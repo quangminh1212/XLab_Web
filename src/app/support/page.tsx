@@ -1,10 +1,5 @@
 import Link from 'next/link'
 
-export const metadata = {
-  title: 'Hỗ trợ & FAQ | XLab - Phần mềm và Dịch vụ',
-  description: 'Trung tâm hỗ trợ, câu hỏi thường gặp và tài nguyên của XLab',
-}
-
 const faqCategories = [
   {
     id: 'general',
