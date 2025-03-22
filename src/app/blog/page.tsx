@@ -1,8 +1,3 @@
-export const metadata = {
-  title: 'Blog | XLab - Phần mềm và Dịch vụ',
-  description: 'Tin tức, cập nhật và kiến thức mới nhất về công nghệ, phát triển phần mềm và giải pháp doanh nghiệp',
-}
-
 export default function BlogPage() {
   const blogPosts = [
     {

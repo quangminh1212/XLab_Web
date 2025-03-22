@@ -1,10 +1,5 @@
 import Link from 'next/link'
 
-export const metadata = {
-  title: 'Dịch vụ | XLab - Phần mềm và Dịch vụ',
-  description: 'Khám phá các dịch vụ công nghệ chuyên nghiệp của XLab dành cho doanh nghiệp',
-}
-
 export default function ServicesPage() {
   return (
     <div>
