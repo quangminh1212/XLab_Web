@@ -46,14 +46,18 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     // Chỉ thực hiện trong môi trường development
     if (process.env.NODE_ENV === 'development' && !isServer) {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'server',
-          analyzerPort: 8888,
-          openAnalyzer: false,
-        })
-      );
+      try {
+        const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+        config.plugins.push(
+          new BundleAnalyzerPlugin({
+            analyzerMode: 'server',
+            analyzerPort: 8888,
+            openAnalyzer: false,
+          })
+        );
+      } catch (error) {
+        console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
+      }
     }
     return config;
   },
