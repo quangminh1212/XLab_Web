@@ -4,12 +4,12 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 30 40% 98%;
+    --foreground: 24 40% 16%;
   }
 
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-secondary-50 text-primary-900;
   }
 }
 
