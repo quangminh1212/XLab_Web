@@ -1,8 +1,3 @@
-export const metadata = {
-  title: 'Giới thiệu | XLab - Phần mềm và Dịch vụ',
-  description: 'Tìm hiểu về XLab - Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ tại Việt Nam',
-}
-
 export default function AboutPage() {
   return (
     <div>
