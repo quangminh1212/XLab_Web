@@ -1,3 +1,5 @@
+'use client';
+
 export default function AuthLoading() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary-50/50 to-white flex flex-col items-center justify-center px-4">
@@ -51,7 +53,16 @@ export default function AuthLoading() {
         </div>
       </div>
       
-      <style jsx>{`
+      <style jsx global>{`
+        @keyframes shimmer {
+          0% {
+            background-position: 0% 0%;
+          }
+          100% {
+            background-position: -200% 0%;
+          }
+        }
+        
         .loading-progress {
           width: 75%;
           animation: shimmer 2s infinite;
@@ -62,15 +73,6 @@ export default function AuthLoading() {
             rgba(75, 136, 229, 0.8) 100%
           );
           background-size: 200% 100%;
-        }
-        
-        @keyframes shimmer {
-          0% {
-            background-position: 0% 0%;
-          }
-          100% {
-            background-position: -200% 0%;
-          }
         }
       `}</style>
     </div>
