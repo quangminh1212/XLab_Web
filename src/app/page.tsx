@@ -349,27 +349,103 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-primary-700 text-white">
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gray-50">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Sẵn sàng nâng cấp hệ thống CNTT của bạn?</h2>
-            <p className="text-xl mb-8">
-              Liên hệ với chúng tôi ngay hôm nay để nhận tư vấn miễn phí và khám phá cách chúng tôi có thể giúp doanh nghiệp của bạn phát triển.
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary-900">Khách hàng nói gì về chúng tôi</h2>
+            <p className="text-lg text-primary-800 max-w-3xl mx-auto">
+              Những đánh giá từ khách hàng đã sử dụng dịch vụ của XLab
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                href="/contact" 
-                className="btn bg-white text-primary-600 hover:bg-secondary-100"
-              >
-                Liên hệ ngay
-              </Link>
-              <Link 
-                href="/services" 
-                className="btn bg-primary-600 hover:bg-primary-500 text-white"
-              >
-                Khám phá dịch vụ
-              </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 relative">
+              <div className="absolute -top-5 -left-5 w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L9.758 4.03c0 0-.218.052-.597.144C8.97 4.222 8.737 4.278 8.472 4.345c-.271.05-.56.187-.882.312C7.272 4.799 6.904 4.895 6.562 5.123c-.344.218-.741.4-1.091.692C5.132 6.116 4.723 6.377 4.421 6.76c-.33.358-.656.734-.909 1.162C3.219 8.33 3.02 8.778 2.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C2.535 17.474 4.338 19 6.5 19c2.485 0 4.5-2.015 4.5-4.5S8.985 10 6.5 10zM17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L20.758 4.03c0 0-.218.052-.597.144-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.317.143-.686.238-1.028.467-.344.218-.741.4-1.091.692-.339.301-.748.562-1.05.944-.33.358-.656.734-.909 1.162C14.219 8.33 14.02 8.778 13.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C13.535 17.474 15.338 19 17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10z" />
+                </svg>
+              </div>
+              <p className="text-gray-700 mb-6 mt-4">
+                XLab đã giúp chúng tôi xây dựng một hệ thống quản lý dữ liệu hoàn toàn mới. Hiệu suất làm việc của đội ngũ tăng lên đáng kể và tiết kiệm được nhiều chi phí.
+              </p>
+              <div className="flex items-center">
+                <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-primary-600 font-bold text-xl">N</div>
+                <div className="ml-4">
+                  <h4 className="font-semibold text-primary-900">Nguyễn Văn A</h4>
+                  <p className="text-gray-600 text-sm">Giám đốc Công nghệ - Tech Group</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 relative">
+              <div className="absolute -top-5 -left-5 w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L9.758 4.03c0 0-.218.052-.597.144C8.97 4.222 8.737 4.278 8.472 4.345c-.271.05-.56.187-.882.312C7.272 4.799 6.904 4.895 6.562 5.123c-.344.218-.741.4-1.091.692C5.132 6.116 4.723 6.377 4.421 6.76c-.33.358-.656.734-.909 1.162C3.219 8.33 3.02 8.778 2.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C2.535 17.474 4.338 19 6.5 19c2.485 0 4.5-2.015 4.5-4.5S8.985 10 6.5 10zM17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L20.758 4.03c0 0-.218.052-.597.144-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.317.143-.686.238-1.028.467-.344.218-.741.4-1.091.692-.339.301-.748.562-1.05.944-.33.358-.656.734-.909 1.162C14.219 8.33 14.02 8.778 13.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C13.535 17.474 15.338 19 17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10z" />
+                </svg>
+              </div>
+              <p className="text-gray-700 mb-6 mt-4">
+                Đội ngũ XLab làm việc rất chuyên nghiệp. Họ đã cung cấp giải pháp cloud phù hợp với nhu cầu của chúng tôi và hỗ trợ kỹ thuật rất nhanh chóng.
+              </p>
+              <div className="flex items-center">
+                <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-primary-600 font-bold text-xl">T</div>
+                <div className="ml-4">
+                  <h4 className="font-semibold text-primary-900">Trần Thị B</h4>
+                  <p className="text-gray-600 text-sm">Quản lý Dự án - Smart Solutions</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100 relative">
+              <div className="absolute -top-5 -left-5 w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L9.758 4.03c0 0-.218.052-.597.144C8.97 4.222 8.737 4.278 8.472 4.345c-.271.05-.56.187-.882.312C7.272 4.799 6.904 4.895 6.562 5.123c-.344.218-.741.4-1.091.692C5.132 6.116 4.723 6.377 4.421 6.76c-.33.358-.656.734-.909 1.162C3.219 8.33 3.02 8.778 2.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C2.535 17.474 4.338 19 6.5 19c2.485 0 4.5-2.015 4.5-4.5S8.985 10 6.5 10zM17.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35.208-.086.39-.16.539-.222.302-.125.474-.197.474-.197L20.758 4.03c0 0-.218.052-.597.144-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.317.143-.686.238-1.028.467-.344.218-.741.4-1.091.692-.339.301-.748.562-1.05.944-.33.358-.656.734-.909 1.162C14.219 8.33 14.02 8.778 13.81 9.221c-.19.443-.343.896-.468 1.336-.237.882-.343 1.72-.384 2.437-.034.718-.014 1.315.028 1.747.015.204.043.402.063.539.017.109.025.168.025.168l.026-.006C13.535 17.474 15.338 19 17.5 19c2.485 0 4.5-2.015 4.5-4.5S19.985 10 17.5 10z" />
+                </svg>
+              </div>
+              <p className="text-gray-700 mb-6 mt-4">
+                Ứng dụng di động do XLab phát triển đã giúp chúng tôi tăng 40% tương tác với khách hàng. Giao diện đẹp và dễ sử dụng, khách hàng rất hài lòng.
+              </p>
+              <div className="flex items-center">
+                <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-primary-600 font-bold text-xl">L</div>
+                <div className="ml-4">
+                  <h4 className="font-semibold text-primary-900">Lê Văn C</h4>
+                  <p className="text-gray-600 text-sm">Giám đốc Marketing - Digital Brand</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-primary-700 to-primary-600 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500 rounded-full opacity-20 -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-800 rounded-full opacity-20 translate-x-1/3 translate-y-1/2"></div>
+        
+        <div className="container relative z-10">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-10 border border-white/20 shadow-xl">
+            <div className="text-center max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">Sẵn sàng nâng cấp hệ thống CNTT của bạn?</h2>
+              <p className="text-xl mb-8 text-white/90">
+                Liên hệ với chúng tôi ngay hôm nay để nhận tư vấn miễn phí và khám phá cách chúng tôi có thể giúp doanh nghiệp của bạn phát triển.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link 
+                  href="/contact" 
+                  className="btn bg-white text-primary-600 hover:bg-secondary-100 shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  Liên hệ ngay
+                </Link>
+                <Link 
+                  href="/services" 
+                  className="btn bg-primary-600 hover:bg-primary-500 text-white border-2 border-white/20 shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  Khám phá dịch vụ
+                </Link>
+              </div>
             </div>
           </div>
         </div>
