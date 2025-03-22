@@ -86,7 +86,51 @@ module.exports = {
         '3xl': '1.5rem',
         'full': '9999px',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: '#374151',
+            a: {
+              color: '#0070F3',
+              '&:hover': {
+                color: '#005CC5',
+              },
+            },
+            h1: {
+              color: '#111827',
+            },
+            h2: {
+              color: '#111827',
+            },
+            h3: {
+              color: '#1F2937',
+            },
+            h4: {
+              color: '#1F2937',
+            },
+            strong: {
+              color: '#1F2937',
+            },
+            code: {
+              color: '#111827',
+              backgroundColor: '#F3F4F6',
+              paddingLeft: '0.25rem',
+              paddingRight: '0.25rem',
+              paddingTop: '0.125rem',
+              paddingBottom: '0.125rem',
+              borderRadius: '0.25rem',
+            },
+            pre: {
+              backgroundColor: '#1F2937',
+              color: '#F9FAFB',
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+  ],
 } 
