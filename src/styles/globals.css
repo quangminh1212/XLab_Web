@@ -2,9 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #3B82F6;
+  --primary-dark: #2563EB;
+  --secondary: #4F46E5;
+  --secondary-dark: #4338CA;
+}
+
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-white text-gray-900 min-h-screen;
   }
   h1 {
     @apply text-4xl font-bold;
@@ -22,7 +29,7 @@
     @apply mb-4;
   }
   a {
-    @apply text-primary hover:text-primary/80 transition-colors;
+    @apply text-primary hover:text-primary-dark transition-colors;
   }
 }
 
@@ -34,12 +41,50 @@
     @apply inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors;
   }
   .btn-primary {
-    @apply bg-primary text-white hover:bg-primary/90 focus:ring-primary;
+    @apply bg-primary text-white hover:bg-primary-dark focus:ring-primary;
   }
   .btn-secondary {
-    @apply bg-secondary text-white hover:bg-secondary/90 focus:ring-secondary;
+    @apply bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary;
   }
   .btn-outline {
     @apply border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-primary;
+  }
+}
+
+/* Additional Utilities */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden;
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg;
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  0% { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0);
   }
 } 
