@@ -2,118 +2,162 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
 
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-primary-600">
-              XLab
-            </Link>
-          </div>
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="text-xl font-bold text-blue-600 flex items-center">
+            XLab
+          </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/products" className="text-gray-600 hover:text-primary-600 font-medium">
+          <nav className="hidden md:flex space-x-6">
+            <Link 
+              href="/products"
+              className={`text-sm font-medium ${pathname === "/products" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+            >
               Sản phẩm
             </Link>
-            <Link href="/services" className="text-gray-600 hover:text-primary-600 font-medium">
+            <Link 
+              href="/services"
+              className={`text-sm font-medium ${pathname === "/services" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+            >
               Dịch vụ
             </Link>
-            <Link href="/pricing" className="text-gray-600 hover:text-primary-600 font-medium">
-              Bảng giá
+            <Link 
+              href="/pricing"
+              className={`text-sm font-medium ${pathname === "/pricing" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+            >
+              Báo giá
             </Link>
-            <Link href="/blog" className="text-gray-600 hover:text-primary-600 font-medium">
+            <Link 
+              href="/payment"
+              className={`text-sm font-medium ${pathname === "/payment" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+            >
+              Thanh toán
+            </Link>
+            <Link 
+              href="/blog"
+              className={`text-sm font-medium ${pathname === "/blog" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+            >
               Blog
             </Link>
-            <Link href="/about" className="text-gray-600 hover:text-primary-600 font-medium">
+            <Link 
+              href="/about"
+              className={`text-sm font-medium ${pathname === "/about" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+            >
               Về chúng tôi
             </Link>
           </nav>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <Link href="/contact" className="btn btn-primary">
+          {/* Contact Button - Desktop */}
+          <div className="hidden md:block">
+            <Link
+              href="/contact"
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+            >
               Liên hệ
             </Link>
           </div>
 
-          {/* Mobile Navigation Toggle */}
+          {/* Mobile Menu Button */}
           <button
-            type="button"
-            className="md:hidden text-gray-600"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden text-gray-700 hover:text-blue-600"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle mobile menu"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+            {mobileMenuOpen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
           </button>
         </div>
 
-        {/* Mobile Navigation Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 space-y-4 pb-3">
-            <Link
-              href="/products"
-              className="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-md"
-            >
-              Sản phẩm
-            </Link>
-            <Link
-              href="/services"
-              className="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-md"
-            >
-              Dịch vụ
-            </Link>
-            <Link
-              href="/pricing"
-              className="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-md"
-            >
-              Bảng giá
-            </Link>
-            <Link
-              href="/blog"
-              className="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-md"
-            >
-              Blog
-            </Link>
-            <Link
-              href="/about"
-              className="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-md"
-            >
-              Về chúng tôi
-            </Link>
-            <Link
-              href="/contact"
-              className="block py-2 px-4 text-white bg-primary-600 hover:bg-primary-700 rounded-md"
-            >
-              Liên hệ
-            </Link>
-          </div>
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <nav className="md:hidden py-4 border-t">
+            <ul className="space-y-4">
+              <li>
+                <Link 
+                  href="/products"
+                  className={`block text-sm font-medium ${pathname === "/products" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sản phẩm
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/services"
+                  className={`block text-sm font-medium ${pathname === "/services" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Dịch vụ
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/pricing"
+                  className={`block text-sm font-medium ${pathname === "/pricing" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Báo giá
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/payment"
+                  className={`block text-sm font-medium ${pathname === "/payment" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Thanh toán
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/blog"
+                  className={`block text-sm font-medium ${pathname === "/blog" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/about"
+                  className={`block text-sm font-medium ${pathname === "/about" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Về chúng tôi
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/contact"
+                  className="block px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors w-full text-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Liên hệ
+                </Link>
+              </li>
+            </ul>
+          </nav>
         )}
       </div>
     </header>
