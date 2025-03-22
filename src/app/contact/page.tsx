@@ -2,11 +2,6 @@
 
 import { useState } from 'react'
 
-export const metadata = {
-  title: 'Liên hệ | XLab - Phần mềm và Dịch vụ',
-  description: 'Liên hệ với XLab để được tư vấn về các giải pháp phần mềm và dịch vụ công nghệ',
-}
-
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
