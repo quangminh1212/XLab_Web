@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Script from 'next/script'
+import Analytics from '@/components/Analytics'
 
 // Tối ưu font loading
 const inter = Inter({ 
@@ -95,6 +96,9 @@ export default function RootLayout({
             <Footer />
           </div>
         </SessionProvider>
+
+        {/* Analytics */}
+        <Analytics />
 
         {/* Structured data for better SEO */}
         <Script
