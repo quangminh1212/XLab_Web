@@ -116,9 +116,11 @@ Copyright © 2023 XLab. All rights reserved.
 6. Thêm tên cho ứng dụng của bạn (ví dụ: "XLab Web")
 7. Thêm các URL sau vào phần "Authorized JavaScript origins":
    - `http://localhost:3000` (cho môi trường phát triển)
+   - `http://58.186.71.93:3000` (cho môi trường hiện tại nếu cần)
    - `https://your-production-domain.com` (cho môi trường sản xuất)
 8. Thêm các URL sau vào phần "Authorized redirect URIs":
    - `http://localhost:3000/api/auth/callback/google` (cho môi trường phát triển)
+   - `http://58.186.71.93:3000/api/auth/callback/google` (cho môi trường hiện tại nếu cần)
    - `https://your-production-domain.com/api/auth/callback/google` (cho môi trường sản xuất)
 9. Click "Create"
 10. Sao chép Client ID và Client Secret
@@ -126,7 +128,7 @@ Copyright © 2023 XLab. All rights reserved.
 
 ```
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_nextauth_secret_key_change_me
+NEXTAUTH_SECRET=K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT
 
 # Google OAuth credentials
 GOOGLE_CLIENT_ID=your_client_id_here
