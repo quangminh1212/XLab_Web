@@ -23,25 +23,51 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
-          {/* Header with gradient */}
-          <div className="bg-gradient-to-r from-primary-500 to-secondary-500 p-6 text-white text-center">
-            <div className="flex justify-center mb-4">
-              <div className="bg-white p-3 rounded-full">
-                <div className="text-primary-600 text-2xl font-bold">XLab</div>
-              </div>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block relative">
+              <svg className="w-12 h-12 text-primary-500 animate-spin" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle className="opacity-25" cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="8" fill="none" />
+                <path className="opacity-75" d="M10,50 A40,40 0 0,1 50,10" strokeLinecap="round" stroke="currentColor" strokeWidth="8" fill="none" />
+              </svg>
             </div>
-            <h2 className="text-xl font-bold">Chào mừng trở lại</h2>
-            <p className="text-primary-100 mt-1">Đăng nhập để truy cập tài khoản của bạn</p>
+            <p className="mt-4 text-sm text-gray-600 font-medium">Đang xử lý đăng nhập...</p>
+          </div>
+        </div>
+      )}
+    
+      <div className="max-w-md w-full space-y-8">
+        <div className="bg-white shadow-lg rounded-2xl overflow-hidden transition-shadow hover:shadow-xl">
+          {/* Header with gradient */}
+          <div className="bg-gradient-to-r from-primary-500/90 to-secondary-500/90 p-6 text-white text-center relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10">
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" strokeWidth="1" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+              </svg>
+            </div>
+            <div className="relative z-10">
+              <div className="flex justify-center mb-4">
+                <div className="bg-white p-3 rounded-full shadow-md">
+                  <div className="text-primary-600 text-2xl font-bold">XLab</div>
+                </div>
+              </div>
+              <h2 className="text-xl font-bold">Chào mừng trở lại</h2>
+              <p className="text-primary-100 mt-1 opacity-90">Đăng nhập để truy cập tài khoản của bạn</p>
+            </div>
           </div>
 
           <div className="p-8">
             {/* Social Login Button */}
             <button
               onClick={handleGoogleSignIn}
-              className="group relative w-full flex justify-center py-3 px-4 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all shadow-sm"
+              className="group relative w-full flex justify-center py-3 px-4 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 transition-all shadow-sm"
               disabled={isLoading}
             >
               <span className="flex items-center">
@@ -69,7 +95,7 @@ export default function LoginPage() {
 
             <div className="my-6 relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-3 bg-white text-gray-500">hoặc đăng nhập bằng email</span>
@@ -94,7 +120,7 @@ export default function LoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-400 focus:border-primary-400 sm:text-sm"
                     placeholder="you@example.com"
                     required
                   />
@@ -121,7 +147,7 @@ export default function LoginPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-400 focus:border-primary-400 sm:text-sm"
                     placeholder="••••••••"
                     required
                   />
@@ -134,7 +160,7 @@ export default function LoginPage() {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-primary-500 focus:ring-primary-400 border-gray-300 rounded"
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                     Ghi nhớ đăng nhập
@@ -145,15 +171,9 @@ export default function LoginPage() {
               <div>
                 <button
                   type="submit"
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors shadow-md"
+                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-lg text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400 transition-colors shadow-md"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  ) : null}
                   <span>{isLoading ? 'Đang xử lý...' : 'Đăng nhập'}</span>
                 </button>
               </div>
