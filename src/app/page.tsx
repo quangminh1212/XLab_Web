@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
+      <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-20">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
@@ -18,339 +18,320 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/products"
-                  className="btn bg-white text-primary-600 hover:bg-gray-100"
+                  className="btn bg-white text-primary-600 hover:bg-secondary-100"
                 >
                   Xem sản phẩm
                 </Link>
-                <Link href="/contact" className="btn btn-secondary">
-                  Liên hệ với chúng tôi
+                <Link 
+                  href="/contact" 
+                  className="btn bg-primary-500 hover:bg-primary-400 text-white"
+                >
+                  Liên hệ ngay
                 </Link>
               </div>
             </div>
-            <div className="hidden md:block relative h-96">
-              <div className="absolute inset-0 bg-white/10 backdrop-blur-md rounded-lg shadow-xl overflow-hidden">
-                <div className="relative h-full w-full bg-gradient-to-br from-primary-500/20 to-secondary-500/30 rounded-lg"></div>
-              </div>
+            <div className="hidden md:block">
+              <Image
+                src="/images/hero-image.svg"
+                alt="Hero Image"
+                width={600}
+                height={400}
+                className="w-full h-auto"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20">
+      {/* Feature Section */}
+      <section className="py-20 bg-secondary-50">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Tính năng nổi bật</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Chúng tôi cung cấp các giải pháp phần mềm hiện đại với nhiều tính năng mạnh mẽ, giúp doanh nghiệp của bạn hoạt động hiệu quả hơn.
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary-900">Tại sao chọn XLab?</h2>
+            <p className="text-lg text-primary-800 max-w-3xl mx-auto">
+              Chúng tôi cung cấp các giải pháp toàn diện cho doanh nghiệp với công nghệ hiện đại và đội ngũ chuyên gia giàu kinh nghiệm.
             </p>
           </div>
-
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
-              <div className="bg-primary-100 text-primary-600 rounded-full w-14 h-14 flex items-center justify-center mb-6">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
+            {/* Feature 1 */}
+            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-primary-600 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-4">Quản lý thông minh</h3>
-              <p className="text-gray-600 mb-6">
-                Quản lý mọi hoạt động của doanh nghiệp một cách thông minh và hiệu quả với các công cụ tiên tiến.
+              <h3 className="text-xl font-semibold mb-3 text-primary-900">Bảo mật tối đa</h3>
+              <p className="text-primary-800">
+                Các giải pháp của chúng tôi được xây dựng với các tiêu chuẩn bảo mật cao nhất, đảm bảo dữ liệu của bạn luôn được an toàn.
               </p>
-              <Link
-                href="/features/smart-management"
-                className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
-              >
-                Tìm hiểu thêm
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 ml-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
-              <div className="bg-primary-100 text-primary-600 rounded-full w-14 h-14 flex items-center justify-center mb-6">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
+            
+            {/* Feature 2 */}
+            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-primary-600 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-4">Phân tích dữ liệu</h3>
-              <p className="text-gray-600 mb-6">
-                Phân tích dữ liệu nâng cao giúp bạn hiểu rõ hoạt động kinh doanh và đưa ra quyết định sáng suốt.
+              <h3 className="text-xl font-semibold mb-3 text-primary-900">Hiệu suất cao</h3>
+              <p className="text-primary-800">
+                Các sản phẩm của chúng tôi được tối ưu hóa để mang lại hiệu suất cao nhất, giúp doanh nghiệp của bạn hoạt động hiệu quả hơn.
               </p>
-              <Link
-                href="/features/data-analytics"
-                className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
-              >
-                Tìm hiểu thêm
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 ml-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
-              <div className="bg-primary-100 text-primary-600 rounded-full w-14 h-14 flex items-center justify-center mb-6">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
+            
+            {/* Feature 3 */}
+            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <div className="text-primary-600 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-4">Bảo mật tối đa</h3>
-              <p className="text-gray-600 mb-6">
-                Bảo vệ dữ liệu của bạn với hệ thống bảo mật tiên tiến và tuân thủ các tiêu chuẩn quốc tế.
+              <h3 className="text-xl font-semibold mb-3 text-primary-900">Công nghệ đám mây</h3>
+              <p className="text-primary-800">
+                Tận dụng sức mạnh của điện toán đám mây để giảm chi phí, tăng khả năng mở rộng và linh hoạt cho doanh nghiệp của bạn.
               </p>
-              <Link
-                href="/features/security"
-                className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
-              >
-                Tìm hiểu thêm
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 ml-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Products Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Sản phẩm của chúng tôi</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Khám phá các sản phẩm phần mềm hiện đại được thiết kế riêng cho doanh nghiệp của bạn.
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary-900">Sản phẩm nổi bật</h2>
+            <p className="text-lg text-primary-800 max-w-3xl mx-auto">
+              Khám phá các sản phẩm đột phá của chúng tôi, được thiết kế để giải quyết các thách thức kinh doanh của bạn.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-primary-500 to-primary-700"></div>
-              <div className="p-8">
-                <h3 className="text-2xl font-bold mb-4">XLab Business Suite</h3>
-                <p className="text-gray-600 mb-6">
-                  Giải pháp phần mềm toàn diện cho việc quản lý doanh nghiệp, bao gồm kế toán, quản lý nhân sự, quản lý khách hàng và nhiều tính năng khác.
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Product 1 */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+              <div className="h-48 w-full bg-primary-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-2 text-primary-900">XLab Analytics</h3>
+                <p className="text-primary-800 mb-4">
+                  Giải pháp phân tích dữ liệu thông minh, giúp doanh nghiệp ra quyết định dựa trên dữ liệu một cách nhanh chóng và chính xác.
                 </p>
-                <Link
-                  href="/products/business-suite"
-                  className="btn btn-primary"
+                <Link 
+                  href="/products#analytics" 
+                  className="text-primary-600 font-medium hover:text-primary-500 inline-flex items-center"
                 >
                   Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               </div>
             </div>
-
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-secondary-500 to-secondary-700"></div>
-              <div className="p-8">
-                <h3 className="text-2xl font-bold mb-4">XLab Analytics Pro</h3>
-                <p className="text-gray-600 mb-6">
-                  Công cụ phân tích dữ liệu nâng cao giúp bạn hiểu rõ hoạt động kinh doanh và đưa ra quyết định dựa trên dữ liệu thực tế.
+            
+            {/* Product 2 */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+              <div className="h-48 w-full bg-primary-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-2 text-primary-900">XLab Mobile</h3>
+                <p className="text-primary-800 mb-4">
+                  Nền tảng phát triển ứng dụng di động đa nền tảng, giúp doanh nghiệp tiếp cận khách hàng mọi lúc, mọi nơi.
                 </p>
-                <Link
-                  href="/products/analytics-pro"
-                  className="btn btn-primary"
+                <Link 
+                  href="/products#mobile" 
+                  className="text-primary-600 font-medium hover:text-primary-500 inline-flex items-center"
                 >
                   Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+            
+            {/* Product 3 */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+              <div className="h-48 w-full bg-primary-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-2 text-primary-900">XLab Cloud</h3>
+                <p className="text-primary-800 mb-4">
+                  Dịch vụ đám mây toàn diện, giúp doanh nghiệp lưu trữ, quản lý và xử lý dữ liệu một cách hiệu quả và bảo mật.
+                </p>
+                <Link 
+                  href="/products#cloud" 
+                  className="text-primary-600 font-medium hover:text-primary-500 inline-flex items-center"
+                >
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               </div>
             </div>
           </div>
-
-          <div className="mt-12 text-center">
-            <Link href="/products" className="btn btn-secondary">
+          
+          <div className="text-center mt-12">
+            <Link 
+              href="/products" 
+              className="btn bg-primary-600 hover:bg-primary-500 text-white"
+            >
               Xem tất cả sản phẩm
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-20">
+      {/* Services Section */}
+      <section className="py-20 bg-secondary-50">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Khách hàng nói gì về chúng tôi</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Những đánh giá từ khách hàng đã sử dụng sản phẩm và dịch vụ của chúng tôi.
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary-900">Dịch vụ của chúng tôi</h2>
+            <p className="text-lg text-primary-800 max-w-3xl mx-auto">
+              Chúng tôi cung cấp các dịch vụ chuyên nghiệp để hỗ trợ doanh nghiệp của bạn trong hành trình chuyển đổi số.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="mr-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-200"></div>
-                </div>
-                <div>
-                  <h4 className="font-bold">Nguyễn Văn A</h4>
-                  <p className="text-gray-600">CEO, Công ty ABC</p>
-                </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Service 1 */}
+            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow flex">
+              <div className="text-primary-600 mr-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
               </div>
-              <p className="text-gray-600 mb-4">
-                "XLab đã giúp chúng tôi chuyển đổi hoàn toàn cách thức quản lý doanh nghiệp. Phần mềm dễ sử dụng và đội ngũ hỗ trợ rất chuyên nghiệp."
-              </p>
-              <div className="flex text-yellow-400">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-900">Phát triển phần mềm</h3>
+                <p className="text-primary-800">
+                  Phát triển các giải pháp phần mềm tùy chỉnh, đáp ứng nhu cầu cụ thể của doanh nghiệp bạn với công nghệ hiện đại.
+                </p>
+                <Link 
+                  href="/services#software-development" 
+                  className="text-primary-600 font-medium hover:text-primary-500 inline-flex items-center mt-3"
+                >
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
               </div>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="mr-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-200"></div>
-                </div>
-                <div>
-                  <h4 className="font-bold">Trần Thị B</h4>
-                  <p className="text-gray-600">CFO, Công ty XYZ</p>
-                </div>
+            
+            {/* Service 2 */}
+            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow flex">
+              <div className="text-primary-600 mr-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                </svg>
               </div>
-              <p className="text-gray-600 mb-4">
-                "Công cụ phân tích dữ liệu của XLab đã giúp chúng tôi hiểu rõ hơn về hoạt động kinh doanh và đưa ra các quyết định tốt hơn. Rất đáng đầu tư!"
-              </p>
-              <div className="flex text-yellow-400">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-900">Dịch vụ đám mây</h3>
+                <p className="text-primary-800">
+                  Cung cấp các dịch vụ đám mây toàn diện, từ tư vấn, triển khai đến quản lý và bảo trì hệ thống.
+                </p>
+                <Link 
+                  href="/services#cloud-services" 
+                  className="text-primary-600 font-medium hover:text-primary-500 inline-flex items-center mt-3"
+                >
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
               </div>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
-              <div className="flex items-center mb-6">
-                <div className="mr-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-200"></div>
-                </div>
-                <div>
-                  <h4 className="font-bold">Lê Văn C</h4>
-                  <p className="text-gray-600">CTO, Công ty 123</p>
-                </div>
+            
+            {/* Service 3 */}
+            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow flex">
+              <div className="text-primary-600 mr-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
               </div>
-              <p className="text-gray-600 mb-4">
-                "Đội ngũ hỗ trợ kỹ thuật của XLab rất tuyệt vời. Họ luôn sẵn sàng giúp đỡ và giải quyết mọi vấn đề một cách nhanh chóng."
-              </p>
-              <div className="flex text-yellow-400">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                </svg>
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-900">Bảo mật CNTT</h3>
+                <p className="text-primary-800">
+                  Bảo vệ hệ thống CNTT của bạn khỏi các mối đe dọa với các giải pháp bảo mật toàn diện và dịch vụ giám sát liên tục.
+                </p>
+                <Link 
+                  href="/services#security" 
+                  className="text-primary-600 font-medium hover:text-primary-500 inline-flex items-center mt-3"
+                >
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
               </div>
             </div>
+            
+            {/* Service 4 */}
+            <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow flex">
+              <div className="text-primary-600 mr-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-primary-900">Tư vấn CNTT</h3>
+                <p className="text-primary-800">
+                  Cung cấp dịch vụ tư vấn chuyên nghiệp để giúp doanh nghiệp của bạn lựa chọn và triển khai các giải pháp CNTT phù hợp nhất.
+                </p>
+                <Link 
+                  href="/services#consulting" 
+                  className="text-primary-600 font-medium hover:text-primary-500 inline-flex items-center mt-3"
+                >
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link 
+              href="/services" 
+              className="btn bg-primary-600 hover:bg-primary-500 text-white"
+            >
+              Xem tất cả dịch vụ
+            </Link>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary-600 text-white">
+      <section className="py-20 bg-primary-700 text-white">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Sẵn sàng nâng cao hiệu suất kinh doanh của bạn?
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Sẵn sàng nâng cấp hệ thống CNTT của bạn?</h2>
             <p className="text-xl mb-8">
-              Liên hệ với chúng tôi ngay hôm nay để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của bạn.
+              Liên hệ với chúng tôi ngay hôm nay để nhận tư vấn miễn phí và khám phá cách chúng tôi có thể giúp doanh nghiệp của bạn phát triển.
             </p>
-            <Link
-              href="/contact"
-              className="btn bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 text-lg"
-            >
-              Liên hệ ngay
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/contact" 
+                className="btn bg-white text-primary-600 hover:bg-secondary-100"
+              >
+                Liên hệ ngay
+              </Link>
+              <Link 
+                href="/services" 
+                className="btn bg-primary-600 hover:bg-primary-500 text-white"
+              >
+                Khám phá dịch vụ
+              </Link>
+            </div>
           </div>
         </div>
       </section>
