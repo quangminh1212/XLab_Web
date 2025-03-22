@@ -69,26 +69,41 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Sản phẩm</h3>
+            <h3 className="text-lg font-semibold mb-4">Trang</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/products/business-software" className="text-gray-400 hover:text-white">
-                  Phần mềm quản lý doanh nghiệp
+                <Link href="/" className="text-gray-400 hover:text-white">
+                  Trang chủ
                 </Link>
               </li>
               <li>
-                <Link href="/products/erp-solutions" className="text-gray-400 hover:text-white">
-                  Giải pháp ERP
+                <Link href="/products" className="text-gray-400 hover:text-white">
+                  Sản phẩm
                 </Link>
               </li>
               <li>
-                <Link href="/products/analytics" className="text-gray-400 hover:text-white">
-                  Phân tích dữ liệu
+                <Link href="/services" className="text-gray-400 hover:text-white">
+                  Dịch vụ
                 </Link>
               </li>
               <li>
-                <Link href="/products/mobile-apps" className="text-gray-400 hover:text-white">
-                  Ứng dụng di động
+                <Link href="/pricing" className="text-gray-400 hover:text-white">
+                  Báo giá
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-gray-400 hover:text-white">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-gray-400 hover:text-white">
+                  Về chúng tôi
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-gray-400 hover:text-white">
+                  Liên hệ
                 </Link>
               </li>
             </ul>
@@ -98,22 +113,22 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Dịch vụ</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/services/software-development" className="text-gray-400 hover:text-white">
+                <Link href="/services#software-development" className="text-gray-400 hover:text-white">
                   Phát triển phần mềm
                 </Link>
               </li>
               <li>
-                <Link href="/services/cloud-services" className="text-gray-400 hover:text-white">
+                <Link href="/services#cloud-services" className="text-gray-400 hover:text-white">
                   Dịch vụ đám mây
                 </Link>
               </li>
               <li>
-                <Link href="/services/consulting" className="text-gray-400 hover:text-white">
+                <Link href="/services#consulting" className="text-gray-400 hover:text-white">
                   Tư vấn công nghệ
                 </Link>
               </li>
               <li>
-                <Link href="/services/support" className="text-gray-400 hover:text-white">
+                <Link href="/services#support" className="text-gray-400 hover:text-white">
                   Hỗ trợ kỹ thuật
                 </Link>
               </li>
@@ -123,9 +138,9 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Liên hệ</h3>
             <p className="text-gray-400 mb-2">Email: info@xlab.com</p>
-            <p className="text-gray-400 mb-2">Điện thoại: (123) 456-7890</p>
+            <p className="text-gray-400 mb-2">Điện thoại: (84) 28 1234 5678</p>
             <p className="text-gray-400">
-              Địa chỉ: Tòa nhà XLab, 123 Đường Công Nghệ, Thành phố Hồ Chí Minh
+              Địa chỉ: Tòa nhà XLab, 123 Đường Công Nghệ, Quận 1, Thành phố Hồ Chí Minh
             </p>
           </div>
         </div>
