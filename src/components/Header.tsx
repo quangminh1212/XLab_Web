@@ -28,8 +28,8 @@ export default function Header() {
             <Link href="/pricing" className="text-gray-600 hover:text-primary-600 font-medium">
               Bảng giá
             </Link>
-            <Link href="/support" className="text-gray-600 hover:text-primary-600 font-medium">
-              Hỗ trợ
+            <Link href="/blog" className="text-gray-600 hover:text-primary-600 font-medium">
+              Blog
             </Link>
             <Link href="/about" className="text-gray-600 hover:text-primary-600 font-medium">
               Về chúng tôi
@@ -96,10 +96,10 @@ export default function Header() {
               Bảng giá
             </Link>
             <Link
-              href="/support"
+              href="/blog"
               className="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-md"
             >
-              Hỗ trợ
+              Blog
             </Link>
             <Link
               href="/about"
