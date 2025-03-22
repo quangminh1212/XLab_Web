@@ -9,7 +9,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'XLab - Phần mềm và Dịch vụ',
-  description: 'Cung cấp phần mềm và dịch vụ phần mềm chất lượng cao',
+  description: 'XLab cung cấp các giải pháp phần mềm và dịch vụ chuyên nghiệp cho doanh nghiệp',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 }
 
 export default function RootLayout({

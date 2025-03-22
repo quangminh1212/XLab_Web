@@ -54,7 +54,7 @@ const handler = NextAuth({
       return false;
     },
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: false,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",

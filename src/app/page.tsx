@@ -6,7 +6,18 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary-700 to-primary-600 text-white pb-16 pt-24 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-[url('/images/hero-pattern.svg')] bg-no-repeat bg-right-top opacity-10"></div>
+        {/* Background pattern */}
+        <div className="absolute top-0 right-0 w-1/2 h-full opacity-10">
+          <svg width="100%" height="100%" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="heroPattern" patternUnits="userSpaceOnUse" width="40" height="40" patternTransform="rotate(30)">
+                <rect width="100%" height="100%" fill="none"/>
+                <path d="M0 20 L40 20 M20 0 L20 40" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#heroPattern)" stroke="none"/>
+          </svg>
+        </div>
         <div className="container relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="order-2 md:order-1">
