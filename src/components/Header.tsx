@@ -17,7 +17,7 @@ export default function Header() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="text-xl font-bold text-blue-600 flex items-center">
+          <Link href="/" className="text-xl font-bold text-primary-600 flex items-center">
             XLab
           </Link>
 
@@ -25,37 +25,37 @@ export default function Header() {
           <nav className="hidden md:flex space-x-6">
             <Link 
               href="/products"
-              className={`text-sm font-medium ${pathname === "/products" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+              className={`text-sm font-medium ${pathname === "/products" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
             >
               Sản phẩm
             </Link>
             <Link 
               href="/services"
-              className={`text-sm font-medium ${pathname === "/services" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+              className={`text-sm font-medium ${pathname === "/services" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
             >
               Dịch vụ
             </Link>
             <Link 
               href="/pricing"
-              className={`text-sm font-medium ${pathname === "/pricing" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+              className={`text-sm font-medium ${pathname === "/pricing" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
             >
               Báo giá
             </Link>
             <Link 
               href="/payment"
-              className={`text-sm font-medium ${pathname === "/payment" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+              className={`text-sm font-medium ${pathname === "/payment" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
             >
               Thanh toán
             </Link>
             <Link 
               href="/blog"
-              className={`text-sm font-medium ${pathname === "/blog" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+              className={`text-sm font-medium ${pathname === "/blog" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
             >
               Blog
             </Link>
             <Link 
               href="/about"
-              className={`text-sm font-medium ${pathname === "/about" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+              className={`text-sm font-medium ${pathname === "/about" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
             >
               Về chúng tôi
             </Link>
@@ -65,7 +65,7 @@ export default function Header() {
           <div className="hidden md:block">
             <Link
               href="/contact"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-colors"
             >
               Liên hệ
             </Link>
@@ -73,7 +73,7 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-gray-700 hover:text-blue-600"
+            className="md:hidden text-primary-800 hover:text-primary-600"
             onClick={toggleMobileMenu}
             aria-label="Toggle mobile menu"
           >
@@ -96,7 +96,7 @@ export default function Header() {
               <li>
                 <Link 
                   href="/products"
-                  className={`block text-sm font-medium ${pathname === "/products" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  className={`block text-sm font-medium ${pathname === "/products" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Sản phẩm
@@ -105,7 +105,7 @@ export default function Header() {
               <li>
                 <Link 
                   href="/services"
-                  className={`block text-sm font-medium ${pathname === "/services" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  className={`block text-sm font-medium ${pathname === "/services" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Dịch vụ
@@ -114,7 +114,7 @@ export default function Header() {
               <li>
                 <Link 
                   href="/pricing"
-                  className={`block text-sm font-medium ${pathname === "/pricing" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  className={`block text-sm font-medium ${pathname === "/services" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Báo giá
@@ -123,7 +123,7 @@ export default function Header() {
               <li>
                 <Link 
                   href="/payment"
-                  className={`block text-sm font-medium ${pathname === "/payment" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  className={`block text-sm font-medium ${pathname === "/payment" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Thanh toán
@@ -132,7 +132,7 @@ export default function Header() {
               <li>
                 <Link 
                   href="/blog"
-                  className={`block text-sm font-medium ${pathname === "/blog" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  className={`block text-sm font-medium ${pathname === "/blog" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Blog
@@ -141,7 +141,7 @@ export default function Header() {
               <li>
                 <Link 
                   href="/about"
-                  className={`block text-sm font-medium ${pathname === "/about" ? "text-blue-600" : "text-gray-700 hover:text-blue-600"}`}
+                  className={`block text-sm font-medium ${pathname === "/about" ? "text-primary-600" : "text-primary-800 hover:text-primary-600"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Về chúng tôi
@@ -150,7 +150,7 @@ export default function Header() {
               <li>
                 <Link 
                   href="/contact"
-                  className="block px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors w-full text-center"
+                  className="block px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-colors w-full text-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Liên hệ
