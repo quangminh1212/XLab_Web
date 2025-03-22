@@ -1,3 +1,5 @@
+'use client';
+
 export default function Loading() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-primary-50 to-white">
@@ -54,11 +56,7 @@ export default function Loading() {
         </div>
       </div>
       
-      <style jsx>{`
-        .loading-bar {
-          animation: loading 1.5s infinite ease-in-out;
-        }
-        
+      <style jsx global>{`
         @keyframes loading {
           0% {
             transform: translateX(-100%);
@@ -69,6 +67,10 @@ export default function Loading() {
           100% {
             transform: translateX(-100%);
           }
+        }
+        
+        .loading-bar {
+          animation: loading 1.5s infinite ease-in-out;
         }
       `}</style>
     </div>
