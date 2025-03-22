@@ -4,11 +4,6 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export const metadata = {
-  title: 'Đăng nhập | XLab - Phần mềm và Dịch vụ',
-  description: 'Đăng nhập vào tài khoản XLab của bạn để truy cập phần mềm và dịch vụ',
-};
-
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
