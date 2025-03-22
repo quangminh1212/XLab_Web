@@ -102,4 +102,41 @@ XLab Development Team
 
 ## Giấy phép
 
-Copyright © 2023 XLab. All rights reserved. 
+Copyright © 2023 XLab. All rights reserved.
+
+## Cài đặt Google OAuth đăng nhập
+
+Để thiết lập đăng nhập bằng Google, bạn cần tạo Google OAuth credentials:
+
+1. Đi đến [Google Cloud Console](https://console.cloud.google.com/)
+2. Tạo dự án mới hoặc chọn dự án hiện có
+3. Từ menu bên trái, chọn "APIs & Services" > "Credentials"
+4. Click "Create Credentials" và chọn "OAuth client ID"
+5. Chọn "Web application" làm loại ứng dụng
+6. Thêm tên cho ứng dụng của bạn (ví dụ: "XLab Web")
+7. Thêm các URL sau vào phần "Authorized JavaScript origins":
+   - `http://localhost:3000` (cho môi trường phát triển)
+   - `https://your-production-domain.com` (cho môi trường sản xuất)
+8. Thêm các URL sau vào phần "Authorized redirect URIs":
+   - `http://localhost:3000/api/auth/callback/google` (cho môi trường phát triển)
+   - `https://your-production-domain.com/api/auth/callback/google` (cho môi trường sản xuất)
+9. Click "Create"
+10. Sao chép Client ID và Client Secret
+11. Thêm chúng vào file `.env.local`:
+
+```
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret_key_change_me
+
+# Google OAuth credentials
+GOOGLE_CLIENT_ID=your_client_id_here
+GOOGLE_CLIENT_SECRET=your_client_secret_here
+```
+
+12. Khởi động lại server để các thay đổi có hiệu lực
+
+## Lưu ý bảo mật
+
+- **KHÔNG** commit file `.env.local` lên git repository
+- **KHÔNG** chia sẻ Google Client Secret với bất kỳ ai
+- Trong môi trường sản xuất, hãy tạo một NEXTAUTH_SECRET mạnh và duy nhất 
