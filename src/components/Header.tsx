@@ -2,11 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  const { data: session, status } = useSession()
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
@@ -70,6 +73,51 @@ export default function Header() {
               Liên hệ
             </Link>
           </div>
+
+          {/* Authentication Button */}
+          {status === 'loading' ? (
+            <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse"></div>
+          ) : session ? (
+            <div className="relative group">
+              <button className="flex items-center gap-2">
+                {session.user?.image ? (
+                  <Image 
+                    src={session.user.image} 
+                    alt={session.user.name || 'User'} 
+                    width={32} 
+                    height={32} 
+                    className="rounded-full"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center">
+                    {session.user?.name?.charAt(0) || 'U'}
+                  </div>
+                )}
+                <span className="hidden md:inline text-sm">{session.user?.name?.split(' ')[0]}</span>
+              </button>
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+                <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Tài khoản của tôi
+                </Link>
+                <Link href="/account/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Đơn hàng
+                </Link>
+                <Link href="/account/downloads" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Tải xuống
+                </Link>
+                <button 
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link href="/login" className="text-sm font-medium text-primary-600 hover:text-primary-500">
+              Đăng nhập
+            </Link>
+          )}
 
           {/* Mobile Menu Button */}
           <button
