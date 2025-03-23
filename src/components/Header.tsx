@@ -81,9 +81,6 @@ export default function Header() {
             <Link href="/services" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
               Dịch vụ
             </Link>
-            <Link href="/about" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Giới thiệu
-            </Link>
             <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
               Liên hệ
             </Link>
@@ -215,9 +212,6 @@ export default function Header() {
             </Link>
             <Link href="/services" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
               Dịch vụ
-            </Link>
-            <Link href="/about" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Giới thiệu
             </Link>
             <Link href="/contact" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
               Liên hệ

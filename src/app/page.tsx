@@ -137,16 +137,10 @@ export default function Home() {
           </p>
           <div className="flex justify-center space-x-4">
                 <Link 
-              href="/register"
-              className="bg-white text-primary-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors"
+                  href="/register"
+                  className="bg-white text-primary-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors"
                 >
-              Đăng ký ngay
-                </Link>
-                <Link 
-              href="/about"
-              className="bg-primary-700 text-white px-6 py-3 rounded-md font-medium hover:bg-primary-800 transition-colors"
-                >
-              Tìm hiểu thêm
+                  Đăng ký ngay
                 </Link>
           </div>
         </div>

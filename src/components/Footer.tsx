@@ -148,11 +148,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-base text-gray-600 hover:text-primary-600 transition-colors flex items-center">
-                  <span className="mr-2">→</span> Giới thiệu
-                </Link>
-              </li>
-              <li>
                 <Link href="/contact" className="text-base text-gray-600 hover:text-primary-600 transition-colors flex items-center">
                   <span className="mr-2">→</span> Liên hệ
                 </Link>
