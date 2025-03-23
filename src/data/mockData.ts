@@ -96,7 +96,7 @@ export const products: Product[] = [
     name: 'DocuSuite Pro',
     slug: 'docu-suite-pro',
     description: 'Bộ ứng dụng văn phòng toàn diện với trình soạn thảo văn bản, bảng tính và thuyết trình.',
-    longDescription: `XLab Office Pro là bộ ứng dụng văn phòng toàn diện với nhiều tính năng mạnh mẽ giúp bạn làm việc hiệu quả:
+    longDescription: `DocuSuite Pro là bộ ứng dụng văn phòng toàn diện với nhiều tính năng mạnh mẽ giúp bạn làm việc hiệu quả:
     
 - Trình soạn thảo văn bản với công cụ định dạng hiện đại
 - Bảng tính với các công thức và biểu đồ nâng cao
@@ -125,7 +125,7 @@ export const products: Product[] = [
     name: 'DevCode Studio',
     slug: 'dev-code-studio',
     description: 'IDE thông minh hỗ trợ nhiều ngôn ngữ lập trình với các tính năng phân tích và gợi ý code.',
-    longDescription: `CodeEditor X là IDE hiện đại dành cho lập trình viên chuyên nghiệp:
+    longDescription: `DevCode Studio là IDE hiện đại dành cho lập trình viên chuyên nghiệp:
     
 - Hỗ trợ hơn 50 ngôn ngữ lập trình
 - IntelliSense thông minh với gợi ý code chính xác
@@ -155,7 +155,7 @@ export const products: Product[] = [
     name: 'PixelCraft Pro',
     slug: 'pixel-craft-pro',
     description: 'Phần mềm thiết kế đồ họa chuyên nghiệp với công cụ vẽ vector, chỉnh sửa ảnh và thiết kế UI.',
-    longDescription: `DesignMaster Pro là giải pháp thiết kế đồ họa toàn diện cho designer:
+    longDescription: `PixelCraft Pro là giải pháp thiết kế đồ họa toàn diện cho designer:
     
 - Công cụ vẽ vector chuyên nghiệp
 - Chức năng chỉnh sửa ảnh nâng cao
@@ -185,7 +185,7 @@ export const products: Product[] = [
     name: 'DataGuard Pro',
     slug: 'data-guard-pro',
     description: 'Giải pháp bảo mật dữ liệu toàn diện với mã hóa 256-bit, quản lý mật khẩu và bảo vệ danh tính.',
-    longDescription: `SecureVault bảo vệ dữ liệu và danh tính của bạn một cách toàn diện:
+    longDescription: `DataGuard Pro bảo vệ dữ liệu và danh tính của bạn một cách toàn diện:
     
 - Mã hóa AES 256-bit cho tất cả dữ liệu
 - Quản lý mật khẩu thông minh
@@ -215,7 +215,7 @@ export const products: Product[] = [
     name: 'PCBooster',
     slug: 'pc-booster',
     description: 'Tối ưu hóa hệ thống, dọn dẹp tập tin rác và tăng tốc máy tính của bạn.',
-    longDescription: `SystemOptimizer giúp máy tính của bạn hoạt động nhanh như ngày đầu:
+    longDescription: `PCBooster giúp máy tính của bạn hoạt động nhanh như ngày đầu:
     
 - Tối ưu hóa RAM và CPU
 - Dọn dẹp tập tin rác và tạm thời
@@ -245,7 +245,7 @@ export const products: Product[] = [
     name: 'LinguaLearn',
     slug: 'lingua-learn',
     description: 'Ứng dụng học ngoại ngữ với phương pháp học tập thông minh và hơn 30 ngôn ngữ.',
-    longDescription: `LanguageMaster giúp bạn học ngoại ngữ hiệu quả:
+    longDescription: `LinguaLearn giúp bạn học ngoại ngữ hiệu quả:
     
 - Hỗ trợ hơn 30 ngôn ngữ phổ biến
 - Phương pháp học lặp lại theo khoảng thời gian (spaced repetition)
@@ -275,7 +275,7 @@ export const products: Product[] = [
     name: 'DataKeeper',
     slug: 'data-keeper',
     description: 'Giải pháp sao lưu dữ liệu tự động với lưu trữ đám mây và khôi phục nhanh chóng.',
-    longDescription: `BackupPro bảo vệ dữ liệu của bạn khỏi mọi rủi ro mất mát:
+    longDescription: `DataKeeper bảo vệ dữ liệu của bạn khỏi mọi rủi ro mất mát:
     
 - Sao lưu tự động theo lịch trình
 - Lưu trữ đám mây an toàn
@@ -305,7 +305,7 @@ export const products: Product[] = [
     name: 'ImageEdit Pro',
     slug: 'image-edit-pro',
     description: 'Công cụ chỉnh sửa ảnh chuyên nghiệp với bộ lọc, hiệu ứng và công cụ biên tập nâng cao.',
-    longDescription: `PhotoEditor X mang đến trải nghiệm chỉnh sửa ảnh chuyên nghiệp:
+    longDescription: `ImageEdit Pro mang đến trải nghiệm chỉnh sửa ảnh chuyên nghiệp:
     
 - Hơn 200 bộ lọc và hiệu ứng
 - Công cụ biên tập nâng cao (dodge/burn, healing, clone)
