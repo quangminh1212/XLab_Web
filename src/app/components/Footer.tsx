@@ -42,12 +42,11 @@ const Footer = () => {
           {/* Quick Links */}
           <div className="col-span-1">
             <h3 className="text-lg font-semibold mb-4">Liên kết nhanh</h3>
-            <ul className="space-y-3">
+            <ul className="list-none mt-4 space-y-2">
               <li><Link href="/about" className="text-gray-400 hover:text-white transition-colors">Giới thiệu</Link></li>
-              <li><Link href="/services" className="text-gray-400 hover:text-white transition-colors">Dịch vụ</Link></li>
-              <li><Link href="/products" className="text-gray-400 hover:text-white transition-colors">Sản phẩm</Link></li>
-              <li><Link href="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Liên hệ</Link></li>
+              <li><Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">Chính sách bảo mật</Link></li>
+              <li><Link href="/terms" className="text-gray-400 hover:text-white transition-colors">Điều khoản sử dụng</Link></li>
             </ul>
           </div>
 
