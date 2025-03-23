@@ -7,11 +7,13 @@ import SessionProvider from '@/components/SessionProvider'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 
-// Tối ưu font loading
+// Optimize font loading
 const inter = Inter({ 
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
+  preload: true,
+  fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
 export const metadata: Metadata = {
@@ -85,44 +87,43 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
-      <body className={`${inter.className} antialiased text-gray-800 bg-white`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          href="/images/hero-image.svg"
+          as="image"
+          type="image/svg+xml"
+        />
+      </head>
+      <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
         <SessionProvider>
-          <div className="flex flex-col min-h-screen">
-            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-              Bỏ qua phần điều hướng
-            </a>
-            <Header />
-            <main id="main-content" className="flex-grow">{children}</main>
-            <Footer />
-          </div>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
+            Bỏ qua phần điều hướng
+          </a>
+          <Header />
+          <main id="main-content" className="flex-grow">
+            {children}
+          </main>
+          <Footer />
         </SessionProvider>
-
-        {/* Analytics */}
         <Analytics />
-
-        {/* Structured data for better SEO */}
         <Script
-          id="schema-org-graph"
-          type="application/ld+json"
+          id="performance-metrics"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: 'XLab',
-              url: 'https://xlab.com',
-              logo: 'https://xlab.com/logo.png',
-              sameAs: [
-                'https://www.facebook.com/xlab',
-                'https://www.linkedin.com/company/xlab',
-                'https://twitter.com/xlab',
-              ],
-              contactPoint: {
-                '@type': 'ContactPoint',
-                telephone: '+84-123-456-789',
-                contactType: 'customer service',
-                availableLanguage: ['Vietnamese', 'English'],
-              },
-            }),
+            __html: `
+              // Core web vitals optimization
+              window.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                  const lcpElement = document.querySelector('main');
+                  if (lcpElement) {
+                    lcpElement.style.contentVisibility = 'auto';
+                  }
+                }, 0);
+              });
+            `,
           }}
         />
       </body>
