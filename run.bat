@@ -110,8 +110,9 @@ copy package.json package.json.bak
 echo Backup created: package.json.bak
 
 echo.
-echo 3. Installing latest Next.js, React, and related packages...
-call npm install next@latest react@latest react-dom@latest eslint-config-next@latest --save
+echo 3. Installing Next.js 15 and related packages...
+call npm uninstall next
+call npm install next@15 react@latest react-dom@latest eslint-config-next@15 --save
 
 echo.
 echo 4. Checking for @swc/helpers compatibility...
