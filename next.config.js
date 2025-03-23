@@ -4,7 +4,6 @@ const nextConfig = {
   swcMinify: true,
   poweredByHeader: false,
   images: {
-    domains: ['images.unsplash.com', 'randomuser.me', 'via.placeholder.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -14,7 +13,6 @@ const nextConfig = {
     minimumCacheTTL: 60,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     formats: ['image/webp', 'image/avif'],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
   experimental: {
     optimizeCss: true,
@@ -22,7 +20,6 @@ const nextConfig = {
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
-    styledComponents: false,
   },
   staticPageGenerationTimeout: 120, // Increases timeout for static page generation
   headers: async () => {
