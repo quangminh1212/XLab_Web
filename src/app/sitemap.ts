@@ -53,28 +53,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
-    {
-      url: `${baseUrl}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
   ] as MetadataRoute.Sitemap;
 
   // TODO: Thêm các trang động từ API hoặc database ở đây
-  // Ví dụ: /blog/[slug], /products/[id], etc.
+  // Ví dụ: /products/[id], etc.
   
   // Có thể fetch dữ liệu từ API hoặc sử dụng dữ liệu tĩnh
-  const blogPosts = [] as MetadataRoute.Sitemap;
+  const dynamicPages = [] as MetadataRoute.Sitemap;
   /* Ví dụ:
-  const blogPosts = (await fetchBlogPosts()).map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.updatedAt,
+  const productPages = (await fetchProducts()).map((product) => ({
+    url: `${baseUrl}/products/${product.slug}`,
+    lastModified: product.updatedAt,
     changeFrequency: 'weekly',
     priority: 0.7,
   })) as MetadataRoute.Sitemap;
   */
 
   // Gộp tất cả URL
-  return [...staticPages, ...blogPosts];
+  return [...staticPages, ...dynamicPages];
 } 

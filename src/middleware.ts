@@ -17,7 +17,6 @@ const publicPaths = [
   '/products',
   '/services',
   '/support',
-  '/blog',
   '/contact',
   '/api/auth',
 ];
