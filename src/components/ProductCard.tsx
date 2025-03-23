@@ -33,13 +33,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className = '' }) =>
     >
       <div className="relative h-48 overflow-hidden bg-gray-100">
         {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
+          <div className="flex items-center justify-center h-full">
+            <Image
+              src={imageUrl}
+              alt={name}
+              width={96}
+              height={96}
+              className="w-auto h-auto max-h-40 p-3"
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full bg-gray-200">
             <svg className="w-12 h-12 text-gray-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -54,9 +57,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className = '' }) =>
           </div>
         )}
         
-        <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-medium px-2 py-1 rounded-full">
-          {license}
-        </div>
+        {license && (
+          <div className="absolute bottom-2 right-2 bg-gray-800 bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+            {license}
+          </div>
+        )}
       </div>
       
       <div className="p-4">

@@ -115,13 +115,13 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Product Image */}
             <div className="bg-white p-8 rounded-lg shadow-lg">
-              <div className="bg-gray-100 rounded-lg h-[400px] flex items-center justify-center">
+              <div className="bg-gray-100 rounded-lg h-[400px] flex items-center justify-center p-6">
                 <Image
-                  src={`/images/products/${product.id}.svg`}
+                  src={product.imageUrl || '/images/product-placeholder.svg'}
                   alt={product.name}
-                  width={500}
-                  height={400}
-                  className="max-w-full h-auto max-h-[350px]"
+                  width={240}
+                  height={240}
+                  className="max-w-full max-h-[320px] w-auto h-auto object-contain"
                   onError={(e) => {
                     e.currentTarget.src = '/images/product-placeholder.svg';
                   }}
