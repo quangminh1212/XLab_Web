@@ -8,17 +8,28 @@ type SessionProviderProps = {
 }
 
 export default function SessionProvider({ children }: SessionProviderProps) {
-  // Theo dõi hiệu suất session
+  // Monitor session performance and prevent call errors
   useEffect(() => {
     console.debug('SessionProvider mounted');
     
+    // Handle any global errors that might be related to session calls
+    const handleError = (event: ErrorEvent) => {
+      if (event.error?.message?.includes('call')) {
+        console.error('Session error intercepted:', event.error);
+        event.preventDefault();
+      }
+    };
+    
+    window.addEventListener('error', handleError);
+    
     return () => {
+      window.removeEventListener('error', handleError);
       console.debug('SessionProvider unmounted');
     };
   }, []);
 
   return (
-    <NextAuthSessionProvider>
+    <NextAuthSessionProvider refetchInterval={0} refetchOnWindowFocus={false}>
       {children}
     </NextAuthSessionProvider>
   );
