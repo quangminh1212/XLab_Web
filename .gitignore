@@ -151,3 +151,11 @@ next-env.d.ts
 
 # Generated JSON data
 /data/*.json
+
+# Additional runtime files
+.next/trace
+.next/cache/
+.next/server/
+.next/static/
+.next/app-build-manifest.json
+.next/*.json
