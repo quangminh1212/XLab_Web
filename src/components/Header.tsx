@@ -95,7 +95,6 @@ export default function Header() {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
-    if (languageMenuOpen) setLanguageMenuOpen(false)
   }
 
   const toggleLanguageMenu = () => {
@@ -147,7 +146,7 @@ export default function Header() {
   };
 
   const handleUserMenuToggle = () => {
-    safeCall(() => setMobileMenuOpen(!mobileMenuOpen), 'handleUserMenuToggle');
+    safeCall(() => setLanguageMenuOpen(!languageMenuOpen), 'handleLanguageMenuToggle');
   };
 
   // Safely render the component
