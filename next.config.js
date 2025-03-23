@@ -47,10 +47,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   poweredByHeader: false,
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 4,
-  },
   logging: {
     fetches: {
       fullUrl: true,
