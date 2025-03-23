@@ -62,7 +62,7 @@ export default function MainHeader() {
             </Link>
             
             {/* Lời chào và tên người dùng trên desktop */}
-            {session?.user && (
+            {status === 'authenticated' && session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
                 <span className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full">
                   {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
@@ -99,7 +99,7 @@ export default function MainHeader() {
               </svg>
             </button>
 
-            {session ? (
+            {status === 'authenticated' && session ? (
               <div className="flex items-center space-x-2">
                 {/* Thông báo */}
                 <button 
@@ -161,7 +161,7 @@ export default function MainHeader() {
                   )}
                 </div>
               </div>
-            ) : (
+            ) : status !== 'loading' ? (
               <div className="hidden sm:flex items-center space-x-2">
                 <Link 
                   href="/login" 
@@ -176,7 +176,7 @@ export default function MainHeader() {
                   Đăng ký
                 </Link>
               </div>
-            )}
+            ) : null}
 
             {/* Hamburger menu for mobile */}
             <button
@@ -200,7 +200,7 @@ export default function MainHeader() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
-            {session && (
+            {status === 'authenticated' && session && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600">
                 {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
               </div>
@@ -218,7 +218,7 @@ export default function MainHeader() {
               Liên hệ
             </Link>
             
-            {!session && (
+            {status !== 'loading' && !session && (
               <div className="flex space-x-2 mt-2 px-3">
                 <Link 
                   href="/login" 
