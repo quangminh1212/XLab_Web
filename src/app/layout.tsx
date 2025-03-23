@@ -1,3 +1,5 @@
+'use client';
+
 import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
@@ -6,43 +8,70 @@ import Footer from '@/components/Footer'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 import ClientSessionProvider from '@/components/ClientSessionProvider'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { debugLog, logError } from '@/utils/debugLogger'
 
-// Add global error logger
+// Initialize app-level debugging
 if (typeof window !== 'undefined') {
-  const originalConsoleError = console.error;
-  console.error = function(...args) {
-    // Log original error
-    originalConsoleError.apply(console, args);
-    
-    // Add extra context for 'call' related errors
-    if (args.length > 0 && typeof args[0] === 'string' && args[0].includes('call')) {
-      originalConsoleError.apply(console, ['CALL ERROR CONTEXT: Current component tree state:', React]);
-      
-      // Log component stack if available
-      if (args[1] && args[1].componentStack) {
-        originalConsoleError.apply(console, ['Component stack:', args[1].componentStack]);
-      }
-    }
-  };
-
-  // Add global error handler to catch unhandled errors
-  window.addEventListener('error', function(event) {
-    console.error('GLOBAL ERROR:', event.error);
-    console.error('GLOBAL ERROR MESSAGE:', event.message);
-    console.error('GLOBAL ERROR FILENAME:', event.filename);
-    console.error('GLOBAL ERROR LINENO:', event.lineno);
-    console.error('GLOBAL ERROR COLNO:', event.colno);
+  debugLog('App', 'Application initialization started', { 
+    url: window.location.href,
+    userAgent: window.navigator.userAgent,
+    screenSize: `${window.innerWidth}x${window.innerHeight}`,
+    timestamp: new Date().toISOString()
   });
-  
-  // Special handling for promise rejection errors
-  window.addEventListener('unhandledrejection', function(event) {
-    console.error('UNHANDLED PROMISE REJECTION:', event.reason);
-    if (event.reason && event.reason.stack) {
-      console.error('REJECTION STACK:', event.reason.stack);
-    }
+
+  // Add global error handler for uncaught errors
+  window.addEventListener('error', (event) => {
+    debugLog(
+      'GlobalErrorHandler',
+      `Uncaught error: ${event.message}`,
+      {
+        filename: event.filename,
+        lineNo: event.lineno,
+        colNo: event.colno,
+        error: event.error?.stack || event.error,
+      },
+      'error'
+    );
+    // Don't prevent default behavior - let the browser handle it normally
+  });
+
+  // Track unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    debugLog(
+      'GlobalErrorHandler',
+      'Unhandled Promise Rejection',
+      {
+        reason: event.reason?.stack || event.reason,
+      },
+      'error'
+    );
   });
 }
+
+// Add global error logger for console.error
+const originalConsoleError = console.error;
+console.error = function(...args) {
+  // Log original error
+  originalConsoleError.apply(console, args);
+
+  try {
+    // Add to debug logs
+    const errorMessage = args[0]?.toString() || 'Unknown console.error';
+    debugLog('ConsoleError', errorMessage, { args }, 'error');
+
+    // Add extra context for 'call' related errors
+    if (args.length > 0 && typeof args[0] === 'string' && args[0].includes('call')) {
+      debugLog('CallErrorContext', 'Found call-related error in console output', {
+        functionProto: typeof Function.prototype.call === 'function' ? 'exists' : 'missing',
+        prototypeChain: Object.getPrototypeOf(Function)
+      }, 'warn');
+    }
+  } catch (e) {
+    // Don't crash if our logging fails
+    originalConsoleError('Error in console.error override:', e);
+  }
+};
 
 // Optimize font loading - use only Google Fonts with font-display: swap
 const inter = Inter({ 
@@ -53,6 +82,8 @@ const inter = Inter({
   fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
+// These metadata declarations will be moved to a metadata object
+// in the exported configuration below
 export const metadata: Metadata = {
   title: {
     template: '%s | XLab - Phần mềm và Dịch vụ',
@@ -128,18 +159,71 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
+function DebugOverlay() {
+  return (
+    <div id="debug-floating-indicator" style={{
+      position: 'fixed',
+      bottom: '10px',
+      left: '10px',
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      color: 'white',
+      padding: '5px 10px',
+      borderRadius: '4px',
+      fontSize: '10px',
+      fontFamily: 'monospace',
+      zIndex: 9999,
+      cursor: 'pointer',
+    }} onClick={() => {
+      const debugElement = document.getElementById('debug-log-container');
+      if (debugElement) {
+        debugElement.style.display = debugElement.style.display === 'none' ? 'block' : 'none';
+      }
+    }}>
+      DEBUG MODE
+    </div>
+  );
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Add development logging
-  if (process.env.NODE_ENV === 'development') {
-    console.log('DEBUG: Rendering RootLayout');
-    console.log('DEBUG: React version:', React.version);
-  }
+  debugLog('RootLayout', 'Layout component rendering started');
 
+  // Add more detailed debug information in development
+  useEffect(() => {
+    debugLog('RootLayout', 'Layout component mounted', {
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV,
+      reactVersion: React.version
+    }, 'success');
+
+    // Check if document.body is ready
+    if (document && document.body) {
+      debugLog('RootLayout', 'document.body is available', null, 'success');
+    } else {
+      debugLog('RootLayout', 'document.body is NOT available', null, 'error');
+    }
+
+    // Check Function.prototype.call
+    try {
+      const testFn = function(this: any, arg: string) { return `Test: ${arg}`; };
+      const result = Function.prototype.call.call(testFn, null, 'call test');
+      debugLog('RootLayout', 'Function.prototype.call test succeeded', { result }, 'success');
+    } catch (error) {
+      logError('RootLayout', error);
+      debugLog('RootLayout', 'Function.prototype.call test failed', { error }, 'error');
+    }
+
+    return () => {
+      debugLog('RootLayout', 'Layout component unmounting');
+    };
+  }, []);
+
+  // We use a try/catch block to render the layout to catch any errors
   try {
+    debugLog('RootLayout', 'Rendering root layout tree');
     return (
       <html lang="vi" className={`${inter.variable} scroll-smooth`}>
         <head>
@@ -153,33 +237,34 @@ export default function RootLayout({
           {process.env.NODE_ENV === 'development' && (
             <script 
               dangerouslySetInnerHTML={{ 
-                __html: `console.log('DEBUG: Layout script executed');` 
+                __html: `console.log('DEBUG: Layout head script executed at ${new Date().toISOString()}');` 
               }} 
             />
           )}
         </head>
         <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
-          <ClientSessionProvider>
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </ClientSessionProvider>
+          {process.env.NODE_ENV === 'development' && <DebugOverlay />}
+          
+          {/* Wrap components in error boundaries */}
+          <ErrorCatcher componentName="ClientSessionProvider">
+            <ClientSessionProvider>
+              <ErrorCatcher componentName="Header">
+                <Header />
+              </ErrorCatcher>
+              
+              <main className="flex-grow">
+                <ErrorCatcher componentName="MainContent">
+                  {children}
+                </ErrorCatcher>
+              </main>
+              
+              <ErrorCatcher componentName="Footer">
+                <Footer />
+              </ErrorCatcher>
+            </ClientSessionProvider>
+          </ErrorCatcher>
 
-          {/* Add debugging info */}
-          {process.env.NODE_ENV === 'development' && (
-            <div id="debug-info" style={{ display: 'none' }}>
-              <script dangerouslySetInnerHTML={{ 
-                __html: `
-                  console.log('DEBUG: Body script executed');
-                  document.addEventListener('DOMContentLoaded', function() {
-                    console.log('DEBUG: DOM fully loaded');
-                  });
-                ` 
-              }} />
-            </div>
-          )}
+          {/* Debug log output element will be created by the logger */}
           
           <Analytics />
           <Script
@@ -187,20 +272,17 @@ export default function RootLayout({
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
-                console.log('DEBUG: afterInteractive script executed');
-                // Check for call-related errors
-                window._checkCallErrors = function() {
-                  console.log('DEBUG: Checking for call errors');
-                  try {
-                    // Test various objects
-                    if (window.React) console.log('DEBUG: React is defined');
-                    if (window.ReactDOM) console.log('DEBUG: ReactDOM is defined');
-                    if (window.next) console.log('DEBUG: Next is defined');
-                  } catch (e) {
-                    console.error('DEBUG: Error in call error check:', e);
-                  }
-                };
-                setTimeout(window._checkCallErrors, 1000);
+                console.log('DEBUG: afterInteractive script executed at ${new Date().toISOString()}');
+                // Log browser information
+                console.log('Browser info:', {
+                  userAgent: navigator.userAgent,
+                  viewport: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                  },
+                  location: window.location.href,
+                  timestamp: new Date().toISOString()
+                });
               `,
             }}
           />
@@ -210,6 +292,8 @@ export default function RootLayout({
             id="google-analytics"
             strategy="afterInteractive"
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+            onLoad={() => debugLog('Analytics', 'Google Analytics script loaded', null, 'success')}
+            onError={(e) => debugLog('Analytics', 'Google Analytics script failed to load', { error: e }, 'error')}
           />
           <Script
             id="google-analytics-config"
@@ -229,7 +313,8 @@ export default function RootLayout({
       </html>
     )
   } catch (error) {
-    console.error('DEBUG: Critical error in RootLayout:', error);
+    logError('RootLayout:render', error);
+    
     // Return minimal fallback UI
     return (
       <html>
@@ -253,9 +338,110 @@ export default function RootLayout({
             }}>
               {error instanceof Error ? error.message : 'Unknown error'}
             </pre>
+            
+            <button 
+              onClick={() => window.location.reload()}
+              style={{
+                marginTop: '20px',
+                padding: '10px 15px',
+                backgroundColor: '#4f46e5',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Reload Page
+            </button>
           </div>
         </body>
       </html>
+    );
+  }
+}
+
+// Simple error boundary component
+function ErrorCatcher({ 
+  children, 
+  componentName 
+}: { 
+  children: React.ReactNode; 
+  componentName: string;
+}) {
+  const [hasError, setHasError] = React.useState(false);
+  const [error, setError] = React.useState<Error | null>(null);
+
+  React.useEffect(() => {
+    debugLog('ErrorCatcher', `Mounted for ${componentName}`);
+    
+    // Add error event listener specific to this component
+    const handleError = (event: ErrorEvent) => {
+      // We only want to catch errors from our children
+      // This is a simple heuristic and not perfect
+      debugLog('ErrorCatcher', `Error event caught in ${componentName}`, {
+        message: event.error?.message,
+        stack: event.error?.stack
+      }, 'warn');
+    };
+    
+    window.addEventListener('error', handleError);
+    
+    return () => {
+      window.removeEventListener('error', handleError);
+      debugLog('ErrorCatcher', `Unmounted for ${componentName}`);
+    };
+  }, [componentName]);
+
+  if (hasError) {
+    return (
+      <div style={{
+        padding: '10px',
+        margin: '10px 0',
+        border: '1px solid #ffcccc',
+        borderRadius: '4px',
+        backgroundColor: '#fff5f5',
+        color: '#e53e3e',
+      }}>
+        <p><strong>Error in {componentName}:</strong></p>
+        <p>{error?.message || 'Unknown error'}</p>
+        <button
+          onClick={() => setHasError(false)}
+          style={{
+            padding: '4px 8px',
+            backgroundColor: '#e53e3e',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            marginTop: '10px',
+            cursor: 'pointer',
+          }}
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  try {
+    debugLog('ErrorCatcher', `Rendering children for ${componentName}`);
+    return <>{children}</>;
+  } catch (e) {
+    const error = e as Error;
+    setError(error);
+    setHasError(true);
+    logError(`ErrorCatcher:${componentName}`, error);
+    return (
+      <div style={{
+        padding: '10px',
+        margin: '10px 0',
+        border: '1px solid #ffcccc',
+        borderRadius: '4px',
+        backgroundColor: '#fff5f5',
+        color: '#e53e3e',
+      }}>
+        <p><strong>Render Error in {componentName}:</strong></p>
+        <p>{error.message || 'Unknown error'}</p>
+      </div>
     );
   }
 } 
