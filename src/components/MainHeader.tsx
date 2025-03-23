@@ -8,11 +8,14 @@ import { signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 
 export default function MainHeader() {
-  console.log('[MainHeader] Rendering')
+  console.log('[MainHeader] Rendering started')
   
-  // Di chuyển useSession lên đầu component tránh lỗi
-  const { data: session, status } = useSession()
-  console.log('[MainHeader] Session status:', status, 'User:', session?.user?.name || 'No user')
+  // Gọi useSession với kiểm tra lỗi
+  const session = useSession()
+  console.log('[MainHeader] useSession result:', { 
+    status: session?.status || 'unknown', 
+    data: session?.data ? 'has data' : 'no data' 
+  })
   
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -25,22 +28,28 @@ export default function MainHeader() {
   
   // Theo dõi và cập nhật authentication state
   useEffect(() => {
-    console.log('[MainHeader] useEffect running, status:', status)
-    
-    if (status === 'loading') {
-      setIsLoading(true)
-      setIsAuthenticated(false)
-    } else if (status === 'authenticated' && session?.user) {
+    try {
+      console.log('[MainHeader] useEffect running, status:', session?.status)
+      
+      if (session?.status === 'loading') {
+        setIsLoading(true)
+        setIsAuthenticated(false)
+      } else if (session?.status === 'authenticated' && session?.data?.user) {
+        setIsLoading(false)
+        setIsAuthenticated(true)
+        setUserName(session.data.user.name || session.data.user.email || 'User')
+        console.log('[MainHeader] Authenticated as:', session.data.user.name || session.data.user.email)
+      } else {
+        setIsLoading(false)
+        setIsAuthenticated(false)
+        console.log('[MainHeader] Not authenticated')
+      }
+    } catch (error) {
+      console.error('[MainHeader] Error in authentication effect:', error)
       setIsLoading(false)
-      setIsAuthenticated(true)
-      setUserName(session.user.name || session.user.email || 'User')
-      console.log('[MainHeader] Authenticated as:', session.user.name || session.user.email)
-    } else {
-      setIsLoading(false)
       setIsAuthenticated(false)
-      console.log('[MainHeader] Not authenticated')
     }
-  }, [status, session])
+  }, [session])
   
   // Đóng menu khi thay đổi URL
   useEffect(() => {
