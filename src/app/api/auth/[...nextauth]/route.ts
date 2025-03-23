@@ -35,12 +35,13 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // Tạo user giả cho môi trường phát triển
-        if (credentials?.email === "test@example.com" && credentials?.password === "password") {
+        // Tạo user giả cho môi trường phát triển 
+        // Trong môi trường thực tế, bạn sẽ kiểm tra thông tin đăng nhập với cơ sở dữ liệu
+        if (credentials?.email && credentials?.password) {
           return {
             id: "1",
             name: "Test User",
-            email: "test@example.com",
+            email: credentials.email,
             image: "https://i.pravatar.cc/150?img=1"
           };
         }
@@ -67,15 +68,9 @@ const handler = NextAuth({
       }
       return token;
     },
-    async signIn({ account, profile }) {
-      if (account?.provider === "google" && profile?.email) {
-        return true;
-      }
-      return false;
-    },
   },
   debug: process.env.NODE_ENV === "development",
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "YOUR_SECRET_HERE",
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
