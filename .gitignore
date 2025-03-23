@@ -31,6 +31,12 @@ yarn-debug.log*
 yarn-error.log*
 error_log.txt
 output.log
+debug.log
+app.log
+
+# backup files
+*.bak
+package.json.bak
 
 # local env files
 .env*.local
