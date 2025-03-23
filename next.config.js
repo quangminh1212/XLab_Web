@@ -19,7 +19,6 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
-    // ServerActions are enabled by default in Next.js 14+
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -86,25 +85,9 @@ const nextConfig = {
       },
     ];
   },
-  // Cấu hình phân tích bundle
+  // Cấu hình webpack đơn giản hơn để tránh lỗi
   webpack: (config, { dev, isServer }) => {
-    // Chỉ thực hiện trong môi trường development
-    if (dev && !isServer) {
-      try {
-        const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-        config.plugins.push(
-          new BundleAnalyzerPlugin({
-            analyzerMode: 'server',
-            analyzerPort: 8888,
-            openAnalyzer: false,
-          })
-        );
-      } catch (error) {
-        console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
-      }
-    }
-
-    // Optimize CSS loading
+    // Disable BundleAnalyzer to avoid potential issues
     if (!isServer) {
       config.optimization.splitChunks.cacheGroups = {
         ...config.optimization.splitChunks.cacheGroups,
@@ -124,7 +107,7 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   compress: true,
   output: 'standalone',
-  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next', // Separate dev and prod builds
+  distDir: '.next', // Use standard .next directory to avoid cache issues
 };
 
 module.exports = nextConfig; 
