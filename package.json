@@ -8,14 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "update-next": "npm install next@latest react@latest react-dom@latest --save"
+    "update-next": "npm install next@15 react@latest react-dom@latest --save"
   },
   "dependencies": {
     "@swc/helpers": "^0.5.1",
     "clsx": "^2.1.1",
     "critters": "^0.0.20",
     "cross-env": "^7.0.3",
-    "next": "latest",
     "next-auth": "^4.24.5",
     "react": "latest",
     "react-dom": "latest",
