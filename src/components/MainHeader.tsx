@@ -9,7 +9,7 @@ import { useSession, signOut } from 'next-auth/react'
 export default function MainHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session, status } = useSession({ required: false })
+  const sessionData = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
 
@@ -41,41 +41,11 @@ export default function MainHeader() {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  // Nếu session đang loading, hiển thị header đơn giản
-  if (status === 'loading') {
-    return (
-      <header 
-        className={`sticky top-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'bg-white shadow-md py-2' 
-            : 'bg-gradient-to-r from-primary-50 to-secondary-50 py-4'
-        }`}
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            {/* Logo */}
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center space-x-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-xl">
-                  X
-                </div>
-                <span className="font-bold text-xl text-primary-700 hidden sm:inline-block">XLab</span>
-              </Link>
-            </div>
-            
-            {/* Nút tìm kiếm và menu cho mobile */}
-            <div className="flex items-center space-x-2">
-              <div className="animate-pulse w-24 h-8 bg-gray-200 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </header>
-    )
-  }
+  const isLoading = sessionData.status === 'loading'
+  const isAuthenticated = sessionData.status === 'authenticated'
+  const userData = isAuthenticated ? sessionData.data?.user : null
 
-  // Chỉ sử dụng data session khi đã authenticated
-  const userData = status === 'authenticated' ? session?.user : null
-
+  // Header mặc định
   return (
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -96,7 +66,7 @@ export default function MainHeader() {
             </Link>
             
             {/* Lời chào và tên người dùng trên desktop */}
-            {userData && (
+            {isAuthenticated && userData && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
                 <span className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full">
                   {greeting}, {userData.name?.split(' ')[0] || 'bạn'}!
@@ -133,7 +103,9 @@ export default function MainHeader() {
               </svg>
             </button>
 
-            {userData ? (
+            {isLoading ? (
+              <div className="animate-pulse w-24 h-8 bg-gray-200 rounded-full"></div>
+            ) : isAuthenticated && userData ? (
               <div className="flex items-center space-x-2">
                 {/* Thông báo */}
                 <button 
@@ -234,7 +206,7 @@ export default function MainHeader() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
-            {userData && (
+            {isAuthenticated && userData && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600">
                 {greeting}, {userData.name?.split(' ')[0] || 'bạn'}!
               </div>
@@ -252,7 +224,7 @@ export default function MainHeader() {
               Liên hệ
             </Link>
             
-            {!userData && (
+            {!isAuthenticated && (
               <div className="flex space-x-2 mt-2 px-3">
                 <Link 
                   href="/login" 
