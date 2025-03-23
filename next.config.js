@@ -16,10 +16,10 @@ const nextConfig = {
   },
   experimental: {
     scrollRestoration: true,
-    appDir: true,
-    serverActions: true,
-    optimizeCss: true,
-    suppressWarning: true,
+    instrumentationHook: true,
+    optimizeCss: {
+      enabled: true,
+    },
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -85,9 +85,9 @@ const nextConfig = {
       },
     ];
   },
-  // Cấu hình phân tích bundle - chỉ chạy khi có biến môi trường ANALYZE=true
+  // Config for webpack analysis - only runs when ANALYZE=true
   webpack: (config, { dev, isServer }) => {
-    // Chỉ khi biến ANALYZE=true
+    // Only when ANALYZE=true
     if (process.env.ANALYZE === 'true') {
       try {
         const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -99,8 +99,17 @@ const nextConfig = {
           })
         );
       } catch (error) {
-        console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
+        console.warn('webpack-bundle-analyzer not found. Skipping bundle analysis.');
       }
+    }
+
+    // Add debugging for potential call errors
+    if (dev) {
+      config.plugins.push(
+        new config.webpack.DefinePlugin({
+          'process.env.DEBUG_CALLS': JSON.stringify(true),
+        })
+      );
     }
 
     // Optimize CSS loading
