@@ -15,6 +15,31 @@ const inter = Inter({
   fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
+// ErrorLogger component để theo dõi và log các lỗi
+function ErrorLogger() {
+  if (typeof window !== 'undefined') {
+    // Ghi lại tất cả các lỗi không bắt được
+    window.addEventListener('error', (event) => {
+      console.error('Global error caught:', {
+        message: event.message,
+        source: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error?.stack
+      });
+    });
+
+    // Ghi lại tất cả các reject không bắt được
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('Unhandled Promise Rejection:', {
+        promise: event.promise,
+        reason: event.reason?.stack || event.reason
+      });
+    });
+  }
+  return null;
+}
+
 export const metadata: Metadata = {
   title: {
     template: '%s | XLab - Phần mềm và Dịch vụ',
@@ -108,6 +133,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
+        <ErrorLogger />
         <ErrorBoundary fallback={<div className="p-4 bg-red-50 text-red-700">Đã xảy ra lỗi khi tải trang. Vui lòng tải lại trang.</div>}>
           <SessionWrapper>
             {children}
@@ -121,6 +147,8 @@ export default function RootLayout({
             __html: `
               // Core web vitals optimization
               window.addEventListener('DOMContentLoaded', () => {
+                console.log('DOM Content Loaded');
+                
                 // Optimize LCP (Largest Contentful Paint)
                 const lcpElement = document.querySelector('main');
                 if (lcpElement) {
@@ -146,6 +174,12 @@ export default function RootLayout({
                   }
                 }, 1000);
               });
+              
+              // Thêm global error tracking
+              window.onerror = function(message, source, lineno, colno, error) {
+                console.error('Global JS Error:', { message, source, lineno, colno, stack: error?.stack });
+                return false;
+              };
             `,
           }}
         />
