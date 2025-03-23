@@ -93,8 +93,8 @@ export const stores: Store[] = [
 export const products: Product[] = [
   {
     id: '1',
-    name: 'XLab Office Pro',
-    slug: 'xlab-office-pro',
+    name: 'DocuSuite Pro',
+    slug: 'docu-suite-pro',
     description: 'Bộ ứng dụng văn phòng toàn diện với trình soạn thảo văn bản, bảng tính và thuyết trình.',
     longDescription: `XLab Office Pro là bộ ứng dụng văn phòng toàn diện với nhiều tính năng mạnh mẽ giúp bạn làm việc hiệu quả:
     
@@ -109,7 +109,7 @@ export const products: Product[] = [
     salePrice: 249000,
     categoryId: '1',
     storeId: '1',
-    imageUrl: '/images/products/office-pro.png',
+    imageUrl: '/images/products/docu-suite.svg',
     version: '2.5.1',
     size: '145MB',
     license: 'Premium',
@@ -122,8 +122,8 @@ export const products: Product[] = [
   },
   {
     id: '2',
-    name: 'CodeEditor X',
-    slug: 'code-editor-x',
+    name: 'DevCode Studio',
+    slug: 'dev-code-studio',
     description: 'IDE thông minh hỗ trợ nhiều ngôn ngữ lập trình với các tính năng phân tích và gợi ý code.',
     longDescription: `CodeEditor X là IDE hiện đại dành cho lập trình viên chuyên nghiệp:
     
@@ -139,7 +139,7 @@ export const products: Product[] = [
     salePrice: null,
     categoryId: '2',
     storeId: '1',
-    imageUrl: '/images/products/code-editor.png',
+    imageUrl: '/images/products/dev-code.svg',
     version: '3.1.0',
     size: '210MB',
     license: 'Professional',
@@ -152,8 +152,8 @@ export const products: Product[] = [
   },
   {
     id: '3',
-    name: 'DesignMaster Pro',
-    slug: 'design-master-pro',
+    name: 'PixelCraft Pro',
+    slug: 'pixel-craft-pro',
     description: 'Phần mềm thiết kế đồ họa chuyên nghiệp với công cụ vẽ vector, chỉnh sửa ảnh và thiết kế UI.',
     longDescription: `DesignMaster Pro là giải pháp thiết kế đồ họa toàn diện cho designer:
     
@@ -169,7 +169,7 @@ export const products: Product[] = [
     salePrice: 899000,
     categoryId: '3',
     storeId: '3',
-    imageUrl: '/images/products/design-master.png',
+    imageUrl: '/images/products/pixel-craft.svg',
     version: '4.2.3',
     size: '1.2GB',
     license: 'Creative Pro',
@@ -182,8 +182,8 @@ export const products: Product[] = [
   },
   {
     id: '4',
-    name: 'SecureVault',
-    slug: 'secure-vault',
+    name: 'DataGuard Pro',
+    slug: 'data-guard-pro',
     description: 'Giải pháp bảo mật dữ liệu toàn diện với mã hóa 256-bit, quản lý mật khẩu và bảo vệ danh tính.',
     longDescription: `SecureVault bảo vệ dữ liệu và danh tính của bạn một cách toàn diện:
     
@@ -199,7 +199,7 @@ export const products: Product[] = [
     salePrice: 399000,
     categoryId: '4',
     storeId: '2',
-    imageUrl: '/images/products/secure-vault.png',
+    imageUrl: '/images/products/data-guard.svg',
     version: '2.0.5',
     size: '85MB',
     license: 'Premium',
@@ -212,8 +212,8 @@ export const products: Product[] = [
   },
   {
     id: '5',
-    name: 'SystemOptimizer',
-    slug: 'system-optimizer',
+    name: 'PCBooster',
+    slug: 'pc-booster',
     description: 'Tối ưu hóa hệ thống, dọn dẹp tập tin rác và tăng tốc máy tính của bạn.',
     longDescription: `SystemOptimizer giúp máy tính của bạn hoạt động nhanh như ngày đầu:
     
@@ -229,7 +229,7 @@ export const products: Product[] = [
     salePrice: 149000,
     categoryId: '5',
     storeId: '2',
-    imageUrl: '/images/products/system-optimizer.png',
+    imageUrl: '/images/products/pc-booster.svg',
     version: '5.1.2',
     size: '65MB',
     license: 'Standard',
@@ -242,8 +242,8 @@ export const products: Product[] = [
   },
   {
     id: '6',
-    name: 'LanguageMaster',
-    slug: 'language-master',
+    name: 'LinguaLearn',
+    slug: 'lingua-learn',
     description: 'Ứng dụng học ngoại ngữ với phương pháp học tập thông minh và hơn 30 ngôn ngữ.',
     longDescription: `LanguageMaster giúp bạn học ngoại ngữ hiệu quả:
     
@@ -259,7 +259,7 @@ export const products: Product[] = [
     salePrice: 299000,
     categoryId: '6',
     storeId: '1',
-    imageUrl: '/images/products/language-master.png',
+    imageUrl: '/images/products/lingua-learn.svg',
     version: '3.5.0',
     size: '180MB',
     license: 'Premium',
@@ -272,8 +272,8 @@ export const products: Product[] = [
   },
   {
     id: '7',
-    name: 'BackupPro',
-    slug: 'backup-pro',
+    name: 'DataKeeper',
+    slug: 'data-keeper',
     description: 'Giải pháp sao lưu dữ liệu tự động với lưu trữ đám mây và khôi phục nhanh chóng.',
     longDescription: `BackupPro bảo vệ dữ liệu của bạn khỏi mọi rủi ro mất mát:
     
@@ -289,7 +289,7 @@ export const products: Product[] = [
     salePrice: null,
     categoryId: '5',
     storeId: '2',
-    imageUrl: '/images/products/backup-pro.png',
+    imageUrl: '/images/products/data-keeper.svg',
     version: '2.8.3',
     size: '95MB',
     license: 'Standard',
@@ -302,8 +302,8 @@ export const products: Product[] = [
   },
   {
     id: '8',
-    name: 'PhotoEditor X',
-    slug: 'photo-editor-x',
+    name: 'ImageEdit Pro',
+    slug: 'image-edit-pro',
     description: 'Công cụ chỉnh sửa ảnh chuyên nghiệp với bộ lọc, hiệu ứng và công cụ biên tập nâng cao.',
     longDescription: `PhotoEditor X mang đến trải nghiệm chỉnh sửa ảnh chuyên nghiệp:
     
@@ -319,7 +319,7 @@ export const products: Product[] = [
     salePrice: 499000,
     categoryId: '3',
     storeId: '3',
-    imageUrl: '/images/products/photo-editor.png',
+    imageUrl: '/images/products/image-edit.svg',
     version: '4.0.2',
     size: '850MB',
     license: 'Creative Pro',
