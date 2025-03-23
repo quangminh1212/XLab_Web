@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
@@ -13,9 +12,14 @@ const nextConfig = {
     minimumCacheTTL: 60,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     formats: ['image/webp', 'image/avif'],
+    domains: ['example.com', 'images.unsplash.com', 'img.icons8.com'],
   },
   experimental: {
     scrollRestoration: true,
+    appDir: true,
+    serverActions: true,
+    optimizeCss: true,
+    suppressWarning: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -121,8 +125,8 @@ const nextConfig = {
   output: 'standalone',
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next', // Separate dev and prod builds
   onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
+    maxInactiveAge: 60 * 60 * 1000,
+    pagesBufferLength: 5,
   },
 };
 
