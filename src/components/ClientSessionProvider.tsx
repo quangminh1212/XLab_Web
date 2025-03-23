@@ -30,12 +30,21 @@ export default function ClientSessionProvider({
   }
 
   // On client-side, wrap with SessionProvider
-  return (
-    <SessionProvider 
-      refetchInterval={0} 
-      refetchOnWindowFocus={false}
-    >
-      {children}
-    </SessionProvider>
-  );
+  try {
+    // We're wrapping this in a try/catch to prevent any potential rendering errors
+    return (
+      <SessionProvider 
+        refetchInterval={0} 
+        refetchOnWindowFocus={false}
+        refetchWhenOffline={false}
+        session={null} // Start with no session to avoid issues with serialization
+      >
+        {children}
+      </SessionProvider>
+    );
+  } catch (error) {
+    console.error('Error in ClientSessionProvider:', error);
+    // If there's an error in the session provider, just return the children without auth
+    return <div className="min-h-screen">{children}</div>;
+  }
 } 
