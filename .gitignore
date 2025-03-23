@@ -69,3 +69,18 @@ pnpm-lock.yaml
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Generated files during runtime
+/.vercel_build_output/
+/public/sw.js
+/public/workbox-*.js
+/public/sw.js.map
+/public/workbox-*.js.map
+/public/fallback-*.js
+
+# Analysis files
+/analyze/
+
+# Generated analyzer files
+.analyzerc
+webpack-bundle-analyzer-report.html
