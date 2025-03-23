@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 import ClientSessionProvider from '@/components/ClientSessionProvider'
-import { ErrorBoundary } from 'react-error-boundary'
+import React from 'react'
 
 // Optimize font loading - use only Google Fonts with font-display: swap
 const inter = Inter({ 
@@ -118,24 +118,13 @@ export default function RootLayout({
         {/* No longer preloading font because we're using Google Fonts with display:swap */}
       </head>
       <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
-        {/* Wrap with ErrorBoundary to prevent crashes from session provider issues */}
-        <ErrorBoundary fallback={
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
-        }>
-          <ClientSessionProvider>
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </ClientSessionProvider>
-        </ErrorBoundary>
+        <ClientSessionProvider>
+          <Header />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </ClientSessionProvider>
         <Analytics />
         <Script
           id="google-analytics"
@@ -159,31 +148,4 @@ export default function RootLayout({
       </body>
     </html>
   )
-}
-
-// Add an ErrorBoundary to catch issues with SessionProvider
-'use client'
-function ErrorBoundary({ 
-  children,
-  fallback
-}: { 
-  children: React.ReactNode; 
-  fallback: React.ReactNode;
-}) {
-  const [hasError, setHasError] = React.useState(false);
-  
-  // Add React import at the top if it's not already imported
-  const React = require('react');
-  
-  React.useEffect(() => {
-    const handleError = () => setHasError(true);
-    window.addEventListener('error', handleError);
-    return () => window.removeEventListener('error', handleError);
-  }, []);
-
-  if (hasError) {
-    return <>{fallback}</>;
-  }
-
-  return <>{children}</>;
 } 
