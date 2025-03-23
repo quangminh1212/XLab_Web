@@ -143,27 +143,18 @@ export default function Footer() {
             </h3>
             <ul className="mt-4 space-y-3">
               <li>
+                <Link href="/services" className="text-base text-gray-600 hover:text-primary-600 transition-colors flex items-center">
+                  <span className="mr-2">→</span> Dịch vụ
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="text-base text-gray-600 hover:text-primary-600 transition-colors flex items-center">
-                  <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                  Về chúng tôi
+                  <span className="mr-2">→</span> Giới thiệu
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-base text-gray-600 hover:text-primary-600 transition-colors flex items-center">
-                  <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-base text-gray-600 hover:text-primary-600 transition-colors flex items-center">
-                  <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                  Tuyển dụng
+                <Link href="/contact" className="text-base text-gray-600 hover:text-primary-600 transition-colors flex items-center">
+                  <span className="mr-2">→</span> Liên hệ
                 </Link>
               </li>
               <li>
