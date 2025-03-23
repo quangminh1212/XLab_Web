@@ -15,7 +15,6 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
   experimental: {
-    optimizeCss: true,
     scrollRestoration: true,
   },
   compiler: {
@@ -82,10 +81,10 @@ const nextConfig = {
       },
     ];
   },
-  // Cấu hình phân tích bundle
+  // Cấu hình phân tích bundle - chỉ chạy khi có biến môi trường ANALYZE=true
   webpack: (config, { dev, isServer }) => {
-    // Chỉ thực hiện trong môi trường development
-    if (dev && !isServer) {
+    // Chỉ khi biến ANALYZE=true
+    if (process.env.ANALYZE === 'true') {
       try {
         const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
         config.plugins.push(
