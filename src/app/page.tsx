@@ -7,14 +7,41 @@ import { products, categories, stores } from '@/data/mockData'
 import CategoryList from '@/components/CategoryList'
 import ProductGrid from '@/components/ProductGrid'
 
+// Define proper types to avoid linter errors
+interface DebugInfo {
+  // Environment info
+  nextVersion: string;
+  nodeEnv: string | undefined;
+  debugCalls: string | undefined;
+  
+  // Runtime checks
+  windowDefined: boolean;
+  documentDefined: boolean;
+  
+  // Function prototype tests
+  functionPrototype: {
+    call: boolean;
+    apply: boolean;
+    bind: boolean;
+  };
+  
+  // Error status
+  hasErrors: boolean;
+  errorMessages: string[];
+  
+  // Optional properties for call test results
+  callTestResult?: string;
+  callTestError?: string;
+}
+
 export default function Home() {
-  const [debugInfo, setDebugInfo] = useState<any>({});
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | any>({});
   const [showDebug, setShowDebug] = useState(false);
   
   useEffect(() => {
     try {
       // Collect detailed debug information
-      const info = {
+      const info: DebugInfo = {
         // Environment info
         nextVersion: process.env.NEXT_PUBLIC_VERSION || 'unknown',
         nodeEnv: process.env.NODE_ENV,
@@ -33,7 +60,7 @@ export default function Home() {
         
         // Error status
         hasErrors: false,
-        errorMessages: [] as string[],
+        errorMessages: [],
       };
       
       // Test Function.prototype.call
