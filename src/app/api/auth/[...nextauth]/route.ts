@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { JWT } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -25,6 +25,26 @@ const handler = NextAuth({
           access_type: "offline",
           response_type: "code"
         }
+      }
+    }),
+    // Thêm CredentialsProvider cho môi trường phát triển
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        // Tạo user giả cho môi trường phát triển
+        if (credentials?.email === "test@example.com" && credentials?.password === "password") {
+          return {
+            id: "1",
+            name: "Test User",
+            email: "test@example.com",
+            image: "https://i.pravatar.cc/150?img=1"
+          };
+        }
+        return null;
       }
     }),
   ],
@@ -54,7 +74,7 @@ const handler = NextAuth({
       return false;
     },
   },
-  debug: false,
+  debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
