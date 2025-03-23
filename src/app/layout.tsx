@@ -6,6 +6,7 @@ import ClientSessionProvider from '@/components/ClientSessionProvider'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 import MainHeader from '@/components/MainHeader'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 // Optimize font loading
 const inter = Inter({ 
@@ -109,16 +110,18 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
-        <ClientSessionProvider>
-          <MainHeader />
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </ClientSessionProvider>
+        <ErrorBoundary>
+          <ClientSessionProvider>
+            <MainHeader />
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
+              Bỏ qua phần điều hướng
+            </a>
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </ClientSessionProvider>
+        </ErrorBoundary>
         <Analytics />
         <Script
           id="performance-metrics"

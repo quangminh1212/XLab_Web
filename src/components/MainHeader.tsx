@@ -9,10 +9,9 @@ import { useSession, signOut } from 'next-auth/react'
 export default function MainHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session, status } = useSession()
+  const session = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
-  const isSessionLoading = status === 'loading'
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
@@ -42,6 +41,41 @@ export default function MainHeader() {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
+  // Nếu session đang loading, hiển thị header đơn giản
+  if (session.status === 'loading') {
+    return (
+      <header 
+        className={`sticky top-0 z-50 transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-white shadow-md py-2' 
+            : 'bg-gradient-to-r from-primary-50 to-secondary-50 py-4'
+        }`}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center space-x-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-xl">
+                  X
+                </div>
+                <span className="font-bold text-xl text-primary-700 hidden sm:inline-block">XLab</span>
+              </Link>
+            </div>
+            
+            {/* Nút tìm kiếm và menu cho mobile */}
+            <div className="flex items-center space-x-2">
+              <div className="animate-pulse w-24 h-8 bg-gray-200 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </header>
+    )
+  }
+
+  // Chỉ sử dụng data session khi đã authenticated
+  const userData = session.status === 'authenticated' ? session.data?.user : null
+
   return (
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -62,10 +96,10 @@ export default function MainHeader() {
             </Link>
             
             {/* Lời chào và tên người dùng trên desktop */}
-            {status === 'authenticated' && session?.user && (
+            {userData && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
                 <span className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full">
-                  {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
+                  {greeting}, {userData.name?.split(' ')[0] || 'bạn'}!
                 </span>
               </div>
             )}
@@ -99,7 +133,7 @@ export default function MainHeader() {
               </svg>
             </button>
 
-            {status === 'authenticated' && session ? (
+            {userData ? (
               <div className="flex items-center space-x-2">
                 {/* Thông báo */}
                 <button 
@@ -118,21 +152,21 @@ export default function MainHeader() {
                     onClick={() => toggleMobileMenu()}
                     className="flex items-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300"
                   >
-                    {session.user?.image ? (
+                    {userData.image ? (
                       <Image
-                        src={session.user.image}
-                        alt={session.user.name || 'Avatar'}
+                        src={userData.image}
+                        alt={userData.name || 'Avatar'}
                         width={32}
                         height={32}
                         className="rounded-full"
                       />
                     ) : (
                       <div className="w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                        {session.user?.name?.charAt(0) || 'U'}
+                        {userData.name?.charAt(0) || 'U'}
                       </div>
                     )}
                     <span className="hidden sm:inline-block text-sm text-gray-700">
-                      {session.user?.name?.split(' ')[0] || 'User'}
+                      {userData.name?.split(' ')[0] || 'User'}
                     </span>
                     <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -142,7 +176,7 @@ export default function MainHeader() {
                   {mobileMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
                       <div className="px-4 py-2 text-xs text-gray-500 border-b">
-                        Đăng nhập bằng {session.user?.email}
+                        Đăng nhập bằng {userData.email}
                       </div>
                       <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50">
                         Tài khoản của tôi
@@ -161,7 +195,7 @@ export default function MainHeader() {
                   )}
                 </div>
               </div>
-            ) : status !== 'loading' ? (
+            ) : (
               <div className="hidden sm:flex items-center space-x-2">
                 <Link 
                   href="/login" 
@@ -176,7 +210,7 @@ export default function MainHeader() {
                   Đăng ký
                 </Link>
               </div>
-            ) : null}
+            )}
 
             {/* Hamburger menu for mobile */}
             <button
@@ -200,9 +234,9 @@ export default function MainHeader() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
-            {status === 'authenticated' && session && (
+            {userData && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600">
-                {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
+                {greeting}, {userData.name?.split(' ')[0] || 'bạn'}!
               </div>
             )}
             <Link href="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
@@ -218,7 +252,7 @@ export default function MainHeader() {
               Liên hệ
             </Link>
             
-            {status !== 'loading' && !session && (
+            {!userData && (
               <div className="flex space-x-2 mt-2 px-3">
                 <Link 
                   href="/login" 
