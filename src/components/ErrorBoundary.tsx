@@ -1,3 +1,5 @@
+'use client'
+
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
@@ -7,89 +9,39 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  error: Error | null;
-  errorInfo: ErrorInfo | null;
+  error?: Error;
 }
 
-class ErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null,
-      errorInfo: null
-    };
+export class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false
+  };
+
+  public static getDerivedStateFromError(error: Error): State {
+    // Cập nhật state để lần render tiếp theo sẽ hiển thị UI thay thế
+    return { hasError: true, error };
   }
 
-  static getDerivedStateFromError(error: Error): State {
-    // Update state so the next render will show the fallback UI
-    return {
-      hasError: true,
-      error,
-      errorInfo: null
-    };
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('Error caught by ErrorBoundary:', error, errorInfo);
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log the error to console
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
-    // You can also log the error to an error reporting service
-    this.setState({
-      errorInfo
-    });
-  }
-
-  render(): ReactNode {
+  public render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
-      if (this.props.fallback) {
-        return this.props.fallback;
-      }
-      
-      return (
-        <div style={{ 
-          padding: '20px', 
-          background: '#ffefef', 
-          border: '1px solid #f5c2c2',
-          borderRadius: '5px',
-          margin: '20px 0'
-        }}>
-          <h2 style={{ color: '#e74c3c' }}>Something went wrong</h2>
-          <details style={{ whiteSpace: 'pre-wrap', margin: '10px 0' }}>
-            <summary>Show error details</summary>
-            <p>{this.state.error && this.state.error.toString()}</p>
-            <p>Component Stack:</p>
-            <pre style={{ 
-              background: '#f8f8f8', 
-              padding: '10px', 
-              overflowX: 'auto',
-              color: '#333',
-              fontSize: '0.9em',
-              borderRadius: '3px'
-            }}>
-              {this.state.errorInfo && this.state.errorInfo.componentStack}
+      // Hiển thị UI thay thế hoặc fallback được cung cấp
+      return this.props.fallback || (
+        <div className="p-4 max-w-xl mx-auto my-8 bg-red-50 border border-red-200 rounded-lg">
+          <h2 className="text-lg font-semibold text-red-700 mb-2">Đã xảy ra lỗi</h2>
+          <details className="mt-2 text-sm text-red-600">
+            <summary className="cursor-pointer">Chi tiết lỗi</summary>
+            <pre className="mt-2 p-2 bg-red-100 rounded text-red-800 overflow-auto text-xs">
+              {this.state.error?.toString()}
             </pre>
           </details>
-          <button
-            style={{
-              padding: '8px 16px',
-              background: '#3498db',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-            onClick={() => window.location.reload()}
-          >
-            Reload Page
-          </button>
         </div>
       );
     }
 
     return this.props.children;
   }
-}
-
-export default ErrorBoundary; 
+} 
