@@ -9,6 +9,7 @@
 
 # next.js
 /.next/
+/.next-dev/
 /out/
 /build
 
@@ -130,3 +131,23 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Browser profiles and data
+/chrome-profile/
+/profiles/
+/cookies/
+/data/
+
+# Log files
+*.log
+
+# HTML files generated for testing/scraping
+*.html
+
+# Temp files
+*.tmp
+/temp/
+/tmp/
+
+# Generated JSON data
+/data/*.json
