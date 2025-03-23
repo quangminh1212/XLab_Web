@@ -1,261 +1,240 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
 
 export default function MainHeader() {
-  console.log('MainHeader: Component render start')
+  console.log('[MainHeader] Rendering')
   
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  // Di chuyển useSession lên đầu component tránh lỗi
+  const { data: session, status } = useSession()
+  console.log('[MainHeader] Session status:', status, 'User:', session?.user?.name || 'No user')
+  
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const pathname = usePathname()
   
-  // Sửa: Gọi useSession ở top-level thay vì trong useEffect
-  const { data: session, status } = useSession()
-  console.log('MainHeader: useSession called directly, status:', status, 'user:', session?.user?.name || 'none')
+  // State cho authentication
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userName, setUserName] = useState('')
   
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [greeting, setGreeting] = useState('')
-
+  // Theo dõi và cập nhật authentication state
   useEffect(() => {
-    console.log('MainHeader: scroll and greeting effect running')
+    console.log('[MainHeader] useEffect running, status:', status)
     
-    // Xác định lời chào dựa trên thời gian trong ngày
-    const getGreeting = () => {
-      const hour = new Date().getHours()
-      if (hour < 12) return 'Chào buổi sáng'
-      if (hour < 18) return 'Chào buổi chiều'
-      return 'Chào buổi tối'
+    if (status === 'loading') {
+      setIsLoading(true)
+      setIsAuthenticated(false)
+    } else if (status === 'authenticated' && session?.user) {
+      setIsLoading(false)
+      setIsAuthenticated(true)
+      setUserName(session.user.name || session.user.email || 'User')
+      console.log('[MainHeader] Authenticated as:', session.user.name || session.user.email)
+    } else {
+      setIsLoading(false)
+      setIsAuthenticated(false)
+      console.log('[MainHeader] Not authenticated')
     }
-
-    setGreeting(getGreeting())
-
-    // Kiểm tra scroll để thay đổi style header
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true)
-      } else {
-        setIsScrolled(false)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => {
-      console.log('MainHeader: scroll effect cleanup')
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
+  }, [status, session])
+  
+  // Đóng menu khi thay đổi URL
+  useEffect(() => {
+    setIsMenuOpen(false)
+    setIsDropdownOpen(false)
+  }, [pathname])
+  
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
   }
-
-  const isLoading = status === 'loading'
-  const isAuthenticated = status === 'authenticated'
-  const userData = isAuthenticated ? session?.user : null
-
-  console.log('MainHeader: Render with auth state:', { isLoading, isAuthenticated, userData: userData?.name || 'none' })
-
-  // Header mặc định
+  
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen)
+  }
+  
+  const handleSignOut = async () => {
+    try {
+      console.log('[MainHeader] Signing out...')
+      await signOut({ callbackUrl: '/' })
+    } catch (error) {
+      console.error('[MainHeader] Error signing out:', error)
+    }
+  }
+  
   return (
-    <header 
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white shadow-md py-2' 
-          : 'bg-gradient-to-r from-primary-50 to-secondary-50 py-4'
-      }`}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center space-x-1">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-xl">
-                X
-              </div>
-              <span className="font-bold text-xl text-primary-700 hidden sm:inline-block">XLab</span>
-            </Link>
-            
-            {/* Lời chào và tên người dùng trên desktop */}
-            {isAuthenticated && userData && (
-              <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
-                <span className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full">
-                  {greeting}, {userData.name?.split(' ')[0] || 'bạn'}!
-                </span>
-              </div>
-            )}
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex">
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/">
+                <Image
+                  src="/images/logo.svg"
+                  alt="XLab Logo"
+                  width={120}
+                  height={40}
+                  priority
+                  className="h-10 w-auto"
+                />
+              </Link>
+            </div>
+            <nav className="hidden md:ml-8 md:flex md:space-x-8">
+              <Link href="/services" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/services' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                Dịch vụ
+              </Link>
+              <Link href="/blog" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/blog' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                Blog
+              </Link>
+              <Link href="/about" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/about' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                Về chúng tôi
+              </Link>
+              <Link href="/contact" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/contact' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+                Liên hệ
+              </Link>
+            </nav>
           </div>
-
-          {/* Menu desktop */}
-          <nav className="hidden md:flex items-center space-x-1">
-            <Link href="/" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Trang chủ
-            </Link>
-            <Link href="/products" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Sản phẩm
-            </Link>
-            <Link href="/services" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Dịch vụ
-            </Link>
-            <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Liên hệ
-            </Link>
-          </nav>
-
-          {/* Buttons */}
-          <div className="flex items-center space-x-2">
-            {/* Tìm kiếm */}
-            <button 
-              className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50"
-              aria-label="Tìm kiếm"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-
+          
+          <div className="hidden md:ml-6 md:flex md:items-center">
             {isLoading ? (
-              <div className="animate-pulse w-24 h-8 bg-gray-200 rounded-full"></div>
-            ) : isAuthenticated && userData ? (
-              <div className="flex items-center space-x-2">
-                {/* Thông báo */}
-                <button 
-                  className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50 relative"
-                  aria-label="Thông báo"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-primary-500"></span>
-                </button>
-
-                {/* User dropdown */}
-                <div className="relative">
+              <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+            ) : isAuthenticated ? (
+              <div className="ml-3 relative">
+                <div>
                   <button 
-                    onClick={() => toggleMobileMenu()}
-                    className="flex items-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300"
+                    onClick={toggleDropdown}
+                    className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                   >
-                    {userData.image ? (
-                      <Image
-                        src={userData.image}
-                        alt={userData.name || 'Avatar'}
-                        width={32}
-                        height={32}
-                        className="rounded-full"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                        {userData.name?.charAt(0) || 'U'}
-                      </div>
-                    )}
-                    <span className="hidden sm:inline-block text-sm text-gray-700">
-                      {userData.name?.split(' ')[0] || 'User'}
-                    </span>
-                    <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {mobileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
-                      <div className="px-4 py-2 text-xs text-gray-500 border-b">
-                        Đăng nhập bằng {userData.email}
-                      </div>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50">
-                        Tài khoản của tôi
-                      </Link>
-                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50">
-                        Cài đặt
-                      </Link>
-                      <div className="border-t border-gray-100"></div>
-                      <button
-                        onClick={() => signOut()}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        Đăng xuất
-                      </button>
+                    <span className="sr-only">Mở menu người dùng</span>
+                    <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-800">
+                      {userName.charAt(0).toUpperCase()}
                     </div>
-                  )}
+                  </button>
                 </div>
+                
+                {isDropdownOpen && (
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                    <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                      {userName}
+                    </div>
+                    <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Dashboard
+                    </Link>
+                    <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      Hồ sơ
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
-              <div className="hidden sm:flex items-center space-x-2">
-                <Link 
-                  href="/login" 
-                  className="px-4 py-2 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 transition-colors"
-                >
+              <div className="flex space-x-4">
+                <Link href="/login" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-50 hover:bg-primary-100">
                   Đăng nhập
                 </Link>
-                <Link 
-                  href="/register" 
-                  className="px-4 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors"
-                >
+                <Link href="/register" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
                   Đăng ký
                 </Link>
               </div>
             )}
-
-            {/* Hamburger menu for mobile */}
+          </div>
+          
+          <div className="flex items-center md:hidden">
             <button
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary-600 hover:bg-primary-50"
-              onClick={toggleMobileMenu}
-              aria-label="Menu"
+              onClick={toggleMenu}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             >
-              {mobileMenuOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <span className="sr-only">{isMenuOpen ? 'Đóng menu' : 'Mở menu'}</span>
+              {isMenuOpen ? (
+                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
           </div>
         </div>
-
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
-            {isAuthenticated && userData && (
-              <div className="px-4 py-2 text-sm font-medium text-gray-600">
-                {greeting}, {userData.name?.split(' ')[0] || 'bạn'}!
-              </div>
-            )}
-            <Link href="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Trang chủ
-            </Link>
-            <Link href="/products" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Sản phẩm
-            </Link>
-            <Link href="/services" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
+      </div>
+      
+      {isMenuOpen && (
+        <div className="md:hidden">
+          <div className="pt-2 pb-3 space-y-1">
+            <Link href="/services" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/services' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
               Dịch vụ
             </Link>
-            <Link href="/contact" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
+            <Link href="/blog" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/blog' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
+              Blog
+            </Link>
+            <Link href="/about" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/about' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
+              Về chúng tôi
+            </Link>
+            <Link href="/contact" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/contact' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
               Liên hệ
             </Link>
-            
-            {!isAuthenticated && (
-              <div className="flex space-x-2 mt-2 px-3">
-                <Link 
-                  href="/login" 
-                  className="flex-1 px-4 py-2 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors"
-                >
+          </div>
+          
+          <div className="pt-4 pb-3 border-t border-gray-200">
+            {isLoading ? (
+              <div className="flex items-center px-4">
+                <div className="flex-shrink-0">
+                  <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse"></div>
+                </div>
+                <div className="ml-3">
+                  <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="mt-1 h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ) : isAuthenticated ? (
+              <>
+                <div className="flex items-center px-4">
+                  <div className="flex-shrink-0">
+                    <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-800">
+                      {userName.charAt(0).toUpperCase()}
+                    </div>
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-base font-medium text-gray-800">{userName}</div>
+                  </div>
+                </div>
+                <div className="mt-3 space-y-1">
+                  <Link href="/dashboard" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                    Dashboard
+                  </Link>
+                  <Link href="/profile" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                    Hồ sơ
+                  </Link>
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full text-left block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="mt-3 space-y-1">
+                <Link href="/login" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
                   Đăng nhập
                 </Link>
-                <Link 
-                  href="/register" 
-                  className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors"
-                >
+                <Link href="/register" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
                   Đăng ký
                 </Link>
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   )
 } 
