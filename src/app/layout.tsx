@@ -8,6 +8,42 @@ import Analytics from '@/components/Analytics'
 import ClientSessionProvider from '@/components/ClientSessionProvider'
 import React from 'react'
 
+// Add global error logger
+if (typeof window !== 'undefined') {
+  const originalConsoleError = console.error;
+  console.error = function(...args) {
+    // Log original error
+    originalConsoleError.apply(console, args);
+    
+    // Add extra context for 'call' related errors
+    if (args.length > 0 && typeof args[0] === 'string' && args[0].includes('call')) {
+      originalConsoleError.apply(console, ['CALL ERROR CONTEXT: Current component tree state:', React]);
+      
+      // Log component stack if available
+      if (args[1] && args[1].componentStack) {
+        originalConsoleError.apply(console, ['Component stack:', args[1].componentStack]);
+      }
+    }
+  };
+
+  // Add global error handler to catch unhandled errors
+  window.addEventListener('error', function(event) {
+    console.error('GLOBAL ERROR:', event.error);
+    console.error('GLOBAL ERROR MESSAGE:', event.message);
+    console.error('GLOBAL ERROR FILENAME:', event.filename);
+    console.error('GLOBAL ERROR LINENO:', event.lineno);
+    console.error('GLOBAL ERROR COLNO:', event.colno);
+  });
+  
+  // Special handling for promise rejection errors
+  window.addEventListener('unhandledrejection', function(event) {
+    console.error('UNHANDLED PROMISE REJECTION:', event.reason);
+    if (event.reason && event.reason.stack) {
+      console.error('REJECTION STACK:', event.reason.stack);
+    }
+  });
+}
+
 // Optimize font loading - use only Google Fonts with font-display: swap
 const inter = Inter({ 
   subsets: ['latin'],
@@ -97,55 +133,129 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
-      <head>
-        {/* Preconnect to domains for critical resources */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        
-        {/* Preload critical images with high priority */}
-        <link
-          rel="preload"
-          href="/images/hero-image.svg"
-          as="image"
-          type="image/svg+xml"
-          fetchPriority="high"
-        />
-        
-        {/* No longer preloading font because we're using Google Fonts with display:swap */}
-      </head>
-      <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
-        <ClientSessionProvider>
-          <Header />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </ClientSessionProvider>
-        <Analytics />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-        />
-        <Script
-          id="google-analytics-config"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
-                page_path: window.location.pathname,
-              });
-            `,
-          }}
-        />
-      </body>
-    </html>
-  )
+  // Add development logging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('DEBUG: Rendering RootLayout');
+    console.log('DEBUG: React version:', React.version);
+  }
+
+  try {
+    return (
+      <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+        <head>
+          {/* Preconnect to domains for critical resources */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="preconnect" href="https://www.googletagmanager.com" />
+          <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+          
+          {/* Debug information in development */}
+          {process.env.NODE_ENV === 'development' && (
+            <script 
+              dangerouslySetInnerHTML={{ 
+                __html: `console.log('DEBUG: Layout script executed');` 
+              }} 
+            />
+          )}
+        </head>
+        <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+          <ClientSessionProvider>
+            <Header />
+            <main className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </ClientSessionProvider>
+
+          {/* Add debugging info */}
+          {process.env.NODE_ENV === 'development' && (
+            <div id="debug-info" style={{ display: 'none' }}>
+              <script dangerouslySetInnerHTML={{ 
+                __html: `
+                  console.log('DEBUG: Body script executed');
+                  document.addEventListener('DOMContentLoaded', function() {
+                    console.log('DEBUG: DOM fully loaded');
+                  });
+                ` 
+              }} />
+            </div>
+          )}
+          
+          <Analytics />
+          <Script
+            id="debug-script"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                console.log('DEBUG: afterInteractive script executed');
+                // Check for call-related errors
+                window._checkCallErrors = function() {
+                  console.log('DEBUG: Checking for call errors');
+                  try {
+                    // Test various objects
+                    if (window.React) console.log('DEBUG: React is defined');
+                    if (window.ReactDOM) console.log('DEBUG: ReactDOM is defined');
+                    if (window.next) console.log('DEBUG: Next is defined');
+                  } catch (e) {
+                    console.error('DEBUG: Error in call error check:', e);
+                  }
+                };
+                setTimeout(window._checkCallErrors, 1000);
+              `,
+            }}
+          />
+
+          {/* Original analytics scripts */}
+          <Script
+            id="google-analytics"
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+          />
+          <Script
+            id="google-analytics-config"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+            }}
+          />
+        </body>
+      </html>
+    )
+  } catch (error) {
+    console.error('DEBUG: Critical error in RootLayout:', error);
+    // Return minimal fallback UI
+    return (
+      <html>
+        <head>
+          <title>Error Loading Application</title>
+        </head>
+        <body>
+          <div style={{ 
+            padding: '20px', 
+            textAlign: 'center', 
+            fontFamily: 'system-ui, sans-serif' 
+          }}>
+            <h1>Application Error</h1>
+            <p>The application encountered a critical error. Please try refreshing the page.</p>
+            <pre style={{ 
+              textAlign: 'left', 
+              backgroundColor: '#f7f7f7', 
+              padding: '10px', 
+              borderRadius: '4px',
+              whiteSpace: 'pre-wrap'
+            }}>
+              {error instanceof Error ? error.message : 'Unknown error'}
+            </pre>
+          </div>
+        </body>
+      </html>
+    );
+  }
 } 
