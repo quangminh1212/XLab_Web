@@ -170,3 +170,23 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# IDEs and editors
+/.idea
+/.vscode
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
