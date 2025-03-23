@@ -57,7 +57,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico' },
-      { url: '/icon.png', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
       { url: '/apple-icon.png', type: 'image/png' },
@@ -65,16 +66,17 @@ export const metadata: Metadata = {
     other: [
       {
         rel: 'apple-touch-icon-precomposed',
-        url: '/apple-touch-icon-precomposed.png',
+        url: '/android-chrome-192x192.png',
       },
     ],
   },
+  manifest: '/site.webmanifest',
   verification: {
     google: 'google-site-verification-code',
   },
   other: {
     'msapplication-TileColor': '#ffffff',
-    'msapplication-TileImage': '/ms-icon-144x144.png',
+    'msapplication-TileImage': '/android-chrome-192x192.png',
     'theme-color': '#ffffff',
   },
 };
