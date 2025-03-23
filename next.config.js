@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
@@ -18,7 +19,7 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  headers() {
+  async headers() {
     return [
       {
         source: '/(.*)',
