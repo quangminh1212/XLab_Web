@@ -24,6 +24,10 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // Define environment variables here
+  env: {
+    DEBUG_CALLS: process.env.NODE_ENV === 'development' ? 'true' : 'false',
+  },
   staticPageGenerationTimeout: 120, // Increases timeout for static page generation
   headers: async () => {
     return [
@@ -101,22 +105,6 @@ const nextConfig = {
       } catch (error) {
         console.warn('webpack-bundle-analyzer not found. Skipping bundle analysis.');
       }
-    }
-
-    // Add debugging for potential call errors
-    if (dev) {
-      // Define debug environment variable without using DefinePlugin
-      // since we can't directly access webpack here
-      config.plugins.push({
-        apply: (compiler) => {
-          compiler.options.plugins = compiler.options.plugins || [];
-          compiler.options.plugins.push(
-            new compiler.webpack.DefinePlugin({
-              'process.env.DEBUG_CALLS': JSON.stringify(true),
-            })
-          );
-        }
-      });
     }
 
     // Optimize CSS loading
