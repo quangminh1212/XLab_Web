@@ -2,7 +2,7 @@ import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Footer from '@/components/Footer'
-import SessionProvider from '@/components/SessionProvider'
+import ClientSessionProvider from '@/components/ClientSessionProvider'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 import MainHeader from '@/components/MainHeader'
@@ -109,7 +109,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
-        <SessionProvider>
+        <ClientSessionProvider>
           <MainHeader />
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
             Bỏ qua phần điều hướng
@@ -118,7 +118,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-        </SessionProvider>
+        </ClientSessionProvider>
         <Analytics />
         <Script
           id="performance-metrics"
