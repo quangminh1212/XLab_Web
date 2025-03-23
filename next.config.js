@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
   experimental: {
     optimizeCss: true,
@@ -28,10 +28,9 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-    styledComponents: false,
+    removeConsole: false,
   },
-  staticPageGenerationTimeout: 120, // Increases timeout for static page generation
+  staticPageGenerationTimeout: 120,
   headers: async () => {
     return [
       {
@@ -92,29 +91,21 @@ const nextConfig = {
       },
     ];
   },
-  // Cấu hình webpack đơn giản hơn để tránh lỗi
   webpack: (config, { dev, isServer }) => {
-    // Disable BundleAnalyzer to avoid potential issues
-    if (!isServer) {
-      config.optimization.splitChunks.cacheGroups = {
-        ...config.optimization.splitChunks.cacheGroups,
-        styles: {
-          name: 'styles',
-          test: /\.(css|scss)$/,
-          chunks: 'all',
-          enforce: true,
-        },
-      };
-    }
-
+    config.module.rules.push({
+      test: /\.(woff|woff2|eot|ttf|otf)$/i,
+      type: 'asset/resource',
+    });
+    
     return config;
   },
-  
-  // Optimize builds for production
+  publicRuntimeConfig: {
+    staticFolder: '/public',
+  },
   productionBrowserSourceMaps: false,
   compress: true,
   output: 'standalone',
-  distDir: '.next', // Use standard .next directory to avoid cache issues
+  distDir: '.next',
 };
 
 module.exports = nextConfig; 
