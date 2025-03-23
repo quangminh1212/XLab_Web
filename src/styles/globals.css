@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Immediate display of critical content */
-body {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 5000px; /* Estimated content size */
-}
-
 /* Optimize image loading */
 img {
   content-visibility: auto;
@@ -178,13 +172,8 @@ main {
 }
 
 @layer base {
-  :root {
-    --background: 30 40% 98%;
-    --foreground: 24 40% 16%;
-  }
-
-  body {
-    @apply bg-secondary-50 text-primary-900;
+  html {
+    scroll-behavior: smooth;
   }
 }
 
