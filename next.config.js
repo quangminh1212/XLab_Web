@@ -47,6 +47,21 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   poweredByHeader: false,
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 4,
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.devtool = 'source-map';
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig; 

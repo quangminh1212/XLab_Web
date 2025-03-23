@@ -2,7 +2,7 @@ import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
-import Analytics from '@/components/Analytics'
+import { ErrorLogger } from '@/utils/error-logger'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SessionWrapper from '@/components/SessionWrapper'
 import MainHeader from '@/components/MainHeader'
@@ -17,21 +17,76 @@ const inter = Inter({
   fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
-// ErrorLogger component để theo dõi và log các lỗi
-const ErrorLogger = () => {
+// Thêm script để nâng cao debug
+const DebugScript = () => {
+  if (process.env.NODE_ENV !== 'development') {
+    return null
+  }
+  
   return (
-    <Script id="error-logger" strategy="afterInteractive">
+    <Script id="debug-script" strategy="afterInteractive">
       {`
-        // Theo dõi lỗi JS
+        // Log thông tin môi trường
+        console.log('[Debug] Environment:', {
+          nextJs: "${process.env.NEXT_PUBLIC_VERCEL_ENV || 'local'}",
+          userAgent: navigator.userAgent,
+          screen: { width: window.innerWidth, height: window.innerHeight }
+        });
+        
+        // Log các lỗi chi tiết
         window.onerror = function(message, source, lineno, colno, error) {
-          console.error('[Global Error]:', { message, source, lineno, colno, error: error?.stack });
+          console.error('[Debug] JavaScript Error:', { 
+            message, 
+            source, 
+            lineno, 
+            colno,
+            stack: error?.stack
+          });
           return false;
         };
         
-        // Theo dõi Promise rejection
+        // Log các unhandled promise rejections
         window.addEventListener('unhandledrejection', function(event) {
-          console.error('[Unhandled Promise]:', event.reason?.stack || event.reason);
+          console.error('[Debug] Unhandled Promise Rejection:', {
+            reason: event.reason?.stack || event.reason || 'Unknown',
+            promise: event.promise
+          });
         });
+        
+        // Log các network errors
+        const originalFetch = window.fetch;
+        window.fetch = async function(...args) {
+          try {
+            const response = await originalFetch(...args);
+            if (!response.ok) {
+              console.warn('[Debug] Fetch Error:', {
+                url: args[0],
+                status: response.status,
+                statusText: response.statusText
+              });
+            }
+            return response;
+          } catch (error) {
+            console.error('[Debug] Fetch Failed:', {
+              url: args[0],
+              error: error.message,
+              stack: error.stack
+            });
+            throw error;
+          }
+        };
+        
+        // Log thông tin về các Component gặp lỗi
+        const origError = console.error;
+        console.error = function() {
+          // Lọc ra các lỗi React thường gặp
+          if (arguments[0]?.includes && 
+             (arguments[0].includes('Warning: ') || 
+              arguments[0].includes('Error: '))) {
+            console.warn('[Debug] React Error:', ...arguments);
+          }
+          origError.apply(console, arguments);
+        };
       `}
     </Script>
   );
@@ -123,8 +178,17 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
+        {/* Custom logging và debug script */}
+        <DebugScript />
+        
+        {/* Error logger sẽ thiết lập global error handlers */}
         <ErrorLogger />
-        <ErrorBoundary fallback={<div className="p-4 bg-red-50 text-red-700">Đã xảy ra lỗi khi tải trang. Vui lòng tải lại trang.</div>}>
+        
+        <ErrorBoundary fallback={
+          <div className="p-4 bg-red-50 text-red-700">
+            Đã xảy ra lỗi khi tải trang. Vui lòng tải lại trang.
+          </div>
+        }>
           <SessionWrapper>
             <div className="flex flex-col min-h-screen">
               <MainHeader />
@@ -135,7 +199,6 @@ export default function RootLayout({
             </div>
           </SessionWrapper>
         </ErrorBoundary>
-        <Analytics />
         
         <Script id="performance-metrics" strategy="afterInteractive">
           {`
