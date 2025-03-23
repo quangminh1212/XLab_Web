@@ -1,5 +1,6 @@
 @echo off
 setlocal EnableDelayedExpansion
+chcp 65001 > nul
 
 echo ==== XLab Web Application Runner ====
 echo.
@@ -32,20 +33,20 @@ if /i "!command!" == "run" (
   goto :run_normal
 )
 
-echo Lệnh không hợp lệ: !command!
-echo Sử dụng --help để xem danh sách lệnh hợp lệ.
+echo Lenh khong hop le: !command!
+echo Su dung --help de xem danh sach lenh hop le.
 exit /b 1
 
 :show_help
-echo Cách sử dụng: run.bat [COMMAND]
+echo Cach su dung: run.bat [COMMAND]
 echo.
 echo Commands:
-echo   run          Chạy ứng dụng bình thường (mặc định)
-echo   check        Kiểm tra phiên bản Next.js hiện tại và có sẵn
-echo   update       Cập nhật Next.js với xác nhận trước
-echo   auto-update  Tự động cập nhật Next.js không cần xác nhận
-echo   debug        Chạy với chế độ debug và logging chi tiết
-echo   --help       Hiển thị trợ giúp này
+echo   run          Chay ung dung binh thuong (mac dinh)
+echo   check        Kiem tra phien ban Next.js hien tai va co san
+echo   update       Cap nhat Next.js voi xac nhan truoc
+echo   auto-update  Tu dong cap nhat Next.js khong can xac nhan
+echo   debug        Chay voi che do debug va logging chi tiet
+echo   --help       Hien thi tro giup nay
 echo.
 goto :eof
 
