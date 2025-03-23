@@ -14,17 +14,18 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
-    serverActions: true,
+    // ServerActions are enabled by default in Next.js 14+
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
     styledComponents: false,
   },
+  staticPageGenerationTimeout: 120, // Increases timeout for static page generation
   headers: async () => {
     return [
       {
@@ -61,7 +62,25 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=86400, immutable',
+            value: 'public, max-age=31536000, immutable', // 1 year for images
+          },
+        ],
+      },
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable', // 1 year for static assets
+          },
+        ],
+      },
+      {
+        source: '/fonts/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable', // 1 year for fonts
           },
         ],
       },
@@ -105,6 +124,7 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   compress: true,
   output: 'standalone',
+  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next', // Separate dev and prod builds
 };
 
 module.exports = nextConfig; 
