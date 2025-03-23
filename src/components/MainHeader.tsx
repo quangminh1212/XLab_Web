@@ -9,11 +9,29 @@ import { useSession, signOut } from 'next-auth/react'
 export default function MainHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session, status } = useSession()
+  
+  // Bao bọc useSession trong try/catch để bắt lỗi
+  let sessionData = { status: 'loading', data: null }
+  try {
+    console.log('MainHeader: Đang gọi useSession...');
+    const { data: session, status } = useSession({
+      required: false,
+      onUnauthenticated() {
+        console.log('MainHeader: Không xác thực');
+      },
+    });
+    sessionData = { data: session, status };
+    console.log('MainHeader: useSession status:', status);
+  } catch (error) {
+    console.error('MainHeader: Lỗi khi gọi useSession:', error);
+  }
+  
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
 
   useEffect(() => {
+    console.log('MainHeader mounted');
+    
     // Xác định lời chào dựa trên thời gian trong ngày
     const getGreeting = () => {
       const hour = new Date().getHours()
@@ -34,16 +52,27 @@ export default function MainHeader() {
     }
 
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      console.log('MainHeader unmounted');
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [])
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const isLoading = status === 'loading'
-  const isAuthenticated = status === 'authenticated'
-  const userData = isAuthenticated ? session?.user : null
+  const isLoading = sessionData.status === 'loading'
+  const isAuthenticated = sessionData.status === 'authenticated'
+  const userData = isAuthenticated ? sessionData.data?.user : null
+
+  if (isLoading) {
+    console.log('MainHeader: Đang loading session');
+  } else if (isAuthenticated) {
+    console.log('MainHeader: Đã xác thực user', userData?.name);
+  } else {
+    console.log('MainHeader: Chưa xác thực');
+  }
 
   // Header mặc định
   return (

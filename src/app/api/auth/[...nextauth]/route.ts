@@ -14,8 +14,34 @@ declare module "next-auth" {
   }
 }
 
+// Cấu hình với logger rõ ràng hơn
 const handler = NextAuth({
   providers: [
+    CredentialsProvider({
+      id: "credentials",
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        console.log("[NextAuth] Authorize called with credentials", 
+          credentials ? { email: credentials.email } : "no credentials");
+
+        // Cho phép đăng nhập với bất kỳ thông tin nào trong môi trường phát triển
+        if (credentials?.email) {
+          // Demo account
+          return {
+            id: "1",
+            name: "Test User",
+            email: credentials.email,
+            image: "https://i.pravatar.cc/150?img=1"
+          };
+        }
+        
+        return null;
+      }
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
@@ -27,27 +53,6 @@ const handler = NextAuth({
         }
       }
     }),
-    // Thêm CredentialsProvider cho môi trường phát triển
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        // Tạo user giả cho môi trường phát triển 
-        // Trong môi trường thực tế, bạn sẽ kiểm tra thông tin đăng nhập với cơ sở dữ liệu
-        if (credentials?.email && credentials?.password) {
-          return {
-            id: "1",
-            name: "Test User",
-            email: credentials.email,
-            image: "https://i.pravatar.cc/150?img=1"
-          };
-        }
-        return null;
-      }
-    }),
   ],
   pages: {
     signIn: "/login",
@@ -55,12 +60,20 @@ const handler = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
+      console.log("[NextAuth] Session callback", { sessionUser: session?.user, token });
+      
       if (token && session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
     async jwt({ token, user, account }) {
+      console.log("[NextAuth] JWT callback", { 
+        tokenSub: token?.sub,
+        userId: user?.id,
+        accountType: account?.provider
+      });
+      
       // Initial sign in
       if (user && account) {
         token.id = user.id;
@@ -69,8 +82,22 @@ const handler = NextAuth({
       return token;
     },
   },
-  debug: process.env.NODE_ENV === "development",
-  secret: process.env.NEXTAUTH_SECRET || "YOUR_SECRET_HERE",
+  logger: {
+    error(code, metadata) {
+      console.error(`[NextAuth] [Error] ${code}:`, metadata);
+    },
+    warn(code) {
+      console.warn(`[NextAuth] [Warning] ${code}`);
+    },
+    debug(code, metadata) {
+      console.log(`[NextAuth] ${code}:`, metadata);
+    }
+  },
+  debug: true,
+  secret: process.env.NEXTAUTH_SECRET || "TEST_SECRET_DO_NOT_USE_IN_PRODUCTION",
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
