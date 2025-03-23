@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image'
 import Link from 'next/link'
 import { products, categories, stores } from '@/data/mockData'
@@ -5,6 +8,57 @@ import CategoryList from '@/components/CategoryList'
 import ProductGrid from '@/components/ProductGrid'
 
 export default function Home() {
+  const [debugInfo, setDebugInfo] = useState<any>({});
+  const [showDebug, setShowDebug] = useState(false);
+  
+  useEffect(() => {
+    try {
+      // Collect detailed debug information
+      const info = {
+        // Environment info
+        nextVersion: process.env.NEXT_PUBLIC_VERSION || 'unknown',
+        nodeEnv: process.env.NODE_ENV,
+        debugCalls: process.env.DEBUG_CALLS,
+        
+        // Runtime checks
+        windowDefined: typeof window !== 'undefined',
+        documentDefined: typeof document !== 'undefined',
+        
+        // Function prototype tests
+        functionPrototype: {
+          call: typeof Function.prototype.call === 'function',
+          apply: typeof Function.prototype.apply === 'function',
+          bind: typeof Function.prototype.bind === 'function',
+        },
+        
+        // Error status
+        hasErrors: false,
+        errorMessages: [] as string[],
+      };
+      
+      // Test Function.prototype.call
+      try {
+        const testObj = { value: 'test' };
+        const testFn = function(this: any, arg: string) { 
+          return `${this.value}-${arg}`; 
+        };
+        const result = Function.prototype.call.call(testFn, testObj, 'arg');
+        info.callTestResult = result;
+      } catch (e: any) {
+        info.hasErrors = true;
+        info.errorMessages.push(`Function.call test error: ${e.message}`);
+        info.callTestError = e.message;
+      }
+      
+      setDebugInfo(info);
+    } catch (error: any) {
+      setDebugInfo({
+        error: error.message,
+        stack: error.stack,
+      });
+    }
+  }, []);
+
   // Get featured products for the homepage
   const featuredProducts = products.filter(product => product.featured)
   
@@ -151,6 +205,60 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Debug Information Section - Hidden by default */}
+      <div className="container mx-auto px-4 py-6">
+        <button 
+          onClick={() => setShowDebug(!showDebug)}
+          className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 py-1 px-2 rounded"
+        >
+          {showDebug ? 'Hide Debug Info' : 'Show Debug Info'}
+        </button>
+        
+        {showDebug && (
+          <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md">
+            <h3 className="font-mono text-sm font-bold mb-2">Debug Information</h3>
+            <pre className="text-xs font-mono bg-gray-800 text-gray-100 p-4 rounded overflow-auto max-h-96">
+              {JSON.stringify(debugInfo, null, 2)}
+            </pre>
+            
+            <div className="mt-4">
+              <h4 className="font-mono text-sm font-bold mb-2">Function Test</h4>
+              <button
+                onClick={() => {
+                  try {
+                    const testFn = function(this: any, text: string) { 
+                      return `Test: ${text}`; 
+                    };
+                    const result = testFn.call(null, "Function Call Test");
+                    alert(`Test successful: ${result}`);
+                  } catch (e: any) {
+                    alert(`Test failed: ${e.message}`);
+                  }
+                }}
+                className="bg-blue-100 hover:bg-blue-200 text-blue-800 py-1 px-2 rounded text-xs mr-2"
+              >
+                Test Function.call
+              </button>
+              
+              <button
+                onClick={() => {
+                  try {
+                    // Force an error by calling a method on undefined
+                    const obj: any = undefined;
+                    obj.method();
+                  } catch (e: any) {
+                    alert(`Caught error: ${e.message}`);
+                  }
+                }}
+                className="bg-red-100 hover:bg-red-200 text-red-800 py-1 px-2 rounded text-xs"
+              >
+                Simulate Error
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 } 
