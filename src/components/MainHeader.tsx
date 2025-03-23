@@ -12,6 +12,7 @@ export default function MainHeader() {
   const { data: session, status } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
+  const isSessionLoading = status === 'loading'
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày

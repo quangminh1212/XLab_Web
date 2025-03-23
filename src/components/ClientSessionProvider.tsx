@@ -1,47 +1,41 @@
 'use client'
 
 import { SessionProvider } from 'next-auth/react'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 export default function ClientSessionProvider({ 
   children 
 }: { 
   children: ReactNode 
 }) {
+  const [mounted, setMounted] = useState(false);
+
+  // Use useEffect to ensure client-side only execution
   useEffect(() => {
+    setMounted(true);
     console.debug('ClientSessionProvider mounted');
-    
     return () => {
       console.debug('ClientSessionProvider unmounted');
     };
   }, []);
 
-  try {
+  // Only render SessionProvider on client-side to avoid hydration issues
+  if (!mounted) {
     return (
-      <SessionProvider 
-        refetchInterval={0} 
-        refetchOnWindowFocus={false}
-      >
+      <div className="min-h-screen">
+        {/* Simple fallback UI while client is loading */}
         {children}
-      </SessionProvider>
-    );
-  } catch (error) {
-    console.error('Error rendering SessionProvider:', error);
-    
-    // Fallback UI to prevent complete crash
-    return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-        <p className="text-red-600 font-medium">Session initialization error</p>
-        <p className="text-red-500 text-sm mt-1">
-          {error instanceof Error ? error.message : 'Unknown error'}
-        </p>
-        <button 
-          onClick={() => window.location.reload()}
-          className="mt-3 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-sm rounded"
-        >
-          Reload page
-        </button>
       </div>
     );
   }
+
+  // On client-side, wrap with SessionProvider
+  return (
+    <SessionProvider 
+      refetchInterval={0} 
+      refetchOnWindowFocus={false}
+    >
+      {children}
+    </SessionProvider>
+  );
 } 
