@@ -1,61 +1,48 @@
 'use client'
 
 import { SessionProvider } from 'next-auth/react'
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import MainHeader from '@/components/MainHeader'
 import Footer from '@/components/Footer'
 
-export default function SessionWrapper({ 
-  children 
-}: { 
-  children: ReactNode 
-}) {
-  const [mounted, setMounted] = useState(false);
+type SessionWrapperProps = {
+  children: React.ReactNode
+}
 
+/**
+ * SessionWrapper component wraps the application with NextAuth SessionProvider
+ * and provides error handling + debugging
+ */
+export default function SessionWrapper({ children }: SessionWrapperProps) {
   useEffect(() => {
-    console.log('SessionWrapper mounted');
+    console.log('[SessionWrapper] Mounted')
     
-    // Đánh dấu component đã được mount
-    setMounted(true);
-    
-    // Kiểm tra xem có lỗi NextAuth không
-    if (typeof window !== 'undefined') {
-      const nextAuthMessage = window.sessionStorage.getItem('nextauth.message');
-      console.log('NextAuth session state:', nextAuthMessage);
-      
-      // Log chi tiết về session storage để debug
-      const allStorage = {};
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key) {
-          allStorage[key] = sessionStorage.getItem(key);
+    // Kiểm tra localStorage để debug
+    try {
+      const sessionItems = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && key.includes('session') || key && key.includes('next-auth')) {
+          sessionItems.push({ key, value: localStorage.getItem(key) })
         }
       }
-      console.log('All session storage:', allStorage);
+      console.log('[SessionWrapper] Storage Items:', sessionItems)
+    } catch (error) {
+      console.warn('[SessionWrapper] Could not access localStorage:', error)
     }
     
     return () => {
-      console.log('SessionWrapper unmounted');
+      console.log('[SessionWrapper] Unmounted')
     }
-  }, []);
-
-  // Đảm bảo chỉ render SessionProvider khi đã mount để tránh lỗi hydration
-  if (!mounted) {
-    console.log('SessionWrapper not mounted yet, returning fallback');
-    return (
-      <div className="flex flex-col min-h-screen">
-        <div className="h-16 bg-gradient-to-r from-primary-50 to-secondary-50"></div>
-        <main id="main-content" className="flex-grow">
-          {children}
-        </main>
-      </div>
-    );
-  }
+  }, [])
 
   try {
-    console.log('Rendering SessionProvider');
+    // Bọc ứng dụng với SessionProvider từ NextAuth
     return (
-      <SessionProvider>
+      <SessionProvider 
+        refetchInterval={5 * 60} // Refresh session every 5 minutes
+        refetchOnWindowFocus={true} 
+      >
         <div className="flex flex-col min-h-screen">
           <MainHeader />
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
@@ -69,12 +56,14 @@ export default function SessionWrapper({
       </SessionProvider>
     )
   } catch (error) {
-    console.error('Error in SessionWrapper:', error);
+    // Xử lý lỗi khi SessionProvider không thể render
+    console.error('[SessionWrapper] Error rendering SessionProvider:', error)
+    
+    // Fallback UI khi SessionProvider fails
     return (
-      <div className="flex flex-col min-h-screen">
-        <div className="p-4 bg-red-50 border border-red-200 rounded m-4">
-          <h2 className="text-lg font-semibold text-red-700">Lỗi khi khởi tạo phiên đăng nhập</h2>
-          <p className="mt-2 text-red-600">{error instanceof Error ? error.message : 'Lỗi không xác định'}</p>
+      <div className="min-h-screen flex flex-col">
+        <div className="p-4 bg-yellow-50 text-yellow-700 text-sm">
+          Không thể khởi tạo phiên đăng nhập. Vui lòng tải lại trang.
         </div>
         <main id="main-content" className="flex-grow">
           {children}

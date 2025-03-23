@@ -7,41 +7,20 @@ import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 
 export default function MainHeader() {
+  console.log('MainHeader: Component render start')
+  
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   
-  // Khởi tạo state mặc định trước khi gọi useSession
-  const [sessionData, setSessionData] = useState({ 
-    status: 'loading', 
-    data: null 
-  });
-  
-  // Sử dụng useEffect để đảm bảo useSession chỉ được gọi ở client-side
-  useEffect(() => {
-    console.log('MainHeader: Component mounted, setting up useSession');
-    
-    try {
-      // Lấy session data bằng phương thức khác
-      const { data: session, status } = useSession({
-        required: false,
-        onUnauthenticated() {
-          console.log('MainHeader: Không xác thực');
-        },
-      });
-      
-      console.log('MainHeader: useSession thành công, status:', status);
-      setSessionData({ data: session, status });
-    } catch (error) {
-      console.error('MainHeader: Lỗi khi gọi useSession:', error);
-      setSessionData({ status: 'unauthenticated', data: null });
-    }
-  }, []);
+  // Sửa: Gọi useSession ở top-level thay vì trong useEffect
+  const { data: session, status } = useSession()
+  console.log('MainHeader: useSession called directly, status:', status, 'user:', session?.user?.name || 'none')
   
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
 
   useEffect(() => {
-    console.log('MainHeader effect for scroll and greeting running');
+    console.log('MainHeader: scroll and greeting effect running')
     
     // Xác định lời chào dựa trên thời gian trong ngày
     const getGreeting = () => {
@@ -64,7 +43,7 @@ export default function MainHeader() {
 
     window.addEventListener('scroll', handleScroll)
     return () => {
-      console.log('MainHeader scroll effect cleanup');
+      console.log('MainHeader: scroll effect cleanup')
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
@@ -73,17 +52,11 @@ export default function MainHeader() {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const isLoading = sessionData.status === 'loading'
-  const isAuthenticated = sessionData.status === 'authenticated'
-  const userData = isAuthenticated ? sessionData.data?.user : null
+  const isLoading = status === 'loading'
+  const isAuthenticated = status === 'authenticated'
+  const userData = isAuthenticated ? session?.user : null
 
-  if (isLoading) {
-    console.log('MainHeader: Đang loading session');
-  } else if (isAuthenticated) {
-    console.log('MainHeader: Đã xác thực user', userData?.name);
-  } else {
-    console.log('MainHeader: Chưa xác thực');
-  }
+  console.log('MainHeader: Render with auth state:', { isLoading, isAuthenticated, userData: userData?.name || 'none' })
 
   // Header mặc định
   return (
