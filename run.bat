@@ -6,7 +6,7 @@ echo Starting XLab_Web development server...
 echo Press Ctrl+C to stop the server when finished.
 if "%1"=="--debug" (
   echo Debug mode: capturing all output to debug.log
-  npm run dev > debug.log 2>&1
+  npm run dev:debug > debug.log 2>&1
 ) else (
   echo Normal mode: redirecting errors to app.log
   npm run dev 2> app.log
