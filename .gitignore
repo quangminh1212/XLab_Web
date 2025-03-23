@@ -29,10 +29,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
+debug.log
 error_log.txt
 output.log
-debug.log
 app.log
+*-logs.js
 
 # backup files
 *.bak
@@ -40,6 +42,7 @@ package.json.bak
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -200,3 +203,19 @@ Thumbs.db
 *.bak
 debug.log
 app.log
+
+# Logs and trace files
+.next/trace
+.next/cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
