@@ -14,6 +14,27 @@ export default function MainHeader() {
   const { data: session, status } = useSession()
   console.log('[MainHeader] Session status:', status, 'User:', session?.user?.name || 'No user')
   
+  // Log chi tiết về session cho debugging
+  useEffect(() => {
+    try {
+      console.log('[MainHeader] Session debug - Status:', status)
+      console.log('[MainHeader] Session debug - Session object:', JSON.stringify({
+        data: session ? {
+          user: session.user ? {
+            id: session.user.id,
+            name: session.user.name,
+            email: session.user.email?.substring(0, 3) + '...',
+            image: !!session.user.image,
+          } : null,
+          expires: session.expires,
+        } : null,
+        status
+      }, null, 2))
+    } catch (error) {
+      console.error('[MainHeader] Error logging session details:', error)
+    }
+  }, [session, status])
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const pathname = usePathname()
@@ -29,20 +50,27 @@ export default function MainHeader() {
       console.log('[MainHeader] useEffect running, status:', status)
       
       if (status === 'loading') {
+        console.log('[MainHeader] Status is loading - waiting for session')
         setIsLoading(true)
         setIsAuthenticated(false)
       } else if (status === 'authenticated' && session?.user) {
+        console.log('[MainHeader] Status is authenticated - with valid user')
         setIsLoading(false)
         setIsAuthenticated(true)
         setUserName(session.user.name || session.user.email || 'User')
         console.log('[MainHeader] Authenticated as:', session.user.name || session.user.email)
       } else {
+        console.log('[MainHeader] Status is:', status, '- no valid session')
         setIsLoading(false)
         setIsAuthenticated(false)
         console.log('[MainHeader] Not authenticated')
       }
     } catch (error) {
       console.error('[MainHeader] Error in authentication effect:', error)
+      // Log stack trace nếu có
+      if (error instanceof Error) {
+        console.error('[MainHeader] Error stack:', error.stack)
+      }
       setIsLoading(false)
       setIsAuthenticated(false)
     }
@@ -55,10 +83,12 @@ export default function MainHeader() {
   }, [pathname])
   
   const toggleMenu = () => {
+    console.log('[MainHeader] Toggling menu to:', !isMenuOpen)
     setIsMenuOpen(!isMenuOpen)
   }
   
   const toggleDropdown = () => {
+    console.log('[MainHeader] Toggling dropdown to:', !isDropdownOpen)
     setIsDropdownOpen(!isDropdownOpen)
   }
   
@@ -68,8 +98,22 @@ export default function MainHeader() {
       await signOut({ callbackUrl: '/' })
     } catch (error) {
       console.error('[MainHeader] Error signing out:', error)
+      // Log stack trace nếu có
+      if (error instanceof Error) {
+        console.error('[MainHeader] Error stack:', error.stack)
+      }
     }
   }
+  
+  // Log thông tin rendering
+  console.log('[MainHeader] Render state:', { 
+    isLoading, 
+    isAuthenticated, 
+    userName: userName || 'None',
+    pathname,
+    menuOpen: isMenuOpen,
+    dropdownOpen: isDropdownOpen
+  })
   
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -85,6 +129,11 @@ export default function MainHeader() {
                   height={40}
                   priority
                   className="h-10 w-auto"
+                  onError={(e) => {
+                    console.error('[MainHeader] Error loading logo image')
+                    e.currentTarget.onerror = null // Tránh lặp vô hạn
+                    e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNDAiIGZpbGw9IiNlZWUiLz48dGV4dCB4PSIxMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk5OSI+WExhYiBMb2dvPC90ZXh0Pjwvc3ZnPg==' // Fallback SVG
+                  }}
                 />
               </Link>
             </div>
