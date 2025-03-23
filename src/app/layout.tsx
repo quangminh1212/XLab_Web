@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  metadataBase: new URL('https://xlab.com'),
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
@@ -90,11 +91,21 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        {/* Preload critical assets */}
         <link
           rel="preload"
           href="/images/hero-image.svg"
           as="image"
           type="image/svg+xml"
+        />
+        <link 
+          rel="preload" 
+          href="/fonts/inter-var.woff2" 
+          as="font" 
+          type="font/woff2" 
+          crossOrigin="anonymous" 
         />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
@@ -116,12 +127,30 @@ export default function RootLayout({
             __html: `
               // Core web vitals optimization
               window.addEventListener('DOMContentLoaded', () => {
+                // Optimize LCP (Largest Contentful Paint)
+                const lcpElement = document.querySelector('main');
+                if (lcpElement) {
+                  lcpElement.style.contentVisibility = 'auto';
+                }
+                
+                // Optimize CLS (Cumulative Layout Shift)
+                document.body.style.overflowX = 'hidden';
+                
+                // Optimize FID (First Input Delay)
                 setTimeout(() => {
-                  const lcpElement = document.querySelector('main');
-                  if (lcpElement) {
-                    lcpElement.style.contentVisibility = 'auto';
+                  const links = Array.from(document.querySelectorAll('a[href], button'));
+                  if (links.length > 0) {
+                    const io = new IntersectionObserver((entries) => {
+                      entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                          entry.target.setAttribute('data-prefetched', 'true');
+                          io.unobserve(entry.target);
+                        }
+                      });
+                    });
+                    links.forEach(link => io.observe(link));
                   }
-                }, 0);
+                }, 1000);
               });
             `,
           }}
