@@ -9,7 +9,7 @@ import { useSession, signOut } from 'next-auth/react'
 export default function MainHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const session = useSession()
+  const { data: session, status } = useSession({ required: false })
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
 
@@ -42,7 +42,7 @@ export default function MainHeader() {
   }
 
   // Nếu session đang loading, hiển thị header đơn giản
-  if (session.status === 'loading') {
+  if (status === 'loading') {
     return (
       <header 
         className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -74,7 +74,7 @@ export default function MainHeader() {
   }
 
   // Chỉ sử dụng data session khi đã authenticated
-  const userData = session.status === 'authenticated' ? session.data?.user : null
+  const userData = status === 'authenticated' ? session?.user : null
 
   return (
     <header 
