@@ -14,10 +14,11 @@ XLab là một website giới thiệu các sản phẩm và dịch vụ phần m
 
 ## Công nghệ sử dụng
 
-- [Next.js 14](https://nextjs.org/)
+- [Next.js](https://nextjs.org/) (luôn sử dụng phiên bản mới nhất)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [React](https://reactjs.org/)
+- [NextAuth.js](https://next-auth.js.org/) cho xác thực người dùng
 
 ## Cài đặt và chạy dự án
 
@@ -45,14 +46,28 @@ yarn install
 pnpm install
 ```
 
-3. Chạy dự án ở môi trường phát triển:
+3. Chạy dự án với run.bat:
 
 ```bash
-npm run dev
+# Chạy ứng dụng bình thường 
+.\run.bat
 # hoặc
-yarn dev
-# hoặc
-pnpm dev
+.\run.bat run
+
+# Cập nhật Next.js lên phiên bản mới nhất (có xác nhận)
+.\run.bat update
+
+# Tự động cập nhật Next.js (không cần xác nhận)
+.\run.bat auto-update
+
+# Kiểm tra phiên bản Next.js hiện tại và mới nhất
+.\run.bat check
+
+# Chạy với chế độ debug và logging chi tiết
+.\run.bat debug
+
+# Hiển thị trợ giúp
+.\run.bat --help
 ```
 
 4. Mở trình duyệt và truy cập [http://localhost:3000](http://localhost:3000)
@@ -91,6 +106,7 @@ XLab_Web/
 ├── .gitignore
 ├── next.config.js        # Next.js configuration
 ├── package.json
+├── run.bat               # Script chạy ứng dụng và cập nhật Next.js
 ├── README.md
 ├── tailwind.config.js    # Tailwind CSS configuration
 └── tsconfig.json         # TypeScript configuration
