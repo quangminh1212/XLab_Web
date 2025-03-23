@@ -1,35 +1,43 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
   },
   transpilePackages: ['next-auth'],
   images: {
+    domains: ['i.pravatar.cc', 'avatars.githubusercontent.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**.example.com',
-      },
-      {
-        protocol: 'https', 
-        hostname: 'i.pravatar.cc',
-      },
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
       },
     ],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  logging: {
-    fetches: {
-      fullUrl: true,
-    },
+  headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+    ];
   },
   eslint: {
     ignoreDuringBuilds: true,
