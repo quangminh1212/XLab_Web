@@ -151,3 +151,18 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# temporary files created while running
+.next-*
+.swc/
+.turbo/
+.cache/
+public/workbox-*.js
+public/sw.js
+public/fallback-*.js
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
