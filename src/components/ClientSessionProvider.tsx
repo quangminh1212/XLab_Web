@@ -22,7 +22,11 @@ export default function ClientSessionProvider({
 
   // Trên client-side, bọc với SessionProvider
   return (
-    <SessionProvider>
+    <SessionProvider 
+      session={null}
+      refetchInterval={0}
+      refetchOnWindowFocus={true}
+    >
       {children}
     </SessionProvider>
   );
