@@ -4,22 +4,21 @@ const nextConfig = {
   swcMinify: true,
   poweredByHeader: false,
   images: {
+    domains: ['images.unsplash.com', 'randomuser.me', 'via.placeholder.com'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        pathname: '**',
+        hostname: '**',
       },
     ],
-    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    formats: ['image/webp', 'image/avif'],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   experimental: {
     optimizeCss: true,
     scrollRestoration: true,
-    // ServerActions are enabled by default in Next.js 14+
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -125,6 +124,10 @@ const nextConfig = {
   compress: true,
   output: 'standalone',
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next', // Separate dev and prod builds
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
 };
 
 module.exports = nextConfig; 
