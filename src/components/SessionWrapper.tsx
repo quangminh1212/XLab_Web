@@ -1,7 +1,7 @@
 'use client'
 
 import { SessionProvider } from 'next-auth/react'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import MainHeader from '@/components/MainHeader'
 import Footer from '@/components/Footer'
 
@@ -10,12 +10,28 @@ export default function SessionWrapper({
 }: { 
   children: ReactNode 
 }) {
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     console.log('SessionWrapper mounted');
     
+    // Đánh dấu component đã được mount
+    setMounted(true);
+    
     // Kiểm tra xem có lỗi NextAuth không
     if (typeof window !== 'undefined') {
-      console.log('NextAuth session state:', window.sessionStorage.getItem('nextauth.message'));
+      const nextAuthMessage = window.sessionStorage.getItem('nextauth.message');
+      console.log('NextAuth session state:', nextAuthMessage);
+      
+      // Log chi tiết về session storage để debug
+      const allStorage = {};
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key) {
+          allStorage[key] = sessionStorage.getItem(key);
+        }
+      }
+      console.log('All session storage:', allStorage);
     }
     
     return () => {
@@ -23,7 +39,21 @@ export default function SessionWrapper({
     }
   }, []);
 
+  // Đảm bảo chỉ render SessionProvider khi đã mount để tránh lỗi hydration
+  if (!mounted) {
+    console.log('SessionWrapper not mounted yet, returning fallback');
+    return (
+      <div className="flex flex-col min-h-screen">
+        <div className="h-16 bg-gradient-to-r from-primary-50 to-secondary-50"></div>
+        <main id="main-content" className="flex-grow">
+          {children}
+        </main>
+      </div>
+    );
+  }
+
   try {
+    console.log('Rendering SessionProvider');
     return (
       <SessionProvider>
         <div className="flex flex-col min-h-screen">

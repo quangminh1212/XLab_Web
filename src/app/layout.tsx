@@ -141,48 +141,36 @@ export default function RootLayout({
         </ErrorBoundary>
         <Analytics />
         <Script
-          id="performance-metrics"
+          id="client-error-logger"
           strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Core web vitals optimization
-              window.addEventListener('DOMContentLoaded', () => {
-                console.log('DOM Content Loaded');
-                
-                // Optimize LCP (Largest Contentful Paint)
-                const lcpElement = document.querySelector('main');
-                if (lcpElement) {
-                  lcpElement.style.contentVisibility = 'auto';
-                }
-                
-                // Optimize CLS (Cumulative Layout Shift)
-                document.body.style.overflowX = 'hidden';
-                
-                // Optimize FID (First Input Delay)
-                setTimeout(() => {
-                  const links = Array.from(document.querySelectorAll('a[href], button'));
-                  if (links.length > 0) {
-                    const io = new IntersectionObserver((entries) => {
-                      entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                          entry.target.setAttribute('data-prefetched', 'true');
-                          io.unobserve(entry.target);
-                        }
-                      });
-                    });
-                    links.forEach(link => io.observe(link));
-                  }
-                }, 1000);
-              });
+        >
+          {`
+            // Thêm global error tracking
+            window.onerror = function(message, source, lineno, colno, error) {
+              console.error('Global JS Error:', { message, source, lineno, colno, stack: error?.stack });
+              return false;
+            };
+            
+            // Theo dõi lỗi promise
+            window.addEventListener('unhandledrejection', function(event) {
+              console.error('Unhandled Promise Rejection:', event.reason);
+            });
+            
+            // Log khi DOM đã tải xong
+            document.addEventListener('DOMContentLoaded', function() {
+              console.log('DOM Content Loaded');
               
-              // Thêm global error tracking
-              window.onerror = function(message, source, lineno, colno, error) {
-                console.error('Global JS Error:', { message, source, lineno, colno, stack: error?.stack });
-                return false;
-              };
-            `,
-          }}
-        />
+              // Optimize LCP (Largest Contentful Paint)
+              const lcpElement = document.querySelector('main');
+              if (lcpElement) {
+                lcpElement.style.contentVisibility = 'auto';
+              }
+              
+              // Optimize CLS (Cumulative Layout Shift)
+              document.body.style.overflowX = 'hidden';
+            });
+          `}
+        </Script>
       </body>
     </html>
   )
