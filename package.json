@@ -11,13 +11,14 @@
     "update-next": "npm install next@15 react@latest react-dom@latest --save"
   },
   "dependencies": {
-    "@swc/helpers": "^0.5.1",
+    "@swc/helpers": "^0.5.15",
     "clsx": "^2.1.1",
     "critters": "^0.0.20",
     "cross-env": "^7.0.3",
+    "next": "^15.2.3",
     "next-auth": "^4.24.5",
-    "react": "latest",
-    "react-dom": "latest",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tailwind-merge": "^2.2.0",
     "zod": "^3.22.4"
   },
@@ -29,7 +30,7 @@
     "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",
-    "eslint-config-next": "latest",
+    "eslint-config-next": "^15.2.3",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.3"
