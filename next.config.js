@@ -22,9 +22,7 @@ const nextConfig = {
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
-    styledComponents: false,
   },
-  staticPageGenerationTimeout: 120, // Increases timeout for static page generation
   async headers() {
     return [
       {
@@ -42,78 +40,14 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=3600, must-revalidate',
-          },
-        ],
-      },
-      {
-        source: '/images/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable', // 1 year for images
-          },
-        ],
-      },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable', // 1 year for static assets
-          },
-        ],
-      },
-      {
-        source: '/fonts/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable', // 1 year for fonts
-          },
         ],
       },
     ];
   },
-  // Cấu hình webpack đơn giản hơn để tránh lỗi
-  webpack: (config, { dev, isServer }) => {
-    // Disable BundleAnalyzer to avoid potential issues
-    if (!isServer) {
-      config.optimization.splitChunks.cacheGroups = {
-        ...config.optimization.splitChunks.cacheGroups,
-        styles: {
-          name: 'styles',
-          test: /\.(css|scss)$/,
-          chunks: 'all',
-          enforce: true,
-        },
-      };
-    }
-
-    return config;
-  },
-  
-  // Optimize builds for production
-  productionBrowserSourceMaps: false,
-  compress: true,
-  output: 'standalone',
-  distDir: '.next', // Use standard .next directory to avoid cache issues
   eslint: {
-    // Tắt kiểm tra ESLint trong quá trình build để tránh lỗi
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Tắt kiểm tra TypeScript trong quá trình build để tránh lỗi
     ignoreBuildErrors: true,
   },
   poweredByHeader: false,
