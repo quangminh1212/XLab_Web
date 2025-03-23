@@ -2,6 +2,7 @@
 
 import { SessionProvider } from 'next-auth/react'
 import { ReactNode, useEffect, useState } from 'react'
+import { debugLog, logError } from '@/utils/debugLogger'
 
 export default function ClientSessionProvider({ 
   children 
@@ -10,67 +11,112 @@ export default function ClientSessionProvider({
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
   
-  // Add extensive debugging in development
+  // Log detailed information about the SessionProvider and Function.prototype.call
   useEffect(() => {
-    console.log('DEBUG: ClientSessionProvider mounting...');
+    debugLog('ClientSessionProvider', 'Mounting component', {
+      hasSessionProvider: typeof SessionProvider === 'function' ? 'yes' : 'no',
+      sessionProviderType: typeof SessionProvider,
+      sessionProviderKeys: Object.keys(SessionProvider || {}),
+      nextAuthReactModule: 'next-auth/react',
+    });
     
     // Log all global objects to check for undefined
-    console.log('DEBUG: window object:', typeof window !== 'undefined' ? 'defined' : 'undefined');
-    console.log('DEBUG: document object:', typeof document !== 'undefined' ? 'defined' : 'undefined');
+    debugLog('ClientSessionProvider', 'Checking global objects', {
+      windowDefined: typeof window !== 'undefined' ? 'yes' : 'no',
+      documentDefined: typeof document !== 'undefined' ? 'yes' : 'no',
+      // Check for React without directly referencing it
+      reactInWindow: typeof window !== 'undefined' && 'React' in window ? 'yes' : 'no',
+    });
     
-    // Check if SessionProvider is properly defined
-    console.log('DEBUG: SessionProvider type:', typeof SessionProvider);
+    // Deep-check Function.prototype methods
+    const functionPrototypeTest = () => {
+      try {
+        debugLog('ClientSessionProvider', 'Testing Function.prototype methods');
+        
+        // Log all properties of Function.prototype
+        const functionProtoProps = Object.getOwnPropertyNames(Function.prototype);
+        debugLog('ClientSessionProvider', 'Function.prototype properties', { 
+          properties: functionProtoProps 
+        });
+        
+        // Test call method
+        if (typeof Function.prototype.call === 'function') {
+          const testFn = function(this: any, arg: string) { 
+            return `Test: ${arg}`; 
+          };
+          const result = Function.prototype.call.call(testFn, null, 'call test from ClientSessionProvider');
+          debugLog('ClientSessionProvider', 'Function.prototype.call test', { 
+            result,
+            success: true
+          }, 'success');
+        } else {
+          debugLog('ClientSessionProvider', 'Function.prototype.call is not a function', {
+            typeOfCall: typeof Function.prototype.call
+          }, 'error');
+          
+          // Try to fix by redefining
+          debugLog('ClientSessionProvider', 'Attempting to restore Function.prototype.call');
+          try {
+            // Save a reference to apply
+            const apply = Function.prototype.apply;
+            
+            // Redefine call in terms of apply
+            Function.prototype.call = function callPolyfill(thisArg, ...args) {
+              return apply.call(this, thisArg, args);
+            };
+            
+            // Test the redefined call
+            const testFn = function(this: any, arg: string) { 
+              return `Fixed: ${arg}`; 
+            };
+            const fixedResult = Function.prototype.call.call(testFn, null, 'restore test');
+            debugLog('ClientSessionProvider', 'Restored Function.prototype.call', { 
+              fixedResult,
+              success: true
+            }, 'success');
+          } catch (restoreError) {
+            logError('ClientSessionProvider', restoreError);
+            debugLog('ClientSessionProvider', 'Failed to restore Function.prototype.call', null, 'error');
+          }
+        }
+      } catch (error) {
+        logError('ClientSessionProvider', error);
+        debugLog('ClientSessionProvider', 'Error during Function.prototype tests', null, 'error');
+      }
+    };
     
-    // Add a protective error boundary around component lifecycle
+    // Run the function prototype test
+    functionPrototypeTest();
+    
+    // Set loaded state
     try {
       setIsLoaded(true);
-      console.log('DEBUG: ClientSessionProvider mounted successfully');
-    } catch (error: any) {
-      console.error('DEBUG: Error in ClientSessionProvider mount:', error);
+      debugLog('ClientSessionProvider', 'Component initialized successfully', null, 'success');
+    } catch (error) {
+      logError('ClientSessionProvider', error);
+      debugLog('ClientSessionProvider', 'Error initializing component state', null, 'error');
+    }
+    
+    // Check if we have any polyfills loaded
+    if (typeof window !== 'undefined') {
+      const hasCorejs = !!(window as any).core || !!(window as any)._babelPolyfill;
+      const hasPromisePolyfill = typeof Promise !== 'undefined' && Promise.toString().includes('[native code]') === false;
+      debugLog('ClientSessionProvider', 'Polyfill check', {
+        hasCorejs,
+        hasPromisePolyfill,
+        hasArrayFrom: typeof Array.from === 'function',
+        hasObjectAssign: typeof Object.assign === 'function',
+      });
     }
     
     return () => {
-      try {
-        console.log('DEBUG: ClientSessionProvider unmounting...');
-      } catch (error: any) {
-        console.error('DEBUG: Error in ClientSessionProvider unmount:', error);
-      }
+      debugLog('ClientSessionProvider', 'Component unmounting');
     };
   }, []);
 
-  // Log any function call attempts
-  const traceFunctionCalls = (obj: any, name: string) => {
-    if (!obj) {
-      console.error(`DEBUG: ${name} is undefined`);
-      return obj;
-    }
-    
-    // Attempt to log methods
-    try {
-      console.log(`DEBUG: ${name} methods:`, Object.getOwnPropertyNames(obj).filter(
-        prop => typeof obj[prop] === 'function'
-      ));
-    } catch (err) {
-      console.error(`DEBUG: Error checking ${name} methods:`, err);
-    }
-    
-    return obj;
-  };
-  
   // Add protective wrapper
   try {
-    console.log('DEBUG: Rendering ClientSessionProvider');
-    traceFunctionCalls(SessionProvider, 'SessionProvider');
-    
-    // Set up global error handler for call-related errors
-    if (typeof window !== 'undefined') {
-      window.addEventListener('error', (event: ErrorEvent) => {
-        if (event.error && event.error.message && event.error.message.includes('call')) {
-          console.error('DEBUG: Global call error intercepted:', event.error);
-          console.error('DEBUG: Error stack:', event.error.stack);
-        }
-      });
-    }
+    debugLog('ClientSessionProvider', 'Rendering SessionProvider');
     
     return (
       <SessionProvider 
@@ -80,13 +126,30 @@ export default function ClientSessionProvider({
         {isLoaded ? (
           children
         ) : (
-          <div>Loading session...</div>
+          <div className="p-4 bg-gray-100 rounded-md shadow-sm">
+            <p className="text-gray-600 animate-pulse">Initializing session...</p>
+          </div>
         )}
       </SessionProvider>
     );
-  } catch (error: any) {
-    console.error('DEBUG: Error rendering SessionProvider:', error);
+  } catch (error) {
+    logError('ClientSessionProvider', error);
+    debugLog('ClientSessionProvider', 'Error rendering SessionProvider', null, 'error');
+    
     // Fallback UI to prevent complete crash
-    return <div>Session initialization error. Please try refreshing the page.</div>;
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+        <p className="text-red-600 font-medium">Session initialization error</p>
+        <p className="text-red-500 text-sm mt-1">
+          {error instanceof Error ? error.message : 'Unknown error'}
+        </p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="mt-3 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-sm rounded"
+        >
+          Reload page
+        </button>
+      </div>
+    );
   }
 } 
