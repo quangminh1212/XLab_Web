@@ -8,18 +8,26 @@ import { useSession, signOut } from 'next-auth/react'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false)
+  const [language, setLanguage] = useState('vi') // 'vi' for Vietnamese, 'en' for English
   const pathname = usePathname()
   const { data: session, status } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
 
   useEffect(() => {
-    // Xác định lời chào dựa trên thời gian trong ngày
+    // Xác định lời chào dựa trên thời gian trong ngày và ngôn ngữ
     const getGreeting = () => {
       const hour = new Date().getHours()
-      if (hour < 12) return 'Chào buổi sáng'
-      if (hour < 18) return 'Chào buổi chiều'
-      return 'Chào buổi tối'
+      if (language === 'vi') {
+        if (hour < 12) return 'Chào buổi sáng'
+        if (hour < 18) return 'Chào buổi chiều'
+        return 'Chào buổi tối'
+      } else {
+        if (hour < 12) return 'Good morning'
+        if (hour < 18) return 'Good afternoon'
+        return 'Good evening'
+      }
     }
 
     setGreeting(getGreeting())
@@ -35,11 +43,55 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [language])
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
+    if (languageMenuOpen) setLanguageMenuOpen(false)
   }
+
+  const toggleLanguageMenu = () => {
+    setLanguageMenuOpen(!languageMenuOpen)
+  }
+
+  const changeLanguage = (lang: string) => {
+    setLanguage(lang)
+    setLanguageMenuOpen(false)
+  }
+
+  // Translations for menu items
+  const translations = {
+    vi: {
+      home: 'Trang chủ',
+      products: 'Sản phẩm',
+      services: 'Dịch vụ',
+      blog: 'Blog',
+      about: 'Giới thiệu',
+      contact: 'Liên hệ',
+      login: 'Đăng nhập',
+      register: 'Đăng ký',
+      account: 'Tài khoản của tôi',
+      settings: 'Cài đặt',
+      logout: 'Đăng xuất',
+      loggedInAs: 'Đăng nhập bằng'
+    },
+    en: {
+      home: 'Home',
+      products: 'Products',
+      services: 'Services',
+      blog: 'Blog',
+      about: 'About',
+      contact: 'Contact',
+      login: 'Login',
+      register: 'Register',
+      account: 'My Account',
+      settings: 'Settings',
+      logout: 'Logout',
+      loggedInAs: 'Logged in as'
+    }
+  }
+
+  const t = translations[language as keyof typeof translations]
 
   return (
     <header 
@@ -64,7 +116,7 @@ export default function Header() {
             {session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
                 <span className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full">
-                  {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
+                  {greeting}, {session.user.name?.split(' ')[0] || (language === 'vi' ? 'bạn' : 'you')}!
                 </span>
               </div>
             )}
@@ -73,27 +125,60 @@ export default function Header() {
           {/* Menu desktop */}
           <nav className="hidden md:flex items-center space-x-1">
             <Link href="/" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Trang chủ
+              {t.home}
             </Link>
             <Link href="/products" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Sản phẩm
+              {t.products}
             </Link>
             <Link href="/services" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Dịch vụ
+              {t.services}
             </Link>
             <Link href="/blog" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Blog
+              {t.blog}
             </Link>
             <Link href="/about" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Giới thiệu
+              {t.about}
             </Link>
             <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
-              Liên hệ
+              {t.contact}
             </Link>
           </nav>
 
           {/* Buttons */}
           <div className="flex items-center space-x-2">
+            {/* Language Selector */}
+            <div className="relative">
+              <button 
+                onClick={toggleLanguageMenu}
+                className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50 flex items-center"
+                aria-label="Change language"
+              >
+                <span className="text-sm font-medium mr-1 hidden sm:inline-block">
+                  {language === 'vi' ? 'VI' : 'EN'}
+                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+              </button>
+
+              {languageMenuOpen && (
+                <div className="absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                  <button
+                    onClick={() => changeLanguage('vi')}
+                    className={`block w-full text-left px-4 py-2 text-sm ${language === 'vi' ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    Tiếng Việt
+                  </button>
+                  <button
+                    onClick={() => changeLanguage('en')}
+                    className={`block w-full text-left px-4 py-2 text-sm ${language === 'en' ? 'bg-primary-50 text-primary-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    English
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Tìm kiếm */}
             <button 
               className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50"
@@ -147,20 +232,20 @@ export default function Header() {
                   {mobileMenuOpen && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
                       <div className="px-4 py-2 text-xs text-gray-500 border-b">
-                        Đăng nhập bằng {session.user?.email}
+                        {t.loggedInAs} {session.user?.email}
                       </div>
                       <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50">
-                        Tài khoản của tôi
+                        {t.account}
                       </Link>
                       <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50">
-                        Cài đặt
+                        {t.settings}
                       </Link>
                       <div className="border-t border-gray-100"></div>
                       <button
                         onClick={() => signOut()}
                         className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
-                        Đăng xuất
+                        {t.logout}
                       </button>
                     </div>
                   )}
@@ -172,13 +257,13 @@ export default function Header() {
                   href="/login" 
                   className="px-4 py-2 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 transition-colors"
                 >
-                  Đăng nhập
+                  {t.login}
                 </Link>
                 <Link 
                   href="/register" 
                   className="px-4 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors"
                 >
-                  Đăng ký
+                  {t.register}
                 </Link>
               </div>
             )}
@@ -207,27 +292,46 @@ export default function Header() {
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
             {session && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600">
-                {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
+                {greeting}, {session.user?.name?.split(' ')[0] || (language === 'vi' ? 'bạn' : 'you')}!
               </div>
             )}
             <Link href="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Trang chủ
+              {t.home}
             </Link>
             <Link href="/products" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Sản phẩm
+              {t.products}
             </Link>
             <Link href="/services" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Dịch vụ
+              {t.services}
             </Link>
             <Link href="/blog" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Blog
+              {t.blog}
             </Link>
             <Link href="/about" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Giới thiệu
+              {t.about}
             </Link>
             <Link href="/contact" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
-              Liên hệ
+              {t.contact}
             </Link>
+            
+            {/* Language switcher in mobile view */}
+            <div className="flex justify-between items-center px-3 py-2">
+              <span className="text-sm text-gray-600">{language === 'vi' ? 'Ngôn ngữ' : 'Language'}</span>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => changeLanguage('vi')}
+                  className={`px-2 py-1 text-sm rounded ${language === 'vi' ? 'bg-primary-100 text-primary-700 font-semibold' : 'text-gray-600'}`}
+                >
+                  VI
+                </button>
+                <button
+                  onClick={() => changeLanguage('en')}
+                  className={`px-2 py-1 text-sm rounded ${language === 'en' ? 'bg-primary-100 text-primary-700 font-semibold' : 'text-gray-600'}`}
+                >
+                  EN
+                </button>
+              </div>
+            </div>
             
             {!session && (
               <div className="flex space-x-2 mt-2 px-3">
@@ -235,13 +339,13 @@ export default function Header() {
                   href="/login" 
                   className="flex-1 px-4 py-2 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors"
                 >
-                  Đăng nhập
+                  {t.login}
                 </Link>
                 <Link 
                   href="/register" 
                   className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors"
                 >
-                  Đăng ký
+                  {t.register}
                 </Link>
               </div>
             )}
