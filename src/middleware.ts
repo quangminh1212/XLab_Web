@@ -13,7 +13,6 @@ const protectedPaths = [
 const publicPaths = [
   '/login',
   '/register',
-  '/about',
   '/products',
   '/services',
   '/support',
