@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import SessionProvider from '@/components/SessionProvider'
+import { SessionProvider } from 'next-auth/react'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 
@@ -11,6 +11,7 @@ import Analytics from '@/components/Analytics'
 const inter = Inter({ 
   subsets: ['latin'],
   display: 'swap',
+  variable: '--font-inter',
   preload: true,
   fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
@@ -114,13 +115,11 @@ export default function RootLayout({
         {/* No longer preloading font because we're using Google Fonts with display:swap */}
       </head>
       <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
-        <SessionProvider>
-          <Header />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </SessionProvider>
+        <Header />
+        <main className="flex-grow">
+          {children}
+        </main>
+        <Footer />
         <Analytics />
         <Script
           id="google-analytics"
