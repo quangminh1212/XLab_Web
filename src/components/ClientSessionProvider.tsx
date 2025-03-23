@@ -9,7 +9,12 @@ export default function ClientSessionProvider({
   children: ReactNode 
 }) {
   return (
-    <SessionProvider>
+    <SessionProvider 
+      session={null}
+      refetchInterval={30}
+      refetchWhenOffline={false}
+      refetchOnWindowFocus={true}
+    >
       {children}
     </SessionProvider>
   );

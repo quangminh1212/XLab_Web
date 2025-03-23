@@ -9,7 +9,7 @@ import { useSession, signOut } from 'next-auth/react'
 export default function MainHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const sessionData = useSession()
+  const { data: session, status } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
 
@@ -41,9 +41,9 @@ export default function MainHeader() {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const isLoading = sessionData.status === 'loading'
-  const isAuthenticated = sessionData.status === 'authenticated'
-  const userData = isAuthenticated ? sessionData.data?.user : null
+  const isLoading = status === 'loading'
+  const isAuthenticated = status === 'authenticated'
+  const userData = isAuthenticated ? session?.user : null
 
   // Header mặc định
   return (

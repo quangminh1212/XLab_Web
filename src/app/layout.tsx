@@ -112,14 +112,16 @@ export default function RootLayout({
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
         <ErrorBoundary fallback={<div className="p-4 bg-red-50 text-red-700">Đã xảy ra lỗi khi tải trang. Vui lòng tải lại trang.</div>}>
           <ClientSessionProvider>
-            <MainHeader />
-            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-              Bỏ qua phần điều hướng
-            </a>
-            <main id="main-content" className="flex-grow">
-              {children}
-            </main>
-            <Footer />
+            <div className="flex flex-col min-h-screen">
+              <MainHeader />
+              <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
+                Bỏ qua phần điều hướng
+              </a>
+              <main id="main-content" className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </ClientSessionProvider>
         </ErrorBoundary>
         <Analytics />
