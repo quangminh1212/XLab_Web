@@ -2,31 +2,28 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '**',
       },
     ],
-    minimumCacheTTL: 60,
+    formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-    formats: ['image/webp', 'image/avif'],
-    domains: ['example.com', 'images.unsplash.com', 'img.icons8.com'],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   experimental: {
+    optimizeCss: true,
     scrollRestoration: true,
-    instrumentationHook: true,
-    optimizeCss: {
-      enabled: true,
-    },
+    // ServerActions are enabled by default in Next.js 14+
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
-  },
-  // Define environment variables here
-  env: {
-    DEBUG_CALLS: process.env.NODE_ENV === 'development' ? 'true' : 'false',
+    styledComponents: false,
   },
   staticPageGenerationTimeout: 120, // Increases timeout for static page generation
   headers: async () => {
@@ -89,10 +86,10 @@ const nextConfig = {
       },
     ];
   },
-  // Config for webpack analysis - only runs when ANALYZE=true
+  // Cấu hình phân tích bundle
   webpack: (config, { dev, isServer }) => {
-    // Only when ANALYZE=true
-    if (process.env.ANALYZE === 'true') {
+    // Chỉ thực hiện trong môi trường development
+    if (dev && !isServer) {
       try {
         const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
         config.plugins.push(
@@ -103,7 +100,7 @@ const nextConfig = {
           })
         );
       } catch (error) {
-        console.warn('webpack-bundle-analyzer not found. Skipping bundle analysis.');
+        console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
       }
     }
 
@@ -128,10 +125,6 @@ const nextConfig = {
   compress: true,
   output: 'standalone',
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next', // Separate dev and prod builds
-  onDemandEntries: {
-    maxInactiveAge: 60 * 60 * 1000,
-    pagesBufferLength: 5,
-  },
 };
 
 module.exports = nextConfig; 

@@ -9,8 +9,8 @@
 
 # next.js
 /.next/
-/.next-dev/
 /out/
+/build
 
 # production
 /build
@@ -18,8 +18,6 @@
 # misc
 .DS_Store
 *.pem
-Thumbs.db
-desktop.ini
 
 # debug
 npm-debug.log*
@@ -38,30 +36,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
+# VS Code
+.vscode
 
-# Bundler output
-.bundle-stats.json
-stats.json
-
-# Generated files
-public/sw.js
-public/workbox-*.js
-public/worker-*.js
-public/sw.js.map
-public/workbox-*.js.map
-public/worker-*.js.map
-
-# Browser profiles
-/.chrome-profile/
-.credentials.json
-
-# Next.js Bundle Analyzer
-/analyze/
+# IntelliJ IDEA
+.idea
 
 # Package manager
 package-lock.json
@@ -151,18 +130,3 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
-
-# temporary files created while running
-.next-*
-.swc/
-.turbo/
-.cache/
-public/workbox-*.js
-public/sw.js
-public/fallback-*.js
-
-# IDE files
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace
