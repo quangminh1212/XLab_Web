@@ -84,3 +84,49 @@ pnpm-lock.yaml
 # Generated analyzer files
 .analyzerc
 webpack-bundle-analyzer-report.html
+
+# Dependency directories
+node_modules/
+.npm
+.yarn/
+.pnp
+.pnp.js
+
+# Next.js build outputs
+/.next/
+/.next-dev/
+/out/
+/build
+
+# Development files
+.DS_Store
+*.pem
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing
+/coverage
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
