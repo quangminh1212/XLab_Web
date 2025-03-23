@@ -10,27 +10,38 @@ export default function MainHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   
-  // Bao bọc useSession trong try/catch để bắt lỗi
-  let sessionData = { status: 'loading', data: null }
-  try {
-    console.log('MainHeader: Đang gọi useSession...');
-    const { data: session, status } = useSession({
-      required: false,
-      onUnauthenticated() {
-        console.log('MainHeader: Không xác thực');
-      },
-    });
-    sessionData = { data: session, status };
-    console.log('MainHeader: useSession status:', status);
-  } catch (error) {
-    console.error('MainHeader: Lỗi khi gọi useSession:', error);
-  }
+  // Khởi tạo state mặc định trước khi gọi useSession
+  const [sessionData, setSessionData] = useState({ 
+    status: 'loading', 
+    data: null 
+  });
+  
+  // Sử dụng useEffect để đảm bảo useSession chỉ được gọi ở client-side
+  useEffect(() => {
+    console.log('MainHeader: Component mounted, setting up useSession');
+    
+    try {
+      // Lấy session data bằng phương thức khác
+      const { data: session, status } = useSession({
+        required: false,
+        onUnauthenticated() {
+          console.log('MainHeader: Không xác thực');
+        },
+      });
+      
+      console.log('MainHeader: useSession thành công, status:', status);
+      setSessionData({ data: session, status });
+    } catch (error) {
+      console.error('MainHeader: Lỗi khi gọi useSession:', error);
+      setSessionData({ status: 'unauthenticated', data: null });
+    }
+  }, []);
   
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
 
   useEffect(() => {
-    console.log('MainHeader mounted');
+    console.log('MainHeader effect for scroll and greeting running');
     
     // Xác định lời chào dựa trên thời gian trong ngày
     const getGreeting = () => {
@@ -53,7 +64,7 @@ export default function MainHeader() {
 
     window.addEventListener('scroll', handleScroll)
     return () => {
-      console.log('MainHeader unmounted');
+      console.log('MainHeader scroll effect cleanup');
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
