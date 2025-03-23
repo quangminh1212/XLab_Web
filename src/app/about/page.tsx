@@ -88,16 +88,24 @@ export default function AboutPage() {
         <h2 className="text-3xl font-bold text-center mb-10">Đội ngũ lãnh đạo</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {[
-            { name: 'Nguyễn Văn A', role: 'CEO & Founder', image: '/images/placeholder.png' },
-            { name: 'Trần Thị B', role: 'CTO', image: '/images/placeholder.png' },
-            { name: 'Lê Văn C', role: 'Head of Data Science', image: '/images/placeholder.png' },
-            { name: 'Phạm Thị D', role: 'Head of Product', image: '/images/placeholder.png' },
+            { name: 'Nguyễn Văn A', role: 'CEO & Founder', image: '/images/placeholder/placeholder.svg' },
+            { name: 'Trần Thị B', role: 'CTO', image: '/images/placeholder/placeholder.svg' },
+            { name: 'Lê Văn C', role: 'Head of Data Science', image: '/images/placeholder/placeholder.svg' },
+            { name: 'Phạm Thị D', role: 'Head of Product', image: '/images/placeholder/placeholder.svg' },
           ].map((member, index) => (
             <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="w-full h-48 bg-indigo-100 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-indigo-300" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  width={200}
+                  height={200}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjxwYXRoIGQ9Ik0xMDAgODBDMTA4LjI4NCA4MCAxMTUgNzMuMjg0MiAxMTUgNjVDMTE1IDU2LjcxNTggMTA4LjI4NCA1MCAxMDAgNTBDOTEuNzE1OCA1MCA4NSA1Ni43MTU4IDg1IDY1Qzg1IDczLjI4NDIgOTEuNzE1OCA4MCAxMDAgODBaIiBmaWxsPSIjOTk5Ii8+PHBhdGggZD0iTTY1IDEzMEM2NSAxMTMuNDMxIDgzLjQzMTUgMTAwIDEwMCAxMDBDMTE2LjU2OSAxMDAgMTM1IDExMy40MzEgMTM1IDEzMEMxMzUgMTQ2LjU2OSAxMTYuNTY5IDE2MCAxMDAgMTYwQzgzLjQzMTUgMTYwIDY1IDE0Ni41NjkgNjUgMTMwWiIgZmlsbD0iIzk5OSIvPjwvc3ZnPg==' // Fallback SVG
+                  }}
+                />
               </div>
               <div className="p-4">
                 <h3 className="text-lg font-semibold">{member.name}</h3>
