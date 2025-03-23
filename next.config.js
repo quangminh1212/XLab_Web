@@ -105,11 +105,18 @@ const nextConfig = {
 
     // Add debugging for potential call errors
     if (dev) {
-      config.plugins.push(
-        new config.webpack.DefinePlugin({
-          'process.env.DEBUG_CALLS': JSON.stringify(true),
-        })
-      );
+      // Define debug environment variable without using DefinePlugin
+      // since we can't directly access webpack here
+      config.plugins.push({
+        apply: (compiler) => {
+          compiler.options.plugins = compiler.options.plugins || [];
+          compiler.options.plugins.push(
+            new compiler.webpack.DefinePlugin({
+              'process.env.DEBUG_CALLS': JSON.stringify(true),
+            })
+          );
+        }
+      });
     }
 
     // Optimize CSS loading
