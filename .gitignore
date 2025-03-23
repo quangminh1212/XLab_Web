@@ -192,3 +192,5 @@ Thumbs.db
 *.tmp
 *.temp
 *.bak
+debug.log
+app.log
