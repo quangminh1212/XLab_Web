@@ -1,7 +1,5 @@
-import NextAuth, { type NextAuthOptions } from 'next-auth'
-import GoogleProvider from 'next-auth/providers/google'
+import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { z } from 'zod'
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -15,172 +13,83 @@ declare module "next-auth" {
   }
 }
 
-// Tạo custom logger cho NextAuth nhưng tuân thủ đúng interface
+// Logger để ghi log trong quá trình authentication
 const logger = {
-  error(code, metadata) {
-    console.error(`[NextAuth] [ERROR] [${code}]`, metadata)
+  error: (code: string, ...message: any) => {
+    console.error(code, ...message)
   },
-  warn(code) {
-    console.warn(`[NextAuth] [WARN] [${code}]`)
+  warn: (code: string, ...message: any) => {
+    console.warn(code, ...message)
   },
-  debug(code, metadata) {
-    console.log(`[NextAuth] [DEBUG] [${code}]`, metadata)
+  debug: (code: string, ...message: any) => {
+    console.log(code, ...message)
   }
 }
 
-// Schema xác thực đầu vào
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Định dạng email không hợp lệ' }),
-  password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 kí tự' })
-})
-
-export const authOptions: NextAuthOptions = {
-  debug: process.env.NODE_ENV === 'development',
-  logger: logger,
+// Tạo và xuất handler NextAuth
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Mật khẩu', type: 'password' }
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        // Thêm logging khi authorize được gọi
-        console.log('[NextAuth] [DEBUG] authorize', { 
-          credentialsProvided: !!credentials,
-          email: credentials?.email ? `${credentials.email.substring(0, 3)}...` : 'missing'
-        })
-        
-        if (!credentials) {
-          console.warn('[NextAuth] [WARN] authorize: Credentials not provided')
-          return null
-        }
-        
         try {
-          // Xác thực dữ liệu đầu vào
-          const result = loginSchema.safeParse(credentials)
+          // Log thông tin credentials nhận được (không bao gồm mật khẩu trong production)
+          console.log('[NextAuth] Authorization attempt for email:', credentials?.email)
           
-          if (!result.success) {
-            console.warn('[NextAuth] [WARN] authorize: Validation failed', result.error.errors)
-            return null
-          }
-          
-          // Mô phỏng đăng nhập thành công cho môi trường dev
-          // Trong môi trường thực tế, cần triển khai kiểm tra password với DB
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[NextAuth] [DEBUG] authorize: Dev mode login, skipping password check')
+          // Giả lập xác thực thành công
+          if (credentials?.email && credentials?.password) {
+            console.log('[NextAuth] Authentication successful for:', credentials.email)
             
-            // Test user
-            if (credentials.email === 'test@example.com' && credentials.password === 'password') {
-              console.log('[NextAuth] [DEBUG] authorize: Test user authenticated')
-              
-              return {
-                id: '1',
-                name: 'Test User',
-                email: credentials.email,
-                role: 'user'
-              }
-            }
-            
-            // Admin user
-            if (credentials.email === 'admin@example.com' && credentials.password === 'password') {
-              console.log('[NextAuth] [DEBUG] authorize: Admin user authenticated')
-              
-              return {
-                id: '2',
-                name: 'Admin User',
-                email: credentials.email,
-                role: 'admin'
-              }
+            return {
+              id: '1',
+              name: 'Admin User',
+              email: credentials.email
             }
           }
           
-          // Đây là nơi xác thực thực tế sẽ được thực hiện (database, API, etc.)
-          
-          console.warn('[NextAuth] [WARN] authorize: Invalid credentials provided')
+          console.log('[NextAuth] Authentication failed: Invalid credentials')
           return null
         } catch (error) {
-          console.error('[NextAuth] [ERROR] authorize', error)
+          console.error('[NextAuth] Authentication error:', error)
           return null
         }
       }
-    }),
-    // Google Provider (nếu có cấu hình)
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      authorization: {
-        params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code"
-        }
-      }
-    }),
+    })
   ],
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60 // 30 days
+  },
   callbacks: {
-    async jwt({ token, user, account }) {
-      console.log('[NextAuth] [DEBUG] jwt callback', { 
-        tokenExists: !!token,
-        userProvided: !!user,
-        accountProvided: !!account
-      })
+    async jwt({ token, user }) {
+      console.log('[NextAuth] JWT callback, user:', user ? 'present' : 'not present')
       
-      // Truyền bổ sung dữ liệu từ user vào token
+      // Thêm thông tin từ user vào token nếu có
       if (user) {
-        console.log('[NextAuth] [DEBUG] jwt callback: Adding user data to token')
-        
-        token.user = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: (user as any).role || 'user'
-        }
+        token.id = user.id
       }
-      
       return token
     },
-    async session({ session, token, user }) {
-      console.log('[NextAuth] [DEBUG] session callback', { 
-        sessionExists: !!session, 
-        tokenExists: !!token,
-        userProvided: !!user
-      })
+    async session({ session, token }) {
+      console.log('[NextAuth] Session callback, token:', token ? 'present' : 'not present')
       
-      // Truyền dữ liệu từ token vào session
-      if (token && token.user) {
-        console.log('[NextAuth] [DEBUG] session callback: Adding token data to session')
-        session.user = {
-          ...session.user,
-          ...(token.user as any)
-        }
+      // Thêm thông tin từ token vào session
+      if (token && session.user) {
+        session.user.id = token.id as string
       }
-      
       return session
-    },
-    async redirect({ url, baseUrl }) {
-      console.log('[NextAuth] [DEBUG] redirect callback', { url, baseUrl })
-      
-      // Đảm bảo redirect URL hợp lệ
-      if (url.startsWith('/')) {
-        return `${baseUrl}${url}`
-      } else if (new URL(url).origin === baseUrl) {
-        return url
-      }
-      
-      return baseUrl
     }
   },
   pages: {
     signIn: '/login',
-    error: '/login?error=true',
+    error: '/error',
   },
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  secret: process.env.NEXTAUTH_SECRET || 'your-secret-for-development-only'
-}
+  debug: process.env.NODE_ENV === 'development',
+  logger,
+})
 
-const handler = NextAuth(authOptions)
 export { handler as GET, handler as POST } 

@@ -10,9 +10,9 @@ import { usePathname } from 'next/navigation'
 export default function MainHeader() {
   console.log('[MainHeader] Rendering')
   
-  // Sử dụng useSession hook
-  const session = useSession()
-  console.log('[MainHeader] Session status:', session.status, 'User:', session.data?.user?.name || 'No user')
+  // Sử dụng destructuring với useSession
+  const { data: session, status } = useSession()
+  console.log('[MainHeader] Session status:', status, 'User:', session?.user?.name || 'No user')
   
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -26,16 +26,16 @@ export default function MainHeader() {
   // Theo dõi và cập nhật authentication state
   useEffect(() => {
     try {
-      console.log('[MainHeader] useEffect running, status:', session.status)
+      console.log('[MainHeader] useEffect running, status:', status)
       
-      if (session.status === 'loading') {
+      if (status === 'loading') {
         setIsLoading(true)
         setIsAuthenticated(false)
-      } else if (session.status === 'authenticated' && session.data?.user) {
+      } else if (status === 'authenticated' && session?.user) {
         setIsLoading(false)
         setIsAuthenticated(true)
-        setUserName(session.data.user.name || session.data.user.email || 'User')
-        console.log('[MainHeader] Authenticated as:', session.data.user.name || session.data.user.email)
+        setUserName(session.user.name || session.user.email || 'User')
+        console.log('[MainHeader] Authenticated as:', session.user.name || session.user.email)
       } else {
         setIsLoading(false)
         setIsAuthenticated(false)
@@ -46,7 +46,7 @@ export default function MainHeader() {
       setIsLoading(false)
       setIsAuthenticated(false)
     }
-  }, [session])
+  }, [status, session])
   
   // Đóng menu khi thay đổi URL
   useEffect(() => {

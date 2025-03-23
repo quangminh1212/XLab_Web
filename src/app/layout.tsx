@@ -5,6 +5,8 @@ import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SessionWrapper from '@/components/SessionWrapper'
+import MainHeader from '@/components/MainHeader'
+import Footer from '@/components/Footer'
 
 // Tối ưu font loading
 const inter = Inter({ 
@@ -36,14 +38,11 @@ const ErrorLogger = () => {
 };
 
 export const metadata: Metadata = {
-  title: {
-    template: '%s | XLab - Phần mềm và Dịch vụ',
-    default: 'XLab - Phần mềm và Dịch vụ Chuyên Nghiệp',
-  },
-  description: 'XLab cung cấp các giải pháp phần mềm và dịch vụ chuyên nghiệp cho doanh nghiệp, mang đến hiệu quả và đổi mới',
+  title: 'XLab Web Platform',
+  description: 'XLab Web Platform - Dịch vụ tiện ích số và tự động hóa',
   applicationName: 'XLab Software',
   authors: [{ name: 'XLab Team', url: 'https://xlab.com' }],
-  keywords: ['phần mềm', 'dịch vụ CNTT', 'giải pháp doanh nghiệp', 'phát triển phần mềm', 'cloud services'],
+  keywords: ['phần mềm', 'dịch vụ', 'công nghệ', 'tự động hóa', 'xlab'],
   category: 'technology',
   robots: {
     index: true,
@@ -105,7 +104,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  console.log('RootLayout: rendering')
+  console.log('[RootLayout] Rendering')
   
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
@@ -127,7 +126,13 @@ export default function RootLayout({
         <ErrorLogger />
         <ErrorBoundary fallback={<div className="p-4 bg-red-50 text-red-700">Đã xảy ra lỗi khi tải trang. Vui lòng tải lại trang.</div>}>
           <SessionWrapper>
-            {children}
+            <div className="flex flex-col min-h-screen">
+              <MainHeader />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </SessionWrapper>
         </ErrorBoundary>
         <Analytics />
