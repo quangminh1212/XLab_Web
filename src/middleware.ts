@@ -18,6 +18,7 @@ const publicPaths = [
   '/support',
   '/contact',
   '/api/auth',
+  '/blog',
 ];
 
 // Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
