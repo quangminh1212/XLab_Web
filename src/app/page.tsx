@@ -16,7 +16,7 @@ export default function Home() {
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               XLab <span className="text-primary-600">Market</span>
-            </h1>
+              </h1>
             <p className="text-lg text-gray-600 mb-6">
               Chợ phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay
             </p>
@@ -26,7 +26,7 @@ export default function Home() {
                   <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                   </svg>
-                </div>
+              </div>
                 <input
                   type="text"
                   placeholder="Tìm kiếm phần mềm, ứng dụng..."
@@ -98,7 +98,7 @@ export default function Home() {
                 className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden group"
               >
                 <div className="p-6">
-                  <div className="flex items-center">
+              <div className="flex items-center">
                     <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mr-4">
                       {store.imageUrl ? (
                         <Image 
@@ -111,16 +111,16 @@ export default function Home() {
                       ) : (
                         <svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                        </svg>
+                </svg>
                       )}
-                    </div>
+              </div>
                     <div>
                       <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary-600 transition-colors">
                         {store.name}
                       </h3>
                       <p className="text-sm text-gray-500">{store.description}</p>
-                    </div>
-                  </div>
+              </div>
+            </div>
                 </div>
               </Link>
             ))}
@@ -136,18 +136,18 @@ export default function Home() {
             Đăng ký làm chủ gian hàng để tải lên và quản lý các sản phẩm phần mềm của riêng bạn.
           </p>
           <div className="flex justify-center space-x-4">
-            <Link
+                <Link 
               href="/register"
               className="bg-white text-primary-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors"
-            >
+                >
               Đăng ký ngay
-            </Link>
-            <Link
+                </Link>
+                <Link 
               href="/about"
               className="bg-primary-700 text-white px-6 py-3 rounded-md font-medium hover:bg-primary-800 transition-colors"
-            >
+                >
               Tìm hiểu thêm
-            </Link>
+                </Link>
           </div>
         </div>
       </section>
