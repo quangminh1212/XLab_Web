@@ -7,11 +7,10 @@ import SessionProvider from '@/components/SessionProvider'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 
-// Optimize font loading
+// Optimize font loading - use only Google Fonts with font-display: swap
 const inter = Inter({ 
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
   preload: true,
   fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
@@ -51,35 +50,43 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'XLab - Phần mềm và Dịch vụ Chuyên Nghiệp',
     description: 'XLab cung cấp các giải pháp phần mềm và dịch vụ chuyên nghiệp cho doanh nghiệp',
+    creator: '@xlab',
     images: ['/images/twitter-image.jpg'],
   },
-  manifest: '/site.webmanifest',
   icons: {
     icon: [
       { url: '/favicon.ico' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon.png', type: 'image/png' },
     ],
     apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-icon.png', type: 'image/png' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#0070f3' },
+      {
+        rel: 'apple-touch-icon-precomposed',
+        url: '/apple-touch-icon-precomposed.png',
+      },
     ],
   },
+  verification: {
+    google: 'google-site-verification-code',
+  },
   other: {
-    'msapplication-TileColor': '#0070f3',
+    'msapplication-TileColor': '#ffffff',
+    'msapplication-TileImage': '/ms-icon-144x144.png',
     'theme-color': '#ffffff',
   },
-}
+};
 
 export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f8fafc' },
+    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
+  ],
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  userScalable: true,
-  themeColor: '#ffffff',
-}
+};
 
 export default function RootLayout({
   children,
@@ -89,68 +96,47 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
+        {/* Preconnect to domains for critical resources */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        {/* Preload critical assets */}
+        
+        {/* Preload critical images with high priority */}
         <link
           rel="preload"
           href="/images/hero-image.svg"
           as="image"
           type="image/svg+xml"
+          fetchPriority="high"
         />
-        <link 
-          rel="preload" 
-          href="/fonts/inter-var.woff2" 
-          as="font" 
-          type="font/woff2" 
-          crossOrigin="anonymous" 
-        />
+        
+        {/* No longer preloading font because we're using Google Fonts with display:swap */}
       </head>
-      <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
+      <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
         <SessionProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
           <Header />
-          <main id="main-content" className="flex-grow">
+          <main className="flex-grow">
             {children}
           </main>
           <Footer />
         </SessionProvider>
         <Analytics />
         <Script
-          id="performance-metrics"
+          id="google-analytics"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+        />
+        <Script
+          id="google-analytics-config"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-              // Core web vitals optimization
-              window.addEventListener('DOMContentLoaded', () => {
-                // Optimize LCP (Largest Contentful Paint)
-                const lcpElement = document.querySelector('main');
-                if (lcpElement) {
-                  lcpElement.style.contentVisibility = 'auto';
-                }
-                
-                // Optimize CLS (Cumulative Layout Shift)
-                document.body.style.overflowX = 'hidden';
-                
-                // Optimize FID (First Input Delay)
-                setTimeout(() => {
-                  const links = Array.from(document.querySelectorAll('a[href], button'));
-                  if (links.length > 0) {
-                    const io = new IntersectionObserver((entries) => {
-                      entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                          entry.target.setAttribute('data-prefetched', 'true');
-                          io.unobserve(entry.target);
-                        }
-                      });
-                    });
-                    links.forEach(link => io.observe(link));
-                  }
-                }, 1000);
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                page_path: window.location.pathname,
               });
             `,
           }}
