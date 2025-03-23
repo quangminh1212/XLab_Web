@@ -14,23 +14,37 @@ declare module "next-auth" {
   }
 }
 
-// Cấu hình với logger rõ ràng hơn
+// Logger cho NextAuth
+const nextAuthLogger = {
+  error(code, metadata) {
+    console.error(`[AuthAPI] [Error] ${code}:`, metadata);
+  },
+  warn(code) {
+    console.warn(`[AuthAPI] [Warning] ${code}`);
+  },
+  debug(code, metadata) {
+    console.log(`[AuthAPI] [Debug] ${code}:`, metadata);
+  }
+};
+
 const handler = NextAuth({
   providers: [
+    // Provider đơn giản nhất - Credentials
     CredentialsProvider({
       id: "credentials",
       name: "Credentials",
+      // Xác định các trường thông tin đăng nhập
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        console.log("[NextAuth] Authorize called with credentials", 
+        console.log("[AuthAPI] Authorize called with credentials", 
           credentials ? { email: credentials.email } : "no credentials");
 
-        // Cho phép đăng nhập với bất kỳ thông tin nào trong môi trường phát triển
+        // Xác thực đơn giản cho môi trường phát triển
         if (credentials?.email) {
-          // Demo account
+          // Trả về user demo
           return {
             id: "1",
             name: "Test User",
@@ -38,10 +52,10 @@ const handler = NextAuth({
             image: "https://i.pravatar.cc/150?img=1"
           };
         }
-        
         return null;
       }
     }),
+    // Google Provider (nếu có cấu hình)
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
@@ -60,21 +74,25 @@ const handler = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      console.log("[NextAuth] Session callback", { sessionUser: session?.user, token });
+      console.log("[AuthAPI] Session callback:", { 
+        hasUser: !!session?.user,
+        hasToken: !!token
+      });
       
+      // Gán user ID từ token vào session
       if (token && session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
     async jwt({ token, user, account }) {
-      console.log("[NextAuth] JWT callback", { 
-        tokenSub: token?.sub,
-        userId: user?.id,
-        accountType: account?.provider
+      console.log("[AuthAPI] JWT callback:", { 
+        tokenSub: token?.sub?.substring(0, 8),
+        hasUser: !!user,
+        provider: account?.provider
       });
       
-      // Initial sign in
+      // Thêm thông tin vào token khi đăng nhập lần đầu
       if (user && account) {
         token.id = user.id;
         token.provider = account.provider;
@@ -82,25 +100,21 @@ const handler = NextAuth({
       return token;
     },
   },
-  logger: {
-    error(code, metadata) {
-      console.error(`[NextAuth] [Error] ${code}:`, metadata);
-    },
-    warn(code) {
-      console.warn(`[NextAuth] [Warning] ${code}`);
-    },
-    debug(code, metadata) {
-      console.log(`[NextAuth] ${code}:`, metadata);
-    }
-  },
-  debug: true,
-  secret: process.env.NEXTAUTH_SECRET || "TEST_SECRET_DO_NOT_USE_IN_PRODUCTION",
+  // Cấu hình logger
+  logger: nextAuthLogger,
+  // Bật debug mode trong môi trường phát triển
+  debug: process.env.NODE_ENV === "development",
+  // Secret key cần được cung cấp trong biến môi trường
+  secret: process.env.NEXTAUTH_SECRET || "NEXTAUTH_SECRET_DEVELOPMENT_ONLY",
+  // Cấu hình JWT
   jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    // Thời gian token hết hạn - 30 ngày
+    maxAge: 30 * 24 * 60 * 60,
   },
+  // Cấu hình session
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60, // 30 ngày
   },
 });
 

@@ -6,7 +6,7 @@ import Analytics from '@/components/Analytics'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import SessionWrapper from '@/components/SessionWrapper'
 
-// Optimize font loading
+// Tối ưu font loading
 const inter = Inter({ 
   subsets: ['latin'],
   display: 'swap',
@@ -16,29 +16,24 @@ const inter = Inter({
 })
 
 // ErrorLogger component để theo dõi và log các lỗi
-function ErrorLogger() {
-  if (typeof window !== 'undefined') {
-    // Ghi lại tất cả các lỗi không bắt được
-    window.addEventListener('error', (event) => {
-      console.error('Global error caught:', {
-        message: event.message,
-        source: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-        error: event.error?.stack
-      });
-    });
-
-    // Ghi lại tất cả các reject không bắt được
-    window.addEventListener('unhandledrejection', (event) => {
-      console.error('Unhandled Promise Rejection:', {
-        promise: event.promise,
-        reason: event.reason?.stack || event.reason
-      });
-    });
-  }
-  return null;
-}
+const ErrorLogger = () => {
+  return (
+    <Script id="error-logger" strategy="afterInteractive">
+      {`
+        // Theo dõi lỗi JS
+        window.onerror = function(message, source, lineno, colno, error) {
+          console.error('[Global Error]:', { message, source, lineno, colno, error: error?.stack });
+          return false;
+        };
+        
+        // Theo dõi Promise rejection
+        window.addEventListener('unhandledrejection', function(event) {
+          console.error('[Unhandled Promise]:', event.reason?.stack || event.reason);
+        });
+      `}
+    </Script>
+  );
+};
 
 export const metadata: Metadata = {
   title: {
@@ -110,6 +105,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  console.log('RootLayout: rendering')
+  
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
@@ -117,19 +114,13 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        {/* Preload critical assets */}
+        
+        {/* Không cần preload font Inter vì đã được Next Font xử lý */}
         <link
           rel="preload"
           href="/images/hero-image.svg"
           as="image"
           type="image/svg+xml"
-        />
-        <link 
-          rel="preload" 
-          href="/fonts/inter-var.woff2" 
-          as="font" 
-          type="font/woff2" 
-          crossOrigin="anonymous" 
         />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
@@ -140,33 +131,20 @@ export default function RootLayout({
           </SessionWrapper>
         </ErrorBoundary>
         <Analytics />
-        <Script
-          id="client-error-logger"
-          strategy="afterInteractive"
-        >
+        
+        <Script id="performance-metrics" strategy="afterInteractive">
           {`
-            // Thêm global error tracking
-            window.onerror = function(message, source, lineno, colno, error) {
-              console.error('Global JS Error:', { message, source, lineno, colno, stack: error?.stack });
-              return false;
-            };
-            
-            // Theo dõi lỗi promise
-            window.addEventListener('unhandledrejection', function(event) {
-              console.error('Unhandled Promise Rejection:', event.reason);
-            });
-            
-            // Log khi DOM đã tải xong
+            // Tối ưu Core Web Vitals
             document.addEventListener('DOMContentLoaded', function() {
-              console.log('DOM Content Loaded');
+              console.log('[Performance] DOM loaded');
               
-              // Optimize LCP (Largest Contentful Paint)
+              // Tối ưu LCP
               const lcpElement = document.querySelector('main');
               if (lcpElement) {
                 lcpElement.style.contentVisibility = 'auto';
               }
               
-              // Optimize CLS (Cumulative Layout Shift)
+              // Tối ưu CLS
               document.body.style.overflowX = 'hidden';
             });
           `}
