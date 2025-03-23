@@ -3,9 +3,9 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { SessionProvider } from 'next-auth/react'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
+import ClientSessionProvider from '@/components/ClientSessionProvider'
 
 // Optimize font loading - use only Google Fonts with font-display: swap
 const inter = Inter({ 
@@ -115,11 +115,13 @@ export default function RootLayout({
         {/* No longer preloading font because we're using Google Fonts with display:swap */}
       </head>
       <body className="antialiased bg-gray-50 text-gray-900 min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <ClientSessionProvider>
+          <Header />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </ClientSessionProvider>
         <Analytics />
         <Script
           id="google-analytics"
