@@ -173,11 +173,14 @@ yarn-error.log*
 
 # Additional runtime files
 .next/trace
-.next/cache/
-.next/server/
-.next/static/
+.next/cache/**
+.next/server/**
+.next/static/**
 .next/app-build-manifest.json
-.next/*.json
+.next/build-manifest.json
+.next/react-loadable-manifest.json
+.next/package.json
+.vercel_build_output/
 
 # Local environment variables
 .env
