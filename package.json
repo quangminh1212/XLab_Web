@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:debug": "cross-env NODE_OPTIONS=\"--trace-warnings\" node -r ./debug-logs.js ./node_modules/next/dist/bin/next dev",
+    "dev:debug": "cross-env NODE_OPTIONS=\"--trace-warnings --inspect --trace-deprecation\" node -r ./debug-logs.js ./node_modules/next/dist/bin/next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "build:debug": "cross-env NODE_OPTIONS=\"--trace-warnings\" node -r ./debug-logs.js ./node_modules/next/dist/bin/next build",
     "update-next": "npm install next@15 react@latest react-dom@latest --save"
   },
   "dependencies": {
