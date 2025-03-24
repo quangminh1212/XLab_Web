@@ -239,3 +239,6 @@ videos/*
 !videos/*.json
 !videos/*.js
 !videos/*.ts
+
+# Next.js debug logs
+next-debug.log

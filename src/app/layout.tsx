@@ -22,8 +22,7 @@ const DebugScript = () => {
   return (
     <script
       dangerouslySetInnerHTML={{
-        __html: 
-{`
+        __html: `
         // Log thông tin môi trường
         console.log('[Debug] Environment:', {
           nextJs: "${process.env.NEXT_PUBLIC_VERCEL_ENV || 'local'}",
@@ -120,7 +119,7 @@ const DebugScript = () => {
             console.error('[Debug] Failed to set up runtime safeguards:', e);
           }
         }
-      `}
+      `
       }}
     />
   );
