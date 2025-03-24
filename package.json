@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:debug": "cross-env NODE_OPTIONS='-r ./debug-logs.js' next dev",
+    "dev:debug": "node -r ./debug-logs.js ./node_modules/next/dist/bin/next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
