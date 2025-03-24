@@ -226,3 +226,16 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# Debug logs
+app.log
+*.log
+
+# Local environment files
+.env*.local
+
+# next-video
+videos/*
+!videos/*.json
+!videos/*.js
+!videos/*.ts
