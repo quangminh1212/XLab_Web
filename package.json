@@ -12,6 +12,7 @@
     "update-next": "npm install next@15 react@latest react-dom@latest --save"
   },
   "dependencies": {
+    "@next/swc-win32-x64-msvc": "^15.2.3",
     "@swc/helpers": "^0.5.15",
     "clsx": "^2.1.1",
     "critters": "^0.0.20",
