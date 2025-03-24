@@ -1,39 +1,26 @@
 'use client'
 
 import { SessionProvider } from 'next-auth/react'
-import { ReactNode, useEffect } from 'react'
-import MainHeader from '@/components/MainHeader'
-import Footer from '@/components/Footer'
+import { memo } from 'react'
 
 /**
  * SessionWrapper component wraps the application with NextAuth SessionProvider
- * Được cập nhật để tương thích với Next.js 15
+ * Được tối ưu với memo để ngăn re-render không cần thiết
+ * Tương thích với Next.js 14+
  */
-export default function SessionWrapper({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    console.log('[SessionWrapper] Component mounted')
-    
-    // Đảm bảo localStorage có thể truy cập (bảo vệ cho môi trường SSR)
-    try {
-      const theme = localStorage.getItem('theme')
-      console.log('[SessionWrapper] Theme from localStorage:', theme || 'not set')
-    } catch (error) {
-      console.error('[SessionWrapper] Error accessing localStorage:', error)
-    }
-  }, [])
+const SessionWrapper = memo(function SessionWrapper({ children }: { children: React.ReactNode }) {
+  // Chỉ log trong môi trường development
+  const isDev = process.env.NODE_ENV === 'development'
+  
+  if (isDev) {
+    console.log('[SessionWrapper] Rendering')
+  }
 
   return (
     <SessionProvider>
-      <div className="flex flex-col min-h-screen">
-        <MainHeader />
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-          Bỏ qua phần điều hướng
-        </a>
-        <main id="main-content" className="flex-grow">
-          {children}
-        </main>
-        <Footer />
-      </div>
+      {children}
     </SessionProvider>
   )
-} 
+})
+
+export default SessionWrapper 

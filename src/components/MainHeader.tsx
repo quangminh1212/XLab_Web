@@ -1,39 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, memo } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 
-export default function MainHeader() {
-  console.log('[MainHeader] Rendering')
+// Memoize MainHeader component để tránh re-render không cần thiết
+const MainHeader = memo(function MainHeader() {
+  // Chỉ log khi môi trường dev
+  const isDev = process.env.NODE_ENV === 'development'
+  if (isDev) console.log('[MainHeader] Rendering')
   
   // Sử dụng destructuring với useSession
   const { data: session, status } = useSession()
-  console.log('[MainHeader] Session status:', status, 'User:', session?.user?.name || 'No user')
-  
-  // Log chi tiết về session cho debugging
-  useEffect(() => {
-    try {
-      console.log('[MainHeader] Session debug - Status:', status)
-      console.log('[MainHeader] Session debug - Session object:', JSON.stringify({
-        data: session ? {
-          user: session.user ? {
-            id: session.user.id,
-            name: session.user.name,
-            email: session.user.email?.substring(0, 3) + '...',
-            image: !!session.user.image,
-          } : null,
-          expires: session.expires,
-        } : null,
-        status
-      }, null, 2))
-    } catch (error) {
-      console.error('[MainHeader] Error logging session details:', error)
-    }
-  }, [session, status])
+  if (isDev) console.log('[MainHeader] Session status:', status, 'User:', session?.user?.name || 'No user')
   
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -47,30 +29,19 @@ export default function MainHeader() {
   // Theo dõi và cập nhật authentication state
   useEffect(() => {
     try {
-      console.log('[MainHeader] useEffect running, status:', status)
-      
       if (status === 'loading') {
-        console.log('[MainHeader] Status is loading - waiting for session')
         setIsLoading(true)
         setIsAuthenticated(false)
       } else if (status === 'authenticated' && session?.user) {
-        console.log('[MainHeader] Status is authenticated - with valid user')
         setIsLoading(false)
         setIsAuthenticated(true)
         setUserName(session.user.name || session.user.email || 'User')
-        console.log('[MainHeader] Authenticated as:', session.user.name || session.user.email)
       } else {
-        console.log('[MainHeader] Status is:', status, '- no valid session')
         setIsLoading(false)
         setIsAuthenticated(false)
-        console.log('[MainHeader] Not authenticated')
       }
     } catch (error) {
       console.error('[MainHeader] Error in authentication effect:', error)
-      // Log stack trace nếu có
-      if (error instanceof Error) {
-        console.error('[MainHeader] Error stack:', error.stack)
-      }
       setIsLoading(false)
       setIsAuthenticated(false)
     }
@@ -82,38 +53,21 @@ export default function MainHeader() {
     setIsDropdownOpen(false)
   }, [pathname])
   
-  const toggleMenu = () => {
-    console.log('[MainHeader] Toggling menu to:', !isMenuOpen)
-    setIsMenuOpen(!isMenuOpen)
-  }
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prevState => !prevState)
+  }, [])
   
-  const toggleDropdown = () => {
-    console.log('[MainHeader] Toggling dropdown to:', !isDropdownOpen)
-    setIsDropdownOpen(!isDropdownOpen)
-  }
+  const toggleDropdown = useCallback(() => {
+    setIsDropdownOpen(prevState => !prevState)
+  }, [])
   
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     try {
-      console.log('[MainHeader] Signing out...')
       await signOut({ callbackUrl: '/' })
     } catch (error) {
       console.error('[MainHeader] Error signing out:', error)
-      // Log stack trace nếu có
-      if (error instanceof Error) {
-        console.error('[MainHeader] Error stack:', error.stack)
-      }
     }
-  }
-  
-  // Log thông tin rendering
-  console.log('[MainHeader] Render state:', { 
-    isLoading, 
-    isAuthenticated, 
-    userName: userName || 'None',
-    pathname,
-    menuOpen: isMenuOpen,
-    dropdownOpen: isDropdownOpen
-  })
+  }, [])
   
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -292,4 +246,6 @@ export default function MainHeader() {
       )}
     </header>
   )
-} 
+})
+
+export default MainHeader 
