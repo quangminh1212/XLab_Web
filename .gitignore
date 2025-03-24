@@ -242,3 +242,4 @@ videos/*
 
 # Next.js debug logs
 next-debug.log
+logs.txt
