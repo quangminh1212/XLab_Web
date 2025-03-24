@@ -35,6 +35,93 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Marketplace Section */}
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold text-center mb-6">Gian hàng phần mềm</h2>
+          <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+            Khám phá các giải pháp phần mềm chất lượng cao được thiết kế đặc biệt cho doanh nghiệp của bạn
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Product 1 */}
+            <div className="bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div className="h-48 bg-gradient-to-r from-indigo-500 to-indigo-700 relative">
+                <div className="absolute top-4 right-4 bg-white text-indigo-600 font-bold py-1 px-3 rounded-full text-sm">
+                  Hot
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2">XLab Analytics Pro</h3>
+                <p className="text-gray-600 mb-4">Giải pháp phân tích dữ liệu toàn diện với trực quan hóa nâng cao.</p>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-indigo-600">2.999.000 ₫</span>
+                  <span className="text-sm text-gray-500 line-through">3.499.000 ₫</span>
+                </div>
+                <Link 
+                  href="/products/analytics-pro" 
+                  className="block w-full text-center py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  Xem chi tiết
+                </Link>
+              </div>
+            </div>
+            
+            {/* Product 2 */}
+            <div className="bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div className="h-48 bg-gradient-to-r from-teal-500 to-teal-700"></div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2">XLab CRM Suite</h3>
+                <p className="text-gray-600 mb-4">Quản lý khách hàng thông minh, tự động hóa tiếp thị và bán hàng.</p>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-indigo-600">1.899.000 ₫</span>
+                  <span className="text-sm text-gray-500 line-through">2.299.000 ₫</span>
+                </div>
+                <Link 
+                  href="/products/crm-suite" 
+                  className="block w-full text-center py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  Xem chi tiết
+                </Link>
+              </div>
+            </div>
+            
+            {/* Product 3 */}
+            <div className="bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div className="h-48 bg-gradient-to-r from-purple-500 to-purple-700 relative">
+                <div className="absolute top-4 right-4 bg-white text-indigo-600 font-bold py-1 px-3 rounded-full text-sm">
+                  Mới
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2">XLab Cloud Security</h3>
+                <p className="text-gray-600 mb-4">Bảo mật đám mây toàn diện với giám sát thời gian thực và phòng chống mối đe dọa.</p>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-indigo-600">3.499.000 ₫</span>
+                  <span className="text-sm text-gray-500 line-through">4.199.000 ₫</span>
+                </div>
+                <Link 
+                  href="/products/cloud-security" 
+                  className="block w-full text-center py-2 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  Xem chi tiết
+                </Link>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-10">
+            <Link 
+              href="/products" 
+              className="inline-flex items-center px-6 py-3 border border-indigo-600 text-indigo-600 bg-white rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+            >
+              Xem tất cả sản phẩm
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+
         {/* Features Section */}
         <div className="mb-20">
           <h2 className="text-3xl font-bold text-center mb-12">Giải pháp của chúng tôi</h2>
