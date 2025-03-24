@@ -70,77 +70,76 @@ const MainHeader = memo(function MainHeader() {
   }, [])
   
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link href="/">
-                <Image
-                  src="/images/logo.svg"
-                  alt="XLab Logo"
-                  width={120}
-                  height={40}
-                  priority
-                  className="h-10 w-auto"
-                  onError={(e) => {
-                    console.error('[MainHeader] Error loading logo image')
-                    e.currentTarget.onerror = null // Tránh lặp vô hạn
-                    e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNDAiIGZpbGw9IiNlZWUiLz48dGV4dCB4PSIxMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk5OSI+WExhYiBMb2dvPC90ZXh0Pjwvc3ZnPg==' // Fallback SVG
-                  }}
-                />
-              </Link>
-            </div>
-            <nav className="hidden md:ml-8 md:flex md:space-x-8">
-              <Link href="/services" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/services' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+    <header className="sticky top-0 z-50 bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 border-b border-gray-100">
+          <div className="flex items-center">
+            <Link href="/" className="flex-shrink-0 flex items-center">
+              <Image
+                src="/images/logo.svg"
+                alt="XLab Logo"
+                width={120}
+                height={40}
+                priority
+                className="h-8 w-auto"
+                onError={(e) => {
+                  console.error('[MainHeader] Error loading logo image')
+                  e.currentTarget.onerror = null // Tránh lặp vô hạn
+                  e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iNDAiIGZpbGw9IiNlZWUiLz48dGV4dCB4PSIxMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk5OSI+WExhYiBMb2dvPC90ZXh0Pjwvc3ZnPg==' // Fallback SVG
+                }}
+              />
+            </Link>
+            <nav className="hidden md:ml-10 md:flex md:space-x-8">
+              <Link href="/services" className={`px-3 py-2 text-sm font-medium ${pathname === '/services' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}>
                 Dịch vụ
               </Link>
-              <Link href="/products" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/products' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+              <Link href="/products" className={`px-3 py-2 text-sm font-medium ${pathname === '/products' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}>
                 Sản phẩm
               </Link>
-              <Link href="/blog" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/blog' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+              <Link href="/blog" className={`px-3 py-2 text-sm font-medium ${pathname === '/blog' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}>
                 Blog
               </Link>
-              <Link href="/about" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/about' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+              <Link href="/about" className={`px-3 py-2 text-sm font-medium ${pathname === '/about' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}>
                 Về chúng tôi
               </Link>
-              <Link href="/contact" className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${pathname === '/contact' ? 'border-primary-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}>
+              <Link href="/contact" className={`px-3 py-2 text-sm font-medium ${pathname === '/contact' ? 'text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}>
                 Liên hệ
               </Link>
             </nav>
           </div>
           
-          <div className="hidden md:ml-6 md:flex md:items-center">
+          <div className="hidden md:flex md:items-center md:space-x-4">
             {isLoading ? (
-              <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+              <div className="w-8 h-8 rounded-full bg-gray-100 animate-pulse"></div>
             ) : isAuthenticated ? (
-              <div className="ml-3 relative">
-                <div>
-                  <button 
-                    onClick={toggleDropdown}
-                    className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                  >
-                    <span className="sr-only">Mở menu người dùng</span>
-                    <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-800">
-                      {userName.charAt(0).toUpperCase()}
-                    </div>
-                  </button>
-                </div>
+              <div className="relative">
+                <button 
+                  onClick={toggleDropdown}
+                  className="flex items-center space-x-2 text-sm focus:outline-none"
+                  aria-expanded={isDropdownOpen}
+                  aria-haspopup="true"
+                >
+                  <span className="sr-only">Mở menu người dùng</span>
+                  <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700">
+                    {userName.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="hidden sm:block text-gray-700">{userName}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
                 
                 {isDropdownOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
-                    <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                      {userName}
-                    </div>
-                    <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 z-50">
+                    <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       Dashboard
                     </Link>
-                    <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       Hồ sơ
                     </Link>
                     <button
                       onClick={handleSignOut}
-                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     >
                       Đăng xuất
                     </button>
@@ -148,21 +147,23 @@ const MainHeader = memo(function MainHeader() {
                 )}
               </div>
             ) : (
-              <div className="flex space-x-4">
-                <Link href="/login" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-50 hover:bg-primary-100">
+              <>
+                <Link href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-900">
                   Đăng nhập
                 </Link>
-                <Link href="/register" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+                <Link href="/register" className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
                   Đăng ký
                 </Link>
-              </div>
+              </>
             )}
           </div>
           
+          {/* Mobile menu button */}
           <div className="flex items-center md:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none"
+              aria-expanded={isMenuOpen}
             >
               <span className="sr-only">{isMenuOpen ? 'Đóng menu' : 'Mở menu'}</span>
               {isMenuOpen ? (
@@ -179,70 +180,62 @@ const MainHeader = memo(function MainHeader() {
         </div>
       </div>
       
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="pt-2 pb-3 space-y-1">
-            <Link href="/services" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/services' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
+        <div className="md:hidden border-b border-gray-200">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            <Link href="/services" className={`block px-3 py-2 rounded-md text-base font-medium ${pathname === '/services' ? 'text-primary-600 bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}>
               Dịch vụ
             </Link>
-            <Link href="/products" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/products' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
+            <Link href="/products" className={`block px-3 py-2 rounded-md text-base font-medium ${pathname === '/products' ? 'text-primary-600 bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}>
               Sản phẩm
             </Link>
-            <Link href="/blog" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/blog' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
+            <Link href="/blog" className={`block px-3 py-2 rounded-md text-base font-medium ${pathname === '/blog' ? 'text-primary-600 bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}>
               Blog
             </Link>
-            <Link href="/about" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/about' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
+            <Link href="/about" className={`block px-3 py-2 rounded-md text-base font-medium ${pathname === '/about' ? 'text-primary-600 bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}>
               Về chúng tôi
             </Link>
-            <Link href="/contact" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${pathname === '/contact' ? 'border-primary-500 text-primary-700 bg-primary-50' : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'}`}>
+            <Link href="/contact" className={`block px-3 py-2 rounded-md text-base font-medium ${pathname === '/contact' ? 'text-primary-600 bg-gray-50' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'}`}>
               Liên hệ
             </Link>
           </div>
           
           <div className="pt-4 pb-3 border-t border-gray-200">
             {isLoading ? (
-              <div className="flex items-center px-4">
-                <div className="flex-shrink-0">
-                  <div className="h-10 w-10 rounded-full bg-gray-200 animate-pulse"></div>
-                </div>
-                <div className="ml-3">
-                  <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
-                  <div className="mt-1 h-3 w-32 bg-gray-200 rounded animate-pulse"></div>
-                </div>
+              <div className="flex items-center px-4 py-2">
+                <div className="h-8 w-8 rounded-full bg-gray-100 animate-pulse"></div>
+                <div className="ml-3 h-4 w-24 bg-gray-100 rounded animate-pulse"></div>
               </div>
             ) : isAuthenticated ? (
               <>
-                <div className="flex items-center px-4">
-                  <div className="flex-shrink-0">
-                    <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-800">
-                      {userName.charAt(0).toUpperCase()}
-                    </div>
+                <div className="flex items-center px-4 py-2">
+                  <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700">
+                    {userName.charAt(0).toUpperCase()}
                   </div>
-                  <div className="ml-3">
-                    <div className="text-base font-medium text-gray-800">{userName}</div>
-                  </div>
+                  <div className="ml-3 text-sm font-medium text-gray-700">{userName}</div>
                 </div>
-                <div className="mt-3 space-y-1">
-                  <Link href="/dashboard" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                <div className="mt-3 space-y-1 px-2">
+                  <Link href="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">
                     Dashboard
                   </Link>
-                  <Link href="/profile" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                  <Link href="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">
                     Hồ sơ
                   </Link>
                   <button
                     onClick={handleSignOut}
-                    className="w-full text-left block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                    className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                   >
                     Đăng xuất
                   </button>
                 </div>
               </>
             ) : (
-              <div className="mt-3 space-y-1">
-                <Link href="/login" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+              <div className="mt-3 px-2 space-y-1">
+                <Link href="/login" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">
                   Đăng nhập
                 </Link>
-                <Link href="/register" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                <Link href="/register" className="block px-3 py-2 rounded-md text-base font-medium bg-primary-600 hover:bg-primary-700 text-white">
                   Đăng ký
                 </Link>
               </div>
