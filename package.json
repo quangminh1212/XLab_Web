@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:debug": "cross-env NODE_OPTIONS=\"--trace-warnings --inspect --trace-deprecation\" node -r ./debug-logs.js ./node_modules/next/dist/bin/next dev",
+    "dev:debug": "cross-env NODE_OPTIONS=\"--trace-warnings --inspect --trace-deprecation --max-old-space-size=4096\" node -r ./debug-logs.js ./node_modules/next/dist/bin/next dev | cmd /V:ON /C \"set \"COLORTERM=true\" && node -e \"process.stdin.pipe(process.stdout)\"\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
