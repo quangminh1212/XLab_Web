@@ -11,7 +11,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@next/font']
   },
-  webpack: (config, { isServer, nextRuntime }) => {
+  webpack: (config, { isServer }) => {
     // Basic fallbacks
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -28,16 +28,6 @@ const nextConfig = {
         'react': require.resolve('react'),
         'react-dom': require.resolve('react-dom'),
       };
-    }
-
-    // Fix đặc biệt cho next-auth trong Next.js
-    if (isServer && nextRuntime === 'nodejs') {
-      config.resolve.mainFields = ['main', 'module'];
-    }
-
-    // Tối ưu hóa bundle và ưu tiên ESM
-    if (!isServer) {
-      config.resolve.mainFields = ['browser', 'module', 'main'];
     }
     
     return config;
