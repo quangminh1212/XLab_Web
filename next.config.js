@@ -7,9 +7,10 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
   experimental: {
-    optimizePackageImports: ['@next/font'],
-    serverComponentsExternalPackages: ['next-auth']
+    optimizePackageImports: ['@next/font']
   },
+  // Moved from experimental.serverComponentsExternalPackages
+  serverExternalPackages: [],
   webpack: (config, { isServer, nextRuntime }) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -50,7 +51,6 @@ const nextConfig = {
     
     return config;
   },
-  transpilePackages: ['next-auth'],
   // Cấu hình bổ sung cho Next.js 15
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
