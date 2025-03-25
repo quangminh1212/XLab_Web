@@ -112,11 +112,11 @@ echo Backup created: package.json.bak
 echo.
 echo 3. Installing Next.js 15 and related packages...
 call npm uninstall next
-call npm install next@15 react@latest react-dom@latest eslint-config-next@15 --save
+call npm install next@15.2.4 react@18.2.0 react-dom@18.2.0 next-auth@4.24.5 eslint-config-next@15.2.4 --save --force
 
 echo.
 echo 4. Checking for @swc/helpers compatibility...
-call npm install @swc/helpers@latest --save
+call npm install @swc/helpers@0.5.7 --save
 
 echo.
 echo 5. Installed versions:
@@ -130,6 +130,10 @@ if exist .next (
   rmdir /s /q .next
   echo .next directory cleaned
 )
+
+echo.
+echo 7. Applying patches...
+call npm run patch
 
 echo.
 echo Update completed successfully!
@@ -149,15 +153,19 @@ echo Starting XLab_Web in DEBUG mode...
 echo Press Ctrl+C to stop the server when finished.
 
 echo Checking dependencies...
-call npm install
+call npm install --force
 
 echo.
 echo Verifying installed versions:
 call npx next --version
 call node -e "console.log('React: ' + require('react').version)"
 
+echo.
+echo Applying patches...
+call npm run patch
+
 echo Debug mode: capturing all output to debug.log
-call npm run dev:debug > debug.log 2>&1
+call npm run dev:debug
 
 IF ERRORLEVEL 1 (
   echo.
@@ -176,14 +184,18 @@ echo Starting XLab_Web development server...
 echo Press Ctrl+C to stop the server when finished.
 
 echo Checking dependencies...
-call npm install
+call npm install --force
 
 echo.
 echo Verifying installed versions:
 call npx next --version
 call node -e "console.log('React: ' + require('react').version)"
 
-call npm run dev 2> app.log
+echo.
+echo Applying patches...
+call npm run patch
+
+call npm run dev
 
 IF ERRORLEVEL 1 (
   echo.
