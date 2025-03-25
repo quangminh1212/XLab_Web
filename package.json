@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clear-next": "if exist .next rmdir /s /q .next",
-    "patch": "node patch-next-auth.js"
+    "clear-next": "if exist .next rmdir /s /q .next"
   },
   "keywords": ["software", "ecommerce", "nextjs", "react"],
   "author": "XLab Team",

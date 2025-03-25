@@ -6,9 +6,7 @@ const nextConfig = {
     domains: ['localhost'],
     formats: ['image/webp'],
   },
-  experimental: {
-    optimizePackageImports: [''],
-  },
+  experimental: {},
   env: {
     SITE_NAME: 'XLab',
     SITE_URL: 'https://xlab.vn',
