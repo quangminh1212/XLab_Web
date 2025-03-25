@@ -46,41 +46,57 @@ export async function middleware(request: NextRequest) {
   console.log(`[Middleware] Request: ${request.method} ${fullUrl}`);
   
   try {
-    // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
+    // Bỏ qua các tài nguyên tĩnh, api routes không được bảo vệ và các file
     if (
       pathname.startsWith('/_next') || 
       pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
       pathname.startsWith('/static') || 
-      pathname.includes('.')
+      pathname.includes('.') || 
+      pathname.includes('favicon')
     ) {
+      return NextResponse.next();
+    }
+
+    // Kiểm tra cấu hình NextAuth Secret
+    if (!process.env.NEXTAUTH_SECRET) {
+      console.error('[Middleware] NEXTAUTH_SECRET is not defined in environment variables');
       return NextResponse.next();
     }
 
     // Nếu đường dẫn công khai (login/register)
     if (pathname === '/login' || pathname === '/register') {
-      // Kiểm tra token trong Next.js 15
-      const token = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET,
-      });
-      
-      if (token) {
-        return NextResponse.redirect(new URL('/account', request.url));
+      try {
+        // Kiểm tra token trong Next.js 15+
+        const token = await getToken({
+          req: request,
+          secret: process.env.NEXTAUTH_SECRET,
+        });
+        
+        if (token) {
+          return NextResponse.redirect(new URL('/account', request.url));
+        }
+      } catch (error) {
+        console.error('[Middleware] Error checking token for public path:', error);
       }
       return NextResponse.next();
     }
 
     // Xử lý các đường dẫn được bảo vệ
     if (isProtectedPath(pathname)) {
-      const token = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET,
-      });
-      
-      if (!token) {
-        const url = new URL('/login', request.url);
-        url.searchParams.set('callbackUrl', encodeURI(pathname));
-        return NextResponse.redirect(url);
+      try {
+        const token = await getToken({
+          req: request,
+          secret: process.env.NEXTAUTH_SECRET,
+        });
+        
+        if (!token) {
+          const url = new URL('/login', request.url);
+          url.searchParams.set('callbackUrl', encodeURI(pathname));
+          return NextResponse.redirect(url);
+        }
+      } catch (error) {
+        console.error('[Middleware] Error checking token for protected path:', error);
+        return NextResponse.next();
       }
     }
 
@@ -108,8 +124,14 @@ export async function middleware(request: NextRequest) {
     
     return response;
   } catch (error) {
-    // Log lỗi nếu có
+    // Log lỗi chi tiết nếu có
     console.error('[Middleware] Error:', error);
+    
+    if (error instanceof Error) {
+      console.error('[Middleware] Error name:', error.name);
+      console.error('[Middleware] Error message:', error.message);
+      console.error('[Middleware] Error stack:', error.stack);
+    }
     
     // Vẫn cho phép request tiếp tục để xem lỗi hiển thị như thế nào
     return NextResponse.next();
