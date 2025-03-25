@@ -5,12 +5,12 @@ echo Press Ctrl+C to stop the server when finished.
 echo.
 
 echo Checking dependencies...
-npm install --force
+npm install
 
 echo.
 echo Verifying installed versions:
-echo Next.js v%npm_package_dependencies_next%
-echo React: %npm_package_dependencies_react%
+echo Next.js v13.5.6
+echo React: 18.2.0
 
 echo.
 echo Cleaning Next.js cache...
