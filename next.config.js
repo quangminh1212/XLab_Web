@@ -21,11 +21,28 @@ const nextConfig = {
         ...config.resolve.alias,
         'react': require.resolve('react'),
         'react-dom': require.resolve('react-dom'),
+        'react/jsx-runtime': require.resolve('react/jsx-runtime'),
+      };
+    }
+    
+    // Fix cho lỗi next-auth với React 18
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        fs: false,
+        child_process: false,
+        'react/jsx-runtime': require.resolve('react/jsx-runtime')
       };
     }
     
     return config;
   },
+  // Disable react-prifresh temporarily to fix issues with @swc/helpers
+  compiler: {
+    reactRemoveProperties: process.env.NODE_ENV === 'production',
+  }
 }
 
 module.exports = nextConfig; 
