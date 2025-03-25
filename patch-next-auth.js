@@ -6,7 +6,6 @@ console.log('Patching next-auth to work with Next.js 15...');
 
 // Các đường dẫn
 const nextAuthPackagePath = path.resolve('./node_modules/next-auth/package.json');
-const nextAuthIndexPath = path.resolve('./node_modules/next-auth/index.js');
 const nextAuthReactPath = path.resolve('./node_modules/next-auth/react/index.js');
 
 // 1. Sửa package.json để chấp nhận Next.js 15
@@ -27,20 +26,44 @@ try {
   console.error('Error updating next-auth package.json:', error);
 }
 
-// 2. Tạo bản patch cho react/jsx-runtime
-const jSXRuntimeFixContent = `
+// 2. Sửa file react/index.js của next-auth để không sử dụng jsx-runtime
 try {
-  // Thử sử dụng đường dẫn jsx-runtime chuẩn
-  module.exports = require('react/jsx-runtime');
-} catch (e) {
-  // Fallback nếu không tìm thấy
-  console.warn('next-auth: Could not load react/jsx-runtime, using polyfill');
-  module.exports = {
-    jsx: (type, props) => ({ type, props }),
-    jsxs: (type, props) => ({ type, props }),
-    Fragment: Symbol.for('react.fragment')
-  };
+  if (fs.existsSync(nextAuthReactPath)) {
+    let reactIndexContent = fs.readFileSync(nextAuthReactPath, 'utf8');
+    
+    // Kiểm tra xem file đã được patch chưa
+    if (reactIndexContent.includes('var _jsxRuntime = require("react/jsx-runtime")')) {
+      // Thay thế lệnh require jsx-runtime bằng polyfill
+      const patchedContent = reactIndexContent.replace(
+        'var _jsxRuntime = require("react/jsx-runtime");',
+        `// JSX Runtime Polyfill for Next.js 15 compatibility
+var _jsxRuntime = {
+  jsx: function jsx(type, props) { return { type: type, props: props }; },
+  jsxs: function jsxs(type, props) { return { type: type, props: props }; },
+  Fragment: Symbol.for('react.fragment')
+};\n`
+      );
+      
+      fs.writeFileSync(nextAuthReactPath, patchedContent);
+      console.log('✅ Patched next-auth/react/index.js to use JSX Runtime polyfill');
+    } else {
+      console.log('ℹ️ next-auth/react/index.js already patched or not using jsx-runtime');
+    }
+  } else {
+    console.log('❌ Could not find next-auth/react/index.js');
+  }
+} catch (error) {
+  console.error('Error patching next-auth/react/index.js:', error);
 }
+
+// 3. Tạo bản patch cho react/jsx-runtime
+const jSXRuntimeFixContent = `
+// Next.js 15 JSX Runtime polyfill
+module.exports = {
+  jsx: function jsx(type, props) { return { type: type, props: props }; },
+  jsxs: function jsxs(type, props) { return { type: type, props: props }; },
+  Fragment: Symbol.for('react.fragment')
+};
 `;
 
 // Tạo file polyfill cho jsx-runtime
@@ -57,6 +80,34 @@ try {
   console.log('✅ Created jsx-runtime polyfill');
 } catch (error) {
   console.error('Error creating jsx-runtime polyfill:', error);
+}
+
+// 4. Tạo file loader
+const loaderContent = `
+// JSX Runtime loader cho Next.js 15
+const originalRequire = module.constructor.prototype.require;
+
+module.constructor.prototype.require = function patchedRequire(path) {
+  if (path === 'react/jsx-runtime') {
+    return {
+      jsx: function jsx(type, props) { return { type: type, props: props }; },
+      jsxs: function jsxs(type, props) { return { type: type, props: props }; },
+      Fragment: Symbol.for('react.fragment')
+    };
+  }
+  
+  return originalRequire.apply(this, arguments);
+};
+
+module.exports = {};
+`;
+
+const loaderPath = path.resolve('./jsx-runtime-loader.js');
+try {
+  fs.writeFileSync(loaderPath, loaderContent);
+  console.log('✅ Created JSX Runtime loader');
+} catch (error) {
+  console.error('Error creating JSX Runtime loader:', error);
 }
 
 console.log('Patch completed!'); 

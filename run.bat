@@ -164,7 +164,13 @@ echo.
 echo Applying patches...
 call npm run patch
 
-echo Debug mode: capturing all output to debug.log
+echo.
+echo Cleaning Next.js cache...
+call npm run clear-next
+
+echo.
+echo Starting debug server...
+set NODE_OPTIONS=--require=./jsx-runtime-loader.js
 call npm run dev:debug
 
 IF ERRORLEVEL 1 (
@@ -195,6 +201,13 @@ echo.
 echo Applying patches...
 call npm run patch
 
+echo.
+echo Cleaning Next.js cache...
+call npm run clear-next
+
+echo.
+echo Starting development server...
+set NODE_OPTIONS=--require=./jsx-runtime-loader.js
 call npm run dev
 
 IF ERRORLEVEL 1 (
@@ -216,12 +229,13 @@ echo Checking for common issues...
 echo 1. Verifying node_modules directory...
 if not exist node_modules (
   echo node_modules not found. Reinstalling dependencies...
-  call npm install
+  call npm install --force
   echo Trying to start server again...
   call npm run dev
 ) else (
   echo Cleaning cache and trying again...
   call npm cache clean --force
+  call npm run clear-next
   call npm run dev
 )
 

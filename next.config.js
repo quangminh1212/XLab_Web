@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -12,6 +14,15 @@ const nextConfig = {
   // Moved from experimental.serverComponentsExternalPackages
   serverExternalPackages: [],
   webpack: (config, { isServer, nextRuntime }) => {
+    // Tạo polyfill cho jsx-runtime
+    const jsxRuntimePolyfill = path.resolve(__dirname, 'jsx-runtime-loader.js');
+    
+    // Thêm resolver cho react/jsx-runtime
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'react/jsx-runtime': jsxRuntimePolyfill,
+    };
+
     // Basic fallbacks
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -27,7 +38,6 @@ const nextConfig = {
         ...config.resolve.alias,
         'react': require.resolve('react'),
         'react-dom': require.resolve('react-dom'),
-        'react/jsx-runtime': require.resolve('react/jsx-runtime'),
       };
     }
 
