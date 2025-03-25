@@ -6,11 +6,24 @@ const nextConfig = {
     domains: ['localhost'],
     formats: ['image/webp'],
   },
-  experimental: {},
+  experimental: {
+    serverActions: true,
+  },
   env: {
     SITE_NAME: 'XLab',
     SITE_URL: 'https://xlab.vn',
     SITE_DESCRIPTION: 'XLab - Trang web bán phần mềm chất lượng cao',
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    });
+    
+    return config;
   },
   async headers() {
     return [
