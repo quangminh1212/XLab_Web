@@ -12,9 +12,13 @@ const nextConfig = {
   // Moved from experimental.serverComponentsExternalPackages
   serverExternalPackages: [],
   webpack: (config, { isServer, nextRuntime }) => {
+    // Basic fallbacks
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
+      net: false,
+      tls: false,
+      child_process: false,
     };
     
     // Đảm bảo các phiên bản React được sử dụng nhất quán
@@ -24,18 +28,6 @@ const nextConfig = {
         'react': require.resolve('react'),
         'react-dom': require.resolve('react-dom'),
         'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-      };
-    }
-    
-    // Fix cho lỗi next-auth với Next.js 15
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        net: false,
-        tls: false,
-        fs: false,
-        child_process: false,
-        'react/jsx-runtime': require.resolve('react/jsx-runtime')
       };
     }
 
