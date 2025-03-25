@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "clear-next": "if exist .next rmdir /s /q .next",
-    "clean-install": "npm cache clean --force && npm install --force"
+    "clean-install": "npm cache clean --force && npm install --force",
+    "debug": "next dev --inspect"
   },
   "keywords": ["software", "ecommerce", "nextjs", "react"],
   "author": "XLab Team",
@@ -23,7 +24,8 @@
     "typescript": "5.3.3",
     "@types/react": "18.2.55",
     "@types/react-dom": "18.2.19",
-    "@types/node": "20.11.17"
+    "@types/node": "20.11.17",
+    "@svgr/webpack": "^8.0.1"
   },
   "resolutions": {
     "react": "18.2.0",
