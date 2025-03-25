@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { ProductTabsInit } from './product-tabs';
 
 // Dữ liệu mẫu cho sản phẩm (giống trang products, sẽ được thay bằng dữ liệu thực tế từ API/DB)
 const products = [
@@ -327,6 +328,8 @@ export default function ProductDetail({ params }: Props) {
           </div>
         </div>
       </div>
+      
+      <ProductTabsInit />
     </div>
   );
 } 
