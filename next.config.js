@@ -6,9 +6,7 @@ const nextConfig = {
     domains: ['localhost'],
     formats: ['image/webp'],
   },
-  experimental: {
-    serverActions: true,
-  },
+  experimental: {},
   env: {
     SITE_NAME: 'XLab',
     SITE_URL: 'https://xlab.vn',
@@ -18,6 +16,16 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        'react-dom/client': require.resolve('react-dom/client'),
+        'react/jsx-runtime': require.resolve('react/jsx-runtime'),
+        'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
+      };
+    }
+    
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
