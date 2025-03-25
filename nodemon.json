@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "public", ".env", ".env.local", "next.config.js"],
+  "ext": "js,jsx,ts,tsx,json,css,scss,md",
+  "ignore": ["node_modules", ".next", "*.test.js", "*.spec.js"],
+  "exec": "next dev"
+} 
