@@ -63,7 +63,7 @@ call node -e "try { console.log('React: ' + require('react').version) } catch (e
 
 echo.
 echo Checking for latest versions available...
-call npm view next version
+call npm view next@13 version
 call npm view react version
 call npm view react-dom version
 call npm view @swc/helpers version
@@ -78,7 +78,7 @@ goto :eof
 echo ==== Next.js Updater Tool ====
 echo.
 
-echo This script will update Next.js and React to the latest versions.
+echo This script will update Next.js 13 and React.
 echo It is recommended to commit your changes before updating.
 echo.
 
@@ -95,7 +95,7 @@ goto :eof
 echo ==== Next.js Automatic Updater ====
 echo.
 
-echo Auto-updating Next.js and React to the latest versions...
+echo Auto-updating Next.js 13 and React...
 call :do_update
 goto :eof
 
@@ -111,7 +111,6 @@ echo Backup created: package.json.bak
 
 echo.
 echo 3. Installing Next.js 13 and related packages...
-call npm uninstall next
 call npm install next@13.5.6 react@18.2.0 react-dom@18.2.0 next-auth@4.24.5 eslint-config-next@13.5.6 --save --force
 
 echo.
@@ -122,7 +121,6 @@ echo.
 echo 5. Installed versions:
 call npx next --version
 call node -e "console.log('React: ' + require('react').version)"
-call node -e "try { console.log('@swc/helpers: ' + require('@swc/helpers/package.json').version) } catch(e) { console.log('@swc/helpers: not found') }"
 
 echo.
 echo 6. Cleaning up Next.js cache...
@@ -175,7 +173,7 @@ call npm run dev:debug
 IF ERRORLEVEL 1 (
   echo.
   echo Primary method failed, trying alternative method...
-  call npm run dev
+  call next dev --inspect
   
   IF ERRORLEVEL 1 (
     goto :run_error
@@ -235,7 +233,6 @@ if not exist node_modules (
   call npm cache clean --force
   call npm run clear-next
   
-  echo Fallback to lower version attempt...
   call next dev
 )
 
