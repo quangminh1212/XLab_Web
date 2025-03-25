@@ -7,9 +7,10 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
   experimental: {
-    optimizePackageImports: ['@next/font']
+    optimizePackageImports: ['@next/font'],
+    serverComponentsExternalPackages: ['next-auth']
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, nextRuntime }) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -25,7 +26,7 @@ const nextConfig = {
       };
     }
     
-    // Fix cho lỗi next-auth với React 18
+    // Fix cho lỗi next-auth với Next.js 15
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -36,12 +37,25 @@ const nextConfig = {
         'react/jsx-runtime': require.resolve('react/jsx-runtime')
       };
     }
+
+    // Fix đặc biệt cho next-auth trong Next.js 15+
+    if (isServer && nextRuntime === 'nodejs') {
+      config.resolve.mainFields = ['main', 'module'];
+    }
+
+    // Tối ưu hóa bundle và ưu tiên ESM
+    if (!isServer) {
+      config.resolve.mainFields = ['browser', 'module', 'main'];
+    }
     
     return config;
   },
-  // Disable react-prifresh temporarily to fix issues with @swc/helpers
+  transpilePackages: ['next-auth'],
+  // Cấu hình bổ sung cho Next.js 15
   compiler: {
-    reactRemoveProperties: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
   }
 }
 

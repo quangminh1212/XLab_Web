@@ -26,7 +26,13 @@ const SessionWrapper = memo(function SessionWrapper({ children }: { children: Re
       }
       
       window.addEventListener('error', authErrorHandler)
-      return () => window.removeEventListener('error', authErrorHandler)
+      
+      // Fix cho việc load React hooks sớm trong Next.js 15
+      window.__NEXT_REACT_ROOT = true
+      
+      return () => {
+        window.removeEventListener('error', authErrorHandler)
+      }
     }
   }, [isDev])
 
@@ -37,4 +43,10 @@ const SessionWrapper = memo(function SessionWrapper({ children }: { children: Re
   )
 })
 
-export default SessionWrapper 
+export default SessionWrapper
+
+// Đặt giá trị toàn cục để đảm bảo JSX runtime được tìm thấy
+if (typeof window !== 'undefined') {
+  // @ts-ignore
+  window.__NEXT_REACT_ROOT = true
+} 
