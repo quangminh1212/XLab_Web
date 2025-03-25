@@ -9,7 +9,8 @@
     "lint": "next lint",
     "clear-next": "if exist .next rmdir /s /q .next",
     "clean-install": "npm cache clean --force && npm install --force",
-    "debug": "next dev --inspect"
+    "debug": "next dev --inspect",
+    "fix-next": "node fix-next.js"
   },
   "keywords": ["software", "ecommerce", "nextjs", "react"],
   "author": "XLab Team",
