@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="120" height="40" rx="4" fill="#F9FAFB"/>
-  <path d="M30 20L13 30V10L30 20Z" fill="#4F46E5"/>
-  <path d="M48 10L31 20L48 30V10Z" fill="#4F46E5"/>
-  <text x="60" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827" text-anchor="middle">XLab</text>
+  <path d="M10 20L30 10L50 20L30 30L10 20Z" fill="#0070F3"/>
+  <text x="60" y="25" font-family="Arial" font-size="16" fill="#111827">XLab</text>
 </svg> 
