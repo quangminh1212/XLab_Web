@@ -16,21 +16,22 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   webpack: (config, { isServer }) => {
+    // SVG support
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack']
+    });
+
+    // Fallbacks khi không ở trong môi trường server
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
-        fs: false,
-        'react-dom/client': require.resolve('react-dom/client'),
-        'react/jsx-runtime': require.resolve('react/jsx-runtime'),
-        'react/jsx-dev-runtime': require.resolve('react/jsx-dev-runtime'),
+        "react-dom/client": require.resolve("react-dom/client"),
+        "react/jsx-runtime": require.resolve("react/jsx-runtime"),
+        "react/jsx-dev-runtime": require.resolve("react/jsx-dev-runtime"),
       };
     }
-    
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
-    
+
     return config;
   },
   async headers() {
@@ -44,7 +45,7 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'SAMEORIGIN',
           },
           {
             key: 'X-XSS-Protection',
