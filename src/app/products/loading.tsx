@@ -1,3 +1,5 @@
+'use client';
+
 export default function ProductsLoading() {
   return (
     <div className="products-loading">

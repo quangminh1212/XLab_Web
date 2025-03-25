@@ -1,3 +1,5 @@
+'use client';
+
 export default function ProductDetailLoading() {
   return (
     <div className="product-detail-loading">
