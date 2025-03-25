@@ -110,13 +110,13 @@ copy package.json package.json.bak
 echo Backup created: package.json.bak
 
 echo.
-echo 3. Installing Next.js 15 and related packages...
+echo 3. Installing Next.js 13 and related packages...
 call npm uninstall next
-call npm install next@15.2.4 react@18.2.0 react-dom@18.2.0 next-auth@4.24.5 eslint-config-next@15.2.4 --save --force
+call npm install next@13.5.6 react@18.2.0 react-dom@18.2.0 next-auth@4.24.5 eslint-config-next@13.5.6 --save --force
 
 echo.
 echo 4. Checking for @swc/helpers compatibility...
-call npm install @swc/helpers@0.5.7 --save
+call npm install @swc/helpers@0.5.1 --save
 
 echo.
 echo 5. Installed versions:
@@ -170,7 +170,6 @@ call npm run clear-next
 
 echo.
 echo Starting debug server...
-set NODE_OPTIONS=--require=./next-polyfill-loader.js
 call npm run dev:debug
 
 IF ERRORLEVEL 1 (
@@ -207,13 +206,11 @@ call npm run clear-next
 
 echo.
 echo Starting development server...
-set NODE_OPTIONS=--require=./next-polyfill-loader.js
 call npm run dev
 
 IF ERRORLEVEL 1 (
   echo.
   echo Primary method failed, trying alternative method...
-  set NODE_OPTIONS=--require=./next-polyfill-loader.js --no-warnings
   call next dev
   
   IF ERRORLEVEL 1 (
@@ -239,7 +236,6 @@ if not exist node_modules (
   call npm run clear-next
   
   echo Fallback to lower version attempt...
-  set NODE_OPTIONS=--require=./next-polyfill-loader.js
   call next dev
 )
 
