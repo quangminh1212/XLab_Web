@@ -9,11 +9,28 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@next/font']
   },
-  webpack: (config) => {
+  // Cấu hình cho Turbopack
+  turbo: {
+    rules: {
+      // Cấu hình tiêu chuẩn cho Turbopack
+    }
+  },
+  webpack: (config, { isServer }) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
     };
+    
+    // Đảm bảo các gói React hoạt động đúng
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Đảm bảo sử dụng cùng một phiên bản React
+        'react': require.resolve('react'),
+        'react-dom': require.resolve('react-dom'),
+      };
+    }
+    
     return config;
   },
 }
