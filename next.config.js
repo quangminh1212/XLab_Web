@@ -14,13 +14,15 @@ const nextConfig = {
   // Moved from experimental.serverComponentsExternalPackages
   serverExternalPackages: [],
   webpack: (config, { isServer, nextRuntime }) => {
-    // Tạo polyfill cho jsx-runtime
+    // Polyfills cho các module bị thiếu
+    const reactDomClientPolyfill = path.resolve(__dirname, 'react-dom-client.js');
     const jsxRuntimePolyfill = path.resolve(__dirname, 'jsx-runtime-loader.js');
     
-    // Thêm resolver cho react/jsx-runtime
+    // Thêm resolvers cho các module
     config.resolve.alias = {
       ...config.resolve.alias,
       'react/jsx-runtime': jsxRuntimePolyfill,
+      'react-dom/client': reactDomClientPolyfill,
     };
 
     // Basic fallbacks

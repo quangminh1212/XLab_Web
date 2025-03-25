@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./jsx-runtime-loader.js next dev",
-    "dev:debug": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./jsx-runtime-loader.js --trace-warnings --inspect next dev",
-    "build": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./jsx-runtime-loader.js next build",
-    "start": "cross-env NODE_OPTIONS=--require=./jsx-runtime-loader.js next start",
+    "dev": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./next-polyfill-loader.js next dev",
+    "dev:debug": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./next-polyfill-loader.js --trace-warnings --inspect next dev",
+    "build": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./next-polyfill-loader.js next build",
+    "start": "cross-env NODE_OPTIONS=--require=./next-polyfill-loader.js next start",
     "lint": "next lint",
-    "build:debug": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./jsx-runtime-loader.js --trace-warnings next build",
+    "build:debug": "node patch-next-auth.js && cross-env NODE_OPTIONS=--require=./next-polyfill-loader.js --trace-warnings next build",
     "update-next": "npm install next@15.2.4 react@18.2.0 react-dom@18.2.0 next-auth@4.24.5 --save --force",
     "patch": "node patch-next-auth.js",
     "clear-next": "if exist .next rmdir /s /q .next"
@@ -36,6 +36,10 @@
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.4.2"
+  },
+  "overrides": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "keywords": [],
   "author": "",
