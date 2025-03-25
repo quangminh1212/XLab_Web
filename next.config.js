@@ -7,7 +7,7 @@ const nextConfig = {
     formats: ['image/webp'],
   },
   experimental: {
-    optimizePackageImports: true,
+    optimizePackageImports: [''],
   },
   env: {
     SITE_NAME: 'XLab',
