@@ -245,3 +245,44 @@ videos/*
 # Next.js debug logs
 next-debug.log
 logs.txt
+
+# Build
+build
+dist
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache
+.cache/
+.next/cache/
+
+# Temporary files
+.DS_Store
+*.swp
+*.swo
+.*.sw*
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+.history/
+*.sublime-workspace
+*.sublime-project
+
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js

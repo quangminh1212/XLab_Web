@@ -11,20 +11,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@next/font']
   },
-  // Moved from experimental.serverComponentsExternalPackages
-  serverExternalPackages: [],
   webpack: (config, { isServer, nextRuntime }) => {
-    // Polyfills cho các module bị thiếu
-    const reactDomClientPolyfill = path.resolve(__dirname, 'react-dom-client.js');
-    const jsxRuntimePolyfill = path.resolve(__dirname, 'jsx-runtime-loader.js');
-    
-    // Thêm resolvers cho các module
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'react/jsx-runtime': jsxRuntimePolyfill,
-      'react-dom/client': reactDomClientPolyfill,
-    };
-
     // Basic fallbacks
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -43,7 +30,7 @@ const nextConfig = {
       };
     }
 
-    // Fix đặc biệt cho next-auth trong Next.js 15+
+    // Fix đặc biệt cho next-auth trong Next.js
     if (isServer && nextRuntime === 'nodejs') {
       config.resolve.mainFields = ['main', 'module'];
     }
@@ -55,7 +42,7 @@ const nextConfig = {
     
     return config;
   },
-  // Cấu hình bổ sung cho Next.js 15
+  // Cấu hình bổ sung
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn'],
