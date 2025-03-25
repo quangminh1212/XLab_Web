@@ -19,27 +19,51 @@ XLab là trang web bán phần mềm chất lượng cao, được phát triển
 
 ## Cài đặt
 
+### Cách 1: Sử dụng file run.bat (Khuyến nghị cho Windows)
+
+Đơn giản là nhấp đúp vào file `run.bat` để tự động:
+- Sửa lỗi môi trường Next.js
+- Cài đặt các thư viện cần thiết
+- Khởi động máy chủ phát triển
+
+### Cách 2: Sử dụng lệnh thủ công
+
 1. Clone dự án:
 ```bash
 git clone https://github.com/yourusername/xlab-web.git
 cd xlab-web
 ```
 
-2. Cài đặt các thư viện:
+2. Sửa lỗi môi trường Next.js (nếu cần):
 ```bash
-npm install
+node fix-next.js
 ```
 
-3. Chạy môi trường phát triển:
+3. Cài đặt các thư viện:
+```bash
+npm install --legacy-peer-deps
+```
+
+4. Chạy môi trường phát triển:
 ```bash
 npm run dev
 ```
 
-4. Build cho môi trường production:
+5. Build cho môi trường production:
 ```bash
 npm run build
 npm start
 ```
+
+## Xử lý sự cố
+
+Nếu gặp lỗi khi chạy dự án:
+
+1. Đảm bảo Node.js đã được cài đặt (khuyến nghị phiên bản LTS)
+2. Chạy script sửa lỗi Next.js: `node fix-next.js`
+3. Cài đặt lại thư viện: `npm install --legacy-peer-deps`
+4. Xóa cache: `npm cache clean --force` và `.next` (nếu có)
+5. Khởi động lại: `npm run dev`
 
 ## Cấu trúc dự án
 
@@ -60,6 +84,8 @@ xlab-web/
 ├── next.config.js      # Cấu hình Next.js
 ├── tsconfig.json       # Cấu hình TypeScript
 ├── package.json        # Thông tin dự án và dependencies
+├── fix-next.js         # Script tự động sửa lỗi môi trường Next.js
+├── run.bat             # Script khởi động tự động cho Windows
 └── README.md           # Tài liệu dự án
 ```
 
