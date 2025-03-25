@@ -3,237 +3,170 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="overflow-hidden">
-      {/* Hero Section - Thiết kế tối giản, hiện đại */}
-      <section className="py-16 md:py-28 px-4 relative">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="md:w-1/2 z-10">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
-                Chào mừng đến với <span className="text-primary-600">XLab</span>
+    <div className="relative overflow-hidden bg-white">
+      {/* Hero Section */}
+      <div className="relative">
+        <div className="absolute inset-0">
+          <div className="absolute inset-y-0 left-0 w-1/2 bg-gray-50"></div>
+        </div>
+        <div className="relative mx-auto max-w-7xl lg:grid lg:grid-cols-2 lg:px-8">
+          <div className="px-4 py-16 sm:px-6 sm:py-24 lg:px-0 lg:py-32">
+            <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
+              <h1 className="mt-4 text-4xl font-bold tracking-tight text-gray-900 sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
+                <span className="block">Chào mừng đến với</span>
+                <span className="block text-blue-600">XLab</span>
               </h1>
-              <p className="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
+              <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
                 Nền tảng xây dựng, phân tích và chia sẻ dữ liệu thông minh cho doanh nghiệp thời đại số.
               </p>
-              <div className="flex flex-wrap gap-4">
-                <Link href="/services" 
-                  className="px-6 py-3 bg-primary-600 text-white font-medium rounded-lg transition-all hover:bg-primary-700 hover:shadow-lg">
-                  Bắt đầu ngay
-                </Link>
-                <Link href="/contact" 
-                  className="px-6 py-3 bg-white text-gray-700 font-medium rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all">
+              <div className="mt-10 flex items-center gap-x-6">
+                <a
+                  href="/contact"
+                  className="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                >
                   Liên hệ ngay
-                </Link>
+                </a>
+                <a href="/services" className="text-sm font-semibold leading-6 text-gray-900">
+                  Tìm hiểu thêm <span aria-hidden="true">→</span>
+                </a>
               </div>
             </div>
-            <div className="md:w-1/2 mt-10 md:mt-0 relative">
-              <div className="relative flex justify-center items-center">
-                <div className="absolute w-72 h-72 bg-primary-100 rounded-full opacity-30 animate-pulse"></div>
-                <Image 
+          </div>
+          <div className="flex items-center justify-center px-4 sm:px-6 lg:px-0">
+            <div className="relative w-full max-w-2xl">
+              <div className="absolute -top-4 -right-4 -bottom-4 -left-4 rounded-2xl bg-blue-50"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600 to-blue-400 opacity-10 blur-3xl"></div>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl shadow-2xl">
+                <Image
                   src="/images/hero-image.svg"
-                  alt="XLab Analytics Platform" 
-                  width={600} 
+                  alt="XLab Analytics Platform"
+                  width={600}
                   height={400}
+                  className="absolute inset-0 h-full w-full object-cover"
                   priority
-                  className="relative z-10"
                 />
               </div>
             </div>
           </div>
         </div>
-        
-        {/* Decorative elements */}
-        <div className="absolute top-1/3 right-0 w-64 h-64 rounded-full bg-primary-50 -z-10 blur-3xl opacity-70"></div>
-        <div className="absolute bottom-0 left-20 w-72 h-72 rounded-full bg-secondary-50 -z-10 blur-3xl opacity-70"></div>
-      </section>
+      </div>
 
-      {/* Features Section - Thiết kế tối giản */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Giải pháp tối ưu cho doanh nghiệp</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+      {/* Features Section */}
+      <div className="relative bg-white py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-base font-semibold leading-7 text-blue-600">Giải pháp tối ưu</h2>
+            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Giải pháp tối ưu cho doanh nghiệp
+            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-600">
               Tối ưu hiệu suất và đơn giản hóa quy trình làm việc với các tính năng tiên tiến
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600 mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+
+          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
+            <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+              {/* Feature 1 */}
+              <div className="flex flex-col">
+                <dt className="text-base font-semibold leading-7 text-gray-900">
+                  <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                    </svg>
+                  </div>
+                  Phân tích dữ liệu
+                </dt>
+                <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                  <p className="flex-auto">Thu thập, phân tích và trực quan hóa dữ liệu giúp ra quyết định tốt hơn.</p>
+                  <p className="mt-6">
+                    <a href="/services/analytics" className="text-sm font-semibold leading-6 text-blue-600">
+                      Tìm hiểu thêm <span aria-hidden="true">→</span>
+                    </a>
+                  </p>
+                </dd>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Phân tích dữ liệu</h3>
-              <p className="text-gray-600 mb-4">Thu thập, phân tích và trực quan hóa dữ liệu giúp ra quyết định tốt hơn.</p>
-              <Link href="/services/analytics" className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center group">
-                Tìm hiểu thêm
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-            
-            {/* Feature 2 */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600 mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+
+              {/* Feature 2 */}
+              <div className="flex flex-col">
+                <dt className="text-base font-semibold leading-7 text-gray-900">
+                  <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                  </div>
+                  Quản lý khách hàng
+                </dt>
+                <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                  <p className="flex-auto">Theo dõi tương tác, hiểu nhu cầu và tạo trải nghiệm tuyệt vời cho khách hàng.</p>
+                  <p className="mt-6">
+                    <a href="/services/crm" className="text-sm font-semibold leading-6 text-blue-600">
+                      Tìm hiểu thêm <span aria-hidden="true">→</span>
+                    </a>
+                  </p>
+                </dd>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Quản lý khách hàng</h3>
-              <p className="text-gray-600 mb-4">Theo dõi tương tác, hiểu nhu cầu và tạo trải nghiệm tuyệt vời cho khách hàng.</p>
-              <Link href="/services/crm" className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center group">
-                Tìm hiểu thêm
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-            
-            {/* Feature 3 */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center text-primary-600 mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+
+              {/* Feature 3 */}
+              <div className="flex flex-col">
+                <dt className="text-base font-semibold leading-7 text-gray-900">
+                  <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
+                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                    </svg>
+                  </div>
+                  Tự động hóa
+                </dt>
+                <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-600">
+                  <p className="flex-auto">Tự động hóa quy trình lặp lại giúp tiết kiệm thời gian và tăng năng suất.</p>
+                  <p className="mt-6">
+                    <a href="/services/automation" className="text-sm font-semibold leading-6 text-blue-600">
+                      Tìm hiểu thêm <span aria-hidden="true">→</span>
+                    </a>
+                  </p>
+                </dd>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Tự động hóa</h3>
-              <p className="text-gray-600 mb-4">Tự động hóa quy trình lặp lại giúp tiết kiệm thời gian và tăng năng suất.</p>
-              <Link href="/services/automation" className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center group">
-                Tìm hiểu thêm
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
+            </dl>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Products Section - Thiết kế giống các trang sản phẩm lớn */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Gian hàng phần mềm</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Khám phá các giải pháp phần mềm chất lượng cao được thiết kế đặc biệt cho doanh nghiệp của bạn
+      {/* CTA Section */}
+      <div className="relative isolate overflow-hidden bg-gray-900">
+        <div className="px-6 py-24 sm:px-6 sm:py-32 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Sẵn sàng nâng cấp doanh nghiệp của bạn?
+            </h2>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-300">
+              Bắt đầu ngay hôm nay với giải pháp phần mềm hoàn chỉnh từ XLab. Chúng tôi sẽ đồng hành cùng bạn trong hành trình chuyển đổi số.
             </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Product 1 */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow">
-              <div className="relative">
-                <div className="h-48 bg-gradient-to-r from-primary-500 to-primary-600"></div>
-                <div className="absolute top-4 right-4 bg-white text-primary-600 font-medium py-1 px-3 rounded-full text-sm shadow-sm">
-                  Hot
-                </div>
-                <div className="absolute -bottom-6 left-0 right-0 flex justify-center">
-                  <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 pt-10 text-center">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">XLab Analytics Pro</h3>
-                <p className="text-gray-600 mb-6">Giải pháp phân tích dữ liệu toàn diện với trực quan hóa nâng cao và AI.</p>
-                <div className="mb-6">
-                  <span className="text-2xl font-bold text-gray-900">2.999.000 ₫</span>
-                  <span className="ml-2 text-sm text-gray-500 line-through">3.499.000 ₫</span>
-                </div>
-                <Link 
-                  href="/products/analytics-pro" 
-                  className="block w-full py-2.5 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                >
-                  Xem chi tiết
-                </Link>
-              </div>
-            </div>
-            
-            {/* Product 2 */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow">
-              <div className="relative">
-                <div className="h-48 bg-gradient-to-r from-secondary-500 to-secondary-600"></div>
-                <div className="absolute -bottom-6 left-0 right-0 flex justify-center">
-                  <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 pt-10 text-center">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">XLab CRM Suite</h3>
-                <p className="text-gray-600 mb-6">Nâng cao trải nghiệm khách hàng với hệ thống quản lý quan hệ khách hàng thông minh.</p>
-                <div className="mb-6">
-                  <span className="text-2xl font-bold text-gray-900">1.799.000 ₫</span>
-                  <span className="ml-2 text-sm text-gray-500 line-through">2.199.000 ₫</span>
-                </div>
-                <Link 
-                  href="/products/crm-suite" 
-                  className="block w-full py-2.5 px-4 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors"
-                >
-                  Xem chi tiết
-                </Link>
-              </div>
-            </div>
-            
-            {/* Product 3 */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow">
-              <div className="relative">
-                <div className="h-48 bg-gradient-to-r from-purple-500 to-purple-600"></div>
-                <div className="absolute top-4 right-4 bg-white text-purple-600 font-medium py-1 px-3 rounded-full text-sm shadow-sm">
-                  Mới
-                </div>
-                <div className="absolute -bottom-6 left-0 right-0 flex justify-center">
-                  <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 pt-10 text-center">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">XLab Automation</h3>
-                <p className="text-gray-600 mb-6">Tự động hóa quy trình kinh doanh và tiết kiệm thời gian với các công cụ tự động.</p>
-                <div className="mb-6">
-                  <span className="text-2xl font-bold text-gray-900">1.499.000 ₫</span>
-                </div>
-                <Link 
-                  href="/products/automation" 
-                  className="block w-full py-2.5 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                >
-                  Xem chi tiết
-                </Link>
-              </div>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href="/contact"
+                className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              >
+                Liên hệ tư vấn
+              </a>
+              <a href="/products" className="text-sm font-semibold leading-6 text-white">
+                Xem tất cả sản phẩm <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* CTA Section - Thiết kế tối giản, hiện đại */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Sẵn sàng nâng cấp doanh nghiệp của bạn?</h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Bắt đầu ngay hôm nay với giải pháp phần mềm hoàn chỉnh từ XLab. Chúng tôi sẽ đồng hành cùng bạn trong hành trình chuyển đổi số.
-          </p>
-          <div className="flex justify-center flex-wrap gap-4">
-            <Link href="/contact" 
-              className="px-8 py-3 bg-primary-600 text-white font-medium rounded-lg shadow-sm hover:shadow-md hover:bg-primary-700 transition-all">
-              Liên hệ tư vấn
-            </Link>
-            <Link href="/products" 
-              className="px-8 py-3 bg-white text-gray-700 font-medium rounded-lg shadow-sm border border-gray-200 hover:bg-gray-50 transition-all">
-              Xem tất cả sản phẩm
-            </Link>
-          </div>
-        </div>
-      </section>
+        <svg
+          viewBox="0 0 1024 1024"
+          className="absolute left-1/2 top-1/2 -z-10 h-[64rem] w-[64rem] -translate-x-1/2 [mask-image:radial-gradient(closest-side,white,transparent)]"
+          aria-hidden="true"
+        >
+          <circle cx="512" cy="512" r="512" fill="url(#gradient)" fillOpacity="0.7" />
+          <defs>
+            <radialGradient id="gradient">
+              <stop stopColor="#3B82F6" />
+              <stop offset="1" stopColor="#1D4ED8" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
     </div>
   )
 } 
