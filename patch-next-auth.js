@@ -1,20 +1,20 @@
-// Patch cho next-auth để tương thích với Next.js 14
+// Patch cho next-auth để tương thích với Next.js 13
 const fs = require('fs');
 const path = require('path');
 
-console.log('Patching next-auth để tương thích với Next.js 14...');
+console.log('Patching next-auth để tương thích với Next.js 13...');
 
 // Đường dẫn đến package.json của next-auth
 const nextAuthPackagePath = path.resolve('./node_modules/next-auth/package.json');
 
-// Sửa package.json để chấp nhận Next.js 14
+// Sửa package.json để chấp nhận Next.js 13
 try {
   if (fs.existsSync(nextAuthPackagePath)) {
     const packageJson = JSON.parse(fs.readFileSync(nextAuthPackagePath, 'utf8'));
     
-    // Sửa peerDependencies để chấp nhận Next.js 14
+    // Sửa peerDependencies để chấp nhận Next.js 13
     if (packageJson.peerDependencies && packageJson.peerDependencies.next) {
-      packageJson.peerDependencies.next = "^12.2.5 || ^13 || ^14";
+      packageJson.peerDependencies.next = "^12.2.5 || ^13";
       fs.writeFileSync(nextAuthPackagePath, JSON.stringify(packageJson, null, 2));
       console.log('✅ Updated next-auth package.json peerDependencies');
     }
