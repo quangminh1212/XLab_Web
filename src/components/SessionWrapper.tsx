@@ -1,12 +1,12 @@
 'use client'
 
 import { SessionProvider } from 'next-auth/react'
-import { memo } from 'react'
+import { memo, useEffect } from 'react'
 
 /**
  * SessionWrapper component wraps the application with NextAuth SessionProvider
  * Được tối ưu với memo để ngăn re-render không cần thiết
- * Tương thích với Next.js 14+
+ * Tương thích với Next.js 15+
  */
 const SessionWrapper = memo(function SessionWrapper({ children }: { children: React.ReactNode }) {
   // Chỉ log trong môi trường development
@@ -15,6 +15,20 @@ const SessionWrapper = memo(function SessionWrapper({ children }: { children: Re
   if (isDev) {
     console.log('[SessionWrapper] Rendering')
   }
+
+  // Theo dõi lỗi với NextAuth
+  useEffect(() => {
+    if (isDev) {
+      const authErrorHandler = (event: any) => {
+        if (event.type === 'error' && event.target?.src?.includes('next-auth')) {
+          console.error('[SessionWrapper] NextAuth error detected:', event)
+        }
+      }
+      
+      window.addEventListener('error', authErrorHandler)
+      return () => window.removeEventListener('error', authErrorHandler)
+    }
+  }, [isDev])
 
   return (
     <SessionProvider>

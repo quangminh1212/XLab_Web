@@ -19,9 +19,46 @@ export default function Error({ error, reset }: ErrorProps) {
       digest: error.digest,
       stack: error.stack
     })
+
+    // Kiểm tra nếu là lỗi từ NextAuth
+    const isNextAuthError = 
+      error.message?.includes('next-auth') || 
+      error.stack?.includes('next-auth') ||
+      error.name === 'NextAuthError';
+    
+    if (isNextAuthError) {
+      console.error('[App] NextAuth error detected. Please check your NextAuth configuration');
+      console.error('[App] Ensure NEXTAUTH_URL and NEXTAUTH_SECRET are properly configured');
+    }
+    
+    // Kiểm tra lỗi liên quan đến React/Next.js Suspense/lazy loading
+    const isSuspenseError = 
+      error.message?.includes('suspended') || 
+      error.message?.includes('lazy');
+    
+    if (isSuspenseError) {
+      console.error('[App] Suspense/Lazy loading error detected. Check components using suspense or lazy loading');
+    }
     
     // Có thể gửi lỗi đến service như Sentry ở đây
   }, [error])
+  
+  // Xác định thông báo lỗi thân thiện với người dùng
+  const getUserFriendlyMessage = () => {
+    if (error.message?.includes('fetch') || error.message?.includes('network')) {
+      return "Có vấn đề kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng của bạn và thử lại.";
+    }
+    
+    if (error.message?.includes('auth') || error.message?.includes('authentication')) {
+      return "Xảy ra lỗi xác thực. Vui lòng đăng nhập lại.";
+    }
+    
+    if (error.message?.includes('permission') || error.message?.includes('access')) {
+      return "Bạn không có quyền truy cập nội dung này.";
+    }
+    
+    return "Rất tiếc, đã có một lỗi xảy ra. Chúng tôi đang khắc phục vấn đề này.";
+  };
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -31,7 +68,7 @@ export default function Error({ error, reset }: ErrorProps) {
             Đã xảy ra lỗi
           </h2>
           <div className="mt-4 text-center text-sm text-gray-600">
-            Rất tiếc, đã có một lỗi xảy ra
+            {getUserFriendlyMessage()}
           </div>
         </div>
         

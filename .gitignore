@@ -35,6 +35,8 @@ error_log.txt
 output.log
 app.log
 *-logs.js
+next-debug.log
+debug-logs.js
 
 # backup files
 *.bak
