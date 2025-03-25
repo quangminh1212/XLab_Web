@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:debug": "cross-env NODE_OPTIONS=\"--trace-warnings --inspect --trace-deprecation --max-old-space-size=4096\" node -r ./debug-logs.js ./node_modules/next/dist/bin/next dev",
+    "dev:debug": "cross-env NODE_OPTIONS=\"--trace-warnings --inspect --trace-deprecation --trace-uncaught --unhandled-rejections=strict --trace-exit --trace-sync-io --zero-fill-buffers\" DEBUG=next:*,webpack:*,babel,turbopack,swc,*compilation* node -r ./debug-logs.js ./node_modules/next/dist/bin/next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
