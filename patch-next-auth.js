@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('Patching next-auth to work with Next.js 15...');
+console.log('Patching next-auth để tương thích với Next.js 15...');
 
 // Các đường dẫn
 const nextAuthPackagePath = path.resolve('./node_modules/next-auth/package.json');
@@ -82,7 +82,63 @@ try {
   console.error('Error creating jsx-runtime polyfill:', error);
 }
 
-// 4. Tạo file loader
+// 4. Tạo polyfill cho react-dom/client
+const reactDomClientContent = `
+// React DOM Client polyfill for Next.js 15
+const createRoot = function(container) {
+  try {
+    const ReactDOM = require('react-dom');
+    if (typeof ReactDOM.render === 'function') {
+      return {
+        render: function(element) {
+          ReactDOM.render(element, container);
+        },
+        unmount: function() {
+          ReactDOM.unmountComponentAtNode(container);
+        }
+      };
+    }
+  } catch (e) {
+    console.error('Polyfill error:', e);
+  }
+  
+  return {
+    render: function() {},
+    unmount: function() {}
+  };
+};
+
+const hydrateRoot = function(container, element) {
+  try {
+    const ReactDOM = require('react-dom');
+    if (typeof ReactDOM.hydrate === 'function') {
+      ReactDOM.hydrate(element, container);
+    }
+  } catch (e) {
+    console.error('Polyfill hydrate error:', e);
+  }
+  
+  return {
+    unmount: function() {}
+  };
+};
+
+module.exports = {
+  createRoot,
+  hydrateRoot
+};
+`;
+
+// Tạo file polyfill cho react-dom/client
+const reactDomClientPath = path.resolve('./node_modules/react-dom/client.js');
+try {
+  fs.writeFileSync(reactDomClientPath, reactDomClientContent);
+  console.log('✅ Created react-dom/client polyfill');
+} catch (error) {
+  console.error('Error creating react-dom/client polyfill:', error);
+}
+
+// 5. Tạo file loader
 const loaderContent = `
 // JSX Runtime loader cho Next.js 15
 const originalRequire = module.constructor.prototype.require;
@@ -93,6 +149,39 @@ module.constructor.prototype.require = function patchedRequire(path) {
       jsx: function jsx(type, props) { return { type: type, props: props }; },
       jsxs: function jsxs(type, props) { return { type: type, props: props }; },
       Fragment: Symbol.for('react.fragment')
+    };
+  }
+  
+  if (path === 'react-dom/client') {
+    return {
+      createRoot: function(container) {
+        try {
+          const ReactDOM = require('react-dom');
+          return {
+            render: function(element) {
+              ReactDOM.render(element, container);
+            },
+            unmount: function() {
+              ReactDOM.unmountComponentAtNode(container);
+            }
+          };
+        } catch (e) {
+          console.error('Client polyfill error:', e);
+          return {
+            render: function() {},
+            unmount: function() {}
+          };
+        }
+      },
+      hydrateRoot: function(container, element) {
+        try {
+          const ReactDOM = require('react-dom');
+          if (typeof ReactDOM.hydrate === 'function') {
+            ReactDOM.hydrate(element, container);
+          }
+        } catch (e) {}
+        return { unmount: function() {} };
+      }
     };
   }
   
@@ -110,4 +199,77 @@ try {
   console.error('Error creating JSX Runtime loader:', error);
 }
 
-console.log('Patch completed!'); 
+// 6. Tạo file kết hợp cả hai loại polyfill
+const combinedLoaderContent = `
+// Combined loader cho cả React JSX Runtime và React DOM Client
+console.log('Đang cung cấp polyfill cho Next.js 15');
+
+// Nạp polyfill cho cả hai module
+const originalRequire = module.constructor.prototype.require;
+
+module.constructor.prototype.require = function patchedRequire(path) {
+  // Xử lý react/jsx-runtime
+  if (path === 'react/jsx-runtime') {
+    console.log('Polyfill được sử dụng cho: react/jsx-runtime');
+    return {
+      jsx: function jsx(type, props) { return { type: type, props: props }; },
+      jsxs: function jsxs(type, props) { return { type: type, props: props }; },
+      Fragment: Symbol.for('react.fragment')
+    };
+  }
+  
+  // Xử lý react-dom/client
+  if (path === 'react-dom/client') {
+    console.log('Polyfill được sử dụng cho: react-dom/client');
+    return {
+      createRoot: function(container) {
+        console.log('Polyfill createRoot được gọi');
+        try {
+          const ReactDOM = require('react-dom');
+          return {
+            render: function(element) {
+              console.log('Polyfill render gọi ReactDOM.render');
+              ReactDOM.render(element, container);
+            },
+            unmount: function() {
+              console.log('Polyfill unmount gọi ReactDOM.unmountComponentAtNode');
+              ReactDOM.unmountComponentAtNode(container);
+            }
+          };
+        } catch (e) {
+          console.error('Lỗi polyfill client:', e);
+          return { 
+            render: function() {},
+            unmount: function() {}
+          };
+        }
+      },
+      hydrateRoot: function(container, element) {
+        console.log('Polyfill hydrateRoot được gọi');
+        try {
+          const ReactDOM = require('react-dom');
+          ReactDOM.hydrate(element, container);
+        } catch (e) {
+          console.error('Lỗi polyfill hydrate:', e);
+        }
+        return { unmount: function() {} };
+      }
+    };
+  }
+  
+  // Chuyển các module khác đến require gốc
+  return originalRequire.apply(this, arguments);
+};
+
+module.exports = {};
+`;
+
+const combinedLoaderPath = path.resolve('./next-polyfill-loader.js');
+try {
+  fs.writeFileSync(combinedLoaderPath, combinedLoaderContent);
+  console.log('✅ Created combined polyfill loader');
+} catch (error) {
+  console.error('Error creating combined polyfill loader:', error);
+}
+
+console.log('Patch đã hoàn thành!'); 

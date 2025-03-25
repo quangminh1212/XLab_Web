@@ -170,7 +170,7 @@ call npm run clear-next
 
 echo.
 echo Starting debug server...
-set NODE_OPTIONS=--require=./jsx-runtime-loader.js
+set NODE_OPTIONS=--require=./next-polyfill-loader.js
 call npm run dev:debug
 
 IF ERRORLEVEL 1 (
@@ -207,13 +207,14 @@ call npm run clear-next
 
 echo.
 echo Starting development server...
-set NODE_OPTIONS=--require=./jsx-runtime-loader.js
+set NODE_OPTIONS=--require=./next-polyfill-loader.js
 call npm run dev
 
 IF ERRORLEVEL 1 (
   echo.
   echo Primary method failed, trying alternative method...
-  call npm run dev
+  set NODE_OPTIONS=--require=./next-polyfill-loader.js --no-warnings
+  call next dev
   
   IF ERRORLEVEL 1 (
     goto :run_error
@@ -236,7 +237,10 @@ if not exist node_modules (
   echo Cleaning cache and trying again...
   call npm cache clean --force
   call npm run clear-next
-  call npm run dev
+  
+  echo Fallback to lower version attempt...
+  set NODE_OPTIONS=--require=./next-polyfill-loader.js
+  call next dev
 )
 
 endlocal 
