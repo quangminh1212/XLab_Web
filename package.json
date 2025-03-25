@@ -12,15 +12,15 @@
     "update-next": "npm install next@15 react@latest react-dom@latest --save"
   },
   "dependencies": {
-    "@next/swc-win32-x64-msvc": "^15.2.3",
+    "@next/swc-win32-x64-msvc": "^14.1.0",
     "@swc/helpers": "^0.5.15",
     "clsx": "^2.1.1",
     "critters": "^0.0.20",
     "cross-env": "^7.0.3",
-    "next": "^15.2.3",
+    "next": "^14.1.0",
     "next-auth": "^4.24.5",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "tailwind-merge": "^2.2.0",
     "zod": "^3.22.4"
   },
