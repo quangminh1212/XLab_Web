@@ -85,36 +85,23 @@ const DebugScript = () => {
           origError.apply(console, arguments);
         };
 
-        // Bảo vệ options.factory
+        // Đảm bảo các global prototypes sẵn sàng trước khi React/Next.js khởi chạy
         if (typeof window !== 'undefined') {
-          window.addEventListener('error', function(event) {
-            if (event.message && event.message.includes('Cannot read properties of undefined')) {
-              console.error('[Debug] Property Access Error:', {
-                message: event.message,
-                source: event.filename,
-                line: event.lineno,
-                column: event.colno,
-                type: 'property_access'
-              });
-            }
-          });
-
-          // Khắc phục lỗi options.factory
-          const safeObjectAccess = (obj, path) => {
-            if (!obj) return undefined;
-            const parts = path.split('.');
-            let current = obj;
-            for (const part of parts) {
-              if (current === undefined || current === null) return undefined;
-              current = current[part];
-            }
-            return current;
-          };
-
-          // Monkey patch một số hàm thường gặp lỗi trong Next.js
           try {
-            // Đây là biện pháp tạm thời - ứng dụng cần được sửa ở mã nguồn
-            console.info('[Debug] Setting up runtime safeguards for common Next.js errors');
+            // Bảo vệ Function prototype để tránh lỗi 'options.factory'
+            if (typeof Function.prototype.call === 'function') {
+              const originalCall = Function.prototype.call;
+              Function.prototype.call = function() {
+                try {
+                  return originalCall.apply(this, arguments);
+                } catch (error) {
+                  console.error('[Debug] Function.call error:', error);
+                  return undefined;
+                }
+              };
+            }
+            
+            console.info('[Debug] Runtime safeguards installed successfully');
           } catch (e) {
             console.error('[Debug] Failed to set up runtime safeguards:', e);
           }

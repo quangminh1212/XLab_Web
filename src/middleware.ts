@@ -56,22 +56,32 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    // Lấy token xác thực
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-
-    // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
-    if (isProtectedPath(pathname) && !token) {
-      const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', encodeURI(pathname));
-      return NextResponse.redirect(url);
+    // Nếu đường dẫn công khai (login/register)
+    if (pathname === '/login' || pathname === '/register') {
+      // Kiểm tra token trong Next.js 15
+      const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+      
+      if (token) {
+        return NextResponse.redirect(new URL('/account', request.url));
+      }
+      return NextResponse.next();
     }
 
-    // Nếu đường dẫn công khai (login/register) và người dùng đã đăng nhập
-    if ((pathname === '/login' || pathname === '/register') && token) {
-      return NextResponse.redirect(new URL('/account', request.url));
+    // Xử lý các đường dẫn được bảo vệ
+    if (isProtectedPath(pathname)) {
+      const token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+      
+      if (!token) {
+        const url = new URL('/login', request.url);
+        url.searchParams.set('callbackUrl', encodeURI(pathname));
+        return NextResponse.redirect(url);
+      }
     }
 
     // Thêm security headers
