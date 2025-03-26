@@ -65,6 +65,17 @@ Nếu gặp lỗi khi chạy dự án:
 4. Xóa cache: `npm cache clean --force` và `.next` (nếu có)
 5. Khởi động lại: `npm run dev`
 
+### Sửa lỗi hiển thị ký tự tiếng Việt
+
+Nếu các ký tự tiếng Việt hiển thị không đúng trong terminal:
+
+1. Chạy file `fix-encoding.bat` để thiết lập UTF-8 cho terminal
+2. Đóng và mở lại terminal sau khi chạy file
+3. Nếu vẫn gặp lỗi, thiết lập thủ công:
+   - Mở PowerShell với quyền administrator
+   - Chạy lệnh: `Set-ItemProperty -Path "HKCU:\Console" -Name CodePage -Value 65001`
+   - Thay đổi font chữ trong terminal sang font hỗ trợ Unicode (như Consolas hoặc Lucida Console)
+
 ## Cấu trúc dự án
 
 ```
@@ -85,6 +96,7 @@ xlab-web/
 ├── tsconfig.json       # Cấu hình TypeScript
 ├── package.json        # Thông tin dự án và dependencies
 ├── fix-next.js         # Script tự động sửa lỗi môi trường Next.js
+├── fix-encoding.bat    # Script sửa lỗi hiển thị ký tự tiếng Việt
 ├── run.bat             # Script khởi động tự động cho Windows
 └── README.md           # Tài liệu dự án
 ```

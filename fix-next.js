@@ -11,6 +11,9 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Đảm bảo terminal hiển thị Unicode đúng
+process.stdout.setEncoding('utf8');
+
 console.log('==== XLab Next.js Fix Tool ====');
 
 // Xóa .next để đảm bảo build mới
@@ -49,7 +52,7 @@ for (const mod of requiredModules) {
 if (needsInstall) {
   console.log('Cài đặt lại các thư viện cần thiết...');
   try {
-    execSync('npm install react@18.2.0 react-dom@18.2.0 next@13.5.6 @svgr/webpack styled-jsx --legacy-peer-deps --force', 
+    execSync('npm install react@18.2.0 react-dom@18.2.0 next@13.5.6 @svgr/webpack styled-jsx --legacy-peer-deps --force',
       { stdio: 'inherit' });
     console.log('Đã cài đặt lại thư viện thành công');
   } catch (err) {
@@ -61,18 +64,18 @@ if (needsInstall) {
 const nextConfigPath = path.join(process.cwd(), 'next.config.js');
 if (fs.existsSync(nextConfigPath)) {
   console.log('Kiểm tra và sửa next.config.js...');
-  
+
   try {
     // Đọc file next.config.js
     let nextConfigContent = fs.readFileSync(nextConfigPath, 'utf8');
-    
+
     // Cập nhật cấu hình webpack
     if (nextConfigContent.includes('experimental: {')) {
       console.log('Cập nhật cấu hình experimental...');
       // Đơn giản hóa cấu hình experimental 
       nextConfigContent = nextConfigContent.replace(/experimental:[\s\S]*?\{[\s\S]*?\},/g, 'experimental: {},');
     }
-    
+
     // Ghi lại file
     fs.writeFileSync(nextConfigPath, nextConfigContent, 'utf8');
     console.log('Đã cập nhật next.config.js thành công');
@@ -98,7 +101,7 @@ declare namespace NodeJS {
     SITE_DESCRIPTION: string
   }
 }`;
-  
+
   try {
     fs.writeFileSync(nextEnvPath, nextEnvContent, 'utf8');
     console.log('Đã tạo file next-env.d.ts thành công');
