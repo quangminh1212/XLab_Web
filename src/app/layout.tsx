@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+// Sử dụng font system thay vì tải từ Google Fonts
+const fontClass = 'system-font'
 
 export const metadata: Metadata = {
   title: 'XLab - Phần mềm chất lượng cao',
@@ -49,7 +49,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body className={inter.className}>
+      <body className={fontClass}>
         <header className="header">
           <div className="container">
             <div className="logo">
