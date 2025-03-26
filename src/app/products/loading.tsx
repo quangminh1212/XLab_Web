@@ -7,8 +7,8 @@ export default function ProductsLoading() {
         <div className="loading-header"></div>
         <div className="loading-filters"></div>
         <div className="loading-grid">
-          {Array(6).fill(0).map((_, i) => (
-            <div key={i} className="loading-card"></div>
+          {[...Array(8)].map((_, index) => (
+            <div key={index} className="loading-card"></div>
           ))}
         </div>
       </div>
