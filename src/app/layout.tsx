@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'XLab - Phần mềm chất lượng cao',
   description: 'XLab cung cấp phần mềm chất lượng cao với giá cả phải chăng',
   keywords: 'phần mềm, software, ứng dụng, xlab, công cụ',
+  metadataBase: new URL('https://xlab.vn'),
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
