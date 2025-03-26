@@ -16,6 +16,38 @@ const products = [
     `,
     price: '1.990.000đ',
     oldPrice: '2.490.000đ',
+    sales: 1250,
+    rating: 4.8,
+    reviews: [
+      {
+        id: 1,
+        user: 'Nguyễn Văn A',
+        avatar: '/images/avatars/user1.jpg',
+        rating: 5,
+        date: '2024-03-15',
+        content: 'Sản phẩm rất tốt, dễ sử dụng và có nhiều tính năng hữu ích. Tôi đã sử dụng được 6 tháng và rất hài lòng.',
+        likes: 12,
+        replies: [
+          {
+            id: 2,
+            user: 'XLab Support',
+            avatar: '/images/avatars/support.jpg',
+            date: '2024-03-16',
+            content: 'Cảm ơn bạn đã đánh giá tích cực về sản phẩm. Chúng tôi sẽ tiếp tục cải thiện để phục vụ bạn tốt hơn.',
+            likes: 3
+          }
+        ]
+      },
+      {
+        id: 3,
+        user: 'Trần Thị B',
+        avatar: '/images/avatars/user2.jpg',
+        rating: 4,
+        date: '2024-03-10',
+        content: 'Tốt nhưng cần thêm một số tính năng nâng cao. Hy vọng sẽ được cập nhật trong phiên bản tiếp theo.',
+        likes: 8
+      }
+    ],
     features: [
       'Phân tích dữ liệu thời gian thực',
       'Báo cáo tùy chỉnh',
@@ -67,6 +99,28 @@ const products = [
     `,
     price: '2.490.000đ',
     oldPrice: '2.990.000đ',
+    sales: 1000,
+    rating: 4.7,
+    reviews: [
+      {
+        id: 4,
+        user: 'Nguyễn Thị C',
+        avatar: '/images/avatars/user3.jpg',
+        rating: 5,
+        date: '2024-03-12',
+        content: 'Sản phẩm rất tốt, bảo mật mạnh mẽ và hiệu quả. Tôi đã sử dụng được 3 tháng và rất hài lòng.',
+        likes: 15
+      },
+      {
+        id: 5,
+        user: 'Trần Văn D',
+        avatar: '/images/avatars/user4.jpg',
+        rating: 4,
+        date: '2024-03-05',
+        content: 'Tốt nhưng cần thêm một số tính năng nâng cao. Hy vọng sẽ được cập nhật trong phiên bản tiếp theo.',
+        likes: 10
+      }
+    ],
     features: [
       'Mã hóa dữ liệu đầu cuối',
       'Xác thực đa yếu tố',
@@ -118,6 +172,28 @@ const products = [
     `,
     price: '1.790.000đ',
     oldPrice: '2.290.000đ',
+    sales: 800,
+    rating: 4.6,
+    reviews: [
+      {
+        id: 6,
+        user: 'Nguyễn Thị E',
+        avatar: '/images/avatars/user5.jpg',
+        rating: 5,
+        date: '2024-03-08',
+        content: 'Sản phẩm rất tốt, giúp tăng năng suất và chất lượng code. Tôi đã sử dụng được 2 tháng và rất hài lòng.',
+        likes: 10
+      },
+      {
+        id: 7,
+        user: 'Trần Văn F',
+        avatar: '/images/avatars/user6.jpg',
+        rating: 4,
+        date: '2024-03-02',
+        content: 'Tốt nhưng cần thêm một số tính năng nâng cao. Hy vọng sẽ được cập nhật trong phiên bản tiếp theo.',
+        likes: 7
+      }
+    ],
     features: [
       'Môi trường phát triển tích hợp',
       'Hỗ trợ nhiều ngôn ngữ lập trình',
@@ -202,6 +278,22 @@ export default function ProductDetail({ params }: Props) {
             <h1>{product.name}</h1>
             <p className="product-description">{product.description}</p>
 
+            <div className="product-meta">
+              <div className="product-rating">
+                <div className="stars">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className={`star ${i < Math.floor(product.rating) ? 'filled' : ''}`}>★</span>
+                  ))}
+                </div>
+                <span className="rating-value">{product.rating}</span>
+                <span className="rating-count">({product.reviews.length} đánh giá)</span>
+              </div>
+              <div className="product-sales">
+                <span className="sales-count">{product.sales.toLocaleString()}</span>
+                <span className="sales-label">lượt bán</span>
+              </div>
+            </div>
+
             <div className="product-price-container">
               <div className="price-box">
                 <span className="current-price">{product.price}</span>
@@ -230,6 +322,7 @@ export default function ProductDetail({ params }: Props) {
             <button className="tab-btn active">Mô tả</button>
             <button className="tab-btn">Thông số kỹ thuật</button>
             <button className="tab-btn">Tính năng</button>
+            <button className="tab-btn">Đánh giá ({product.reviews.length})</button>
             <button className="tab-btn">FAQ</button>
           </div>
 
@@ -261,6 +354,111 @@ export default function ProductDetail({ params }: Props) {
                   <li key={index}>{feature}</li>
                 ))}
               </ul>
+            </div>
+          </div>
+
+          <div className="tab-content">
+            <div className="product-reviews">
+              <div className="reviews-summary">
+                <div className="rating-overview">
+                  <div className="rating-average">
+                    <span className="rating-number">{product.rating}</span>
+                    <div className="stars">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className={`star ${i < Math.floor(product.rating) ? 'filled' : ''}`}>★</span>
+                      ))}
+                    </div>
+                    <span className="rating-count">{product.reviews.length} đánh giá</span>
+                  </div>
+                  <div className="rating-bars">
+                    {[5, 4, 3, 2, 1].map((star) => {
+                      const count = product.reviews.filter(r => r.rating === star).length;
+                      const percentage = (count / product.reviews.length) * 100;
+                      return (
+                        <div key={star} className="rating-bar">
+                          <span className="star-label">{star} sao</span>
+                          <div className="bar-container">
+                            <div className="bar" style={{ width: `${percentage}%` }}></div>
+                          </div>
+                          <span className="bar-count">{count}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="reviews-list">
+                {product.reviews.map((review) => (
+                  <div key={review.id} className="review-item">
+                    <div className="review-header">
+                      <div className="review-user">
+                        <img src={review.avatar} alt={review.user} className="user-avatar" />
+                        <div className="user-info">
+                          <span className="user-name">{review.user}</span>
+                          <div className="review-rating">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i} className={`star ${i < review.rating ? 'filled' : ''}`}>★</span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="review-date">{new Date(review.date).toLocaleDateString('vi-VN')}</span>
+                    </div>
+                    <div className="review-content">
+                      <p>{review.content}</p>
+                      <div className="review-actions">
+                        <button className="btn-like">
+                          <span className="icon">👍</span>
+                          <span className="count">{review.likes}</span>
+                        </button>
+                        <button className="btn-reply">Trả lời</button>
+                      </div>
+                    </div>
+                    {review.replies && review.replies.map((reply) => (
+                      <div key={reply.id} className="review-reply">
+                        <div className="reply-header">
+                          <div className="reply-user">
+                            <img src={reply.avatar} alt={reply.user} className="user-avatar" />
+                            <div className="user-info">
+                              <span className="user-name">{reply.user}</span>
+                            </div>
+                          </div>
+                          <span className="reply-date">{new Date(reply.date).toLocaleDateString('vi-VN')}</span>
+                        </div>
+                        <div className="reply-content">
+                          <p>{reply.content}</p>
+                          <div className="reply-actions">
+                            <button className="btn-like">
+                              <span className="icon">👍</span>
+                              <span className="count">{reply.likes}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+
+              <div className="review-form">
+                <h3>Viết đánh giá của bạn</h3>
+                <form>
+                  <div className="form-group">
+                    <label>Đánh giá sao</label>
+                    <div className="rating-input">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button key={star} type="button" className="star-btn">★</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Nội dung đánh giá</label>
+                    <textarea rows={5} placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."></textarea>
+                  </div>
+                  <button type="submit" className="btn btn-primary">Gửi đánh giá</button>
+                </form>
+              </div>
             </div>
           </div>
 
@@ -298,6 +496,20 @@ export default function ProductDetail({ params }: Props) {
                   <div className="product-content">
                     <h3>{relatedProduct.name}</h3>
                     <p>{relatedProduct.description}</p>
+                    <div className="product-meta">
+                      <div className="product-rating">
+                        <div className="stars">
+                          {[...Array(5)].map((_, i) => (
+                            <span key={i} className={`star ${i < Math.floor(relatedProduct.rating) ? 'filled' : ''}`}>★</span>
+                          ))}
+                        </div>
+                        <span className="rating-value">{relatedProduct.rating}</span>
+                      </div>
+                      <div className="product-sales">
+                        <span className="sales-count">{relatedProduct.sales.toLocaleString()}</span>
+                        <span className="sales-label">lượt bán</span>
+                      </div>
+                    </div>
                     <div className="product-price">
                       <span className="price">{relatedProduct.price}</span>
                       <Link href={`/products/${relatedProduct.id}`} className="btn btn-primary">Chi tiết</Link>
