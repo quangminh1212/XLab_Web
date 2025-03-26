@@ -7,6 +7,7 @@ const nextConfig = {
   },
   experimental: {
     optimizeCss: true,
+    optimizePackageImports: ['react-dom', '@heroicons/react'],
   },
   env: {
     SITE_NAME: 'XLab',
@@ -48,8 +49,23 @@ const nextConfig = {
     if (process.env.NODE_ENV === 'production') {
       // Tối ưu minification
       config.optimization.minimize = true;
-
-      // Thêm các plugin tối ưu hóa nếu cần
+      
+      // Thêm caching
+      config.optimization.runtimeChunk = 'single';
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        maxInitialRequests: Infinity,
+        minSize: 0,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module) {
+              const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+              return `vendor.${packageName.replace('@', '')}`;
+            },
+          },
+        },
+      };
     }
 
     return config;
