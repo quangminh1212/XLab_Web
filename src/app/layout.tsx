@@ -10,8 +10,11 @@ export const metadata: Metadata = {
   description: 'XLab cung cấp phần mềm chất lượng cao với giá cả phải chăng',
   keywords: 'phần mềm, software, ứng dụng, xlab, công cụ',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/favicon.svg', sizes: '32x32', type: 'image/svg+xml' }
+    ],
+    shortcut: '/favicon.ico',
     apple: '/favicon.svg',
   },
   openGraph: {
