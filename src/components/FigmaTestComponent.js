@@ -8,8 +8,8 @@ export default function FigmaTestComponent() {
   useEffect(() => {
     const fetchFigmaData = async () => {
       try {
-        // Thay thế với fileKey thực tế của bạn
-        const fileKey = 'harcbTGSHYc46WFThk6l';
+        // Sử dụng một file Figma UI Kit phổ biến để test
+        const fileKey = 'FP8EJoQGN5PVkvzqlD7Qb5';
         const response = await fetch(`/api/figma?fileKey=${fileKey}`);
         
         if (!response.ok) {
