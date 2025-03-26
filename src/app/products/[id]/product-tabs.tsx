@@ -32,14 +32,17 @@ export function ProductTabsInit() {
                     const toggle = question.querySelector('.faq-toggle');
 
                     if (answer && answer.classList.contains('active')) {
-                        if (answer?.classList.contains('active')) {
-                            answer.classList.remove('active');
-                            toggle?.textContent = '+';
-                        } else {
-                            answer?.classList.add('active');
-                            toggle?.textContent = '-';
+                        answer.classList.remove('active');
+                        if (toggle) {
+                            toggle.textContent = '+';
                         }
-                    });
+                    } else if (answer) {
+                        answer.classList.add('active');
+                        if (toggle) {
+                            toggle.textContent = '-';
+                        }
+                    }
+                });
             });
         };
 

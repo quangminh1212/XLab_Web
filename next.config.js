@@ -17,11 +17,6 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  // Tăng timeout cho việc tải font
-  httpAgentOptions: {
-    keepAlive: true,
-    timeout: 60000, // 60 giây (mặc định: 5 giây)
-  },
   webpack: (config, { isServer }) => {
     // SVG support
     config.module.rules.push({
