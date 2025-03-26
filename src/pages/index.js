@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import FigmaTestComponent from '../components/FigmaTestComponent'
 
 export default function Home() {
   return (
@@ -195,6 +196,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Test Figma Component */}
+        <section className="py-12 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <FigmaTestComponent />
           </div>
         </section>
       </main>
