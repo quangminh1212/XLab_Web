@@ -6,9 +6,7 @@ const nextConfig = {
     domains: ['localhost', 'xlab.vn'],
     formats: ['image/webp', 'image/avif'],
   },
-  experimental: {
-    optimizeFonts: true,
-  },
+  experimental: {},
   env: {
     SITE_NAME: 'XLab',
     SITE_URL: 'https://xlab.vn',
