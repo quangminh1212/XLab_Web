@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -12,13 +14,13 @@ type Props = {
 // Tạo metadata động dựa trên slug
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = params.slug[0];
-  
+
   if (!validSlugs.includes(slug)) {
     return {
       title: 'Trang không tồn tại | XLab',
     };
   }
-  
+
   // Chuyển đổi slug thành title (vd: about -> Giới thiệu)
   const slugToTitle: Record<string, string> = {
     pricing: 'Bảng giá',
@@ -30,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     login: 'Đăng nhập',
     signup: 'Đăng ký',
   };
-  
+
   return {
     title: `${slugToTitle[slug] || slug.charAt(0).toUpperCase() + slug.slice(1)} | XLab`,
     description: `Trang ${slugToTitle[slug]} của XLab - Phần mềm chất lượng cao`,
@@ -39,11 +41,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default function ComingSoonPage({ params }: Props) {
   const slug = params.slug[0];
-  
+
   if (!validSlugs.includes(slug)) {
     notFound();
   }
-  
+
   const slugToTitle: Record<string, string> = {
     pricing: 'Bảng giá',
     about: 'Giới thiệu',
@@ -54,7 +56,7 @@ export default function ComingSoonPage({ params }: Props) {
     login: 'Đăng nhập',
     signup: 'Đăng ký',
   };
-  
+
   return (
     <div className="coming-soon-page">
       <div className="container">
