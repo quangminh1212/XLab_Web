@@ -1,1 +1,4 @@
 node_modules
+
+# Ignore cursor-talk-to-figma-mcp-main project
+../cursor-talk-to-figma-mcp-main/
