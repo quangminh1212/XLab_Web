@@ -2,15 +2,23 @@ import NextAuth from "next-auth";
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
+// Kiểm tra xem các environment variable có tồn tại không
+const hasCredentials = 
+  process.env.GOOGLE_CLIENT_ID && 
+  process.env.GOOGLE_CLIENT_SECRET;
+
 export const authOptions: NextAuthOptions = {
     providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID || "",
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-        }),
+        ...(hasCredentials 
+          ? [GoogleProvider({
+              clientId: process.env.GOOGLE_CLIENT_ID || "",
+              clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+            })]
+          : []),
     ],
     pages: {
         signIn: "/login",
+        error: "/auth/error",
     },
     callbacks: {
         async session({ session, token, user }) {
@@ -27,6 +35,7 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
     },
+    secret: process.env.NEXTAUTH_SECRET || "default_secret_replace_this_in_production",
 };
 
 const handler = NextAuth(authOptions);

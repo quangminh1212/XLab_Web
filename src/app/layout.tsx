@@ -14,14 +14,11 @@ export const metadata: Metadata = {
   description: 'XLab cung cấp các giải pháp phần mềm chất lượng cao cho doanh nghiệp và cá nhân tại Việt Nam',
   keywords: 'phần mềm, software, ứng dụng, xlab, công cụ',
   metadataBase: new URL('https://xlab.vn'),
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
-      { url: '/favicon.svg', sizes: '32x32', type: 'image/svg+xml' }
-    ],
-    shortcut: '/favicon.ico',
-    apple: '/favicon.svg',
-  },
+  icons: [
+    { rel: 'icon', url: '/favicon.ico', type: 'image/x-icon' },
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
+    { rel: 'apple-touch-icon', url: '/favicon.svg' }
+  ],
   openGraph: {
     title: 'XLab - Phần mềm chất lượng cao',
     description: 'XLab cung cấp phần mềm chất lượng cao với giá cả phải chăng',
@@ -54,6 +51,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      </head>
       <body className={inter.className}>
         <Providers>
           <Header />
