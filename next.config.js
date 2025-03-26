@@ -6,7 +6,7 @@ const nextConfig = {
     formats: ['image/webp', 'image/avif'],
   },
   experimental: {
-    optimizeCss: true,
+    // Bỏ optimizeCss để tránh lỗi liên quan đến critters
   },
   serverExternalPackages: ['sharp'],
   env: {
