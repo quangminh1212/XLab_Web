@@ -1,15 +1,17 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Metadata } from 'next'
 import './globals.css'
 import { inter } from './fonts'
 import { Providers } from './providers'
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 // Sử dụng font system thay vì tải từ Google Fonts
 const fontClass = 'system-font'
 
 export const metadata: Metadata = {
-  title: 'XLab - Phần mềm chất lượng cao',
-  description: 'XLab cung cấp phần mềm chất lượng cao với giá cả phải chăng',
+  title: 'XLab - Giải pháp phần mềm chất lượng cao',
+  description: 'XLab cung cấp các giải pháp phần mềm chất lượng cao cho doanh nghiệp và cá nhân tại Việt Nam',
   keywords: 'phần mềm, software, ứng dụng, xlab, công cụ',
   metadataBase: new URL('https://xlab.vn'),
   icons: {
@@ -55,7 +57,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
-          {children}
+          <main>{children}</main>
           <Footer />
         </Providers>
       </body>
