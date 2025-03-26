@@ -5,4 +5,5 @@
     }
   }
 }
-// localhost:3333: npx figma-developer-mcp --figma-api-key=figd_B0wyzUpgbb2jIXoCW4HFl5aLmxu3FPla9dfa-imB
+// localhost:3333: npx figma-developer-mcp --figma-api-key=figd_0Gq6gksL6UhAX72cwelo-dRi49UxkhvdIxzWVsSy
+figd_df9Ru9E7bD6kdq7IPMkeixJnTVLOEwNeCioR3Gp6
