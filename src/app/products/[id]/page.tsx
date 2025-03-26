@@ -4,8 +4,41 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ProductTabsInit } from './product-tabs';
 
+type Review = {
+  id: number;
+  user: string;
+  avatar: string;
+  rating: number;
+  date: string;
+  content: string;
+  likes: number;
+  replies?: {
+    id: number;
+    user: string;
+    avatar: string;
+    date: string;
+    content: string;
+    likes: number;
+  }[];
+};
+
+type Product = {
+  id: string;
+  name: string;
+  description: string;
+  longDescription: string;
+  price: string;
+  oldPrice?: string;
+  sales: number;
+  rating: number;
+  reviews: Review[];
+  features: string[];
+  specifications?: Record<string, string>;
+  faq?: { question: string; answer: string }[];
+};
+
 // Dữ liệu mẫu cho sản phẩm (giống trang products, sẽ được thay bằng dữ liệu thực tế từ API/DB)
-const products = [
+const products: Product[] = [
   {
     id: 'analytics',
     name: 'XLab Analytics',
