@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
-    domains: ['localhost'],
-    formats: ['image/webp'],
+    domains: ['localhost', 'xlab.vn', 'lh3.googleusercontent.com'],
+    formats: ['image/webp', 'image/avif'],
   },
-  experimental: {},
+  experimental: {
+    optimizeCss: true,
+  },
+  serverExternalPackages: ['sharp'],
   env: {
     SITE_NAME: 'XLab',
     SITE_URL: 'https://xlab.vn',
@@ -19,7 +21,18 @@ const nextConfig = {
     // SVG support
     config.module.rules.push({
       test: /\.svg$/,
+      issuer: { and: [/\.(js|ts)x?$/] },
       use: ['@svgr/webpack']
+    });
+
+    // Thêm loaders cho SVG khi sử dụng trong CSS
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.(css|scss)$/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/media/[name].[hash][ext]'
+      }
     });
 
     // Fallbacks khi không ở trong môi trường server
@@ -32,29 +45,48 @@ const nextConfig = {
       };
     }
 
+    // Tối ưu hóa build
+    if (process.env.NODE_ENV === 'production') {
+      // Tối ưu minification
+      config.optimization.minimize = true;
+
+      // Thêm các plugin tối ưu hóa nếu cần
+    }
+
     return config;
   },
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
           },
           {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
         ],
       },
     ];
   },
+  // Tối ưu trang tĩnh
+  compress: true,
+  poweredByHeader: false,
 };
 
 module.exports = nextConfig; 
