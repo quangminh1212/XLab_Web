@@ -1,6 +1,7 @@
+'use client';
+
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
 import { ProductTabsInit } from './product-tabs';
 
 // Dữ liệu mẫu cho sản phẩm (giống trang products, sẽ được thay bằng dữ liệu thực tế từ API/DB)
@@ -164,27 +165,6 @@ type Props = {
   params: { id: string }
 };
 
-// Tạo metadata động dựa trên tham số sản phẩm
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = products.find(p => p.id === params.id);
-  
-  if (!product) {
-    return {
-      title: 'Sản phẩm không tồn tại | XLab',
-    };
-  }
-  
-  return {
-    title: `${product.name} | XLab - Phần mềm chất lượng cao`,
-    description: product.description,
-    openGraph: {
-      title: `${product.name} | XLab`,
-      description: product.description,
-      type: 'product',
-    },
-  };
-}
-
 // Cung cấp các đường dẫn tĩnh cho Next.js build
 export async function generateStaticParams() {
   return products.map(product => ({
@@ -194,18 +174,18 @@ export async function generateStaticParams() {
 
 export default function ProductDetail({ params }: Props) {
   const product = products.find(p => p.id === params.id);
-  
+
   if (!product) {
     notFound();
   }
-  
+
   return (
     <div className="product-detail-page">
       <div className="container">
         <div className="product-breadcrumb">
           <Link href="/">Trang chủ</Link> &gt; <Link href="/products">Sản phẩm</Link> &gt; <span>{product.name}</span>
         </div>
-        
+
         <div className="product-hero">
           <div className="product-image-container">
             <div className="product-image">
@@ -217,23 +197,23 @@ export default function ProductDetail({ params }: Props) {
               <div className="thumbnail"></div>
             </div>
           </div>
-          
+
           <div className="product-info">
             <h1>{product.name}</h1>
             <p className="product-description">{product.description}</p>
-            
+
             <div className="product-price-container">
               <div className="price-box">
                 <span className="current-price">{product.price}</span>
                 {product.oldPrice && <span className="old-price">{product.oldPrice}</span>}
               </div>
-              
+
               <div className="product-actions">
                 <button className="btn btn-primary">Mua ngay</button>
                 <button className="btn btn-outline">Thêm vào giỏ hàng</button>
               </div>
             </div>
-            
+
             <div className="product-features-highlight">
               <h3>Tính năng nổi bật</h3>
               <ul>
@@ -244,7 +224,7 @@ export default function ProductDetail({ params }: Props) {
             </div>
           </div>
         </div>
-        
+
         <div className="product-tabs">
           <div className="tabs-header">
             <button className="tab-btn active">Mô tả</button>
@@ -252,11 +232,11 @@ export default function ProductDetail({ params }: Props) {
             <button className="tab-btn">Tính năng</button>
             <button className="tab-btn">FAQ</button>
           </div>
-          
+
           <div className="tab-content active">
             <div className="product-description-full" dangerouslySetInnerHTML={{ __html: product.longDescription }}></div>
           </div>
-          
+
           <div className="tab-content">
             <div className="product-specifications">
               <h3>Thông số kỹ thuật</h3>
@@ -272,7 +252,7 @@ export default function ProductDetail({ params }: Props) {
               </table>
             </div>
           </div>
-          
+
           <div className="tab-content">
             <div className="product-features-full">
               <h3>Tất cả tính năng</h3>
@@ -283,7 +263,7 @@ export default function ProductDetail({ params }: Props) {
               </ul>
             </div>
           </div>
-          
+
           <div className="tab-content">
             <div className="product-faq">
               <h3>Câu hỏi thường gặp</h3>
@@ -303,7 +283,7 @@ export default function ProductDetail({ params }: Props) {
             </div>
           </div>
         </div>
-        
+
         <div className="related-products">
           <h2>Sản phẩm liên quan</h2>
           <div className="products-grid">
@@ -328,7 +308,7 @@ export default function ProductDetail({ params }: Props) {
           </div>
         </div>
       </div>
-      
+
       <ProductTabsInit />
     </div>
   );

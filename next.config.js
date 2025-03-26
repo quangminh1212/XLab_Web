@@ -6,7 +6,9 @@ const nextConfig = {
     domains: ['localhost', 'xlab.vn'],
     formats: ['image/webp', 'image/avif'],
   },
-  experimental: {},
+  experimental: {
+    optimizeFonts: true,
+  },
   env: {
     SITE_NAME: 'XLab',
     SITE_URL: 'https://xlab.vn',
@@ -14,6 +16,11 @@ const nextConfig = {
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
+  },
+  // Tăng timeout cho việc tải font
+  httpAgentOptions: {
+    keepAlive: true,
+    timeout: 60000, // 60 giây (mặc định: 5 giây)
   },
   webpack: (config, { isServer }) => {
     // SVG support
