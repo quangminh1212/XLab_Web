@@ -3,8 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ['localhost'],
-    formats: ['image/webp'],
+    domains: ['localhost', 'xlab.vn'],
+    formats: ['image/webp', 'image/avif'],
   },
   experimental: {},
   env: {
@@ -19,7 +19,18 @@ const nextConfig = {
     // SVG support
     config.module.rules.push({
       test: /\.svg$/,
+      issuer: { and: [/\.(js|ts)x?$/] },
       use: ['@svgr/webpack']
+    });
+
+    // Thêm loaders cho SVG khi sử dụng trong CSS
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.(css|scss)$/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/media/[name].[hash][ext]'
+      }
     });
 
     // Fallbacks khi không ở trong môi trường server
