@@ -7,8 +7,8 @@ const nextConfig = {
   },
   experimental: {
     optimizeCss: true,
-    serverComponentsExternalPackages: ['sharp'],
   },
+  serverExternalPackages: ['sharp'],
   env: {
     SITE_NAME: 'XLab',
     SITE_URL: 'https://xlab.vn',
