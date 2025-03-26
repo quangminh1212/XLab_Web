@@ -1,11 +1,94 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: 'XLab - Phần mềm chất lượng cao',
   description: 'XLab cung cấp các phần mềm chất lượng cao với giá cả phải chăng. Khám phá ngay!',
 };
+
+// Tách các SVG icons thành components để tái sử dụng và tối ưu hóa
+const InfinityIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+  </svg>
+);
+
+const UpdateIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <polyline points="16 12 12 8 8 12"></polyline>
+    <line x1="12" y1="16" x2="12" y2="8"></line>
+  </svg>
+);
+
+// Định nghĩa interfaces cho props của components
+interface FeatureCardProps {
+  icon: ReactNode;
+  title: string;
+  description: string;
+}
+
+interface ProductCardProps {
+  title: string;
+  description: string;
+  price: string;
+  link: string;
+}
+
+interface TestimonialCardProps {
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+}
+
+// Tách thành các components riêng biệt để dễ quản lý và bảo trì
+const FeatureCard = ({ icon, title, description }: FeatureCardProps) => (
+  <div className="feature-card">
+    <div className="feature-icon">{icon}</div>
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </div>
+);
+
+const ProductCard = ({ title, description, price, link }: ProductCardProps) => (
+  <div className="product-card">
+    <div className="product-image">
+      {/* Placeholder for product image */}
+    </div>
+    <div className="product-content">
+      <h3>{title}</h3>
+      <p>{description}</p>
+      <div className="product-price">
+        <span className="price">{price}</span>
+        <Link href={link} className="btn btn-primary">Chi tiết</Link>
+      </div>
+    </div>
+  </div>
+);
+
+const TestimonialCard = ({ quote, author, role, company }: TestimonialCardProps) => (
+  <div className="testimonial-card">
+    <p>"{quote}"</p>
+    <div className="testimonial-author">
+      <div className="author-avatar">
+        {/* Avatar placeholder */}
+      </div>
+      <div className="author-info">
+        <h4>{author}</h4>
+        <p>{role}, {company}</p>
+      </div>
+    </div>
+  </div>
+);
 
 export default function Home() {
   return (
@@ -32,35 +115,21 @@ export default function Home() {
             <p>Chúng tôi phát triển phần mềm với sự tập trung vào trải nghiệm người dùng, hiệu suất và bảo mật.</p>
           </div>
           <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
-                </svg>
-              </div>
-              <h3>Thiết kế hiện đại</h3>
-              <p>Giao diện người dùng trực quan, thân thiện và đáp ứng trên mọi thiết bị.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg>
-              </div>
-              <h3>Bảo mật tối đa</h3>
-              <p>Chúng tôi ưu tiên bảo mật dữ liệu với các công nghệ mã hóa và kiểm soát truy cập tiên tiến.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="16 12 12 8 8 12"></polyline>
-                  <line x1="12" y1="16" x2="12" y2="8"></line>
-                </svg>
-              </div>
-              <h3>Cập nhật liên tục</h3>
-              <p>Phần mềm của chúng tôi luôn được cập nhật với các tính năng mới và cải tiến hiệu suất.</p>
-            </div>
+            <FeatureCard 
+              icon={<InfinityIcon />}
+              title="Thiết kế hiện đại"
+              description="Giao diện người dùng trực quan, thân thiện và đáp ứng trên mọi thiết bị."
+            />
+            <FeatureCard 
+              icon={<ShieldIcon />}
+              title="Bảo mật tối đa"
+              description="Chúng tôi ưu tiên bảo mật dữ liệu với các công nghệ mã hóa và kiểm soát truy cập tiên tiến."
+            />
+            <FeatureCard 
+              icon={<UpdateIcon />}
+              title="Cập nhật liên tục"
+              description="Phần mềm của chúng tôi luôn được cập nhật với các tính năng mới và cải tiến hiệu suất."
+            />
           </div>
         </div>
       </section>
@@ -73,45 +142,24 @@ export default function Home() {
             <p>Khám phá các giải pháp phần mềm chuyên nghiệp của chúng tôi.</p>
           </div>
           <div className="products-grid">
-            <div className="product-card">
-              <div className="product-image">
-                {/* Placeholder for product image */}
-              </div>
-              <div className="product-content">
-                <h3>XLab Analytics</h3>
-                <p>Giải pháp phân tích dữ liệu hiện đại giúp doanh nghiệp ra quyết định thông minh.</p>
-                <div className="product-price">
-                  <span className="price">1.990.000đ</span>
-                  <Link href="/products/analytics" className="btn btn-primary">Chi tiết</Link>
-                </div>
-              </div>
-            </div>
-            <div className="product-card">
-              <div className="product-image">
-                {/* Placeholder for product image */}
-              </div>
-              <div className="product-content">
-                <h3>XLab Security</h3>
-                <p>Bảo vệ dữ liệu quan trọng của bạn với giải pháp bảo mật toàn diện.</p>
-                <div className="product-price">
-                  <span className="price">2.490.000đ</span>
-                  <Link href="/products/security" className="btn btn-primary">Chi tiết</Link>
-                </div>
-              </div>
-            </div>
-            <div className="product-card">
-              <div className="product-image">
-                {/* Placeholder for product image */}
-              </div>
-              <div className="product-content">
-                <h3>XLab Developer</h3>
-                <p>Bộ công cụ phát triển phần mềm cao cấp cho các lập trình viên chuyên nghiệp.</p>
-                <div className="product-price">
-                  <span className="price">1.790.000đ</span>
-                  <Link href="/products/developer" className="btn btn-primary">Chi tiết</Link>
-                </div>
-              </div>
-            </div>
+            <ProductCard 
+              title="XLab Analytics"
+              description="Giải pháp phân tích dữ liệu hiện đại giúp doanh nghiệp ra quyết định thông minh."
+              price="1.990.000đ"
+              link="/products/analytics"
+            />
+            <ProductCard 
+              title="XLab Security"
+              description="Bảo vệ dữ liệu quan trọng của bạn với giải pháp bảo mật toàn diện."
+              price="2.490.000đ"
+              link="/products/security"
+            />
+            <ProductCard 
+              title="XLab Developer"
+              description="Bộ công cụ phát triển phần mềm cao cấp cho các lập trình viên chuyên nghiệp."
+              price="1.790.000đ"
+              link="/products/developer"
+            />
           </div>
         </div>
       </section>
@@ -124,42 +172,24 @@ export default function Home() {
             <p>Những đánh giá từ khách hàng đã sử dụng sản phẩm của XLab.</p>
           </div>
           <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <p>"XLab Analytics đã giúp công ty chúng tôi hiểu rõ hơn về hành vi khách hàng và tối ưu hóa chiến lược kinh doanh. Một công cụ tuyệt vời!"</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">
-                  {/* Avatar placeholder */}
-                </div>
-                <div className="author-info">
-                  <h4>Nguyễn Văn A</h4>
-                  <p>Giám đốc Marketing, Công ty ABC</p>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial-card">
-              <p>"Bảo mật là ưu tiên hàng đầu của chúng tôi, và XLab Security cung cấp giải pháp toàn diện mà chúng tôi cần. Đáng đồng tiền bát gạo!"</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">
-                  {/* Avatar placeholder */}
-                </div>
-                <div className="author-info">
-                  <h4>Trần Thị B</h4>
-                  <p>Giám đốc CNTT, Công ty XYZ</p>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial-card">
-              <p>"XLab Developer đã tăng hiệu suất của team lập trình chúng tôi lên đáng kể. Giao diện trực quan, tính năng đa dạng và hiệu suất cao."</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">
-                  {/* Avatar placeholder */}
-                </div>
-                <div className="author-info">
-                  <h4>Lê Văn C</h4>
-                  <p>Tech Lead, Startup DEF</p>
-                </div>
-              </div>
-            </div>
+            <TestimonialCard 
+              quote="XLab Analytics đã giúp công ty chúng tôi hiểu rõ hơn về hành vi khách hàng và tối ưu hóa chiến lược kinh doanh. Một công cụ tuyệt vời!"
+              author="Nguyễn Văn A"
+              role="Giám đốc Marketing"
+              company="Công ty ABC"
+            />
+            <TestimonialCard 
+              quote="Bảo mật là ưu tiên hàng đầu của chúng tôi, và XLab Security cung cấp giải pháp toàn diện mà chúng tôi cần. Đáng đồng tiền bát gạo!"
+              author="Trần Thị B"
+              role="Giám đốc CNTT"
+              company="Công ty XYZ"
+            />
+            <TestimonialCard 
+              quote="XLab Developer đã tăng hiệu suất của team lập trình chúng tôi lên đáng kể. Giao diện trực quan, tính năng đa dạng và hiệu suất cao."
+              author="Lê Văn C"
+              role="Tech Lead"
+              company="Startup DEF"
+            />
           </div>
         </div>
       </section>
