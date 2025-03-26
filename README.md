@@ -44,7 +44,7 @@ npm start
 
 Chạy Figma MCP:
 ```
-npx figma-developer-mcp --figma-api-key=figd_harcbTGSHYc46WFThk6leVvE_SKFDT8y5_6Z1_2-
+npx figma-developer-mcp --figma-api-key=figd_o9UXH8kEBgND0cTSfRFSxLRKsOwZP9CbSZuOHZuf
 ```
 
 
