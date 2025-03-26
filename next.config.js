@@ -8,6 +8,10 @@ const nextConfig = {
   experimental: {
     // Bỏ optimizeCss để tránh lỗi liên quan đến critters
   },
+  // Thêm cấu hình telemetry và trace
+  telemetry: {
+    telemetryDisabled: true
+  },
   serverExternalPackages: ['sharp'],
   env: {
     SITE_NAME: 'XLab',

@@ -1,15 +1,30 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
+// Tạm thời comment phần import next-auth
+// import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 
+// Tạo type session để tạm thời thay thế
+type MockUser = {
+    name?: string;
+    image?: string;
+};
+
+type MockSession = {
+    user?: MockUser;
+};
+
 export default function Header() {
-    const { data: session, status } = useSession();
+    // Tạm thời mock session
+    const session: MockSession | null = null;
+    const status = 'unauthenticated';
     const [menuOpen, setMenuOpen] = useState(false);
 
     const handleSignOut = () => {
-        signOut({ callbackUrl: '/' });
+        // signOut({ callbackUrl: '/' });
+        console.log('Sign out clicked');
+        // TODO: Xử lý đăng xuất sau khi cấu hình next-auth
     };
 
     const toggleMenu = () => {
@@ -33,55 +48,9 @@ export default function Header() {
                 </nav>
 
                 <div className="user-actions">
-                    {status === 'authenticated' && session?.user ? (
-                        <div className="user-dropdown">
-                            <button className="user-menu-btn" onClick={toggleMenu}>
-                                {session.user.image ? (
-                                    <img src={session.user.image} alt={session.user.name || 'User'} className="user-avatar-small" />
-                                ) : (
-                                    <div className="user-avatar-small">
-                                        {session.user.name ? session.user.name[0].toUpperCase() : 'U'}
-                                    </div>
-                                )}
-                                <span className="user-name-display">{session.user.name}</span>
-                            </button>
-
-                            <div className={`user-dropdown-menu ${menuOpen ? 'active' : ''}`}>
-                                <ul>
-                                    <li>
-                                        <Link href="/profile">
-                                            <span className="menu-icon">👤</span>
-                                            <span>Hồ sơ của tôi</span>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/orders">
-                                            <span className="menu-icon">🛒</span>
-                                            <span>Đơn hàng của tôi</span>
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/downloads">
-                                            <span className="menu-icon">⬇️</span>
-                                            <span>Tải xuống</span>
-                                        </Link>
-                                    </li>
-                                    <div className="user-dropdown-divider"></div>
-                                    <li>
-                                        <button onClick={handleSignOut}>
-                                            <span className="menu-icon">🚪</span>
-                                            <span>Đăng xuất</span>
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    ) : (
-                        <>
-                            <Link href="/login" className="btn btn-light">Đăng nhập</Link>
-                            <Link href="/register" className="btn btn-primary">Đăng ký</Link>
-                        </>
-                    )}
+                    {/* Tạm thời chỉ hiển thị nút đăng nhập và đăng ký */}
+                    <Link href="/login" className="btn btn-light">Đăng nhập</Link>
+                    <Link href="/register" className="btn btn-primary">Đăng ký</Link>
                 </div>
             </div>
         </header>
