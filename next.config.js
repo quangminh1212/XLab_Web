@@ -8,6 +8,7 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['react-dom', '@heroicons/react'],
+    serverSourceMaps: true,
   },
   env: {
     SITE_NAME: 'XLab',
@@ -15,8 +16,11 @@ const nextConfig = {
     SITE_DESCRIPTION: 'XLab - Trang web bán phần mềm chất lượng cao',
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
   },
+  productionBrowserSourceMaps: true,  // Bật source maps cho môi trường production
   webpack: (config, { isServer }) => {
     // SVG support
     config.module.rules.push({
