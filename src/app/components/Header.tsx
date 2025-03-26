@@ -1,16 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 
 export default function Header() {
-    const { data: session, status } = useSession();
+    // Simplified implementation without next-auth
     const [menuOpen, setMenuOpen] = useState(false);
-
-    const handleSignOut = () => {
-        signOut({ callbackUrl: '/' });
-    };
+    const isLoggedIn = false; // Temporary - will be replaced with actual auth later
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -33,17 +29,11 @@ export default function Header() {
                 </nav>
 
                 <div className="user-actions">
-                    {status === 'authenticated' && session?.user ? (
+                    {isLoggedIn ? (
                         <div className="user-dropdown">
                             <button className="user-menu-btn" onClick={toggleMenu}>
-                                {session.user.image ? (
-                                    <img src={session.user.image} alt={session.user.name || 'User'} className="user-avatar-small" />
-                                ) : (
-                                    <div className="user-avatar-small">
-                                        {session.user.name ? session.user.name[0].toUpperCase() : 'U'}
-                                    </div>
-                                )}
-                                <span className="user-name-display">{session.user.name}</span>
+                                <div className="user-avatar-small">U</div>
+                                <span className="user-name-display">Người dùng</span>
                             </button>
 
                             <div className={`user-dropdown-menu ${menuOpen ? 'active' : ''}`}>
@@ -68,7 +58,7 @@ export default function Header() {
                                     </li>
                                     <div className="user-dropdown-divider"></div>
                                     <li>
-                                        <button onClick={handleSignOut}>
+                                        <button onClick={() => {}}>
                                             <span className="menu-icon">🚪</span>
                                             <span>Đăng xuất</span>
                                         </button>
