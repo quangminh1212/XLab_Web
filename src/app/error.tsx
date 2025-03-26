@@ -10,21 +10,20 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    // Log error
+    console.error('Application error:', error);
   }, [error]);
 
   return (
-    <div className="error-container container">
-      <div className="error-content">
-        <h2>Đã xảy ra lỗi</h2>
-        <p>Xin lỗi, đã có lỗi xảy ra khi tải trang. Vui lòng thử lại sau.</p>
-        <button
-          className="btn btn-primary"
-          onClick={() => reset()}
-        >
-          Thử lại
-        </button>
-      </div>
+    <div className="error-container">
+      <h2>Đã xảy ra lỗi</h2>
+      <p>Xin lỗi, đã có sự cố xảy ra. Vui lòng thử lại.</p>
+      <button
+        onClick={() => reset()}
+        className="error-button"
+      >
+        Thử lại
+      </button>
     </div>
   );
 } 
