@@ -39,25 +39,40 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     setLoading(false)
   }
 
+  // Nếu src là URL từ bên ngoài, sử dụng img tag thay vì Image component từ Next.js
+  const isExternalUrl = src && (src.startsWith('http://') || src.startsWith('https://'))
+
   return (
-    <div className={`relative w-full h-full ${className}`}>
+    <div className={`relative overflow-hidden ${className}`}>
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="w-6 h-6 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
         </div>
       )}
       
-      <Image
-        src={error ? '/images/placeholder-product.jpg' : imageSrc}
-        alt={alt}
-        width={width}
-        height={height}
-        className={`transition-opacity duration-300 ${loading ? 'opacity-0' : 'opacity-100'} object-cover h-full w-full`}
-        onLoad={handleLoad}
-        onError={handleError}
-        priority={true}
-        unoptimized={true}
-      />
+      {isExternalUrl ? (
+        // Sử dụng thẻ img cho URL bên ngoài
+        <img 
+          src={error ? '/images/placeholder-product.jpg' : imageSrc}
+          alt={alt}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${loading ? 'opacity-0' : 'opacity-100'}`}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      ) : (
+        // Sử dụng Next.js Image cho URL nội bộ
+        <Image
+          src={error ? '/images/placeholder-product.jpg' : imageSrc}
+          alt={alt}
+          width={width}
+          height={height}
+          className={`transition-opacity duration-300 ${loading ? 'opacity-0' : 'opacity-100'} object-cover`}
+          onLoad={handleLoad}
+          onError={handleError}
+          priority={true}
+          unoptimized={true}
+        />
+      )}
 
       {error && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 bg-opacity-70 text-gray-400">
