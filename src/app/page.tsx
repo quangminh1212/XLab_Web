@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { products, categories, stores } from '@/data/mockData'
 import CategoryList from '@/components/CategoryList'
 import ProductGrid from '@/components/ProductGrid'
+import { ProductImage } from '@/components/ProductImage'
 
 export default function Home() {
   // Get featured products for the homepage
@@ -99,21 +100,15 @@ export default function Home() {
               >
                 <div className="p-6">
               <div className="flex items-center">
-                    <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mr-4">
-                      {store.imageUrl ? (
-                        <Image 
-                          src={store.imageUrl}
-                          alt={store.name}
-                          width={64}
-                          height={64}
-                          className="rounded-full object-cover"
-                        />
-                      ) : (
-                        <svg className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
-                      )}
-              </div>
+                    <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mr-4 overflow-hidden">
+                      <ProductImage 
+                        src={store.imageUrl || '/placeholder-product.jpg'}
+                        alt={store.name}
+                        width={64}
+                        height={64}
+                        className="rounded-full object-cover"
+                      />
+                    </div>
                     <div>
                       <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary-600 transition-colors">
                         {store.name}
