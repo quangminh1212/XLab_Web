@@ -1,12 +1,12 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo XLab Web - Next.js 14.1.0 Startup Tool
+echo XLab Web - Next.js 15.2.4 Startup Tool
 echo ------------------------------
-echo [Running in Next.js 14.1.0 DEVELOPMENT mode]
+echo [Running in Next.js 15.2.4 DEVELOPMENT mode]
 
-:: Cài đặt mặc định phiên bản Next.js 14.1.0 và dùng development
-set NEXT_VERSION_FULL=14.1.0
+:: Cài đặt mặc định phiên bản Next.js 15.2.4 và dùng development
+set NEXT_VERSION_FULL=15.2.4
 set RUN_MODE=dev
 
 :: Bước 1: Kiểm tra cài đặt Node.js
