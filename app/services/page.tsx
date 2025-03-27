@@ -1,214 +1,278 @@
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export const metadata = {
   title: "Dịch vụ - XLab",
   description: "Các dịch vụ phát triển và triển khai phần mềm của XLab",
 };
 
-export default function ServicesPage() {
+export default function Services() {
   return (
-    <main>
+    <>
       {/* Hero Section */}
-      <section className="bg-indigo-600 text-white py-16">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">Dịch vụ của XLab</h1>
-          <p className="text-xl max-w-3xl">
-            Chúng tôi cung cấp các dịch vụ chuyên nghiệp từ tư vấn chiến lược, thiết kế giải pháp đến triển khai và hỗ trợ kỹ thuật.
-          </p>
+      <section className="hero-gradient text-white py-20 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image 
+            src="/images/hero-bg.svg" 
+            alt="Hero Background" 
+            fill
+            style={{ objectFit: 'cover' }}
+            priority
+          />
+        </div>
+        <div className="container relative">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="mb-6">Dịch vụ chuyên nghiệp</h1>
+            <p className="text-xl text-blue-100 mb-0">
+              Chúng tôi cung cấp các dịch vụ chuyên nghiệp để giúp doanh nghiệp của bạn triển khai, vận hành và tối ưu hóa các giải pháp phần mềm
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Services List */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {/* Service 1 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 flex flex-col">
-              <div className="p-6 flex-grow">
-                <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Tư vấn & Thiết kế giải pháp</h3>
-                <p className="text-gray-600 mb-6">
-                  Đội ngũ chuyên gia của chúng tôi sẽ phân tích nhu cầu doanh nghiệp của bạn và đề xuất giải pháp phần mềm phù hợp nhất.
-                </p>
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Dịch vụ bao gồm:</h4>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Phân tích nhu cầu kinh doanh</li>
-                    <li>Thiết kế giải pháp tổng thể</li>
-                    <li>Đánh giá công nghệ</li>
-                    <li>Lên kế hoạch triển khai</li>
-                  </ul>
-                </div>
+      {/* Services */}
+      <section className="section">
+        <div className="container">
+          <div className="grid grid-cols-1 gap-16">
+            {/* Consulting Service */}
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="bg-blue-50 rounded-2xl p-8 flex items-center justify-center">
+                <Image
+                  src="/images/consulting.svg"
+                  alt="Tư vấn giải pháp"
+                  width={400}
+                  height={300}
+                  className="w-full max-w-md"
+                />
               </div>
-              <div className="p-6 border-t border-gray-100">
-                <Link 
-                  href="/contact" 
-                  className="inline-block bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium"
-                >
-                  Tư vấn miễn phí
-                </Link>
+              <div>
+                <h2 className="mb-4">Tư vấn giải pháp</h2>
+                <p className="text-gray-600 mb-6">
+                  Đội ngũ chuyên gia giàu kinh nghiệm của chúng tôi sẽ tư vấn và đề xuất giải pháp phù hợp nhất với mô hình kinh doanh và nhu cầu cụ thể của doanh nghiệp bạn.
+                </p>
+                <h3 className="text-xl font-semibold mb-4">Lợi ích</h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Đánh giá chi tiết nhu cầu và thách thức của doanh nghiệp</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Đề xuất giải pháp tối ưu dựa trên kinh nghiệm thực tế</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Lộ trình triển khai rõ ràng và quản lý thay đổi hiệu quả</span>
+                  </li>
+                </ul>
               </div>
             </div>
-
-            {/* Service 2 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 flex flex-col">
-              <div className="p-6 flex-grow">
-                <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Phát triển phần mềm tùy chỉnh</h3>
-                <p className="text-gray-600 mb-6">
-                  Chúng tôi xây dựng các giải pháp phần mềm tùy chỉnh theo yêu cầu cụ thể của doanh nghiệp bạn.
-                </p>
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Dịch vụ bao gồm:</h4>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Phát triển ứng dụng web/mobile</li>
-                    <li>Xây dựng API và tích hợp hệ thống</li>
-                    <li>Phát triển theo phương pháp Agile</li>
-                    <li>Kiểm thử và đảm bảo chất lượng</li>
-                  </ul>
-                </div>
+            
+            {/* Development Service */}
+            <div className="grid md:grid-cols-2 gap-12 items-center md:flex-row-reverse">
+              <div className="order-1 md:order-2 bg-indigo-50 rounded-2xl p-8 flex items-center justify-center">
+                <Image
+                  src="/images/development.svg"
+                  alt="Phát triển phần mềm"
+                  width={400}
+                  height={300}
+                  className="w-full max-w-md"
+                />
               </div>
-              <div className="p-6 border-t border-gray-100">
-                <Link 
-                  href="/contact" 
-                  className="inline-block bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-lg font-medium"
-                >
-                  Yêu cầu báo giá
-                </Link>
+              <div className="order-2 md:order-1">
+                <h2 className="mb-4">Phát triển phần mềm</h2>
+                <p className="text-gray-600 mb-6">
+                  Chúng tôi cung cấp dịch vụ phát triển phần mềm theo yêu cầu, giúp doanh nghiệp tạo ra các ứng dụng tùy chỉnh hoặc mở rộng các giải pháp hiện có để đáp ứng nhu cầu đặc thù.
+                </p>
+                <h3 className="text-xl font-semibold mb-4">Quy trình làm việc</h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Thu thập yêu cầu và phân tích chi tiết</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Thiết kế kiến trúc và giao diện người dùng</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Phát triển linh hoạt với review thường xuyên</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Kiểm thử kỹ lưỡng và đảm bảo chất lượng</span>
+                  </li>
+                </ul>
               </div>
             </div>
-
-            {/* Service 3 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 flex flex-col">
-              <div className="p-6 flex-grow">
-                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Triển khai & Tích hợp</h3>
-                <p className="text-gray-600 mb-6">
-                  Chúng tôi đảm bảo quá trình triển khai và tích hợp phần mềm diễn ra suôn sẻ với quy trình được tối ưu hóa.
-                </p>
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Dịch vụ bao gồm:</h4>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Triển khai hệ thống</li>
-                    <li>Tích hợp với các hệ thống hiện có</li>
-                    <li>Di chuyển dữ liệu</li>
-                    <li>Đào tạo người dùng</li>
-                  </ul>
-                </div>
+            
+            {/* Integration Service */}
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="bg-green-50 rounded-2xl p-8 flex items-center justify-center">
+                <Image
+                  src="/images/integration.svg"
+                  alt="Triển khai & Tích hợp"
+                  width={400}
+                  height={300}
+                  className="w-full max-w-md"
+                />
               </div>
-              <div className="p-6 border-t border-gray-100">
-                <Link 
-                  href="/contact" 
-                  className="inline-block bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg font-medium"
-                >
-                  Tìm hiểu thêm
-                </Link>
+              <div>
+                <h2 className="mb-4">Triển khai & Tích hợp</h2>
+                <p className="text-gray-600 mb-6">
+                  Chúng tôi hỗ trợ triển khai và tích hợp các giải pháp phần mềm vào hệ thống hiện có của doanh nghiệp một cách liền mạch, đảm bảo quá trình chuyển đổi diễn ra suôn sẻ và an toàn.
+                </p>
+                <h3 className="text-xl font-semibold mb-4">Dịch vụ bao gồm</h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Thiết lập hệ thống và cấu hình theo yêu cầu</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Tích hợp với các hệ thống và ứng dụng hiện có</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Di chuyển dữ liệu an toàn và toàn vẹn</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Đào tạo người dùng và quản trị viên hệ thống</span>
+                  </li>
+                </ul>
               </div>
             </div>
-
-            {/* Service 4 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-100 flex flex-col">
-              <div className="p-6 flex-grow">
-                <div className="w-16 h-16 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Hỗ trợ & Bảo trì</h3>
-                <p className="text-gray-600 mb-6">
-                  Chúng tôi cung cấp dịch vụ hỗ trợ và bảo trì liên tục để đảm bảo phần mềm của bạn luôn hoạt động tốt nhất.
-                </p>
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Dịch vụ bao gồm:</h4>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Hỗ trợ kỹ thuật 24/7</li>
-                    <li>Cập nhật và nâng cấp hệ thống</li>
-                    <li>Giám sát hiệu suất</li>
-                    <li>Sao lưu và khôi phục dữ liệu</li>
-                  </ul>
-                </div>
+            
+            {/* Support Service */}
+            <div className="grid md:grid-cols-2 gap-12 items-center md:flex-row-reverse">
+              <div className="order-1 md:order-2 bg-purple-50 rounded-2xl p-8 flex items-center justify-center">
+                <Image
+                  src="/images/support.svg"
+                  alt="Hỗ trợ & Bảo trì"
+                  width={400}
+                  height={300}
+                  className="w-full max-w-md"
+                />
               </div>
-              <div className="p-6 border-t border-gray-100">
-                <Link 
-                  href="/contact" 
-                  className="inline-block bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-lg font-medium"
-                >
-                  Đăng ký dịch vụ
-                </Link>
+              <div className="order-2 md:order-1">
+                <h2 className="mb-4">Hỗ trợ & Bảo trì</h2>
+                <p className="text-gray-600 mb-6">
+                  Dịch vụ hỗ trợ và bảo trì của chúng tôi đảm bảo hệ thống của bạn luôn hoạt động ổn định, an toàn và cập nhật với các tính năng mới nhất.
+                </p>
+                <h3 className="text-xl font-semibold mb-4">Gói hỗ trợ</h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Hỗ trợ kỹ thuật 24/7 qua nhiều kênh liên lạc</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Bảo trì định kỳ và cập nhật phần mềm tự động</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Giám sát hiệu suất và bảo mật hệ thống</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Sao lưu dữ liệu và khôi phục sự cố nhanh chóng</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-16">Quy trình làm việc của chúng tôi</h2>
-          
-          <div className="flex flex-col md:flex-row justify-between max-w-4xl mx-auto">
-            <div className="text-center mb-8 md:mb-0">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold">1</span>
+      {/* Process */}
+      <section className="section bg-gray-50">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="mb-4">Quy trình làm việc</h2>
+            <p className="text-xl text-gray-600">
+              Chúng tôi tuân theo quy trình làm việc minh bạch và hiệu quả để đảm bảo chất lượng dịch vụ
+            </p>
+          </div>
+          <div className="max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="card p-8 relative">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 rounded-full text-white text-xl font-bold flex items-center justify-center">1</div>
+                <h3 className="text-xl font-semibold mb-3 mt-2">Tư vấn ban đầu</h3>
+                <p className="text-gray-600">
+                  Gặp gỡ và trao đổi để hiểu rõ nhu cầu, mục tiêu và thách thức của doanh nghiệp.
+                </p>
               </div>
-              <h3 className="text-lg font-bold mb-2">Tìm hiểu & Phân tích</h3>
-              <p className="text-gray-600 px-4">Hiểu rõ nhu cầu và mục tiêu của bạn</p>
-            </div>
-            
-            <div className="text-center mb-8 md:mb-0">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold">2</span>
+              <div className="card p-8 relative">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 rounded-full text-white text-xl font-bold flex items-center justify-center">2</div>
+                <h3 className="text-xl font-semibold mb-3 mt-2">Đề xuất giải pháp</h3>
+                <p className="text-gray-600">
+                  Phân tích và đề xuất giải pháp phù hợp kèm theo kế hoạch triển khai chi tiết.
+                </p>
               </div>
-              <h3 className="text-lg font-bold mb-2">Thiết kế & Phát triển</h3>
-              <p className="text-gray-600 px-4">Xây dựng giải pháp tùy chỉnh</p>
-            </div>
-            
-            <div className="text-center mb-8 md:mb-0">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold">3</span>
+              <div className="card p-8 relative">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 rounded-full text-white text-xl font-bold flex items-center justify-center">3</div>
+                <h3 className="text-xl font-semibold mb-3 mt-2">Triển khai</h3>
+                <p className="text-gray-600">
+                  Thực hiện giải pháp theo kế hoạch với sự phối hợp chặt chẽ và báo cáo tiến độ thường xuyên.
+                </p>
               </div>
-              <h3 className="text-lg font-bold mb-2">Kiểm thử & Triển khai</h3>
-              <p className="text-gray-600 px-4">Đảm bảo chất lượng và hiệu suất</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold">4</span>
+              <div className="card p-8 relative">
+                <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 rounded-full text-white text-xl font-bold flex items-center justify-center">4</div>
+                <h3 className="text-xl font-semibold mb-3 mt-2">Bàn giao & Hỗ trợ</h3>
+                <p className="text-gray-600">
+                  Bàn giao hệ thống, đào tạo người dùng và cung cấp hỗ trợ liên tục sau triển khai.
+                </p>
               </div>
-              <h3 className="text-lg font-bold mb-2">Hỗ trợ & Cải tiến</h3>
-              <p className="text-gray-600 px-4">Duy trì và nâng cấp liên tục</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact CTA */}
-      <section className="py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Bắt đầu dự án của bạn ngay hôm nay</h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Hãy liên hệ với chúng tôi để thảo luận về yêu cầu dự án và nhận tư vấn miễn phí từ đội ngũ chuyên gia của XLab.
-          </p>
-          <Link 
-            href="/contact" 
-            className="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-3 rounded-lg font-medium"
-          >
-            Liên hệ ngay
-          </Link>
+      {/* CTA */}
+      <section className="hero-gradient text-white py-16">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="mb-6">Sẵn sàng nâng cấp quy trình kinh doanh?</h2>
+            <p className="text-xl text-blue-100 mb-8">
+              Liên hệ với chúng tôi ngay hôm nay để được tư vấn miễn phí về các dịch vụ chuyên nghiệp phù hợp với doanh nghiệp của bạn.
+            </p>
+            <Link href="/contact" className="button-primary bg-white text-blue-600 hover:bg-blue-50">
+              Liên hệ tư vấn
+            </Link>
+          </div>
         </div>
       </section>
-    </main>
+    </>
   );
 } 
