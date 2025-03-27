@@ -6,7 +6,7 @@ export const categories: Category[] = [
     id: 'cat-1',
     name: 'Phần mềm doanh nghiệp',
     slug: 'phan-mem-doanh-nghiep',
-    description: 'Phần mềm quản lý doanh nghiệp toàn diện',
+    description: 'Các phần mềm phục vụ cho doanh nghiệp như ERP, CRM, thanh toán...',
     imageUrl: '/images/categories/productivity.png',
     productCount: 4
   },
@@ -14,7 +14,7 @@ export const categories: Category[] = [
     id: 'cat-2',
     name: 'Ứng dụng văn phòng',
     slug: 'ung-dung-van-phong',
-    description: 'Các ứng dụng phục vụ công việc văn phòng',
+    description: 'Các ứng dụng văn phòng như soạn thảo, bảng tính, thuyết trình...',
     imageUrl: '/images/categories/utilities.png',
     productCount: 3
   },
@@ -22,7 +22,7 @@ export const categories: Category[] = [
     id: 'cat-3',
     name: 'Phần mềm đồ họa',
     slug: 'phan-mem-do-hoa',
-    description: 'Phần mềm thiết kế và xử lý đồ họa chuyên nghiệp',
+    description: 'Các phần mềm thiết kế, chỉnh sửa ảnh, video và đồ họa...',
     imageUrl: '/images/categories/design.png',
     productCount: 2
   },
@@ -30,17 +30,17 @@ export const categories: Category[] = [
     id: 'cat-4',
     name: 'Bảo mật & Antivirus',
     slug: 'bao-mat-antivirus',
-    description: 'Phần mềm bảo mật và diệt virus hàng đầu',
+    description: 'Các phần mềm bảo mật, diệt virus, mã hóa dữ liệu...',
     imageUrl: '/images/categories/security.png',
-    productCount: 2
+    productCount: 1
   },
   {
     id: 'cat-5',
     name: 'Ứng dụng giáo dục',
     slug: 'ung-dung-giao-duc',
-    description: 'Phần mềm phục vụ giảng dạy và học tập',
+    description: 'Các ứng dụng học ngoại ngữ, lập trình, toán học...',
     imageUrl: '/images/categories/education.png',
-    productCount: 1
+    productCount: 2
   }
 ];
 
@@ -87,40 +87,62 @@ export const products: Product[] = [
     id: 'prod-1',
     name: 'XLab Office Suite',
     slug: 'xlab-office-suite',
-    description: 'Bộ ứng dụng văn phòng toàn diện, thay thế hoàn hảo cho Microsoft Office',
-    longDescription: `XLab Office Suite là bộ ứng dụng văn phòng toàn diện, được thiết kế để thay thế hoàn hảo cho Microsoft Office. Với đầy đủ các tính năng cần thiết cho công việc văn phòng hàng ngày, XLab Office Suite giúp bạn làm việc hiệu quả hơn mà không cần phải trả phí bản quyền đắt đỏ.
-
-Bộ ứng dụng bao gồm:
-- XLab Writer: Soạn thảo văn bản chuyên nghiệp
-- XLab Calc: Bảng tính với các công thức mạnh mẽ
-- XLab Present: Tạo bài thuyết trình ấn tượng
-- XLab Database: Quản lý dữ liệu một cách dễ dàng
-
-Các tính năng nổi bật:
-- Tương thích hoàn toàn với các định dạng của Microsoft Office
-- Giao diện thân thiện, dễ sử dụng
-- Hỗ trợ lưu trữ đám mây
-- Cập nhật thường xuyên và miễn phí
-- Bảo mật cao, an toàn dữ liệu`,
+    description: 'Bộ ứng dụng văn phòng toàn diện cho doanh nghiệp Việt Nam.',
+    longDescription: `
+      <p>XLab Office Suite là bộ ứng dụng văn phòng toàn diện được phát triển bởi đội ngũ XLab dành riêng cho người dùng Việt Nam.</p>
+      <p>Bộ phần mềm bao gồm:</p>
+      <ul>
+        <li>Ứng dụng soạn thảo văn bản với đầy đủ tính năng định dạng</li>
+        <li>Ứng dụng bảng tính với các công thức và biểu đồ phong phú</li>
+        <li>Ứng dụng trình chiếu với nhiều mẫu đẹp mắt</li>
+        <li>Hỗ trợ đầy đủ tiếng Việt và các định dạng văn bản phổ biến</li>
+        <li>Tích hợp lưu trữ đám mây để chia sẻ và đồng bộ dữ liệu giữa các thiết bị</li>
+      </ul>
+      <p>XLab Office Suite là giải pháp hoàn hảo cho doanh nghiệp Việt Nam muốn tối ưu hóa quy trình làm việc văn phòng mà không phụ thuộc vào các giải pháp nước ngoài.</p>
+    `,
     price: 1200000,
     salePrice: 990000,
     categoryId: 'cat-2',
     imageUrl: '/images/products/office-pro.png',
     featured: true,
     isNew: false,
-    downloadCount: 15240,
-    viewCount: 45720,
-    rating: 4.7,
+    downloadCount: 1500,
+    viewCount: 4200,
+    rating: 4.5,
     version: '2.5.1',
-    size: '245MB',
+    size: '250MB',
     license: 'Thương mại',
-    createdAt: '2022-02-15T00:00:00Z',
-    updatedAt: '2023-07-10T00:00:00Z'
+    createdAt: '2023-05-10T08:00:00.000Z',
+    updatedAt: '2023-09-15T10:30:00.000Z',
+    storeId: '1'
   },
   {
     id: 'prod-2',
     name: 'XLab ERP System',
     slug: 'xlab-erp-system',
+    description: 'Hệ thống quản lý doanh nghiệp toàn diện cho doanh nghiệp vừa và nhỏ.',
+    longDescription: `
+      <p>XLab ERP System là giải pháp quản lý doanh nghiệp toàn diện được phát triển dành riêng cho các doanh nghiệp vừa và nhỏ tại Việt Nam.</p>
+      <p>Tính năng nổi bật:</p>
+      <ul>
+        <li>Quản lý tài chính: kế toán, thanh toán, báo cáo tài chính</li>
+        <li>Quản lý nhân sự: hồ sơ nhân viên, chấm công, lương thưởng</li>
+        <li>Quản lý khách hàng: CRM, theo dõi giao dịch, chăm sóc khách hàng</li>
+        <li>Quản lý kho: xuất nhập tồn, tồn kho, đặt hàng tự động</li>
+        <li>Quản lý bán hàng: hóa đơn, đơn hàng, khuyến mãi</li>
+        <li>Báo cáo thống kê đa chiều với giao diện trực quan</li>
+      </ul>
+      <p>XLab ERP System tối ưu hóa quy trình quản lý của doanh nghiệp, giảm thiểu thời gian và chi phí vận hành, mang lại hiệu quả tối đa trong quản trị doanh nghiệp.</p>
+    `,
+    price: 15000000,
+    salePrice: 12000000,
+    categoryId: 'cat-1',
+    imageUrl: '/images/products/system-optimizer.png',
+    featured: true,
+    isNew: true,
+    downloadCount: 350,
+    viewCount: 1200,
+    rating: 4.8,
     description: 'Phần mềm quản lý doanh nghiệp toàn diện, tích hợp mọi phòng ban',
     longDescription: `XLab ERP System là giải pháp quản lý doanh nghiệp toàn diện, được thiết kế để tối ưu hóa quy trình làm việc và nâng cao hiệu suất của doanh nghiệp. Hệ thống tích hợp tất cả các phòng ban trong doanh nghiệp, từ kế toán, nhân sự đến bán hàng và sản xuất.
 
