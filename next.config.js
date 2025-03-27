@@ -2,13 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-        pathname: '**',
-      },
-    ],
+    domains: ['*'],
     unoptimized: true,
   },
   async headers() {
@@ -48,39 +42,24 @@ const nextConfig = {
       }
     ];
   },
-  experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000'],
-      bodySizeLimit: '2mb'
-    },
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
-  distDir: '.next',
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config, { isServer, dev }) => {
-    config.optimization.splitChunks = false;
-    
-    if (dev) {
-      config.optimization.minimize = false;
-      config.optimization.minimizer = [];
-    }
-    
-    config.module.parser = {
-      ...config.module.parser,
-      javascript: {
-        ...config.module.parser?.javascript,
-        exportsPresence: 'error'
-      }
+  webpack: (config) => {
+    // Tắt hoàn toàn tính năng tối ưu hóa để ngăn lỗi
+    config.optimization = {
+      ...config.optimization,
+      splitChunks: false,
+      minimize: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      concatenateModules: false,
     };
     
-    if (!isServer) {
-      config.optimization.runtimeChunk = 'single';
-    }
-
     return config;
   },
   compiler: {
