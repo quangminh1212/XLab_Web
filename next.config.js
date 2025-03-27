@@ -17,13 +17,10 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   experimental: {
-    optimizeCss: true,
     scrollRestoration: true,
-    // ServerActions are enabled by default in Next.js 14+
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
-    styledComponents: false,
   },
   staticPageGenerationTimeout: 120, // Increases timeout for static page generation
   headers: async () => {
