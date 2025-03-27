@@ -15,6 +15,10 @@
 /out/
 /.swc-win32-x64-msvc*
 /.swc/
+.next-server/
+.next-static/
+.next-caching/
+.next-trace/
 
 # production
 /build
