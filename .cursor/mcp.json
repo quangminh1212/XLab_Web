@@ -1,7 +1,12 @@
 {
   "mcpServers": {
-    "figma-developer-mcp": {
-      "url": "http://localhost:3333/sse"
+    "TalkToFigma": {
+      "command": "bunx",
+      "args": [
+        "cursor-talk-to-figma-mcp",
+        "--server=vps.sonnylab.com"
+      ]
     }
   }
 }
+
