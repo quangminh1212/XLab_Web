@@ -47,21 +47,21 @@ export default function Header() {
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white shadow-md py-1' 
-          : 'bg-white py-2'
+          ? 'bg-white shadow-md py-0.5' 
+          : 'bg-white py-1'
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-4 lg:px-6">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center space-x-1">
             <Link href="/" className="flex items-center">
-              <span className="w-32 h-32 inline-flex items-center justify-center">
+              <span className="w-20 h-20 inline-flex items-center justify-center">
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={96} 
-                  height={96} 
+                  width={60} 
+                  height={60} 
                   className="object-contain"
                   priority
                 />
