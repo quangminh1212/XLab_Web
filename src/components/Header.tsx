@@ -71,7 +71,7 @@ export default function Header() {
             {/* Lời chào và tên người dùng trên desktop */}
             {!isLoading && session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
-                <span className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full">
+                <span className="bg-teal-50 text-teal-700 px-3 py-1 rounded-full">
                   {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
                 </span>
               </div>
@@ -80,19 +80,19 @@ export default function Header() {
 
           {/* Menu desktop */}
           <nav className="hidden md:flex items-center space-x-1">
-            <Link href="/" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/products' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/products" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/products' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/services' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/services" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/services' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/about' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/about" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/about' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/contact' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/contact" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/contact' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Liên hệ
             </Link>
           </nav>
@@ -101,7 +101,7 @@ export default function Header() {
           <div className="flex items-center space-x-2">
             {/* Tìm kiếm */}
             <button 
-              className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50"
+              className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50"
               aria-label="Tìm kiếm"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -113,20 +113,20 @@ export default function Header() {
               <div className="flex items-center space-x-2">
                 {/* Thông báo */}
                 <button 
-                  className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50 relative"
+                  className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50 relative"
                   aria-label="Thông báo"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-primary-500"></span>
+                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-teal-500"></span>
                 </button>
 
                 {/* User dropdown */}
                 <div className="relative">
                   <button 
                     onClick={() => toggleMobileMenu()}
-                    className="flex items-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300"
+                    className="flex items-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-teal-300"
                   >
                     {session.user?.image ? (
                       <Image
@@ -137,7 +137,7 @@ export default function Header() {
                         className="rounded-full"
                       />
                     ) : (
-                      <div className="w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                      <div className="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-medium">
                         {session.user?.name?.charAt(0) || 'U'}
                       </div>
                     )}
@@ -154,10 +154,10 @@ export default function Header() {
                       <div className="px-4 py-2 text-xs text-gray-500 border-b">
                         Đăng nhập bằng {session.user?.email}
                       </div>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50">
+                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50">
                         Tài khoản của tôi
                       </Link>
-                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50">
+                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50">
                         Cài đặt
                       </Link>
                       <div className="border-t border-gray-100"></div>
@@ -175,13 +175,13 @@ export default function Header() {
               <div className="hidden sm:flex items-center space-x-2">
                 <Link 
                   href="/login" 
-                  className="px-4 py-2 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 transition-colors"
+                  className="px-4 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 transition-colors"
                 >
                   Đăng nhập
                 </Link>
                 <Link 
                   href="/register" 
-                  className="px-4 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors"
+                  className="px-4 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors"
                 >
                   Đăng ký
                 </Link>
@@ -190,7 +190,7 @@ export default function Header() {
 
             {/* Hamburger menu for mobile */}
             <button
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary-600 hover:bg-primary-50"
+              className="md:hidden p-2 rounded-md text-gray-600 hover:text-teal-600 hover:bg-teal-50"
               onClick={toggleMobileMenu}
               aria-label="Menu"
             >
@@ -215,19 +215,19 @@ export default function Header() {
                 {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
               </div>
             )}
-            <Link href="/" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/products' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/products" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/products' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/services' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/services" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/services' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/about' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/about" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/about' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/contact' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/contact" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/contact' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Liên hệ
             </Link>
             
@@ -235,13 +235,13 @@ export default function Header() {
               <div className="flex space-x-2 mt-2 px-3">
                 <Link 
                   href="/login" 
-                  className="flex-1 px-4 py-2 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors"
                 >
                   Đăng nhập
                 </Link>
                 <Link 
                   href="/register" 
-                  className="flex-1 px-4 py-2 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors"
+                  className="flex-1 px-4 py-2 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors"
                 >
                   Đăng ký
                 </Link>
