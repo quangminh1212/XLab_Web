@@ -8,7 +8,6 @@ XLab là một website giới thiệu các sản phẩm và dịch vụ phần m
 - **Sản phẩm**: Trình bày chi tiết các sản phẩm phần mềm
 - **Dịch vụ**: Mô tả các dịch vụ công nghệ và hỗ trợ
 - **Báo giá**: Hiển thị các gói dịch vụ và báo giá
-- **Blog**: Chia sẻ kiến thức về công nghệ và phần mềm
 - **Giới thiệu**: Thông tin về công ty và đội ngũ
 - **Liên hệ**: Form liên hệ và thông tin liên lạc
 
