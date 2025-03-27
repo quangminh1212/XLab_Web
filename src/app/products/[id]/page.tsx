@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { Metadata } from 'next'
 
 // This would typically come from a database or API
 const getProductById = (id: string) => {
@@ -67,7 +68,9 @@ const getProductById = (id: string) => {
   return products[id as keyof typeof products];
 };
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
   const product = getProductById(params.id);
   return {
     title: `${product?.name || 'Sản phẩm'} | XLab - Phần mềm và Dịch vụ`,
