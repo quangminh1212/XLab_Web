@@ -1,110 +1,182 @@
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export const metadata = {
   title: "Sản phẩm - XLab",
   description: "Danh sách các sản phẩm phần mềm tiên tiến của XLab",
 };
 
-export default function ProductsPage() {
+export default function Products() {
   return (
-    <main>
+    <>
       {/* Hero Section */}
-      <section className="bg-blue-600 text-white py-16">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">Sản phẩm của XLab</h1>
-          <p className="text-xl max-w-3xl">
-            Khám phá các giải pháp phần mềm tiên tiến được thiết kế để giải quyết các thách thức kinh doanh của doanh nghiệp hiện đại.
-          </p>
+      <section className="hero-gradient text-white py-20 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image 
+            src="/images/hero-bg.svg" 
+            alt="Hero Background" 
+            fill
+            style={{ objectFit: 'cover' }}
+            priority
+          />
+        </div>
+        <div className="container relative">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="mb-6">Sản phẩm</h1>
+            <p className="text-xl text-blue-100 mb-0">
+              Khám phá bộ giải pháp phần mềm toàn diện của XLab giúp doanh nghiệp tối ưu hoá quy trình và tăng năng suất
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Products List */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {/* Product 1 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-lg border border-gray-100">
-              <div className="h-48 bg-blue-200 flex items-center justify-center">
-                <div className="text-2xl font-bold text-blue-600">XLab CRM</div>
+      {/* Products */}
+      <section className="section">
+        <div className="container">
+          <div className="grid grid-cols-1 gap-16">
+            {/* CRM Product */}
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="bg-blue-50 rounded-2xl p-8 flex items-center justify-center">
+                <Image
+                  src="/images/crm.svg"
+                  alt="XLab CRM"
+                  width={400}
+                  height={300}
+                  className="w-full max-w-md"
+                />
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab CRM</h3>
+              <div>
+                <h2 className="mb-4">XLab CRM</h2>
                 <p className="text-gray-600 mb-6">
-                  Hệ thống quản lý khách hàng toàn diện với các tính năng phân tích dữ liệu thông minh, 
-                  tự động hóa tiếp thị và quản lý bán hàng hiệu quả.
+                  Hệ thống quản lý quan hệ khách hàng toàn diện, giúp doanh nghiệp quản lý và tối ưu hóa quy trình bán hàng, chăm sóc khách hàng và phát triển kinh doanh.
                 </p>
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Tính năng chính:</h4>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Quản lý thông tin khách hàng</li>
-                    <li>Theo dõi cơ hội bán hàng</li>
-                    <li>Tự động hóa tiếp thị</li>
-                    <li>Báo cáo và phân tích dữ liệu</li>
-                  </ul>
-                </div>
-                <Link 
-                  href="/products/crm" 
-                  className="inline-block bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium"
-                >
-                  Chi tiết
+                <h3 className="text-xl font-semibold mb-4">Tính năng nổi bật</h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Quản lý thông tin khách hàng tập trung</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Theo dõi cơ hội bán hàng và quản lý tiến trình</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Tự động hóa quy trình marketing và chăm sóc khách hàng</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Phân tích dữ liệu và báo cáo chi tiết</span>
+                  </li>
+                </ul>
+                <Link href="/products/crm" className="button-primary">
+                  Tìm hiểu thêm
                 </Link>
               </div>
             </div>
-
-            {/* Product 2 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-lg border border-gray-100">
-              <div className="h-48 bg-indigo-200 flex items-center justify-center">
-                <div className="text-2xl font-bold text-indigo-600">XLab ERP</div>
+            
+            {/* ERP Product */}
+            <div className="grid md:grid-cols-2 gap-12 items-center md:flex-row-reverse">
+              <div className="order-1 md:order-2 bg-indigo-50 rounded-2xl p-8 flex items-center justify-center">
+                <Image
+                  src="/images/erp.svg"
+                  alt="XLab ERP"
+                  width={400}
+                  height={300}
+                  className="w-full max-w-md"
+                />
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab ERP</h3>
+              <div className="order-2 md:order-1">
+                <h2 className="mb-4">XLab ERP</h2>
                 <p className="text-gray-600 mb-6">
-                  Giải pháp hoạch định tài nguyên doanh nghiệp hiện đại, tích hợp mọi quy trình
-                  từ kế toán, mua hàng đến quản lý tồn kho và sản xuất.
+                  Giải pháp quản trị nguồn lực doanh nghiệp tích hợp, giúp quản lý toàn diện các hoạt động từ tài chính, kế toán, chuỗi cung ứng đến nhân sự và sản xuất.
                 </p>
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Tính năng chính:</h4>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Quản lý tài chính và kế toán</li>
-                    <li>Quản lý chuỗi cung ứng</li>
-                    <li>Quản lý sản xuất</li>
-                    <li>Quản lý nhân sự</li>
-                  </ul>
-                </div>
-                <Link 
-                  href="/products/erp" 
-                  className="inline-block bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-lg font-medium"
-                >
-                  Chi tiết
+                <h3 className="text-xl font-semibold mb-4">Tính năng nổi bật</h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Quản lý tài chính và kế toán tích hợp</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Quản lý chuỗi cung ứng và kho hàng</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Quản lý nhân sự và tính lương tự động</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Lập kế hoạch và quản lý sản xuất</span>
+                  </li>
+                </ul>
+                <Link href="/products/erp" className="button-primary">
+                  Tìm hiểu thêm
                 </Link>
               </div>
             </div>
-
-            {/* Product 3 */}
-            <div className="bg-white rounded-lg overflow-hidden shadow-lg border border-gray-100">
-              <div className="h-48 bg-purple-200 flex items-center justify-center">
-                <div className="text-2xl font-bold text-purple-600">XLab Analytics</div>
+            
+            {/* Analytics Product */}
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="bg-purple-50 rounded-2xl p-8 flex items-center justify-center">
+                <Image
+                  src="/images/analytics.svg"
+                  alt="XLab Analytics"
+                  width={400}
+                  height={300}
+                  className="w-full max-w-md"
+                />
               </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab Analytics</h3>
+              <div>
+                <h2 className="mb-4">XLab Analytics</h2>
                 <p className="text-gray-600 mb-6">
-                  Công cụ phân tích dữ liệu mạnh mẽ với khả năng trực quan hóa thông tin, 
-                  tạo báo cáo tùy chỉnh và đề xuất chiến lược dựa trên AI.
+                  Công cụ phân tích dữ liệu thông minh với báo cáo trực quan, giúp doanh nghiệp phân tích xu hướng, nắm bắt thông tin và ra quyết định chính xác.
                 </p>
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Tính năng chính:</h4>
-                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                    <li>Phân tích dữ liệu thời gian thực</li>
-                    <li>Trực quan hóa dữ liệu đa nền tảng</li>
-                    <li>Dự báo và phân tích xu hướng</li>
-                    <li>Tích hợp AI cho đề xuất thông minh</li>
-                  </ul>
-                </div>
-                <Link 
-                  href="/products/analytics" 
-                  className="inline-block bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-lg font-medium"
-                >
-                  Chi tiết
+                <h3 className="text-xl font-semibold mb-4">Tính năng nổi bật</h3>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Bảng điều khiển tùy chỉnh theo vai trò người dùng</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Phân tích xu hướng và dự báo kinh doanh</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Đo lường hiệu suất doanh nghiệp qua KPI</span>
+                  </li>
+                  <li className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Báo cáo tự động và chia sẻ thông tin liền mạch</span>
+                  </li>
+                </ul>
+                <Link href="/products/analytics" className="button-primary">
+                  Tìm hiểu thêm
                 </Link>
               </div>
             </div>
@@ -112,22 +184,22 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* Contact CTA */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Cần tư vấn thêm về sản phẩm?</h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ bạn lựa chọn giải pháp 
-            phù hợp nhất với nhu cầu doanh nghiệp của bạn.
-          </p>
-          <Link 
-            href="/contact" 
-            className="bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium"
-          >
-            Liên hệ ngay
-          </Link>
+      {/* Customization */}
+      <section className="section bg-gray-50">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="mb-4">Giải pháp tùy chỉnh</h2>
+            <p className="text-xl text-gray-600">
+              Không tìm thấy giải pháp phù hợp với doanh nghiệp của bạn? Chúng tôi cung cấp dịch vụ phát triển giải pháp phần mềm tùy chỉnh.
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto text-center">
+            <Link href="/contact" className="button-primary">
+              Liên hệ với chúng tôi
+            </Link>
+          </div>
         </div>
       </section>
-    </main>
+    </>
   );
 } 
