@@ -172,29 +172,52 @@ call npx next telemetry disable >nul 2>&1
 echo [+] Validating Next.js configuration...
 if not exist next.config.js (
     echo WARNING: next.config.js not found!
+    echo Creating default Next.js config file...
+    
+    :: Tạo file config sử dụng phương pháp đơn giản
+    type nul > next.config.js
+    echo /** @type {import('next').NextConfig} */ > next.config.js
+    echo const nextConfig = { >> next.config.js
+    echo   reactStrictMode: true, >> next.config.js
+    echo   poweredByHeader: false, >> next.config.js
+    echo   experimental: { >> next.config.js
+    echo     scrollRestoration: true, >> next.config.js
+    echo   }, >> next.config.js
+    echo   webpack: function(config) { >> next.config.js
+    echo     return config; >> next.config.js
+    echo   }, >> next.config.js
+    echo   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next', >> next.config.js
+    echo }; >> next.config.js
+    echo. >> next.config.js
+    echo module.exports = nextConfig; >> next.config.js
+    
+    echo Default configuration created!
 ) else (
     :: Lấy kích thước file
     for %%A in (next.config.js) do set filesize=%%~zA
     if !filesize! LEQ 100 (
         echo ERROR: next.config.js appears to be corrupted or empty
         echo Creating backup and generating default config...
+        
         if exist next.config.js ren next.config.js next.config.js.bak
-        (
-            echo /** @type {import('next').NextConfig} */
-            echo const nextConfig = {
-            echo   reactStrictMode: true,
-            echo   poweredByHeader: false,
-            echo   experimental: {
-            echo     scrollRestoration: true,
-            echo   },
-            echo   webpack: (config^) =^> {
-            echo     return config;
-            echo   },
-            echo   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
-            echo };
-            echo. 
-            echo module.exports = nextConfig;
-        ) > next.config.js
+        
+        :: Tạo file config sử dụng phương pháp đơn giản
+        type nul > next.config.js
+        echo /** @type {import('next').NextConfig} */ > next.config.js
+        echo const nextConfig = { >> next.config.js
+        echo   reactStrictMode: true, >> next.config.js
+        echo   poweredByHeader: false, >> next.config.js
+        echo   experimental: { >> next.config.js
+        echo     scrollRestoration: true, >> next.config.js
+        echo   }, >> next.config.js
+        echo   webpack: function(config) { >> next.config.js
+        echo     return config; >> next.config.js
+        echo   }, >> next.config.js
+        echo   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next', >> next.config.js
+        echo }; >> next.config.js
+        echo. >> next.config.js
+        echo module.exports = nextConfig; >> next.config.js
+        
         echo Default configuration created!
     )
 )
