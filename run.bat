@@ -3,11 +3,11 @@ setlocal enabledelayedexpansion
 
 echo XLab Web - Next.js 15.2.4 Startup Tool
 echo ------------------------------
-echo [Running in Next.js 15.2.4 PRODUCTION mode]
+echo [Running in Next.js 15.2.4 DEVELOPMENT mode]
 
-:: Cài đặt mặc định phiên bản Next.js 15.2.4 và luôn dùng production
+:: Cài đặt mặc định phiên bản Next.js 15.2.4 và dùng development
 set NEXT_VERSION_FULL=15.2.4
-set RUN_MODE=prod
+set RUN_MODE=dev
 
 :: Bước 1: Kiểm tra cài đặt Node.js
 echo [1/6] Checking Node.js installation...
@@ -50,17 +50,9 @@ if not exist node_modules (
 )
 
 :: Bước 6: Chạy ứng dụng
-echo [6/6] Building and starting application...
-if "%RUN_MODE%"=="prod" (
-  call npm run build
-  echo.
-  echo Starting Next.js %NEXT_VERSION_FULL% production server...
-  echo [Press Ctrl+C to stop the server]
-  call npm start
-) else (
-  echo Starting Next.js %NEXT_VERSION_FULL% development server...
-  echo [Press Ctrl+C to stop the server]
-  call npm run dev
-)
+echo [6/6] Starting application in %RUN_MODE% mode...
+echo Starting Next.js %NEXT_VERSION_FULL% development server...
+echo [Press Ctrl+C to stop the server]
+call npm run dev
 
 endlocal 
