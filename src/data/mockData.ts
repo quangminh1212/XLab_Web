@@ -7,7 +7,7 @@ export const categories: Category[] = [
     name: 'Phần mềm doanh nghiệp',
     slug: 'phan-mem-doanh-nghiep',
     description: 'Phần mềm quản lý doanh nghiệp toàn diện',
-    imageUrl: '/images/categories/business.svg',
+    imageUrl: '/images/categories/productivity.png',
     productCount: 4
   },
   {
@@ -15,7 +15,7 @@ export const categories: Category[] = [
     name: 'Ứng dụng văn phòng',
     slug: 'ung-dung-van-phong',
     description: 'Các ứng dụng phục vụ công việc văn phòng',
-    imageUrl: '/images/products/office-pro.svg',
+    imageUrl: '/images/categories/utilities.png',
     productCount: 3
   },
   {
@@ -23,7 +23,7 @@ export const categories: Category[] = [
     name: 'Phần mềm đồ họa',
     slug: 'phan-mem-do-hoa',
     description: 'Phần mềm thiết kế và xử lý đồ họa chuyên nghiệp',
-    imageUrl: '/images/products/design-master.svg',
+    imageUrl: '/images/categories/design.png',
     productCount: 2
   },
   {
@@ -31,7 +31,7 @@ export const categories: Category[] = [
     name: 'Bảo mật & Antivirus',
     slug: 'bao-mat-antivirus',
     description: 'Phần mềm bảo mật và diệt virus hàng đầu',
-    imageUrl: '/images/products/secure-vault.svg',
+    imageUrl: '/images/categories/security.png',
     productCount: 2
   },
   {
@@ -39,7 +39,7 @@ export const categories: Category[] = [
     name: 'Ứng dụng giáo dục',
     slug: 'ung-dung-giao-duc',
     description: 'Phần mềm phục vụ giảng dạy và học tập',
-    imageUrl: '/images/products/language-master.svg',
+    imageUrl: '/images/categories/education.png',
     productCount: 1
   }
 ];
@@ -330,7 +330,7 @@ Tính năng chính:
     price: 2800000,
     salePrice: 2490000,
     categoryId: 'cat-3',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/photo-editor.svg',
     featured: true,
     isNew: false,
     downloadCount: 14560,
@@ -370,7 +370,7 @@ Tính năng chính:
     price: 5500000,
     salePrice: 4800000,
     categoryId: 'cat-1',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/office-pro.svg',
     featured: false,
     isNew: true,
     downloadCount: 9800,
@@ -409,7 +409,7 @@ Tính năng chính:
     price: 1200000,
     salePrice: 990000,
     categoryId: 'cat-2',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/code-editor.svg',
     featured: false,
     isNew: false,
     downloadCount: 22400,
@@ -448,7 +448,7 @@ Lợi ích:
     price: 18000000,
     salePrice: 15000000,
     categoryId: 'cat-5',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/language-master.svg',
     featured: false,
     isNew: true,
     downloadCount: 6200,
@@ -488,7 +488,7 @@ Tính năng chính:
     price: 850000,
     salePrice: 690000,
     categoryId: 'cat-2',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/system-optimizer.svg',
     featured: false,
     isNew: false,
     downloadCount: 19800,
@@ -528,7 +528,7 @@ Lợi ích:
     price: 8500000,
     salePrice: 7200000,
     categoryId: 'cat-1',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/backup-pro.svg',
     featured: false,
     isNew: false,
     downloadCount: 7840,
