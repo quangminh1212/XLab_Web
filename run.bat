@@ -6,19 +6,6 @@ echo =    XLab Web - Script khoi dong       =
 echo ========================================
 echo.
 
-rem Kiem tra neu node_modules da ton tai
-if exist node_modules (
-  echo Node modules da ton tai. Ban co muon cai lai khong? (Y/N)
-  set /p reinstall=
-  if /i "!reinstall!"=="Y" (
-    echo Dang xoa node_modules cu...
-    rmdir /s /q node_modules
-    echo Xoa thanh cong!
-  ) else (
-    echo Giu nguyen node_modules hien tai.
-  )
-)
-
 echo Kiem tra Node.js...
 node --version
 if %errorlevel% neq 0 (
@@ -28,12 +15,16 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo Cai dat cac goi phu thuoc...
-call npm install --no-fund
-if %errorlevel% neq 0 (
-  echo [LOI] Khong the cai dat cac goi phu thuoc. Vui long kiem tra ket noi mang hoac xoa thu muc node_modules va thu lai.
-  pause
-  exit /b
+if not exist node_modules (
+  echo Cai dat cac goi phu thuoc...
+  call npm install --no-fund
+  if %errorlevel% neq 0 (
+    echo [LOI] Khong the cai dat cac goi phu thuoc. Vui long kiem tra ket noi mang.
+    pause
+    exit /b
+  )
+) else (
+  echo Da tim thay node_modules. Tiep tuc...
 )
 
 echo.
@@ -48,8 +39,4 @@ if %errorlevel% neq 0 (
 
 echo.
 echo Build thanh cong! Dang khoi dong o che do production...
-call npm run start
-
-echo.
-echo Cam on ban da su dung XLab Web!
-pause 
+call npm run start 
