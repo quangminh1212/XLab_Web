@@ -2,10 +2,18 @@
 
 import { products, categories } from '@/data/mockData'
 import Link from 'next/link'
-import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { ProductImage } from '@/components/ProductImage'
 
 export default function ProductsPage() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Update title khi component được render
+  useEffect(() => {
+    document.title = 'Sản phẩm | XLab - Phần mềm và Dịch vụ'
+    setIsLoaded(true);
+  }, []);
+  
   // Get featured products
   const featuredProducts = products.filter(product => product.featured)
   // Get newest products
@@ -16,9 +24,12 @@ export default function ProductsPage() {
   // Get popular products
   const popularProducts = [...products].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 4)
 
-  // Xử lý lỗi ảnh
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.src = '/placeholder-product.jpg'
+  if (!isLoaded) {
+    return (
+      <div className="py-12 flex justify-center">
+        <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return (
@@ -54,13 +65,12 @@ export default function ProductsPage() {
                   className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all group"
                 >
                   <div className="p-6 bg-gray-50 flex items-center justify-center h-48">
-                    <Image
+                    <ProductImage
                       src={productImage}
                       alt={product.name}
                       width={120}
                       height={120}
                       className="w-auto h-auto max-h-32"
-                      onError={handleImageError}
                     />
                   </div>
                   <div className="p-4">
@@ -69,8 +79,8 @@ export default function ProductsPage() {
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-primary-600 font-medium">
                         {product.salePrice 
-                          ? Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)
-                          : Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                          ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)
+                          : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
                       </span>
                       <div className="flex items-center text-sm text-gray-500">
                         <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
