@@ -7,7 +7,7 @@ export const categories: Category[] = [
     name: 'Phần mềm doanh nghiệp',
     slug: 'phan-mem-doanh-nghiep',
     description: 'Phần mềm quản lý doanh nghiệp toàn diện',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/categories/business.svg',
     productCount: 4
   },
   {
@@ -15,7 +15,7 @@ export const categories: Category[] = [
     name: 'Ứng dụng văn phòng',
     slug: 'ung-dung-van-phong',
     description: 'Các ứng dụng phục vụ công việc văn phòng',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/office-pro.svg',
     productCount: 3
   },
   {
@@ -23,7 +23,7 @@ export const categories: Category[] = [
     name: 'Phần mềm đồ họa',
     slug: 'phan-mem-do-hoa',
     description: 'Phần mềm thiết kế và xử lý đồ họa chuyên nghiệp',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/design-master.svg',
     productCount: 2
   },
   {
@@ -31,7 +31,7 @@ export const categories: Category[] = [
     name: 'Bảo mật & Antivirus',
     slug: 'bao-mat-antivirus',
     description: 'Phần mềm bảo mật và diệt virus hàng đầu',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/secure-vault.svg',
     productCount: 2
   },
   {
@@ -39,7 +39,7 @@ export const categories: Category[] = [
     name: 'Ứng dụng giáo dục',
     slug: 'ung-dung-giao-duc',
     description: 'Phần mềm phục vụ giảng dạy và học tập',
-    imageUrl: '/placeholder-product.jpg',
+    imageUrl: '/images/products/language-master.svg',
     productCount: 1
   }
 ];
