@@ -7,6 +7,10 @@ echo [Running in Next.js 15.2.4 mode]
 
 :: Cài đặt mặc định phiên bản Next.js 15.2.4
 set NEXT_VERSION_FULL=15.2.4
+set RUN_MODE=dev
+
+:: Hỏi chế độ chạy
+set /p RUN_MODE=Run in development or production mode? (dev/prod) [default: dev]: 
 
 :: Bước 1: Kiểm tra cài đặt Node.js
 echo [1/6] Checking Node.js installation...
@@ -43,8 +47,10 @@ echo [5/6] Installing Next.js %NEXT_VERSION_FULL% and dependencies...
 :: Cài đặt Next.js 15.2.4
 npm install next@15.2.4 eslint-config-next@15.2.4 react@18.3.1 react-dom@18.3.1 --save
 
-:: Cài đặt các dependencies được cập nhật để tránh warning và fix lỗi module not found
-npm install rimraf@5.0.10 glob@10.3.10 lru-cache@10.2.0 @eslint/config-array@2.1.0 @eslint/object-schema@2.0.3 --save-dev
+:: Cài đặt các dependencies mới để fix warning
+echo [5.1/6] Fixing deprecated packages...
+npm install --save-dev rimraf@5.0.10 glob@10.3.10 eslint@9.0.0-alpha.2 lru-cache@10.2.0
+npm install --save-dev @eslint/config-array@2.1.0 @eslint/object-schema@2.0.3
 
 :: Tạo thư mục fonts nếu chưa tồn tại
 if not exist public\fonts mkdir public\fonts
@@ -56,11 +62,24 @@ npm install
 echo [6/6] Listing all dependencies...
 npm ls --depth=0
 
-:: Khởi chạy ứng dụng
-echo.
-echo Starting Next.js %NEXT_VERSION_FULL% development server...
-echo [Press Ctrl+C to stop the server]
-echo.
-npm run dev
+:: Nếu là chế độ production, chạy build trước khi start
+if /I "%RUN_MODE%"=="prod" (
+    echo.
+    echo Building for production...
+    npm run build
+    
+    echo.
+    echo Starting Next.js %NEXT_VERSION_FULL% production server...
+    echo [Press Ctrl+C to stop the server]
+    echo.
+    npm start
+) else (
+    :: Khởi chạy ứng dụng ở chế độ development
+    echo.
+    echo Starting Next.js %NEXT_VERSION_FULL% development server...
+    echo [Press Ctrl+C to stop the server]
+    echo.
+    npm run dev
+)
 
 endlocal 
