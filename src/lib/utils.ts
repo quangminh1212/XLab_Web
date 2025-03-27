@@ -186,14 +186,14 @@ export function getProductBySlug(slug: string): Product | undefined {
  */
 export function incrementViewCount(slug: string): number {
   const product = getProductBySlug(slug);
-  if (!product) return 0;
-  
-  if (!viewCountCache[slug]) {
-    viewCountCache[slug] = product.viewCount;
+  if (product) {
+    if (!product.viewCount) {
+      product.viewCount = 0;
+    }
+    product.viewCount += 1;
+    return product.viewCount;
   }
-  
-  viewCountCache[slug] += 1;
-  return viewCountCache[slug];
+  return 0;
 }
 
 /**
@@ -201,14 +201,11 @@ export function incrementViewCount(slug: string): number {
  */
 export function incrementDownloadCount(slug: string): number {
   const product = getProductBySlug(slug);
-  if (!product) return 0;
-  
-  if (!downloadCountCache[slug]) {
-    downloadCountCache[slug] = product.downloadCount;
+  if (product) {
+    product.downloadCount += 1;
+    return product.downloadCount;
   }
-  
-  downloadCountCache[slug] += 1;
-  return downloadCountCache[slug];
+  return 0;
 }
 
 /**
