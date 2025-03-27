@@ -1,12 +1,12 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo XLab Web - Next.js 14.1.0 Startup Tool
+echo XLab Web - Next.js 15.2.4 Startup Tool
 echo ------------------------------
-echo [Running in Next.js 14.1.0 DEVELOPMENT mode]
+echo [Running in Next.js 15.2.4 DEVELOPMENT mode]
 
-:: Cài đặt mặc định phiên bản Next.js 14.1.0 và dùng development
-set NEXT_VERSION_FULL=14.1.0
+:: Cài đặt mặc định phiên bản Next.js 15.2.4 và dùng development
+set NEXT_VERSION_FULL=15.2.4
 set RUN_MODE=dev
 
 :: Bước 1: Kiểm tra cài đặt Node.js
@@ -28,7 +28,6 @@ echo [3/9] Cleaning up environment...
 echo Cleaning cache folders...
 if exist .next rmdir /s /q .next 2>nul
 if exist .next-dev rmdir /s /q .next-dev 2>nul
-if exist node_modules rmdir /s /q node_modules 2>nul
 if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul
 if exist .vercel rmdir /s /q .vercel 2>nul
 if exist .turbo rmdir /s /q .turbo 2>nul
