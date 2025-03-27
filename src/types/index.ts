@@ -1,23 +1,24 @@
 export interface Product {
-  id: string;
+  id: number | string;
   name: string;
   slug: string;
   description: string;
-  longDescription?: string;
+  longDescription: string;
   price: number;
-  salePrice?: number;
-  categoryId: string;
-  imageUrl?: string;
-  featured: boolean;
+  salePrice: number;
+  categoryId: number | string;
+  imageUrl: string;
+  isFeatured: boolean;
   isNew: boolean;
-  rating: number;
   downloadCount: number;
   viewCount: number;
+  rating: number;
   version: string;
   size: string;
-  license: string;
-  updatedAt: string;
+  licenseType: string;
   createdAt: string;
+  updatedAt: string;
+  storeId: number | string;
 }
 
 export interface Category {
