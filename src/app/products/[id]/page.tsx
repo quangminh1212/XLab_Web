@@ -3,22 +3,35 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Metadata } from 'next'
 import { Button } from '@/components/ui/button'
-import { getProductBySlug, incrementViewCount, formatCurrency } from '@/lib/utils'
+import { getProductBySlug, incrementViewCount } from '@/lib/utils'
 import { products } from '@/data/mockData'
 import { DownloadButton } from './client'
+import { unstable_cache } from 'next/cache'
+
+// Cache product data retrieval to optimize performance
+const getCachedProduct = unstable_cache(
+  async (slug: string) => {
+    return getProductBySlug(slug);
+  },
+  ['product-detail'],
+  {
+    revalidate: 3600, // Cache for 1 hour
+    tags: ['products']
+  }
+);
 
 export async function generateMetadata(
   { params }: { params: { id: string } }
 ): Promise<Metadata> {
-  const product = getProductBySlug(params.id);
+  const product = await getCachedProduct(params.id);
   return {
     title: `${product?.name || 'Sản phẩm'} | XLab - Phần mềm và Dịch vụ`,
     description: product?.description || 'Chi tiết sản phẩm phần mềm từ XLab',
-  };
+  }
 }
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const product = getProductBySlug(params.id)
+export default async function ProductDetailPage({ params }: { params: { id: string } }) {
+  const product = await getCachedProduct(params.id)
   
   if (!product) {
     return notFound()
@@ -26,6 +39,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   
   // Increment view count when viewing the product
   incrementViewCount(product.slug)
+  
+  // Mặc định placeholder image nếu không có imageUrl
+  const productImage = product.imageUrl || '/placeholder-product.jpg'
   
   return (
     <div className="py-8">
@@ -35,15 +51,17 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <div className="flex flex-col md:flex-row -mx-4">
               <div className="md:flex-1 px-4 mb-6 md:mb-0">
                 <div className="bg-gray-50 border border-gray-100 rounded-lg p-6 flex items-center justify-center h-80">
-                  {product.imageUrl && (
-                    <Image
-                      src={product.imageUrl}
-                      alt={product.name}
-                      width={300}
-                      height={300}
-                      className="max-h-64 max-w-full object-contain"
-                    />
-                  )}
+                  <Image
+                    src={productImage}
+                    alt={product.name}
+                    width={300}
+                    height={300}
+                    className="max-h-64 max-w-full object-contain"
+                    onError={(e) => {
+                      // Fallback nếu ảnh không tải được
+                      e.currentTarget.src = '/placeholder-product.jpg'
+                    }}
+                  />
                 </div>
                 
                 <div className="mt-6 flex items-center justify-between">
