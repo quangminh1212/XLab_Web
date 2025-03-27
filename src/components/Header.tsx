@@ -60,8 +60,8 @@ export default function Header() {
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={30} 
-                  height={30} 
+                  width={24} 
+                  height={24} 
                   className="w-auto h-auto"
                   priority
                 />
