@@ -141,3 +141,23 @@ next-env.d.ts
 /.next/trace
 .eslintcache
 **/.swc/**
+
+# temp files
+*.tmp
+*.temp
+*.bak
+*.swp
+~$*
+._*
+*~
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Windows
+Thumbs.db
+Desktop.ini

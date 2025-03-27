@@ -22,8 +22,12 @@ if "%1"=="-c" set CLEAN_MODE=1
 if "%1"=="-r" set CLEAN_MODE=1
 if "%1"=="reset" set CLEAN_MODE=1
 
-:: Không hỏi nữa - chạy tự động theo chế độ đã định
-echo [Mode: %CLEAN_MODE%] - 0=Normal, 1=Clean Install
+:: Hiển thị chế độ chạy
+if %CLEAN_MODE% EQU 1 (
+  echo [Running in CLEAN mode]
+) else (
+  echo [Running in NORMAL mode]
+)
 
 :: Kiểm tra Node.js
 echo [1/5] Checking Node.js installation...
