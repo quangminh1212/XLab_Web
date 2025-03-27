@@ -133,6 +133,8 @@ const nextConfig = {
     // Chỉ thực hiện trong môi trường development
     if (dev && !isServer) {
       try {
+        // Temporarily disabled bundle analyzer to avoid port conflicts
+        /*
         // Check if webpack-bundle-analyzer is installed before requiring it
         const hasBundleAnalyzer = (() => {
           try {
@@ -148,13 +150,14 @@ const nextConfig = {
           config.plugins.push(
             new BundleAnalyzerPlugin({
               analyzerMode: 'server',
-              analyzerPort: 8888,
+              analyzerPort: 9999,
               openAnalyzer: false,
             })
           );
         } else {
           console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
         }
+        */
       } catch (error) {
         console.warn('Lỗi khi cấu hình phân tích bundle:', error.message);
       }
