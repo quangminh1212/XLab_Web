@@ -47,8 +47,8 @@ export default function Header() {
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white shadow-md py-2' 
-          : 'bg-white py-4'
+          ? 'bg-white shadow-md py-1' 
+          : 'bg-white py-2'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,16 +56,14 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-1">
             <Link href="/" className="flex items-center">
-              <div className="bg-white rounded-lg p-0.5 flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
-                <Image 
-                  src="/images/logo.jpg" 
-                  alt="XLab Logo" 
-                  width={20} 
-                  height={20} 
-                  className="w-auto h-auto"
-                  priority
-                />
-              </div>
+              <Image 
+                src="/images/logo.jpg" 
+                alt="XLab Logo" 
+                width={12} 
+                height={12} 
+                className="w-auto h-auto"
+                priority
+              />
             </Link>
             
             {/* Lời chào và tên người dùng trên desktop */}
