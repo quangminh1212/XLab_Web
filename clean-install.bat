@@ -12,9 +12,15 @@ if exist .next-dev rd /s /q .next-dev
 if exist node_modules rd /s /q node_modules
 if exist package-lock.json del /f package-lock.json
 
+echo Clearing npm cache...
+call npm cache clean --force
+
 echo Installing dependencies...
-powershell -ExecutionPolicy Bypass -Command "npm cache clean --force"
-powershell -ExecutionPolicy Bypass -Command "npm install --no-fund"
+call npm install --no-fund --legacy-peer-deps
+
+echo Running Next.js setup...
+call npx next telemetry disable
+call npx next info
 
 echo Installation complete.
 echo.
