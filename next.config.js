@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  swcMinify: false,
   images: {
     domains: ['*'],
     unoptimized: true,
@@ -48,17 +49,29 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config) => {
-    // Tắt hoàn toàn tính năng tối ưu hóa để ngăn lỗi
+  webpack: (config, { dev, isServer }) => {
     config.optimization = {
       ...config.optimization,
-      splitChunks: false,
       minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
       usedExports: false,
       sideEffects: false,
       providedExports: false,
-      concatenateModules: false,
+      innerGraph: false,
+      mangleExports: false,
     };
+    
+    if (dev) {
+      config.mode = 'none';
+    }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
+    }
     
     return config;
   },
