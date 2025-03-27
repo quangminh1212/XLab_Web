@@ -60,6 +60,19 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  webpack: (config, { isServer }) => {
+    config.optimization.splitChunks = false;
+    
+    config.module.parser = {
+      ...config.module.parser,
+      javascript: {
+        ...config.module.parser?.javascript,
+        exportsPresence: 'error'
+      }
+    };
+
+    return config;
+  },
 };
 
 module.exports = nextConfig;
