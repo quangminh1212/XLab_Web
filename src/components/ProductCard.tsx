@@ -32,14 +32,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className = '', prio
       href={`/products/${slug}`}
       className={`group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all ${className} ${featured ? 'ring-2 ring-primary-500 ring-opacity-50' : ''}`}
     >
-      <div className="relative h-48 overflow-hidden bg-gray-100">
-        <div className="flex items-center justify-center h-full">
+      <div className="relative h-52 overflow-hidden bg-gray-50">
+        <div className="flex items-center justify-center h-full w-full p-4">
           <ProductImage
             src={imageUrl || '/placeholder-product.jpg'}
             alt={name}
-            width={96}
-            height={96}
-            className="w-auto h-auto max-h-40 p-3"
+            width={150}
+            height={150}
+            className="w-full h-full max-h-44"
           />
         </div>
         
