@@ -56,10 +56,18 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-1">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-xl">
-                X
-              </div>
-              <span className="font-bold text-xl text-primary-700 hidden sm:inline-block">XLab</span>
+              <Image 
+                src="/images/brand/xlab-logo.png" 
+                alt="XLab Logo" 
+                width={48} 
+                height={48} 
+                className="w-auto h-10"
+                priority
+              />
+              <span className="font-bold text-xl text-gray-900 hidden sm:inline-block">
+                <span className="text-black">X</span>
+                <span className="text-primary-600">Lab</span>
+              </span>
             </Link>
             
             {/* Lời chào và tên người dùng trên desktop */}
