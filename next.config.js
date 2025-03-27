@@ -87,9 +87,9 @@ const nextConfig = {
       },
     ];
   },
-  // Cấu hình phân tích bundle
+  // Cấu hình webpack cải tiến
   webpack: (config, { dev, isServer }) => {
-    // Fix for React Server Components issue
+    // Fix các vấn đề liên quan đến React Server Components
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -98,36 +98,16 @@ const nextConfig = {
         tls: false,
       };
       
-      // Add specific webpack config to handle the options.factory error
-      config.module = {
-        ...config.module,
-        exprContextCritical: false,
-        strictExportPresence: false,
-      };
+      // Khắc phục lỗi options.factory 
+      if (config.module) {
+        config.module.exprContextCritical = false;
+      }
       
-      // Fix for JSON modules handling
+      // Sửa xử lý webpack modules
       config.module.rules.push({
         test: /\.json$/,
-        type: 'javascript/auto',
-        use: [],
+        type: 'javascript/auto'
       });
-      
-      // Fix for options.factory error in React Server Components
-      config.plugins = config.plugins.filter(
-        (plugin) => 
-          plugin.constructor.name !== 'ForkTsCheckerWebpackPlugin' &&
-          plugin.constructor.name !== 'ESLintWebpackPlugin'
-      );
-      
-      // Ensure proper handling of React Server Components
-      config.module.parser = {
-        ...config.module.parser,
-        javascript: {
-          ...config.module.parser?.javascript,
-          dynamicImportMode: 'eager',
-          importExportsPresence: 'warn'
-        }
-      };
     }
 
     // Chỉ thực hiện trong môi trường development
