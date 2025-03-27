@@ -55,21 +55,17 @@ export default function Header() {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center space-x-1">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="bg-white rounded-lg w-14 h-14 flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300 border-2 border-primary-100">
+            <Link href="/" className="flex items-center">
+              <div className="bg-white rounded-lg p-2 flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={48} 
-                  height={48} 
-                  className="w-auto h-12"
+                  width={80} 
+                  height={80} 
+                  className="w-auto h-auto"
                   priority
                 />
               </div>
-              <span className="font-bold text-2xl text-gray-900 hidden sm:inline-block">
-                <span className="text-black">X</span>
-                <span className="text-primary-600">Lab</span>
-              </span>
             </Link>
             
             {/* Lời chào và tên người dùng trên desktop */}
