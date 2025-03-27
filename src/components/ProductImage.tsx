@@ -21,41 +21,43 @@ export function ProductImage({
   // Màu xanh của XLab
   const defaultImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjhmZiIvPjxjaXJjbGUgY3g9IjQwMCIgY3k9IjMwMCIgcj0iODAiIGZpbGw9IiMwMDc0ZDkiIGZpbGwtb3BhY2l0eT0iMC44Ii8+PHRleHQgeD0iNDAwIiB5PSIzODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzMzMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPlhMYWI8L3RleHQ+PC9zdmc+'
   const [imgSrc, setImgSrc] = useState<string>(defaultImage)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
-  const [isPlaceholder, setIsPlaceholder] = useState(false)
+  const [isPlaceholder, setIsPlaceholder] = useState(true)
   
-  // Kiểm tra URL hợp lệ
-  const isValidUrl = (url: string) => {
-    // Kiểm tra nếu URL không chứa file không tồn tại
-    if (!url || url === '/placeholder-product.jpg' || url.includes('business.svg')) {
-      return false
+  // Chuyển SVG sang PNG nếu có thể
+  const getValidImageUrl = (url: string): string => {
+    // Trường hợp không có URL
+    if (!url || url === '/placeholder-product.jpg') {
+      return defaultImage
     }
     
-    // Xác định đúng đuôi file PNG/JPG thay vì SVG
+    // Nếu URL là SVG, tự động chuyển sang PNG
     if (url.includes('.svg') && !url.startsWith('data:')) {
-      return false
+      return url.replace('.svg', '.png')
     }
     
-    return true
+    return url
   }
   
-  // Cập nhật imgSrc khi src prop thay đổi và đặt loading timeout
+  // Cập nhật imgSrc khi src prop thay đổi
   useEffect(() => {
-    if (isValidUrl(src)) {
-      setImgSrc(src)
-      setIsError(false)
-      setIsPlaceholder(false)
-    } else {
+    const validImageUrl = getValidImageUrl(src)
+    
+    if (validImageUrl === defaultImage) {
       setImgSrc(defaultImage)
       setIsPlaceholder(true)
       setIsLoading(false)
+    } else {
+      setImgSrc(validImageUrl)
+      setIsPlaceholder(false)
+      setIsLoading(true)
     }
     
-    // Tự động chuyển loading state sau 800ms để tránh spinner vô hạn
+    // Tự động tắt trạng thái loading sau 500ms để tránh spinner vô tận
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false)
-    }, 800)
+    }, 500)
     
     return () => clearTimeout(loadingTimeout)
   }, [src])
