@@ -47,6 +47,14 @@ const nextConfig = {
         ...config.output,
         chunkLoadingGlobal: `webpackChunk_${require('./package.json').name}`,
       };
+
+      // Thêm cấu hình để tránh prefetch và lỗi liên quan
+      config.output.chunkLoading = 'jsonp';
+      
+      // Vô hiệu hóa các tối ưu hóa có thể gây ra lỗi
+      config.optimization.concatenateModules = false;
+      config.optimization.providedExports = false;
+      config.optimization.usedExports = false;
     }
     
     return config;
