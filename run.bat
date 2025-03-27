@@ -37,39 +37,18 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo ===============================================
-echo =  Chon che do chay:                         =
-echo =  1. Production (tuyen khai)                =
-echo =  2. Development (phat trien)               =
-echo =  3. Build va chay production               =
-echo ===============================================
-echo.
+echo Tien hanh build du an...
+call npm run build
 
-set /p mode="Nhap lua chon cua ban (mac dinh: 1): "
-
-if "%mode%"=="3" (
-  echo.
-  echo Tien hanh build du an...
-  call npm run build
-
-  if %errorlevel% neq 0 (
-    echo [LOI] Khong the build du an. Vui long kiem tra lai code va thu lai.
-    pause
-    exit /b
-  )
-
-  echo.
-  echo Build thanh cong! Dang khoi dong o che do production...
-  call npm run start
-) else if "%mode%"=="2" (
-  echo.
-  echo Khoi dong XLab Web o che do phat trien...
-  call npm run dev
-) else (
-  echo.
-  echo Khoi dong XLab Web o che do san xuat...
-  call npm run start
+if %errorlevel% neq 0 (
+  echo [LOI] Khong the build du an. Vui long kiem tra lai code va thu lai.
+  pause
+  exit /b
 )
+
+echo.
+echo Build thanh cong! Dang khoi dong o che do production...
+call npm run start
 
 echo.
 echo Cam on ban da su dung XLab Web!
