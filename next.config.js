@@ -35,9 +35,6 @@ const nextConfig = {
     return config;
   },
   
-  // Cấu hình server components
-  serverExternalPackages: [],
-  
   // Cấu hình cơ bản
   staticPageGenerationTimeout: 120,
   
