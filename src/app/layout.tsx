@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
-import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 
 // Optimized font loading config
@@ -87,20 +86,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        
-        {/* Preload critical assets */}
-        <link
-          rel="preload"
-          href="/images/hero-image.svg"
-          as="image"
-          type="image/svg+xml"
-        />
-      </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
         <SessionProvider>
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
@@ -113,41 +98,6 @@ export default function RootLayout({
           <Footer />
         </SessionProvider>
         <Analytics />
-        <Script
-          id="performance-metrics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Core web vitals optimization
-              window.addEventListener('DOMContentLoaded', () => {
-                // Optimize LCP (Largest Contentful Paint)
-                const lcpElement = document.querySelector('main');
-                if (lcpElement) {
-                  lcpElement.style.contentVisibility = 'auto';
-                }
-                
-                // Optimize CLS (Cumulative Layout Shift)
-                document.body.style.overflowX = 'hidden';
-                
-                // Optimize FID (First Input Delay)
-                setTimeout(() => {
-                  const links = Array.from(document.querySelectorAll('a[href], button'));
-                  if (links.length > 0) {
-                    const io = new IntersectionObserver((entries) => {
-                      entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                          entry.target.setAttribute('data-prefetched', 'true');
-                          io.unobserve(entry.target);
-                        }
-                      });
-                    });
-                    links.forEach(link => io.observe(link));
-                  }
-                }, 1000);
-              });
-            `,
-          }}
-        />
       </body>
     </html>
   )
