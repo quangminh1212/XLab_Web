@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XLab Web Sync</title>
+  <style>
+    body {
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 16px;
+      color: #333;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 16px;
+    }
+    .section {
+      margin-bottom: 16px;
+    }
+    button {
+      background-color: #3B82F6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+    button:hover {
+      background-color: #2563EB;
+    }
+    .status {
+      padding: 8px;
+      background-color: #f3f4f6;
+      border-radius: 4px;
+      font-size: 12px;
+      height: 100px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>XLab Website Sync</h1>
+  
+  <div class="section">
+    <button id="createHomepage">Tạo Trang chủ</button>
+    <button id="createProducts">Tạo Trang sản phẩm</button>
+    <button id="createServices">Tạo Trang dịch vụ</button>
+    <button id="createContact">Tạo Trang liên hệ</button>
+  </div>
+  
+  <div class="section">
+    <button id="createComponents">Tạo Components</button>
+    <button id="createStyles">Tạo Styles</button>
+  </div>
+  
+  <div class="section">
+    <h3>Trạng thái</h3>
+    <div id="status" class="status">Sẵn sàng đồng bộ thiết kế XLab Website...</div>
+  </div>
+
+  <script>
+    document.getElementById('createHomepage').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'create-homepage' } }, '*')
+    }
+    
+    document.getElementById('createProducts').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'create-products' } }, '*')
+    }
+    
+    document.getElementById('createServices').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'create-services' } }, '*')
+    }
+    
+    document.getElementById('createContact').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'create-contact' } }, '*')
+    }
+    
+    document.getElementById('createComponents').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'create-components' } }, '*')
+    }
+    
+    document.getElementById('createStyles').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'create-styles' } }, '*')
+    }
+    
+    onmessage = (event) => {
+      const message = event.data.pluginMessage
+      if (message && message.type === 'status') {
+        const statusEl = document.getElementById('status')
+        statusEl.innerHTML += `<div>${message.text}</div>`
+        statusEl.scrollTop = statusEl.scrollHeight
+      }
+    }
+  </script>
+</body>
+</html> 
