@@ -9,27 +9,27 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-primary">
-              XLab
+            <Link href="/">
+              <span className="text-2xl font-bold text-primary">XLab</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-gray-600 hover:text-primary transition-colors">
-              Trang chủ
+            <Link href="/">
+              <span className="text-gray-600 hover:text-primary transition-colors">Trang chủ</span>
             </Link>
-            <Link href="/research" className="text-gray-600 hover:text-primary transition-colors">
-              Nghiên cứu
+            <Link href="/research">
+              <span className="text-gray-600 hover:text-primary transition-colors">Nghiên cứu</span>
             </Link>
-            <Link href="/community" className="text-gray-600 hover:text-primary transition-colors">
-              Cộng đồng
+            <Link href="/community">
+              <span className="text-gray-600 hover:text-primary transition-colors">Cộng đồng</span>
             </Link>
-            <Link href="/analytics" className="text-gray-600 hover:text-primary transition-colors">
-              Phân tích
+            <Link href="/analytics">
+              <span className="text-gray-600 hover:text-primary transition-colors">Phân tích</span>
             </Link>
-            <Link href="/about" className="text-gray-600 hover:text-primary transition-colors">
-              Giới thiệu
+            <Link href="/about">
+              <span className="text-gray-600 hover:text-primary transition-colors">Giới thiệu</span>
             </Link>
           </nav>
 
@@ -69,20 +69,20 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4">
             <div className="flex flex-col space-y-4">
-              <Link href="/" className="text-gray-600 hover:text-primary transition-colors">
-                Trang chủ
+              <Link href="/">
+                <span className="text-gray-600 hover:text-primary transition-colors">Trang chủ</span>
               </Link>
-              <Link href="/research" className="text-gray-600 hover:text-primary transition-colors">
-                Nghiên cứu
+              <Link href="/research">
+                <span className="text-gray-600 hover:text-primary transition-colors">Nghiên cứu</span>
               </Link>
-              <Link href="/community" className="text-gray-600 hover:text-primary transition-colors">
-                Cộng đồng
+              <Link href="/community">
+                <span className="text-gray-600 hover:text-primary transition-colors">Cộng đồng</span>
               </Link>
-              <Link href="/analytics" className="text-gray-600 hover:text-primary transition-colors">
-                Phân tích
+              <Link href="/analytics">
+                <span className="text-gray-600 hover:text-primary transition-colors">Phân tích</span>
               </Link>
-              <Link href="/about" className="text-gray-600 hover:text-primary transition-colors">
-                Giới thiệu
+              <Link href="/about">
+                <span className="text-gray-600 hover:text-primary transition-colors">Giới thiệu</span>
               </Link>
             </div>
           </div>
