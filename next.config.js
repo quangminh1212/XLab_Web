@@ -49,8 +49,10 @@ const nextConfig = {
     ];
   },
   experimental: {
+    enableUndici: false,
     serverActions: {
-      allowedOrigins: ['localhost:3000']
+      allowedOrigins: ['localhost:3000'],
+      bodySizeLimit: '2mb'
     },
   },
   typescript: {
@@ -60,8 +62,13 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
     config.optimization.splitChunks = false;
+    
+    if (dev) {
+      config.optimization.minimize = false;
+      config.optimization.minimizer = [];
+    }
     
     config.module.parser = {
       ...config.module.parser,
@@ -70,8 +77,20 @@ const nextConfig = {
         exportsPresence: 'error'
       }
     };
+    
+    if (!isServer) {
+      config.optimization.runtimeChunk = 'single';
+      
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react-server-dom-webpack/client': require.resolve('react-server-dom-webpack/client'),
+      };
+    }
 
     return config;
+  },
+  compiler: {
+    styledComponents: true,
   },
 };
 

@@ -4,8 +4,19 @@ import { Metadata } from 'next'
 import { Button } from '@/components/ui/button'
 import { getProductBySlug, incrementViewCount } from '@/lib/utils'
 import { products } from '@/data/mockData'
-import { DownloadButton } from './client'
-import { ProductImage } from '@/components/ProductImage'
+import dynamic from 'next/dynamic'
+
+// Import client component với dynamic để tránh lỗi hydration
+const ProductImage = dynamic(
+  () => import('@/components/ProductImage').then(mod => ({ default: mod.ProductImage })),
+  { ssr: false }
+);
+
+// Import DownloadButton với dynamic
+const DownloadButton = dynamic(
+  () => import('./client').then(mod => ({ default: mod.DownloadButton })),
+  { ssr: false }
+);
 
 // Helper function để lấy sản phẩm theo slug
 async function getProduct(slug: string) {
@@ -75,6 +86,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
               <div className="flex flex-col md:flex-row -mx-4">
                 <div className="md:flex-1 px-4 mb-6 md:mb-0">
                   <div className="bg-gray-50 border border-gray-100 rounded-lg p-6 flex items-center justify-center h-80">
+                    {/* Sử dụng ProductImage component từ dynamic import */}
                     <ProductImage 
                       src={productImage}
                       alt={product.name || 'Product image'}
@@ -132,12 +144,12 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
                   <div className="flex items-center space-x-4 mb-6">
                     <div className="text-3xl font-bold text-primary-600">
                       {product.salePrice 
-                        ? Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)
-                        : Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price || 0)}
+                        ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)
+                        : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price || 0)}
                     </div>
                     {product.salePrice && product.price && (
                       <div className="text-gray-400 line-through">
-                        {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
                       </div>
                     )}
                   </div>
