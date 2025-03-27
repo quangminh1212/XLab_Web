@@ -49,7 +49,6 @@ const nextConfig = {
     ];
   },
   experimental: {
-    enableUndici: false,
     serverActions: {
       allowedOrigins: ['localhost:3000'],
       bodySizeLimit: '2mb'
@@ -80,11 +79,6 @@ const nextConfig = {
     
     if (!isServer) {
       config.optimization.runtimeChunk = 'single';
-      
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'react-server-dom-webpack/client': require.resolve('react-server-dom-webpack/client'),
-      };
     }
 
     return config;
