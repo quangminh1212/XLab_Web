@@ -19,9 +19,8 @@ const nextConfig = {
   // Cấu hình tối giản
   experimental: {},
 
-  // Tắt source maps và minification trong development
+  // Tắt source maps trong production
   productionBrowserSourceMaps: false,
-  swcMinify: false,
 
   // Cấu hình webpack đơn giản
   webpack: (config, { dev }) => {
