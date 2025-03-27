@@ -176,6 +176,7 @@ products.forEach(product => {
  * Get product by slug
  */
 export function getProductBySlug(slug: string): Product | undefined {
+  if (!slug) return undefined;
   return products.find(product => product.slug === slug);
 }
 
@@ -183,36 +184,57 @@ export function getProductBySlug(slug: string): Product | undefined {
  * Increment and get product view count
  */
 export function incrementViewCount(slug: string): number {
+  if (!slug) return 0;
+  
   const product = getProductBySlug(slug);
-  if (product) {
+  if (!product) return 0;
+  
+  try {
     if (typeof product.viewCount !== 'number') {
       product.viewCount = 0;
     }
     product.viewCount += 1;
+    
+    // Cập nhật cache
+    viewCountCache[slug] = product.viewCount;
+    
     return product.viewCount;
+  } catch (error) {
+    console.error(`Lỗi khi tăng lượt xem cho ${slug}:`, error);
+    return viewCountCache[slug] || 0;
   }
-  return 0;
 }
 
 /**
  * Increment and get product download count
  */
 export function incrementDownloadCount(slug: string): number {
+  if (!slug) return 0;
+  
   const product = getProductBySlug(slug);
-  if (product) {
+  if (!product) return 0;
+  
+  try {
     if (typeof product.downloadCount !== 'number') {
       product.downloadCount = 0;
     }
     product.downloadCount += 1;
+    
+    // Cập nhật cache
+    downloadCountCache[slug] = product.downloadCount;
+    
     return product.downloadCount;
+  } catch (error) {
+    console.error(`Lỗi khi tăng lượt tải cho ${slug}:`, error);
+    return downloadCountCache[slug] || 0;
   }
-  return 0;
 }
 
 /**
  * Get current view count
  */
 export function getViewCount(slug: string): number {
+  if (!slug) return 0;
   return viewCountCache[slug] || 0;
 }
 
@@ -220,5 +242,6 @@ export function getViewCount(slug: string): number {
  * Get current download count
  */
 export function getDownloadCount(slug: string): number {
+  if (!slug) return 0;
   return downloadCountCache[slug] || 0;
 } 
