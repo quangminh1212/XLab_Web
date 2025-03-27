@@ -100,13 +100,6 @@ export default function RootLayout({
           as="image"
           type="image/svg+xml"
         />
-        <link 
-          rel="preload" 
-          href="/fonts/inter-var.woff2" 
-          as="font" 
-          type="font/woff2" 
-          crossOrigin="anonymous" 
-        />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
         <SessionProvider>
