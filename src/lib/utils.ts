@@ -1,5 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { products } from '@/data/mockData';
+import { Product } from '@/types';
 
 /**
  * Combines classNames with Tailwind classes
@@ -157,4 +159,68 @@ export function debounce<T extends (...args: any[]) => any>(
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), ms);
   };
+}
+
+/**
+ * Gets a product by slug from mockData
+ */
+// Caching mechanism for storing view counts
+const viewCountCache: Record<string, number> = {};
+const downloadCountCache: Record<string, number> = {};
+
+// Initialize cache from mockData
+products.forEach(product => {
+  viewCountCache[product.slug] = product.viewCount;
+  downloadCountCache[product.slug] = product.downloadCount;
+});
+
+/**
+ * Get product by slug
+ */
+export function getProductBySlug(slug: string): Product | undefined {
+  return products.find(product => product.slug === slug);
+}
+
+/**
+ * Increment and get product view count
+ */
+export function incrementViewCount(slug: string): number {
+  const product = getProductBySlug(slug);
+  if (!product) return 0;
+  
+  if (!viewCountCache[slug]) {
+    viewCountCache[slug] = product.viewCount;
+  }
+  
+  viewCountCache[slug] += 1;
+  return viewCountCache[slug];
+}
+
+/**
+ * Increment and get product download count
+ */
+export function incrementDownloadCount(slug: string): number {
+  const product = getProductBySlug(slug);
+  if (!product) return 0;
+  
+  if (!downloadCountCache[slug]) {
+    downloadCountCache[slug] = product.downloadCount;
+  }
+  
+  downloadCountCache[slug] += 1;
+  return downloadCountCache[slug];
+}
+
+/**
+ * Get current view count
+ */
+export function getViewCount(slug: string): number {
+  return viewCountCache[slug] || 0;
+}
+
+/**
+ * Get current download count
+ */
+export function getDownloadCount(slug: string): number {
+  return downloadCountCache[slug] || 0;
 } 
