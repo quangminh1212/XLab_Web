@@ -1,5 +1,3 @@
-'use client';
-
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
@@ -127,7 +125,7 @@ export default function RootLayout({
               </div>
             </div>
             <div className="border-t border-gray-800 pt-8 mt-8 text-center text-gray-500 text-sm">
-              <p>© {new Date().getFullYear()} XLab. Tất cả quyền được bảo lưu.</p>
+              <p>© 2024 XLab. Tất cả quyền được bảo lưu.</p>
             </div>
           </div>
         </footer>
