@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Removed swcMinify as it's no longer needed in Next.js 15.2.4
+  // swcMinify: true, // Removed as it's causing warnings
   poweredByHeader: false,
   images: {
     remotePatterns: [
@@ -21,6 +21,7 @@ const nextConfig = {
 
   // Tắt source maps và minification trong development
   productionBrowserSourceMaps: false,
+  swcMinify: false,
 
   // Cấu hình webpack đơn giản
   webpack: (config, { dev }) => {
