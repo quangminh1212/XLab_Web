@@ -43,7 +43,7 @@ const nextConfig = {
   staticPageGenerationTimeout: 120,
   
   // Thư mục build
-  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
+  distDir: '.next',
 };
 
 module.exports = nextConfig; 
