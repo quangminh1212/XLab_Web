@@ -1,86 +1,26 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Metadata } from 'next'
-
-// This would typically come from a database or API
-const getProductById = (id: string) => {
-  const products = {
-    'business-suite': {
-      id: 'business-suite',
-      name: 'XLab Business Suite',
-      shortDescription: 'Giải pháp phần mềm toàn diện cho việc quản lý doanh nghiệp',
-      fullDescription: 'Giải pháp phần mềm toàn diện cho việc quản lý doanh nghiệp, bao gồm kế toán, quản lý nhân sự, quản lý khách hàng và nhiều tính năng khác.',
-      price: 5990000,
-      discountPrice: 4990000,
-      features: [
-        'Quản lý khách hàng (CRM)',
-        'Quản lý nhân sự (HRM)',
-        'Quản lý tài chính và kế toán',
-        'Báo cáo phân tích doanh số',
-        'Tích hợp thanh toán trực tuyến',
-        'Hỗ trợ đa ngôn ngữ',
-        'Truy cập từ mọi thiết bị',
-        'Cập nhật tự động',
-      ],
-      systemRequirements: {
-        os: 'Windows 10/11, macOS 11+, Linux',
-        processor: 'Intel Core i3 hoặc AMD Ryzen 3 trở lên',
-        ram: '8GB RAM',
-        storage: '250MB dung lượng trống',
-        browser: 'Chrome, Firefox, Safari, Edge phiên bản mới nhất',
-      },
-      versions: [
-        {
-          name: 'Cơ bản',
-          price: 2990000,
-          features: ['Quản lý khách hàng cơ bản', 'Báo cáo hàng tháng', 'Hỗ trợ email'],
-        },
-        {
-          name: 'Chuyên nghiệp',
-          price: 4990000,
-          features: ['Tất cả tính năng cơ bản', 'Quản lý tài chính', 'Quản lý nhân sự', 'Hỗ trợ 24/7'],
-          recommended: true,
-        },
-        {
-          name: 'Doanh nghiệp',
-          price: 9990000,
-          features: ['Tất cả tính năng chuyên nghiệp', 'API tích hợp', 'Tùy chỉnh theo yêu cầu', 'Hỗ trợ ưu tiên'],
-        },
-      ],
-      reviews: [
-        {
-          name: 'Nguyễn Văn A',
-          position: 'CEO, Công ty XYZ',
-          rating: 5,
-          comment: 'Phần mềm tuyệt vời, giúp doanh nghiệp của chúng tôi tiết kiệm thời gian và tăng hiệu quả làm việc.',
-        },
-        {
-          name: 'Trần Thị B',
-          position: 'Giám đốc tài chính, Tập đoàn ABC',
-          rating: 4,
-          comment: 'Dễ sử dụng, đầy đủ tính năng, hỗ trợ kỹ thuật nhanh chóng và hiệu quả.',
-        },
-      ],
-    },
-    // Add more products as needed
-  };
-
-  return products[id as keyof typeof products];
-};
+import { getProductBySlug, incrementViewCount, formatCurrency } from '@/lib/utils'
+import { products } from '@/data/mockData'
+import { DownloadButton } from './client'
 
 export async function generateMetadata(
   { params }: { params: { id: string } }
 ): Promise<Metadata> {
-  const product = getProductById(params.id);
+  const product = getProductBySlug(params.id);
   return {
     title: `${product?.name || 'Sản phẩm'} | XLab - Phần mềm và Dịch vụ`,
-    description: product?.shortDescription || 'Chi tiết sản phẩm phần mềm từ XLab',
+    description: product?.description || 'Chi tiết sản phẩm phần mềm từ XLab',
   };
 }
 
 export default function ProductDetail({ params }: { params: { id: string } }) {
-  const product = getProductById(params.id);
-
+  const product = getProductBySlug(params.id);
+  
+  // Tăng lượt xem khi render trang (chỉ tính server-side)
+  const viewCount = product ? incrementViewCount(product.slug) : 0;
+  
   if (!product) {
     return (
       <div className="container py-20 text-center">
@@ -108,7 +48,7 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
       <section className="bg-gradient-to-r from-primary-700 to-primary-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{product.name}</h1>
-          <p className="text-xl max-w-3xl">{product.shortDescription}</p>
+          <p className="text-xl max-w-3xl">{product.description}</p>
         </div>
       </section>
 
@@ -129,6 +69,29 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
                     e.currentTarget.src = '/images/product-placeholder.svg';
                   }}
                 />
+              </div>
+              
+              {/* Thống kê sản phẩm */}
+              <div className="mt-6 bg-gray-50 p-4 rounded-lg">
+                <div className="flex justify-between items-center mb-3">
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm font-medium">Lượt xem:</span>
+                  </div>
+                  <span className="text-sm font-bold text-primary-600">{viewCount.toLocaleString('vi-VN')}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm font-medium">Lượt tải:</span>
+                  </div>
+                  <span className="text-sm font-bold text-primary-600">{product.downloadCount.toLocaleString('vi-VN')}</span>
+                </div>
               </div>
               
               {/* Product Demo/Screenshots */}
@@ -158,17 +121,17 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <p className="text-3xl font-bold text-primary-600">
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.discountPrice || product.price)}
+                      {formatCurrency(product.salePrice || product.price)}
                     </p>
-                    {product.discountPrice && (
+                    {product.salePrice && (
                       <p className="text-gray-500 line-through">
-                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                        {formatCurrency(product.price)}
                       </p>
                     )}
                   </div>
                   <div className="flex">
-                    {renderStars(4.5)}
-                    <span className="ml-2 text-gray-600">(18 đánh giá)</span>
+                    {renderStars(product.rating)}
+                    <span className="ml-2 text-gray-600">({Math.round(viewCount/20)} đánh giá)</span>
                   </div>
                 </div>
 
@@ -190,33 +153,35 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
                 <div className="space-y-3">
                   <button className="btn bg-primary-600 text-white w-full">Thêm vào giỏ hàng</button>
                   <button className="btn bg-secondary-600 text-white w-full">Mua ngay</button>
-                  <button className="btn bg-gray-100 text-gray-700 w-full">Dùng thử miễn phí 30 ngày</button>
+                  <DownloadButton slug={product.slug}>
+                    Tải xuống dùng thử
+                  </DownloadButton>
                 </div>
               </div>
 
               {/* System Requirements */}
               <div className="bg-white p-8 rounded-lg shadow-lg">
-                <h3 className="text-xl font-bold mb-4">Yêu cầu hệ thống</h3>
+                <h3 className="text-xl font-bold mb-4">Thông tin phần mềm</h3>
                 <ul className="space-y-3">
                   <li className="flex">
-                    <span className="font-semibold w-1/3">Hệ điều hành:</span>
-                    <span>{product.systemRequirements.os}</span>
-                  </li>
-                  <li className="flex">
-                    <span className="font-semibold w-1/3">Bộ vi xử lý:</span>
-                    <span>{product.systemRequirements.processor}</span>
-                  </li>
-                  <li className="flex">
-                    <span className="font-semibold w-1/3">Bộ nhớ RAM:</span>
-                    <span>{product.systemRequirements.ram}</span>
+                    <span className="font-semibold w-1/3">Phiên bản:</span>
+                    <span>{product.version}</span>
                   </li>
                   <li className="flex">
                     <span className="font-semibold w-1/3">Dung lượng:</span>
-                    <span>{product.systemRequirements.storage}</span>
+                    <span>{product.size}</span>
                   </li>
                   <li className="flex">
-                    <span className="font-semibold w-1/3">Trình duyệt:</span>
-                    <span>{product.systemRequirements.browser}</span>
+                    <span className="font-semibold w-1/3">Giấy phép:</span>
+                    <span>{product.license}</span>
+                  </li>
+                  <li className="flex">
+                    <span className="font-semibold w-1/3">Nhà phát hành:</span>
+                    <span>XLab Software</span>
+                  </li>
+                  <li className="flex">
+                    <span className="font-semibold w-1/3">Cập nhật:</span>
+                    <span>{new Date(product.updatedAt).toLocaleDateString('vi-VN')}</span>
                   </li>
                 </ul>
               </div>
@@ -225,159 +190,19 @@ export default function ProductDetail({ params }: { params: { id: string } }) {
         </div>
       </section>
 
-      {/* Product Features */}
+      {/* Product Description */}
       <section className="py-16 bg-gray-50">
         <div className="container">
-          <h2 className="text-3xl font-bold mb-12 text-center">Tính năng của {product.name}</h2>
+          <h2 className="text-3xl font-bold mb-12 text-center">Giới thiệu về {product.name}</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {product.features.map((feature, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mb-4">
-                  <span className="text-xl">✓</span>
+          <div className="bg-white p-8 rounded-lg shadow-md mx-auto max-w-4xl">
+            <div className="prose max-w-none">
+              {product.longDescription && (
+                <div className="whitespace-pre-line">
+                  {product.longDescription}
                 </div>
-                <h3 className="font-bold text-lg mb-2">
-                  {feature.split('(')[0].trim()}
-                  {feature.includes('(') && (
-                    <span className="text-primary-600">
-                      {' '}({feature.split('(')[1]}
-                    </span>
-                  )}
-                </h3>
-                <p className="text-gray-600">
-                  Tính năng này giúp tối ưu hóa quy trình làm việc và nâng cao hiệu quả.
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Version Comparison */}
-      <section className="py-16">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-12 text-center">So sánh các phiên bản</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {product.versions.map((version, index) => (
-              <div 
-                key={index} 
-                className={`border rounded-lg overflow-hidden ${version.recommended ? 'border-primary-600 shadow-xl' : 'border-gray-200 shadow-md'}`}
-              >
-                {version.recommended && (
-                  <div className="bg-primary-600 text-white py-2 px-4 text-center">
-                    Được lựa chọn nhiều nhất
-                  </div>
-                )}
-                <div className="p-6 bg-white">
-                  <h3 className="text-xl font-bold mb-2">{version.name}</h3>
-                  <p className="text-3xl font-bold text-primary-600 mb-6">
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(version.price)}
-                  </p>
-                  
-                  <ul className="space-y-3 mb-8">
-                    {version.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <div className="text-green-500 mt-1 mr-3">✓</div>
-                        <p>{feature}</p>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <button className={`btn w-full ${version.recommended ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'}`}>
-                    Chọn gói {version.name}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Customer Reviews */}
-      <section className="py-16 bg-gray-50">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-12 text-center">Đánh giá từ khách hàng</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {product.reviews.map((review, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-4">
-                    <span className="text-gray-600 text-xl">{review.name[0]}</span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold">{review.name}</h4>
-                    <p className="text-gray-600 text-sm">{review.position}</p>
-                  </div>
-                </div>
-                <div className="flex mb-3">
-                  {renderStars(review.rating)}
-                </div>
-                <p className="text-gray-700">{review.comment}</p>
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center">
-            <button className="btn bg-white border border-gray-300 text-gray-700">
-              Xem tất cả đánh giá
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-16">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-12 text-center">Câu hỏi thường gặp</h2>
-          
-          <div className="max-w-3xl mx-auto space-y-6">
-            {[
-              {
-                question: 'Tôi có thể sử dụng phần mềm trên bao nhiêu thiết bị?',
-                answer: 'Bạn có thể cài đặt và sử dụng phần mềm trên không giới hạn số lượng thiết bị cá nhân, nhưng chỉ một người dùng có thể sử dụng tại một thời điểm. Đối với giấy phép doanh nghiệp, số lượng người dùng sẽ phụ thuộc vào gói bạn chọn.'
-              },
-              {
-                question: 'Phần mềm có cập nhật tự động không?',
-                answer: 'Có, phần mềm sẽ tự động cập nhật khi có phiên bản mới. Bạn có thể tùy chỉnh cài đặt cập nhật trong phần Cài đặt của phần mềm.'
-              },
-              {
-                question: 'Tôi có được hỗ trợ kỹ thuật sau khi mua không?',
-                answer: 'Có, khi mua phần mềm, bạn sẽ được hỗ trợ kỹ thuật trong thời gian 1 năm. Sau đó, bạn có thể gia hạn gói hỗ trợ hoặc nâng cấp phiên bản để tiếp tục nhận hỗ trợ.'
-              },
-              {
-                question: 'Làm thế nào để tôi nhận được bản cập nhật sau khi mua?',
-                answer: 'Tất cả bản cập nhật sẽ được tự động cung cấp thông qua ứng dụng trong thời gian bảo hành của bạn. Bạn cũng có thể tải xuống phiên bản mới nhất từ khu vực Tài khoản của bạn trên trang web của chúng tôi.'
-              },
-            ].map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                <div className="p-4 bg-white">
-                  <h4 className="font-bold text-lg">{faq.question}</h4>
-                  <p className="mt-2 text-gray-600">{faq.answer}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link href="/support" className="btn bg-gray-100 text-gray-700">
-              Xem tất cả câu hỏi thường gặp
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-16 bg-primary-600 text-white">
-        <div className="container text-center">
-          <h2 className="text-3xl font-bold mb-6">Sẵn sàng nâng cấp trải nghiệm với {product.name}?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Đăng ký ngay hôm nay và nhận giảm giá 20% cho 3 tháng đầu tiên. Áp dụng cho tất cả các gói dịch vụ.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="btn bg-white text-primary-600">Mua ngay</button>
-            <button className="btn bg-primary-700 text-white">Dùng thử miễn phí</button>
+              )}
+            </div>
           </div>
         </div>
       </section>

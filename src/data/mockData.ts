@@ -116,6 +116,7 @@ export const products: Product[] = [
     featured: true,
     active: true,
     downloadCount: 1250,
+    viewCount: 3750,
     rating: 4.8,
     createdAt: new Date('2023-04-10').toISOString(),
     updatedAt: new Date('2023-10-15').toISOString()
@@ -146,6 +147,7 @@ export const products: Product[] = [
     featured: true,
     active: true,
     downloadCount: 3420,
+    viewCount: 10260,
     rating: 4.9,
     createdAt: new Date('2023-02-25').toISOString(),
     updatedAt: new Date('2023-09-05').toISOString()
@@ -176,6 +178,7 @@ export const products: Product[] = [
     featured: true,
     active: true,
     downloadCount: 5680,
+    viewCount: 17040,
     rating: 4.7,
     createdAt: new Date('2023-01-05').toISOString(),
     updatedAt: new Date('2023-11-20').toISOString()
@@ -206,6 +209,7 @@ export const products: Product[] = [
     featured: false,
     active: true,
     downloadCount: 2840,
+    viewCount: 8520,
     rating: 4.6,
     createdAt: new Date('2023-05-15').toISOString(),
     updatedAt: new Date('2023-10-01').toISOString()
@@ -236,6 +240,7 @@ export const products: Product[] = [
     featured: false,
     active: true,
     downloadCount: 7920,
+    viewCount: 23760,
     rating: 4.5,
     createdAt: new Date('2023-03-10').toISOString(),
     updatedAt: new Date('2023-11-05').toISOString()
@@ -266,6 +271,7 @@ export const products: Product[] = [
     featured: true,
     active: true,
     downloadCount: 9650,
+    viewCount: 28950,
     rating: 4.8,
     createdAt: new Date('2023-06-20').toISOString(),
     updatedAt: new Date('2023-12-10').toISOString()
@@ -296,6 +302,7 @@ export const products: Product[] = [
     featured: false,
     active: true,
     downloadCount: 3150,
+    viewCount: 9450,
     rating: 4.6,
     createdAt: new Date('2023-07-05').toISOString(),
     updatedAt: new Date('2023-11-15').toISOString()
@@ -326,6 +333,7 @@ export const products: Product[] = [
     featured: false,
     active: true,
     downloadCount: 4820,
+    viewCount: 14460,
     rating: 4.7,
     createdAt: new Date('2023-05-25').toISOString(),
     updatedAt: new Date('2023-12-05').toISOString()

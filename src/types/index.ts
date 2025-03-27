@@ -15,6 +15,7 @@ export interface Product {
   featured: boolean;
   active: boolean;
   downloadCount: number;
+  viewCount: number;
   rating: number;
   createdAt: string;
   updatedAt: string;
