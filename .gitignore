@@ -1,5 +1,5 @@
 # dependencies
-node_modules
+/node_modules
 /.pnp
 .pnp.js
 
@@ -9,6 +9,7 @@ node_modules
 # next.js
 /.next/
 /out/
+/.next-dev/
 
 # production
 /build
@@ -16,6 +17,7 @@ node_modules
 # misc
 .DS_Store
 *.pem
+bfg.jar
 
 # debug
 npm-debug.log*
@@ -24,6 +26,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
