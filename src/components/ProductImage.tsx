@@ -19,10 +19,10 @@ export function ProductImage({
   className = '',
 }: ProductImageProps) {
   const defaultImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2NjY2NjYyIvPjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzYiIGZpbGw9IiM2NjY2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIj5YTGFiIFByb2R1Y3Q8L3RleHQ+PC9zdmc+'
-  const [imgSrc, setImgSrc] = useState<string>(defaultImage)
+  const [imgSrc, setImgSrc] = useState<string>(src || defaultImage)
   const [isLoading, setIsLoading] = useState(true)
   
-  // Cập nhật imgSrc khi src prop thay đổi
+  // Cập nhật imgSrc khi src prop thay đổi và đặt loading timeout
   useEffect(() => {
     if (src && src !== '/placeholder-product.jpg') {
       setImgSrc(src)
@@ -30,6 +30,13 @@ export function ProductImage({
       setImgSrc(defaultImage)
     }
     setIsLoading(true)
+    
+    // Tự động chuyển loading state sau 1.5 giây để tránh spinner vô hạn
+    const loadingTimeout = setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
+    
+    return () => clearTimeout(loadingTimeout)
   }, [src])
 
   // Xử lý lỗi khi ảnh không tải được
