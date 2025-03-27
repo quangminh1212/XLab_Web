@@ -1,9 +1,9 @@
 'use client'
 
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
 
-type ProductImageProps = {
+interface ProductImageProps {
   src: string
   alt: string
   width: number
@@ -11,84 +11,56 @@ type ProductImageProps = {
   className?: string
 }
 
-export function ProductImage({
+export const ProductImage: React.FC<ProductImageProps> = ({
   src,
   alt,
   width,
   height,
   className = '',
-}: ProductImageProps) {
-  // Màu xanh của XLab
-  const defaultImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjhmZiIvPjxjaXJjbGUgY3g9IjQwMCIgY3k9IjMwMCIgcj0iODAiIGZpbGw9IiMwMDc0ZDkiIGZpbGwtb3BhY2l0eT0iMC44Ii8+PHRleHQgeD0iNDAwIiB5PSIzODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzMzMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPlhMYWI8L3RleHQ+PC9zdmc+'
-  const [imgSrc, setImgSrc] = useState<string>(src || defaultImage)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isError, setIsError] = useState(false)
-  
-  // Tạo URL chính xác cho hình ảnh
-  const getValidImageUrl = (url: string): string => {
-    if (!url || url === '/placeholder-product.jpg') {
-      return url
-    }
-    
-    // Chuyển đổi đường dẫn từ SVG sang PNG
-    let validUrl = url
-    
-    // Đảm bảo đường dẫn /images/product/ có file .png
-    if (url.includes('products/') || url.includes('categories/')) {
-      // Loại bỏ đuôi SVG nếu có
-      validUrl = url.replace('.svg', '.png')
-      
-      // Đảm bảo sử dụng các file PNG có sẵn
-      if (validUrl.includes('business.svg') || validUrl.includes('business.png')) {
-        validUrl = '/images/categories/productivity.png'
-      }
-    }
-    
-    return validUrl
-  }
-  
-  // Cập nhật imgSrc khi src prop thay đổi
+}) => {
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [imageSrc, setImageSrc] = useState(src)
+
   useEffect(() => {
-    const validImageUrl = getValidImageUrl(src)
-    setImgSrc(validImageUrl)
-    setIsLoading(true)
-    
-    return () => {}
+    setImageSrc(src)
+    setLoading(true)
+    setError(false)
   }, [src])
 
-  // Xử lý lỗi khi ảnh không tải được
-  const handleError = () => {
-    console.log('Ảnh không tải được:', imgSrc)
-    // Không đổi imgSrc để hiển thị loading thay vì placeholder
-    setIsError(true)
-    // Giữ trạng thái loading khi có lỗi
-    setIsLoading(true)
-  }
-  
-  // Xử lý khi ảnh tải thành công
   const handleLoad = () => {
-    setIsLoading(false)
-    setIsError(false)
+    setLoading(false)
+  }
+
+  const handleError = () => {
+    setError(true)
+    setLoading(false)
   }
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center bg-gray-50">
-      {isLoading && (
+    <div className={`relative w-full h-full ${className}`}>
+      {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
         </div>
       )}
-      {!isError && (
+      
+      {error ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span className="text-xs">{alt}</span>
+        </div>
+      ) : (
         <Image
-          src={imgSrc}
-          alt={alt || 'Product image'}
-          width={width || 300}
-          height={height || 300}
-          className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-contain px-4 py-2`}
-          onError={handleError}
+          src={imageSrc}
+          alt={alt}
+          width={width}
+          height={height}
+          className={`transition-opacity duration-300 ${loading ? 'opacity-0' : 'opacity-100'}`}
           onLoad={handleLoad}
-          priority={true}
-          unoptimized={true}
+          onError={handleError}
         />
       )}
     </div>
