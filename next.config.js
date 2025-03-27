@@ -97,6 +97,20 @@ const nextConfig = {
         net: false,
         tls: false,
       };
+      
+      // Add specific webpack config to handle the options.factory error
+      config.module = {
+        ...config.module,
+        exprContextCritical: false,
+        strictExportPresence: false,
+      };
+      
+      // Fix for JSON modules handling
+      config.module.rules.push({
+        test: /\.json$/,
+        type: 'javascript/auto',
+        use: [],
+      });
     }
 
     // Chỉ thực hiện trong môi trường development
