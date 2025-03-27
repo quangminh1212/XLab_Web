@@ -1,140 +1,103 @@
+import { products, categories } from '@/data/mockData'
 import Link from 'next/link'
+import ProductGrid from '@/components/ProductGrid'
+import CategoryList from '@/components/CategoryList'
+import Image from 'next/image'
 
 export default function ProductsPage() {
+  // Lấy sản phẩm nổi bật để hiển thị riêng
+  const featuredProducts = products.filter(product => product.featured)
+  // Sản phẩm mới nhất
+  const newestProducts = [...products].sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  ).slice(0, 8)
+
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-primary-600 text-white py-16">
-        <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Sản phẩm</h1>
-          <p className="text-xl max-w-3xl">
-            Khám phá các sản phẩm phần mềm hiện đại được thiết kế riêng cho doanh nghiệp của bạn.
-          </p>
-        </div>
-      </section>
-
-      {/* Products List */}
-      <section className="py-16">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Product 1 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-primary-500 to-primary-700"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab Business Suite</h3>
-                <p className="text-gray-600 mb-4">
-                  Giải pháp phần mềm toàn diện cho việc quản lý doanh nghiệp, bao gồm kế toán, quản lý nhân sự, quản lý khách hàng và nhiều tính năng khác.
-                </p>
-                <Link
-                  href="/products/business-suite"
-                  className="btn btn-primary"
-                >
-                  Chi tiết
-                </Link>
+      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="mb-8 md:mb-0 md:mr-8 md:max-w-2xl">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">Sản phẩm</h1>
+              <p className="text-xl text-primary-100">
+                Khám phá các sản phẩm phần mềm hiện đại được thiết kế riêng cho doanh nghiệp của bạn.
+              </p>
+              <div className="mt-6">
+                <div className="relative max-w-lg w-full">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-primary-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    className="block w-full bg-white bg-opacity-10 border border-primary-400 border-opacity-30 rounded-full py-3 pl-10 pr-4 text-white placeholder-primary-200 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
+                  />
+                </div>
               </div>
             </div>
-
-            {/* Product 2 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-secondary-500 to-secondary-700"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab Analytics Pro</h3>
-                <p className="text-gray-600 mb-4">
-                  Công cụ phân tích dữ liệu nâng cao giúp bạn hiểu rõ hoạt động kinh doanh và đưa ra quyết định dựa trên dữ liệu thực tế.
-                </p>
-                <Link
-                  href="/products/analytics-pro"
-                  className="btn btn-primary"
-                >
-                  Chi tiết
-                </Link>
-              </div>
-            </div>
-
-            {/* Product 3 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-primary-700 to-secondary-700"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab Cloud Solutions</h3>
-                <p className="text-gray-600 mb-4">
-                  Giải pháp đám mây bảo mật và hiệu quả giúp doanh nghiệp vận hành mượt mà từ bất kỳ đâu với khả năng mở rộng linh hoạt.
-                </p>
-                <Link
-                  href="/products/cloud-solutions"
-                  className="btn btn-primary"
-                >
-                  Chi tiết
-                </Link>
-              </div>
-            </div>
-
-            {/* Product 4 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-primary-600 to-primary-800"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab CRM Pro</h3>
-                <p className="text-gray-600 mb-4">
-                  Phần mềm quản lý quan hệ khách hàng giúp doanh nghiệp quản lý, phân tích và tối ưu hóa mọi tương tác với khách hàng.
-                </p>
-                <Link
-                  href="/products/crm-pro"
-                  className="btn btn-primary"
-                >
-                  Chi tiết
-                </Link>
-              </div>
-            </div>
-
-            {/* Product 5 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-secondary-600 to-secondary-800"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab HR Management</h3>
-                <p className="text-gray-600 mb-4">
-                  Giải pháp quản lý nhân sự toàn diện, từ tuyển dụng đến đánh giá hiệu suất và phát triển nhân tài.
-                </p>
-                <Link
-                  href="/products/hr-management"
-                  className="btn btn-primary"
-                >
-                  Chi tiết
-                </Link>
-              </div>
-            </div>
-
-            {/* Product 6 */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 bg-gradient-to-r from-primary-800 to-secondary-600"></div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3">XLab E-commerce Platform</h3>
-                <p className="text-gray-600 mb-4">
-                  Nền tảng thương mại điện tử mạnh mẽ giúp doanh nghiệp nhanh chóng triển khai cửa hàng trực tuyến với đầy đủ tính năng.
-                </p>
-                <Link
-                  href="/products/ecommerce-platform"
-                  className="btn btn-primary"
-                >
-                  Chi tiết
-                </Link>
-              </div>
+            <div className="w-full md:w-1/3 flex justify-center">
+              <Image
+                src="/images/hero-image.svg"
+                alt="Product Hero"
+                width={400}
+                height={300}
+                className="w-auto h-auto max-w-full"
+                priority
+              />
             </div>
           </div>
         </div>
       </section>
+      
+      {/* Categories Section */}
+      <section className="py-10 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Danh mục sản phẩm</h2>
+          </div>
+          <CategoryList categories={categories} />
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Sản phẩm nổi bật</h2>
+          </div>
+          <ProductGrid products={featuredProducts} />
+        </div>
+      </section>
+
+      {/* All Products */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Tất cả sản phẩm</h2>
+          </div>
+          <ProductGrid products={products} />
+        </div>
+      </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                Bạn cần một giải pháp riêng biệt?
-              </h2>
-              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                Chúng tôi cung cấp dịch vụ phát triển phần mềm theo yêu cầu. Hãy liên hệ với chúng tôi để được tư vấn giải pháp phù hợp nhất.
-              </p>
-              <Link href="/contact" className="btn btn-primary px-8">
+      <section className="py-16 bg-gradient-to-br from-primary-600 to-primary-800 text-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              Bạn cần một giải pháp riêng biệt?
+            </h2>
+            <p className="text-primary-100 mb-8 max-w-2xl mx-auto">
+              Chúng tôi cung cấp dịch vụ phát triển phần mềm theo yêu cầu. Hãy liên hệ với chúng tôi để được tư vấn giải pháp phù hợp nhất.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link href="/contact" className="bg-white text-primary-600 hover:bg-gray-100 font-medium px-6 py-3 rounded-md transition-colors">
                 Liên hệ ngay
+              </Link>
+              <Link href="/services" className="bg-primary-700 hover:bg-primary-800 text-white font-medium px-6 py-3 rounded-md transition-colors">
+                Khám phá dịch vụ
               </Link>
             </div>
           </div>
