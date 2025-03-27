@@ -8,6 +8,14 @@ const nextConfig = {
   
   // Disable source maps in production
   productionBrowserSourceMaps: false,
+  
+  // Disable traces
+  tracing: {
+    ignoreRootSpans: true,
+  },
+  
+  // Modify output directory to avoid permission issues
+  distDir: process.env.NODE_ENV !== 'production' ? '.next-dev' : '.next',
 };
 
 module.exports = nextConfig;

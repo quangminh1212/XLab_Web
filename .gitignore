@@ -19,6 +19,7 @@
 .next-static/
 .next-caching/
 .next-trace/
+.next-dev/
 
 # production
 /build
