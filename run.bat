@@ -1,5 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
+chcp 65001 > nul
 
 cd /d %~dp0
 
@@ -34,8 +35,9 @@ IF NOT EXIST node_modules (
     call npm update --no-fund --loglevel=error
 )
 
-echo Cleaning Next.js cache...
-call npx next clean
+:: Sửa lỗi "Invalid project directory"
+if exist .next rd /s /q .next 2>nul
+if exist .next-dev rd /s /q .next-dev 2>nul
 
 goto :start_server
 
@@ -70,15 +72,10 @@ echo.
 echo Starting XLab_Web development server...
 echo Press Ctrl+C to stop the server when finished.
 set NODE_OPTIONS=--max-old-space-size=4096
-call npm run dev
 
-IF ERRORLEVEL 1 (
-    echo Primary method failed, trying alternative method...
-    echo Make sure you have Node.js v20+ installed
-    node --version
-    echo Try running with node directly...
-    node node_modules\next\dist\bin\next dev --port 3000 --hostname 0.0.0.0
-)
+:: Chạy server thông qua node trực tiếp, tránh các vấn đề với npm run dev
+echo Starting Next.js directly with Node...
+node node_modules\next\dist\bin\next dev --port 3000 --hostname 0.0.0.0
 
 endlocal
 exit /b 0 
