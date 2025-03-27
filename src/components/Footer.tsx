@@ -13,12 +13,12 @@ export default function Footer() {
           {/* Logo và giới thiệu */}
           <div className="mb-8">
             <Link href="/" className="flex items-center mb-5">
-              <div className="bg-white p-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+              <div className="bg-white p-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={80} 
-                  height={80} 
+                  width={50} 
+                  height={50} 
                   className="w-auto h-auto"
                 />
               </div>
