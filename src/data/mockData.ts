@@ -143,423 +143,362 @@ export const products: Product[] = [
     downloadCount: 350,
     viewCount: 1200,
     rating: 4.8,
-    description: 'Phần mềm quản lý doanh nghiệp toàn diện, tích hợp mọi phòng ban',
-    longDescription: `XLab ERP System là giải pháp quản lý doanh nghiệp toàn diện, được thiết kế để tối ưu hóa quy trình làm việc và nâng cao hiệu suất của doanh nghiệp. Hệ thống tích hợp tất cả các phòng ban trong doanh nghiệp, từ kế toán, nhân sự đến bán hàng và sản xuất.
-
-Các module chính:
-- Quản lý tài chính kế toán
-- Quản lý nhân sự tiền lương
-- Quản lý bán hàng và khách hàng (CRM)
-- Quản lý chuỗi cung ứng (SCM)
-- Quản lý sản xuất
-- Báo cáo quản trị
-
-Lợi ích khi sử dụng XLab ERP:
-- Tự động hóa quy trình làm việc
-- Cung cấp thông tin quản trị toàn diện
-- Tối ưu hóa việc ra quyết định
-- Giảm thiểu chi phí vận hành
-- Nâng cao hiệu suất làm việc
-- Dễ dàng mở rộng theo quy mô doanh nghiệp`,
-    price: 30000000,
-    salePrice: 25000000,
-    categoryId: 'cat-1',
-    imageUrl: '/images/products/system-optimizer.png',
-    featured: true,
-    isNew: true,
-    downloadCount: 5240,
-    viewCount: 18450,
-    rating: 4.9,
-    version: '3.0.2',
-    size: '1.2GB',
+    version: '1.2.0',
+    size: '500MB',
     license: 'Thương mại',
-    createdAt: '2022-01-20T00:00:00Z',
-    updatedAt: '2023-08-05T00:00:00Z'
+    createdAt: '2023-08-01T09:00:00.000Z',
+    updatedAt: '2023-10-20T14:45:00.000Z',
+    storeId: '1'
   },
   {
     id: 'prod-3',
-    name: 'XLab Antivirus Pro',
-    slug: 'xlab-antivirus-pro',
-    description: 'Phần mềm diệt virus mạnh mẽ, bảo vệ máy tính khỏi các mối đe dọa',
-    longDescription: `XLab Antivirus Pro là giải pháp bảo mật toàn diện, bảo vệ máy tính của bạn khỏi tất cả các loại mối đe dọa trực tuyến. Với công nghệ quét thời gian thực và trí tuệ nhân tạo, XLab Antivirus Pro phát hiện và ngăn chặn virus, malware, ransomware và các phần mềm độc hại khác trước khi chúng có thể gây hại cho hệ thống của bạn.
-
-Tính năng chính:
-- Bảo vệ thời gian thực
-- Quét virus thông minh và nhanh chóng
-- Tường lửa thông minh
-- Bảo vệ email và web
-- Bảo vệ dữ liệu cá nhân
-- Bảo vệ giao dịch ngân hàng
-- Cập nhật cơ sở dữ liệu virus tự động
-
-Ưu điểm:
-- Sử dụng ít tài nguyên hệ thống
-- Giao diện đơn giản, dễ sử dụng
-- Tỷ lệ phát hiện virus cao
-- Hỗ trợ kỹ thuật 24/7
-- Cập nhật liên tục cơ sở dữ liệu virus`,
-    price: 750000,
-    salePrice: 590000,
+    name: 'XLab Secure Vault',
+    slug: 'xlab-secure-vault',
+    description: 'Phần mềm bảo mật và mã hóa dữ liệu cho cá nhân và doanh nghiệp.',
+    longDescription: `
+      <p>XLab Secure Vault là giải pháp bảo mật và mã hóa dữ liệu hàng đầu cho cá nhân và doanh nghiệp.</p>
+      <p>Tính năng chính:</p>
+      <ul>
+        <li>Mã hóa dữ liệu AES-256 bit, đảm bảo an toàn tuyệt đối</li>
+        <li>Quản lý mật khẩu an toàn với tích hợp sinh mật khẩu mạnh</li>
+        <li>Chia sẻ dữ liệu an toàn giữa các thành viên trong tổ chức</li>
+        <li>Xác thực hai yếu tố và sinh khóa bảo mật</li>
+        <li>Tự động sao lưu và khôi phục dữ liệu</li>
+        <li>Xóa dữ liệu từ xa trong trường hợp thiết bị bị mất</li>
+      </ul>
+      <p>XLab Secure Vault được phát triển bởi đội ngũ chuyên gia bảo mật với hơn 10 năm kinh nghiệm, đảm bảo dữ liệu của bạn luôn được bảo vệ an toàn tuyệt đối.</p>
+    `,
+    price: 800000,
+    salePrice: 690000,
     categoryId: 'cat-4',
     imageUrl: '/images/products/secure-vault.png',
     featured: false,
-    isNew: false,
-    downloadCount: 25600,
-    viewCount: 68420,
-    rating: 4.6,
-    version: '5.2.3',
-    size: '125MB',
+    isNew: true,
+    downloadCount: 950,
+    viewCount: 2100,
+    rating: 4.7,
+    version: '3.0.1',
+    size: '120MB',
     license: 'Thương mại',
-    createdAt: '2021-12-10T00:00:00Z',
-    updatedAt: '2023-09-15T00:00:00Z'
+    createdAt: '2023-06-15T11:20:00.000Z',
+    updatedAt: '2023-10-05T09:15:00.000Z',
+    storeId: '1'
   },
   {
     id: 'prod-4',
-    name: 'XLab Design Studio',
-    slug: 'xlab-design-studio',
-    description: 'Phần mềm thiết kế đồ họa chuyên nghiệp dành cho designer',
-    longDescription: `XLab Design Studio là phần mềm thiết kế đồ họa chuyên nghiệp, cung cấp đầy đủ công cụ cần thiết cho các nhà thiết kế. Từ thiết kế web, thiết kế in ấn đến chỉnh sửa ảnh và vẽ vector, XLab Design Studio đáp ứng mọi nhu cầu sáng tạo của bạn.
-
-Các tính năng nổi bật:
-- Thiết kế vector chuyên nghiệp
-- Chỉnh sửa ảnh mạnh mẽ
-- Thiết kế UI/UX
-- Thiết kế ấn phẩm
-- Thư viện mẫu và template phong phú
-- Hỗ trợ xuất file với nhiều định dạng
-
-Ưu điểm:
-- Giao diện thân thiện, dễ sử dụng
-- Hiệu suất cao, xử lý mượt mà
-- Hỗ trợ màn hình Retina và độ phân giải cao
-- Tương thích với nhiều định dạng file
-- Cộng đồng người dùng lớn
-- Cập nhật thường xuyên với tính năng mới`,
-    price: 3600000,
-    salePrice: 2790000,
+    name: 'XLab Design Master',
+    slug: 'xlab-design-master',
+    description: 'Phần mềm thiết kế đồ họa chuyên nghiệp với giao diện tiếng Việt.',
+    longDescription: `
+      <p>XLab Design Master là giải pháp thiết kế đồ họa chuyên nghiệp được phát triển bởi đội ngũ XLab dành cho người dùng Việt Nam.</p>
+      <p>Tính năng nổi bật:</p>
+      <ul>
+        <li>Thiết kế vector chuyên nghiệp với các công cụ vẽ mạnh mẽ</li>
+        <li>Chỉnh sửa ảnh chuyên sâu với các bộ lọc và hiệu ứng đa dạng</li>
+        <li>Thiết kế giao diện UI/UX với thư viện mẫu phong phú</li>
+        <li>Tạo ấn phẩm in ấn với hỗ trợ đầy đủ cho CMYK</li>
+        <li>Hỗ trợ các định dạng đồ họa phổ biến: PSD, AI, SVG, EPS...</li>
+        <li>Tương thích với các phần mềm thiết kế quốc tế</li>
+      </ul>
+      <p>XLab Design Master là lựa chọn hoàn hảo cho các nhà thiết kế, họa sĩ và các doanh nghiệp cần giải pháp thiết kế đồ họa chuyên nghiệp với giao diện tiếng Việt thân thiện.</p>
+    `,
+    price: 2500000,
+    salePrice: 1990000,
     categoryId: 'cat-3',
     imageUrl: '/images/products/design-master.png',
     featured: true,
     isNew: false,
-    downloadCount: 12480,
-    viewCount: 37950,
-    rating: 4.8,
-    version: '4.1.0',
-    size: '1.8GB',
+    downloadCount: 1200,
+    viewCount: 3500,
+    rating: 4.6,
+    version: '4.2.1',
+    size: '850MB',
     license: 'Thương mại',
-    createdAt: '2022-03-05T00:00:00Z',
-    updatedAt: '2023-06-20T00:00:00Z'
+    createdAt: '2023-04-20T13:45:00.000Z',
+    updatedAt: '2023-09-28T16:30:00.000Z',
+    storeId: '1'
   },
   {
     id: 'prod-5',
-    name: 'XLab CRM',
-    slug: 'xlab-crm',
-    description: 'Phần mềm quản lý khách hàng thông minh, tối ưu quy trình bán hàng',
-    longDescription: `XLab CRM là giải pháp quản lý khách hàng toàn diện, giúp doanh nghiệp tối ưu hóa quy trình bán hàng và chăm sóc khách hàng. Với giao diện thân thiện và tính năng thông minh, XLab CRM là công cụ không thể thiếu cho các đội ngũ sales và marketing.
-
-Tính năng chính:
-- Quản lý thông tin khách hàng
-- Theo dõi cơ hội bán hàng
-- Quản lý đội ngũ bán hàng
-- Tự động hóa marketing
-- Phân tích và báo cáo
-- Tích hợp email và cuộc gọi
-- Quản lý hợp đồng và đơn hàng
-
-Lợi ích:
-- Tăng hiệu suất bán hàng
-- Cải thiện trải nghiệm khách hàng
-- Tối ưu hóa quy trình làm việc
-- Giảm chi phí quản lý
-- Phân tích dữ liệu khách hàng
-- Dễ dàng mở rộng theo quy mô doanh nghiệp`,
-    price: 15000000,
-    salePrice: 12000000,
-    categoryId: 'cat-1',
+    name: 'XLab Code IDE',
+    slug: 'xlab-code-ide',
+    description: 'Môi trường phát triển tích hợp cho lập trình viên với đầy đủ tính năng.',
+    longDescription: `
+      <p>XLab Code IDE là môi trường phát triển tích hợp mạnh mẽ dành cho lập trình viên Việt Nam và quốc tế.</p>
+      <p>Tính năng chính:</p>
+      <ul>
+        <li>Hỗ trợ đa ngôn ngữ lập trình: Java, Python, C/C++, JavaScript, PHP, Ruby...</li>
+        <li>Công cụ debug mạnh mẽ với visualizer trực quan</li>
+        <li>Tích hợp Git và các hệ thống quản lý phiên bản khác</li>
+        <li>IntelliSense thông minh và gợi ý code tự động</li>
+        <li>Tích hợp terminal và hệ thống quản lý package</li>
+        <li>Tùy biến giao diện và theme với nhiều lựa chọn</li>
+        <li>Hỗ trợ extension với kho thư viện phong phú</li>
+      </ul>
+      <p>XLab Code IDE được phát triển bởi đội ngũ lập trình viên giàu kinh nghiệm, mang đến trải nghiệm phát triển phần mềm hiệu quả và tối ưu cho mọi dự án.</p>
+    `,
+    price: 1500000,
+    salePrice: 1200000,
+    categoryId: 'cat-5',
     imageUrl: '/images/products/code-editor.png',
     featured: false,
     isNew: true,
-    downloadCount: 8750,
-    viewCount: 24680,
-    rating: 4.5,
-    version: '2.3.5',
-    size: '450MB',
+    downloadCount: 850,
+    viewCount: 2300,
+    rating: 4.9,
+    version: '2.1.0',
+    size: '350MB',
     license: 'Thương mại',
-    createdAt: '2022-04-15T00:00:00Z',
-    updatedAt: '2023-08-25T00:00:00Z'
+    createdAt: '2023-07-12T10:30:00.000Z',
+    updatedAt: '2023-10-18T09:45:00.000Z',
+    storeId: '1'
   },
   {
     id: 'prod-6',
-    name: 'XLab Data Recovery',
-    slug: 'xlab-data-recovery',
-    description: 'Phần mềm khôi phục dữ liệu đã xóa, hỗ trợ nhiều định dạng',
-    longDescription: `XLab Data Recovery là giải pháp khôi phục dữ liệu chuyên nghiệp, giúp bạn lấy lại dữ liệu đã bị xóa do vô tình hay sự cố. Phần mềm hỗ trợ khôi phục dữ liệu từ nhiều nguồn khác nhau như ổ cứng, thẻ nhớ, USB và các thiết bị lưu trữ khác.
-
-Tính năng chính:
-- Khôi phục file đã xóa
-- Khôi phục phân vùng bị mất
-- Khôi phục dữ liệu từ thiết bị bị hỏng
-- Khôi phục dữ liệu sau khi format
-- Hỗ trợ nhiều định dạng file
-- Quét nhanh và quét sâu
-- Xem trước file trước khi khôi phục
-
-Ưu điểm:
-- Tỷ lệ khôi phục dữ liệu cao
-- Giao diện đơn giản, dễ sử dụng
-- Tốc độ quét nhanh
-- An toàn, không ghi đè dữ liệu
-- Hỗ trợ nhiều hệ thống file
-- Cập nhật thường xuyên`,
-    price: 1800000,
-    salePrice: 1490000,
-    categoryId: 'cat-4',
+    name: 'XLab Backup Pro',
+    slug: 'xlab-backup-pro',
+    description: 'Giải pháp sao lưu và khôi phục dữ liệu tự động cho doanh nghiệp.',
+    longDescription: `
+      <p>XLab Backup Pro là giải pháp sao lưu và khôi phục dữ liệu toàn diện dành cho doanh nghiệp mọi quy mô.</p>
+      <p>Tính năng nổi bật:</p>
+      <ul>
+        <li>Sao lưu tự động theo lịch trình với nhiều cấu hình linh hoạt</li>
+        <li>Hỗ trợ sao lưu gia tăng và sao lưu đầy đủ</li>
+        <li>Mã hóa dữ liệu sao lưu đảm bảo an toàn tuyệt đối</li>
+        <li>Khôi phục nhanh chóng với chế độ instant recovery</li>
+        <li>Sao lưu đám mây với tích hợp các nền tảng lưu trữ phổ biến</li>
+        <li>Quản lý tập trung với bảng điều khiển trực quan</li>
+        <li>Báo cáo chi tiết về trạng thái và lịch sử sao lưu</li>
+      </ul>
+      <p>XLab Backup Pro giúp doanh nghiệp bảo vệ dữ liệu quan trọng, đảm bảo hoạt động kinh doanh liên tục và khả năng phục hồi sau sự cố.</p>
+    `,
+    price: 2200000,
+    salePrice: 1800000,
+    categoryId: 'cat-1',
     imageUrl: '/images/products/backup-pro.png',
-    featured: false,
+    featured: true,
     isNew: false,
-    downloadCount: 18200,
-    viewCount: 42560,
-    rating: 4.4,
-    version: '3.6.2',
-    size: '180MB',
+    downloadCount: 650,
+    viewCount: 1800,
+    rating: 4.7,
+    version: '3.1.2',
+    size: '190MB',
     license: 'Thương mại',
-    createdAt: '2021-11-28T00:00:00Z',
-    updatedAt: '2023-07-30T00:00:00Z'
+    createdAt: '2023-03-25T14:20:00.000Z',
+    updatedAt: '2023-09-10T11:05:00.000Z',
+    storeId: '2'
   },
   {
     id: 'prod-7',
-    name: 'XLab Video Editor',
-    slug: 'xlab-video-editor',
-    description: 'Phần mềm biên tập video chuyên nghiệp với nhiều hiệu ứng',
-    longDescription: `XLab Video Editor là phần mềm biên tập video chuyên nghiệp với đầy đủ công cụ cần thiết cho việc sản xuất video chất lượng cao. Từ cắt ghép đơn giản đến hiệu ứng chuyên nghiệp, XLab Video Editor đáp ứng mọi nhu cầu sáng tạo của bạn.
-
-Tính năng chính:
-- Chỉnh sửa video đa track
-- Thư viện hiệu ứng và transition phong phú
-- Chỉnh màu chuyên nghiệp
-- Mixing âm thanh
-- Hỗ trợ text và subtitle
-- Xuất video với nhiều định dạng và độ phân giải
-- Tích hợp các công cụ color grading
-
-Ưu điểm:
-- Giao diện thân thiện, dễ sử dụng
-- Hiệu suất cao, render nhanh
-- Hỗ trợ nhiều định dạng video
-- Cộng đồng người dùng lớn
-- Cập nhật thường xuyên với tính năng mới
-- Tài nguyên học tập phong phú`,
-    price: 2800000,
-    salePrice: 2490000,
+    name: 'XLab Photo Editor',
+    slug: 'xlab-photo-editor',
+    description: 'Phần mềm chỉnh sửa ảnh chuyên nghiệp với giao diện tiếng Việt.',
+    longDescription: `
+      <p>XLab Photo Editor là giải pháp chỉnh sửa ảnh chuyên nghiệp dành cho nhiếp ảnh gia và người dùng Việt Nam.</p>
+      <p>Tính năng chính:</p>
+      <ul>
+        <li>Chỉnh sửa ảnh chuyên sâu với các công cụ chuyên nghiệp</li>
+        <li>Bộ lọc và hiệu ứng đa dạng với khả năng tùy chỉnh</li>
+        <li>Xử lý RAW chuyên nghiệp với hỗ trợ đa dạng định dạng máy ảnh</li>
+        <li>Tính năng retouching nâng cao: làm mịn da, xóa vết, thay đổi ánh sáng...</li>
+        <li>Tích hợp AI để tự động cải thiện chất lượng ảnh</li>
+        <li>Quản lý thư viện ảnh với khả năng phân loại và tag</li>
+        <li>Xuất ảnh với nhiều định dạng và tùy chọn chất lượng</li>
+      </ul>
+      <p>XLab Photo Editor là công cụ hoàn hảo cho những người yêu thích nhiếp ảnh và cần một giải pháp chỉnh sửa ảnh chuyên nghiệp với giao diện tiếng Việt thân thiện.</p>
+    `,
+    price: 1400000,
+    salePrice: 1100000,
     categoryId: 'cat-3',
     imageUrl: '/images/products/photo-editor.png',
-    featured: true,
-    isNew: false,
-    downloadCount: 14560,
-    viewCount: 37820,
-    rating: 4.7,
-    version: '3.2.1',
-    size: '2.1GB',
+    featured: false,
+    isNew: true,
+    downloadCount: 900,
+    viewCount: 2700,
+    rating: 4.6,
+    version: '2.3.0',
+    size: '450MB',
     license: 'Thương mại',
-    createdAt: '2022-05-18T00:00:00Z',
-    updatedAt: '2023-09-05T00:00:00Z'
+    createdAt: '2023-05-30T09:15:00.000Z',
+    updatedAt: '2023-10-12T13:40:00.000Z',
+    storeId: '2'
   },
   {
     id: 'prod-8',
-    name: 'XLab Accounting',
-    slug: 'xlab-accounting',
-    description: 'Phần mềm kế toán đơn giản, đầy đủ tính năng cho doanh nghiệp vừa và nhỏ',
-    longDescription: `XLab Accounting là phần mềm kế toán toàn diện, được thiết kế đặc biệt cho các doanh nghiệp vừa và nhỏ tại Việt Nam. Phần mềm tuân thủ đầy đủ các quy định về kế toán và thuế hiện hành, giúp doanh nghiệp quản lý tài chính hiệu quả.
-
-Tính năng chính:
-- Quản lý chứng từ kế toán
-- Quản lý mua hàng, bán hàng
-- Quản lý công nợ
-- Quản lý kho
-- Báo cáo tài chính
-- Báo cáo thuế
-- Quản lý tài sản cố định
-- Quản lý ngân quỹ
-
-Ưu điểm:
-- Tuân thủ chuẩn mực kế toán Việt Nam
-- Giao diện thân thiện, dễ sử dụng
-- Tự động hóa nhiều quy trình
-- Báo cáo đa dạng, trực quan
-- Bảo mật dữ liệu cao
-- Hỗ trợ kỹ thuật 24/7
-- Cập nhật thường xuyên theo quy định mới`,
-    price: 5500000,
-    salePrice: 4800000,
+    name: 'XLab Document Management',
+    slug: 'xlab-document-management',
+    description: 'Hệ thống quản lý tài liệu và quy trình làm việc cho doanh nghiệp.',
+    longDescription: `
+      <p>XLab Document Management là giải pháp quản lý tài liệu và quy trình làm việc toàn diện cho doanh nghiệp Việt Nam.</p>
+      <p>Tính năng nổi bật:</p>
+      <ul>
+        <li>Lưu trữ tài liệu tập trung với hệ thống phân loại thông minh</li>
+        <li>Tìm kiếm nhanh chóng với công nghệ OCR nhận dạng văn bản</li>
+        <li>Quản lý phiên bản tài liệu, theo dõi lịch sử chỉnh sửa</li>
+        <li>Phân quyền truy cập chi tiết đến từng tài liệu</li>
+        <li>Quy trình làm việc tự động với khả năng tùy chỉnh</li>
+        <li>Tích hợp chữ ký điện tử và xác thực tài liệu</li>
+        <li>Báo cáo thống kê về quá trình sử dụng và truy cập tài liệu</li>
+      </ul>
+      <p>XLab Document Management giúp doanh nghiệp tối ưu hóa quy trình quản lý tài liệu, tăng cường bảo mật và nâng cao hiệu quả làm việc.</p>
+    `,
+    price: 3500000,
+    salePrice: 2800000,
     categoryId: 'cat-1',
     imageUrl: '/images/products/office-pro.png',
-    featured: false,
-    isNew: true,
-    downloadCount: 9800,
-    viewCount: 26450,
-    rating: 4.6,
-    version: '2.8.3',
-    size: '350MB',
+    featured: true,
+    isNew: false,
+    downloadCount: 420,
+    viewCount: 1500,
+    rating: 4.5,
+    version: '2.0.1',
+    size: '320MB',
     license: 'Thương mại',
-    createdAt: '2022-06-10T00:00:00Z',
-    updatedAt: '2023-08-15T00:00:00Z'
+    createdAt: '2023-02-18T08:45:00.000Z',
+    updatedAt: '2023-08-25T15:20:00.000Z',
+    storeId: '3'
   },
   {
     id: 'prod-9',
-    name: 'XLab PDF Master',
-    slug: 'xlab-pdf-master',
-    description: 'Phần mềm xử lý file PDF toàn diện: chỉnh sửa, chuyển đổi, nén',
-    longDescription: `XLab PDF Master là giải pháp toàn diện cho việc làm việc với file PDF. Từ chỉnh sửa nội dung, chuyển đổi định dạng đến nén dung lượng, XLab PDF Master đáp ứng mọi nhu cầu xử lý PDF của bạn.
-
-Tính năng chính:
-- Chỉnh sửa văn bản và hình ảnh trong PDF
-- Chuyển đổi PDF sang Word, Excel, PowerPoint
-- Chuyển đổi từ nhiều định dạng sang PDF
-- Nén dung lượng file PDF
-- Tách và ghép file PDF
-- Thêm chữ ký điện tử
-- Bảo vệ PDF bằng mật khẩu
-- OCR (nhận dạng ký tự quang học)
-
-Ưu điểm:
-- Giao diện thân thiện, dễ sử dụng
-- Tốc độ xử lý nhanh
-- Chất lượng đầu ra cao
-- Hỗ trợ xử lý hàng loạt
-- Bảo mật dữ liệu
-- Tiết kiệm chi phí so với Adobe Acrobat`,
-    price: 1200000,
-    salePrice: 990000,
-    categoryId: 'cat-2',
+    name: 'XLab Web Developer Studio',
+    slug: 'xlab-web-developer-studio',
+    description: 'Môi trường phát triển web tích hợp với nhiều công cụ và framework.',
+    longDescription: `
+      <p>XLab Web Developer Studio là môi trường phát triển web tích hợp toàn diện dành cho lập trình viên web.</p>
+      <p>Tính năng chính:</p>
+      <ul>
+        <li>Hỗ trợ đầy đủ các ngôn ngữ và framework web phổ biến</li>
+        <li>Editor thông minh với gợi ý code và auto-completion</li>
+        <li>Live preview với đồng bộ hóa thời gian thực</li>
+        <li>Công cụ debug JavaScript và PHP mạnh mẽ</li>
+        <li>Tích hợp terminal và quản lý package</li>
+        <li>Hỗ trợ Git và các hệ thống quản lý phiên bản</li>
+        <li>Công cụ tối ưu hóa và kiểm tra hiệu suất website</li>
+        <li>Tích hợp các API và dịch vụ web phổ biến</li>
+      </ul>
+      <p>XLab Web Developer Studio là giải pháp hoàn hảo cho lập trình viên web muốn nâng cao hiệu suất và chất lượng trong phát triển website và ứng dụng web.</p>
+    `,
+    price: 1800000,
+    salePrice: 1500000,
+    categoryId: 'cat-5',
     imageUrl: '/images/products/code-editor.png',
     featured: false,
     isNew: false,
-    downloadCount: 22400,
-    viewCount: 58760,
-    rating: 4.5,
-    version: '4.0.2',
-    size: '210MB',
+    downloadCount: 750,
+    viewCount: 2000,
+    rating: 4.8,
+    version: '3.2.0',
+    size: '480MB',
     license: 'Thương mại',
-    createdAt: '2021-10-05T00:00:00Z',
-    updatedAt: '2023-06-10T00:00:00Z'
+    createdAt: '2023-04-05T11:30:00.000Z',
+    updatedAt: '2023-09-20T10:25:00.000Z',
+    storeId: '1'
   },
   {
     id: 'prod-10',
-    name: 'XLab Learning Management',
-    slug: 'xlab-learning-management',
-    description: 'Hệ thống quản lý học tập trực tuyến cho trường học và doanh nghiệp',
-    longDescription: `XLab Learning Management là hệ thống quản lý học tập trực tuyến toàn diện, được thiết kế để đáp ứng nhu cầu đào tạo của các trường học, trung tâm đào tạo và doanh nghiệp. Hệ thống cung cấp môi trường học tập trực tuyến hiệu quả, giúp người dạy và người học tương tác dễ dàng.
-
-Tính năng chính:
-- Quản lý khóa học và học liệu
-- Tạo bài giảng, bài kiểm tra trực tuyến
-- Quản lý học viên và giảng viên
-- Giao bài tập và chấm điểm tự động
-- Thống kê tiến độ học tập
-- Diễn đàn trao đổi và phòng chat
-- Cấp chứng chỉ tự động
-- Tích hợp video conference
-
-Lợi ích:
-- Tiết kiệm chi phí đào tạo
-- Mở rộng quy mô đào tạo không giới hạn
-- Theo dõi tiến độ học tập chi tiết
-- Nâng cao hiệu quả học tập
-- Tùy biến theo nhu cầu cụ thể
-- Trải nghiệm học tập đa phương tiện`,
-    price: 18000000,
-    salePrice: 15000000,
+    name: 'XLab Language Master',
+    slug: 'xlab-language-master',
+    description: 'Phần mềm học ngoại ngữ thông minh với trí tuệ nhân tạo.',
+    longDescription: `
+      <p>XLab Language Master là giải pháp học ngoại ngữ thông minh dựa trên trí tuệ nhân tạo, đặc biệt phù hợp với người học Việt Nam.</p>
+      <p>Tính năng nổi bật:</p>
+      <ul>
+        <li>Hỗ trợ học 10 ngôn ngữ phổ biến: Anh, Pháp, Đức, Trung, Nhật...</li>
+        <li>Phương pháp học dựa trên AI phân tích điểm mạnh, yếu của người học</li>
+        <li>Công nghệ nhận dạng giọng nói để luyện phát âm chuẩn xác</li>
+        <li>Bài học được thiết kế theo lộ trình từ cơ bản đến nâng cao</li>
+        <li>Trò chơi và bài tập tương tác giúp học từ vựng và ngữ pháp hiệu quả</li>
+        <li>Tính năng chat với AI để luyện hội thoại thực tế</li>
+        <li>Báo cáo tiến độ và đề xuất bài học phù hợp với từng cá nhân</li>
+      </ul>
+      <p>XLab Language Master giúp người học tiếp thu ngoại ngữ một cách tự nhiên và hiệu quả, phù hợp với mọi lứa tuổi và trình độ.</p>
+    `,
+    price: 900000,
+    salePrice: 750000,
     categoryId: 'cat-5',
     imageUrl: '/images/products/language-master.png',
-    featured: false,
+    featured: true,
     isNew: true,
-    downloadCount: 6200,
-    viewCount: 18640,
-    rating: 4.8,
-    version: '2.2.0',
-    size: '680MB',
+    downloadCount: 1100,
+    viewCount: 3200,
+    rating: 4.7,
+    version: '1.5.0',
+    size: '280MB',
     license: 'Thương mại',
-    createdAt: '2022-07-25T00:00:00Z',
-    updatedAt: '2023-09-20T00:00:00Z'
+    createdAt: '2023-06-08T12:15:00.000Z',
+    updatedAt: '2023-10-15T14:10:00.000Z',
+    storeId: '3'
   },
   {
     id: 'prod-11',
-    name: 'XLab Mail Client',
-    slug: 'xlab-mail-client',
-    description: 'Ứng dụng email hiện đại, hỗ trợ nhiều tài khoản và bảo mật cao',
-    longDescription: `XLab Mail Client là ứng dụng email hiện đại với đầy đủ tính năng cần thiết cho việc quản lý email cá nhân và doanh nghiệp. Ứng dụng hỗ trợ nhiều tài khoản email từ các nhà cung cấp khác nhau, giúp bạn dễ dàng quản lý tất cả email trong một giao diện thống nhất.
-
-Tính năng chính:
-- Hỗ trợ nhiều tài khoản email (Gmail, Outlook, Yahoo, IMAP/POP3)
-- Giao diện người dùng hiện đại, dễ sử dụng
-- Lọc và phân loại email thông minh
-- Lên lịch gửi email
-- Nhắc nhở theo dõi email
-- Bảo mật hai lớp
-- Chống spam hiệu quả
-- Tìm kiếm email nhanh chóng
-
-Ưu điểm:
-- Tốc độ load email nhanh
-- Tiết kiệm dung lượng lưu trữ
-- Bảo mật cao
-- Đồng bộ hóa trên nhiều thiết bị
-- Làm việc offline
-- Giao diện tùy biến
-- Hỗ trợ PGP mã hóa`,
-    price: 850000,
-    salePrice: 690000,
-    categoryId: 'cat-2',
+    name: 'XLab System Optimizer',
+    slug: 'xlab-system-optimizer',
+    description: 'Công cụ tối ưu hóa và dọn dẹp hệ thống máy tính hiệu quả.',
+    longDescription: `
+      <p>XLab System Optimizer là giải pháp tối ưu hóa và dọn dẹp hệ thống máy tính toàn diện.</p>
+      <p>Tính năng chính:</p>
+      <ul>
+        <li>Dọn dẹp file rác, cache và các file tạm không cần thiết</li>
+        <li>Tối ưu hóa registry để tăng tốc độ hệ thống</li>
+        <li>Quản lý các ứng dụng khởi động cùng Windows</li>
+        <li>Phân tích và giải phóng không gian ổ đĩa</li>
+        <li>Tối ưu hóa RAM và hiệu suất CPU</li>
+        <li>Công cụ gỡ cài đặt ứng dụng triệt để không để lại rác</li>
+        <li>Bảo vệ quyền riêng tư với công cụ xóa lịch sử duyệt web</li>
+        <li>Chế độ tự động tối ưu hóa định kỳ</li>
+      </ul>
+      <p>XLab System Optimizer giúp máy tính của bạn luôn hoạt động ổn định, nhanh chóng và hiệu quả, kéo dài tuổi thọ của thiết bị.</p>
+    `,
+    price: 650000,
+    salePrice: 490000,
+    categoryId: 'cat-1',
     imageUrl: '/images/products/system-optimizer.png',
     featured: false,
     isNew: false,
-    downloadCount: 19800,
-    viewCount: 42560,
-    rating: 4.3,
-    version: '3.5.2',
-    size: '95MB',
+    downloadCount: 1800,
+    viewCount: 4000,
+    rating: 4.4,
+    version: '5.2.1',
+    size: '85MB',
     license: 'Thương mại',
-    createdAt: '2021-09-15T00:00:00Z',
-    updatedAt: '2023-05-10T00:00:00Z'
+    createdAt: '2023-01-20T09:40:00.000Z',
+    updatedAt: '2023-08-15T10:50:00.000Z',
+    storeId: '2'
   },
   {
     id: 'prod-12',
-    name: 'XLab Inventory Management',
-    slug: 'xlab-inventory-management',
-    description: 'Phần mềm quản lý kho hàng chuyên nghiệp cho doanh nghiệp',
-    longDescription: `XLab Inventory Management là giải pháp quản lý kho hàng toàn diện dành cho các doanh nghiệp vừa và nhỏ. Phần mềm giúp doanh nghiệp theo dõi hàng tồn kho, quản lý nhập xuất, và tối ưu hóa quy trình kho hàng một cách hiệu quả.
-
-Tính năng chính:
-- Quản lý nhập xuất kho
-- Theo dõi tồn kho thời gian thực
-- Quản lý nhiều kho hàng
-- Báo cáo hàng tồn kho chi tiết
-- Quản lý vị trí hàng trong kho
-- Quét mã vạch và QR code
-- Cảnh báo hàng sắp hết
-- Đặt hàng tự động khi dưới ngưỡng
-
-Lợi ích:
-- Giảm thiểu thất thoát hàng hóa
-- Tối ưu hóa không gian kho
-- Tiết kiệm thời gian kiểm kê
-- Cải thiện dự báo nhu cầu
-- Tăng tốc độ xử lý đơn hàng
-- Dễ dàng mở rộng theo quy mô
-- Tương thích với các thiết bị di động`,
-    price: 8500000,
-    salePrice: 7200000,
-    categoryId: 'cat-1',
+    name: 'XLab Cloud Backup',
+    slug: 'xlab-cloud-backup',
+    description: 'Giải pháp sao lưu đám mây an toàn với mã hóa đầu cuối.',
+    longDescription: `
+      <p>XLab Cloud Backup là giải pháp sao lưu đám mây an toàn với mã hóa đầu cuối, bảo vệ dữ liệu của bạn tuyệt đối.</p>
+      <p>Tính năng nổi bật:</p>
+      <ul>
+        <li>Sao lưu tự động các thiết bị: máy tính, điện thoại, máy tính bảng</li>
+        <li>Mã hóa đầu cuối AES-256 bit bảo vệ dữ liệu tuyệt đối</li>
+        <li>Đồng bộ hóa thời gian thực giữa các thiết bị</li>
+        <li>Sao lưu chọn lọc: hình ảnh, tài liệu, video, cấu hình...</li>
+        <li>Khôi phục nhanh chóng trên mọi thiết bị</li>
+        <li>Quản lý phiên bản với khả năng khôi phục các phiên bản cũ</li>
+        <li>Chia sẻ an toàn với liên kết mã hóa và mật khẩu</li>
+        <li>Giám sát hoạt động sao lưu từ xa</li>
+      </ul>
+      <p>XLab Cloud Backup mang lại sự an tâm tuyệt đối về an toàn dữ liệu, bảo vệ những thông tin quan trọng của bạn trong mọi tình huống.</p>
+    `,
+    price: 1100000,
+    salePrice: 890000,
+    categoryId: 'cat-4',
     imageUrl: '/images/products/backup-pro.png',
     featured: false,
-    isNew: false,
-    downloadCount: 7840,
-    viewCount: 22360,
-    rating: 4.5,
-    version: '2.4.1',
-    size: '320MB',
+    isNew: true,
+    downloadCount: 550,
+    viewCount: 1300,
+    rating: 4.9,
+    version: '2.0.1',
+    size: '110MB',
     license: 'Thương mại',
-    createdAt: '2022-03-20T00:00:00Z',
-    updatedAt: '2023-07-15T00:00:00Z'
+    createdAt: '2023-07-25T15:30:00.000Z',
+    updatedAt: '2023-10-08T11:20:00.000Z',
+    storeId: '2'
   }
 ] 
