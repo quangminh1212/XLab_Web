@@ -39,6 +39,16 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     setLoading(false)
   }
 
+  // Thêm useEffect để đảm bảo loading biến mất sau một khoảng thời gian nhất định
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        setLoading(false)
+      }, 2000) // Tối đa 2 giây
+      return () => clearTimeout(timer)
+    }
+  }, [loading])
+
   // Kiểm tra xem URL hình ảnh là từ bên ngoài hay không
   const isExternalUrl = src && (src.startsWith('http://') || src.startsWith('https://'))
 
