@@ -97,7 +97,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
         
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-0 group-hover:bg-opacity-10 transition-all">
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-0 group-hover:bg-opacity-40 opacity-0 group-hover:opacity-100 transition-all">
           {getProductIcon(product.slug)}
         </div>
         
