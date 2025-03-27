@@ -56,12 +56,12 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-1">
             <Link href="/" className="flex items-center">
-              <div className="bg-white rounded-lg p-2 flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
+              <div className="bg-white rounded-lg p-1.5 flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-300">
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={50} 
-                  height={50} 
+                  width={40} 
+                  height={40} 
                   className="w-auto h-auto"
                   priority
                 />
