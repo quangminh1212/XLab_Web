@@ -1,28 +1,37 @@
 'use client';
 
+import React from 'react';
 import { incrementDownloadCount } from '@/lib/utils';
 
-interface DownloadButtonProps {
+export interface DownloadButtonProps {
   slug: string;
   children: React.ReactNode;
+  className?: string;
 }
 
-export function DownloadButton({ slug, children }: DownloadButtonProps) {
+export function DownloadButton({ slug, children, className = '' }: DownloadButtonProps) {
   const handleDownload = () => {
-    // Tăng lượt tải xuống
+    // Tăng số lượt tải
     incrementDownloadCount(slug);
     
-    // Thực hiện tải xuống (giả lập)
-    setTimeout(() => {
-      alert('Đang tải xuống phần mềm...');
-    }, 500);
+    // Mô phỏng tải xuống (trong thực tế sẽ tải file thực)
+    console.log(`Tải xuống sản phẩm: ${slug}`);
+    
+    // Tạo một tệp trống để tải xuống (chỉ để demo)
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,Đây là file demo cho sản phẩm ' + slug);
+    element.setAttribute('download', `${slug}-demo.txt`);
+    
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    
+    element.click();
+    
+    document.body.removeChild(element);
   };
 
   return (
-    <button 
-      className="btn bg-gray-100 text-gray-700 w-full hover:bg-gray-200 transition-colors" 
-      onClick={handleDownload}
-    >
+    <button onClick={handleDownload} className={className}>
       {children}
     </button>
   );
