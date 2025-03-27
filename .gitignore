@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# runtime
+.swc/
+.turbo/
+
+# project specific
+/xlab-web/
