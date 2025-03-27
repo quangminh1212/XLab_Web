@@ -29,7 +29,7 @@ export default function Footer() {
           <div className="mb-8">
             <Link href="/" className="flex items-center mb-4">
               <Image 
-                src="/images/xlab-logo.png" 
+                src="/images/xlab-logo.svg" 
                 alt="XLab Logo" 
                 width={48} 
                 height={48} 
