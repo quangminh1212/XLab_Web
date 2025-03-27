@@ -14,6 +14,12 @@ if "%1"=="--help" goto :show_help
 if "%1"=="-h" goto :show_help
 if "%1"=="/?" goto :show_help
 
+:: Kiểm tra tham số fix
+set FIX_MODE=0
+if "%1"=="fix" set FIX_MODE=1
+if "%1"=="--fix" set FIX_MODE=1
+if "%1"=="-f" set FIX_MODE=1
+
 :: Kiểm tra tham số
 set CLEAN_MODE=0
 if "%1"=="clean" set CLEAN_MODE=1
@@ -25,6 +31,8 @@ if "%1"=="reset" set CLEAN_MODE=1
 :: Hiển thị chế độ chạy
 if %CLEAN_MODE% EQU 1 (
   echo [Running in CLEAN mode]
+) else if %FIX_MODE% EQU 1 (
+  echo [Running in FIX mode]
 ) else (
   echo [Running in NORMAL mode]
 )
@@ -52,31 +60,81 @@ echo [2/5] Cleaning previous builds and caches...
 
 :: Dừng các quy trình Node.js đang chạy
 taskkill /F /IM node.exe /T >nul 2>&1
+timeout /t 1 >nul
 
 :: Xóa các tệp cache
 if exist .next rd /s /q .next >nul 2>&1
 if exist .next-dev rd /s /q .next-dev >nul 2>&1
 if exist node_modules\.cache rd /s /q node_modules\.cache >nul 2>&1
 
+:: Trong chế độ fix, đảm bảo các module Next.js được cài đặt đúng
+if %FIX_MODE% EQU 1 (
+    echo [*] FIX MODE: Reinstalling Next.js and dependencies...
+    
+    :: Đảm bảo không có tệp lock nào ngăn cài đặt
+    if exist package-lock.json del /f package-lock.json >nul 2>&1
+    if exist node_modules\next rd /s /q node_modules\next >nul 2>&1
+    if exist node_modules\react rd /s /q node_modules\react >nul 2>&1
+    if exist node_modules\react-dom rd /s /q node_modules\react-dom >nul 2>&1
+    
+    :: Cài đặt lại các gói cốt lõi từng gói một
+    echo Installing Next.js core packages individually...
+    call npm install next@14.2.4 --no-fund --legacy-peer-deps --force
+    call npm install react@latest --no-fund --legacy-peer-deps --force
+    call npm install react-dom@latest --no-fund --legacy-peer-deps --force
+    
+    :: Sửa lỗi bảo mật
+    echo Fixing security vulnerabilities...
+    call npm audit fix --force
+    
+    echo [*] Fix completed. Dependencies have been reinstalled.
+    goto :verify_dependencies
+)
+
 :: Nếu chọn chế độ clean, xóa hoàn toàn cài đặt
 if %CLEAN_MODE% EQU 1 (
     echo [*] CLEAN MODE: Removing all dependencies and reinstalling...
     if exist node_modules rd /s /q node_modules >nul 2>&1
     if exist package-lock.json del /f package-lock.json >nul 2>&1
+    
+    :: Xóa cache npm để đảm bảo cài đặt mới sạch
     call npm cache clean --force >nul 2>&1
+    
+    :: Tạm dừng để đảm bảo tất cả các tệp đã được giải phóng
+    timeout /t 2 >nul
+    
     echo [*] All dependencies removed successfully.
 )
 
+:verify_dependencies
 :: Kiểm tra node_modules
 echo [3/5] Verifying dependencies...
 if not exist node_modules (
     echo Node modules not found, installing dependencies...
+    
+    :: Cài đặt với tùy chọn legacy-peer-deps để tránh xung đột
     call npm install --no-fund --legacy-peer-deps
     
     if %ERRORLEVEL% NEQ 0 (
-        echo ERROR: Failed to install dependencies!
-        pause
-        exit /b 1
+        echo.
+        echo WARNING: Initial installation failed, trying alternative method...
+        echo.
+        
+        :: Thử cài đặt từng gói cốt lõi trước
+        call npm install next@14.2.4 --no-fund --legacy-peer-deps --force
+        call npm install react@latest --no-fund --legacy-peer-deps --force
+        call npm install react-dom@latest --no-fund --legacy-peer-deps --force
+        
+        :: Sau đó cài đặt các gói còn lại
+        call npm install --no-fund --legacy-peer-deps
+        
+        if %ERRORLEVEL% NEQ 0 (
+            echo.
+            echo ERROR: Failed to install dependencies!
+            echo Try running with 'run.bat fix' to fix installation issues.
+            pause
+            exit /b 1
+        )
     )
     
     echo Dependencies installed successfully
@@ -84,11 +142,22 @@ if not exist node_modules (
     :: Kiểm tra xem next có tồn tại không
     if not exist node_modules\next\dist\bin\next.js (
         echo Next.js modules incomplete, reinstalling...
+        
+        :: Xóa các gói có thể gây xung đột
+        if exist node_modules\next rd /s /q node_modules\next >nul 2>&1
+        if exist node_modules\react rd /s /q node_modules\react >nul 2>&1
+        if exist node_modules\react-dom rd /s /q node_modules\react-dom >nul 2>&1
         if exist package-lock.json del /f package-lock.json >nul 2>&1
-        call npm install next@14.2.4 react@latest react-dom@latest --no-fund --legacy-peer-deps
+        
+        :: Cài đặt từng gói một để tránh xung đột
+        call npm install next@14.2.4 --no-fund --legacy-peer-deps --force
+        call npm install react@latest --no-fund --legacy-peer-deps --force
+        call npm install react-dom@latest --no-fund --legacy-peer-deps --force
         
         if %ERRORLEVEL% NEQ 0 (
+            echo.
             echo ERROR: Failed to install Next.js!
+            echo Try running with 'run.bat fix' to fix installation issues.
             pause
             exit /b 1
         )
@@ -130,6 +199,14 @@ if not exist next.config.js (
     )
 )
 
+:: Đảm bảo Next.js đã được cài đặt đúng
+if not exist node_modules\next\dist\bin\next.js (
+    echo ERROR: Next.js not installed correctly.
+    echo Try running 'run.bat fix' to repair the installation.
+    pause
+    exit /b 1
+)
+
 :: Cấu hình môi trường
 echo [5/5] Starting development server...
 set NODE_OPTIONS=--max-old-space-size=4096
@@ -158,11 +235,14 @@ echo   (no option)  Start normally without asking
 echo   clean        Clean and reinstall all dependencies
 echo   -c, --clean  Same as clean
 echo   -r, reset    Reset and reinstall
+echo   fix, --fix   Fix installation issues
+echo   -f           Same as fix
 echo   -h, --help   Show this help message
 echo.
 echo Examples:
 echo   run.bat            - Normal startup (no questions)
 echo   run.bat clean      - Clean all and reinstall
+echo   run.bat fix        - Fix installation issues
 echo   run.bat --help     - Show this help
 echo.
 exit /b 0
