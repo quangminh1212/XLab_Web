@@ -1,14 +1,20 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { products, categories, stores } from '@/data/mockData'
-import CategoryList from '@/components/CategoryList'
-import ProductGrid from '@/components/ProductGrid'
-import { ProductImage } from '@/components/ProductImage'
+'use client';
 
-export default function Home() {
-  // Get featured products for the homepage
-  const featuredProducts = products.filter(product => product.featured)
+import React from 'react';
+import Link from 'next/link';
+import CategoryList from '@/components/CategoryList';
+import ProductCard from '@/components/ProductCard';
+import { categories, products } from '@/data/mockData';
+
+function HomePage() {
+  // Lọc sản phẩm nổi bật
+  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
   
+  // Lọc sản phẩm mới nhất
+  const newProducts = [...products]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 4);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <section className="w-full bg-gradient-to-r from-primary-600 to-primary-700 py-12 md:py-16">
@@ -80,5 +86,7 @@ export default function Home() {
         </section>
       </div>
     </div>
-  )
-} 
+  );
+}
+
+export default HomePage; 

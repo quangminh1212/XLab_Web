@@ -116,12 +116,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
       </div>
       
-      <div className="flex flex-col flex-grow p-4">
-        <h3 className="text-sm md:text-base font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2">
+      <div className="flex flex-col flex-grow p-3">
+        <h3 className="text-xs md:text-sm font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2">
           {product.name}
         </h3>
         
-        <p className="text-xs text-gray-500 mt-1 mb-2 line-clamp-2 flex-grow">
+        <p className="text-xs text-gray-500 mt-1 mb-2 line-clamp-1 flex-grow">
           {product.description}
         </p>
         
@@ -129,7 +129,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="flex flex-col">
             {product.salePrice && product.salePrice < product.price ? (
               <>
-                <span className="text-sm font-semibold text-primary-600">
+                <span className="text-xs font-semibold text-primary-600">
                   {formatCurrency(product.salePrice)}
                 </span>
                 <span className="text-xs text-gray-400 line-through">
@@ -137,24 +137,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </span>
               </>
             ) : (
-              <span className="text-sm font-semibold text-primary-600">
+              <span className="text-xs font-semibold text-primary-600">
                 {formatCurrency(product.price)}
               </span>
             )}
           </div>
           
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-xs text-gray-500">
             <span className="inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-yellow-400 mr-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400 mr-1">
                 <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
               </svg>
               {product.rating}
             </span>
             
-            <span className="mx-2">•</span>
+            <span className="mx-1">•</span>
             
             <span className="inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-400 mr-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-gray-400 mr-1">
                 <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
                 <path fillRule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clipRule="evenodd" />
                 <path d="M2.25 18a.75.75 0 000 1.5h19.5a.75.75 0 000-1.5H2.25z" />
