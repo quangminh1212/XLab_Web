@@ -9,6 +9,11 @@ const protectedPaths = [
   '/api/protected',
 ];
 
+// Danh sách các đường dẫn chỉ dành cho admin
+const adminPaths = [
+  '/admin',
+];
+
 // Danh sách các đường dẫn công khai (không cần đăng nhập)
 const publicPaths = [
   '/login',
@@ -25,6 +30,13 @@ const publicPaths = [
 const isProtectedPath = (path: string) => {
   return protectedPaths.some((protectedPath) => 
     path === protectedPath || path.startsWith(`${protectedPath}/`)
+  );
+};
+
+// Kiểm tra xem đường dẫn có thuộc danh sách admin hay không
+const isAdminPath = (path: string) => {
+  return adminPaths.some((adminPath) => 
+    path === adminPath || path.startsWith(`${adminPath}/`)
   );
 };
 
@@ -69,6 +81,19 @@ export default async function middleware(request: NextRequest) {
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
+
+  // Kiểm tra quyền admin cho các đường dẫn admin
+  if (isAdminPath(pathname)) {
+    if (!token) {
+      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
+      const url = new URL('/login', request.url);
+      url.searchParams.set('callbackUrl', encodeURI(pathname));
+      return NextResponse.redirect(url);
+    } else if (token.email !== 'xlab.rnd@gmail.com') {
+      // Nếu đã đăng nhập nhưng không phải email admin, chuyển đến trang chủ
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
 
   // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
   if (isProtectedPath(pathname) && !token) {
