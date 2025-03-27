@@ -18,14 +18,17 @@ export function ProductImage({
   height,
   className = '',
 }: ProductImageProps) {
-  const defaultImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2NjY2NjYyIvPjx0ZXh0IHg9IjQwMCIgeT0iMzAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzYiIGZpbGw9IiM2NjY2NjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGFsaWdubWVudC1iYXNlbGluZT0ibWlkZGxlIj5YTGFiIFByb2R1Y3Q8L3RleHQ+PC9zdmc+'
+  // Màu xanh của XLab
+  const defaultImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjhmZiIvPjxjaXJjbGUgY3g9IjQwMCIgY3k9IjMwMCIgcj0iODAiIGZpbGw9IiMwMDc0ZDkiIGZpbGwtb3BhY2l0eT0iMC44Ii8+PHRleHQgeD0iNDAwIiB5PSIzODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzMzMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPlhMYWI8L3RleHQ+PC9zdmc+'
   const [imgSrc, setImgSrc] = useState<string>(src || defaultImage)
   const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
   
   // Cập nhật imgSrc khi src prop thay đổi và đặt loading timeout
   useEffect(() => {
     if (src && src !== '/placeholder-product.jpg') {
       setImgSrc(src)
+      setIsError(false)
     } else {
       setImgSrc(defaultImage)
     }
@@ -44,11 +47,13 @@ export function ProductImage({
     console.log('Ảnh không tải được:', imgSrc)
     setImgSrc(defaultImage)
     setIsLoading(false)
+    setIsError(true)
   }
   
   // Xử lý khi ảnh tải thành công
   const handleLoad = () => {
     setIsLoading(false)
+    setIsError(false)
   }
 
   return (
