@@ -18,7 +18,7 @@ const nextConfig = {
   // },
   experimental: {
     // scrollRestoration đã là tính năng mặc định trong Next.js 15
-    // // ppr: true, // Chỉ hoạt động với phiên bản canary
+    // ppr: false, // Chỉ hoạt động với phiên bản canary
     // serverActions: {
       // bodySizeLimit: "2mb",
     // },
