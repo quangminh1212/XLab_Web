@@ -56,14 +56,16 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-1">
             <Link href="/" className="flex items-center space-x-2">
-              <Image 
-                src="/images/xlab-logo.svg" 
-                alt="XLab Logo" 
-                width={48} 
-                height={48} 
-                className="w-auto h-10"
-                priority
-              />
+              <div className="bg-white rounded-lg w-12 h-12 flex items-center justify-center shadow-sm">
+                <Image 
+                  src="/images/xlab-logo.svg" 
+                  alt="XLab Logo" 
+                  width={40} 
+                  height={40} 
+                  className="w-auto h-10"
+                  priority
+                />
+              </div>
               <span className="font-bold text-xl text-gray-900 hidden sm:inline-block">
                 <span className="text-black">X</span>
                 <span className="text-primary-600">Lab</span>
