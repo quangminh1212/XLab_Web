@@ -111,7 +111,7 @@ export const products: Product[] = [
     rating: 4.5,
     version: '2.5.1',
     size: '250MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-05-10T08:00:00.000Z',
     updatedAt: '2023-09-15T10:30:00.000Z',
     storeId: '1'
@@ -145,7 +145,7 @@ export const products: Product[] = [
     rating: 4.8,
     version: '1.2.0',
     size: '500MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-08-01T09:00:00.000Z',
     updatedAt: '2023-10-20T14:45:00.000Z',
     storeId: '1'
@@ -179,7 +179,7 @@ export const products: Product[] = [
     rating: 4.7,
     version: '3.0.1',
     size: '120MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-06-15T11:20:00.000Z',
     updatedAt: '2023-10-05T09:15:00.000Z',
     storeId: '1'
@@ -213,7 +213,7 @@ export const products: Product[] = [
     rating: 4.6,
     version: '4.2.1',
     size: '850MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-04-20T13:45:00.000Z',
     updatedAt: '2023-09-28T16:30:00.000Z',
     storeId: '1'
@@ -248,7 +248,7 @@ export const products: Product[] = [
     rating: 4.9,
     version: '2.1.0',
     size: '350MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-07-12T10:30:00.000Z',
     updatedAt: '2023-10-18T09:45:00.000Z',
     storeId: '1'
@@ -283,7 +283,7 @@ export const products: Product[] = [
     rating: 4.7,
     version: '3.1.2',
     size: '190MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-03-25T14:20:00.000Z',
     updatedAt: '2023-09-10T11:05:00.000Z',
     storeId: '2'
@@ -318,7 +318,7 @@ export const products: Product[] = [
     rating: 4.6,
     version: '2.3.0',
     size: '450MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-05-30T09:15:00.000Z',
     updatedAt: '2023-10-12T13:40:00.000Z',
     storeId: '2'
@@ -353,7 +353,7 @@ export const products: Product[] = [
     rating: 4.5,
     version: '2.0.1',
     size: '320MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-02-18T08:45:00.000Z',
     updatedAt: '2023-08-25T15:20:00.000Z',
     storeId: '3'
@@ -389,7 +389,7 @@ export const products: Product[] = [
     rating: 4.8,
     version: '3.2.0',
     size: '480MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-04-05T11:30:00.000Z',
     updatedAt: '2023-09-20T10:25:00.000Z',
     storeId: '1'
@@ -424,7 +424,7 @@ export const products: Product[] = [
     rating: 4.7,
     version: '1.5.0',
     size: '280MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-06-08T12:15:00.000Z',
     updatedAt: '2023-10-15T14:10:00.000Z',
     storeId: '3'
@@ -460,7 +460,7 @@ export const products: Product[] = [
     rating: 4.4,
     version: '5.2.1',
     size: '85MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-01-20T09:40:00.000Z',
     updatedAt: '2023-08-15T10:50:00.000Z',
     storeId: '2'
@@ -496,7 +496,7 @@ export const products: Product[] = [
     rating: 4.9,
     version: '2.0.1',
     size: '110MB',
-    license: 'Thương mại',
+    licenseType: 'Thương mại',
     createdAt: '2023-07-25T15:30:00.000Z',
     updatedAt: '2023-10-08T11:20:00.000Z',
     storeId: '2'
