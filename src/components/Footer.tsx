@@ -13,12 +13,12 @@ export default function Footer() {
           {/* Logo và giới thiệu */}
           <div className="mb-8">
             <Link href="/" className="flex items-center mb-4">
-              <span className="w-6 h-6 inline-flex items-center justify-center">
+              <span className="w-8 h-8 inline-flex items-center justify-center">
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={6} 
-                  height={6} 
+                  width={24} 
+                  height={24} 
                   className="object-contain"
                 />
               </span>
