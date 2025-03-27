@@ -84,7 +84,8 @@ const nextConfig = {
     ];
   },
   // Tối giản hóa cấu hình webpack
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config) => {
+    // Để trống để ngăn lỗi "Cannot read properties of undefined (reading 'call')"
     return config;
   },
   
