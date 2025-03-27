@@ -75,7 +75,7 @@ function HomePage() {
                 </svg>
                 <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
                 <p className="text-gray-500 max-w-lg mx-auto">
-                  Vui lòng truy cập trang quản trị để thêm sản phẩm mới vào hệ thống.
+                  Hệ thống đang cập nhật
                 </p>
               </div>
             </div>
@@ -102,7 +102,7 @@ function HomePage() {
                 </svg>
                 <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
                 <p className="text-gray-500 max-w-lg mx-auto">
-                  Vui lòng truy cập trang quản trị để thêm sản phẩm mới vào hệ thống.
+                  Hệ thống đang cập nhật
                 </p>
               </div>
             </div>
