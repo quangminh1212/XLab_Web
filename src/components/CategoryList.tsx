@@ -94,7 +94,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
               height={48}
               className="rounded-full object-cover"
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-0 group-hover:bg-opacity-20 transition-all">
+            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-0 group-hover:bg-opacity-40 opacity-0 group-hover:opacity-100 transition-all">
               {getCategoryIcon(category.slug)}
             </div>
           </div>
