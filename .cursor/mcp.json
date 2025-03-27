@@ -1,7 +1,0 @@
-{
-  "mcpServers": {
-    "figma-developer-mcp": {
-      "url": "http://localhost:3333/sse"
-    }
-  }
-}
