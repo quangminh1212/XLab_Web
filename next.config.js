@@ -17,13 +17,8 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   
-  // Tắt tất cả tính năng thực nghiệm
-  experimental: {
-    optimizePackageImports: false,
-    optimizeCss: false,
-    optimizeServerReact: false,
-    serverActions: false,
-  },
+  // Cấu hình tối giản
+  experimental: {},
 
   // Tắt source maps và minification trong development
   productionBrowserSourceMaps: false,
@@ -47,7 +42,7 @@ const nextConfig = {
   // Cấu hình cơ bản
   staticPageGenerationTimeout: 120,
   
-  // Thư mục build riêng cho dev và prod
+  // Thư mục build
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
 };
 
