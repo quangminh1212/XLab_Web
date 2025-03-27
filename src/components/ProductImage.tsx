@@ -20,24 +20,42 @@ export function ProductImage({
 }: ProductImageProps) {
   // Màu xanh của XLab
   const defaultImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2YwZjhmZiIvPjxjaXJjbGUgY3g9IjQwMCIgY3k9IjMwMCIgcj0iODAiIGZpbGw9IiMwMDc0ZDkiIGZpbGwtb3BhY2l0eT0iMC44Ii8+PHRleHQgeD0iNDAwIiB5PSIzODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzMzMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgYWxpZ25tZW50LWJhc2VsaW5lPSJtaWRkbGUiPlhMYWI8L3RleHQ+PC9zdmc+'
-  const [imgSrc, setImgSrc] = useState<string>(src || defaultImage)
+  const [imgSrc, setImgSrc] = useState<string>(defaultImage)
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
+  const [isPlaceholder, setIsPlaceholder] = useState(false)
+  
+  // Kiểm tra URL hợp lệ
+  const isValidUrl = (url: string) => {
+    // Kiểm tra nếu URL không chứa file không tồn tại
+    if (!url || url === '/placeholder-product.jpg' || url.includes('business.svg')) {
+      return false
+    }
+    
+    // Xác định đúng đuôi file PNG/JPG thay vì SVG
+    if (url.includes('.svg') && !url.startsWith('data:')) {
+      return false
+    }
+    
+    return true
+  }
   
   // Cập nhật imgSrc khi src prop thay đổi và đặt loading timeout
   useEffect(() => {
-    if (src && src !== '/placeholder-product.jpg') {
+    if (isValidUrl(src)) {
       setImgSrc(src)
       setIsError(false)
+      setIsPlaceholder(false)
     } else {
       setImgSrc(defaultImage)
+      setIsPlaceholder(true)
+      setIsLoading(false)
     }
-    setIsLoading(true)
     
-    // Tự động chuyển loading state sau 1.5 giây để tránh spinner vô hạn
+    // Tự động chuyển loading state sau 800ms để tránh spinner vô hạn
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false)
-    }, 1500)
+    }, 800)
     
     return () => clearTimeout(loadingTimeout)
   }, [src])
@@ -48,6 +66,7 @@ export function ProductImage({
     setImgSrc(defaultImage)
     setIsLoading(false)
     setIsError(true)
+    setIsPlaceholder(true)
   }
   
   // Xử lý khi ảnh tải thành công
@@ -58,7 +77,7 @@ export function ProductImage({
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      {isLoading && (
+      {isLoading && !isPlaceholder && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -68,7 +87,7 @@ export function ProductImage({
         alt={alt || 'Product image'}
         width={width || 300}
         height={height || 300}
-        className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        className={`${className} ${isLoading && !isPlaceholder ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
         onError={handleError}
         onLoad={handleLoad}
         priority={true}
