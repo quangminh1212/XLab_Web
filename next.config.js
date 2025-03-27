@@ -22,15 +22,33 @@ const nextConfig = {
   // Tắt source maps trong production
   productionBrowserSourceMaps: false,
 
-  // Cấu hình webpack đơn giản
-  webpack: (config, { dev }) => {
+  // Cấu hình webpack đơn giản với điều chỉnh để tránh lỗi
+  webpack: (config, { dev, isServer }) => {
     if (dev) {
       config.optimization = {
         ...config.optimization,
         minimize: false,
         minimizer: [],
-      }
+      };
     }
+
+    // Giải quyết lỗi "Cannot read properties of undefined (reading 'call')"
+    // Tham khảo: https://github.com/webpack/webpack/issues/15582
+    if (!isServer) {
+      // Tắt chức năng splitChunks để tránh lỗi
+      config.optimization.splitChunks = {
+        cacheGroups: {
+          default: false,
+        }
+      };
+      
+      // Đảm bảo hành vi nhất quán cho webpack
+      config.output = {
+        ...config.output,
+        chunkLoadingGlobal: `webpackChunk_${require('./package.json').name}`,
+      };
+    }
+    
     return config;
   },
   
