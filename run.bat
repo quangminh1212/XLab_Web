@@ -22,11 +22,8 @@ if "%1"=="-c" set CLEAN_MODE=1
 if "%1"=="-r" set CLEAN_MODE=1
 if "%1"=="reset" set CLEAN_MODE=1
 
-:: Nếu không có tham số nhưng muốn hỏi
-if "%1"=="" if "%INTERACTIVE%"=="" (
-    choice /C YN /M "Ban co muon xoa sach va cai dat lai khong? (Y=Co, N=Khong)"
-    if %ERRORLEVEL% EQU 1 set CLEAN_MODE=1
-)
+:: Không hỏi nữa - chạy tự động theo chế độ đã định
+echo [Mode: %CLEAN_MODE%] - 0=Normal, 1=Clean Install
 
 :: Kiểm tra Node.js
 echo [1/5] Checking Node.js installation...
@@ -153,14 +150,14 @@ echo.
 echo Usage: run.bat [option]
 echo.
 echo Options:
-echo   (no option)  Start normally with prompt
+echo   (no option)  Start normally without asking
 echo   clean        Clean and reinstall all dependencies
 echo   -c, --clean  Same as clean
 echo   -r, reset    Reset and reinstall
 echo   -h, --help   Show this help message
 echo.
 echo Examples:
-echo   run.bat            - Normal startup with prompt
+echo   run.bat            - Normal startup (no questions)
 echo   run.bat clean      - Clean all and reinstall
 echo   run.bat --help     - Show this help
 echo.
