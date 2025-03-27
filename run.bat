@@ -77,7 +77,7 @@ IF ERRORLEVEL 1 (
     echo Make sure you have Node.js v20+ installed
     node --version
     echo Try running with node directly...
-    node node_modules/next/dist/bin/next dev --port 3000 --hostname 0.0.0.0
+    node node_modules\next\dist\bin\next dev --port 3000 --hostname 0.0.0.0
 )
 
 endlocal
