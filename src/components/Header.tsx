@@ -56,12 +56,12 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-1">
             <Link href="/" className="flex items-center">
-              <span className="w-6 h-6 inline-flex items-center justify-center">
+              <span className="w-8 h-8 inline-flex items-center justify-center">
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={6} 
-                  height={6} 
+                  width={24} 
+                  height={24} 
                   className="object-contain"
                   priority
                 />
