@@ -17,7 +17,11 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   experimental: {
-    scrollRestoration: true,
+    // scrollRestoration đã là tính năng mặc định trong Next.js 15
+    // ppr: true, // Chỉ hoạt động với phiên bản canary
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',

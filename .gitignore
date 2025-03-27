@@ -161,3 +161,29 @@ next-env.d.ts
 # Windows
 Thumbs.db
 Desktop.ini
+
+# Runtime generated files
+.next-server/
+.next-caching/
+.next-static/
+*.build-manifest.json
+trace-*.json
+*.buildmanifest.json
+.next-server/
+.webpack/
+public/sw*.js.map
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# System files that might be created during development
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
