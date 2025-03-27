@@ -1,0 +1,25 @@
+{
+  "name": "xlab_web",
+  "version": "1.0.0",
+  "description": "Website giới thiệu và bán phần mềm của công ty XLab.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^14.1.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.18",
+    "postcss": "^8.4.37",
+    "tailwindcss": "^3.4.1"
+  }
+}
