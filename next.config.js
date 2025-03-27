@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  // swcMinify: true, // Removed as it's causing warnings
   poweredByHeader: false,
   images: {
     remotePatterns: [
@@ -88,16 +88,30 @@ const nextConfig = {
     // Chỉ thực hiện trong môi trường development
     if (dev && !isServer) {
       try {
-        const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-        config.plugins.push(
-          new BundleAnalyzerPlugin({
-            analyzerMode: 'server',
-            analyzerPort: 8888,
-            openAnalyzer: false,
-          })
-        );
+        // Check if webpack-bundle-analyzer is installed before requiring it
+        const hasBundleAnalyzer = (() => {
+          try {
+            require.resolve('webpack-bundle-analyzer');
+            return true;
+          } catch (e) {
+            return false;
+          }
+        })();
+
+        if (hasBundleAnalyzer) {
+          const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+          config.plugins.push(
+            new BundleAnalyzerPlugin({
+              analyzerMode: 'server',
+              analyzerPort: 8888,
+              openAnalyzer: false,
+            })
+          );
+        } else {
+          console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
+        }
       } catch (error) {
-        console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
+        console.warn('Lỗi khi cấu hình phân tích bundle:', error.message);
       }
     }
 
