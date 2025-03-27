@@ -23,7 +23,7 @@ export default function AboutPage() {
                 nâng cao hiệu quả hoạt động và năng lực cạnh tranh trong kỷ nguyên số.
               </p>
               <p className="mb-4">
-                Sau hơn 13 năm hoạt động và phát triển, XLab đã trở thành đối tác công nghệ 
+                Sau hơn 10 năm hoạt động và phát triển, XLab đã trở thành đối tác công nghệ 
                 tin cậy của hàng trăm doanh nghiệp trong và ngoài nước, từ các công ty khởi nghiệp 
                 cho đến các tập đoàn lớn thuộc nhiều lĩnh vực khác nhau như tài chính, bán lẻ, 
                 sản xuất, giáo dục và y tế.
