@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import React from 'react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Home: NextPage = () => {
   return (
@@ -22,21 +22,18 @@ const Home: NextPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Tính năng 1 */}
           <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="text-primary text-2xl mb-4">🔬</div>
             <h2 className="text-xl font-semibold mb-2">Nghiên cứu</h2>
             <p className="text-gray-600">Truy cập vào cơ sở dữ liệu khoa học và công cụ nghiên cứu tiên tiến.</p>
           </div>
 
-          {/* Tính năng 2 */}
           <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="text-secondary text-2xl mb-4">👥</div>
             <h2 className="text-xl font-semibold mb-2">Cộng đồng</h2>
             <p className="text-gray-600">Kết nối với các nhà nghiên cứu và chuyên gia từ khắp nơi trên thế giới.</p>
           </div>
 
-          {/* Tính năng 3 */}
           <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="text-accent text-2xl mb-4">📊</div>
             <h2 className="text-xl font-semibold mb-2">Phân tích</h2>
@@ -51,11 +48,7 @@ const Home: NextPage = () => {
         </div>
       </main>
 
-      <footer className="mt-16 py-8 bg-gray-800 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; {new Date().getFullYear()} XLab. Tất cả các quyền được bảo lưu.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
