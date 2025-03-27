@@ -10,142 +10,75 @@ export default function Home() {
   const featuredProducts = products.filter(product => product.featured)
   
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Simplified Hero Section */}
-      <section className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10 sm:py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              X<span className="text-primary-600"> Lab</span>
-              </h1>
-            <p className="text-lg text-gray-600 mb-6">
+    <div className="min-h-screen bg-gray-50">
+      <section className="w-full bg-gradient-to-r from-primary-600 to-primary-700 py-12 md:py-16">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+              X Lab
+            </h1>
+            <p className="text-lg md:text-xl text-white/90 max-w-3xl mb-8">
               Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay
             </p>
-            <div className="flex justify-center">
-              <div className="relative max-w-lg w-full">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                  </svg>
-              </div>
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm phần mềm, ứng dụng..."
-                  className="block w-full bg-white border border-gray-200 rounded-full py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                />
-              </div>
+            
+            <div className="relative w-full max-w-2xl">
+              <input
+                type="text"
+                placeholder="Tìm kiếm phần mềm, ứng dụng..."
+                className="w-full px-4 py-3 pr-12 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800"
+              />
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-600">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                  <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-8 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Danh mục</h2>
-            <Link href="/categories" className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+      <div className="container px-3 mx-auto max-w-7xl">
+        <section className="py-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-gray-900">Danh mục</h2>
+            <Link href="/categories" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
               Xem tất cả
             </Link>
           </div>
+          
           <CategoryList categories={categories} />
-        </div>
-      </section>
+        </section>
 
-      {/* Featured Products */}
-      <section className="py-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Phần mềm nổi bật</h2>
-            <Link href="/products" className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+        <section className="py-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-gray-900">Phần mềm nổi bật</h2>
+            <Link href="/products" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
               Xem tất cả
             </Link>
           </div>
-          <ProductGrid products={featuredProducts.slice(0, 4)} />
-        </div>
-      </section>
-
-      {/* Newest Products */}
-      <section className="py-10 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Sản phẩm mới nhất</h2>
-            <Link href="/products" className="text-primary-600 hover:text-primary-700 text-sm font-medium">
-              Xem tất cả
-            </Link>
-          </div>
-          <ProductGrid 
-            products={[...products].sort((a, b) => 
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            ).slice(0, 8)} 
-          />
-        </div>
-      </section>
-
-      {/* Popular Stores */}
-      <section className="py-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Gian hàng phổ biến</h2>
-            <Link href="/stores" className="text-primary-600 hover:text-primary-700 text-sm font-medium">
-              Xem tất cả
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {stores.map(store => (
-              <Link 
-                key={store.id}
-                href={`/stores/${store.id}`}
-                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden group"
-              >
-                <div className="p-6">
-              <div className="flex items-center">
-                    <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mr-4 overflow-hidden">
-                      <ProductImage 
-                        src={store.imageUrl || '/placeholder-product.jpg'}
-                        alt={store.name}
-                        width={64}
-                        height={64}
-                        className="rounded-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900 group-hover:text-primary-600 transition-colors">
-                        {store.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">{store.description}</p>
-              </div>
-            </div>
-                </div>
-              </Link>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA Section - Simplified */}
-      <section className="py-10 bg-primary-600 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Bạn muốn thêm phần mềm riêng?</h2>
-          <p className="text-primary-100 mb-6 max-w-2xl mx-auto">
-            Đăng ký làm chủ gian hàng để tải lên và quản lý các sản phẩm phần mềm của riêng bạn.
-          </p>
-          <div className="flex justify-center space-x-4">
-                <Link 
-              href="/register"
-              className="bg-white text-primary-600 px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors"
-                >
-              Đăng ký ngay
-                </Link>
-                <Link 
-              href="/about"
-              className="bg-primary-700 text-white px-6 py-3 rounded-md font-medium hover:bg-primary-800 transition-colors"
-                >
-              Tìm hiểu thêm
-                </Link>
+        <section className="py-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-gray-900">Phần mềm mới</h2>
+            <Link href="/products?sort=newest" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+              Xem tất cả
+            </Link>
           </div>
-        </div>
-      </section>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {newProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   )
 } 
