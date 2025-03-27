@@ -36,18 +36,8 @@ npm start
 {
   "mcpServers": {
     "figma-developer-mcp": {
-      "url": "http://localhost:3333/sse"
+      "url": "http://localhost:3334/sse"
     }
   }
 }
 ```
-
-Chạy Figma MCP:
-```
-npx figma-developer-mcp --figma-api-key=figd_o9UXH8kEBgND0cTSfRFSxLRKsOwZP9CbSZuOHZuf
-```
-
-
-## Thông tin dự án
-
-Được phát triển bởi XLab - 2023
