@@ -16,7 +16,7 @@ export default function ProductsPage() {
   const popularProducts = [...products].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 4)
 
   return (
-    <div className="animate-fadeIn">
+    <div>
       {/* Page Header */}
       <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-16 relative overflow-hidden">
         {/* Decorative elements */}
@@ -27,11 +27,11 @@ export default function ProductsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-8 md:mb-0 md:mr-8 md:max-w-2xl">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 animate-slideInUp">Sản phẩm</h1>
-              <p className="text-xl text-primary-100 animate-slideInUp animation-delay-100">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">Sản phẩm</h1>
+              <p className="text-xl text-primary-100">
                 Khám phá các sản phẩm phần mềm hiện đại được thiết kế riêng cho doanh nghiệp của bạn.
               </p>
-              <div className="mt-6 animate-slideInUp animation-delay-200">
+              <div className="mt-6">
                 <div className="relative max-w-lg w-full">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-primary-400" viewBox="0 0 20 20" fill="currentColor">
@@ -46,7 +46,7 @@ export default function ProductsPage() {
                 </div>
               </div>
             </div>
-            <div className="w-full md:w-1/3 flex justify-center animate-floating">
+            <div className="w-full md:w-1/3 flex justify-center">
               <Image
                 src="/images/hero-image.svg"
                 alt="Product Hero"
@@ -131,7 +131,7 @@ export default function ProductsPage() {
                       alt={product.name}
                       width={120}
                       height={120}
-                      className="w-auto h-auto max-h-32 group-hover:scale-110 transition-transform duration-300"
+                      className="w-auto h-auto max-h-32 transition-transform duration-300"
                     />
                   )}
                 </div>
@@ -190,7 +190,7 @@ export default function ProductsPage() {
                       alt={product.name}
                       width={100}
                       height={100}
-                      className="w-auto h-auto max-h-24 group-hover:scale-110 transition-transform duration-300"
+                      className="w-auto h-auto max-h-24"
                     />
                   )}
                   <div className="absolute bottom-2 right-2 bg-gray-800 bg-opacity-80 text-white text-xs px-2 py-1 rounded-full">
@@ -230,7 +230,7 @@ export default function ProductsPage() {
                       alt={product.name}
                       width={100}
                       height={100}
-                      className="w-auto h-auto max-h-24 group-hover:scale-110 transition-transform duration-300"
+                      className="w-auto h-auto max-h-24"
                     />
                   )}
                   <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -283,10 +283,10 @@ export default function ProductsPage() {
               Chúng tôi cung cấp dịch vụ phát triển phần mềm theo yêu cầu. Hãy liên hệ với chúng tôi để được tư vấn giải pháp phù hợp nhất.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/contact" className="bg-white text-primary-600 hover:bg-gray-100 font-medium px-6 py-3 rounded-md transition-colors transform hover:-translate-y-1">
+              <Link href="/contact" className="bg-white text-primary-600 hover:bg-gray-100 font-medium px-6 py-3 rounded-md transition-colors">
                 Liên hệ ngay
               </Link>
-              <Link href="/services" className="bg-primary-700 hover:bg-primary-800 text-white font-medium px-6 py-3 rounded-md transition-colors transform hover:-translate-y-1">
+              <Link href="/services" className="bg-primary-700 hover:bg-primary-800 text-white font-medium px-6 py-3 rounded-md transition-colors">
                 Khám phá dịch vụ
               </Link>
             </div>
