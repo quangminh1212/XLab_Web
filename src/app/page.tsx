@@ -17,13 +17,13 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <section className="w-full bg-gradient-to-r from-primary-600 to-primary-700 py-12 md:py-16">
+      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10 sm:py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-              X Lab
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              <span className="text-gray-900">X</span><span className="text-primary-600">Lab</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/90 max-w-3xl mb-8">
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mb-8">
               Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay
             </p>
             
@@ -31,10 +31,10 @@ function HomePage() {
               <input
                 type="text"
                 placeholder="Tìm kiếm phần mềm, ứng dụng..."
-                className="w-full px-4 py-3 pr-12 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800"
+                className="w-full px-4 py-3 pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-600">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                   <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
                 </svg>
               </button>
