@@ -25,19 +25,30 @@ export function ProductImage({
   const [isError, setIsError] = useState(false)
   const [isPlaceholder, setIsPlaceholder] = useState(true)
   
-  // Chuyển SVG sang PNG nếu có thể
+  // Tạo URL chính xác cho hình ảnh
   const getValidImageUrl = (url: string): string => {
-    // Trường hợp không có URL
     if (!url || url === '/placeholder-product.jpg') {
+      console.log('Invalid image URL, using default', url)
       return defaultImage
     }
     
-    // Nếu URL là SVG, tự động chuyển sang PNG
-    if (url.includes('.svg') && !url.startsWith('data:')) {
-      return url.replace('.svg', '.png')
+    // Chuyển đổi đường dẫn từ SVG sang PNG
+    let validUrl = url
+    
+    // Đảm bảo đường dẫn /images/product/ có file .png
+    if (url.includes('products/') || url.includes('categories/')) {
+      // Loại bỏ đuôi SVG nếu có
+      validUrl = url.replace('.svg', '.png')
+      
+      // Đảm bảo sử dụng các file PNG có sẵn
+      if (validUrl.includes('business.svg') || validUrl.includes('business.png')) {
+        validUrl = '/images/categories/productivity.png'
+      }
+      
+      console.log('Using image:', validUrl)
     }
     
-    return url
+    return validUrl
   }
   
   // Cập nhật imgSrc khi src prop thay đổi
@@ -54,10 +65,10 @@ export function ProductImage({
       setIsLoading(true)
     }
     
-    // Tự động tắt trạng thái loading sau 500ms để tránh spinner vô tận
+    // Tự động tắt trạng thái loading sau 300ms
     const loadingTimeout = setTimeout(() => {
       setIsLoading(false)
-    }, 500)
+    }, 300)
     
     return () => clearTimeout(loadingTimeout)
   }, [src])
@@ -78,7 +89,7 @@ export function ProductImage({
   }
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full h-full flex items-center justify-center bg-gray-50">
       {isLoading && !isPlaceholder && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
@@ -89,7 +100,7 @@ export function ProductImage({
         alt={alt || 'Product image'}
         width={width || 300}
         height={height || 300}
-        className={`${className} ${isLoading && !isPlaceholder ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        className={`${className} ${isLoading && !isPlaceholder ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300 object-contain px-4 py-2`}
         onError={handleError}
         onLoad={handleLoad}
         priority={true}
