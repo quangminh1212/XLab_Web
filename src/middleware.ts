@@ -36,6 +36,22 @@ const isPublicPath = (path: string) => {
   );
 };
 
+// Define public routes that don't require authentication
+const publicRoutes = [
+  '/',
+  '/login',
+  '/register',
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/reset-password',
+  '/about',
+  '/contact',
+  '/products',
+  '/products/.+',
+  '/services',
+  '/services/.+',
+];
+
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
