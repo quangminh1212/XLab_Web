@@ -22,8 +22,6 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
     optimizeCss: true,
-    esmExternals: 'loose',
-    appDir: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
