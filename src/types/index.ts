@@ -5,20 +5,19 @@ export interface Product {
   description: string;
   longDescription?: string;
   price: number;
-  salePrice: number | null;
+  salePrice?: number;
   categoryId: string;
-  storeId: string;
-  imageUrl: string;
+  imageUrl?: string;
+  featured: boolean;
+  isNew: boolean;
+  rating: number;
+  downloadCount: number;
+  viewCount: number;
   version: string;
   size: string;
   license: string;
-  featured: boolean;
-  active: boolean;
-  downloadCount: number;
-  viewCount: number;
-  rating: number;
-  createdAt: string;
   updatedAt: string;
+  createdAt: string;
 }
 
 export interface Category {
@@ -26,8 +25,8 @@ export interface Category {
   name: string;
   slug: string;
   description: string;
-  icon: string;
-  imageUrl: string;
+  imageUrl?: string;
+  productCount: number;
 }
 
 export interface Store {
@@ -44,9 +43,13 @@ export interface Store {
 
 export interface User {
   id: string;
-  name?: string;
+  name: string;
   email: string;
   image?: string;
-  role: 'USER' | 'ADMIN' | 'STORE_OWNER';
-  stores?: Store[];
+  role: 'USER' | 'ADMIN';
+}
+
+export interface Session {
+  user?: User;
+  expires: string;
 } 
