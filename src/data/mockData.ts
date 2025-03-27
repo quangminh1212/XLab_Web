@@ -52,7 +52,7 @@ export const stores: Store[] = [
     slug: 'xlab-software',
     description: 'Chuyên cung cấp phần mềm chất lượng cao',
     owner: 'admin@xlab.com',
-    imageUrl: '/images/stores/xlab.png',
+    imageUrl: '/images/categories/development.png',
     website: 'https://xlab.example.com',
     active: true,
     createdAt: new Date('2023-01-15').toISOString()
@@ -63,7 +63,7 @@ export const stores: Store[] = [
     slug: 'vn-tech-solutions',
     description: 'Giải pháp phần mềm cho doanh nghiệp Việt',
     owner: 'contact@vntech.vn',
-    imageUrl: '/images/stores/vntech.png',
+    imageUrl: '/images/categories/productivity.png',
     website: 'https://vntech.example.com',
     active: true,
     createdAt: new Date('2023-03-20').toISOString()
@@ -74,7 +74,7 @@ export const stores: Store[] = [
     slug: 'creative-tools',
     description: 'Công cụ sáng tạo cho designer và họa sĩ',
     owner: 'hello@creative-tools.com',
-    imageUrl: '/images/stores/creative.png',
+    imageUrl: '/images/categories/design.png',
     website: 'https://creative-tools.example.com',
     active: true,
     createdAt: new Date('2023-02-10').toISOString()
