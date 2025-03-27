@@ -28,6 +28,15 @@ echo [3/6] Cleaning up environment...
 echo Cleaning cache folders...
 if exist .next rmdir /s /q .next 2>nul
 if exist .next-dev rmdir /s /q .next-dev 2>nul
+if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul
+if exist .vercel rmdir /s /q .vercel 2>nul
+if exist .turbo rmdir /s /q .turbo 2>nul
+
+:: Xóa các file cache TypeScript
+if exist *.tsbuildinfo del /f /q *.tsbuildinfo 2>nul
+
+:: Xóa các file cache webpack
+if exist .webpack rmdir /s /q .webpack 2>nul
 
 :: Bước 4: Tạo .npmrc để tắt warning và thiết lập cài đặt
 echo [4/6] Configuring Next.js %NEXT_VERSION_FULL%...
@@ -53,6 +62,8 @@ if not exist node_modules (
 echo [6/6] Starting application in %RUN_MODE% mode...
 echo Starting Next.js %NEXT_VERSION_FULL% development server...
 echo [Press Ctrl+C to stop the server]
+
+:: Chạy ứng dụng
 call npm run dev
 
 endlocal 
