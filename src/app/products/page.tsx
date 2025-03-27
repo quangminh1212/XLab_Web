@@ -35,42 +35,49 @@ export default function ProductsPage() {
             <p className="text-gray-600 mt-1">Khám phá toàn bộ sản phẩm của chúng tôi</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <Link 
-                key={product.id}
-                href={`/products/${product.slug}`}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all group"
-              >
-                <div className="p-6 bg-gray-50 flex items-center justify-center h-48">
-                  {product.imageUrl && (
+            {products.map((product) => {
+              // Fallback image nếu không có imageUrl
+              const productImage = product.imageUrl || '/placeholder-product.jpg';
+              
+              return (
+                <Link 
+                  key={product.id}
+                  href={`/products/${product.slug}`}
+                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all group"
+                >
+                  <div className="p-6 bg-gray-50 flex items-center justify-center h-48">
                     <Image
-                      src={product.imageUrl}
+                      src={productImage}
                       alt={product.name}
                       width={120}
                       height={120}
                       className="w-auto h-auto max-h-32"
+                      onError={(e) => {
+                        // Fallback nếu ảnh không tải được
+                        e.currentTarget.src = '/placeholder-product.jpg';
+                      }}
                     />
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-                  <p className="text-gray-600 mt-1 line-clamp-2">{product.description}</p>
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="text-primary-600 font-medium">
-                      {product.salePrice 
-                        ? Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)
-                        : Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
-                    </span>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                      {product.downloadCount}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
+                    <p className="text-gray-600 mt-1 line-clamp-2">{product.description}</p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-primary-600 font-medium">
+                        {product.salePrice 
+                          ? Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)
+                          : Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                      </span>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        {product.downloadCount}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
