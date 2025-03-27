@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Category } from '@/types';
 import { ProductImage } from './ProductImage';
+import Image from 'next/image';
 
 interface CategoryListProps {
   categories: Category[];
@@ -84,25 +85,25 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
         <Link
           key={category.id}
           href={`/categories/${category.slug}`}
-          className="group flex flex-col items-center bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all hover:border-primary-200"
+          className="group relative flex flex-col items-center bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all p-4"
         >
-          <div className="w-16 h-16 bg-primary-50 text-primary-600 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary-100 transition-colors overflow-hidden relative">
-            <ProductImage
-              src={category.imageUrl || '/placeholder-product.jpg'}
+          <div className="relative w-16 h-16 mb-4">
+            <Image
+              src={category.imageUrl || '/images/placeholder-product.jpg'}
               alt={category.name}
-              width={48}
-              height={48}
-              className="rounded-full object-cover"
+              width={64}
+              height={64}
+              className="object-contain"
+              unoptimized={true}
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-0 group-hover:bg-opacity-40 opacity-0 group-hover:opacity-100 transition-all">
-              {getCategoryIcon(category.slug)}
-            </div>
           </div>
-          <h3 className="text-sm font-medium text-gray-900 text-center group-hover:text-primary-600 transition-colors">
+          
+          <h3 className="text-sm font-medium text-gray-900 text-center group-hover:text-primary-600">
             {category.name}
           </h3>
-          <p className="text-xs text-gray-500 text-center mt-1 line-clamp-2">
-            {category.description}
+          
+          <p className="mt-1 text-xs text-gray-500 text-center line-clamp-2">
+            {category.productCount} sản phẩm
           </p>
         </Link>
       ))}
