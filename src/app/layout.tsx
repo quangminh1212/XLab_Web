@@ -6,9 +6,8 @@ import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 
-// Optimized font loading config
+// Simple font loading config
 const inter = Inter({
-  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
@@ -85,7 +84,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+    <html lang="vi" className={inter.variable}>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
         <SessionProvider>
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
