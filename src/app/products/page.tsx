@@ -1,6 +1,9 @@
+'use client'
+
 import { products, categories } from '@/data/mockData'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState } from 'react'
 
 export default function ProductsPage() {
   // Get featured products
@@ -12,6 +15,11 @@ export default function ProductsPage() {
   
   // Get popular products
   const popularProducts = [...products].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 4)
+
+  // Xử lý lỗi ảnh
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = '/placeholder-product.jpg'
+  }
 
   return (
     <div className="pb-16">
@@ -52,10 +60,7 @@ export default function ProductsPage() {
                       width={120}
                       height={120}
                       className="w-auto h-auto max-h-32"
-                      onError={(e) => {
-                        // Fallback nếu ảnh không tải được
-                        e.currentTarget.src = '/placeholder-product.jpg';
-                      }}
+                      onError={handleImageError}
                     />
                   </div>
                   <div className="p-4">
