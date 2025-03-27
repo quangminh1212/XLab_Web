@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 
-// Simple font loading config
+// Load Inter font
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -84,8 +84,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="vi" className={inter.variable}>
+    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
+        <noscript>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 text-white p-4">
+            <div className="bg-red-600 p-6 rounded-lg max-w-md text-center">
+              <h2 className="text-xl font-bold mb-2">JavaScript Bị Vô Hiệu Hóa</h2>
+              <p>Website này yêu cầu JavaScript để hoạt động đúng. Vui lòng bật JavaScript và tải lại trang.</p>
+            </div>
+          </div>
+        </noscript>
+        
         <SessionProvider>
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
             Bỏ qua phần điều hướng
