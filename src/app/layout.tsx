@@ -7,10 +7,11 @@ import SessionProvider from '@/components/SessionProvider'
 import Script from 'next/script'
 import Analytics from '@/components/Analytics'
 
-// Optimize font loading - simpler config
-const inter = Inter({ 
+// Optimized font loading config
+const inter = Inter({
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
-  display: 'auto',
+  display: 'swap',
   variable: '--font-inter',
 })
 
@@ -85,10 +86,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="vi" className={inter.variable}>
+    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         
