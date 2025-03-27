@@ -20,18 +20,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           return;
         }
 
-        const fetchedProduct = getProductBySlug(params.id);
+        // Kiểm tra trong database hoặc API thực tế nên được triển khai tại đây
+        // Hiện tại chỉ hiển thị thông báo không tìm thấy sản phẩm
+        setError('Không tìm thấy sản phẩm');
         
-        if (!fetchedProduct) {
-          setError('Không tìm thấy sản phẩm');
-          setLoading(false);
-          return;
-        }
-
         // Cập nhật title cho trang
-        document.title = `${fetchedProduct.name || 'Sản phẩm'} | XLab - Phần mềm và Dịch vụ`;
-
-        setProduct(fetchedProduct);
+        document.title = `Sản phẩm | XLab - Phần mềm và Dịch vụ`;
       } catch (err) {
         console.error('Error loading product:', err);
         setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
@@ -55,30 +49,45 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return (
       <div className="py-8 text-center">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl font-bold text-red-600">{error || 'Đã xảy ra lỗi'}</h1>
-          <p className="mt-4 text-gray-600">
-            Vui lòng thử lại sau hoặc chọn sản phẩm khác.
-          </p>
-          <div className="mt-6">
-            <Link 
-              href="/products" 
-              className="text-primary-600 hover:text-primary-700 flex items-center justify-center"
-            >
-              <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Quay lại danh sách sản phẩm
-            </Link>
+          <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h1 className="text-2xl font-bold text-red-600 mb-4">{error || 'Đã xảy ra lỗi'}</h1>
+            <p className="text-gray-600 mb-6">
+              Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa. 
+              Vui lòng thêm sản phẩm mới hoặc kiểm tra lại đường dẫn.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link 
+                href="/products" 
+                className="text-primary-600 hover:text-primary-700 flex items-center justify-center"
+              >
+                <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Quay lại danh sách sản phẩm
+              </Link>
+              <Link 
+                href="/admin" 
+                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Thêm sản phẩm mới
+              </Link>
+            </div>
           </div>
         </div>
       </div>
     );
   }
   
-  // Mặc định placeholder image nếu không có imageUrl
+  // Đoạn code bên dưới sẽ không được thực thi vì luôn đi vào trường hợp error ở trên
+  // Giữ lại code để tham khảo cho sau này khi có sản phẩm thực tế
   const productImage = product.imageUrl || '/placeholder-product.jpg';
   
-  // Hàm xử lý sự kiện tải xuống
   const handleDownload = () => {
     if (!product.slug) return;
     
