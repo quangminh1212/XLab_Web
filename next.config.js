@@ -2,20 +2,18 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ['lh3.googleusercontent.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '**',
+      }
+    ],
     formats: ['image/avif', 'image/webp'],
   },
   
   // Disable source maps in production
   productionBrowserSourceMaps: false,
-  
-  // Disable traces
-  tracing: {
-    ignoreRootSpans: true,
-  },
-  
-  // Modify output directory to avoid permission issues
-  distDir: process.env.NODE_ENV !== 'production' ? '.next-dev' : '.next',
 };
 
 module.exports = nextConfig;
