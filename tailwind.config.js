@@ -74,7 +74,7 @@ module.exports = {
         'none': 'none',
       },
       fontFamily: {
-        sans: ['Inter var', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         'sm': '0.125rem',
