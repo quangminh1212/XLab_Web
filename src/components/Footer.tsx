@@ -12,20 +12,16 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo và giới thiệu */}
           <div className="mb-8">
-            <Link href="/" className="flex items-center mb-5 group">
-              <div className="bg-white p-3 rounded-lg shadow-md mr-3 group-hover:shadow-lg transition-all duration-300">
+            <Link href="/" className="flex items-center mb-5">
+              <div className="bg-white p-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
                 <Image 
                   src="/images/logo.jpg" 
                   alt="XLab Logo" 
-                  width={52} 
-                  height={52} 
-                  className="h-12 w-auto"
+                  width={80} 
+                  height={80} 
+                  className="w-auto h-auto"
                 />
               </div>
-              <span className="text-3xl font-bold">
-                <span className="text-white">X</span>
-                <span className="text-primary-400 group-hover:text-primary-300 transition-colors">Lab</span>
-              </span>
             </Link>
             <p className="text-gray-400 mb-4">
               Chúng tôi chuyên cung cấp các giải pháp phần mềm và dịch vụ công nghệ
