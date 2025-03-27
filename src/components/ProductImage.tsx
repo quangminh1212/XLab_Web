@@ -57,9 +57,11 @@ export const ProductImage: React.FC<ProductImageProps> = ({
 
   return (
     <div className={`relative aspect-square w-full ${className}`}>
-      <div className={`absolute inset-0 flex items-center justify-center bg-gray-100 ${loading ? '' : 'hidden'}`}>
-        <div className="w-6 h-6 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-      </div>
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+          <div className="w-6 h-6 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+        </div>
+      )}
       
       {isExternalUrl ? (
         // Sử dụng thẻ img cho URL bên ngoài
