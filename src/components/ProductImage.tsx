@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 type ProductImageProps = {
   src: string
@@ -18,22 +18,35 @@ export function ProductImage({
   height,
   className = '',
 }: ProductImageProps) {
-  const [imgSrc, setImgSrc] = useState(src)
+  const defaultImage = '/placeholder-product.jpg'
+  const [imgSrc, setImgSrc] = useState<string>(defaultImage)
+  
+  // Cập nhật imgSrc khi src prop thay đổi
+  useEffect(() => {
+    if (src) {
+      setImgSrc(src)
+    } else {
+      setImgSrc(defaultImage)
+    }
+  }, [src])
 
   // Xử lý lỗi khi ảnh không tải được
   const handleError = () => {
-    setImgSrc('/placeholder-product.jpg')
+    if (imgSrc !== defaultImage) {
+      setImgSrc(defaultImage)
+    }
   }
 
   return (
     <Image
       src={imgSrc}
-      alt={alt}
-      width={width}
-      height={height}
+      alt={alt || 'Product image'}
+      width={width || 300}
+      height={height || 300}
       className={className}
       onError={handleError}
       priority={true}
+      unoptimized={true}
     />
   )
 } 
