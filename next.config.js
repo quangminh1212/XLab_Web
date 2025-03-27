@@ -1,14 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  swcMinify: true, 
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'lh3.googleusercontent.com',
-        pathname: '**',
-      }
-    ],
+    domains: ['lh3.googleusercontent.com'],
     formats: ['image/avif', 'image/webp'],
   },
   
