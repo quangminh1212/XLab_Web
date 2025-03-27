@@ -17,15 +17,35 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days for better caching
   },
   
-  // Cấu hình đơn giản nhất để tránh lỗi
-  experimental: {},
-  
-  staticPageGenerationTimeout: 120,
-  
-  // Tối giản hóa cấu hình webpack
-  webpack: function(config) {
+  // Cấu hình webpack để xử lý lỗi route loading
+  webpack: (config, { isServer }) => {
+    // Tắt một số tính năng webpack có thể gây lỗi
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+    };
+
+    // Tắt source maps trong development để tăng tốc độ
+    if (!isServer) {
+      config.devtool = false;
+      config.optimization.minimize = true;
+    }
+
     return config;
   },
+  
+  // Tắt một số tính năng thực nghiệm
+  experimental: {
+    serverActions: false,
+    serverComponentsExternalPackages: [],
+    optimizeCss: false,
+    optimizeServerReact: false,
+  },
+  
+  // Cấu hình cơ bản
+  staticPageGenerationTimeout: 120,
   
   // Thư mục build
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
