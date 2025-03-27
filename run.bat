@@ -47,9 +47,11 @@ echo [2/4] Cleaning up environment...
 taskkill /F /IM node.exe /T >nul 2>&1
 timeout /t 2 >nul
 
-:: Dọn dẹp cache
-echo Running cleanup...
-call npm run clean
+:: Tự dọn dẹp cache thay vì sử dụng npm run clean
+echo Cleaning cache folders...
+if exist .next rd /s /q .next >nul 2>&1
+if exist .next-dev rd /s /q .next-dev >nul 2>&1
+if exist node_modules\.cache rd /s /q node_modules\.cache >nul 2>&1
 
 :: Nếu chọn chế độ clean, xóa hoàn toàn cài đặt
 if %CLEAN_MODE% EQU 1 (
@@ -60,9 +62,12 @@ if %CLEAN_MODE% EQU 1 (
     timeout /t 2 >nul
 )
 
-:: Đảm bảo next.config.js
+:: Kiểm tra file next.config.js
+echo [3/4] Verifying Next.js configuration...
 if not exist next.config.js (
-    echo [3/4] Creating default Next.js config...
+    echo Creating default Next.js config...
+    
+    :: Tạo file tạm
     (
     echo /** @type {import('next').NextConfig} */
     echo const nextConfig = {
@@ -78,11 +83,13 @@ if not exist next.config.js (
     echo };
     echo.
     echo module.exports = nextConfig;
-    ) > next.config.js.txt
+    ) > config_temp.js
     
-    :: Copy thay vì tạo trực tiếp để tránh lỗi cú pháp
-    copy /Y next.config.js.txt next.config.js >nul
-    del next.config.js.txt >nul
+    :: Copy file tạm vào next.config.js và xóa file tạm
+    copy /Y config_temp.js next.config.js >nul
+    del config_temp.js >nul
+    
+    echo Config file created successfully!
 )
 
 :: Cài đặt dependencies nếu cần
@@ -112,8 +119,9 @@ echo.
 :: Cấu hình môi trường
 set NODE_OPTIONS=--max-old-space-size=4096
 
-:: Sử dụng npm run để khởi động ứng dụng
-call npm run dev
+:: Khởi động Next.js trực tiếp để tránh lỗi
+echo Starting Next.js server...
+node node_modules\next\dist\bin\next dev
 
 goto :eof
 
