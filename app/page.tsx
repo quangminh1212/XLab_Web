@@ -3,156 +3,292 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main>
+    <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-24">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 mb-10 md:mb-0">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Giải pháp phần mềm tiên tiến cho doanh nghiệp
+      <section className="hero-gradient text-white relative overflow-hidden">
+        <div className="absolute inset-0">
+          <Image 
+            src="/images/hero-bg.svg" 
+            alt="Hero Background" 
+            fill
+            style={{ objectFit: 'cover' }}
+            priority
+          />
+        </div>
+        <div className="container relative py-20 md:py-28">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="mb-6">
+                Giải pháp phần mềm <br />
+                <span className="text-blue-200">tiên tiến cho doanh nghiệp</span>
               </h1>
-              <p className="text-xl mb-8">
-                XLab cung cấp các giải pháp phần mềm chuyên nghiệp, giúp doanh nghiệp tối ưu hóa quy trình làm việc và tăng năng suất.
+              <p className="text-xl text-blue-100 mb-8 max-w-lg">
+                Tối ưu hóa quy trình làm việc, nâng cao năng suất và thúc đẩy tăng trưởng với các giải pháp phần mềm của XLab.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link 
-                  href="/products" 
-                  className="bg-white text-blue-700 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium text-center"
-                >
-                  Khám phá sản phẩm
-                </Link>
-                <Link 
-                  href="/contact" 
-                  className="bg-transparent border border-white text-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium text-center"
-                >
+              <div className="flex flex-wrap gap-4">
+                <Link href="/contact" className="button-primary bg-white text-blue-600 hover:bg-blue-50">
                   Liên hệ ngay
                 </Link>
+                <Link href="/products" className="button-secondary border-blue-200 text-white hover:bg-blue-700">
+                  Xem sản phẩm
+                </Link>
               </div>
             </div>
-            <div className="md:w-1/2 flex justify-center">
-              <div className="w-full max-w-md h-80 bg-white/10 rounded-lg flex items-center justify-center">
-                <div className="text-6xl font-bold text-white/50">XLab</div>
-              </div>
+            <div className="relative animate-float hidden md:block">
+              <Image 
+                src="/images/hero-illustration.svg" 
+                alt="XLab Dashboard" 
+                width={500}
+                height={400}
+                priority
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-16">Tại sao chọn XLab?</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
+      {/* Trusted by */}
+      <section className="py-10 bg-gray-50">
+        <div className="container">
+          <p className="text-center text-gray-500 mb-8">Được tin dùng bởi các doanh nghiệp hàng đầu</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center items-center opacity-70">
+            <div className="grayscale hover:grayscale-0 transition duration-300">
+              <svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="120" height="40" rx="4" fill="#F3F4F6" />
+                <path d="M23 20H33" stroke="#4B5563" strokeWidth="2" />
+                <path d="M28 15V25" stroke="#4B5563" strokeWidth="2" />
+                <path d="M42 15H52L42 25H52" stroke="#4B5563" strokeWidth="2" />
+                <path d="M62 15V25H72" stroke="#4B5563" strokeWidth="2" />
+                <path d="M82 15V25H92V15" stroke="#4B5563" strokeWidth="2" />
+              </svg>
+            </div>
+            <div className="grayscale hover:grayscale-0 transition duration-300">
+              <svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="120" height="40" rx="4" fill="#F3F4F6" />
+                <circle cx="28" cy="20" r="5" stroke="#4B5563" strokeWidth="2" />
+                <path d="M42 15L52 15L52 25L42 25" stroke="#4B5563" strokeWidth="2" />
+                <path d="M62 17L72 17M62 23L72 23" stroke="#4B5563" strokeWidth="2" />
+                <path d="M82 15L92 20L82 25" stroke="#4B5563" strokeWidth="2" />
+              </svg>
+            </div>
+            <div className="grayscale hover:grayscale-0 transition duration-300">
+              <svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="120" height="40" rx="4" fill="#F3F4F6" />
+                <path d="M28 15V25" stroke="#4B5563" strokeWidth="2" />
+                <path d="M23 15H33" stroke="#4B5563" strokeWidth="2" />
+                <rect x="42" y="15" width="10" height="10" stroke="#4B5563" strokeWidth="2" />
+                <circle cx="67" cy="20" r="5" stroke="#4B5563" strokeWidth="2" />
+                <path d="M82 15L92 15L92 25L82 25" stroke="#4B5563" strokeWidth="2" />
+              </svg>
+            </div>
+            <div className="grayscale hover:grayscale-0 transition duration-300">
+              <svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="120" height="40" rx="4" fill="#F3F4F6" />
+                <path d="M28 15L28 25L33 20L38 25L38 15" stroke="#4B5563" strokeWidth="2" />
+                <circle cx="52" cy="20" r="5" stroke="#4B5563" strokeWidth="2" />
+                <path d="M67 15V25H72M67 20H72" stroke="#4B5563" strokeWidth="2" />
+                <path d="M83 15L83 25M93 15L93 25M83 20L93 20" stroke="#4B5563" strokeWidth="2" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="section">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="mb-4">Điểm nổi bật</h2>
+            <p className="text-xl text-gray-600">
+              Chúng tôi cung cấp các giải pháp phần mềm hiện đại với nhiều tính năng vượt trội
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="card p-8">
+              <div className="feature-icon">
+                <Image src="/images/security.svg" alt="Bảo mật" width={48} height={48} />
               </div>
-              <h3 className="text-xl font-bold mb-4">Bảo mật cao cấp</h3>
+              <h3 className="text-xl font-semibold mb-2">Bảo mật tối đa</h3>
               <p className="text-gray-600">
-                Chúng tôi ưu tiên bảo mật dữ liệu của khách hàng với các tiêu chuẩn bảo mật hàng đầu trong ngành.
+                Hệ thống bảo mật đa lớp bảo vệ dữ liệu của doanh nghiệp an toàn trước mọi mối đe dọa.
               </p>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+            <div className="card p-8">
+              <div className="feature-icon">
+                <Image src="/images/performance.svg" alt="Hiệu suất" width={48} height={48} />
               </div>
-              <h3 className="text-xl font-bold mb-4">Hiệu suất tối ưu</h3>
+              <h3 className="text-xl font-semibold mb-2">Hiệu suất cao</h3>
               <p className="text-gray-600">
-                Các giải pháp của chúng tôi được tối ưu hóa để mang lại hiệu suất cao nhất, giúp doanh nghiệp tiết kiệm thời gian và chi phí.
+                Tốc độ xử lý nhanh chóng và khả năng mở rộng linh hoạt theo nhu cầu doanh nghiệp.
               </p>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-md">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                </svg>
+            <div className="card p-8">
+              <div className="feature-icon">
+                <Image src="/images/cloud.svg" alt="Đám mây" width={48} height={48} />
               </div>
-              <h3 className="text-xl font-bold mb-4">Công nghệ đám mây</h3>
+              <h3 className="text-xl font-semibold mb-2">Công nghệ đám mây</h3>
               <p className="text-gray-600">
-                Tất cả sản phẩm của chúng tôi đều được xây dựng trên nền tảng đám mây, đảm bảo tính sẵn sàng và khả năng mở rộng.
+                Truy cập hệ thống từ mọi nơi với giải pháp đám mây tiên tiến và đồng bộ dữ liệu thời gian thực.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Products Preview */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-16">Sản phẩm nổi bật</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <div className="h-48 bg-blue-200 flex items-center justify-center">
-                <div className="text-2xl font-bold text-blue-600">XLab CRM</div>
+      {/* Products */}
+      <section className="section bg-gray-50">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="mb-4">Sản phẩm của chúng tôi</h2>
+            <p className="text-xl text-gray-600">
+              Khám phá bộ giải pháp phần mềm toàn diện đáp ứng mọi nhu cầu của doanh nghiệp
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="card">
+              <div className="aspect-video relative bg-blue-50">
+                <Image
+                  src="/images/crm.svg"
+                  alt="XLab CRM"
+                  fill
+                  style={{ objectFit: 'contain' }}
+                />
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold mb-2">XLab CRM</h3>
+                <h3 className="text-xl font-semibold mb-2">XLab CRM</h3>
                 <p className="text-gray-600 mb-4">
-                  Hệ thống quản lý khách hàng toàn diện với các tính năng phân tích dữ liệu thông minh.
+                  Hệ thống quản lý quan hệ khách hàng toàn diện, tối ưu hóa quy trình bán hàng và chăm sóc khách hàng.
                 </p>
-                <Link href="/products/crm" className="text-blue-600 hover:underline font-medium">
-                  Tìm hiểu thêm →
+                <Link href="/products/crm" className="text-blue-600 font-medium hover:text-blue-700 inline-flex items-center">
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               </div>
             </div>
-
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <div className="h-48 bg-indigo-200 flex items-center justify-center">
-                <div className="text-2xl font-bold text-indigo-600">XLab ERP</div>
+            <div className="card">
+              <div className="aspect-video relative bg-blue-50">
+                <Image
+                  src="/images/erp.svg"
+                  alt="XLab ERP"
+                  fill
+                  style={{ objectFit: 'contain' }}
+                />
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold mb-2">XLab ERP</h3>
+                <h3 className="text-xl font-semibold mb-2">XLab ERP</h3>
                 <p className="text-gray-600 mb-4">
-                  Giải pháp hoạch định tài nguyên doanh nghiệp giúp tối ưu hóa quy trình vận hành.
+                  Giải pháp quản trị nguồn lực doanh nghiệp tích hợp, quản lý hiệu quả từ tài chính đến nhân sự.
                 </p>
-                <Link href="/products/erp" className="text-blue-600 hover:underline font-medium">
-                  Tìm hiểu thêm →
+                <Link href="/products/erp" className="text-blue-600 font-medium hover:text-blue-700 inline-flex items-center">
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               </div>
             </div>
-
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <div className="h-48 bg-purple-200 flex items-center justify-center">
-                <div className="text-2xl font-bold text-purple-600">XLab Analytics</div>
+            <div className="card">
+              <div className="aspect-video relative bg-blue-50">
+                <Image
+                  src="/images/analytics.svg"
+                  alt="XLab Analytics"
+                  fill
+                  style={{ objectFit: 'contain' }}
+                />
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold mb-2">XLab Analytics</h3>
+                <h3 className="text-xl font-semibold mb-2">XLab Analytics</h3>
                 <p className="text-gray-600 mb-4">
-                  Công cụ phân tích dữ liệu với các báo cáo trực quan giúp ra quyết định chính xác.
+                  Công cụ phân tích dữ liệu thông minh với các báo cáo trực quan, hỗ trợ ra quyết định chính xác.
                 </p>
-                <Link href="/products/analytics" className="text-blue-600 hover:underline font-medium">
-                  Tìm hiểu thêm →
+                <Link href="/products/analytics" className="text-blue-600 font-medium hover:text-blue-700 inline-flex items-center">
+                  Tìm hiểu thêm
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               </div>
             </div>
           </div>
+          <div className="mt-12 text-center">
+            <Link href="/products" className="button-primary">
+              Xem tất cả sản phẩm
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Sẵn sàng nâng cấp hệ thống của bạn?</h2>
-          <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-            Liên hệ ngay với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của bạn.
-          </p>
-          <Link 
-            href="/contact" 
-            className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-4 rounded-lg font-medium text-lg"
-          >
-            Liên hệ tư vấn
-          </Link>
+      {/* Services */}
+      <section className="section">
+        <div className="container">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="mb-4">Dịch vụ chuyên nghiệp</h2>
+            <p className="text-xl text-gray-600">
+              Chúng tôi không chỉ cung cấp phần mềm mà còn đồng hành cùng doanh nghiệp trong suốt quá trình triển khai và sử dụng
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="card p-6">
+              <div className="mb-4">
+                <Image src="/images/consulting.svg" alt="Tư vấn" width={60} height={60} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Tư vấn giải pháp</h3>
+              <p className="text-gray-600">
+                Đội ngũ chuyên gia giàu kinh nghiệm tư vấn giải pháp phù hợp nhất với doanh nghiệp.
+              </p>
+            </div>
+            <div className="card p-6">
+              <div className="mb-4">
+                <Image src="/images/development.svg" alt="Phát triển" width={60} height={60} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Phát triển phần mềm</h3>
+              <p className="text-gray-600">
+                Phát triển các tính năng tùy chỉnh theo yêu cầu đặc thù của từng doanh nghiệp.
+              </p>
+            </div>
+            <div className="card p-6">
+              <div className="mb-4">
+                <Image src="/images/integration.svg" alt="Tích hợp" width={60} height={60} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Triển khai & Tích hợp</h3>
+              <p className="text-gray-600">
+                Triển khai nhanh chóng và tích hợp liền mạch với các hệ thống hiện có của doanh nghiệp.
+              </p>
+            </div>
+            <div className="card p-6">
+              <div className="mb-4">
+                <Image src="/images/support.svg" alt="Hỗ trợ" width={60} height={60} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Hỗ trợ & Bảo trì</h3>
+              <p className="text-gray-600">
+                Dịch vụ hỗ trợ 24/7 và bảo trì thường xuyên đảm bảo hệ thống luôn hoạt động ổn định.
+              </p>
+            </div>
+          </div>
+          <div className="mt-12 text-center">
+            <Link href="/services" className="button-primary">
+              Tìm hiểu thêm về dịch vụ
+            </Link>
+          </div>
         </div>
       </section>
-    </main>
+
+      {/* CTA */}
+      <section className="hero-gradient text-white py-16">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="mb-6">Sẵn sàng nâng cấp hệ thống của bạn?</h2>
+            <p className="text-xl text-blue-100 mb-8">
+              Liên hệ với chúng tôi ngay hôm nay để được tư vấn miễn phí về giải pháp phù hợp với doanh nghiệp của bạn.
+            </p>
+            <Link href="/contact" className="button-primary bg-white text-blue-600 hover:bg-blue-50">
+              Liên hệ ngay
+            </Link>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
