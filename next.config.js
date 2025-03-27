@@ -18,10 +18,6 @@ const nextConfig = {
   },
   experimental: {
     scrollRestoration: true,
-    serverActions: {
-      bodySizeLimit: '2mb',
-    },
-    optimizeCss: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -87,75 +83,8 @@ const nextConfig = {
       },
     ];
   },
-  // Cấu hình webpack cải tiến
+  // Tối giản hóa cấu hình webpack
   webpack: (config, { dev, isServer }) => {
-    // Fix các vấn đề liên quan đến React Server Components
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-      
-      // Khắc phục lỗi options.factory 
-      if (config.module) {
-        config.module.exprContextCritical = false;
-      }
-      
-      // Sửa xử lý webpack modules
-      config.module.rules.push({
-        test: /\.json$/,
-        type: 'javascript/auto'
-      });
-    }
-
-    // Chỉ thực hiện trong môi trường development
-    if (dev && !isServer) {
-      try {
-        // Temporarily disabled bundle analyzer to avoid port conflicts
-        /*
-        // Check if webpack-bundle-analyzer is installed before requiring it
-        const hasBundleAnalyzer = (() => {
-          try {
-            require.resolve('webpack-bundle-analyzer');
-            return true;
-          } catch (e) {
-            return false;
-          }
-        })();
-
-        if (hasBundleAnalyzer) {
-          const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-          config.plugins.push(
-            new BundleAnalyzerPlugin({
-              analyzerMode: 'server',
-              analyzerPort: 9999,
-              openAnalyzer: false,
-            })
-          );
-        } else {
-          console.warn('webpack-bundle-analyzer không được tìm thấy. Bỏ qua phân tích bundle.');
-        }
-        */
-      } catch (error) {
-        console.warn('Lỗi khi cấu hình phân tích bundle:', error.message);
-      }
-    }
-
-    // Optimize CSS loading
-    if (!isServer) {
-      config.optimization.splitChunks.cacheGroups = {
-        ...config.optimization.splitChunks.cacheGroups,
-        styles: {
-          name: 'styles',
-          test: /\.(css|scss)$/,
-          chunks: 'all',
-          enforce: true,
-        },
-      };
-    }
-
     return config;
   },
   
