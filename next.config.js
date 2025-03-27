@@ -18,6 +18,10 @@ const nextConfig = {
   },
   experimental: {
     scrollRestoration: true,
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+    optimizeCss: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -85,6 +89,16 @@ const nextConfig = {
   },
   // Cấu hình phân tích bundle
   webpack: (config, { dev, isServer }) => {
+    // Fix for React Server Components issue
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+
     // Chỉ thực hiện trong môi trường development
     if (dev && !isServer) {
       try {

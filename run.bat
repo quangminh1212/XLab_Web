@@ -8,6 +8,9 @@ IF NOT EXIST node_modules (
     echo Installation complete.
 )
 
+echo Cleaning Next.js cache...
+powershell -ExecutionPolicy Bypass -Command "npx next clean"
+
 echo Starting XLab_Web development server...
 echo Press Ctrl+C to stop the server when finished.
 powershell -ExecutionPolicy Bypass -Command "npm run dev"
