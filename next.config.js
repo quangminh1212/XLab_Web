@@ -22,6 +22,8 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
     optimizeCss: true,
+    esmExternals: 'loose',
+    appDir: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -111,6 +113,23 @@ const nextConfig = {
         type: 'javascript/auto',
         use: [],
       });
+      
+      // Fix for options.factory error in React Server Components
+      config.plugins = config.plugins.filter(
+        (plugin) => 
+          plugin.constructor.name !== 'ForkTsCheckerWebpackPlugin' &&
+          plugin.constructor.name !== 'ESLintWebpackPlugin'
+      );
+      
+      // Ensure proper handling of React Server Components
+      config.module.parser = {
+        ...config.module.parser,
+        javascript: {
+          ...config.module.parser?.javascript,
+          dynamicImportMode: 'eager',
+          importExportsPresence: 'warn'
+        }
+      };
     }
 
     // Chỉ thực hiện trong môi trường development
