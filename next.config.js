@@ -36,10 +36,11 @@ const nextConfig = {
     return config;
   },
   
+  // Cấu hình server components
+  serverExternalPackages: [],
+  
   // Tắt một số tính năng thực nghiệm
   experimental: {
-    serverActions: false,
-    serverComponentsExternalPackages: [],
     optimizeCss: false,
     optimizeServerReact: false,
   },
