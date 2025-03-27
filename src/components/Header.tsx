@@ -58,7 +58,7 @@ export default function Header() {
             <Link href="/" className="flex items-center space-x-2">
               <div className="bg-white rounded-lg w-12 h-12 flex items-center justify-center shadow-sm">
                 <Image 
-                  src="/images/xlab-logo.svg" 
+                  src="/images/logo.png" 
                   alt="XLab Logo" 
                   width={40} 
                   height={40} 
