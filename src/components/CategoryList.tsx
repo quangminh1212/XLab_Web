@@ -80,14 +80,14 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
       {categories.map((category) => (
         <Link
           key={category.id}
           href={`/categories/${category.slug}`}
-          className="group relative flex flex-col items-center bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all p-4"
+          className="group relative flex flex-col items-center bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all p-3"
         >
-          <div className="relative w-16 h-16 mb-4">
+          <div className="relative w-14 h-14 mb-2">
             <Image
               src={category.imageUrl || '/images/placeholder-product.jpg'}
               alt={category.name}
@@ -98,11 +98,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
             />
           </div>
           
-          <h3 className="text-sm font-medium text-gray-900 text-center group-hover:text-primary-600">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-900 text-center group-hover:text-primary-600">
             {category.name}
           </h3>
           
-          <p className="mt-1 text-xs text-gray-500 text-center line-clamp-2">
+          <p className="mt-1 text-xs text-gray-500 text-center">
             {category.productCount} sản phẩm
           </p>
         </Link>
