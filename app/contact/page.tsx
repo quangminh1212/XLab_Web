@@ -10,6 +10,7 @@ export default function Contact() {
     email: '',
     phone: '',
     company: '',
+    subject: '',
     message: '',
     service: 'consultation'
   });
@@ -39,6 +40,7 @@ export default function Contact() {
         email: '',
         phone: '',
         company: '',
+        subject: '',
         message: '',
         service: 'consultation'
       });
@@ -78,88 +80,108 @@ export default function Contact() {
                 Điền thông tin vào mẫu dưới đây và chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất.
               </p>
               
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              {isSubmitted ? (
+                <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-6 mb-6">
+                  <h3 className="text-lg font-semibold mb-2">Cảm ơn bạn đã liên hệ!</h3>
+                  <p>Chúng tôi đã nhận được tin nhắn của bạn và sẽ phản hồi trong thời gian sớm nhất.</p>
+                </div>
+              ) : (
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Họ và tên</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                        placeholder="Nhập họ và tên của bạn"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">Công ty</label>
+                      <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        value={formData.company}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                        placeholder="Tên công ty của bạn"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                        placeholder="your.email@company.com"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">Số điện thoại</label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                        placeholder="0912 345 678"
+                      />
+                    </div>
+                  </div>
+                  
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Họ và tên</label>
+                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">Chủ đề</label>
                     <input
                       type="text"
-                      id="name"
-                      name="name"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                      placeholder="Nhập họ và tên của bạn"
+                      placeholder="Chủ đề của tin nhắn"
                       required
                     />
                   </div>
+                  
                   <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">Công ty</label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Tin nhắn</label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={5}
+                      value={formData.message}
+                      onChange={handleChange}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                      placeholder="Tên công ty của bạn"
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                      placeholder="your.email@company.com"
+                      placeholder="Nhập nội dung tin nhắn của bạn tại đây..."
                       required
-                    />
+                    ></textarea>
                   </div>
+                  
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">Số điện thoại</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                      placeholder="0912 345 678"
-                    />
+                    <button
+                      type="submit"
+                      className="button-primary w-full md:w-auto"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Đang gửi...' : 'Gửi tin nhắn'}
+                    </button>
                   </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">Chủ đề</label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="Chủ đề của tin nhắn"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Tin nhắn</label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={5}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                    placeholder="Nhập nội dung tin nhắn của bạn tại đây..."
-                    required
-                  ></textarea>
-                </div>
-                
-                <div>
-                  <button
-                    type="submit"
-                    className="button-primary w-full md:w-auto"
-                  >
-                    Gửi tin nhắn
-                  </button>
-                </div>
-              </form>
+                </form>
+              )}
             </div>
             
             <div>
