@@ -18,7 +18,7 @@ export default function AboutPage() {
             <div>
               <h2 className="text-2xl font-bold mb-6">Câu chuyện của chúng tôi</h2>
               <p className="mb-4">
-                XLab được thành lập vào năm 2010 bởi một nhóm kỹ sư phần mềm đam mê và có tầm nhìn 
+                XLab được thành lập vào năm 2018 bởi một nhóm kỹ sư phần mềm đam mê và có tầm nhìn 
                 về việc tạo ra các giải pháp công nghệ tiên tiến, giúp doanh nghiệp Việt Nam 
                 nâng cao hiệu quả hoạt động và năng lực cạnh tranh trong kỷ nguyên số.
               </p>
