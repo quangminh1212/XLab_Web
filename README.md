@@ -141,4 +141,43 @@ GOOGLE_CLIENT_SECRET=your_client_secret_here
 
 - **KHÔNG** commit file `.env.local` lên git repository
 - **KHÔNG** chia sẻ Google Client Secret với bất kỳ ai
-- Trong môi trường sản xuất, hãy tạo một NEXTAUTH_SECRET mạnh và duy nhất 
+- Trong môi trường sản xuất, hãy tạo một NEXTAUTH_SECRET mạnh và duy nhất
+
+## Hướng dẫn chạy ứng dụng
+
+### Yêu cầu
+- Node.js phiên bản 20.x trở lên
+- npm phiên bản 10.x trở lên
+
+### Cách chạy
+
+1. Chạy bình thường:
+```
+run.bat
+```
+
+2. Cài đặt mới hoàn toàn (xóa cache và cài đặt lại):
+```
+run.bat clean
+```
+hoặc
+```
+run.bat --clean
+```
+hoặc
+```
+run.bat -c
+```
+
+Đồng thời, khi chạy không có tham số, script sẽ hỏi bạn muốn chạy bình thường hay cài đặt mới.
+
+### Các lỗi thường gặp
+
+1. Lỗi "Cannot read properties of undefined (reading 'call')":
+   - Đã được sửa trong cấu hình webpack
+
+2. Lỗi "Port 3000 is in use":
+   - Hệ thống sẽ tự động chuyển sang cổng khác
+
+3. Lỗi EPERM khi xóa hoặc cài đặt:
+   - Chạy lại với quyền admin hoặc đóng tất cả ứng dụng đang sử dụng tệp 
