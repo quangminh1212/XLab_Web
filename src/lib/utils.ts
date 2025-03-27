@@ -16,9 +16,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
-    currency: 'VND',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    currency: 'VND'
   }).format(amount);
 }
 
@@ -187,7 +185,7 @@ export function getProductBySlug(slug: string): Product | undefined {
 export function incrementViewCount(slug: string): number {
   const product = getProductBySlug(slug);
   if (product) {
-    if (!product.viewCount) {
+    if (typeof product.viewCount !== 'number') {
       product.viewCount = 0;
     }
     product.viewCount += 1;
@@ -202,6 +200,9 @@ export function incrementViewCount(slug: string): number {
 export function incrementDownloadCount(slug: string): number {
   const product = getProductBySlug(slug);
   if (product) {
+    if (typeof product.downloadCount !== 'number') {
+      product.downloadCount = 0;
+    }
     product.downloadCount += 1;
     return product.downloadCount;
   }
