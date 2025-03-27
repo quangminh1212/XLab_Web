@@ -41,12 +41,14 @@ export default function Header() {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
+  const isLoading = status === 'loading'
+
   return (
     <header 
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
           ? 'bg-white shadow-md py-2' 
-          : 'bg-gradient-to-r from-primary-50 to-secondary-50 py-4'
+          : 'bg-white py-4'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,7 +63,7 @@ export default function Header() {
             </Link>
             
             {/* Lời chào và tên người dùng trên desktop */}
-            {session?.user && (
+            {!isLoading && session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
                 <span className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full">
                   {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
@@ -72,19 +74,19 @@ export default function Header() {
 
           {/* Menu desktop */}
           <nav className="hidden md:flex items-center space-x-1">
-            <Link href="/" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
+            <Link href="/" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
+            <Link href="/products" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/products' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
+            <Link href="/services" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/services' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
+            <Link href="/about" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/about' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors">
+            <Link href="/contact" className={`px-3 py-2 rounded-md transition-colors ${pathname === '/contact' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Liên hệ
             </Link>
           </nav>
@@ -101,7 +103,7 @@ export default function Header() {
               </svg>
             </button>
 
-            {session ? (
+            {!isLoading && session ? (
               <div className="flex items-center space-x-2">
                 {/* Thông báo */}
                 <button 
@@ -202,28 +204,28 @@ export default function Header() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
-            {session && (
+            {!isLoading && session && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600">
                 {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
               </div>
             )}
-            <Link href="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
+            <Link href="/" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
+            <Link href="/products" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/products' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
+            <Link href="/services" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/services' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
+            <Link href="/about" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/about' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-md">
+            <Link href="/contact" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/contact' ? 'text-primary-600 bg-primary-50' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Liên hệ
             </Link>
             
-            {!session && (
+            {!isLoading && !session && (
               <div className="flex space-x-2 mt-2 px-3">
                 <Link 
                   href="/login" 
