@@ -36,8 +36,28 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
-              <div className="bg-gray-200 h-96 flex items-center justify-center">
-                <p className="text-gray-500">Hình ảnh văn phòng XLab</p>
+              <div className="relative slideshow-container h-96">
+                <img 
+                  src="/images/office-workspace.jpg" 
+                  alt="Không gian làm việc tại XLab" 
+                  className="w-full h-full object-cover slideshow-item"
+                />
+                <img 
+                  src="/images/company-team.jpg" 
+                  alt="Đội ngũ XLab làm việc cùng nhau" 
+                  className="w-full h-full object-cover slideshow-item hidden"
+                />
+                <img 
+                  src="/images/tech-workspace.jpg" 
+                  alt="Không gian công nghệ tại XLab" 
+                  className="w-full h-full object-cover slideshow-item hidden"
+                />
+                
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+                  <button className="w-3 h-3 rounded-full bg-white opacity-50 slideshow-dot slideshow-dot-active"></button>
+                  <button className="w-3 h-3 rounded-full bg-white opacity-50 slideshow-dot"></button>
+                  <button className="w-3 h-3 rounded-full bg-white opacity-50 slideshow-dot"></button>
+                </div>
               </div>
             </div>
           </div>
@@ -243,6 +263,65 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Slideshow Script */}
+      <script dangerouslySetInnerHTML={{
+        __html: `
+          document.addEventListener('DOMContentLoaded', function() {
+            let slideIndex = 0;
+            const slides = document.querySelectorAll('.slideshow-item');
+            const dots = document.querySelectorAll('.slideshow-dot');
+            
+            function showSlides() {
+              // Ẩn tất cả slides
+              slides.forEach(slide => {
+                slide.classList.add('hidden');
+              });
+              
+              // Xóa lớp active khỏi tất cả dots
+              dots.forEach(dot => {
+                dot.classList.remove('slideshow-dot-active');
+                dot.classList.remove('opacity-100');
+                dot.classList.add('opacity-50');
+              });
+              
+              // Tăng slideIndex
+              slideIndex++;
+              
+              // Reset slideIndex nếu vượt quá số slides
+              if (slideIndex > slides.length) {
+                slideIndex = 1;
+              }
+              
+              // Hiển thị slide hiện tại
+              if (slides[slideIndex - 1]) {
+                slides[slideIndex - 1].classList.remove('hidden');
+              }
+              
+              // Đánh dấu dot tương ứng là active
+              if (dots[slideIndex - 1]) {
+                dots[slideIndex - 1].classList.add('slideshow-dot-active');
+                dots[slideIndex - 1].classList.remove('opacity-50');
+                dots[slideIndex - 1].classList.add('opacity-100');
+              }
+              
+              // Gọi lại hàm sau 5 giây
+              setTimeout(showSlides, 5000);
+            }
+            
+            // Khởi tạo slideshow
+            showSlides();
+            
+            // Xử lý sự kiện click vào dot
+            dots.forEach((dot, index) => {
+              dot.addEventListener('click', () => {
+                slideIndex = index;
+                showSlides();
+              });
+            });
+          });
+        `
+      }} />
     </div>
   )
 } 
