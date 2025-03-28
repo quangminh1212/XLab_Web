@@ -26,8 +26,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-gray-400 text-sm">
-              XLab cung cấp các giải pháp phần mềm và dịch vụ CNTT chất lượng cao,
-              giúp doanh nghiệp của bạn phát triển trong kỷ nguyên số.
+              {translate('footer.companyDescription')}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -76,7 +75,7 @@ export default function Footer() {
             <form className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
               <input
                 type="email"
-                placeholder="Email của bạn"
+                placeholder={translate('footer.emailPlaceholder')}
                 className="px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
                 required
               />
