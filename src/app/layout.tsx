@@ -2,12 +2,11 @@
 
 import React from 'react'
 import '@/styles/globals.css'
-import type { Metadata, Viewport } from 'next'
 import { Inter, Roboto } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Analytics from '@/components/Analytics'
-import { SessionProvider } from '@/contexts/SessionContext'
+import SessionProvider from '@/components/SessionProvider'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { siteConfig } from '@/config/siteConfig'
 import { usePathname } from 'next/navigation'
@@ -30,9 +29,6 @@ const roboto = Roboto({
 // Các trang không hiển thị header và footer (ví dụ: trang đăng nhập)
 const noLayoutPaths = ['/login', '/register', '/admin/login']
 
-// Thêm export type metadata và viewport cho server component
-export { metadata, viewport } from './_metadata'
-
 export default function RootLayout({
   children,
 }: {
@@ -49,6 +45,9 @@ export default function RootLayout({
     if (typeof document !== 'undefined') {
       document.documentElement.lang = 'vi'
     }
+    
+    // Thiết lập tiêu đề trang
+    document.title = siteConfig.seo.defaultTitle
   }, [])
 
   return (
@@ -56,10 +55,8 @@ export default function RootLayout({
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-        <meta name="description" content="XLab cung cấp phần mềm và dịch vụ CNTT đáng tin cậy cho doanh nghiệp" />
+        <meta name="description" content={siteConfig.seo.defaultDescription} />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
         <noscript>
