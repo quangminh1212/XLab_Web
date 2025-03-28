@@ -5,6 +5,8 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
+import { LanguageProvider } from '@/contexts/LanguageContext'
+import { siteConfig } from '@/config/siteConfig'
 
 // Load Inter font
 const inter = Inter({
@@ -15,40 +17,41 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | XLab - Phần mềm và Dịch vụ',
-    default: 'XLab - Phần mềm và Dịch vụ Chuyên Nghiệp',
+    template: siteConfig.seo.titleTemplate,
+    default: siteConfig.seo.defaultTitle,
   },
-  description: 'XLab cung cấp các giải pháp phần mềm và dịch vụ chuyên nghiệp cho doanh nghiệp, mang đến hiệu quả và đổi mới',
-  applicationName: 'XLab Software',
-  authors: [{ name: 'XLab Team', url: 'https://xlab.com' }],
+  description: siteConfig.seo.defaultDescription,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.legal.companyName, url: siteConfig.url }],
   keywords: ['phần mềm', 'dịch vụ CNTT', 'giải pháp doanh nghiệp', 'phát triển phần mềm', 'cloud services'],
   category: 'technology',
   robots: {
     index: true,
     follow: true,
   },
-  metadataBase: new URL('https://xlab.com'),
+  metadataBase: new URL(siteConfig.url),
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
-    url: 'https://xlab.com',
-    title: 'XLab - Phần mềm và Dịch vụ Chuyên Nghiệp',
-    description: 'XLab cung cấp các giải pháp phần mềm và dịch vụ chuyên nghiệp cho doanh nghiệp, mang đến hiệu quả và đổi mới',
-    siteName: 'XLab',
+    url: siteConfig.url,
+    title: siteConfig.seo.defaultTitle,
+    description: siteConfig.seo.defaultDescription,
+    siteName: siteConfig.name,
     images: [
       {
-        url: '/images/og-image.jpg',
+        url: siteConfig.seo.ogImage,
         width: 1200,
         height: 630,
-        alt: 'XLab - Phần mềm và Dịch vụ Chuyên Nghiệp',
+        alt: siteConfig.seo.defaultTitle,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'XLab - Phần mềm và Dịch vụ Chuyên Nghiệp',
-    description: 'XLab cung cấp các giải pháp phần mềm và dịch vụ chuyên nghiệp cho doanh nghiệp',
-    images: ['/images/twitter-image.jpg'],
+    title: siteConfig.seo.defaultTitle,
+    description: siteConfig.seo.defaultDescription,
+    creator: siteConfig.seo.twitterHandle,
+    images: [siteConfig.seo.ogImage],
   },
   manifest: '/site.webmanifest',
   icons: {
@@ -98,16 +101,18 @@ export default function RootLayout({
             </div>
           </div>
         </noscript>
-        
+
         <SessionProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
-          <Header />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
+          <LanguageProvider>
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
+              Bỏ qua phần điều hướng
+            </a>
+            <Header />
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </LanguageProvider>
         </SessionProvider>
         <Analytics />
       </body>
