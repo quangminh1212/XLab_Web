@@ -44,12 +44,11 @@ export default function Header() {
   const isLoading = status === 'loading'
 
   return (
-    <header 
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white shadow-md py-0.5' 
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
+          ? 'bg-white shadow-md py-0.5'
           : 'bg-white py-1'
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4 sm:px-4 lg:px-6">
         <div className="flex justify-between items-center">
@@ -57,17 +56,17 @@ export default function Header() {
           <div className="flex items-center space-x-1">
             <Link href="/" className="flex items-center">
               <span className="w-20 h-20 inline-flex items-center justify-center">
-                <Image 
-                  src="/images/logo.jpg" 
-                  alt="XLab Logo" 
-                  width={60} 
-                  height={60} 
+                <Image
+                  src="/images/logo.jpg"
+                  alt="XLab Logo"
+                  width={60}
+                  height={60}
                   className="object-contain"
                   priority
                 />
               </span>
             </Link>
-            
+
             {/* Lời chào và tên người dùng trên desktop */}
             {!isLoading && session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
@@ -100,7 +99,7 @@ export default function Header() {
           {/* Buttons */}
           <div className="flex items-center space-x-2">
             {/* Tìm kiếm */}
-            <button 
+            <button
               className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50"
               aria-label="Tìm kiếm"
             >
@@ -112,7 +111,7 @@ export default function Header() {
             {!isLoading && session ? (
               <div className="flex items-center space-x-2">
                 {/* Thông báo */}
-                <button 
+                <button
                   className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50 relative"
                   aria-label="Thông báo"
                 >
@@ -124,7 +123,7 @@ export default function Header() {
 
                 {/* User dropdown */}
                 <div className="relative">
-                  <button 
+                  <button
                     onClick={() => toggleMobileMenu()}
                     className="flex items-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-teal-300"
                   >
@@ -173,14 +172,14 @@ export default function Header() {
               </div>
             ) : (
               <div className="hidden sm:flex items-center space-x-2">
-                <Link 
-                  href="/login" 
+                <Link
+                  href="/login"
                   className="px-4 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 transition-colors"
                 >
                   Đăng nhập
                 </Link>
-                <Link 
-                  href="/register" 
+                <Link
+                  href="/register"
                   className="px-4 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors"
                 >
                   Đăng ký
@@ -230,17 +229,17 @@ export default function Header() {
             <Link href="/contact" className={`block px-3 py-2 text-base font-medium rounded-md ${pathname === '/contact' ? 'text-teal-600 bg-teal-50' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Liên hệ
             </Link>
-            
+
             {!isLoading && !session && (
               <div className="flex space-x-2 mt-2 px-3">
-                <Link 
-                  href="/login" 
+                <Link
+                  href="/login"
                   className="flex-1 px-4 py-2 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors"
                 >
                   Đăng nhập
                 </Link>
-                <Link 
-                  href="/register" 
+                <Link
+                  href="/register"
                   className="flex-1 px-4 py-2 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors"
                 >
                   Đăng ký
