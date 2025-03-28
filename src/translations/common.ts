@@ -449,6 +449,118 @@ const translations = {
             vi: 'Vui lòng đợi trong giây lát...',
             en: 'Please wait a moment...'
         }
+    },
+    
+    // Trang dịch vụ
+    services: {
+        pageTitle: {
+            vi: 'Dịch vụ của XLab',
+            en: 'XLab Services'
+        },
+        pageDescription: {
+            vi: 'Chúng tôi cung cấp các dịch vụ CNTT chất lượng cao, giúp doanh nghiệp của bạn phát triển trong kỷ nguyên số.',
+            en: 'We provide high-quality IT services to help your business thrive in the digital era.'
+        },
+        customSoftwareDev: {
+            vi: 'Phát triển phần mềm tùy chỉnh',
+            en: 'Custom Software Development'
+        },
+        customSoftwareDesc: {
+            vi: 'Chúng tôi xây dựng các giải pháp phần mềm tùy chỉnh theo yêu cầu cụ thể của doanh nghiệp bạn, từ ứng dụng di động đến phần mềm doanh nghiệp.',
+            en: 'We build custom software solutions tailored to your specific business needs, from mobile apps to enterprise software.'
+        },
+        cloudServices: {
+            vi: 'Dịch vụ đám mây',
+            en: 'Cloud Services'
+        },
+        cloudServicesDesc: {
+            vi: 'Tối ưu hóa hoạt động kinh doanh của bạn với các dịch vụ đám mây của chúng tôi, bao gồm di chuyển lên đám mây, quản lý, và tối ưu hóa.',
+            en: 'Optimize your business operations with our cloud services, including cloud migration, management, and optimization.'
+        },
+        techConsulting: {
+            vi: 'Tư vấn công nghệ',
+            en: 'Technology Consulting'
+        },
+        techConsultingDesc: {
+            vi: 'Đội ngũ chuyên gia của chúng tôi cung cấp tư vấn chiến lược về các vấn đề công nghệ để giúp doanh nghiệp của bạn đưa ra quyết định đúng đắn.',
+            en: 'Our expert team provides strategic advice on technology issues to help your business make the right decisions.'
+        },
+        technicalSupport: {
+            vi: 'Hỗ trợ kỹ thuật',
+            en: 'Technical Support'
+        },
+        technicalSupportDesc: {
+            vi: 'Dịch vụ hỗ trợ kỹ thuật 24/7 của chúng tôi đảm bảo các hệ thống của bạn luôn hoạt động hiệu quả và giảm thiểu thời gian ngừng hoạt động.',
+            en: 'Our 24/7 technical support services ensure your systems are always running efficiently and minimize downtime.'
+        },
+        additionalServices: {
+            vi: 'Dịch vụ bổ sung',
+            en: 'Additional Services'
+        },
+        additionalServicesDesc: {
+            vi: 'Chúng tôi cung cấp nhiều dịch vụ CNTT chuyên biệt khác để đáp ứng mọi nhu cầu công nghệ của doanh nghiệp bạn.',
+            en: 'We provide a range of specialized IT services to meet all your business technology needs.'
+        },
+        training: {
+            vi: 'Đào tạo và phát triển kỹ năng',
+            en: 'Training and Skill Development'
+        },
+        trainingDesc: {
+            vi: 'Các khóa đào tạo về công nghệ được thiết kế riêng cho đội ngũ của bạn, giúp họ nắm bắt các kỹ năng và công nghệ mới.',
+            en: 'Technology training courses tailored for your team, helping them acquire new skills and technologies.'
+        },
+        maintenance: {
+            vi: 'Bảo trì và nâng cấp',
+            en: 'Maintenance and Upgrades'
+        },
+        maintenanceDesc: {
+            vi: 'Dịch vụ bảo trì và nâng cấp thường xuyên để đảm bảo hệ thống của bạn luôn được cập nhật và hoạt động tốt nhất.',
+            en: 'Regular maintenance and upgrade services to ensure your systems are always up-to-date and performing at their best.'
+        },
+        systemIntegration: {
+            vi: 'Tích hợp hệ thống',
+            en: 'System Integration'
+        },
+        systemIntegrationDesc: {
+            vi: 'Kết nối các hệ thống và ứng dụng khác nhau trong doanh nghiệp của bạn để tạo ra một quy trình làm việc liền mạch.',
+            en: 'Connect different systems and applications in your business to create a seamless workflow.'
+        },
+        cybersecurity: {
+            vi: 'An ninh mạng',
+            en: 'Cybersecurity'
+        },
+        cybersecurityDesc: {
+            vi: 'Các giải pháp bảo mật toàn diện để bảo vệ dữ liệu và hệ thống của bạn khỏi các mối đe dọa trực tuyến.',
+            en: 'Comprehensive security solutions to protect your data and systems from online threats.'
+        },
+        dataAnalytics: {
+            vi: 'Phân tích dữ liệu',
+            en: 'Data Analytics'
+        },
+        dataAnalyticsDesc: {
+            vi: 'Biến dữ liệu thành những hiểu biết có giá trị với các dịch vụ phân tích dữ liệu tiên tiến của chúng tôi.',
+            en: 'Turn data into valuable insights with our advanced data analytics services.'
+        },
+        digitalTransformation: {
+            vi: 'Chuyển đổi số',
+            en: 'Digital Transformation'
+        },
+        digitalTransformationDesc: {
+            vi: 'Hỗ trợ doanh nghiệp của bạn thực hiện chuyển đổi số toàn diện, từ chiến lược đến triển khai.',
+            en: 'Support your business in comprehensive digital transformation, from strategy to implementation.'
+        },
+        ctaTitle: {
+            vi: 'Sẵn sàng nâng cấp công nghệ cho doanh nghiệp của bạn?',
+            en: 'Ready to upgrade technology for your business?'
+        },
+        ctaDescription: {
+            vi: 'Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn về các giải pháp CNTT phù hợp nhất cho doanh nghiệp của bạn.',
+            en: 'Contact us today for advice on the most suitable IT solutions for your business.'
+        },
+        contactUs: {
+            vi: 'Liên hệ với chúng tôi',
+            en: 'Contact us'
+        }
     }
 };
 
