@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { siteConfig } from '@/config/siteConfig'
 
 export default function TermsPage() {
     return (
@@ -9,12 +10,12 @@ export default function TermsPage() {
 
                     <div className="prose prose-teal max-w-none">
                         <p className="text-gray-600 mb-6">
-                            Cập nhật lần cuối: 28/03/2025
+                            Cập nhật lần cuối: {siteConfig.legal.termsLastUpdated}
                         </p>
 
                         <h2>1. Giới thiệu</h2>
                         <p>
-                            Chào mừng bạn đến với XLab! Các Điều khoản Dịch vụ này ("Điều khoản") chi phối việc truy cập và sử dụng trang web, sản phẩm và dịch vụ của chúng tôi. Bằng cách truy cập hoặc sử dụng dịch vụ của chúng tôi, bạn đồng ý tuân theo các Điều khoản này.
+                            Chào mừng bạn đến với {siteConfig.name}! Các Điều khoản Dịch vụ này ("Điều khoản") chi phối việc truy cập và sử dụng trang web, sản phẩm và dịch vụ của chúng tôi. Bằng cách truy cập hoặc sử dụng dịch vụ của chúng tôi, bạn đồng ý tuân theo các Điều khoản này.
                         </p>
 
                         <h2>2. Tài khoản của bạn</h2>
@@ -24,12 +25,12 @@ export default function TermsPage() {
 
                         <h2>3. Nội dung và quyền sở hữu trí tuệ</h2>
                         <p>
-                            XLab và bên cấp phép sở hữu tất cả các quyền, quyền sở hữu và lợi ích đối với dịch vụ, bao gồm tất cả quyền sở hữu trí tuệ liên quan. Bạn không được sao chép, sửa đổi, phân phối, hoặc bán bất kỳ phần nào của dịch vụ của chúng tôi mà không có sự cho phép rõ ràng bằng văn bản.
+                            {siteConfig.legal.companyName} và bên cấp phép sở hữu tất cả các quyền, quyền sở hữu và lợi ích đối với dịch vụ, bao gồm tất cả quyền sở hữu trí tuệ liên quan. Bạn không được sao chép, sửa đổi, phân phối, hoặc bán bất kỳ phần nào của dịch vụ của chúng tôi mà không có sự cho phép rõ ràng bằng văn bản.
                         </p>
 
                         <h2>4. Giấy phép sử dụng</h2>
                         <p>
-                            XLab cấp cho bạn giấy phép sử dụng cá nhân, không độc quyền, không thể chuyển nhượng để sử dụng dịch vụ của chúng tôi. Bạn không được sao chép, sửa đổi, phân phối, bán, cho thuê, thuê, hoặc cấp phép phụ bất kỳ phần nào của dịch vụ.
+                            {siteConfig.legal.companyName} cấp cho bạn giấy phép sử dụng cá nhân, không độc quyền, không thể chuyển nhượng để sử dụng dịch vụ của chúng tôi. Bạn không được sao chép, sửa đổi, phân phối, bán, cho thuê, thuê, hoặc cấp phép phụ bất kỳ phần nào của dịch vụ.
                         </p>
 
                         <h2>5. Giá cả và thanh toán</h2>
@@ -44,17 +45,17 @@ export default function TermsPage() {
 
                         <h2>7. Tuyên bố từ chối trách nhiệm</h2>
                         <p>
-                            Dịch vụ của chúng tôi được cung cấp "nguyên trạng" và "như sẵn có". XLab từ chối tất cả các bảo đảm, dù rõ ràng hay ngụ ý, bao gồm nhưng không giới hạn ở các bảo đảm về tính thương mại, sự phù hợp cho một mục đích cụ thể, và không vi phạm.
+                            Dịch vụ của chúng tôi được cung cấp "nguyên trạng" và "như sẵn có". {siteConfig.legal.companyName} từ chối tất cả các bảo đảm, dù rõ ràng hay ngụ ý, bao gồm nhưng không giới hạn ở các bảo đảm về tính thương mại, sự phù hợp cho một mục đích cụ thể, và không vi phạm.
                         </p>
 
                         <h2>8. Giới hạn trách nhiệm</h2>
                         <p>
-                            Trong mọi trường hợp, XLab sẽ không chịu trách nhiệm đối với bất kỳ thiệt hại gián tiếp, ngẫu nhiên, đặc biệt, hậu quả hoặc trừng phạt nào, bao gồm mất lợi nhuận, doanh thu, dữ liệu, hoặc cơ hội kinh doanh.
+                            Trong mọi trường hợp, {siteConfig.legal.companyName} sẽ không chịu trách nhiệm đối với bất kỳ thiệt hại gián tiếp, ngẫu nhiên, đặc biệt, hậu quả hoặc trừng phạt nào, bao gồm mất lợi nhuận, doanh thu, dữ liệu, hoặc cơ hội kinh doanh.
                         </p>
 
                         <h2>9. Chấm dứt</h2>
                         <p>
-                            Chúng tôi có thể đình chỉ hoặc chấm dứt quyền truy cập của bạn vào tất cả hoặc một phần của dịch vụ nếu bạn vi phạm các Điều khoản này, hoặc nếu chúng tôi tin rằng việc sử dụng của bạn có thể gây thiệt hại cho XLab hoặc người dùng khác.
+                            Chúng tôi có thể đình chỉ hoặc chấm dứt quyền truy cập của bạn vào tất cả hoặc một phần của dịch vụ nếu bạn vi phạm các Điều khoản này, hoặc nếu chúng tôi tin rằng việc sử dụng của bạn có thể gây thiệt hại cho {siteConfig.legal.companyName} hoặc người dùng khác.
                         </p>
 
                         <h2>10. Thay đổi điều khoản</h2>
@@ -69,7 +70,7 @@ export default function TermsPage() {
 
                         <h2>12. Liên hệ</h2>
                         <p>
-                            Nếu bạn có bất kỳ câu hỏi nào về các Điều khoản này, vui lòng liên hệ với chúng tôi qua địa chỉ email: <a href="mailto:support@xlab.vn" className="text-teal-600 hover:underline">support@xlab.vn</a> hoặc truy cập trang <Link href="/contact" className="text-teal-600 hover:underline">Liên hệ</Link> của chúng tôi.
+                            Nếu bạn có bất kỳ câu hỏi nào về các Điều khoản này, vui lòng liên hệ với chúng tôi qua địa chỉ email: <a href={`mailto:${siteConfig.contact.email}`} className="text-teal-600 hover:underline">{siteConfig.contact.email}</a> hoặc truy cập trang <Link href="/contact" className="text-teal-600 hover:underline">Liên hệ</Link> của chúng tôi.
                         </p>
                     </div>
                 </div>
