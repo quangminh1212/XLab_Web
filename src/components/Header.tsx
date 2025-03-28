@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
+import { useLanguage } from '@/contexts/LanguageContext'
+import LanguageSwitcher from './LanguageSwitcher'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -13,7 +15,7 @@ export default function Header() {
   const { data: session, status } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
-  const [language, setLanguage] = useState<'vi' | 'en'>('vi')
+  const { language, translate } = useLanguage()
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
@@ -49,48 +51,24 @@ export default function Header() {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const toggleLanguage = () => {
-    setLanguage(prevLang => prevLang === 'vi' ? 'en' : 'vi')
-  }
-
   const isLoading = status === 'loading'
 
   // Danh sách menu dựa theo ngôn ngữ
-  const menuItems = {
-    vi: [
-      { path: '/', label: 'Trang chủ' },
-      { path: '/products', label: 'Sản phẩm' },
-      { path: '/services', label: 'Dịch vụ' },
-      { path: '/about', label: 'Giới thiệu' },
-      { path: '/contact', label: 'Liên hệ' }
-    ],
-    en: [
-      { path: '/', label: 'Home' },
-      { path: '/products', label: 'Products' },
-      { path: '/services', label: 'Services' },
-      { path: '/about', label: 'About' },
-      { path: '/contact', label: 'Contact' }
-    ]
-  }
+  const menuItems = [
+    { path: '/', label: translate('navigation.home') },
+    { path: '/products', label: translate('navigation.products') },
+    { path: '/services', label: translate('navigation.services') },
+    { path: '/about', label: translate('navigation.about') },
+    { path: '/contact', label: translate('navigation.contact') }
+  ]
 
-  // Các từ khóa UI dựa theo ngôn ngữ
   const uiText = {
-    vi: {
-      login: 'Đăng nhập',
-      register: 'Đăng ký',
-      myAccount: 'Tài khoản của tôi',
-      settings: 'Cài đặt',
-      logout: 'Đăng xuất',
-      loggedInAs: 'Đăng nhập bằng'
-    },
-    en: {
-      login: 'Login',
-      register: 'Register',
-      myAccount: 'My Account',
-      settings: 'Settings',
-      logout: 'Logout',
-      loggedInAs: 'Logged in as'
-    }
+    login: translate('navigation.login'),
+    register: translate('navigation.register'),
+    myAccount: translate('navigation.myAccount'),
+    settings: translate('navigation.settings'),
+    logout: translate('navigation.logout'),
+    loggedInAs: translate('navigation.loggedInAs')
   }
 
   return (
@@ -129,7 +107,7 @@ export default function Header() {
 
           {/* Menu desktop */}
           <nav className="hidden md:flex items-center justify-center space-x-2">
-            {menuItems[language].map(item => (
+            {menuItems.map(item => (
               <Link
                 key={item.path}
                 href={item.path}
@@ -142,19 +120,13 @@ export default function Header() {
 
           {/* Buttons */}
           <div className="flex items-center justify-center space-x-3">
-            {/* Chuyển đổi ngôn ngữ */}
-            <button
-              onClick={toggleLanguage}
-              className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
-              aria-label={language === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}
-            >
-              <span className="font-medium text-sm">{language === 'vi' ? 'EN' : 'VI'}</span>
-            </button>
+            {/* Language Switcher */}
+            <LanguageSwitcher />
 
             {/* Tìm kiếm */}
             <button
               className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
-              aria-label="Tìm kiếm"
+              aria-label={translate('actions.search')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -204,20 +176,20 @@ export default function Header() {
                   {mobileMenuOpen && (
                     <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black/5 z-50">
                       <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
-                        {uiText[language].loggedInAs} {session.user?.email}
+                        {uiText.loggedInAs} {session.user?.email}
                       </div>
                       <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
-                        {uiText[language].myAccount}
+                        {uiText.myAccount}
                       </Link>
                       <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
-                        {uiText[language].settings}
+                        {uiText.settings}
                       </Link>
                       <div className="border-t border-gray-100"></div>
                       <button
                         onClick={() => signOut()}
                         className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
-                        {uiText[language].logout}
+                        {uiText.logout}
                       </button>
                     </div>
                   )}
@@ -229,13 +201,13 @@ export default function Header() {
                   href="/login"
                   className="px-5 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
                 >
-                  {uiText[language].login}
+                  {uiText.login}
                 </Link>
                 <Link
                   href="/register"
                   className="px-5 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center"
                 >
-                  {uiText[language].register}
+                  {uiText.register}
                 </Link>
               </div>
             )}
@@ -268,7 +240,7 @@ export default function Header() {
               </div>
             )}
 
-            {menuItems[language].map(item => (
+            {menuItems.map(item => (
               <Link
                 key={item.path}
                 href={item.path}
@@ -278,13 +250,8 @@ export default function Header() {
               </Link>
             ))}
 
-            {/* Chuyển đổi ngôn ngữ (mobile) */}
-            <button
-              onClick={toggleLanguage}
-              className="w-full text-left px-4 py-2.5 text-base font-medium rounded-md text-gray-700 hover:text-teal-600 hover:bg-teal-50 text-center flex items-center justify-center"
-            >
-              {language === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}
-            </button>
+            {/* Ngôn ngữ (mobile) */}
+            <LanguageSwitcher className="w-full flex justify-center items-center" />
 
             {!isLoading && !session && (
               <div className="flex space-x-3 mt-3 px-3">
@@ -292,13 +259,13 @@ export default function Header() {
                   href="/login"
                   className="flex-1 px-4 py-2.5 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium"
                 >
-                  {uiText[language].login}
+                  {uiText.login}
                 </Link>
                 <Link
                   href="/register"
                   className="flex-1 px-4 py-2.5 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium"
                 >
-                  {uiText[language].register}
+                  {uiText.register}
                 </Link>
               </div>
             )}
