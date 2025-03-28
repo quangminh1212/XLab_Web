@@ -3,6 +3,26 @@
  */
 
 const translations = {
+    // Trang chủ
+    home: {
+        heroSubtitle: {
+            vi: 'Các giải pháp phần mềm và dịch vụ công nghệ chất lượng cao cho doanh nghiệp của bạn',
+            en: 'High-quality software solutions and technology services for your business'
+        },
+        featuredProducts: {
+            vi: 'Sản phẩm nổi bật',
+            en: 'Featured Products'
+        },
+        newProducts: {
+            vi: 'Sản phẩm mới',
+            en: 'New Products'
+        },
+        popularProducts: {
+            vi: 'Sản phẩm phổ biến',
+            en: 'Popular Products'
+        }
+    },
+
     // Phần header và navigation
     navigation: {
         home: {
@@ -59,111 +79,59 @@ const translations = {
         }
     },
 
-    // Phần footer
-    footer: {
-        products: {
-            vi: 'Sản phẩm',
-            en: 'Products'
+    // Actions (hành động)
+    actions: {
+        search: {
+            vi: 'Tìm kiếm...',
+            en: 'Search...'
         },
-        allProducts: {
-            vi: 'Tất cả sản phẩm',
-            en: 'All products'
+        viewAll: {
+            vi: 'Xem tất cả',
+            en: 'View all'
         },
-        newReleases: {
-            vi: 'Mới phát hành',
-            en: 'New releases'
+        readMore: {
+            vi: 'Đọc tiếp',
+            en: 'Read more'
         },
-        mostPopular: {
-            vi: 'Phổ biến nhất',
-            en: 'Most popular'
+        learnMore: {
+            vi: 'Tìm hiểu thêm',
+            en: 'Learn more'
         },
-        onSale: {
-            vi: 'Khuyến mãi',
-            en: 'On sale'
+        addToCart: {
+            vi: 'Thêm vào giỏ hàng',
+            en: 'Add to cart'
         },
-        support: {
-            vi: 'Hỗ trợ',
-            en: 'Support'
+        buyNow: {
+            vi: 'Mua ngay',
+            en: 'Buy now'
         },
-        contact: {
-            vi: 'Liên hệ',
-            en: 'Contact'
+        submit: {
+            vi: 'Gửi',
+            en: 'Submit'
         },
-        faq: {
-            vi: 'FAQ',
-            en: 'FAQ'
+        cancel: {
+            vi: 'Hủy',
+            en: 'Cancel'
         },
-        userGuides: {
-            vi: 'Hướng dẫn sử dụng',
-            en: 'User guides'
+        save: {
+            vi: 'Lưu',
+            en: 'Save'
         },
-        reportBug: {
-            vi: 'Báo lỗi',
-            en: 'Report a bug'
+        edit: {
+            vi: 'Sửa',
+            en: 'Edit'
         },
-        aboutUs: {
-            vi: 'Về chúng tôi',
-            en: 'About us'
+        delete: {
+            vi: 'Xóa',
+            en: 'Delete'
         },
-        blog: {
-            vi: 'Blog',
-            en: 'Blog'
+        download: {
+            vi: 'Tải xuống',
+            en: 'Download'
         },
-        careers: {
-            vi: 'Tuyển dụng',
-            en: 'Careers'
-        },
-        partners: {
-            vi: 'Đối tác',
-            en: 'Partners'
-        },
-        legal: {
-            vi: 'Pháp lý',
-            en: 'Legal'
-        },
-        termsOfService: {
-            vi: 'Điều khoản dịch vụ',
-            en: 'Terms of service'
-        },
-        privacyPolicy: {
-            vi: 'Chính sách bảo mật',
-            en: 'Privacy policy'
-        },
-        refundPolicy: {
-            vi: 'Chính sách hoàn tiền',
-            en: 'Refund policy'
-        },
-        intellectualProperty: {
-            vi: 'Quyền sở hữu trí tuệ',
-            en: 'Intellectual property'
-        },
-        newsletter: {
-            vi: 'Đăng ký nhận thông tin mới',
-            en: 'Sign up for newsletter'
-        },
-        newsletterDescription: {
-            vi: 'Nhận thông tin về sản phẩm mới, khuyến mãi và cập nhật từ XLab',
-            en: 'Get updates on new products, promotions, and news from XLab'
-        },
-        subscribeButton: {
-            vi: 'Đăng ký',
-            en: 'Subscribe'
-        },
-        copyright: {
-            vi: 'Bản quyền',
-            en: 'Copyright'
-        },
-        allRightsReserved: {
-            vi: 'Tất cả quyền được bảo lưu',
-            en: 'All rights reserved'
-        },
-        companyDescription: {
-            vi: 'XLab cung cấp các giải pháp phần mềm và dịch vụ CNTT chất lượng cao, giúp doanh nghiệp của bạn phát triển trong kỷ nguyên số.',
-            en: 'XLab provides high-quality software solutions and IT services, helping your business thrive in the digital era.'
-        },
-        emailPlaceholder: {
-            vi: 'Email của bạn',
-            en: 'Your email'
+        viewDetails: {
+            vi: 'Xem chi tiết',
+            en: 'View details'
         }
     },
 
@@ -198,443 +166,78 @@ const translations = {
             en: 'This website requires JavaScript to function properly. Please enable JavaScript and reload the page.'
         },
         productComingSoon: {
-            vi: 'Sản phẩm sẽ được thêm sau',
-            en: 'Products coming soon'
+            vi: 'Sản phẩm sắp ra mắt',
+            en: 'Product coming soon'
         },
         systemUpdating: {
-            vi: 'Hệ thống đang cập nhật',
-            en: 'System is updating'
+            vi: 'Hệ thống đang được cập nhật. Vui lòng quay lại sau.',
+            en: 'System is being updated. Please check back later.'
         }
     },
 
-    // Nút và hành động chung
-    actions: {
-        search: {
-            vi: 'Tìm kiếm',
-            en: 'Search'
+    // Các trường trong form
+    forms: {
+        email: {
+            vi: 'Email',
+            en: 'Email'
         },
-        submit: {
-            vi: 'Gửi',
-            en: 'Submit'
+        password: {
+            vi: 'Mật khẩu',
+            en: 'Password'
         },
-        cancel: {
-            vi: 'Hủy',
-            en: 'Cancel'
+        confirmPassword: {
+            vi: 'Xác nhận mật khẩu',
+            en: 'Confirm password'
         },
-        save: {
-            vi: 'Lưu',
-            en: 'Save'
+        firstName: {
+            vi: 'Tên',
+            en: 'First name'
         },
-        download: {
-            vi: 'Tải xuống',
-            en: 'Download'
-        },
-        learnMore: {
-            vi: 'Tìm hiểu thêm',
-            en: 'Learn more'
-        },
-        viewDetails: {
-            vi: 'Xem chi tiết',
-            en: 'View details'
-        },
-        buyNow: {
-            vi: 'Mua ngay',
-            en: 'Buy now'
-        },
-        addToCart: {
-            vi: 'Thêm vào giỏ hàng',
-            en: 'Add to cart'
-        },
-        continue: {
-            vi: 'Tiếp tục',
-            en: 'Continue'
-        },
-        backToHome: {
-            vi: 'Quay lại trang chủ',
-            en: 'Back to home'
-        },
-        switchToEnglish: {
-            vi: 'Switch to English',
-            en: 'Chuyển sang tiếng Việt'
-        },
-        viewAll: {
-            vi: 'Xem tất cả',
-            en: 'View all'
-        }
-    },
-
-    // Trang chủ
-    home: {
-        welcomeMessage: {
-            vi: 'Chào mừng đến với XLab',
-            en: 'Welcome to XLab'
-        },
-        heroTitle: {
-            vi: 'Giải pháp công nghệ cho doanh nghiệp của bạn',
-            en: 'Technology solutions for your business'
-        },
-        heroSubtitle: {
-            vi: 'Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay',
-            en: 'Your custom software - Download and use today'
-        },
-        featuredProducts: {
-            vi: 'Sản phẩm nổi bật',
-            en: 'Featured products'
-        },
-        ourServices: {
-            vi: 'Dịch vụ của chúng tôi',
-            en: 'Our services'
-        },
-        testimonials: {
-            vi: 'Khách hàng nói gì về chúng tôi',
-            en: 'What our customers say'
-        },
-        contactUs: {
-            vi: 'Liên hệ với chúng tôi',
-            en: 'Contact us'
-        },
-        newProducts: {
-            vi: 'Phần mềm mới',
-            en: 'New software'
-        }
-    },
-
-    // Trang Giới thiệu
-    about: {
-        pageTitle: {
-            vi: 'Về chúng tôi',
-            en: 'About us'
-        },
-        companyDescription: {
-            vi: 'XLab - Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ tại Việt Nam',
-            en: 'XLab - A pioneer in software development and technology solutions in Vietnam'
-        },
-        ourHistory: {
-            vi: 'Câu chuyện của chúng tôi',
-            en: 'Our Story'
-        },
-        historyParagraph1: {
-            vi: 'XLab được thành lập vào năm 2018 bởi một nhóm kỹ sư phần mềm đam mê và có tầm nhìn về việc tạo ra các giải pháp công nghệ tiên tiến, giúp doanh nghiệp Việt Nam nâng cao hiệu quả hoạt động và năng lực cạnh tranh trong kỷ nguyên số.',
-            en: 'XLab was founded in 2018 by a passionate group of software engineers with a vision to create advanced technology solutions that help Vietnamese businesses improve operational efficiency and competitiveness in the digital era.'
-        },
-        historyParagraph2: {
-            vi: 'Sau hơn 10 năm hoạt động và phát triển, XLab đã trở thành đối tác công nghệ tin cậy của hàng trăm doanh nghiệp trong và ngoài nước, từ các công ty khởi nghiệp cho đến các tập đoàn lớn thuộc nhiều lĩnh vực khác nhau như tài chính, bán lẻ, sản xuất, giáo dục và y tế.',
-            en: 'After more than 10 years of operation and development, XLab has become a trusted technology partner for hundreds of businesses both domestically and internationally, from startups to large corporations in various sectors such as finance, retail, manufacturing, education, and healthcare.'
-        },
-        historyParagraph3: {
-            vi: 'Chúng tôi tự hào về đội ngũ nhân sự tài năng và đam mê công nghệ, với hơn 100 chuyên gia phần mềm, kỹ sư hệ thống, và chuyên gia tư vấn giàu kinh nghiệm, luôn tận tâm với mục tiêu mang lại những giải pháp tối ưu cho đối tác và khách hàng.',
-            en: 'We are proud of our talented team passionate about technology, with over 100 software experts, system engineers, and experienced consultants, always dedicated to bringing optimal solutions to our partners and customers.'
-        },
-        workspaceImageAlt: {
-            vi: 'Không gian làm việc tại XLab',
-            en: 'XLab workspace'
-        },
-        teamImageAlt: {
-            vi: 'Đội ngũ XLab làm việc cùng nhau',
-            en: 'XLab team working together'
-        },
-        techspaceImageAlt: {
-            vi: 'Không gian công nghệ tại XLab',
-            en: 'Technology space at XLab'
-        },
-        ourMission: {
-            vi: 'Sứ mệnh',
-            en: 'Our Mission'
-        },
-        missionContent: {
-            vi: 'Sứ mệnh của XLab là ứng dụng công nghệ tiên tiến để tạo ra các giải pháp phần mềm xuất sắc, giúp doanh nghiệp Việt Nam tối ưu hóa quy trình, tăng năng suất và phát triển bền vững trong kỷ nguyên số. Chúng tôi cam kết mang đến những sản phẩm và dịch vụ chất lượng cao, đáp ứng nhu cầu đa dạng của khách hàng, đồng thời góp phần thúc đẩy sự phát triển của ngành công nghệ thông tin Việt Nam.',
-            en: 'The mission of XLab is to apply advanced technology to create excellent software solutions, helping Vietnamese businesses optimize processes, increase productivity, and develop sustainably in the digital era. We commit to delivering high-quality products and services that meet diverse customer needs while contributing to the development of the Vietnamese IT industry.'
-        },
-        ourVision: {
-            vi: 'Tầm nhìn',
-            en: 'Our Vision'
-        },
-        visionContent: {
-            vi: 'XLab hướng tới trở thành doanh nghiệp công nghệ hàng đầu tại Việt Nam và khu vực Đông Nam Á trong lĩnh vực phát triển phần mềm và cung cấp giải pháp công nghệ thông tin toàn diện. Chúng tôi nỗ lực trở thành đối tác tin cậy và lâu dài của các doanh nghiệp trong hành trình chuyển đổi số, đồng thời là môi trường làm việc lý tưởng cho các tài năng công nghệ phát triển sự nghiệp.',
-            en: 'XLab aims to become a leading technology company in Vietnam and Southeast Asia in software development and comprehensive IT solutions. We strive to be a reliable, long-term partner for businesses in their digital transformation journey, while also being an ideal working environment for technology talents to develop their careers.'
-        },
-        ourValues: {
-            vi: 'Giá trị cốt lõi',
-            en: 'Core Values'
-        },
-        valuesDescription: {
-            vi: 'Những giá trị tạo nên văn hóa và định hướng mọi hoạt động của XLab',
-            en: 'The values that create XLab\'s culture and guide all our activities'
-        },
-        valueQuality: {
-            vi: 'Chất lượng',
-            en: 'Quality'
-        },
-        qualityDesc: {
-            vi: 'Đặt chất lượng sản phẩm và dịch vụ lên hàng đầu, không ngừng cải tiến để đạt được sự xuất sắc',
-            en: 'Prioritizing product and service quality, continuously improving to achieve excellence'
-        },
-        valueInnovation: {
-            vi: 'Đổi mới',
-            en: 'Innovation'
-        },
-        innovationDesc: {
-            vi: 'Khuyến khích tư duy sáng tạo, dám thử nghiệm những ý tưởng mới và công nghệ tiên tiến',
-            en: 'Encouraging creative thinking, daring to experiment with new ideas and advanced technologies'
-        },
-        valueCollaboration: {
-            vi: 'Hợp tác',
-            en: 'Collaboration'
-        },
-        collaborationDesc: {
-            vi: 'Xây dựng mối quan hệ đối tác lâu dài dựa trên sự tôn trọng và hợp tác cùng có lợi',
-            en: 'Building long-term partnerships based on respect and mutually beneficial cooperation'
-        },
-        valueResponsibility: {
-            vi: 'Trách nhiệm',
-            en: 'Responsibility'
-        },
-        responsibilityDesc: {
-            vi: 'Làm việc với tinh thần trách nhiệm cao, cam kết hoàn thành mọi cam kết với khách hàng',
-            en: 'Working with a high sense of responsibility, committed to fulfilling all commitments to customers'
-        },
-        ctaTitle: {
-            vi: 'Hợp tác cùng XLab',
-            en: 'Partner with XLab'
-        },
-        ctaText: {
-            vi: 'Chúng tôi luôn sẵn sàng lắng nghe và đồng hành cùng doanh nghiệp của bạn trong hành trình chuyển đổi số và phát triển bền vững.',
-            en: 'We are always ready to listen and accompany your business on the journey of digital transformation and sustainable development.'
-        },
-        ctaButton: {
-            vi: 'Liên hệ ngay',
-            en: 'Contact Us Now'
-        }
-    },
-
-    // Trang Liên hệ 
-    contact: {
-        pageTitle: {
-            vi: 'Liên hệ với chúng tôi',
-            en: 'Contact us'
-        },
-        formTitle: {
-            vi: 'Gửi tin nhắn cho chúng tôi',
-            en: 'Send us a message'
+        lastName: {
+            vi: 'Họ',
+            en: 'Last name'
         },
         fullName: {
             vi: 'Họ và tên',
             en: 'Full name'
         },
-        email: {
-            vi: 'Email',
-            en: 'Email'
-        },
         phone: {
             vi: 'Số điện thoại',
             en: 'Phone number'
-        },
-        subject: {
-            vi: 'Tiêu đề',
-            en: 'Subject'
-        },
-        message: {
-            vi: 'Nội dung tin nhắn',
-            en: 'Message'
-        },
-        sendMessage: {
-            vi: 'Gửi tin nhắn',
-            en: 'Send message'
-        },
-        contactInfo: {
-            vi: 'Thông tin liên hệ',
-            en: 'Contact information'
         },
         address: {
             vi: 'Địa chỉ',
             en: 'Address'
         },
-        phoneNumber: {
-            vi: 'Số điện thoại',
-            en: 'Phone number'
+        city: {
+            vi: 'Thành phố',
+            en: 'City'
         },
-        emailAddress: {
-            vi: 'Địa chỉ email',
-            en: 'Email address'
+        state: {
+            vi: 'Tỉnh/Thành phố',
+            en: 'State/Province'
         },
-        workingHours: {
-            vi: 'Giờ làm việc',
-            en: 'Working hours'
+        country: {
+            vi: 'Quốc gia',
+            en: 'Country'
+        },
+        postalCode: {
+            vi: 'Mã bưu điện',
+            en: 'Postal code'
+        },
+        company: {
+            vi: 'Công ty',
+            en: 'Company'
+        },
+        message: {
+            vi: 'Nội dung',
+            en: 'Message'
+        },
+        subject: {
+            vi: 'Tiêu đề',
+            en: 'Subject'
         }
-    },
-
-    // Services page
-    'services.pageTitle': 'Dịch vụ của chúng tôi',
-    'services.pageTitle_en': 'Our Services',
-    'services.pageDescription': 'Chúng tôi cung cấp các dịch vụ công nghệ toàn diện, từ phát triển phần mềm đến tư vấn và hỗ trợ kỹ thuật',
-    'services.pageDescription_en': 'We provide comprehensive technology services, from software development to consulting and technical support',
-
-    // Main services
-    'services.customSoftwareDev': 'Phát triển phần mềm tùy chỉnh',
-    'services.customSoftwareDev_en': 'Custom Software Development',
-    'services.customSoftwareDesc': 'Xây dựng giải pháp phần mềm đáp ứng chính xác nhu cầu kinh doanh của bạn',
-    'services.customSoftwareDesc_en': 'Build software solutions that exactly match your business needs',
-
-    'services.cloudServices': 'Dịch vụ đám mây',
-    'services.cloudServices_en': 'Cloud Services',
-    'services.cloudServicesDesc': 'Giải pháp đám mây linh hoạt, bảo mật và hiệu quả cho doanh nghiệp',
-    'services.cloudServicesDesc_en': 'Flexible, secure and efficient cloud solutions for businesses',
-
-    'services.techConsulting': 'Tư vấn công nghệ',
-    'services.techConsulting_en': 'Technology Consulting',
-    'services.techConsultingDesc': 'Tư vấn chiến lược và giải pháp công nghệ phù hợp với mục tiêu kinh doanh',
-    'services.techConsultingDesc_en': 'Strategic consulting and technology solutions aligned with business goals',
-
-    'services.technicalSupport': 'Hỗ trợ kỹ thuật',
-    'services.technicalSupport_en': 'Technical Support',
-    'services.technicalSupportDesc': 'Dịch vụ hỗ trợ kỹ thuật 24/7 với đội ngũ chuyên gia giàu kinh nghiệm',
-    'services.technicalSupportDesc_en': '24/7 technical support services with experienced experts',
-
-    // Additional services
-    'services.additionalServices': 'Dịch vụ bổ sung',
-    'services.additionalServices_en': 'Additional Services',
-    'services.additionalServicesDesc': 'Khám phá thêm các dịch vụ chuyên biệt của chúng tôi',
-    'services.additionalServicesDesc_en': 'Explore more of our specialized services',
-
-    'services.training': 'Đào tạo',
-    'services.training_en': 'Training',
-    'services.trainingDesc': 'Chương trình đào tạo công nghệ chuyên sâu cho đội ngũ của bạn',
-    'services.trainingDesc_en': 'In-depth technology training programs for your team',
-
-    'services.maintenance': 'Bảo trì & Nâng cấp',
-    'services.maintenance_en': 'Maintenance & Upgrades',
-    'services.maintenanceDesc': 'Dịch vụ bảo trì và nâng cấp hệ thống thường xuyên',
-    'services.maintenanceDesc_en': 'Regular system maintenance and upgrade services',
-
-    'services.systemIntegration': 'Tích hợp hệ thống',
-    'services.systemIntegration_en': 'System Integration',
-    'services.systemIntegrationDesc': 'Tích hợp liền mạch các hệ thống và ứng dụng doanh nghiệp',
-    'services.systemIntegrationDesc_en': 'Seamless integration of enterprise systems and applications',
-
-    'services.cybersecurity': 'An ninh mạng',
-    'services.cybersecurity_en': 'Cybersecurity',
-    'services.cybersecurityDesc': 'Giải pháp bảo mật toàn diện bảo vệ dữ liệu và hệ thống của bạn',
-    'services.cybersecurityDesc_en': 'Comprehensive security solutions to protect your data and systems',
-
-    'services.dataAnalytics': 'Phân tích dữ liệu',
-    'services.dataAnalytics_en': 'Data Analytics',
-    'services.dataAnalyticsDesc': 'Khai thác giá trị từ dữ liệu với công cụ phân tích tiên tiến',
-    'services.dataAnalyticsDesc_en': 'Extract value from data with advanced analytics tools',
-
-    'services.digitalTransformation': 'Chuyển đổi số',
-    'services.digitalTransformation_en': 'Digital Transformation',
-    'services.digitalTransformationDesc': 'Hỗ trợ doanh nghiệp trong hành trình chuyển đổi số toàn diện',
-    'services.digitalTransformationDesc_en': 'Support businesses in comprehensive digital transformation journey',
-
-    // CTA section
-    'services.ctaTitle': 'Sẵn sàng nâng cấp công nghệ cho doanh nghiệp của bạn?',
-    'services.ctaTitle_en': 'Ready to upgrade your business technology?',
-    'services.ctaDescription': 'Liên hệ với chúng tôi ngay hôm nay để được tư vấn giải pháp phù hợp nhất',
-    'services.ctaDescription_en': 'Contact us today for consultation on the most suitable solutions',
-    'services.contactUs': 'Liên hệ ngay',
-    'services.contactUs_en': 'Contact Now',
-
-    // Contact page
-    'contact.pageTitle': 'Liên hệ với chúng tôi',
-    'contact.pageTitle_en': 'Contact Us',
-    'contact.pageDescription': 'Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của bạn.',
-    'contact.pageDescription_en': 'Contact us to get advice on the most suitable solution for your business.',
-    'contact.sendMessage': 'Gửi tin nhắn cho chúng tôi',
-    'contact.sendMessage_en': 'Send us a message',
-    'contact.name': 'Họ và tên',
-    'contact.name_en': 'Full Name',
-    'contact.email': 'Email',
-    'contact.email_en': 'Email',
-    'contact.phone': 'Số điện thoại',
-    'contact.phone_en': 'Phone Number',
-    'contact.subject': 'Chủ đề',
-    'contact.subject_en': 'Subject',
-    'contact.selectSubject': '-- Chọn chủ đề --',
-    'contact.selectSubject_en': '-- Select a subject --',
-    'contact.generalInquiry': 'Thông tin chung',
-    'contact.generalInquiry_en': 'General Inquiry',
-    'contact.technicalSupport': 'Hỗ trợ kỹ thuật',
-    'contact.technicalSupport_en': 'Technical Support',
-    'contact.salesInquiry': 'Thông tin bán hàng',
-    'contact.salesInquiry_en': 'Sales Inquiry',
-    'contact.partnership': 'Đối tác',
-    'contact.partnership_en': 'Partnership',
-    'contact.message': 'Tin nhắn',
-    'contact.message_en': 'Message',
-    'contact.send': 'Gửi tin nhắn',
-    'contact.send_en': 'Send Message',
-    'contact.contactInfo': 'Thông tin liên hệ',
-    'contact.contactInfo_en': 'Contact Information',
-    'contact.address': 'Địa chỉ',
-    'contact.address_en': 'Address',
-    'contact.businessHours': 'Giờ làm việc',
-    'contact.businessHours_en': 'Business Hours',
-    'contact.weekdays': 'Thứ Hai - Thứ Sáu',
-    'contact.weekdays_en': 'Monday - Friday',
-    'contact.weekend': 'Thứ Bảy & Chủ Nhật',
-    'contact.weekend_en': 'Saturday & Sunday',
-    'contact.closed': 'Đóng cửa',
-    'contact.closed_en': 'Closed',
-    'contact.findUs': 'Tìm chúng tôi',
-    'contact.findUs_en': 'Find Us',
-    'contact.mapPlaceholder': 'Bản đồ sẽ được hiển thị tại đây',
-    'contact.mapPlaceholder_en': 'Map will be displayed here',
-    'contact.messageSent': 'Cảm ơn bạn! Tin nhắn đã được gửi thành công.',
-    'contact.messageSent_en': 'Thank you! Your message has been sent successfully.',
-
-    // Loading page
-    'loading.title': 'Đang tải...',
-    'loading.title_en': 'Loading...',
-    'loading.message': 'Vui lòng đợi trong giây lát',
-    'loading.message_en': 'Please wait a moment',
-
-    // Software page
-    'software.pageTitle': 'Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay',
-    'software.pageTitle_en': 'Your exclusive software - Download and use today',
-    'software.pageDescription': 'Chúng tôi cung cấp các phần mềm chất lượng cao, được thiết kế riêng cho nhu cầu của bạn',
-    'software.pageDescription_en': 'We provide high-quality software designed specifically for your needs',
-    'software.searchPlaceholder': 'Tìm kiếm phần mềm, ứng dụng...',
-    'software.searchPlaceholder_en': 'Search for software, applications...',
-    'software.categories': 'Danh mục',
-    'software.categories_en': 'Categories',
-    'software.viewAll': 'Xem tất cả',
-    'software.viewAll_en': 'View all',
-    'software.businessSoftware': 'Phần mềm doanh nghiệp',
-    'software.businessSoftware_en': 'Business Software',
-    'software.officeSoftware': 'Ứng dụng văn phòng',
-    'software.officeSoftware_en': 'Office Applications',
-    'software.designSoftware': 'Phần mềm đồ họa',
-    'software.designSoftware_en': 'Design Software',
-    'software.securitySoftware': 'Bảo mật & Antivirus',
-    'software.securitySoftware_en': 'Security & Antivirus',
-    'software.educationSoftware': 'Ứng dụng giáo dục',
-    'software.educationSoftware_en': 'Education Applications',
-    'software.products': 'sản phẩm',
-    'software.products_en': 'products',
-    'software.featured': 'Phần mềm nổi bật',
-    'software.featured_en': 'Featured Software',
-    'software.details': 'Chi tiết',
-    'software.details_en': 'Details',
-    'software.download': 'Tải xuống',
-    'software.download_en': 'Download',
-    'software.customTitle': 'Bạn cần phần mềm tùy chỉnh?',
-    'software.customTitle_en': 'Need custom software?',
-    'software.customDescription': 'Chúng tôi có thể phát triển phần mềm theo yêu cầu cụ thể của doanh nghiệp bạn',
-    'software.customDescription_en': 'We can develop software according to your specific business requirements',
-    'software.contactUs': 'Liên hệ ngay',
-    'software.contactUs_en': 'Contact us now',
-    'software.xManager': 'XManager - Phần mềm quản lý doanh nghiệp',
-    'software.xManager_en': 'XManager - Business Management Software',
-    'software.xManagerDesc': 'Quản lý hiệu quả mọi hoạt động của doanh nghiệp với giao diện thân thiện',
-    'software.xManagerDesc_en': 'Effectively manage all business operations with a user-friendly interface',
-    'software.cloudBackup': 'Cloud Backup Pro',
-    'software.cloudBackup_en': 'Cloud Backup Pro',
-    'software.cloudBackupDesc': 'Sao lưu dữ liệu an toàn trên đám mây, truy cập mọi lúc mọi nơi',
-    'software.cloudBackupDesc_en': 'Safely back up data to the cloud, access anytime, anywhere',
-    'software.secureOffice': 'Secure Office Suite',
-    'software.secureOffice_en': 'Secure Office Suite',
-    'software.secureOfficeDesc': 'Bộ ứng dụng văn phòng với tính năng bảo mật cao cấp',
-    'software.secureOfficeDesc_en': 'Office application suite with advanced security features',
-}
+    }
+};
 
 export default translations; 
