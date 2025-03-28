@@ -83,15 +83,9 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center">
-              <span className="w-20 h-20 inline-flex items-center justify-center">
-                <Image
-                  src="/images/logo.jpg"
-                  alt={`${siteConfig.name} Logo`}
-                  width={70}
-                  height={70}
-                  className="object-contain rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
-                  priority
-                />
+              <span className="text-2xl font-bold">
+                <span className="text-gray-800">X</span>
+                <span className="text-teal-600">Lab</span>
               </span>
             </Link>
 
@@ -126,7 +120,7 @@ export default function Header() {
             {/* Tìm kiếm */}
             <button
               className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
-              aria-label={translate('actions.search')}
+              aria-label={translate('actions.search.vi')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
