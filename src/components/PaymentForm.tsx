@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { siteConfig } from '@/config/siteConfig';
 
 interface PaymentFormProps {
   amount: number;
@@ -58,7 +59,7 @@ export default function PaymentForm({ amount, productName }: PaymentFormProps) {
     try {
       // Simulate payment processing
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      
+
       // Redirect to success page
       router.push("/payment/success?product=" + encodeURIComponent(productName));
     } catch (err) {
@@ -73,7 +74,7 @@ export default function PaymentForm({ amount, productName }: PaymentFormProps) {
         <div className="p-6 bg-primary-700 text-white">
           <h2 className="text-xl font-semibold">Thông tin đơn hàng</h2>
         </div>
-        
+
         <div className="p-6 flex flex-col md:flex-row">
           <div className="md:w-1/2 md:pr-6 mb-6 md:mb-0">
             <div className="bg-secondary-50 p-4 rounded-lg mb-6">
@@ -262,7 +263,7 @@ export default function PaymentForm({ amount, productName }: PaymentFormProps) {
               <div>
                 <h3 className="text-lg font-medium text-primary-800 mb-2">Cần hỗ trợ?</h3>
                 <p className="text-primary-700">
-                  Liên hệ với chúng tôi qua email <span className="font-medium">support@xlab.vn</span> hoặc gọi đến số <span className="font-medium">(84) 28 1234 5678</span> trong giờ làm việc.
+                  Liên hệ với chúng tôi qua email <span className="font-medium">{siteConfig.contact.email}</span> hoặc gọi đến số <span className="font-medium">{siteConfig.contact.phone}</span> trong giờ làm việc.
                 </p>
               </div>
             </div>
