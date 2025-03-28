@@ -30,7 +30,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; block-all-mixed-content; upgrade-insecure-requests;"
           },
           {
             key: 'X-DNS-Prefetch-Control',
@@ -67,27 +67,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
-    config.optimization = {
-      ...config.optimization,
-      minimize: false,
-      minimizer: [],
-      splitChunks: false,
-      runtimeChunk: false,
-      flagIncludedChunks: false,
-      concatenateModules: false,
-      usedExports: false,
-      sideEffects: false,
-      providedExports: false,
-      innerGraph: false,
-      mangleExports: false,
-    };
-    
     if (dev) {
-      config.mode = 'none';
-    }
-    
-    if (!isServer) {
-      config.output.libraryTarget = 'var';
+      config.optimization.minimize = false;
     }
     
     return config;
@@ -95,6 +76,11 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  experimental: {
+    optimizeFonts: false
+  },
+  swcMinify: true,
+  poweredByHeader: false,
 };
 
 module.exports = nextConfig;
