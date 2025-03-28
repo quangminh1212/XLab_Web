@@ -1,74 +1,23 @@
-import { MetadataRoute } from 'next';
+import { siteConfig } from '@/config/siteConfig'
+import { MetadataRoute } from 'next'
+
+// Các URL tĩnh của trang web
+const routes = [
+  '/',
+  '/products',
+  '/services',
+  '/about',
+  '/contact',
+]
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://xlab.com';
-  
-  // Danh sách các trang tĩnh
-  const staticPages = [
-    {
-      url: `${baseUrl}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/products`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/services`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/pricing`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/support`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/login`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-  ] as MetadataRoute.Sitemap;
+  // Lấy danh sách các URL tĩnh
+  const routeEntries = routes.map((route) => ({
+    url: `${siteConfig.url}${route}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: route === '/' ? 1.0 : 0.8,
+  })) as MetadataRoute.Sitemap
 
-  // TODO: Thêm các trang động từ API hoặc database ở đây
-  // Ví dụ: /products/[id], etc.
-  
-  // Có thể fetch dữ liệu từ API hoặc sử dụng dữ liệu tĩnh
-  const dynamicPages = [] as MetadataRoute.Sitemap;
-  /* Ví dụ:
-  const productPages = (await fetchProducts()).map((product) => ({
-    url: `${baseUrl}/products/${product.id}`,
-    lastModified: product.updatedAt,
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  })) as MetadataRoute.Sitemap;
-  */
-
-  // Gộp tất cả URL
-  return [...staticPages, ...dynamicPages];
+  return [...routeEntries]
 } 
