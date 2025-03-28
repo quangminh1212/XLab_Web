@@ -22,6 +22,8 @@
 /.swc-win32-x64-msvc*
 /next-font-manifest*.json
 /next-font-manifest*.js
+.next/server/next-font-manifest.json
+.next/server/webpack-runtime.js
 
 # production
 /build
@@ -199,6 +201,9 @@ Thumbs.db
 .swc/
 **/.swc/
 /.swc-*/
+
+# Batch files
+*.bat
 
 # Thêm các file được tạo ra khi dự án đang chạy
 .next/
