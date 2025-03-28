@@ -57,11 +57,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    // Thêm các cấu hình để tránh lỗi font
+    fontLoaders: [
+      { loader: 'next/font/google', options: { subsets: ['latin', 'vietnamese'] } },
+    ],
+    // Tránh lỗi useLayoutEffect
+    nextScriptWorkers: true,
+  },
   webpack: (config, { dev }) => {
-    if (dev) {
-      config.optimization.minimize = false;
-    }
-    
     return config;
   },
   compiler: {
