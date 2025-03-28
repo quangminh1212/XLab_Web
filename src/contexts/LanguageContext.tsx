@@ -28,7 +28,7 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
     const [language, setLanguageState] = useState<Language>('vi')
-    const [translations, setTranslations] = useState<Record<string, Record<string, string>>>({})
+    const [translations, setTranslations] = useState<any>({})
     const [isLoaded, setIsLoaded] = useState(false)
 
     useEffect(() => {
@@ -51,9 +51,11 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         // Tải các bản dịch
         const loadTranslations = async () => {
             try {
-                const commonTranslations = await import('@/translations/common')
-                setTranslations(commonTranslations.default)
+                // Import trực tiếp bản dịch để tránh lỗi
+                const commonTranslations = (await import('@/translations/common')).default
+                setTranslations(commonTranslations)
                 setIsLoaded(true)
+                console.log('Translations loaded successfully:', Object.keys(commonTranslations).length)
             } catch (error) {
                 console.error('Không thể tải các bản dịch:', error)
                 setIsLoaded(true) // Vẫn đánh dấu là đã tải xong ngay cả khi có lỗi
@@ -96,44 +98,42 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         if (!isLoaded || !key) return key
 
         try {
-            // Kiểm tra xem có phiên bản dạng "key_en" hoặc "key_vi" không
-            const langSpecificKey = `${key}_${language}`;
-            if (translations[langSpecificKey]) {
-                return translations[langSpecificKey];
-            }
-            
+            // Tách key theo dấu chấm (ví dụ: 'navigation.home')
             const keys = key.split('.')
             let result: any = translations
-
-            // Duyệt qua từng phần của key (ví dụ: 'footer.products')
+            
+            // Nếu không có bản dịch, trả về key
+            if (!translations || Object.keys(translations).length === 0) {
+                console.warn(`No translations available for key: ${key}`)
+                return key
+            }
+            
+            // Duyệt qua từng phần của key để lấy giá trị
             for (const k of keys) {
-                if (!result || !result[k]) {
-                    // Thử tìm kiếm key trực tiếp (cho các key dạng cũ)
-                    if (translations[key]) {
-                        const translationObj = translations[key];
-                        if (typeof translationObj === 'object' && translationObj[language]) {
-                            return translationObj[language];
-                        } else if (typeof translationObj === 'string') {
-                            return translationObj;
-                        }
-                    }
-                    return key;
+                if (!result || typeof result !== 'object' || !(k in result)) {
+                    // Nếu không tìm thấy key trong các bản dịch, trả về key gốc
+                    console.warn(`Translation not found for key: ${key}`)
+                    return key
                 }
                 result = result[k]
             }
-
+            
             // Nếu kết quả là chuỗi, trả về chuỗi đó
             if (typeof result === 'string') return result
-
+            
             // Nếu kết quả là object có chứa ngôn ngữ hiện tại, trả về giá trị của ngôn ngữ đó
             if (result && typeof result === 'object') {
-                if (result[language]) {
+                if (language in result) {
                     return result[language]
                 }
+                // Nếu không có ngôn ngữ hiện tại, dùng ngôn ngữ mặc định
+                if ('vi' in result) {
+                    return result['vi']
+                }
             }
-
+            
             // Nếu không tìm thấy bản dịch, trả về key gốc
-            console.warn(`Translation not found for key: ${key}`)
+            console.warn(`Translation structure invalid for key: ${key}`)
             return key
         } catch (error) {
             console.error('Error in translate function:', error)
