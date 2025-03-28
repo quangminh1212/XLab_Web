@@ -13,7 +13,7 @@ function convertToKey(text: string): string {
   text = text.toLowerCase().replace(/\s+/g, '');
 
   // Bảng chuyển đổi các ký tự có dấu sang không dấu
-  const map = {
+  const map: Record<string, string> = {
     'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
     'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
     'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
@@ -40,7 +40,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   // Ánh xạ từ tên tiếng Việt sang key cho các section
-  const sectionKeys = {
+  const sectionKeys: Record<string, string> = {
     'Sản phẩm': 'products',
     'Hỗ trợ': 'support',
     'Về chúng tôi': 'aboutus',
@@ -48,7 +48,7 @@ export default function Footer() {
   }
 
   // Ánh xạ từ tên tiếng Việt sang key cho các link
-  const linkKeys = {
+  const linkKeys: Record<string, string> = {
     'Tất cả sản phẩm': 'allproducts',
     'Mới phát hành': 'newreleases',
     'Phổ biến nhất': 'mostpopular',
