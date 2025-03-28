@@ -1,179 +1,116 @@
-import Image from 'next/image';
+'use client';
+
+import React from 'react';
 import Link from 'next/link';
-import type { Metadata } from 'next';
+import CategoryList from '@/components/CategoryList';
+import ProductCard from '@/components/ProductCard';
+import { categories, products } from '@/data/mockData';
 
-export const metadata: Metadata = {
-  title: 'XLab - Phần mềm chất lượng cao',
-  description: 'XLab cung cấp các phần mềm chất lượng cao với giá cả phải chăng. Khám phá ngay!',
-};
+function HomePage() {
+  // Lọc sản phẩm nổi bật
+  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
+  
+  // Lọc sản phẩm mới nhất
+  const newProducts = [...products]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 4);
 
-export default function Home() {
   return (
-    <>
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="container">
-          <div className="hero-content">
-            <h1>Phần mềm hiệu quả cho doanh nghiệp của bạn</h1>
-            <p>XLab cung cấp các giải pháp phần mềm hiện đại, tối ưu hóa quy trình và tăng hiệu suất cho doanh nghiệp mọi quy mô.</p>
-            <div className="hero-buttons">
-              <Link href="/products" className="btn btn-light">Khám phá sản phẩm</Link>
-              <Link href="/contact" className="btn btn-outline">Liên hệ ngay</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="features">
-        <div className="container">
-          <div className="section-title">
-            <h2>Tại sao chọn XLab?</h2>
-            <p>Chúng tôi phát triển phần mềm với sự tập trung vào trải nghiệm người dùng, hiệu suất và bảo mật.</p>
-          </div>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+    <div className="min-h-screen bg-gray-50">
+      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10 sm:py-12">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              <span className="text-gray-900">X</span><span className="text-primary-600">Lab</span>
+            </h1>
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mb-8">
+              Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay
+            </p>
+            
+            <div className="relative w-full max-w-2xl">
+              <input
+                type="text"
+                placeholder="Tìm kiếm phần mềm, ứng dụng..."
+                className="w-full px-4 py-3 pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800"
+              />
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
                 </svg>
-              </div>
-              <h3>Thiết kế hiện đại</h3>
-              <p>Giao diện người dùng trực quan, thân thiện và đáp ứng trên mọi thiết bị.</p>
+              </button>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </div>
+        </div>
+      </section>
+
+      <div className="container px-3 mx-auto max-w-7xl">
+        <section className="py-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-gray-900">Danh mục</h2>
+            <Link href="/categories" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+              Xem tất cả
+            </Link>
+          </div>
+          
+          <CategoryList categories={categories} />
+        </section>
+
+        {/* Featured products */}
+        <section className="py-12 bg-white">
+          <div className="container max-w-7xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold">Phần mềm nổi bật</h2>
+              <Link
+                href="/products"
+                className="text-primary-600 hover:text-primary-800 transition-colors"
+              >
+                Xem tất cả
+              </Link>
+            </div>
+            
+            <div className="flex items-center justify-center">
+              <div className="text-center py-16">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
+                <p className="text-gray-500 max-w-lg mx-auto">
+                  Hệ thống đang cập nhật
+                </p>
               </div>
-              <h3>Bảo mật tối đa</h3>
-              <p>Chúng tôi ưu tiên bảo mật dữ liệu với các công nghệ mã hóa và kiểm soát truy cập tiên tiến.</p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="16 12 12 8 8 12"></polyline>
-                  <line x1="12" y1="16" x2="12" y2="8"></line>
+          </div>
+        </section>
+        
+        {/* New products */}
+        <section className="py-12 bg-gray-50">
+          <div className="container max-w-7xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold">Phần mềm mới</h2>
+              <Link
+                href="/products"
+                className="text-primary-600 hover:text-primary-800 transition-colors"
+              >
+                Xem tất cả
+              </Link>
+            </div>
+            
+            <div className="flex items-center justify-center">
+              <div className="text-center py-16">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
-              </div>
-              <h3>Cập nhật liên tục</h3>
-              <p>Phần mềm của chúng tôi luôn được cập nhật với các tính năng mới và cải tiến hiệu suất.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Products Section */}
-      <section className="products">
-        <div className="container">
-          <div className="section-title">
-            <h2>Sản phẩm nổi bật</h2>
-            <p>Khám phá các giải pháp phần mềm chuyên nghiệp của chúng tôi.</p>
-          </div>
-          <div className="products-grid">
-            <div className="product-card">
-              <div className="product-image">
-                {/* Placeholder for product image */}
-              </div>
-              <div className="product-content">
-                <h3>XLab Analytics</h3>
-                <p>Giải pháp phân tích dữ liệu hiện đại giúp doanh nghiệp ra quyết định thông minh.</p>
-                <div className="product-price">
-                  <span className="price">1.990.000đ</span>
-                  <Link href="/products/analytics" className="btn btn-primary">Chi tiết</Link>
-                </div>
-              </div>
-            </div>
-            <div className="product-card">
-              <div className="product-image">
-                {/* Placeholder for product image */}
-              </div>
-              <div className="product-content">
-                <h3>XLab Security</h3>
-                <p>Bảo vệ dữ liệu quan trọng của bạn với giải pháp bảo mật toàn diện.</p>
-                <div className="product-price">
-                  <span className="price">2.490.000đ</span>
-                  <Link href="/products/security" className="btn btn-primary">Chi tiết</Link>
-                </div>
-              </div>
-            </div>
-            <div className="product-card">
-              <div className="product-image">
-                {/* Placeholder for product image */}
-              </div>
-              <div className="product-content">
-                <h3>XLab Developer</h3>
-                <p>Bộ công cụ phát triển phần mềm cao cấp cho các lập trình viên chuyên nghiệp.</p>
-                <div className="product-price">
-                  <span className="price">1.790.000đ</span>
-                  <Link href="/products/developer" className="btn btn-primary">Chi tiết</Link>
-                </div>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
+                <p className="text-gray-500 max-w-lg mx-auto">
+                  Hệ thống đang cập nhật
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="testimonials">
-        <div className="container">
-          <div className="section-title">
-            <h2>Khách hàng nói gì về chúng tôi</h2>
-            <p>Những đánh giá từ khách hàng đã sử dụng sản phẩm của XLab.</p>
-          </div>
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <p>"XLab Analytics đã giúp công ty chúng tôi hiểu rõ hơn về hành vi khách hàng và tối ưu hóa chiến lược kinh doanh. Một công cụ tuyệt vời!"</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">
-                  {/* Avatar placeholder */}
-                </div>
-                <div className="author-info">
-                  <h4>Nguyễn Văn A</h4>
-                  <p>Giám đốc Marketing, Công ty ABC</p>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial-card">
-              <p>"Bảo mật là ưu tiên hàng đầu của chúng tôi, và XLab Security cung cấp giải pháp toàn diện mà chúng tôi cần. Đáng đồng tiền bát gạo!"</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">
-                  {/* Avatar placeholder */}
-                </div>
-                <div className="author-info">
-                  <h4>Trần Thị B</h4>
-                  <p>Giám đốc CNTT, Công ty XYZ</p>
-                </div>
-              </div>
-            </div>
-            <div className="testimonial-card">
-              <p>"XLab Developer đã tăng hiệu suất của team lập trình chúng tôi lên đáng kể. Giao diện trực quan, tính năng đa dạng và hiệu suất cao."</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">
-                  {/* Avatar placeholder */}
-                </div>
-                <div className="author-info">
-                  <h4>Lê Văn C</h4>
-                  <p>Tech Lead, Startup DEF</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="cta">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Sẵn sàng nâng cao hiệu suất doanh nghiệp của bạn?</h2>
-            <p>Đăng ký ngay hôm nay để trải nghiệm các giải pháp phần mềm chất lượng cao của XLab.</p>
-            <Link href="/signup" className="btn">Đăng ký ngay</Link>
-          </div>
-        </div>
-      </section>
-    </>
+        </section>
+      </div>
+    </div>
   );
-} 
+}
+
+export default HomePage; 

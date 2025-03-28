@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <!-- Nền -->
+  <rect width="600" height="400" fill="#f8f9fa" opacity="0.1"/>
+  
+  <!-- Hình trang web -->
+  <rect x="50" y="50" width="300" height="250" rx="10" fill="#ffffff" stroke="#01785c" stroke-width="3"/>
+  
+  <!-- Thanh tiêu đề -->
+  <rect x="50" y="50" width="300" height="40" rx="10" fill="#01785c"/>
+  <circle cx="70" cy="70" r="5" fill="#ff9753"/>
+  <circle cx="90" cy="70" r="5" fill="#ffcca9"/>
+  <circle cx="110" cy="70" r="5" fill="#ffffff"/>
+  
+  <!-- Nội dung -->
+  <rect x="70" y="110" width="260" height="10" rx="2" fill="#ebf4f2"/>
+  <rect x="70" y="130" width="200" height="10" rx="2" fill="#ebf4f2"/>
+  <rect x="70" y="150" width="180" height="10" rx="2" fill="#ebf4f2"/>
+  <rect x="70" y="170" width="220" height="10" rx="2" fill="#ebf4f2"/>
+  
+  <!-- Nút kêu gọi hành động -->
+  <rect x="70" y="200" width="120" height="30" rx="15" fill="#01785c"/>
+  <text x="90" y="220" font-family="Arial" font-size="14" fill="#ffffff">Bắt đầu ngay</text>
+  
+  <!-- Thiết bị di động -->
+  <rect x="400" y="100" width="120" height="200" rx="10" fill="#ffffff" stroke="#01785c" stroke-width="3"/>
+  <rect x="400" y="120" width="120" height="160" fill="#ebf4f2"/>
+  <circle cx="460" cy="300" r="10" fill="#f0f0f0" stroke="#01785c" stroke-width="1"/>
+  
+  <!-- Đường kết nối -->
+  <path d="M350 150 C 370 150, 380 150, 400 150" stroke="#01785c" stroke-width="2" fill="none"/>
+  <path d="M350 170 C 370 170, 380 170, 400 180" stroke="#01785c" stroke-width="2" fill="none"/>
+  <path d="M350 190 C 370 190, 380 190, 400 210" stroke="#01785c" stroke-width="2" fill="none"/>
+  
+  <!-- Biểu tượng kết nối -->
+  <circle cx="375" cy="200" r="25" fill="#ff9753" opacity="0.7"/>
+  <text x="363" y="205" font-family="Arial" font-size="14" fill="#ffffff">Sync</text>
+  
+  <!-- Đám mây -->
+  <ellipse cx="500" cy="80" rx="40" ry="25" fill="#ebf4f2" stroke="#01785c" stroke-width="2"/>
+  <text x="477" y="85" font-family="Arial" font-size="12" fill="#01785c">Cloud</text>
+</svg> 
