@@ -1,6 +1,6 @@
 'use client'
 
-import { products, categories } from '@/data/mockData'
+import { products as mockProducts, categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ProductImage } from '@/components/ProductImage'
@@ -20,7 +20,7 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       try {
         // Giả lập gọi API
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 800));
         
         // Mô phỏng lỗi khi không tải được dữ liệu (ngẫu nhiên để test)
         const shouldFail = false; // Đặt thành true để test trạng thái lỗi
@@ -29,8 +29,8 @@ export default function ProductsPage() {
           throw new Error('Không thể kết nối đến máy chủ');
         }
         
-        // Hiện tại để trống danh sách sản phẩm
-        setProducts([]);
+        // Sử dụng dữ liệu mẫu từ mockData
+        setProducts(mockProducts);
         setLoading(false);
       } catch (err: any) {
         console.error('Lỗi khi tải sản phẩm:', err);
@@ -42,12 +42,12 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
   
-  // Các danh mục sản phẩm - sẽ được sử dụng khi có sản phẩm thực tế
+  // Các danh mục sản phẩm - được sắp xếp theo các tiêu chí khác nhau
   const featuredProducts = products.filter(product => product.isFeatured);
-  const newProducts = products.slice().sort((a, b) => 
+  const newProducts = [...products].sort((a, b) => 
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   ).slice(0, 6);
-  const popularProducts = products.slice().sort((a, b) => 
+  const popularProducts = [...products].sort((a, b) => 
     (b.downloadCount || 0) - (a.downloadCount || 0)
   ).slice(0, 6);
 
@@ -106,6 +106,24 @@ export default function ProductsPage() {
           <p className="text-gray-600">
             Khám phá các giải pháp phần mềm chất lượng cao được phát triển bởi XLab và cộng đồng.
           </p>
+        </div>
+
+        {/* Danh sách danh mục */}
+        <div className="mb-10">
+          <div className="flex flex-wrap gap-2">
+            <Link href="/products" className="px-4 py-2 bg-primary-600 text-white rounded-full text-sm font-medium">
+              Tất cả
+            </Link>
+            {categories.map((category) => (
+              <Link 
+                key={category.id} 
+                href={`/categories/${category.slug}`}
+                className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-50"
+              >
+                {category.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {products.length === 0 ? (
