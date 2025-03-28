@@ -55,6 +55,10 @@ export const siteConfig = {
         googleAnalyticsId: '', // Thêm Google Analytics ID
         facebookPixelId: '', // Thêm Facebook Pixel ID
     },
+
+    // Thông báo JavaScript bị vô hiệu hóa
+    noJavaScriptTitle: 'JavaScript Bị Vô Hiệu Hóa',
+    noJavaScriptMessage: 'Website này yêu cầu JavaScript để hoạt động đúng. Vui lòng bật JavaScript và tải lại trang.',
 }
 
 // Danh sách các trang trong footer

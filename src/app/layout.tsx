@@ -1,117 +1,83 @@
+'use client'
+
+import React from 'react'
 import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Roboto } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
+import { SessionProvider } from '@/contexts/SessionContext'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { siteConfig } from '@/config/siteConfig'
+import { usePathname } from 'next/navigation'
 
 // Load Inter font
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ['latin', 'vietnamese'],
   display: 'swap',
   variable: '--font-inter',
 })
 
-export const metadata: Metadata = {
-  title: {
-    template: siteConfig.seo.titleTemplate,
-    default: siteConfig.seo.defaultTitle,
-  },
-  description: siteConfig.seo.defaultDescription,
-  applicationName: siteConfig.name,
-  authors: [{ name: siteConfig.legal.companyName, url: siteConfig.url }],
-  keywords: ['phần mềm', 'dịch vụ CNTT', 'giải pháp doanh nghiệp', 'phát triển phần mềm', 'cloud services'],
-  category: 'technology',
-  robots: {
-    index: true,
-    follow: true,
-  },
-  metadataBase: new URL(siteConfig.url),
-  openGraph: {
-    type: 'website',
-    locale: 'vi_VN',
-    url: siteConfig.url,
-    title: siteConfig.seo.defaultTitle,
-    description: siteConfig.seo.defaultDescription,
-    siteName: siteConfig.name,
-    images: [
-      {
-        url: siteConfig.seo.ogImage,
-        width: 1200,
-        height: 630,
-        alt: siteConfig.seo.defaultTitle,
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteConfig.seo.defaultTitle,
-    description: siteConfig.seo.defaultDescription,
-    creator: siteConfig.seo.twitterHandle,
-    images: [siteConfig.seo.ogImage],
-  },
-  manifest: '/site.webmanifest',
-  icons: {
-    icon: [
-      { url: '/favicon.ico' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      { rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#0070f3' },
-    ],
-  },
-  other: {
-    'msapplication-TileColor': '#0070f3',
-    'theme-color': '#ffffff',
-  },
-}
+// Cấu hình font Roboto
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin', 'vietnamese'],
+  display: 'swap',
+  variable: '--font-roboto',
+})
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: '#ffffff',
-}
+// Các trang không hiển thị header và footer (ví dụ: trang đăng nhập)
+const noLayoutPaths = ['/login', '/register', '/admin/login']
+
+// Thêm export type metadata và viewport cho server component
+export { metadata, viewport } from './_metadata'
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+  
+  // Kiểm tra xem có cần hiển thị header và footer không
+  const showLayout = !noLayoutPaths.includes(pathname || '')
+
+  // Thêm use client directive để tránh lỗi hydration và useLayoutEffect
+  React.useEffect(() => {
+    // Thiết lập ngôn ngữ cho thẻ html
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = 'vi'
+    }
+  }, [])
+
   return (
-    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+    <html lang="vi" className={`${inter.variable} ${roboto.variable} scroll-smooth`}>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
+        <meta name="description" content="XLab cung cấp phần mềm và dịch vụ CNTT đáng tin cậy cho doanh nghiệp" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
-      <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
+      <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
         <noscript>
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 text-white p-4">
-            <div className="bg-red-600 p-6 rounded-lg max-w-md text-center">
-              <h2 className="text-xl font-bold mb-2">JavaScript Bị Vô Hiệu Hóa</h2>
-              <p>Website này yêu cầu JavaScript để hoạt động đúng. Vui lòng bật JavaScript và tải lại trang.</p>
+            <div className="max-w-md p-6 bg-gray-800 rounded-lg text-center">
+              <h2 className="text-xl font-bold mb-4">{siteConfig.noJavaScriptTitle}</h2>
+              <p>{siteConfig.noJavaScriptMessage}</p>
             </div>
           </div>
         </noscript>
 
         <SessionProvider>
           <LanguageProvider>
-            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-              Bỏ qua phần điều hướng
-            </a>
-            <Header />
+            {showLayout && <Header />}
             <main id="main-content" className="flex-grow">
               {children}
             </main>
-            <Footer />
+            {showLayout && <Footer />}
           </LanguageProvider>
         </SessionProvider>
         <Analytics />

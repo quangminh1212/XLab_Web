@@ -218,3 +218,9 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.pem
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+.eslintcache
