@@ -13,14 +13,21 @@ export default function Header() {
   const { data: session, status } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
+  const [language, setLanguage] = useState<'vi' | 'en'>('vi')
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
     const getGreeting = () => {
       const hour = new Date().getHours()
-      if (hour < 12) return 'Chào buổi sáng'
-      if (hour < 18) return 'Chào buổi chiều'
-      return 'Chào buổi tối'
+      if (language === 'vi') {
+        if (hour < 12) return 'Chào buổi sáng'
+        if (hour < 18) return 'Chào buổi chiều'
+        return 'Chào buổi tối'
+      } else {
+        if (hour < 12) return 'Good morning'
+        if (hour < 18) return 'Good afternoon'
+        return 'Good evening'
+      }
     }
 
     setGreeting(getGreeting())
@@ -36,13 +43,55 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [language])
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
+  const toggleLanguage = () => {
+    setLanguage(prevLang => prevLang === 'vi' ? 'en' : 'vi')
+  }
+
   const isLoading = status === 'loading'
+
+  // Danh sách menu dựa theo ngôn ngữ
+  const menuItems = {
+    vi: [
+      { path: '/', label: 'Trang chủ' },
+      { path: '/products', label: 'Sản phẩm' },
+      { path: '/services', label: 'Dịch vụ' },
+      { path: '/about', label: 'Giới thiệu' },
+      { path: '/contact', label: 'Liên hệ' }
+    ],
+    en: [
+      { path: '/', label: 'Home' },
+      { path: '/products', label: 'Products' },
+      { path: '/services', label: 'Services' },
+      { path: '/about', label: 'About' },
+      { path: '/contact', label: 'Contact' }
+    ]
+  }
+
+  // Các từ khóa UI dựa theo ngôn ngữ
+  const uiText = {
+    vi: {
+      login: 'Đăng nhập',
+      register: 'Đăng ký',
+      myAccount: 'Tài khoản của tôi',
+      settings: 'Cài đặt',
+      logout: 'Đăng xuất',
+      loggedInAs: 'Đăng nhập bằng'
+    },
+    en: {
+      login: 'Login',
+      register: 'Register',
+      myAccount: 'My Account',
+      settings: 'Settings',
+      logout: 'Logout',
+      loggedInAs: 'Logged in as'
+    }
+  }
 
   return (
     <header
@@ -72,7 +121,7 @@ export default function Header() {
             {!isLoading && session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
                 <span className="bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full shadow-sm text-center">
-                  {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
+                  {greeting}, {session.user.name?.split(' ')[0] || (language === 'vi' ? 'bạn' : 'you')}!
                 </span>
               </div>
             )}
@@ -80,25 +129,28 @@ export default function Header() {
 
           {/* Menu desktop */}
           <nav className="hidden md:flex items-center justify-center space-x-2">
-            <Link href="/" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
-              Trang chủ
-            </Link>
-            <Link href="/products" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/products' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
-              Sản phẩm
-            </Link>
-            <Link href="/services" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/services' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
-              Dịch vụ
-            </Link>
-            <Link href="/about" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/about' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
-              Giới thiệu
-            </Link>
-            <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
-              Liên hệ
-            </Link>
+            {menuItems[language].map(item => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === item.path ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Buttons */}
           <div className="flex items-center justify-center space-x-3">
+            {/* Chuyển đổi ngôn ngữ */}
+            <button
+              onClick={toggleLanguage}
+              className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
+              aria-label={language === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}
+            >
+              <span className="font-medium text-sm">{language === 'vi' ? 'EN' : 'VI'}</span>
+            </button>
+
             {/* Tìm kiếm */}
             <button
               className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
@@ -152,20 +204,20 @@ export default function Header() {
                   {mobileMenuOpen && (
                     <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black/5 z-50">
                       <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
-                        Đăng nhập bằng {session.user?.email}
+                        {uiText[language].loggedInAs} {session.user?.email}
                       </div>
                       <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
-                        Tài khoản của tôi
+                        {uiText[language].myAccount}
                       </Link>
                       <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
-                        Cài đặt
+                        {uiText[language].settings}
                       </Link>
                       <div className="border-t border-gray-100"></div>
                       <button
                         onClick={() => signOut()}
                         className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
-                        Đăng xuất
+                        {uiText[language].logout}
                       </button>
                     </div>
                   )}
@@ -177,13 +229,13 @@ export default function Header() {
                   href="/login"
                   className="px-5 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
                 >
-                  Đăng nhập
+                  {uiText[language].login}
                 </Link>
                 <Link
                   href="/register"
                   className="px-5 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center"
                 >
-                  Đăng ký
+                  {uiText[language].register}
                 </Link>
               </div>
             )}
@@ -212,24 +264,27 @@ export default function Header() {
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
             {!isLoading && session && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 rounded-md text-center">
-                {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
+                {greeting}, {session.user?.name?.split(' ')[0] || (language === 'vi' ? 'bạn' : 'you')}!
               </div>
             )}
-            <Link href="/" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
-              Trang chủ
-            </Link>
-            <Link href="/products" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/products' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
-              Sản phẩm
-            </Link>
-            <Link href="/services" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/services' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
-              Dịch vụ
-            </Link>
-            <Link href="/about" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/about' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
-              Giới thiệu
-            </Link>
-            <Link href="/contact" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
-              Liên hệ
-            </Link>
+
+            {menuItems[language].map(item => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === item.path ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            {/* Chuyển đổi ngôn ngữ (mobile) */}
+            <button
+              onClick={toggleLanguage}
+              className="w-full text-left px-4 py-2.5 text-base font-medium rounded-md text-gray-700 hover:text-teal-600 hover:bg-teal-50 text-center flex items-center justify-center"
+            >
+              {language === 'vi' ? 'Switch to English' : 'Chuyển sang tiếng Việt'}
+            </button>
 
             {!isLoading && !session && (
               <div className="flex space-x-3 mt-3 px-3">
@@ -237,13 +292,13 @@ export default function Header() {
                   href="/login"
                   className="flex-1 px-4 py-2.5 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium"
                 >
-                  Đăng nhập
+                  {uiText[language].login}
                 </Link>
                 <Link
                   href="/register"
                   className="flex-1 px-4 py-2.5 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium"
                 >
-                  Đăng ký
+                  {uiText[language].register}
                 </Link>
               </div>
             )}
