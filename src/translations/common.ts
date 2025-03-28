@@ -238,6 +238,113 @@ const translations = {
             en: 'Subject'
         }
     },
+
+    // Phần footer
+    footer: {
+        products: {
+            vi: 'Sản phẩm',
+            en: 'Products'
+        },
+        allProducts: {
+            vi: 'Tất cả sản phẩm',
+            en: 'All products'
+        },
+        newReleases: {
+            vi: 'Mới phát hành',
+            en: 'New releases'
+        },
+        mostPopular: {
+            vi: 'Phổ biến nhất',
+            en: 'Most popular'
+        },
+        onSale: {
+            vi: 'Khuyến mãi',
+            en: 'On sale'
+        },
+        support: {
+            vi: 'Hỗ trợ',
+            en: 'Support'
+        },
+        contact: {
+            vi: 'Liên hệ',
+            en: 'Contact'
+        },
+        faq: {
+            vi: 'FAQ',
+            en: 'FAQ'
+        },
+        userGuides: {
+            vi: 'Hướng dẫn sử dụng',
+            en: 'User guides'
+        },
+        reportBug: {
+            vi: 'Báo lỗi',
+            en: 'Report a bug'
+        },
+        aboutUs: {
+            vi: 'Về chúng tôi',
+            en: 'About us'
+        },
+        blog: {
+            vi: 'Blog',
+            en: 'Blog'
+        },
+        careers: {
+            vi: 'Tuyển dụng',
+            en: 'Careers'
+        },
+        partners: {
+            vi: 'Đối tác',
+            en: 'Partners'
+        },
+        legal: {
+            vi: 'Pháp lý',
+            en: 'Legal'
+        },
+        termsOfService: {
+            vi: 'Điều khoản dịch vụ',
+            en: 'Terms of service'
+        },
+        privacyPolicy: {
+            vi: 'Chính sách bảo mật',
+            en: 'Privacy policy'
+        },
+        refundPolicy: {
+            vi: 'Chính sách hoàn tiền',
+            en: 'Refund policy'
+        },
+        intellectualProperty: {
+            vi: 'Quyền sở hữu trí tuệ',
+            en: 'Intellectual property'
+        },
+        newsletter: {
+            vi: 'Đăng ký nhận thông tin mới',
+            en: 'Sign up for newsletter'
+        },
+        newsletterDescription: {
+            vi: 'Nhận thông tin về sản phẩm mới, khuyến mãi và cập nhật từ XLab',
+            en: 'Get updates on new products, promotions, and news from XLab'
+        },
+        subscribeButton: {
+            vi: 'Đăng ký',
+            en: 'Subscribe'
+        },
+        copyright: {
+            vi: 'Bản quyền',
+            en: 'Copyright'
+        },
+        allRightsReserved: {
+            vi: 'Tất cả quyền được bảo lưu',
+            en: 'All rights reserved'
+        },
+        companyDescription: {
+            vi: 'XLab cung cấp các giải pháp phần mềm và dịch vụ CNTT chất lượng cao, giúp doanh nghiệp của bạn phát triển trong kỷ nguyên số.',
+            en: 'XLab provides high-quality software solutions and IT services, helping your business thrive in the digital era.'
+        },
+        emailPlaceholder: {
+            vi: 'Email của bạn',
+            en: 'Your email'
+        }
     }
 };
 
