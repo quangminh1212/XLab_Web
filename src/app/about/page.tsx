@@ -1,26 +1,35 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function AboutPage() {
-  const { translate } = useLanguage()
+  const { translate, isLoaded } = useLanguage()
   
   // Set page title
-  React.useEffect(() => {
-    document.title = 'Giới thiệu | XLab - Phần mềm và Dịch vụ'
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      document.title = 'Giới thiệu | XLab - Phần mềm và Dịch vụ'
+    }
   }, [])
+
+  // Fallback text cho trường hợp dịch không thành công
+  const getTranslation = (key, fallback) => {
+    return isLoaded ? translate(key) : fallback;
+  };
 
   return (
     <div>
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{translate('about.pageTitle')}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            {getTranslation('about.pageTitle', 'Giới thiệu về XLab')}
+          </h1>
           <p className="text-xl max-w-3xl">
-            {translate('about.companyDescription')}
+            {getTranslation('about.companyDescription', 'XLab là công ty hàng đầu trong lĩnh vực phát triển phần mềm và dịch vụ công nghệ thông tin tại Việt Nam.')}
           </p>
         </div>
       </section>
@@ -30,32 +39,34 @@ export default function AboutPage() {
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-2xl font-bold mb-6">{translate('about.ourHistory')}</h2>
+              <h2 className="text-2xl font-bold mb-6">
+                {getTranslation('about.ourHistory', 'Lịch sử của chúng tôi')}
+              </h2>
               <p className="mb-4">
-                {translate('about.historyParagraph1')}
+                {getTranslation('about.historyParagraph1', 'XLab được thành lập vào năm 2020 bởi một nhóm các kỹ sư phần mềm nhiệt huyết với mục tiêu tạo ra các giải pháp công nghệ sáng tạo cho thị trường Việt Nam.')}
               </p>
               <p className="mb-4">
-                {translate('about.historyParagraph2')}
+                {getTranslation('about.historyParagraph2', 'Với sự đầu tư mạnh mẽ vào nghiên cứu và phát triển, chúng tôi đã nhanh chóng phát triển từ một startup nhỏ thành một công ty công nghệ đáng tin cậy với nhiều khách hàng lớn trong và ngoài nước.')}
               </p>
               <p>
-                {translate('about.historyParagraph3')}
+                {getTranslation('about.historyParagraph3', 'Hiện nay, XLab đã phát triển mạnh mẽ với đội ngũ hơn 50 nhân viên tài năng, làm việc trong môi trường chuyên nghiệp và sáng tạo.')}
               </p>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
               <div className="relative slideshow-container h-96">
                 <img
                   src="/images/office-workspace.jpg"
-                  alt={translate('about.workspaceImageAlt')}
+                  alt={getTranslation('about.workspaceImageAlt', 'Không gian làm việc tại XLab')}
                   className="w-full h-full object-cover slideshow-item"
                 />
                 <img
                   src="/images/company-team.jpg"
-                  alt={translate('about.teamImageAlt')}
+                  alt={getTranslation('about.teamImageAlt', 'Đội ngũ XLab')}
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
                 <img
                   src="/images/tech-workspace.jpg"
-                  alt={translate('about.techspaceImageAlt')}
+                  alt={getTranslation('about.techspaceImageAlt', 'Không gian công nghệ tại XLab')}
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
 
@@ -91,9 +102,11 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-4">{translate('about.ourMission')}</h2>
+              <h2 className="text-2xl font-bold mb-4">
+                {getTranslation('about.ourMission', 'Sứ mệnh của chúng tôi')}
+              </h2>
               <p className="text-gray-600">
-                {translate('about.missionContent')}
+                {getTranslation('about.missionContent', 'Sứ mệnh của XLab là phát triển các giải pháp công nghệ sáng tạo, hiệu quả và dễ tiếp cận cho mọi đối tượng khách hàng, từ doanh nghiệp nhỏ đến tập đoàn lớn tại Việt Nam và khu vực.')}
               </p>
             </div>
 
@@ -120,9 +133,11 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-4">{translate('about.ourVision')}</h2>
+              <h2 className="text-2xl font-bold mb-4">
+                {getTranslation('about.ourVision', 'Tầm nhìn của chúng tôi')}
+              </h2>
               <p className="text-gray-600">
-                {translate('about.visionContent')}
+                {getTranslation('about.visionContent', 'Khát vọng của XLab là trở thành công ty công nghệ hàng đầu trong khu vực, mang lại giá trị thực sự cho khách hàng thông qua các giải pháp công nghệ tiên tiến và dịch vụ chất lượng cao.')}
               </p>
             </div>
           </div>
@@ -133,9 +148,11 @@ export default function AboutPage() {
       <section className="py-16">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">{translate('about.ourValues')}</h2>
+            <h2 className="text-3xl font-bold mb-4">
+              {getTranslation('about.ourValues', 'Giá trị cốt lõi')}
+            </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {translate('about.valuesDescription')}
+              {getTranslation('about.valuesDescription', 'Những giá trị cốt lõi định hướng mọi hoạt động và quyết định của chúng tôi, từ phát triển sản phẩm đến chăm sóc khách hàng.')}
             </p>
           </div>
 
@@ -157,9 +174,11 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">{translate('about.valueQuality')}</h3>
+              <h3 className="text-xl font-bold mb-2">
+                {getTranslation('about.valueQuality', 'Chất lượng')}
+              </h3>
               <p className="text-gray-600">
-                {translate('about.qualityDesc')}
+                {getTranslation('about.qualityDesc', 'Cam kết đảm bảo chất lượng trong mỗi sản phẩm và dịch vụ, mang đến trải nghiệm tốt nhất cho khách hàng.')}
               </p>
             </div>
 
@@ -180,9 +199,11 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">{translate('about.valueInnovation')}</h3>
+              <h3 className="text-xl font-bold mb-2">
+                {getTranslation('about.valueInnovation', 'Đổi mới')}
+              </h3>
               <p className="text-gray-600">
-                {translate('about.innovationDesc')}
+                {getTranslation('about.innovationDesc', 'Luôn tìm kiếm giải pháp sáng tạo và tiên phong trong việc áp dụng các công nghệ mới.')}
               </p>
             </div>
 
@@ -203,9 +224,11 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">{translate('about.valueCollaboration')}</h3>
+              <h3 className="text-xl font-bold mb-2">
+                {getTranslation('about.valueCollaboration', 'Hợp tác')}
+              </h3>
               <p className="text-gray-600">
-                {translate('about.collaborationDesc')}
+                {getTranslation('about.collaborationDesc', 'Làm việc cùng nhau trong tinh thần đồng đội, chia sẻ kiến thức và kinh nghiệm để đạt kết quả tốt nhất.')}
               </p>
             </div>
 
@@ -226,9 +249,11 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">{translate('about.valueResponsibility')}</h3>
+              <h3 className="text-xl font-bold mb-2">
+                {getTranslation('about.valueResponsibility', 'Trách nhiệm')}
+              </h3>
               <p className="text-gray-600">
-                {translate('about.responsibilityDesc')}
+                {getTranslation('about.responsibilityDesc', 'Cam kết với khách hàng, đối tác và xã hội; làm việc có trách nhiệm và đạo đức.')}
               </p>
             </div>
           </div>
@@ -239,15 +264,17 @@ export default function AboutPage() {
       <section className="py-16 bg-primary-600 text-white">
         <div className="container">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-6">{translate('about.ctaTitle')}</h2>
+            <h2 className="text-3xl font-bold mb-6">
+              {getTranslation('about.ctaTitle', 'Sẵn sàng hợp tác với chúng tôi?')}
+            </h2>
             <p className="text-xl mb-8 max-w-3xl mx-auto">
-              {translate('about.ctaText')}
+              {getTranslation('about.ctaText', 'Liên hệ ngay hôm nay để thảo luận về dự án của bạn và khám phá cách XLab có thể giúp doanh nghiệp bạn phát triển.')}
             </p>
             <a
               href="/contact"
               className="inline-block bg-white text-primary-600 font-medium rounded-full py-3 px-8 shadow-md hover:bg-gray-100 transition-colors"
             >
-              {translate('about.ctaButton')}
+              {getTranslation('about.ctaButton', 'Liên hệ với chúng tôi')}
             </a>
           </div>
         </div>

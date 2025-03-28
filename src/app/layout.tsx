@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import '@/styles/globals.css'
 import { Inter, Roboto } from 'next/font/google'
 import Header from '@/components/Header'
@@ -40,14 +40,15 @@ export default function RootLayout({
   const showLayout = !noLayoutPaths.includes(pathname || '')
 
   // Thêm use client directive để tránh lỗi hydration và useLayoutEffect
-  React.useEffect(() => {
-    // Thiết lập ngôn ngữ cho thẻ html
-    if (typeof document !== 'undefined') {
+  useEffect(() => {
+    // Kiểm tra môi trường client một cách rõ ràng
+    if (typeof window !== 'undefined') {
+      // Thiết lập ngôn ngữ cho thẻ html
       document.documentElement.lang = 'vi'
+      
+      // Thiết lập tiêu đề trang
+      document.title = siteConfig.seo.defaultTitle
     }
-    
-    // Thiết lập tiêu đề trang
-    document.title = siteConfig.seo.defaultTitle
   }, [])
 
   return (
