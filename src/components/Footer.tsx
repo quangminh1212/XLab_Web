@@ -14,12 +14,12 @@ export default function Footer() {
           {/* Logo và giới thiệu */}
           <div className="mb-8">
             <Link href="/" className="flex items-center justify-center mb-4">
-              <span className="w-80 h-80 inline-flex items-center justify-center p-4 bg-gray-800 rounded-xl">
+              <span className="w-40 h-40 inline-flex items-center justify-center p-4 bg-gray-800 rounded-xl">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={500}
-                  height={500}
+                  width={100}
+                  height={100}
                   className="w-full h-full object-cover rounded-lg border-2 border-gray-700 shadow-xl"
                 />
               </span>
