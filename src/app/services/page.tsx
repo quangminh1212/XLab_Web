@@ -1,11 +1,17 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function ServicesPage() {
   const { translate } = useLanguage();
+  
+  // Set page title
+  React.useEffect(() => {
+    document.title = 'Dịch vụ | XLab - Phần mềm và Dịch vụ'
+  }, [])
 
   // Danh sách dịch vụ chính
   const mainServices = [

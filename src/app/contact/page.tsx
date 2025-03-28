@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { useState } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
@@ -12,6 +13,11 @@ export default function ContactPage() {
     subject: '',
     message: ''
   })
+
+  // Set page title
+  React.useEffect(() => {
+    document.title = 'Liên hệ | XLab - Phần mềm và Dịch vụ'
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
