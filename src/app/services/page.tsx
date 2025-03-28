@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function ServicesPage() {
@@ -95,10 +96,13 @@ export default function ServicesPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
             <div className="mb-6">
-              <img
+              <Image
                 src="/images/logo.jpg"
                 alt="XLab Logo"
-                className="w-40 h-40 object-contain rounded-lg shadow-lg"
+                width={160}
+                height={160}
+                className="rounded-lg shadow-lg"
+                priority
               />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">{translate('services.pageTitle')}</h1>
