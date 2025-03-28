@@ -6,11 +6,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export const metadata = {
-  title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
-}
-
 export default function AdminPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -22,6 +17,11 @@ export default function AdminPage() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
+  
+  // Thiết lập tiêu đề trang bằng useEffect thay vì metadata
+  useEffect(() => {
+    document.title = 'Quản trị | XLab - Phần mềm và Dịch vụ';
+  }, []);
   
   // Kiểm tra quyền admin
   useEffect(() => {
