@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import ProductGrid from '@/components/ProductGrid'
 import CategoryList from '@/components/CategoryList'
-import { products as mockProducts, categories } from '@/data/mockData'
+import { categories } from '@/data/mockData'
 import { Product } from '@/types'
 
 export default function ProductsPage() {
@@ -26,16 +26,9 @@ export default function ProductsPage() {
         // Giả lập gọi API
         await new Promise(resolve => setTimeout(resolve, 800))
         
-        // Mô phỏng lỗi khi không tải được dữ liệu (ngẫu nhiên để test)
-        const shouldFail = false // Đặt thành true để test trạng thái lỗi
-        
-        if (shouldFail) {
-          throw new Error('Không thể kết nối đến máy chủ')
-        }
-        
-        // Sử dụng dữ liệu mẫu từ mockData
-        setProducts(mockProducts)
-        setFilteredProducts(mockProducts)
+        // Sử dụng mảng rỗng để biểu thị chưa có sản phẩm
+        setProducts([])
+        setFilteredProducts([])
         setError(null)
       } catch (err: any) {
         console.error('Lỗi khi tải sản phẩm:', err)
@@ -76,21 +69,6 @@ export default function ProductsPage() {
   const handleCategoryClick = (slug: string) => {
     setSelectedCategory(prevCat => prevCat === slug ? null : slug)
   }
-
-  // Lấy danh sách các sản phẩm nổi bật (có rating cao)
-  const featuredProducts = [...products]
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-    .slice(0, 4)
-
-  // Lấy danh sách các sản phẩm mới (dựa trên ngày tạo)
-  const newProducts = [...products]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 4)
-
-  // Lấy danh sách các sản phẩm phổ biến (dựa trên số lượt tải)
-  const popularProducts = [...products]
-    .sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0))
-    .slice(0, 4)
 
   if (loading) {
     return (
@@ -133,6 +111,46 @@ export default function ProductsPage() {
               </svg>
               Về trang chủ
             </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Hiển thị thông báo và hướng dẫn khi không có sản phẩm
+  if (products.length === 0) {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto text-gray-400 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Chưa có sản phẩm</h2>
+            <p className="text-gray-600 mb-8">
+              Hiện tại chưa có sản phẩm nào được thêm vào hệ thống. Bạn có thể thêm sản phẩm mới bằng cách nhấn vào nút bên dưới.
+            </p>
+            <div className="flex justify-center">
+              <Link href="/admin/products/new">
+                <Button className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Thêm sản phẩm mới
+                </Button>
+              </Link>
+            </div>
+          </div>
+          
+          {/* Vẫn hiển thị danh mục sản phẩm để người dùng có thể xem các danh mục có sẵn */}
+          <div className="mt-16 mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">Danh mục sản phẩm</h2>
+              <Link href="/categories" className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                Xem tất cả
+              </Link>
+            </div>
+            <CategoryList categories={categories} />
           </div>
         </div>
       </div>
@@ -240,43 +258,8 @@ export default function ProductsPage() {
             </div>
           
             {/* Sản phẩm nổi bật */}
-            {featuredProducts.length > 0 && (
-              <div className="mb-12">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">Sản phẩm nổi bật</h2>
-                  <Button variant="link" className="text-primary-600 px-0">
-                    Xem tất cả
-                  </Button>
-                </div>
-                <ProductGrid products={featuredProducts} />
-              </div>
-            )}
-            
             {/* Sản phẩm mới */}
-            {newProducts.length > 0 && (
-              <div className="mb-12">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">Sản phẩm mới</h2>
-                  <Button variant="link" className="text-primary-600 px-0">
-                    Xem tất cả
-                  </Button>
-                </div>
-                <ProductGrid products={newProducts} />
-              </div>
-            )}
-            
             {/* Sản phẩm phổ biến */}
-            {popularProducts.length > 0 && (
-              <div className="mb-12">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">Sản phẩm phổ biến</h2>
-                  <Button variant="link" className="text-primary-600 px-0">
-                    Xem tất cả
-                  </Button>
-                </div>
-                <ProductGrid products={popularProducts} />
-              </div>
-            )}
           </>
         )}
       </div>

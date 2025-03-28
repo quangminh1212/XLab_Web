@@ -3,8 +3,7 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import CategoryList from '@/components/CategoryList';
-import ProductCard from '@/components/ProductCard';
-import { categories, products } from '@/data/mockData';
+import { categories } from '@/data/mockData';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 function HomePage() {
@@ -18,14 +17,6 @@ function HomePage() {
       console.log('Translations not loaded yet in HomePage');
     }
   }, [isLoaded]);
-  
-  // Lọc sản phẩm nổi bật
-  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
-
-  // Lọc sản phẩm mới nhất
-  const newProducts = [...products]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 4);
 
   return (
     <div className="min-h-screen bg-gray-50">
