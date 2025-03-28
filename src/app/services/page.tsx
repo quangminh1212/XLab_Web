@@ -1,14 +1,19 @@
+'use client'
+
 import Link from 'next/link'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function ServicesPage() {
+  const { translate } = useLanguage();
+
   return (
     <div>
       {/* Page Header */}
       <section className="bg-secondary-600 text-white py-16">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Dịch vụ</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{translate('services.pageTitle')}</h1>
           <p className="text-xl max-w-3xl">
-            Chúng tôi cung cấp các dịch vụ công nghệ chuyên nghiệp giúp doanh nghiệp của bạn phát triển.
+            {translate('services.pageDescription')}
           </p>
         </div>
       </section>
@@ -38,15 +43,15 @@ export default function ServicesPage() {
                 </div>
               </div>
               <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Phát triển phần mềm theo yêu cầu</h3>
+                <h3 className="text-xl font-bold mb-3">{translate('services.customSoftwareDev')}</h3>
                 <p className="text-gray-600 mb-4">
-                  Chúng tôi xây dựng các giải pháp phần mềm tùy chỉnh theo nhu cầu cụ thể của doanh nghiệp, từ ứng dụng web đến ứng dụng di động và hệ thống backend.
+                  {translate('services.customSoftwareDesc')}
                 </p>
                 <Link
                   href="/services/software-development"
                   className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
                 >
-                  Tìm hiểu thêm
+                  {translate('actions.learnMore')}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 ml-1"
@@ -84,15 +89,15 @@ export default function ServicesPage() {
                 </div>
               </div>
               <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Dịch vụ đám mây</h3>
+                <h3 className="text-xl font-bold mb-3">{translate('services.cloudServices')}</h3>
                 <p className="text-gray-600 mb-4">
-                  Cung cấp giải pháp đám mây toàn diện, từ tư vấn và triển khai đến quản lý và tối ưu hóa, giúp doanh nghiệp tiết kiệm chi phí và tăng cường khả năng mở rộng.
+                  {translate('services.cloudServicesDesc')}
                 </p>
                 <Link
                   href="/services/cloud-services"
                   className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
                 >
-                  Tìm hiểu thêm
+                  {translate('actions.learnMore')}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 ml-1"
@@ -130,15 +135,15 @@ export default function ServicesPage() {
                 </div>
               </div>
               <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Tư vấn công nghệ</h3>
+                <h3 className="text-xl font-bold mb-3">{translate('services.techConsulting')}</h3>
                 <p className="text-gray-600 mb-4">
-                  Cung cấp dịch vụ tư vấn chuyên nghiệp về chiến lược công nghệ, lộ trình chuyển đổi số và tối ưu hóa quy trình, giúp doanh nghiệp đưa ra quyết định đúng đắn.
+                  {translate('services.techConsultingDesc')}
                 </p>
                 <Link
                   href="/services/consulting"
                   className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
                 >
-                  Tìm hiểu thêm
+                  {translate('actions.learnMore')}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 ml-1"
@@ -176,15 +181,15 @@ export default function ServicesPage() {
                 </div>
               </div>
               <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Hỗ trợ kỹ thuật</h3>
+                <h3 className="text-xl font-bold mb-3">{translate('services.technicalSupport')}</h3>
                 <p className="text-gray-600 mb-4">
-                  Đội ngũ hỗ trợ kỹ thuật 24/7 luôn sẵn sàng giải quyết mọi vấn đề, đảm bảo hệ thống của bạn hoạt động trơn tru và hiệu quả.
+                  {translate('services.technicalSupportDesc')}
                 </p>
                 <Link
                   href="/services/technical-support"
                   className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
                 >
-                  Tìm hiểu thêm
+                  {translate('actions.learnMore')}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 ml-1"
@@ -208,52 +213,52 @@ export default function ServicesPage() {
       <section className="py-16 bg-gray-50">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Dịch vụ bổ sung</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">{translate('services.additionalServices')}</h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Ngoài các dịch vụ chính, chúng tôi còn cung cấp nhiều dịch vụ bổ sung để đáp ứng đầy đủ nhu cầu của doanh nghiệp.
+              {translate('services.additionalServicesDesc')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Đào tạo</h3>
+              <h3 className="text-lg font-semibold mb-3">{translate('services.training')}</h3>
               <p className="text-gray-600">
-                Chương trình đào tạo chuyên sâu giúp nhân viên của bạn nắm vững cách sử dụng và tối ưu hóa các giải pháp phần mềm.
+                {translate('services.trainingDesc')}
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Bảo trì và nâng cấp</h3>
+              <h3 className="text-lg font-semibold mb-3">{translate('services.maintenance')}</h3>
               <p className="text-gray-600">
-                Dịch vụ bảo trì và nâng cấp hệ thống thường xuyên, đảm bảo phần mềm luôn hoạt động ổn định và cập nhật với công nghệ mới nhất.
+                {translate('services.maintenanceDesc')}
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Tích hợp hệ thống</h3>
+              <h3 className="text-lg font-semibold mb-3">{translate('services.systemIntegration')}</h3>
               <p className="text-gray-600">
-                Giúp kết nối và tích hợp các hệ thống, ứng dụng và dịch vụ khác nhau để tạo ra một hệ sinh thái công nghệ thống nhất.
+                {translate('services.systemIntegrationDesc')}
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">An ninh mạng</h3>
+              <h3 className="text-lg font-semibold mb-3">{translate('services.cybersecurity')}</h3>
               <p className="text-gray-600">
-                Dịch vụ bảo mật toàn diện, từ đánh giá rủi ro đến triển khai các giải pháp bảo mật và giám sát liên tục.
+                {translate('services.cybersecurityDesc')}
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Phân tích dữ liệu</h3>
+              <h3 className="text-lg font-semibold mb-3">{translate('services.dataAnalytics')}</h3>
               <p className="text-gray-600">
-                Dịch vụ phân tích dữ liệu chuyên sâu giúp bạn khai thác giá trị từ dữ liệu và đưa ra quyết định kinh doanh sáng suốt.
+                {translate('services.dataAnalyticsDesc')}
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Thiết kế UX/UI</h3>
+              <h3 className="text-lg font-semibold mb-3">{translate('services.digitalTransformation')}</h3>
               <p className="text-gray-600">
-                Dịch vụ thiết kế trải nghiệm người dùng và giao diện chuyên nghiệp, giúp tạo ra các sản phẩm số thân thiện và hấp dẫn.
+                {translate('services.digitalTransformationDesc')}
               </p>
             </div>
           </div>
@@ -263,18 +268,16 @@ export default function ServicesPage() {
       {/* CTA Section */}
       <section className="py-16 bg-secondary-600 text-white">
         <div className="container">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">
-              Sẵn sàng nâng cấp hệ thống công nghệ của bạn?
-            </h2>
-            <p className="text-xl mb-8">
-              Liên hệ với chúng tôi ngay hôm nay để được tư vấn miễn phí về giải pháp phù hợp nhất cho doanh nghiệp của bạn.
+          <div className="text-center">
+            <h2 className="text-3xl font-bold mb-6">{translate('services.ctaTitle')}</h2>
+            <p className="text-xl max-w-3xl mx-auto mb-8">
+              {translate('services.ctaDescription')}
             </p>
             <Link
               href="/contact"
-              className="btn bg-white text-secondary-600 hover:bg-gray-100 px-8 py-3 text-lg"
+              className="inline-block bg-white text-secondary-600 hover:bg-gray-100 font-medium px-8 py-3 rounded-full transition-colors"
             >
-              Đặt lịch tư vấn
+              {translate('services.contactUs')}
             </Link>
           </div>
         </div>
