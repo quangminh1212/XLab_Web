@@ -1,12 +1,18 @@
+'use client'
+
+import { useLanguage } from '@/contexts/LanguageContext'
+
 export default function AboutPage() {
+  const { translate } = useLanguage()
+
   return (
     <div>
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Về chúng tôi</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{translate('about.pageTitle')}</h1>
           <p className="text-xl max-w-3xl">
-            XLab - Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ tại Việt Nam
+            {translate('about.companyDescription')}
           </p>
         </div>
       </section>
@@ -16,43 +22,35 @@ export default function AboutPage() {
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-2xl font-bold mb-6">Câu chuyện của chúng tôi</h2>
+              <h2 className="text-2xl font-bold mb-6">{translate('about.ourHistory')}</h2>
               <p className="mb-4">
-                XLab được thành lập vào năm 2018 bởi một nhóm kỹ sư phần mềm đam mê và có tầm nhìn 
-                về việc tạo ra các giải pháp công nghệ tiên tiến, giúp doanh nghiệp Việt Nam 
-                nâng cao hiệu quả hoạt động và năng lực cạnh tranh trong kỷ nguyên số.
+                {translate('about.historyParagraph1')}
               </p>
               <p className="mb-4">
-                Sau hơn 10 năm hoạt động và phát triển, XLab đã trở thành đối tác công nghệ 
-                tin cậy của hàng trăm doanh nghiệp trong và ngoài nước, từ các công ty khởi nghiệp 
-                cho đến các tập đoàn lớn thuộc nhiều lĩnh vực khác nhau như tài chính, bán lẻ, 
-                sản xuất, giáo dục và y tế.
+                {translate('about.historyParagraph2')}
               </p>
               <p>
-                Chúng tôi tự hào về đội ngũ nhân sự tài năng và đam mê công nghệ, 
-                với hơn 100 chuyên gia phần mềm, kỹ sư hệ thống, và chuyên gia tư vấn 
-                giàu kinh nghiệm, luôn tận tâm với mục tiêu mang lại những giải pháp 
-                tối ưu cho đối tác và khách hàng.
+                {translate('about.historyParagraph3')}
               </p>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
               <div className="relative slideshow-container h-96">
-                <img 
-                  src="/images/office-workspace.jpg" 
-                  alt="Không gian làm việc tại XLab" 
+                <img
+                  src="/images/office-workspace.jpg"
+                  alt={translate('about.workspaceImageAlt')}
                   className="w-full h-full object-cover slideshow-item"
                 />
-                <img 
-                  src="/images/company-team.jpg" 
-                  alt="Đội ngũ XLab làm việc cùng nhau" 
+                <img
+                  src="/images/company-team.jpg"
+                  alt={translate('about.teamImageAlt')}
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
-                <img 
-                  src="/images/tech-workspace.jpg" 
-                  alt="Không gian công nghệ tại XLab" 
+                <img
+                  src="/images/tech-workspace.jpg"
+                  alt={translate('about.techspaceImageAlt')}
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
-                
+
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
                   <button className="w-3 h-3 rounded-full bg-white opacity-50 slideshow-dot slideshow-dot-active"></button>
                   <button className="w-3 h-3 rounded-full bg-white opacity-50 slideshow-dot"></button>
@@ -85,14 +83,9 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-4">Sứ mệnh</h2>
+              <h2 className="text-2xl font-bold mb-4">{translate('about.ourMission')}</h2>
               <p className="text-gray-600">
-                Sứ mệnh của XLab là ứng dụng công nghệ tiên tiến để tạo ra các giải pháp 
-                phần mềm xuất sắc, giúp doanh nghiệp Việt Nam tối ưu hóa quy trình, 
-                tăng năng suất và phát triển bền vững trong kỷ nguyên số. 
-                Chúng tôi cam kết mang đến những sản phẩm và dịch vụ chất lượng cao, 
-                đáp ứng nhu cầu đa dạng của khách hàng, đồng thời góp phần thúc đẩy 
-                sự phát triển của ngành công nghệ thông tin Việt Nam.
+                {translate('about.missionContent')}
               </p>
             </div>
 
@@ -119,14 +112,9 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-4">Tầm nhìn</h2>
+              <h2 className="text-2xl font-bold mb-4">{translate('about.ourVision')}</h2>
               <p className="text-gray-600">
-                XLab hướng tới trở thành doanh nghiệp công nghệ hàng đầu tại Việt Nam 
-                và khu vực Đông Nam Á trong lĩnh vực phát triển phần mềm và cung cấp 
-                giải pháp công nghệ thông tin toàn diện. Chúng tôi nỗ lực trở thành 
-                đối tác tin cậy và lâu dài của các doanh nghiệp trong hành trình 
-                chuyển đổi số, đồng thời là môi trường làm việc lý tưởng cho 
-                các tài năng công nghệ phát triển sự nghiệp.
+                {translate('about.visionContent')}
               </p>
             </div>
           </div>
@@ -137,9 +125,9 @@ export default function AboutPage() {
       <section className="py-16">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Giá trị cốt lõi</h2>
+            <h2 className="text-3xl font-bold mb-4">{translate('about.ourValues')}</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Những giá trị tạo nên văn hóa và định hướng mọi hoạt động của XLab
+              {translate('about.valuesDescription')}
             </p>
           </div>
 
@@ -161,10 +149,9 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Chất lượng</h3>
+              <h3 className="text-xl font-bold mb-2">{translate('about.valueQuality')}</h3>
               <p className="text-gray-600">
-                Đặt chất lượng sản phẩm và dịch vụ lên hàng đầu, 
-                không ngừng cải tiến để đạt được sự xuất sắc
+                {translate('about.qualityDesc')}
               </p>
             </div>
 
@@ -185,10 +172,9 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Đổi mới</h3>
+              <h3 className="text-xl font-bold mb-2">{translate('about.valueInnovation')}</h3>
               <p className="text-gray-600">
-                Khuyến khích tư duy sáng tạo, dám thử nghiệm 
-                những ý tưởng mới và công nghệ tiên tiến
+                {translate('about.innovationDesc')}
               </p>
             </div>
 
@@ -209,10 +195,9 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Hợp tác</h3>
+              <h3 className="text-xl font-bold mb-2">{translate('about.valueCollaboration')}</h3>
               <p className="text-gray-600">
-                Xây dựng mối quan hệ đối tác lâu dài dựa trên 
-                sự tôn trọng và hợp tác cùng có lợi
+                {translate('about.collaborationDesc')}
               </p>
             </div>
 
@@ -233,10 +218,9 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Trách nhiệm</h3>
+              <h3 className="text-xl font-bold mb-2">{translate('about.valueResponsibility')}</h3>
               <p className="text-gray-600">
-                Làm việc với tinh thần trách nhiệm cao, 
-                cam kết hoàn thành mọi cam kết với khách hàng
+                {translate('about.responsibilityDesc')}
               </p>
             </div>
           </div>
@@ -247,19 +231,16 @@ export default function AboutPage() {
       <section className="py-16 bg-primary-600 text-white">
         <div className="container">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-6">Hợp tác cùng XLab</h2>
+            <h2 className="text-3xl font-bold mb-6">{translate('about.ctaTitle')}</h2>
             <p className="text-xl mb-8 max-w-3xl mx-auto">
-              Chúng tôi luôn sẵn sàng lắng nghe và đồng hành cùng doanh nghiệp của bạn
-              trong hành trình chuyển đổi số và phát triển bền vững.
+              {translate('about.ctaText')}
             </p>
-            <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4">
-              <a href="/contact" className="btn bg-white text-primary-600 hover:bg-gray-100">
-                Liên hệ ngay
-              </a>
-              <a href="/services" className="btn border border-white text-white hover:bg-primary-700">
-                Khám phá dịch vụ
-              </a>
-            </div>
+            <a
+              href="/contact"
+              className="inline-block bg-white text-primary-600 font-medium rounded-full py-3 px-8 shadow-md hover:bg-gray-100 transition-colors"
+            >
+              {translate('about.ctaButton')}
+            </a>
           </div>
         </div>
       </section>
