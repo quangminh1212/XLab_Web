@@ -4,7 +4,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { footerLinks, newsletterConfig } from '@/config/siteConfig'
 import { useLanguage } from '@/contexts/LanguageContext'
-import GoogleTranslate from './GoogleTranslate'
 
 export default function Footer() {
   const { translate } = useLanguage()
@@ -88,9 +87,6 @@ export default function Footer() {
                 {translate('footer.subscribeButton')}
               </button>
             </form>
-            <div className="mt-4">
-              <GoogleTranslate className="text-sm" />
-            </div>
           </div>
         </div>
 
