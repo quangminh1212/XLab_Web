@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { siteConfig } from '@/config/siteConfig'
 
 export default function PrivacyPage() {
     return (
@@ -9,12 +10,12 @@ export default function PrivacyPage() {
 
                     <div className="prose prose-teal max-w-none">
                         <p className="text-gray-600 mb-6">
-                            Cập nhật lần cuối: 28/03/2025
+                            Cập nhật lần cuối: {siteConfig.legal.privacyLastUpdated}
                         </p>
 
                         <h2>1. Giới thiệu</h2>
                         <p>
-                            XLab ("chúng tôi", "của chúng tôi") cam kết bảo vệ quyền riêng tư của bạn. Chính sách bảo mật này mô tả cách chúng tôi thu thập, sử dụng và chia sẻ thông tin cá nhân của bạn khi bạn truy cập hoặc sử dụng trang web, ứng dụng hoặc dịch vụ của chúng tôi.
+                            {siteConfig.legal.companyName} ("chúng tôi", "của chúng tôi") cam kết bảo vệ quyền riêng tư của bạn. Chính sách bảo mật này mô tả cách chúng tôi thu thập, sử dụng và chia sẻ thông tin cá nhân của bạn khi bạn truy cập hoặc sử dụng trang web, ứng dụng hoặc dịch vụ của chúng tôi.
                         </p>
 
                         <h2>2. Thông tin chúng tôi thu thập</h2>
@@ -95,8 +96,8 @@ export default function PrivacyPage() {
                             Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua:
                         </p>
                         <ul>
-                            <li>Email: <a href="mailto:privacy@xlab.vn" className="text-teal-600 hover:underline">privacy@xlab.vn</a></li>
-                            <li>Điện thoại: +84 28 1234 5678</li>
+                            <li>Email: <a href={`mailto:${siteConfig.contact.email}`} className="text-teal-600 hover:underline">{siteConfig.contact.email}</a></li>
+                            <li>Điện thoại: {siteConfig.contact.phone}</li>
                             <li>Hoặc truy cập trang <Link href="/contact" className="text-teal-600 hover:underline">Liên hệ</Link> của chúng tôi</li>
                         </ul>
                     </div>
