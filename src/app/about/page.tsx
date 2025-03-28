@@ -1,9 +1,17 @@
 'use client'
 
+import React from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function AboutPage() {
   const { translate } = useLanguage()
+  
+  // Set page title
+  React.useEffect(() => {
+    document.title = 'Giới thiệu | XLab - Phần mềm và Dịch vụ'
+  }, [])
 
   return (
     <div>
