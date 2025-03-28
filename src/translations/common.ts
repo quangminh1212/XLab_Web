@@ -561,6 +561,114 @@ const translations = {
             vi: 'Liên hệ với chúng tôi',
             en: 'Contact us'
         }
+    },
+
+    // Trang giới thiệu
+    about: {
+        pageTitle: {
+            vi: 'Giới thiệu về XLab',
+            en: 'About XLab'
+        },
+        companyDescription: {
+            vi: 'XLab là công ty công nghệ hàng đầu tập trung vào phát triển giải pháp phần mềm sáng tạo và dịch vụ CNTT cho doanh nghiệp.',
+            en: 'XLab is a leading technology company focused on developing innovative software solutions and IT services for businesses.'
+        },
+        ourHistory: {
+            vi: 'Lịch sử của chúng tôi',
+            en: 'Our History'
+        },
+        historyParagraph1: {
+            vi: 'Thành lập vào năm 2015, XLab bắt đầu như một nhóm nhỏ các nhà phát triển phần mềm và kỹ sư CNTT đam mê tạo ra các sản phẩm chất lượng cao cho thị trường Việt Nam.',
+            en: 'Founded in 2015, XLab started as a small team of passionate software developers and IT engineers dedicated to creating high-quality products for the Vietnamese market.'
+        },
+        historyParagraph2: {
+            vi: 'Trong những năm qua, chúng tôi đã phát triển thành một công ty công nghệ toàn diện với đội ngũ chuyên gia giàu kinh nghiệm trong nhiều lĩnh vực khác nhau của công nghệ thông tin.',
+            en: 'Over the years, we have grown into a comprehensive technology company with a team of experts experienced in various fields of information technology.'
+        },
+        historyParagraph3: {
+            vi: 'Ngày nay, XLab tự hào cung cấp một loạt các giải pháp phần mềm và dịch vụ CNTT chất lượng cao, phục vụ hàng trăm khách hàng từ các doanh nghiệp nhỏ đến các tập đoàn lớn trong nước và quốc tế.',
+            en: 'Today, XLab proudly offers a range of high-quality software solutions and IT services, serving hundreds of clients from small businesses to large corporations both domestically and internationally.'
+        },
+        workspaceImageAlt: {
+            vi: 'Không gian làm việc của XLab',
+            en: 'XLab workspace'
+        },
+        teamImageAlt: {
+            vi: 'Đội ngũ XLab',
+            en: 'XLab team'
+        },
+        techspaceImageAlt: {
+            vi: 'Không gian công nghệ XLab',
+            en: 'XLab technology space'
+        },
+        ourMission: {
+            vi: 'Sứ mệnh của chúng tôi',
+            en: 'Our Mission'
+        },
+        missionContent: {
+            vi: 'Sứ mệnh của chúng tôi là cung cấp các giải pháp công nghệ sáng tạo và đáng tin cậy, giúp các doanh nghiệp Việt Nam và thế giới phát triển trong kỷ nguyên số.',
+            en: 'Our mission is to provide innovative and reliable technology solutions that help Vietnamese and global businesses thrive in the digital era.'
+        },
+        ourVision: {
+            vi: 'Tầm nhìn của chúng tôi',
+            en: 'Our Vision'
+        },
+        visionContent: {
+            vi: 'Chúng tôi khát vọng trở thành đối tác công nghệ hàng đầu tại Việt Nam, được công nhận bởi chất lượng sản phẩm và dịch vụ, sự đổi mới không ngừng, và cam kết với sự thành công của khách hàng.',
+            en: 'We aspire to become a leading technology partner in Vietnam, recognized for product and service quality, continuous innovation, and commitment to customer success.'
+        },
+        ourValues: {
+            vi: 'Giá trị cốt lõi',
+            en: 'Our Core Values'
+        },
+        valuesDescription: {
+            vi: 'Tại XLab, chúng tôi tin vào việc duy trì những giá trị cốt lõi mạnh mẽ để định hướng mọi khía cạnh hoạt động của mình.',
+            en: 'At XLab, we believe in maintaining strong core values to guide every aspect of our operations.'
+        },
+        valueQuality: {
+            vi: 'Chất lượng',
+            en: 'Quality'
+        },
+        qualityDesc: {
+            vi: 'Chúng tôi cam kết cung cấp các sản phẩm và dịch vụ đạt tiêu chuẩn cao nhất, vượt qua mong đợi của khách hàng.',
+            en: 'We are committed to delivering products and services of the highest standard, exceeding customer expectations.'
+        },
+        valueInnovation: {
+            vi: 'Đổi mới',
+            en: 'Innovation'
+        },
+        innovationDesc: {
+            vi: 'Chúng tôi luôn tìm kiếm những cách thức mới để giải quyết các thách thức và nắm bắt các công nghệ mới nhất.',
+            en: 'We constantly seek new ways to solve challenges and embrace the latest technologies.'
+        },
+        valueCollaboration: {
+            vi: 'Hợp tác',
+            en: 'Collaboration'
+        },
+        collaborationDesc: {
+            vi: 'Chúng tôi tin vào sức mạnh của làm việc nhóm và xây dựng mối quan hệ dài lâu với khách hàng và đối tác.',
+            en: 'We believe in the power of teamwork and building lasting relationships with customers and partners.'
+        },
+        valueResponsibility: {
+            vi: 'Trách nhiệm',
+            en: 'Responsibility'
+        },
+        responsibilityDesc: {
+            vi: 'Chúng tôi có trách nhiệm với lời hứa của mình và luôn hành động với sự liêm chính và minh bạch.',
+            en: 'We take responsibility for our promises and always act with integrity and transparency.'
+        },
+        ctaTitle: {
+            vi: 'Hãy trở thành đối tác của chúng tôi',
+            en: 'Become Our Partner'
+        },
+        ctaText: {
+            vi: 'Bạn muốn tìm hiểu thêm về cách XLab có thể giúp doanh nghiệp của bạn phát triển?',
+            en: 'Want to learn more about how XLab can help your business grow?'
+        },
+        ctaButton: {
+            vi: 'Liên hệ với chúng tôi',
+            en: 'Contact Us'
+        }
     }
 };
 
