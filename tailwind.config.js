@@ -91,15 +91,9 @@ module.exports = {
           css: {
             color: '#374151',
             a: {
-<<<<<<< HEAD
-              color: '#319795',
-              '&:hover': {
-                color: '#2C7A7B',
-=======
               color: '#14B8A6',
               '&:hover': {
                 color: '#0D9488',
->>>>>>> 677692e2e68d3fface1c48b0cfd999aa401d5e37
               },
             },
             h1: {
