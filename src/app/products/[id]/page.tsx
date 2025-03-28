@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getProductBySlug, incrementDownloadCount, incrementViewCount } from '@/lib/utils';
 import { ProductImage } from '@/components/ProductImage';
+import { useParams } from 'next/navigation';
+import { Product } from '@/types';
+import { categories } from '@/data/mockData';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const [product, setProduct] = useState<any>(null);
@@ -64,26 +67,17 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <h1 className="text-2xl font-bold text-red-600 mb-4">{error || 'Đã xảy ra lỗi'}</h1>
             <p className="text-gray-600 mb-6">
               Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa. 
-              Vui lòng thêm sản phẩm mới hoặc kiểm tra lại đường dẫn.
+              Vui lòng kiểm tra lại đường dẫn hoặc quay lại trang sản phẩm.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link 
                 href="/products" 
-                className="text-primary-600 hover:text-primary-700 flex items-center justify-center"
-              >
-                <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-          Quay lại danh sách sản phẩm
-        </Link>
-              <Link 
-                href="/admin" 
                 className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Thêm sản phẩm mới
+                Quay lại danh sách sản phẩm
               </Link>
             </div>
           </div>
@@ -92,8 +86,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     );
   }
 
-  // Đoạn code bên dưới sẽ không được thực thi vì luôn đi vào trường hợp error ở trên
-  // Giữ lại code để tham khảo cho sau này khi có sản phẩm thực tế
   const productImage = product.imageUrl || '/placeholder-product.jpg';
   
   const handleDownload = () => {
@@ -121,6 +113,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       console.error('Lỗi khi tải xuống:', error);
     }
   };
+
+  // Tìm thông tin danh mục của sản phẩm
+  const category = categories.find(cat => cat.id === product.categoryId);
 
   return (
     <div className="py-8">
@@ -159,6 +154,16 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
               <div className="md:flex-1 px-4">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+                
+                {category && (
+                  <Link 
+                    href={`/categories/${category.slug}`}
+                    className="inline-block mb-3 text-sm text-primary-600 bg-primary-50 px-3 py-1 rounded-full"
+                  >
+                    {category.name}
+                  </Link>
+                )}
+                
                 <p className="text-gray-600 text-sm mb-4">
                   Phiên bản {product.version || '1.0'} | Cập nhật: {new Date(product.updatedAt || new Date()).toLocaleDateString('vi-VN')}
                 </p>
@@ -179,51 +184,81 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <span className="ml-2 text-gray-600">({product.rating || 0})</span>
                 </div>
                 
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2">Mô tả</h2>
-                  <div 
-                    className="text-gray-600 prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{ 
-                      __html: product.longDescription || product.description || 'Chưa có mô tả cho sản phẩm này.'
-                    }}
-                  />
+                <div className="flex items-center mb-6">
+                  <div className="text-3xl font-bold text-gray-900">
+                    {product.salePrice ? (
+                      <>
+                        <span>{product.salePrice.toLocaleString('vi-VN')}đ</span>
+                        <span className="ml-2 text-sm line-through text-gray-500">
+                          {product.price.toLocaleString('vi-VN')}đ
+                        </span>
+                      </>
+                    ) : (
+                      <span>{product.price.toLocaleString('vi-VN')}đ</span>
+                    )}
+                  </div>
                 </div>
                 
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="text-3xl font-bold text-primary-600">
-                    {product.salePrice 
-                      ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)
-                      : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price || 0)}
-                  </div>
-                  {product.salePrice && product.price && (
-                    <div className="text-gray-400 line-through">
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
-                  </div>
-                  )}
-          </div>
-          
-                <div className="flex space-x-4">
-                  {product.slug && (
-                    <button
-                      onClick={handleDownload}
-                      className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium flex items-center"
+                <div className="mb-6">
+                  <div className="flex space-x-4">
+                    <button 
+                      onClick={handleDownload} 
+                      className="flex-1 bg-primary-600 text-white py-3 px-6 rounded-lg hover:bg-primary-700 transition-colors flex items-center justify-center"
                     >
                       <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
                       Tải xuống
-            </button>
-                  )}
-                  
-                  <Button variant="outline" className="px-6 py-3">
-                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                    Thêm vào giỏ hàng
-                  </Button>
+                    </button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 py-3 border-2"
+                      onClick={() => alert('Tính năng này đang được phát triển')}
+                    >
+                      <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      Thêm vào giỏ hàng
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <div className="text-gray-700">{product.description}</div>
+                </div>
+                
+                <div className="border-t border-gray-200 pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Thông tin sản phẩm</h3>
+                  <ul className="space-y-3">
+                    <li className="flex justify-between">
+                      <span className="text-gray-600">Loại bản quyền:</span>
+                      <span className="font-medium">{product.licenseType || 'Thương mại'}</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-gray-600">Kích thước:</span>
+                      <span className="font-medium">{product.size || '10MB'}</span>
+                    </li>
+                    <li className="flex justify-between">
+                      <span className="text-gray-600">Ngày phát hành:</span>
+                      <span className="font-medium">{new Date(product.createdAt || new Date()).toLocaleDateString('vi-VN')}</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
+            </div>
           </div>
+          
+          {/* Chi tiết sản phẩm */}
+          <div className="p-6 md:p-8 border-t border-gray-200">
+            <h2 className="text-xl font-bold mb-4">Mô tả chi tiết</h2>
+            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: product.longDescription || product.description }}></div>
+          </div>
+          
+          {/* Sản phẩm liên quan */}
+          <div className="p-6 md:p-8 border-t border-gray-200">
+            <h2 className="text-xl font-bold mb-4">Sản phẩm tương tự</h2>
+            <p className="text-gray-500">Tính năng này sẽ được cập nhật sau.</p>
           </div>
         </div>
         
