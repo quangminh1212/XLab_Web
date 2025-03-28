@@ -5,10 +5,67 @@ import Image from 'next/image'
 import { footerLinks, newsletterConfig } from '@/config/siteConfig'
 import { useLanguage } from '@/contexts/LanguageContext'
 
+// Hàm chuyển đổi chuỗi tiếng Việt sang không dấu và lowercase
+function convertToKey(text: string): string {
+  if (!text) return '';
+
+  // Chuyển về chữ thường và loại bỏ khoảng trắng
+  text = text.toLowerCase().replace(/\s+/g, '');
+
+  // Bảng chuyển đổi các ký tự có dấu sang không dấu
+  const map = {
+    'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
+    'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
+    'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
+    'đ': 'd',
+    'è': 'e', 'é': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
+    'ê': 'e', 'ề': 'e', 'ế': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
+    'ì': 'i', 'í': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
+    'ò': 'o', 'ó': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
+    'ô': 'o', 'ồ': 'o', 'ố': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
+    'ơ': 'o', 'ờ': 'o', 'ớ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
+    'ù': 'u', 'ú': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
+    'ư': 'u', 'ừ': 'u', 'ứ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
+    'ỳ': 'y', 'ý': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y'
+  };
+
+  // Áp dụng bảng chuyển đổi
+  return text.replace(/[àáảãạăằắẳẵặâầấẩẫậđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/g,
+    function (m) { return map[m]; });
+}
+
 export default function Footer() {
   const { translate } = useLanguage()
 
   const currentYear = new Date().getFullYear()
+
+  // Ánh xạ từ tên tiếng Việt sang key cho các section
+  const sectionKeys = {
+    'Sản phẩm': 'products',
+    'Hỗ trợ': 'support',
+    'Về chúng tôi': 'aboutus',
+    'Pháp lý': 'legal'
+  }
+
+  // Ánh xạ từ tên tiếng Việt sang key cho các link
+  const linkKeys = {
+    'Tất cả sản phẩm': 'allproducts',
+    'Mới phát hành': 'newreleases',
+    'Phổ biến nhất': 'mostpopular',
+    'Khuyến mãi': 'onsale',
+    'Liên hệ': 'contact',
+    'FAQ': 'faq',
+    'Hướng dẫn sử dụng': 'userguides',
+    'Báo lỗi': 'reportbug',
+    'Giới thiệu': 'aboutus',
+    'Blog': 'blog',
+    'Tuyển dụng': 'careers',
+    'Đối tác': 'partners',
+    'Điều khoản dịch vụ': 'termsofservice',
+    'Chính sách bảo mật': 'privacypolicy',
+    'Chính sách hoàn tiền': 'refundpolicy',
+    'Quyền sở hữu trí tuệ': 'intellectualproperty'
+  }
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -55,12 +112,14 @@ export default function Footer() {
           {/* Footer Links */}
           {footerLinks.map((section, index) => (
             <div key={index} className="space-y-3">
-              <h3 className="text-lg font-semibold">{translate(`footer.${section.title.toLowerCase().replace(/\s+/g, '')}`)}</h3>
+              <h3 className="text-lg font-semibold">
+                {translate(`footer.${sectionKeys[section.title] || convertToKey(section.title)}`)}
+              </h3>
               <ul className="space-y-2">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
                     <Link href={link.href} className="text-gray-400 hover:text-white transition-colors text-sm">
-                      {translate(`footer.${link.name.toLowerCase().replace(/\s+/g, '')}`)}
+                      {translate(`footer.${linkKeys[link.name] || convertToKey(link.name)}`)}
                     </Link>
                   </li>
                 ))}
