@@ -35,7 +35,7 @@ function convertToKey(text: string): string {
 }
 
 export default function Footer() {
-  const { translate } = useLanguage()
+  const { translate, language } = useLanguage()
 
   const currentYear = new Date().getFullYear()
 
@@ -43,28 +43,28 @@ export default function Footer() {
   const sectionKeys: Record<string, string> = {
     'Sản phẩm': 'products',
     'Hỗ trợ': 'support',
-    'Về chúng tôi': 'aboutus',
+    'Về chúng tôi': 'aboutUs',
     'Pháp lý': 'legal'
   }
 
   // Ánh xạ từ tên tiếng Việt sang key cho các link
   const linkKeys: Record<string, string> = {
-    'Tất cả sản phẩm': 'allproducts',
-    'Mới phát hành': 'newreleases',
-    'Phổ biến nhất': 'mostpopular',
-    'Khuyến mãi': 'onsale',
+    'Tất cả sản phẩm': 'allProducts',
+    'Mới phát hành': 'newReleases',
+    'Phổ biến nhất': 'mostPopular',
+    'Khuyến mãi': 'onSale',
     'Liên hệ': 'contact',
     'FAQ': 'faq',
-    'Hướng dẫn sử dụng': 'userguides',
-    'Báo lỗi': 'reportbug',
-    'Giới thiệu': 'aboutus',
+    'Hướng dẫn sử dụng': 'userGuides',
+    'Báo lỗi': 'reportBug',
+    'Giới thiệu': 'aboutUs',
     'Blog': 'blog',
     'Tuyển dụng': 'careers',
     'Đối tác': 'partners',
-    'Điều khoản dịch vụ': 'termsofservice',
-    'Chính sách bảo mật': 'privacypolicy',
-    'Chính sách hoàn tiền': 'refundpolicy',
-    'Quyền sở hữu trí tuệ': 'intellectualproperty'
+    'Điều khoản dịch vụ': 'termsOfService',
+    'Chính sách bảo mật': 'privacyPolicy',
+    'Chính sách hoàn tiền': 'refundPolicy',
+    'Quyền sở hữu trí tuệ': 'intellectualProperty'
   }
 
   return (
