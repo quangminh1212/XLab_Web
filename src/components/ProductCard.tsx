@@ -6,6 +6,11 @@ import { Product } from '@/types';
 import { ProductImage } from './ProductImage';
 import { formatCurrency } from '@/lib/utils';
 
+// Function to strip HTML tags from a string
+const stripHtml = (html: string) => {
+  return html.replace(/<\/?[^>]+(>|$)/g, "");
+};
+
 interface ProductCardProps {
   product: Product;
 }
@@ -121,9 +126,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {product.name}
         </h3>
         
-        <p className="text-xs text-gray-500 mt-1 mb-2 line-clamp-1 flex-grow">
-          {product.description}
-        </p>
+        <div className="text-xs text-gray-500 mt-1 mb-2 line-clamp-2 flex-grow">
+          {stripHtml(product.description)}
+        </div>
         
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
           <div className="flex flex-col">

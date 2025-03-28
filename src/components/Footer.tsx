@@ -110,22 +110,32 @@ export default function Footer() {
           </div>
 
           {/* Footer Links */}
-          {footerLinks.map((section, index) => (
-            <div key={index} className="space-y-3">
-              <h3 className="text-lg font-semibold">
-                {translate(`footer.${sectionKeys[section.title] || convertToKey(section.title)}`)}
-              </h3>
-              <ul className="space-y-2">
-                {section.links.map((link, linkIndex) => (
-                  <li key={linkIndex}>
-                    <Link href={link.href} className="text-gray-400 hover:text-white transition-colors text-sm">
-                      {translate(`footer.${linkKeys[link.name] || convertToKey(link.name)}`)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {footerLinks.map((section, index) => {
+            // Tìm key section dựa vào tên section
+            const sectionKey = sectionKeys[section.title] || convertToKey(section.title);
+            
+            return (
+              <div key={index} className="space-y-3">
+                <h3 className="text-lg font-semibold">
+                  {translate(`footer.${sectionKey}`)}
+                </h3>
+                <ul className="space-y-2">
+                  {section.links.map((link, linkIndex) => {
+                    // Tìm key link dựa vào tên link
+                    const linkKey = linkKeys[link.name] || convertToKey(link.name);
+                    
+                    return (
+                      <li key={linkIndex}>
+                        <Link href={link.href} className="text-gray-400 hover:text-white transition-colors text-sm">
+                          {translate(`footer.${linkKey}`)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
 
           {/* Newsletter */}
           <div className="space-y-3 lg:col-span-2">

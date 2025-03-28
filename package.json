@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "rimraf .next node_modules/.cache && echo Preparing development environment...",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "type-check": "tsc --noEmit",
     "clean": "rimraf .next .next-dev node_modules/.cache"
   },
   "dependencies": {
