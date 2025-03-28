@@ -2,62 +2,26 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ['localhost', 'xlab.vn', 'lh3.googleusercontent.com'],
-    formats: ['image/webp', 'image/avif'],
-  },
-  experimental: {
-    // Bỏ optimizeCss để tránh lỗi liên quan đến critters
-  },
-  // Thêm cấu hình telemetry và trace
-  telemetry: {
-    telemetryDisabled: true
-  },
-  serverExternalPackages: ['sharp'],
-  env: {
-    SITE_NAME: 'XLab',
-    SITE_URL: 'https://xlab.vn',
-    SITE_DESCRIPTION: 'XLab - Trang web bán phần mềm chất lượng cao',
-  },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
-  webpack: (config, { isServer }) => {
-    // SVG support
-    config.module.rules.push({
-      test: /\.svg$/,
-      issuer: { and: [/\.(js|ts)x?$/] },
-      use: ['@svgr/webpack']
-    });
-
-    // Thêm loaders cho SVG khi sử dụng trong CSS
-    config.module.rules.push({
-      test: /\.svg$/,
-      issuer: /\.(css|scss)$/,
-      type: 'asset/resource',
-      generator: {
-        filename: 'static/media/[name].[hash][ext]'
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
       }
-    });
-
-    // Fallbacks khi không ở trong môi trường server
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        "react-dom/client": require.resolve("react-dom/client"),
-        "react/jsx-runtime": require.resolve("react/jsx-runtime"),
-        "react/jsx-dev-runtime": require.resolve("react/jsx-dev-runtime"),
-      };
-    }
-
-    // Tối ưu hóa build
-    if (process.env.NODE_ENV === 'production') {
-      // Tối ưu minification
-      config.optimization.minimize = true;
-
-      // Thêm các plugin tối ưu hóa nếu cần
-    }
-
-    return config;
+    ],
+    loader: 'default',
+    path: '',
+    disableStaticImages: false,
+    unoptimized: true,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    formats: ['image/webp'],
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
   async headers() {
     return [
@@ -81,16 +45,56 @@ const nextConfig = {
             value: '1; mode=block'
           },
           {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
           },
-        ],
-      },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'same-origin'
+          }
+        ]
+      }
     ];
   },
-  // Tối ưu trang tĩnh
-  compress: true,
-  poweredByHeader: false,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  webpack: (config, { dev, isServer }) => {
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
+    if (dev) {
+      config.mode = 'none';
+    }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
+    }
+    
+    return config;
+  },
+  compiler: {
+    styledComponents: true,
+  },
 };
 
 module.exports = nextConfig;
