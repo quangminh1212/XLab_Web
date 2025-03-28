@@ -96,21 +96,37 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         if (!isLoaded) return key
         if (!key) return ''
 
-        const keys = key.split('.')
-        let result = { ...translations } as any
+        try {
+            // Xử lý key dạng chuỗi đơn (không phải đối tượng lồng)
+            // Ví dụ: 'services.pageTitle' và 'services.pageTitle_en'
+            const directKey = language === 'en' ? `${key}_en` : key
 
-        for (let i = 0; i < keys.length - 1; i++) {
-            if (result[keys[i]]) {
-                result = result[keys[i]]
-            } else {
-                return key // Không tìm thấy khóa trong translations
+            // @ts-ignore - Bỏ qua lỗi TypeScript ở đây do chúng ta biết translations là đối tượng
+            if (translations[directKey] && typeof translations[directKey] === 'string') {
+                // @ts-ignore
+                return translations[directKey]
             }
+
+            // Xử lý key dạng đối tượng lồng nhau với vi/en
+            const keys = key.split('.')
+            let result = { ...translations } as any
+
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (result[keys[i]]) {
+                    result = result[keys[i]]
+                } else {
+                    return key // Không tìm thấy khóa trong translations
+                }
+            }
+
+            const lastKey = keys[keys.length - 1]
+            const translatedText = result[lastKey]?.[language]
+
+            return translatedText || key
+        } catch (error) {
+            console.error('Error in translate function:', error)
+            return key
         }
-
-        const lastKey = keys[keys.length - 1]
-        const translatedText = result[lastKey]?.[language]
-
-        return translatedText || key
     }
 
     const contextValue: LanguageContextType = {
