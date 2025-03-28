@@ -1,195 +1,171 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { industries, categories, products } from './data';
-import './products.css';
+import { products, categories } from '@/data/mockData'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { ProductImage } from '@/components/ProductImage'
+import ProductCard from '@/components/ProductCard'
+import { Button } from '@/components/ui/button'
 
 export default function ProductsPage() {
-  const [filteredProducts, setFilteredProducts] = useState(products);
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [activeIndustry, setActiveIndustry] = useState('all');
-  const [activePriceRange, setActivePriceRange] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // Lọc sản phẩm khi các bộ lọc thay đổi
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Update title khi component được render
   useEffect(() => {
-    let result = [...products];
-
-    // Lọc theo ngành
-    if (activeIndustry !== 'all') {
-      result = result.filter(product =>
-        product.industry.includes(activeIndustry)
-      );
-    }
-
-    // Lọc theo danh mục
-    if (activeCategory !== 'all') {
-      result = result.filter(product =>
-        product.category === activeCategory
-      );
-    }
-
-    // Lọc theo giá
-    if (activePriceRange !== 'all') {
-      switch (activePriceRange) {
-        case 'low':
-          result = result.filter(product => product.priceNumeric < 2000000);
-          break;
-        case 'medium':
-          result = result.filter(product =>
-            product.priceNumeric >= 2000000 && product.priceNumeric <= 3000000
-          );
-          break;
-        case 'high':
-          result = result.filter(product => product.priceNumeric > 3000000);
-          break;
+    document.title = 'Sản phẩm | XLab - Phần mềm và Dịch vụ'
+    
+    // Mô phỏng việc lấy sản phẩm từ API
+    const fetchProducts = async () => {
+      try {
+        // Giả lập gọi API
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Mô phỏng lỗi khi không tải được dữ liệu (ngẫu nhiên để test)
+        const shouldFail = false; // Đặt thành true để test trạng thái lỗi
+        
+        if (shouldFail) {
+          throw new Error('Không thể kết nối đến máy chủ');
+        }
+        
+        // Hiện tại để trống danh sách sản phẩm
+        setProducts([]);
+        setLoading(false);
+      } catch (err: any) {
+        console.error('Lỗi khi tải sản phẩm:', err);
+        setError(err.message || 'Không thể tải sản phẩm từ máy chủ');
+        setLoading(false);
       }
-    }
+    };
+    
+    fetchProducts();
+  }, []);
+  
+  // Các danh mục sản phẩm - sẽ được sử dụng khi có sản phẩm thực tế
+  const featuredProducts = products.filter(product => product.isFeatured);
+  const newProducts = products.slice().sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  ).slice(0, 6);
+  const popularProducts = products.slice().sort((a, b) => 
+    (b.downloadCount || 0) - (a.downloadCount || 0)
+  ).slice(0, 6);
 
-    // Lọc theo từ khóa tìm kiếm
-    if (searchQuery.trim() !== '') {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(product =>
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query) ||
-        product.shortDescription.toLowerCase().includes(query)
-      );
-    }
+  if (loading) {
+    return (
+      <div className="py-12 flex justify-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-600">Đang tải sản phẩm...</p>
+        </div>
+      </div>
+    );
+  }
 
-    setFilteredProducts(result);
-  }, [activeCategory, activeIndustry, activePriceRange, searchQuery]);
+  if (error) {
+    return (
+      <div className="py-12 flex justify-center">
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải sản phẩm</h2>
+          <p className="text-gray-600 mb-6">
+            {error}
+          </p>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Thử lại
+            </button>
+            <Link 
+              href="/"
+              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7m-7-7v14" />
+              </svg>
+              Về trang chủ
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="products-page">
-      <div className="container">
-        <div className="page-header">
-          <h1>Sản phẩm phần mềm</h1>
-          <p>Khám phá các giải pháp phần mềm chất lượng cao của XLab</p>
+    <div className="py-8 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Sản phẩm phần mềm</h1>
+          <p className="text-gray-600">
+            Khám phá các giải pháp phần mềm chất lượng cao được phát triển bởi XLab và cộng đồng.
+          </p>
         </div>
 
-        <div className="products-filter">
-          <div className="filter-options">
-            <select
-              name="industry"
-              id="industry"
-              value={activeIndustry}
-              onChange={(e) => setActiveIndustry(e.target.value)}
-            >
-              {industries.map(industry => (
-                <option key={industry.id} value={industry.id}>
-                  {industry.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="category"
-              id="category"
-              value={activeCategory}
-              onChange={(e) => setActiveCategory(e.target.value)}
-            >
-              {categories.map(category => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="price"
-              id="price"
-              value={activePriceRange}
-              onChange={(e) => setActivePriceRange(e.target.value)}
-            >
-              <option value="all">Tất cả giá</option>
-              <option value="low">Dưới 2 triệu</option>
-              <option value="medium">2 - 3 triệu</option>
-              <option value="high">Trên 3 triệu</option>
-            </select>
-          </div>
-
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button className="btn btn-primary">Tìm kiếm</button>
-          </div>
-        </div>
-
-        {filteredProducts.length === 0 ? (
-          <div className="no-results">
-            <h3>Không tìm thấy sản phẩm phù hợp</h3>
-            <p>Vui lòng thử lại với bộ lọc khác</p>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                setActiveCategory('all');
-                setActiveIndustry('all');
-                setActivePriceRange('all');
-                setSearchQuery('');
-              }}
-            >
-              Xóa bộ lọc
-            </button>
+        {products.length === 0 ? (
+          <div className="py-12 text-center">
+            <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              </svg>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Chưa có sản phẩm</h2>
+              <p className="text-gray-600 mb-6">
+                Hiện tại chúng tôi chưa có sản phẩm nào. Các sản phẩm sẽ được thêm vào sau.
+              </p>
+              <Link 
+                href="/admin" 
+                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Thêm sản phẩm mới
+              </Link>
+            </div>
           </div>
         ) : (
-          <div className="products-grid">
-            {filteredProducts.map((product) => (
-              <div className="product-card" key={product.id}>
-                {(product.isNew || product.isBestSeller) && (
-                  <div className="product-badge">
-                    {product.isNew && <span className="badge-new">Mới</span>}
-                    {product.isBestSeller && <span className="badge-bestseller">Bán chạy</span>}
-                  </div>
-                )}
-                <div className="product-image">
-                  {/* Placeholder cho hình ảnh sản phẩm */}
-                  <div className="image-placeholder">
-                    <span>{product.name.charAt(0)}</span>
-                  </div>
+          <div className="space-y-12">
+            {featuredProducts.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Sản phẩm nổi bật</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {featuredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
                 </div>
-                <div className="product-content">
-                  <h3>{product.name}</h3>
-                  <p>{product.shortDescription}</p>
-                  <div className="product-tags">
-                    <span className="tag-category">{categories.find(c => c.id === product.category)?.name}</span>
-                    {product.industry.slice(0, 2).map(ind => (
-                      <span key={ind} className="tag-industry">
-                        {industries.find(i => i.id === ind)?.name}
-                      </span>
-                    ))}
-                  </div>
-                  <ul className="product-features">
-                    {product.features.slice(0, 3).map((feature, index) => (
-                      <li key={index}>{feature}</li>
-                    ))}
-                  </ul>
-                  <div className="product-price">
-                    <span className="price">{product.price}</span>
-                    <Link href={`/products/${product.id}`} className="btn btn-primary">Chi tiết</Link>
-                  </div>
+              </section>
+            )}
+            
+            {newProducts.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Sản phẩm mới</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {newProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {filteredProducts.length > 0 && (
-          <div className="pagination">
-            <button className="btn btn-light">Trước</button>
-            <div className="page-numbers">
-              <button className="active">1</button>
-              <button>2</button>
-              <button>3</button>
-            </div>
-            <button className="btn btn-light">Sau</button>
+              </section>
+            )}
+            
+            {popularProducts.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Phổ biến nhất</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {popularProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </div>
     </div>
-  );
+  )
 } 
