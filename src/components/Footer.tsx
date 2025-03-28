@@ -14,7 +14,7 @@ export default function Footer() {
           {/* Logo và giới thiệu */}
           <div className="mb-8">
             <Link href="/" className="flex items-center justify-center mb-4">
-              <span className="w-80 h-80 inline-flex items-center justify-center p-4 bg-gray-800 rounded-xl border-2 border-teal-500">
+              <span className="w-80 h-80 inline-flex items-center justify-center p-2 bg-gray-800 rounded-xl border border-teal-500">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
