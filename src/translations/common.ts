@@ -237,6 +237,7 @@ const translations = {
             vi: 'Tiêu đề',
             en: 'Subject'
         }
+    },
     }
 };
 

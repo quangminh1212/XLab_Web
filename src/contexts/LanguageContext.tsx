@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import commonTranslations from '@/translations/common'
 
 type Language = 'vi' | 'en'
 
@@ -28,8 +29,8 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
     const [language, setLanguageState] = useState<Language>('vi')
-    const [translations, setTranslations] = useState<any>({})
-    const [isLoaded, setIsLoaded] = useState(false)
+    const [translations, setTranslations] = useState<any>(commonTranslations)
+    const [isLoaded, setIsLoaded] = useState(true)
 
     useEffect(() => {
         // Kiểm tra xem localStorage có sẵn không (chỉ làm trên client-side)
@@ -48,22 +49,6 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
             }
         }
 
-        // Tải các bản dịch
-        const loadTranslations = async () => {
-            try {
-                // Import trực tiếp bản dịch để tránh lỗi
-                const commonTranslations = (await import('@/translations/common')).default
-                setTranslations(commonTranslations)
-                setIsLoaded(true)
-                console.log('Translations loaded successfully:', Object.keys(commonTranslations).length)
-            } catch (error) {
-                console.error('Không thể tải các bản dịch:', error)
-                setIsLoaded(true) // Vẫn đánh dấu là đã tải xong ngay cả khi có lỗi
-            }
-        }
-
-        loadTranslations()
-
         // Thêm sự kiện lắng nghe khi language trong localStorage thay đổi từ tab khác
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === 'language' && e.newValue && (e.newValue === 'vi' || e.newValue === 'en')) {
@@ -72,11 +57,14 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         }
 
         window.addEventListener('storage', handleStorageChange)
+        
+        // Log để debug
+        console.log('Translations available in context:', Object.keys(translations).length)
 
         return () => {
             window.removeEventListener('storage', handleStorageChange)
         }
-    }, [])
+    }, [translations])
 
     const setLanguage = (lang: Language) => {
         if (lang !== language) {
@@ -95,7 +83,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     }
 
     const translate = (key: string): string => {
-        if (!isLoaded || !key) return key
+        if (!key) return key
 
         try {
             // Tách key theo dấu chấm (ví dụ: 'navigation.home')

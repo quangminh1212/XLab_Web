@@ -15,7 +15,7 @@ export default function Header() {
   const { data: session, status } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
-  const { language, translate } = useLanguage()
+  const { language, translate, isLoaded } = useLanguage()
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
@@ -55,20 +55,20 @@ export default function Header() {
 
   // Danh sách menu dựa theo ngôn ngữ
   const menuItems = [
-    { path: '/', label: translate('navigation.home') },
-    { path: '/products', label: translate('navigation.products') },
-    { path: '/services', label: translate('navigation.services') },
-    { path: '/about', label: translate('navigation.about') },
-    { path: '/contact', label: translate('navigation.contact') }
+    { path: '/', label: isLoaded ? translate('navigation.home') : 'Trang chủ' },
+    { path: '/products', label: isLoaded ? translate('navigation.products') : 'Sản phẩm' },
+    { path: '/services', label: isLoaded ? translate('navigation.services') : 'Dịch vụ' },
+    { path: '/about', label: isLoaded ? translate('navigation.about') : 'Giới thiệu' },
+    { path: '/contact', label: isLoaded ? translate('navigation.contact') : 'Liên hệ' }
   ]
 
   const uiText = {
-    login: translate('navigation.login'),
-    register: translate('navigation.register'),
-    myAccount: translate('navigation.myAccount'),
-    settings: translate('navigation.settings'),
-    logout: translate('navigation.logout'),
-    loggedInAs: translate('navigation.loggedInAs')
+    login: isLoaded ? translate('navigation.login') : 'Đăng nhập',
+    register: isLoaded ? translate('navigation.register') : 'Đăng ký',
+    myAccount: isLoaded ? translate('navigation.myAccount') : 'Tài khoản của tôi',
+    settings: isLoaded ? translate('navigation.settings') : 'Cài đặt',
+    logout: isLoaded ? translate('navigation.logout') : 'Đăng xuất',
+    loggedInAs: isLoaded ? translate('navigation.loggedInAs') : 'Đăng nhập bằng'
   }
 
   return (
