@@ -1,78 +1,67 @@
 'use client';
 
+import React from 'react'
+import { useLanguage } from '@/contexts/LanguageContext'
+
 export default function Loading() {
+  const { translate } = useLanguage();
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-primary-50 to-white">
-      <div className="text-center">
-        <div className="relative mb-8">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-primary-500/10"></div>
-          </div>
-          <div className="relative z-10 flex items-center justify-center">
-            <svg 
-              className="w-20 h-20 text-primary-500" 
-              viewBox="0 0 100 100" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle 
-                className="opacity-25" 
-                cx="50" 
-                cy="50" 
-                r="40" 
-                stroke="currentColor" 
-                strokeWidth="8" 
-                fill="none" 
-              />
-              <path 
-                className="opacity-75" 
-                d="M10,50 A40,40 0 0,1 50,10"
-                strokeLinecap="round"
-                stroke="currentColor"
-                strokeWidth="8"
-                fill="none"
-              >
-                <animateTransform
-                  attributeName="transform"
-                  type="rotate"
-                  from="0 50 50"
-                  to="360 50 50"
-                  dur="1s"
-                  repeatCount="indefinite"
-                />
-              </path>
-            </svg>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <div className="w-full max-w-md p-8 mx-auto text-center">
+        <div className="mb-6">
+          <div className="spinner">
+            <div className="double-bounce1"></div>
+            <div className="double-bounce2"></div>
           </div>
         </div>
-        
-        <div className="space-y-2">
-          <h2 className="text-xl font-medium text-gray-900">Đang tải...</h2>
-          <p className="text-sm text-gray-500">Vui lòng đợi trong giây lát</p>
-        </div>
-        
-        <div className="mt-8 relative">
-          <div className="h-1 w-32 mx-auto bg-gray-200 rounded-full overflow-hidden">
-            <div className="h-full bg-primary-500 rounded-full w-1/3 loading-bar"></div>
-          </div>
-        </div>
+        <h2 className="text-2xl font-bold mb-3 text-gray-800">{translate('loading.title')}</h2>
+        <p className="text-gray-600">{translate('loading.message')}</p>
       </div>
-      
-      <style jsx global>{`
-        @keyframes loading {
-          0% {
-            transform: translateX(-100%);
-          }
-          50% {
-            transform: translateX(100%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
+
+      <style jsx>{`
+        .spinner {
+          width: 60px;
+          height: 60px;
+          position: relative;
+          margin: 0 auto;
         }
         
-        .loading-bar {
-          animation: loading 1.5s infinite ease-in-out;
+        .double-bounce1, .double-bounce2 {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background-color: #4299e1;
+          opacity: 0.6;
+          position: absolute;
+          top: 0;
+          left: 0;
+          
+          -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+          animation: sk-bounce 2.0s infinite ease-in-out;
+        }
+        
+        .double-bounce2 {
+          -webkit-animation-delay: -1.0s;
+          animation-delay: -1.0s;
+          background-color: #3182ce;
+        }
+        
+        @-webkit-keyframes sk-bounce {
+          0%, 100% { -webkit-transform: scale(0.0) }
+          50% { -webkit-transform: scale(1.0) }
+        }
+        
+        @keyframes sk-bounce {
+          0%, 100% { 
+            transform: scale(0.0);
+            -webkit-transform: scale(0.0);
+          } 50% { 
+            transform: scale(1.0);
+            -webkit-transform: scale(1.0);
+          }
         }
       `}</style>
     </div>
-  );
+  )
 } 
