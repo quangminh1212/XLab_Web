@@ -93,10 +93,19 @@ export default function ServicesPage() {
       {/* Page Header */}
       <section className="bg-secondary-600 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{translate('services.pageTitle')}</h1>
-          <p className="text-xl max-w-3xl">
-            {translate('services.pageDescription')}
-          </p>
+          <div className="flex flex-col items-center justify-center">
+            <div className="mb-6">
+              <img
+                src="/images/logo.jpg"
+                alt="XLab Logo"
+                className="w-40 h-40 object-contain rounded-lg shadow-lg"
+              />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">{translate('services.pageTitle')}</h1>
+            <p className="text-xl max-w-3xl text-center">
+              {translate('services.pageDescription')}
+            </p>
+          </div>
         </div>
       </section>
 
