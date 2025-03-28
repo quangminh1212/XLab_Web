@@ -13,14 +13,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo và giới thiệu */}
           <div className="mb-8">
-            <Link href="/" className="flex items-center mb-4">
-              <span className="w-64 h-64 inline-flex items-center justify-center">
+            <Link href="/" className="flex items-center justify-center mb-4">
+              <span className="w-80 h-80 inline-flex items-center justify-center p-4 bg-gray-800 rounded-xl">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={320}
-                  height={320}
-                  className="object-contain rounded-xl border-2 border-gray-700 shadow-lg"
+                  width={500}
+                  height={500}
+                  className="w-full h-full object-cover rounded-lg border-2 border-gray-700 shadow-xl"
                 />
               </span>
             </Link>
