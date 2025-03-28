@@ -345,6 +345,110 @@ const translations = {
             vi: 'Email của bạn',
             en: 'Your email'
         }
+    },
+
+    // Trang liên hệ
+    contact: {
+        pageTitle: {
+            vi: 'Liên hệ với chúng tôi',
+            en: 'Contact Us'
+        },
+        pageDescription: {
+            vi: 'Bạn có câu hỏi hoặc yêu cầu? Hãy liên hệ ngay với chúng tôi.',
+            en: 'Have questions or requests? Contact us right away.'
+        },
+        sendMessage: {
+            vi: 'Gửi tin nhắn cho chúng tôi',
+            en: 'Send us a message'
+        },
+        name: {
+            vi: 'Họ tên của bạn',
+            en: 'Your name'
+        },
+        email: {
+            vi: 'Email của bạn',
+            en: 'Your email'
+        },
+        phone: {
+            vi: 'Số điện thoại',
+            en: 'Phone number'
+        },
+        subject: {
+            vi: 'Tiêu đề',
+            en: 'Subject'
+        },
+        selectSubject: {
+            vi: 'Chọn tiêu đề',
+            en: 'Select subject'
+        },
+        generalInquiry: {
+            vi: 'Thắc mắc chung',
+            en: 'General inquiry'
+        },
+        technicalSupport: {
+            vi: 'Hỗ trợ kỹ thuật',
+            en: 'Technical support'
+        },
+        salesInquiry: {
+            vi: 'Thông tin bán hàng',
+            en: 'Sales inquiry'
+        },
+        partnership: {
+            vi: 'Hợp tác',
+            en: 'Partnership'
+        },
+        message: {
+            vi: 'Tin nhắn của bạn',
+            en: 'Your message'
+        },
+        send: {
+            vi: 'Gửi tin nhắn',
+            en: 'Send message'
+        },
+        contactInfo: {
+            vi: 'Thông tin liên hệ',
+            en: 'Contact information'
+        },
+        address: {
+            vi: 'Địa chỉ',
+            en: 'Address'
+        },
+        businessHours: {
+            vi: 'Giờ làm việc',
+            en: 'Business hours'
+        },
+        weekdays: {
+            vi: 'Thứ Hai - Thứ Sáu: 8:00 - 17:00',
+            en: 'Monday - Friday: 8:00 AM - 5:00 PM'
+        },
+        weekend: {
+            vi: 'Thứ Bảy: 9:00 - 12:00',
+            en: 'Saturday: 9:00 AM - 12:00 PM'
+        },
+        closed: {
+            vi: 'Chủ Nhật: Đóng cửa',
+            en: 'Sunday: Closed'
+        },
+        findUs: {
+            vi: 'Tìm chúng tôi tại',
+            en: 'Find us at'
+        },
+        mapPlaceholder: {
+            vi: 'Bản đồ tới văn phòng của chúng tôi',
+            en: 'Map to our office'
+        }
+    },
+
+    // Trạng thái tải
+    loading: {
+        title: {
+            vi: 'Đang tải dữ liệu',
+            en: 'Loading data'
+        },
+        message: {
+            vi: 'Vui lòng đợi trong giây lát...',
+            en: 'Please wait a moment...'
+        }
     }
 };
 
