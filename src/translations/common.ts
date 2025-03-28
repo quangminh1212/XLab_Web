@@ -152,6 +152,14 @@ const translations = {
         allRightsReserved: {
             vi: 'Tất cả quyền được bảo lưu',
             en: 'All rights reserved'
+        },
+        companyDescription: {
+            vi: 'XLab cung cấp các giải pháp phần mềm và dịch vụ CNTT chất lượng cao, giúp doanh nghiệp của bạn phát triển trong kỷ nguyên số.',
+            en: 'XLab provides high-quality software solutions and IT services, helping your business thrive in the digital era.'
+        },
+        emailPlaceholder: {
+            vi: 'Email của bạn',
+            en: 'Your email'
         }
     },
 
@@ -236,6 +244,122 @@ const translations = {
         switchToEnglish: {
             vi: 'Switch to English',
             en: 'Chuyển sang tiếng Việt'
+        }
+    },
+
+    // Trang chủ
+    home: {
+        welcomeMessage: {
+            vi: 'Chào mừng đến với XLab',
+            en: 'Welcome to XLab'
+        },
+        heroTitle: {
+            vi: 'Giải pháp công nghệ cho doanh nghiệp của bạn',
+            en: 'Technology solutions for your business'
+        },
+        heroSubtitle: {
+            vi: 'Được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp',
+            en: 'Get advice on the most suitable solution for your business'
+        },
+        featuredProducts: {
+            vi: 'Sản phẩm nổi bật',
+            en: 'Featured products'
+        },
+        ourServices: {
+            vi: 'Dịch vụ của chúng tôi',
+            en: 'Our services'
+        },
+        testimonials: {
+            vi: 'Khách hàng nói gì về chúng tôi',
+            en: 'What our customers say'
+        },
+        contactUs: {
+            vi: 'Liên hệ với chúng tôi',
+            en: 'Contact us'
+        }
+    },
+
+    // Trang Giới thiệu
+    about: {
+        pageTitle: {
+            vi: 'Về chúng tôi',
+            en: 'About us'
+        },
+        ourMission: {
+            vi: 'Sứ mệnh của chúng tôi',
+            en: 'Our mission'
+        },
+        ourVision: {
+            vi: 'Tầm nhìn',
+            en: 'Our vision'
+        },
+        ourValues: {
+            vi: 'Giá trị cốt lõi',
+            en: 'Our core values'
+        },
+        ourTeam: {
+            vi: 'Đội ngũ của chúng tôi',
+            en: 'Our team'
+        },
+        ourHistory: {
+            vi: 'Lịch sử hình thành',
+            en: 'Our history'
+        }
+    },
+
+    // Trang Liên hệ 
+    contact: {
+        pageTitle: {
+            vi: 'Liên hệ với chúng tôi',
+            en: 'Contact us'
+        },
+        formTitle: {
+            vi: 'Gửi tin nhắn cho chúng tôi',
+            en: 'Send us a message'
+        },
+        fullName: {
+            vi: 'Họ và tên',
+            en: 'Full name'
+        },
+        email: {
+            vi: 'Email',
+            en: 'Email'
+        },
+        phone: {
+            vi: 'Số điện thoại',
+            en: 'Phone number'
+        },
+        subject: {
+            vi: 'Tiêu đề',
+            en: 'Subject'
+        },
+        message: {
+            vi: 'Nội dung tin nhắn',
+            en: 'Message'
+        },
+        sendMessage: {
+            vi: 'Gửi tin nhắn',
+            en: 'Send message'
+        },
+        contactInfo: {
+            vi: 'Thông tin liên hệ',
+            en: 'Contact information'
+        },
+        address: {
+            vi: 'Địa chỉ',
+            en: 'Address'
+        },
+        phoneNumber: {
+            vi: 'Số điện thoại',
+            en: 'Phone number'
+        },
+        emailAddress: {
+            vi: 'Địa chỉ email',
+            en: 'Email address'
+        },
+        workingHours: {
+            vi: 'Giờ làm việc',
+            en: 'Working hours'
         }
     }
 }
