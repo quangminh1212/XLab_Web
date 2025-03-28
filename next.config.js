@@ -58,15 +58,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    // Thêm các cấu hình để tránh lỗi font
-    fontLoaders: [
-      { loader: 'next/font/google', options: { subsets: ['latin', 'vietnamese'] } },
-    ],
-    // Tránh lỗi useLayoutEffect
-    nextScriptWorkers: true,
-  },
-  webpack: (config, { dev }) => {
-    return config;
+    // Tránh lỗi useLayoutEffect và font với SSR
+    optimizeCss: false,
+    esmExternals: true,
   },
   compiler: {
     styledComponents: true,
