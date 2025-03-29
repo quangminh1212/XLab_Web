@@ -58,14 +58,13 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    // Các cấu hình thực nghiệm được hỗ trợ
-    optimizeCss: false,
-    esmExternals: true,
+    // Chỉ sử dụng các cấu hình thực nghiệm được hỗ trợ
+    esmExternals: true
   },
   compiler: {
     styledComponents: true,
   },
-  poweredByHeader: false,
+  poweredByHeader: false
 };
 
 module.exports = nextConfig;
