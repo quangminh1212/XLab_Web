@@ -57,10 +57,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    // Giới hạn các tùy chọn thử nghiệm
-    esmExternals: 'loose'
-  },
   compiler: {
     styledComponents: true,
   },
