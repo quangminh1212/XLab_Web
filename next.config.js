@@ -58,13 +58,22 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    // Chỉ sử dụng các cấu hình thực nghiệm được hỗ trợ
-    esmExternals: true
+    // Giới hạn các tùy chọn thử nghiệm
+    esmExternals: 'loose'
   },
   compiler: {
     styledComponents: true,
   },
-  poweredByHeader: false
+  poweredByHeader: false,
+  // Đảm bảo webpack được cấu hình chính xác
+  webpack: (config, { isServer }) => {
+    // Fix cho lỗi "Cannot read properties of undefined (reading 'call')"
+    config.infrastructureLogging = {
+      level: 'error'
+    };
+    
+    return config;
+  }
 };
 
 module.exports = nextConfig;
