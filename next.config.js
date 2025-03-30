@@ -60,16 +60,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  poweredByHeader: false,
-  // Đảm bảo webpack được cấu hình chính xác
-  webpack: (config, { isServer }) => {
-    // Fix cho lỗi "Cannot read properties of undefined (reading 'call')"
-    config.infrastructureLogging = {
-      level: 'error'
-    };
-    
-    return config;
-  }
+  poweredByHeader: false
 };
 
 module.exports = nextConfig;
