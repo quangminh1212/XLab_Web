@@ -1,103 +1,310 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo XLab Web - Next.js 15.2.4 Startup Tool
-echo ------------------------------
-echo [Running in Next.js 15.2.4 DEVELOPMENT mode]
+title XLab Web - Công cụ sửa lỗi tổng hợp
+color 0A
 
-:: Cài đặt mặc định phiên bản Next.js 15.2.4 và dùng development
-set NEXT_VERSION_FULL=15.2.4
-set RUN_MODE=dev
+:menu
+cls
+echo ========================================================
+echo     XLab Web - CÔNG CỤ SỬA LỖI TỔNG HỢP
+echo ========================================================
+echo.
+echo  [1] Sửa lỗi WEBPACK (Cannot read properties of undefined (reading 'call'))
+echo  [2] Sửa lỗi xung đột SWC/BABEL (next/font yêu cầu SWC thay vì Babel)
+echo  [3] Sửa lỗi tùy chọn SWCMINIFY không được hỗ trợ
+echo  [4] Xóa cache và file NEXT.JS tạm
+echo  [5] Cài đặt lại các DEPENDENCIES
+echo  [6] Chạy tất cả các bước sửa lỗi theo thứ tự
+echo  [7] Chạy dự án (npm run dev)
+echo  [0] Thoát
+echo.
+echo ========================================================
+echo.
 
-:: Bước 1: Kiểm tra cài đặt Node.js
-echo [1/9] Checking Node.js installation...
-node -v > nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    echo Node.js is not installed or not in PATH. Please install Node.js from https://nodejs.org/
-    exit /b 1
+set /p choice=Nhập lựa chọn của bạn (0-7): 
+
+if "%choice%"=="0" goto :eof
+if "%choice%"=="1" goto fix_webpack
+if "%choice%"=="2" goto fix_swc_babel
+if "%choice%"=="3" goto fix_swcminify
+if "%choice%"=="4" goto clean_cache
+if "%choice%"=="5" goto reinstall_deps
+if "%choice%"=="6" goto run_all
+if "%choice%"=="7" goto start_dev
+goto menu
+
+:run_all
+cls
+echo ========================================================
+echo     ĐANG CHẠY TẤT CẢ CÁC BƯỚC SỬA LỖI
+echo ========================================================
+echo.
+call :fix_webpack
+call :fix_swc_babel
+call :fix_swcminify
+call :clean_cache
+call :reinstall_deps
+echo.
+echo ========================================================
+echo     HOÀN THÀNH TẤT CẢ CÁC BƯỚC SỬA LỖI
+echo ========================================================
+echo.
+pause
+goto menu
+
+:fix_webpack
+cls
+echo ========================================================
+echo     SỬA LỖI WEBPACK 'CALL' ERROR
+echo ========================================================
+echo.
+echo [1/4] Dừng các tiến trình Node.js đang chạy...
+taskkill /F /IM node.exe >nul 2>&1
+echo.
+echo [2/4] Cài đặt webpack phiên bản cụ thể...
+call npm install --save-dev webpack@5.82.1
+echo.
+echo [3/4] Xóa cache...
+rd /s /q .next >nul 2>&1
+echo Đã xóa thư mục .next
+echo.
+echo [4/4] Cập nhật React và React DOM...
+call npm install react@18.2.0 react-dom@18.2.0
+echo.
+echo ========================================================
+echo     HOÀN THÀNH SỬA LỖI WEBPACK 'CALL' ERROR
+echo ========================================================
+echo.
+pause
+if "%choice%"=="1" goto menu
+exit /b 0
+
+:fix_swc_babel
+cls
+echo ========================================================
+echo     SỬA LỖI XUNG ĐỘT SWC/BABEL
+echo ========================================================
+echo.
+echo [1/5] Dừng các tiến trình Node.js đang chạy...
+taskkill /F /IM node.exe >nul 2>&1
+echo.
+echo [2/5] Kiểm tra và xóa file .babelrc...
+if exist .babelrc (
+    echo File .babelrc được tìm thấy, tạo backup và xóa...
+    copy .babelrc .babelrc.backup >nul
+    del .babelrc
+    echo Đã xóa .babelrc
+) else (
+    echo File .babelrc không tồn tại, bỏ qua...
 )
-echo Node.js version: 
-node -v
-
-:: Bước 2: Dừng tất cả các tiến trình Node đang chạy
-echo [2/9] Stopping any running Node.js processes...
-taskkill /f /im node.exe >nul 2>&1
-
-:: Bước 3: Dọn dẹp môi trường
-echo [3/9] Cleaning up environment...
-echo Cleaning cache folders...
-if exist .next rmdir /s /q .next 2>nul
-if exist .next-dev rmdir /s /q .next-dev 2>nul
-if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul
-if exist .vercel rmdir /s /q .vercel 2>nul
-if exist .turbo rmdir /s /q .turbo 2>nul
-
-:: Xóa các file cache TypeScript
-if exist *.tsbuildinfo del /f /q *.tsbuildinfo 2>nul
-
-:: Xóa các file cache webpack
-if exist .webpack rmdir /s /q .webpack 2>nul
-
-:: Xóa các file lock
-if exist package-lock.json del /f /q package-lock.json 2>nul
-if exist yarn.lock del /f /q yarn.lock 2>nul
-if exist pnpm-lock.yaml del /f /q pnpm-lock.yaml 2>nul
-
-:: Bước 4: Tạo .npmrc để tắt warning và thiết lập cài đặt
-echo [4/9] Configuring Next.js %NEXT_VERSION_FULL%...
-echo loglevel=error > .npmrc
-echo fund=false >> .npmrc
-echo audit=false >> .npmrc
-echo update-notifier=false >> .npmrc
-echo legacy-peer-deps=true >> .npmrc
-echo engine-strict=false >> .npmrc
-echo save-exact=true >> .npmrc
-
-:: Bước 5: Cài đặt các dependencies
-echo [5/9] Installing Next.js %NEXT_VERSION_FULL% and dependencies...
-
-:: Cài đặt Next.js và dependencies chính
-call npm install next@%NEXT_VERSION_FULL% --save-exact --no-fund --no-audit --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install Next.js
-    exit /b 1
+echo.
+echo [3/5] Kiểm tra và cập nhật next.config.js...
+if exist next.config.js (
+    echo Tạo backup cho next.config.js...
+    copy next.config.js next.config.js.backup >nul
+    
+    echo Đọc nội dung next.config.js hiện tại...
+    set "swcminify_exists="
+    set "styled_components_exists="
+    
+    for /f "tokens=*" %%a in (next.config.js) do (
+        set "line=%%a"
+        if "!line!"=="  swcMinify: true," set "swcminify_exists=1"
+        if "!line:~0,15!"=="  compiler: {" set "styled_components_exists=1"
+    )
+    
+    echo Cập nhật next.config.js...
+    type next.config.js > next.config.js.temp
+    
+    if defined swcminify_exists (
+        echo Đang xóa tùy chọn swcMinify không được hỗ trợ...
+        powershell -Command "(Get-Content next.config.js.temp) -replace '  swcMinify: true,', '' | Set-Content next.config.js.new"
+        del next.config.js.temp
+        copy next.config.js.new next.config.js.temp >nul
+        del next.config.js.new
+    )
+    
+    if not defined styled_components_exists (
+        echo Đang thêm hỗ trợ styled-components...
+        powershell -Command "(Get-Content next.config.js.temp) -replace 'reactStrictMode: (true|false),', 'reactStrictMode: $1,\n  compiler: {\n    styledComponents: true\n  },' | Set-Content next.config.js.new"
+        del next.config.js.temp
+        move next.config.js.new next.config.js >nul
+    ) else (
+        move next.config.js.temp next.config.js >nul
+    )
+    
+    echo Đã cập nhật next.config.js
+) else (
+    echo Không tìm thấy next.config.js, tạo file mới...
+    echo // next.config.js > next.config.js
+    echo const nextConfig = {>> next.config.js
+    echo   reactStrictMode: true,>> next.config.js
+    echo   compiler: {>> next.config.js
+    echo     styledComponents: true>> next.config.js
+    echo   },>> next.config.js
+    echo   // Đã xóa tùy chọn swcMinify không được hỗ trợ>> next.config.js
+    echo }>> next.config.js
+    echo >> next.config.js
+    echo module.exports = nextConfig>> next.config.js
+    echo Đã tạo next.config.js mới
 )
-
-call npm install --no-fund --no-audit --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install dependencies
-    exit /b 1
+echo.
+echo [4/5] Thiết lập biến môi trường...
+echo NODE_OPTIONS=--max_old_space_size=4096 > .env.local
+echo Đã thiết lập NODE_OPTIONS=--max_old_space_size=4096 trong .env.local
+echo.
+echo [5/5] Xóa cache và thư mục .next...
+rd /s /q .next >nul 2>&1
+echo Đã xóa thư mục .next
+echo.
+for /d %%i in (node_modules\.cache\*) do (
+    rd /s /q "%%i" >nul 2>&1
 )
+echo Đã xóa cache trong node_modules\.cache
+echo.
+echo ========================================================
+echo     HOÀN THÀNH SỬA LỖI XUNG ĐỘT SWC/BABEL
+echo ========================================================
+echo LƯU Ý: Không sử dụng file .babelrc khi bạn cần các tính năng yêu cầu SWC.
+echo Nếu bạn cần cấu hình babel, hãy sử dụng next.config.js thay thế.
+echo.
+pause
+if "%choice%"=="2" goto menu
+exit /b 0
 
-:: Bước 6: Xóa cache của npm
-echo [6/9] Clearing npm cache...
-call npm cache clean --force
-
-:: Bước 7: Kiểm tra cài đặt Next.js
-echo [7/9] Verifying Next.js installation...
-call npm ls next
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to verify Next.js installation
-    exit /b 1
+:fix_swcminify
+cls
+echo ========================================================
+echo     SỬA LỖI TÙY CHỌN SWCMINIFY KHÔNG ĐƯỢC HỖ TRỢ
+echo ========================================================
+echo.
+echo [1/2] Dừng các tiến trình Node.js đang chạy...
+taskkill /F /IM node.exe >nul 2>&1
+echo.
+echo [2/2] Kiểm tra và cập nhật next.config.js...
+if exist next.config.js (
+    echo Tạo backup cho next.config.js...
+    copy next.config.js next.config.js.swcminify.backup >nul
+    
+    echo Xóa tùy chọn swcMinify không được hỗ trợ...
+    powershell -Command "(Get-Content next.config.js) -replace '  swcMinify: true,', '' | Set-Content next.config.js.new"
+    move /y next.config.js.new next.config.js >nul
+    echo Đã cập nhật next.config.js
+) else (
+    echo Không tìm thấy next.config.js, bỏ qua...
 )
+echo.
+echo ========================================================
+echo     HOÀN THÀNH SỬA LỖI TÙY CHỌN SWCMINIFY
+echo ========================================================
+echo.
+pause
+if "%choice%"=="3" goto menu
+exit /b 0
 
-:: Bước 8: Kiểm tra môi trường
-echo [8/9] Checking environment...
-if not exist node_modules\.bin\next.cmd (
-    echo Next.js binary not found
-    exit /b 1
+:clean_cache
+cls
+echo ========================================================
+echo     XÓA CACHE VÀ FILE NEXT.JS TẠM
+echo ========================================================
+echo.
+echo [1/3] Dừng các tiến trình Node.js đang chạy...
+taskkill /F /IM node.exe >nul 2>&1
+echo.
+echo [2/3] Xóa thư mục .next...
+rd /s /q .next >nul 2>&1
+echo Đã xóa thư mục .next
+echo.
+echo [3/3] Xóa cache trong node_modules\.cache...
+for /d %%i in (node_modules\.cache\*) do (
+    rd /s /q "%%i" >nul 2>&1
 )
+echo Đã xóa cache trong node_modules\.cache
+echo.
+echo ========================================================
+echo     HOÀN THÀNH XÓA CACHE VÀ FILE TẠM
+echo ========================================================
+echo.
+pause
+if "%choice%"=="4" goto menu
+exit /b 0
 
-:: Bước 9: Chạy ứng dụng
-echo [9/9] Starting application in %RUN_MODE% mode...
-echo Starting Next.js %NEXT_VERSION_FULL% development server...
-echo [Press Ctrl+C to stop the server]
+:reinstall_deps
+cls
+echo ========================================================
+echo     CÀI ĐẶT LẠI CÁC DEPENDENCIES
+echo ========================================================
+echo.
+echo Chọn các dependency cần cài đặt:
+echo  [1] Cài đặt lại React và React DOM (phiên bản 18.2.0)
+echo  [2] Cài đặt Webpack phiên bản 5.82.1
+echo  [3] Cài đặt Next.js phiên bản 13.4.8
+echo  [4] Cài đặt styled-components
+echo  [5] Cài đặt các UI components (@radix-ui/react-slot, class-variance-authority, clsx, tailwind-merge)
+echo  [6] Xóa node_modules và cài đặt lại tất cả dependencies
+echo  [0] Quay lại menu chính
+echo.
+set /p deps_choice=Nhập lựa chọn của bạn (0-6): 
 
-:: Đặt biến môi trường
-set NODE_ENV=development
-set NEXT_TELEMETRY_DISABLED=1
+if "%deps_choice%"=="0" goto menu
+if "%deps_choice%"=="1" (
+    echo Cài đặt lại React và React DOM (phiên bản 18.2.0)...
+    call npm install react@18.2.0 react-dom@18.2.0
+)
+if "%deps_choice%"=="2" (
+    echo Cài đặt Webpack phiên bản 5.82.1...
+    call npm install --save-dev webpack@5.82.1
+)
+if "%deps_choice%"=="3" (
+    echo Cài đặt Next.js phiên bản 13.4.8...
+    call npm install next@13.4.8
+)
+if "%deps_choice%"=="4" (
+    echo Cài đặt styled-components...
+    call npm install styled-components
+)
+if "%deps_choice%"=="5" (
+    echo Cài đặt các UI components...
+    call npm install @radix-ui/react-slot class-variance-authority clsx tailwind-merge
+)
+if "%deps_choice%"=="6" (
+    echo Xóa node_modules và cài đặt lại tất cả dependencies...
+    echo CẢNH BÁO: Quá trình này có thể mất nhiều thời gian!
+    
+    echo Bạn có chắc chắn muốn tiếp tục? (y/n)
+    set /p confirm=
+    if /i "%confirm%"=="y" (
+        echo Xóa thư mục node_modules...
+        rd /s /q node_modules >nul 2>&1
+        echo Cài đặt lại tất cả dependencies...
+        call npm install
+    ) else (
+        echo Đã hủy thao tác.
+    )
+)
+echo.
+echo ========================================================
+echo     HOÀN THÀNH CÀI ĐẶT DEPENDENCIES
+echo ========================================================
+echo.
+pause
+goto reinstall_deps
 
-:: Chạy ứng dụng với đường dẫn đầy đủ
-call node_modules\.bin\next.cmd dev
+:start_dev
+cls
+echo ========================================================
+echo     KHỞI ĐỘNG DỰ ÁN - NPM RUN DEV
+echo ========================================================
+echo.
+echo Khởi động dự án với lệnh npm run dev...
+call npm run dev
 
-endlocal 
+pause
+goto menu
+
+:eof
+echo.
+echo Cảm ơn bạn đã sử dụng công cụ sửa lỗi XLab Web!
+timeout /t 2 >nul
+exit /b 0
