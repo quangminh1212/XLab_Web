@@ -224,3 +224,13 @@ yarn-error.log*
 *.temp
 *.log
 .eslintcache
+
+# Thêm các file được tạo ra khi chạy dự án
+*.backup
+*.bat
+*.js.backup
+.babelrc.backup
+next.config.js.backup
+fix-*.js
+fix-*.bat
+run-fix.bat

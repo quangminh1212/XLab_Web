@@ -1,175 +1,118 @@
+#!/usr/bin/env node
+
 /**
- * Script để sửa lỗi xung đột giữa SWC và Babel trong Next.js
- * Chạy lệnh: node fix-swc-babel-js.js
+ * Script để sửa xung đột giữa SWC và Babel trong Next.js
+ * Vấn đề: Khi có file .babelrc, Next.js sẽ dùng Babel thay vì SWC gây xung đột với tính năng next/font
  */
 
 const fs = require('fs');
-const { execSync } = require('child_process');
 const path = require('path');
+const { execSync } = require('child_process');
+const os = require('os');
 
-console.log('XLab Web - SWC/Babel Conflict Fix Script');
-console.log('--------------------------------------');
+console.log('XLab Web - SWC/Babel Conflict Fix');
+console.log('------------------------------');
 
-// Kiểm tra và xóa file .babelrc
-console.log('🔍 Kiểm tra file .babelrc...');
-if (fs.existsSync('.babelrc')) {
-  try {
-    console.log('Phát hiện file .babelrc gây xung đột với next/font');
-    fs.renameSync('.babelrc', '.babelrc.backup');
-    console.log('✅ Đã đổi tên .babelrc thành .babelrc.backup');
-  } catch (error) {
-    console.error(`❌ Không thể xóa file .babelrc: ${error.message}`);
-  }
-} else {
-  console.log('✅ Không tìm thấy file .babelrc, bỏ qua bước này');
-}
+try {
+    // Bước 1: Kiểm tra và xóa file .babelrc
+    console.log('[1/5] Kiểm tra và xóa file .babelrc...');
+    const babelrcPath = path.join(process.cwd(), '.babelrc');
+    const babelrcBackupPath = path.join(process.cwd(), '.babelrc.backup');
+    
+    if (fs.existsSync(babelrcPath)) {
+        console.log('File .babelrc được tìm thấy, tạo backup và xóa...');
+        fs.copyFileSync(babelrcPath, babelrcBackupPath);
+        fs.unlinkSync(babelrcPath);
+        console.log('Đã xóa .babelrc và tạo bản sao lưu .babelrc.backup');
+    } else {
+        console.log('File .babelrc không tồn tại, bỏ qua...');
+    }
 
-// Cập nhật next.config.js
-console.log('\n🔧 Cập nhật next.config.js để sử dụng SWC...');
-const nextConfigContent = `/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: false,
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-      {
-        protocol: 'http',
-        hostname: '**',
-      }
-    ],
-    unoptimized: true,
-  },
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self';"
-          },
-          {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on'
-          },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload'
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block'
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff'
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'same-origin'
-          }
-        ]
-      }
-    ];
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  swcMinify: true,
-  poweredByHeader: false,
-  webpack: (config, { dev, isServer }) => {
-    // Vô hiệu hóa các alias có thể gây xung đột
-    if (!isServer && config.resolve && config.resolve.alias) {
-      delete config.resolve.alias['react'];
-      delete config.resolve.alias['react-dom'];
+    // Bước 2: Cập nhật next.config.js
+    console.log('[2/5] Cập nhật next.config.js để sử dụng SWC...');
+    const nextConfigPath = path.join(process.cwd(), 'next.config.js');
+    const nextConfigBackupPath = path.join(process.cwd(), 'next.config.js.backup');
+    
+    // Tạo bản sao lưu nếu tồn tại file cấu hình
+    if (fs.existsSync(nextConfigPath)) {
+        fs.copyFileSync(nextConfigPath, nextConfigBackupPath);
+        console.log('Đã tạo bản sao lưu next.config.js.backup');
     }
     
-    // Điều chỉnh cấu hình webpack
-    config.infrastructureLogging = { level: 'error' };
-    
-    return config;
+    // Tạo nội dung mới cho next.config.js
+    const newConfig = `// next.config.js
+const nextConfig = {
+  reactStrictMode: true,
+  compiler: {
+    styledComponents: true
   },
-};
-
-module.exports = nextConfig;`;
-
-try {
-  if (fs.existsSync('next.config.js')) {
-    fs.renameSync('next.config.js', `next.config.js.backup-${Date.now()}`);
-    console.log('✅ Đã sao lưu next.config.js cũ');
-  }
-  fs.writeFileSync('next.config.js', nextConfigContent);
-  console.log('✅ Đã cập nhật next.config.js với cấu hình SWC');
-} catch (error) {
-  console.error(`❌ Không thể cập nhật next.config.js: ${error.message}`);
+  // Đã xóa tùy chọn swcMinify không được hỗ trợ
 }
 
-// Xóa thư mục .next
-console.log('\n🧹 Xóa thư mục .next...');
-try {
-  if (fs.existsSync('.next')) {
-    fs.rmSync('.next', { recursive: true, force: true });
-    console.log('✅ Đã xóa thư mục .next');
-  } else {
-    console.log('✅ Thư mục .next không tồn tại, bỏ qua bước này');
-  }
+module.exports = nextConfig
+`;
+    
+    fs.writeFileSync(nextConfigPath, newConfig);
+    console.log('Đã cập nhật next.config.js với cấu hình SWC');
+
+    // Bước 3: Xóa thư mục .next (cache)
+    console.log('[3/5] Xóa thư mục .next...');
+    const nextDir = path.join(process.cwd(), '.next');
+    if (fs.existsSync(nextDir)) {
+        if (os.platform() === 'win32') {
+            execSync('rd /s /q .next', { stdio: 'ignore' });
+        } else {
+            execSync('rm -rf .next', { stdio: 'ignore' });
+        }
+        console.log('Đã xóa thư mục .next');
+    } else {
+        console.log('Thư mục .next không tồn tại, bỏ qua...');
+    }
+
+    // Bước 4: Thiết lập biến môi trường trong .env.local
+    console.log('[4/5] Thiết lập biến môi trường...');
+    const envPath = path.join(process.cwd(), '.env.local');
+    fs.writeFileSync(envPath, 'NODE_OPTIONS=--max_old_space_size=4096\n');
+    console.log('Đã thiết lập NODE_OPTIONS=--max_old_space_size=4096 trong .env.local');
+
+    // Bước 5: Xóa cache
+    console.log('[5/5] Xóa cache trong node_modules/.cache...');
+    const cachePath = path.join(process.cwd(), 'node_modules', '.cache');
+    if (fs.existsSync(cachePath)) {
+        const cacheItems = fs.readdirSync(cachePath);
+        for (const item of cacheItems) {
+            const itemPath = path.join(cachePath, item);
+            if (fs.statSync(itemPath).isDirectory()) {
+                if (os.platform() === 'win32') {
+                    try {
+                        execSync(`rd /s /q "${itemPath}"`, { stdio: 'ignore' });
+                    } catch (e) {
+                        console.log(`Không thể xóa ${itemPath}: ${e.message}`);
+                    }
+                } else {
+                    try {
+                        execSync(`rm -rf "${itemPath}"`, { stdio: 'ignore' });
+                    } catch (e) {
+                        console.log(`Không thể xóa ${itemPath}: ${e.message}`);
+                    }
+                }
+            }
+        }
+        console.log('Đã xóa cache trong node_modules/.cache');
+    } else {
+        console.log('Thư mục node_modules/.cache không tồn tại, bỏ qua...');
+    }
+
+    console.log('\n===== THÔNG BÁO QUAN TRỌNG =====');
+    console.log('Đã cấu hình Next.js để sử dụng SWC thay vì Babel.');
+    console.log('Đã loại bỏ tùy chọn swcMinify không được hỗ trợ.');
+    console.log('Đã thêm cấu hình compiler.styledComponents để hỗ trợ styled-components.');
+    console.log('LƯU Ý: Không sử dụng file .babelrc khi bạn cần các tính năng yêu cầu SWC.');
+    console.log('Nếu bạn cần cấu hình babel, hãy sử dụng next.config.js thay thế.');
+    console.log('===============================\n');
+    
+    console.log('Khởi động lại ứng dụng bằng lệnh: npm run dev');
 } catch (error) {
-  console.error(`❌ Không thể xóa thư mục .next: ${error.message}`);
-}
-
-// Thiết lập biến môi trường
-console.log('\n🔧 Thiết lập biến môi trường...');
-const envContent = 'NODE_OPTIONS=--max-old-space-size=4096';
-try {
-  fs.writeFileSync('.env.local', envContent);
-  console.log('✅ Đã thiết lập NODE_OPTIONS trong .env.local');
-} catch (error) {
-  console.error(`❌ Không thể tạo file .env.local: ${error.message}`);
-}
-
-// Xóa cache
-console.log('\n🧹 Xóa cache...');
-try {
-  const cacheDir = path.join('node_modules', '.cache');
-  if (fs.existsSync(cacheDir)) {
-    fs.rmSync(cacheDir, { recursive: true, force: true });
-    console.log('✅ Đã xóa thư mục node_modules/.cache');
-  }
-} catch (error) {
-  console.error(`❌ Không thể xóa cache: ${error.message}`);
-}
-
-// Hiển thị hướng dẫn
-console.log('\n');
-console.log('===============================');
-console.log('🎉 ĐÃ HOÀN THÀNH CÁC BƯỚC SỬA LỖI');
-console.log('===============================');
-console.log(`
-Đã khắc phục xung đột giữa SWC và Babel:
-1. ${fs.existsSync('.babelrc.backup') ? 'Đã đổi tên .babelrc thành .babelrc.backup để tránh xung đột' : 'Không tìm thấy .babelrc'}
-2. Đã cập nhật next.config.js để sử dụng SWC thay vì Babel
-3. Đã thêm swcMinify: true để tối ưu hóa bằng SWC
-4. Đã xóa cache Next.js
-
-Lưu ý quan trọng:
-- Next.js 15.2.4 ưu tiên sử dụng SWC compiler thay vì Babel
-- Khi có file .babelrc, Next.js sẽ tự động chuyển sang dùng Babel và tắt SWC
-- Điều này gây xung đột với tính năng next/font cần SWC để hoạt động
-
-Bước tiếp theo:
-1. Khởi động lại ứng dụng: npm run dev
-2. Nếu vẫn gặp lỗi, hãy thử: npm run build && npm start
-`);
-
-console.log('Bạn có muốn khởi động lại ứng dụng ngay bây giờ? (y/n)');
-console.log('Để khởi động: npm run dev'); 
+    console.error('Đã xảy ra lỗi:', error.message);
+    process.exit(1);
+} 
