@@ -10,6 +10,8 @@ import SessionProvider from '@/components/SessionProvider'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { siteConfig } from '@/config/siteConfig'
 import { usePathname } from 'next/navigation'
+import ScriptComponent from '@/components/ScriptComponent'
+import { setupPartytown } from '@/utils/partytown'
 
 // Load Inter font
 const inter = Inter({
@@ -48,6 +50,9 @@ export default function RootLayout({
       
       // Thiết lập tiêu đề trang
       document.title = siteConfig.seo.defaultTitle
+      
+      // Khởi tạo Partytown nếu cần
+      setupPartytown()
     }
   }, [])
 
@@ -58,6 +63,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <meta name="description" content={siteConfig.seo.defaultDescription} />
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        {/* Thêm vào các script cần thiết mà không sử dụng next/script */}
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
         <noscript>
