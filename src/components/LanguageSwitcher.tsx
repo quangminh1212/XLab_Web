@@ -37,16 +37,21 @@ export default function LanguageSwitcher({
         }
     }, [])
 
+    // Hiển thị ngôn ngữ hiện tại một cách đầy đủ
+    const currentLanguageDisplay = language === 'vi' ? 'VI' : 'EN'
+    // Hiển thị ngôn ngữ đích để chuyển đổi
+    const targetLanguageDisplay = language === 'vi' ? 'EN' : 'VI'
+
     return (
         <div className={`relative ${className}`} ref={menuRef}>
             <button
                 onClick={toggleOptions}
-                className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
+                className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center whitespace-nowrap"
                 aria-label={language === 'vi' ? 'Chuyển đổi ngôn ngữ' : 'Switch language'}
             >
                 <div className="flex items-center">
                     <span className="font-medium text-sm mr-1">
-                        {language === 'vi' ? 'VI' : 'EN'}
+                        {currentLanguageDisplay}
                     </span>
                     <svg
                         className={`h-4 w-4 transition-transform ${showOptions ? 'rotate-180' : ''}`}
@@ -60,14 +65,14 @@ export default function LanguageSwitcher({
             </button>
 
             {showOptions && (
-                <div className="absolute right-0 top-full mt-1 bg-white rounded-md shadow-lg z-50 w-40">
+                <div className="absolute right-0 top-full mt-1 bg-white rounded-md shadow-lg z-50 w-48">
                     <div className="py-1 border border-gray-100 rounded-md">
                         <button
                             onClick={toggleLanguage}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 flex items-center"
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 flex items-center whitespace-nowrap"
                         >
                             <span className="w-6 text-center mr-2 inline-block font-medium">
-                                {language === 'vi' ? 'EN' : 'VI'}
+                                {targetLanguageDisplay}
                             </span>
                             {translate('actions.switchToEnglish')}
                         </button>
