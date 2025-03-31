@@ -45,8 +45,12 @@ export default function RootLayout({
   useEffect(() => {
     // Kiểm tra môi trường client một cách rõ ràng
     if (typeof window !== 'undefined') {
-      // Không thiết lập ngôn ngữ cho thẻ html ở đây để tránh xung đột với LanguageContext
-      // Thiết lập sẽ được thực hiện bởi LanguageContext
+      // Thiết lập ngôn ngữ mặc định cho thẻ html nếu chưa được thiết lập
+      if (!document.documentElement.lang) {
+        const savedLanguage = localStorage.getItem('language') as 'vi' | 'en' | null;
+        document.documentElement.lang = savedLanguage || 'vi';
+        console.log('Initial HTML lang set to:', document.documentElement.lang);
+      }
 
       // Thiết lập tiêu đề trang
       document.title = siteConfig.seo.defaultTitle
