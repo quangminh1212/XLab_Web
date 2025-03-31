@@ -91,29 +91,40 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     }, [])
 
     const setLanguage = (lang: Language) => {
+        console.log('Call to setLanguage with:', lang, 'Current language:', language)
+
         if (lang !== language) {
             console.log('Changing language to:', lang)
-            // Cập nhật state
-            setLanguageState(lang)
 
             try {
+                // Đảm bảo update localStorage trước
                 if (typeof window !== 'undefined') {
-                    // Cập nhật localStorage
-                    localStorage.removeItem('language') // Xóa cũ trước
-                    localStorage.setItem('language', lang)
-                    console.log('Language saved to localStorage:', lang, 'Current in storage:', localStorage.getItem('language'))
+                    try {
+                        window.localStorage.clear(); // Xóa tất cả để đảm bảo không có xung đột
+                        window.localStorage.setItem('language', lang);
+                        console.log('localStorage after update:', window.localStorage.getItem('language'));
+                    } catch (err) {
+                        console.error('Error updating localStorage:', err);
+                    }
 
                     // Cập nhật thuộc tính lang trên thẻ html
                     document.documentElement.lang = lang
                     console.log('HTML lang attribute set to:', document.documentElement.lang)
+                }
 
-                    // Phát sự kiện thay đổi ngôn ngữ
+                // Cập nhật state sau khi đã xử lý localStorage
+                setLanguageState(lang)
+
+                // Phát sự kiện thay đổi ngôn ngữ
+                if (typeof window !== 'undefined' && document) {
                     const event = new CustomEvent('languageChange', { detail: { language: lang } })
                     document.dispatchEvent(event)
                 }
             } catch (error) {
-                console.error('Error saving language:', error)
+                console.error('Error in setLanguage:', error)
             }
+        } else {
+            console.log('Language is already', lang, '- no change needed')
         }
     }
 
