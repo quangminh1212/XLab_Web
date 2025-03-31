@@ -193,13 +193,13 @@ export default function Header() {
               <div className="hidden sm:flex items-center justify-center space-x-3">
                 <Link
                   href="/login"
-                  className="px-5 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
+                  className="px-3 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center whitespace-nowrap"
                 >
                   {uiText.login}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center"
+                  className="px-3 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center whitespace-nowrap"
                 >
                   {uiText.register}
                 </Link>

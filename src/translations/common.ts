@@ -106,8 +106,8 @@ const translations = {
             en: 'Buy now'
         },
         switchToEnglish: {
-            vi: 'Chuyển sang tiếng Anh',
-            en: 'Switch to Vietnamese'
+            vi: 'Tiếng Anh',
+            en: 'Tiếng Việt'
         },
         submit: {
             vi: 'Gửi',
