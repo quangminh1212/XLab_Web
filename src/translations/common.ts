@@ -154,6 +154,30 @@ const translations = {
         viewDetails: {
             vi: 'Xem chi tiết',
             en: 'View details'
+        },
+        addNewProduct: {
+            vi: 'Thêm sản phẩm mới',
+            en: 'Add new product'
+        },
+        backToProductList: {
+            vi: 'Quay lại danh sách sản phẩm',
+            en: 'Back to product list'
+        },
+        clearFilters: {
+            vi: 'Xóa bộ lọc',
+            en: 'Clear filters'
+        },
+        searchProducts: {
+            vi: 'Tìm kiếm sản phẩm...',
+            en: 'Search products...'
+        },
+        searchResults: {
+            vi: 'Kết quả tìm kiếm',
+            en: 'Search Results'
+        },
+        tryAgain: {
+            vi: 'Thử lại',
+            en: 'Try again'
         }
     },
 
@@ -198,6 +222,38 @@ const translations = {
         noCategories: {
             vi: 'Chưa có danh mục nào.',
             en: 'No categories available yet.'
+        },
+        invalidProductId: {
+            vi: 'Mã sản phẩm không hợp lệ',
+            en: 'Invalid product ID'
+        },
+        productNotFound: {
+            vi: 'Không tìm thấy sản phẩm',
+            en: 'Product not found'
+        },
+        errorLoadingProduct: {
+            vi: 'Đã xảy ra lỗi khi tải thông tin sản phẩm',
+            en: 'An error occurred while loading product information'
+        },
+        productNotFoundDescription: {
+            vi: 'Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa. Vui lòng kiểm tra lại đường dẫn hoặc quay lại trang sản phẩm.',
+            en: 'The product you are looking for does not exist or has been removed. Please check the URL or go back to the products page.'
+        },
+        noProductsYet: {
+            vi: 'Hiện tại chưa có sản phẩm nào được thêm vào hệ thống. Bạn có thể thêm sản phẩm mới bằng cách nhấn vào nút bên dưới.',
+            en: 'There are no products added to the system yet. You can add a new product by clicking the button below.'
+        },
+        noProducts: {
+            vi: 'Chưa có sản phẩm nào.',
+            en: 'No products available yet.'
+        },
+        noSearchResults: {
+            vi: 'Không tìm thấy sản phẩm nào phù hợp với bộ lọc đã chọn.',
+            en: 'No products match your selected filters.'
+        },
+        featureInDevelopment: {
+            vi: 'Tính năng này đang được phát triển',
+            en: 'This feature is under development'
         }
     },
 
@@ -770,6 +826,46 @@ const translations = {
         ctaButton: {
             vi: 'Liên hệ với chúng tôi',
             en: 'Contact Us'
+        }
+    },
+
+    // Dịch cho trang sản phẩm
+    product: {
+        views: {
+            vi: 'lượt xem',
+            en: 'views'
+        },
+        downloads: {
+            vi: 'lượt tải',
+            en: 'downloads'
+        },
+        version: {
+            vi: 'Phiên bản',
+            en: 'Version'
+        },
+        updated: {
+            vi: 'Cập nhật',
+            en: 'Updated'
+        },
+        information: {
+            vi: 'Thông tin sản phẩm',
+            en: 'Product Information'
+        },
+        licenseType: {
+            vi: 'Loại bản quyền:',
+            en: 'License Type:'
+        },
+        size: {
+            vi: 'Kích thước:',
+            en: 'Size:'
+        },
+        releaseDate: {
+            vi: 'Ngày phát hành:',
+            en: 'Release Date:'
+        },
+        new: {
+            vi: 'Mới',
+            en: 'New'
         }
     }
 };
