@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 setlocal enabledelayedexpansion
 
 title XLab Web - Tự động sửa lỗi và cài đặt
