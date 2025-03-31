@@ -105,6 +105,10 @@ const translations = {
             vi: 'Mua ngay',
             en: 'Buy now'
         },
+        switchToEnglish: {
+            vi: 'Chuyển sang tiếng Anh',
+            en: 'Switch to Vietnamese'
+        },
         submit: {
             vi: 'Gửi',
             en: 'Submit'
@@ -450,7 +454,7 @@ const translations = {
             en: 'Please wait a moment...'
         }
     },
-    
+
     // Trang dịch vụ
     services: {
         pageTitle: {
