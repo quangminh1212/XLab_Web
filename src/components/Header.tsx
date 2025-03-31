@@ -193,13 +193,13 @@ export default function Header() {
               <div className="hidden sm:flex items-center justify-center space-x-3 overflow-hidden">
                 <Link
                   href="/login"
-                  className="px-3.5 py-1.5 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center whitespace-nowrap text-sm"
+                  className="px-3.5 py-1.5 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center whitespace-nowrap text-sm min-w-[90px]"
                 >
                   {uiText.login}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-3.5 py-1.5 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center whitespace-nowrap text-sm"
+                  className="px-3.5 py-1.5 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center whitespace-nowrap text-sm min-w-[90px]"
                 >
                   {uiText.register}
                 </Link>
@@ -251,13 +251,13 @@ export default function Header() {
               <div className="flex space-x-3 mt-3 px-3">
                 <Link
                   href="/login"
-                  className="flex-1 px-4 py-2 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium text-sm"
+                  className="flex-1 px-4 py-2 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium text-sm min-w-[100px]"
                 >
                   {uiText.login}
                 </Link>
                 <Link
                   href="/register"
-                  className="flex-1 px-4 py-2 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium text-sm"
+                  className="flex-1 px-4 py-2 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium text-sm min-w-[100px]"
                 >
                   {uiText.register}
                 </Link>
