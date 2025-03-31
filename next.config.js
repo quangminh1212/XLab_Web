@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,\n  compiler: {\n    styledComponents: true\n  },
+  reactStrictMode: false,\n  compiler: {\n    styledComponents: true\n  },\n  compiler: {\n    styledComponents: true\n  },
   images: {
     remotePatterns: [
       {
