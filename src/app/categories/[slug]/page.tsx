@@ -1,8 +1,11 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { categories, products } from '@/data/mockData';
 import { notFound } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface CategoryPageProps {
     params: {
@@ -11,12 +14,40 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
+    const { translate, isLoaded } = useLanguage();
     const category = categories.find((cat) => cat.slug === params.slug);
 
     if (!category) {
         notFound();
     }
 
+    // Ánh xạ slug sang key trong bản dịch
+    const getCategoryTranslation = (categorySlug: string) => {
+        const slugToTranslationKey: Record<string, string> = {
+            'phan-mem-doanh-nghiep': 'businessSoftware',
+            'ung-dung-van-phong': 'officeApps',
+            'phan-mem-do-hoa': 'graphicSoftware',
+            'bao-mat-antivirus': 'security',
+            'ung-dung-giao-duc': 'education'
+        };
+
+        const translationKey = slugToTranslationKey[categorySlug];
+
+        if (translationKey && isLoaded) {
+            return {
+                name: translate(`categories.categoriesList.${translationKey}.name`),
+                description: translate(`categories.categoriesList.${translationKey}.description`)
+            };
+        }
+
+        const cat = categories.find(c => c.slug === categorySlug);
+        return {
+            name: cat?.name || '',
+            description: cat?.description || ''
+        };
+    };
+
+    const categoryTranslation = getCategoryTranslation(category.slug);
     const categoryProducts = products.filter((product) => product.categoryId === category.id);
 
     return (
@@ -27,22 +58,22 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
-                        Quay lại danh mục
+                        {isLoaded ? translate('categories.backToCategories') : 'Quay lại danh mục'}
                     </Link>
 
                     <div className="flex items-center mb-6">
                         <div className="w-16 h-16 bg-teal-50 rounded-lg flex items-center justify-center mr-4">
                             <Image
                                 src={category.imageUrl || '/images/placeholder.png'}
-                                alt={category.name}
+                                alt={categoryTranslation.name}
                                 width={48}
                                 height={48}
                                 className="object-contain"
                             />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
-                            <p className="text-gray-600 mt-1">{category.description}</p>
+                            <h1 className="text-3xl font-bold text-gray-900">{categoryTranslation.name}</h1>
+                            <p className="text-gray-600 mt-1">{categoryTranslation.description}</p>
                         </div>
                     </div>
                 </div>
@@ -63,34 +94,29 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                                         className="object-cover"
                                     />
                                 </div>
-                                <div className="p-5">
-                                    <h2 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h2>
-                                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                                        {product.description}
-                                    </p>
+                                <div className="p-4">
+                                    <h2 className="text-lg font-bold text-gray-900 mb-2">{product.name}</h2>
+                                    <p className="text-gray-600 text-sm mb-4">{product.description}</p>
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center text-yellow-500">
-                                            {Array.from({ length: 5 }).map((_, index) => (
-                                                <svg
-                                                    key={index}
-                                                    className={`w-4 h-4 ${index < Math.floor(product.rating) ? 'fill-current' : 'fill-gray-300'}`}
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                                                </svg>
-                                            ))}
-                                            <span className="text-gray-600 text-xs ml-1">{product.rating}</span>
-                                        </div>
-                                        <div className="text-sm">
-                                            {product.salePrice < product.price ? (
-                                                <div>
-                                                    <span className="text-gray-400 line-through">{product.price.toLocaleString('vi-VN')}đ</span>
-                                                    <span className="text-teal-600 font-bold ml-2">{product.salePrice.toLocaleString('vi-VN')}đ</span>
+                                        <div className="text-teal-600 font-medium">
+                                            {product.salePrice ? (
+                                                <div className="flex items-center">
+                                                    <span className="text-sm line-through text-gray-400 mr-2">
+                                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                                                    </span>
+                                                    <span>
+                                                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice)}
+                                                    </span>
                                                 </div>
                                             ) : (
-                                                <span className="text-teal-600 font-bold">{product.price.toLocaleString('vi-VN')}đ</span>
+                                                <span>
+                                                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                                                </span>
                                             )}
                                         </div>
+                                        <span className="px-2 py-1 bg-teal-50 text-teal-600 text-xs rounded-full">
+                                            {isLoaded ? translate('actions.viewDetails') : 'Xem chi tiết'}
+                                        </span>
                                     </div>
                                 </div>
                             </Link>
