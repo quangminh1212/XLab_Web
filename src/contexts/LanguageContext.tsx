@@ -30,54 +30,79 @@ interface LanguageProviderProps {
 export function LanguageProvider({ children }: LanguageProviderProps) {
     const [language, setLanguageState] = useState<Language>('vi')
     const [translations, setTranslations] = useState<any>(commonTranslations)
-    const [isLoaded, setIsLoaded] = useState(true)
+    const [isLoaded, setIsLoaded] = useState(false)
 
+    // Khởi tạo ngôn ngữ từ localStorage hoặc ngôn ngữ trình duyệt
     useEffect(() => {
-        // Kiểm tra xem localStorage có sẵn không (chỉ làm trên client-side)
-        const savedLanguage = typeof window !== 'undefined' ? localStorage.getItem('language') as Language : null
+        try {
+            // Đánh dấu là đã tải
+            setIsLoaded(true)
 
-        if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
-            setLanguageState(savedLanguage)
-        } else {
-            // Nếu không có ngôn ngữ lưu trong localStorage, kiểm tra ngôn ngữ trình duyệt
-            if (typeof window !== 'undefined' && window.navigator) {
-                const browserLang = window.navigator.language.split('-')[0]
-                if (browserLang === 'en') {
-                    setLanguageState('en')
-                    localStorage.setItem('language', 'en')
+            // Kiểm tra localStorage chỉ ở phía client
+            if (typeof window !== 'undefined') {
+                const savedLanguage = localStorage.getItem('language') as Language
+                console.log('Saved language from localStorage:', savedLanguage)
+
+                if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+                    console.log('Setting language from localStorage:', savedLanguage)
+                    setLanguageState(savedLanguage)
+                } else {
+                    // Nếu không có ngôn ngữ lưu trong localStorage, kiểm tra ngôn ngữ trình duyệt
+                    const browserLang = window.navigator.language.split('-')[0]
+                    console.log('Browser language:', browserLang)
+
+                    if (browserLang === 'en') {
+                        console.log('Setting language to English from browser')
+                        setLanguageState('en')
+                        localStorage.setItem('language', 'en')
+                    } else {
+                        // Đặt mặc định là tiếng Việt và lưu vào localStorage
+                        console.log('Setting default language to Vietnamese')
+                        setLanguageState('vi')
+                        localStorage.setItem('language', 'vi')
+                    }
                 }
             }
+        } catch (error) {
+            console.error('Error initializing language:', error)
+            // Đảm bảo luôn có ngôn ngữ mặc định
+            setLanguageState('vi')
         }
+    }, [])
 
-        // Thêm sự kiện lắng nghe khi language trong localStorage thay đổi từ tab khác
+    // Theo dõi thay đổi từ tab khác
+    useEffect(() => {
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === 'language' && e.newValue && (e.newValue === 'vi' || e.newValue === 'en')) {
+                console.log('Language changed from another tab:', e.newValue)
                 setLanguageState(e.newValue as Language)
             }
         }
 
         window.addEventListener('storage', handleStorageChange)
-        
-        // Log để debug
-        console.log('Translations available in context:', Object.keys(translations).length)
-
         return () => {
             window.removeEventListener('storage', handleStorageChange)
         }
-    }, [translations])
+    }, [])
 
     const setLanguage = (lang: Language) => {
         if (lang !== language) {
+            console.log('Changing language to:', lang)
             setLanguageState(lang)
-            if (typeof window !== 'undefined') {
-                localStorage.setItem('language', lang)
 
-                // Thêm hoặc cập nhật thuộc tính lang trên thẻ html để hỗ trợ SEO và các công cụ đọc màn hình
-                document.documentElement.lang = lang
+            try {
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('language', lang)
 
-                // Phát sự kiện tùy chỉnh để thông báo cho các components khác về thay đổi ngôn ngữ
-                const event = new CustomEvent('languageChange', { detail: { language: lang } })
-                document.dispatchEvent(event)
+                    // Cập nhật thuộc tính lang trên thẻ html
+                    document.documentElement.lang = lang
+
+                    // Phát sự kiện thay đổi ngôn ngữ
+                    const event = new CustomEvent('languageChange', { detail: { language: lang } })
+                    document.dispatchEvent(event)
+                }
+            } catch (error) {
+                console.error('Error saving language:', error)
             }
         }
     }
@@ -89,13 +114,13 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
             // Tách key theo dấu chấm (ví dụ: 'navigation.home')
             const keys = key.split('.')
             let result: any = translations
-            
+
             // Nếu không có bản dịch, trả về key
             if (!translations || Object.keys(translations).length === 0) {
                 console.warn(`No translations available for key: ${key}`)
                 return key
             }
-            
+
             // Duyệt qua từng phần của key để lấy giá trị
             for (const k of keys) {
                 if (!result || typeof result !== 'object' || !(k in result)) {
@@ -105,10 +130,10 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
                 }
                 result = result[k]
             }
-            
+
             // Nếu kết quả là chuỗi, trả về chuỗi đó
             if (typeof result === 'string') return result
-            
+
             // Nếu kết quả là object có chứa ngôn ngữ hiện tại, trả về giá trị của ngôn ngữ đó
             if (result && typeof result === 'object') {
                 if (language in result) {
@@ -119,7 +144,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
                     return result['vi']
                 }
             }
-            
+
             // Nếu không tìm thấy bản dịch, trả về key gốc
             console.warn(`Translation structure invalid for key: ${key}`)
             return key
