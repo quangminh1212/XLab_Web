@@ -64,10 +64,10 @@ echo Kiểm tra vấn đề webpack...
 REM Kiểm tra phiên bản webpack hiện tại
 if exist node_modules\webpack (
     set "webpack_version="
-    for /f "tokens=*" %%a in ('npm list webpack --depth=0 2^>nul ^| findstr /C:"webpack@"') do (
-        set webpack_info=%%a
+    for /f "usebackq tokens=*" %%a in (`npm list webpack --depth=0 2^>nul ^| findstr /C:"webpack@"`) do (
+        set "webpack_info=%%a"
         for /f "tokens=2 delims=@" %%b in ("!webpack_info!") do (
-            set webpack_version=%%b
+            set "webpack_version=%%b"
         )
     )
     
@@ -92,10 +92,10 @@ if exist node_modules\webpack (
 REM Kiểm tra React và React DOM
 if exist node_modules\react (
     set "react_version="
-    for /f "tokens=*" %%a in ('npm list react --depth=0 2^>nul ^| findstr /C:"react@"') do (
-        set react_info=%%a
+    for /f "usebackq tokens=*" %%a in (`npm list react --depth=0 2^>nul ^| findstr /C:"react@"`) do (
+        set "react_info=%%a"
         for /f "tokens=2 delims=@" %%b in ("!react_info!") do (
-            set react_version=%%b
+            set "react_version=%%b"
         )
     )
     
@@ -131,7 +131,7 @@ if exist .babelrc (
 REM Kiểm tra cấu hình styled-components trong next.config.js
 if exist next.config.js (
     set "styled_components_exists=0"
-    for /f "tokens=*" %%a in (next.config.js) do (
+    for /f "usebackq tokens=*" %%a in (next.config.js) do (
         set "line=%%a"
         if "!line:~0,15!"=="  compiler: {" set "styled_components_exists=1"
     )
@@ -156,7 +156,7 @@ echo Kiểm tra vấn đề swcMinify...
 REM Kiểm tra tùy chọn swcMinify trong next.config.js
 if exist next.config.js (
     set "swcminify_exists=0"
-    for /f "tokens=*" %%a in (next.config.js) do (
+    for /f "usebackq tokens=*" %%a in (next.config.js) do (
         set "line=%%a"
         if "!line!"=="  swcMinify: true," set "swcminify_exists=1"
     )
@@ -189,21 +189,21 @@ if exist package.json (
     echo Kiểm tra dependencies từ package.json...
     
     REM Đọc các dependencies chính từ package.json
-    for /f "tokens=*" %%a in ('findstr /C:"\"react\":" package.json') do (
+    for /f "usebackq tokens=*" %%a in (`findstr /C:"\"react\":" package.json`) do (
         if not exist node_modules\react (
             echo React không được cài đặt, cần cài đặt lại dependencies
             set "dependencies_issue=1"
         )
     )
     
-    for /f "tokens=*" %%a in ('findstr /C:"\"next\":" package.json') do (
+    for /f "usebackq tokens=*" %%a in (`findstr /C:"\"next\":" package.json`) do (
         if not exist node_modules\next (
             echo Next.js không được cài đặt, cần cài đặt lại dependencies
             set "dependencies_issue=1"
         )
     )
     
-    for /f "tokens=*" %%a in ('findstr /C:"\"styled-components\":" package.json') do (
+    for /f "usebackq tokens=*" %%a in (`findstr /C:"\"styled-components\":" package.json`) do (
         if not exist node_modules\styled-components (
             echo styled-components không được cài đặt, cần cài đặt lại dependencies
             set "dependencies_issue=1"
@@ -269,7 +269,7 @@ if exist next.config.js (
     set "swcminify_exists="
     set "styled_components_exists="
     
-    for /f "tokens=*" %%a in (next.config.js) do (
+    for /f "usebackq tokens=*" %%a in (next.config.js) do (
         set "line=%%a"
         if "!line!"=="  swcMinify: true," set "swcminify_exists=1"
         if "!line:~0,15!"=="  compiler: {" set "styled_components_exists=1"
@@ -280,7 +280,7 @@ if exist next.config.js (
     
     if defined swcminify_exists (
         echo Đang xóa tùy chọn swcMinify không được hỗ trợ...
-        powershell -Command "(Get-Content next.config.js.temp) -replace '  swcMinify: true,', '' | Set-Content next.config.js.new"
+        powershell -Command "$content = Get-Content -Path 'next.config.js.temp' -Raw; $content = $content -replace '  swcMinify: true,', ''; Set-Content -Path 'next.config.js.new' -Value $content"
         del next.config.js.temp
         copy next.config.js.new next.config.js.temp >nul
         del next.config.js.new
@@ -288,7 +288,7 @@ if exist next.config.js (
     
     if not defined styled_components_exists (
         echo Đang thêm hỗ trợ styled-components...
-        powershell -Command "(Get-Content next.config.js.temp) -replace 'reactStrictMode: (true|false),', 'reactStrictMode: $1,\n  compiler: {\n    styledComponents: true\n  },' | Set-Content next.config.js.new"
+        powershell -Command "$content = Get-Content -Path 'next.config.js.temp' -Raw; $content = $content -replace 'reactStrictMode: (true|false),', 'reactStrictMode: $1,`n  compiler: {`n    styledComponents: true`n  },'; Set-Content -Path 'next.config.js.new' -Value $content"
         del next.config.js.temp
         move next.config.js.new next.config.js >nul
     ) else (
@@ -298,16 +298,18 @@ if exist next.config.js (
     echo Đã cập nhật next.config.js
 ) else (
     echo Không tìm thấy next.config.js, tạo file mới...
-    echo // next.config.js > next.config.js
-    echo const nextConfig = {>> next.config.js
-    echo   reactStrictMode: true,>> next.config.js
-    echo   compiler: {>> next.config.js
-    echo     styledComponents: true>> next.config.js
-    echo   },>> next.config.js
-    echo   // Đã xóa tùy chọn swcMinify không được hỗ trợ>> next.config.js
-    echo }>> next.config.js
-    echo >> next.config.js
-    echo module.exports = nextConfig>> next.config.js
+    (
+        echo // next.config.js
+        echo const nextConfig = {
+        echo   reactStrictMode: true,
+        echo   compiler: {
+        echo     styledComponents: true
+        echo   },
+        echo   // Đã xóa tùy chọn swcMinify không được hỗ trợ
+        echo }
+        echo.
+        echo module.exports = nextConfig
+    ) > next.config.js
     echo Đã tạo next.config.js mới
 )
 echo.
@@ -319,10 +321,12 @@ echo [5/5] Xóa cache và thư mục .next...
 rd /s /q .next >nul 2>&1
 echo Đã xóa thư mục .next
 echo.
-for /d %%i in (node_modules\.cache\*) do (
-    rd /s /q "%%i" >nul 2>&1
+if exist node_modules\.cache (
+    for /d %%i in (node_modules\.cache\*) do (
+        rd /s /q "%%i" >nul 2>&1
+    )
+    echo Đã xóa cache trong node_modules\.cache
 )
-echo Đã xóa cache trong node_modules\.cache
 echo.
 echo ========================================================
 echo     HOÀN THÀNH SỬA LỖI XUNG ĐỘT SWC/BABEL
@@ -347,7 +351,7 @@ if exist next.config.js (
     copy next.config.js next.config.js.swcminify.backup >nul
     
     echo Xóa tùy chọn swcMinify không được hỗ trợ...
-    powershell -Command "(Get-Content next.config.js) -replace '  swcMinify: true,', '' | Set-Content next.config.js.new"
+    powershell -Command "$content = Get-Content -Path 'next.config.js' -Raw; $content = $content -replace '  swcMinify: true,', ''; Set-Content -Path 'next.config.js.new' -Value $content"
     move /y next.config.js.new next.config.js >nul
     echo Đã cập nhật next.config.js
 ) else (
