@@ -14,28 +14,47 @@ echo [1/4] Dung cac tien trinh Node.js dang chay...
 taskkill /F /IM node.exe >nul 2>&1
 echo.
 
-echo [2/4] Xoa thu muc node_modules (neu co)...
-if exist node_modules (
-    rd /s /q node_modules >nul 2>&1
-    echo Da xoa node_modules
+echo [2/4] Kiem tra thu muc node_modules...
+if not exist node_modules (
+    echo Thu muc node_modules khong ton tai, se cai dat moi
+    set need_install=1
 ) else (
-    echo Thu muc node_modules khong ton tai
+    echo Thu muc node_modules da ton tai, bo qua buoc cai dat
+    set need_install=0
 )
 echo.
 
-echo [3/4] Cai dat dependencies...
-call npm install
+echo [3/4] Tao file next.config.js moi...
+echo // next.config.js > next.config.js
+echo const nextConfig = { >> next.config.js
+echo   reactStrictMode: true, >> next.config.js
+echo   compiler: { >> next.config.js
+echo     styledComponents: true >> next.config.js
+echo   } >> next.config.js
+echo } >> next.config.js
+echo. >> next.config.js
+echo module.exports = nextConfig >> next.config.js
+echo Da tao file next.config.js moi
 echo.
 
-echo [4/4] Khoi dong ung dung...
+if "%need_install%"=="1" (
+    echo [4/4] Cai dat dependencies...
+    call npm install
+    echo.
+) else (
+    echo [4/4] Bo qua cai dat dependencies
+    echo.
+)
+
+echo Khoi dong ung dung...
 echo.
 echo ========================================================
-echo     STARTING XLAB WEB (NPM START)
+echo     STARTING XLAB WEB (NPM DEV)
 echo     Press Ctrl+C to stop
 echo ========================================================
 echo.
 
-call npm start
+call npm run dev
 
 echo.
 echo ========================================================
