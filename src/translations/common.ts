@@ -109,6 +109,24 @@ const translations = {
             vi: 'Tiếng Anh',
             en: 'Tiếng Việt'
         },
+        englishName: {
+            vi: 'Tiếng Anh',
+            en: 'English'
+        },
+        vietnameseName: {
+            vi: 'Tiếng Việt',
+            en: 'Vietnamese'
+        },
+        languages: {
+            vietnamese: {
+                vi: 'Tiếng Việt',
+                en: 'Vietnamese'
+            },
+            english: {
+                vi: 'Tiếng Anh',
+                en: 'English'
+            }
+        },
         submit: {
             vi: 'Gửi',
             en: 'Submit'
@@ -176,6 +194,10 @@ const translations = {
         systemUpdating: {
             vi: 'Hệ thống đang được cập nhật. Vui lòng quay lại sau.',
             en: 'System is being updated. Please check back later.'
+        },
+        noCategories: {
+            vi: 'Chưa có danh mục nào.',
+            en: 'No categories available yet.'
         }
     },
 
@@ -452,6 +474,82 @@ const translations = {
         message: {
             vi: 'Vui lòng đợi trong giây lát...',
             en: 'Please wait a moment...'
+        }
+    },
+
+    // Danh mục sản phẩm
+    categories: {
+        pageTitle: {
+            vi: 'Danh mục sản phẩm',
+            en: 'Product Categories'
+        },
+        pageDescription: {
+            vi: 'Khám phá các phần mềm của chúng tôi theo danh mục',
+            en: 'Explore our software by category'
+        },
+        backToCategories: {
+            vi: 'Quay lại danh mục',
+            en: 'Back to categories'
+        },
+        productCount: {
+            vi: 'Sản phẩm: ',
+            en: 'Products: '
+        },
+        products: {
+            vi: 'sản phẩm',
+            en: 'products'
+        },
+        categoriesList: {
+            businessSoftware: {
+                name: {
+                    vi: 'Phần mềm doanh nghiệp',
+                    en: 'Business Software'
+                },
+                description: {
+                    vi: 'Các phần mềm phục vụ cho doanh nghiệp như ERP, CRM, thanh toán...',
+                    en: 'Software for businesses such as ERP, CRM, payment systems...'
+                }
+            },
+            officeApps: {
+                name: {
+                    vi: 'Ứng dụng văn phòng',
+                    en: 'Office Applications'
+                },
+                description: {
+                    vi: 'Các ứng dụng văn phòng như soạn thảo, bảng tính, thuyết trình...',
+                    en: 'Office applications like word processing, spreadsheets, presentations...'
+                }
+            },
+            graphicSoftware: {
+                name: {
+                    vi: 'Phần mềm đồ họa',
+                    en: 'Graphic Software'
+                },
+                description: {
+                    vi: 'Các phần mềm thiết kế, chỉnh sửa ảnh, video và đồ họa...',
+                    en: 'Design software, photo editing, video and graphics tools...'
+                }
+            },
+            security: {
+                name: {
+                    vi: 'Bảo mật & Antivirus',
+                    en: 'Security & Antivirus'
+                },
+                description: {
+                    vi: 'Các phần mềm bảo mật, diệt virus, mã hóa dữ liệu...',
+                    en: 'Security software, antivirus, data encryption tools...'
+                }
+            },
+            education: {
+                name: {
+                    vi: 'Ứng dụng giáo dục',
+                    en: 'Educational Applications'
+                },
+                description: {
+                    vi: 'Các ứng dụng học ngoại ngữ, lập trình, toán học...',
+                    en: 'Language learning, programming, mathematics applications...'
+                }
+            }
         }
     },
 

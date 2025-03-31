@@ -41,6 +41,10 @@ export default function LanguageSwitcher({
     const currentLanguageDisplay = language === 'vi' ? 'VI' : 'EN'
     // Hiển thị ngôn ngữ đích để chuyển đổi
     const targetLanguageDisplay = language === 'vi' ? 'EN' : 'VI'
+    // Lấy tên ngôn ngữ đích từ bản dịch
+    const targetLanguageName = language === 'vi'
+        ? translate('actions.englishName')
+        : translate('actions.vietnameseName')
 
     return (
         <div className={`relative ${className}`} ref={menuRef}>
@@ -74,7 +78,7 @@ export default function LanguageSwitcher({
                             <span className="w-6 text-center mr-2 inline-block font-medium">
                                 {targetLanguageDisplay}
                             </span>
-                            {translate('actions.switchToEnglish')}
+                            {targetLanguageName}
                         </button>
                     </div>
                 </div>
