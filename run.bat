@@ -6,7 +6,7 @@ color 0A
 
 REM --- Bắt đầu thực thi tự động ---
 echo ========================================================
-echo     BẮT ĐẦU QUÁ TRÌNH SỬA LỖI VÀ CÀI ĐẶT TỰ ĐỘNG
+echo     BẮT ĐẦU QUÁ TRÌNH KIỂM TRA VÀ SỬA LỖI TỰ ĐỘNG
 echo ========================================================
 echo.
 
@@ -21,16 +21,198 @@ goto :eof
 REM --- Kết thúc thực thi tự động ---
 
 :run_all
-REM Khối lệnh này giờ chỉ đóng vai trò điều phối
+REM Khối lệnh này giờ sẽ kiểm tra và chỉ sửa những thành phần cần thiết
 echo.
-echo --- Chạy các bước sửa lỗi --- 
+echo --- Đang kiểm tra và sửa lỗi tự động --- 
 echo.
-call :fix_webpack
-call :fix_swc_babel
-call :fix_swcminify
+
+REM Kiểm tra webpack
+call :check_webpack_issue
+if "%webpack_issue%"=="1" (
+    call :fix_webpack
+)
+
+REM Kiểm tra SWC/BABEL
+call :check_swc_babel_issue
+if "%swc_babel_issue%"=="1" (
+    call :fix_swc_babel
+)
+
+REM Kiểm tra swcMinify
+call :check_swcminify_issue
+if "%swcminify_issue%"=="1" (
+    call :fix_swcminify
+)
+
+REM Luôn xóa cache vì điều này không gây hại
 call :clean_cache
-call :reinstall_all_auto
-REM Không còn pause hay goto menu ở đây
+
+REM Kiểm tra dependencies có thiếu không
+call :check_dependencies_issue
+if "%dependencies_issue%"=="1" (
+    call :reinstall_all_auto
+)
+
+echo.
+exit /b 0
+
+:check_webpack_issue
+set "webpack_issue=0"
+echo Kiểm tra vấn đề webpack...
+
+REM Kiểm tra phiên bản webpack hiện tại
+if exist node_modules\webpack (
+    set "webpack_version="
+    for /f "tokens=*" %%a in ('npm list webpack --depth=0 2^>nul ^| findstr /C:"webpack@"') do (
+        set webpack_info=%%a
+        for /f "tokens=2 delims=@" %%b in ("!webpack_info!") do (
+            set webpack_version=%%b
+        )
+    )
+    
+    if "!webpack_version!"=="" (
+        echo Không thể xác định phiên bản webpack
+        set "webpack_issue=1"
+    ) else (
+        echo Phiên bản webpack hiện tại: !webpack_version!
+        REM Kiểm tra xem phiên bản có phải là 5.82.1 không
+        if not "!webpack_version!"=="5.82.1" (
+            echo Phiên bản webpack không phải là 5.82.1, cần cập nhật
+            set "webpack_issue=1"
+        ) else (
+            echo Phiên bản webpack đã OK (5.82.1)
+        )
+    )
+) else (
+    echo Webpack chưa được cài đặt, cần cài đặt
+    set "webpack_issue=1"
+)
+
+REM Kiểm tra React và React DOM
+if exist node_modules\react (
+    set "react_version="
+    for /f "tokens=*" %%a in ('npm list react --depth=0 2^>nul ^| findstr /C:"react@"') do (
+        set react_info=%%a
+        for /f "tokens=2 delims=@" %%b in ("!react_info!") do (
+            set react_version=%%b
+        )
+    )
+    
+    if "!react_version!"=="" (
+        echo Không thể xác định phiên bản React
+        set "webpack_issue=1"
+    ) else (
+        echo Phiên bản React hiện tại: !react_version!
+        if not "!react_version!"=="18.2.0" (
+            echo Phiên bản React không phải là 18.2.0, cần cập nhật
+            set "webpack_issue=1"
+        ) else (
+            echo Phiên bản React đã OK (18.2.0)
+        )
+    )
+) else (
+    echo React chưa được cài đặt, cần cài đặt
+    set "webpack_issue=1"
+)
+
+exit /b 0
+
+:check_swc_babel_issue
+set "swc_babel_issue=0"
+echo Kiểm tra vấn đề SWC/BABEL...
+
+REM Kiểm tra file .babelrc
+if exist .babelrc (
+    echo File .babelrc tồn tại, cần xử lý xung đột SWC/BABEL
+    set "swc_babel_issue=1"
+)
+
+REM Kiểm tra cấu hình styled-components trong next.config.js
+if exist next.config.js (
+    set "styled_components_exists=0"
+    for /f "tokens=*" %%a in (next.config.js) do (
+        set "line=%%a"
+        if "!line:~0,15!"=="  compiler: {" set "styled_components_exists=1"
+    )
+    
+    if not "!styled_components_exists!"=="1" (
+        echo next.config.js thiếu cấu hình styled-components, cần cập nhật
+        set "swc_babel_issue=1"
+    ) else (
+        echo Cấu hình styled-components trong next.config.js đã OK
+    )
+) else (
+    echo File next.config.js không tồn tại, cần tạo mới
+    set "swc_babel_issue=1"
+)
+
+exit /b 0
+
+:check_swcminify_issue
+set "swcminify_issue=0"
+echo Kiểm tra vấn đề swcMinify...
+
+REM Kiểm tra tùy chọn swcMinify trong next.config.js
+if exist next.config.js (
+    set "swcminify_exists=0"
+    for /f "tokens=*" %%a in (next.config.js) do (
+        set "line=%%a"
+        if "!line!"=="  swcMinify: true," set "swcminify_exists=1"
+    )
+    
+    if "!swcminify_exists!"=="1" (
+        echo Tùy chọn swcMinify tồn tại trong next.config.js, cần xóa
+        set "swcminify_issue=1"
+    ) else (
+        echo Không có tùy chọn swcMinify trong next.config.js, OK
+    )
+) else (
+    echo File next.config.js không tồn tại, sẽ được tạo bởi bước fix_swc_babel
+)
+
+exit /b 0
+
+:check_dependencies_issue
+set "dependencies_issue=0"
+echo Kiểm tra vấn đề dependencies...
+
+REM Kiểm tra thư mục node_modules
+if not exist node_modules (
+    echo Thư mục node_modules không tồn tại, cần cài đặt dependencies
+    set "dependencies_issue=1"
+    exit /b 0
+)
+
+REM Kiểm tra package.json và node_modules có khớp nhau không
+if exist package.json (
+    echo Kiểm tra dependencies từ package.json...
+    
+    REM Đọc các dependencies chính từ package.json
+    for /f "tokens=*" %%a in ('findstr /C:"\"react\":" package.json') do (
+        if not exist node_modules\react (
+            echo React không được cài đặt, cần cài đặt lại dependencies
+            set "dependencies_issue=1"
+        )
+    )
+    
+    for /f "tokens=*" %%a in ('findstr /C:"\"next\":" package.json') do (
+        if not exist node_modules\next (
+            echo Next.js không được cài đặt, cần cài đặt lại dependencies
+            set "dependencies_issue=1"
+        )
+    )
+    
+    for /f "tokens=*" %%a in ('findstr /C:"\"styled-components\":" package.json') do (
+        if not exist node_modules\styled-components (
+            echo styled-components không được cài đặt, cần cài đặt lại dependencies
+            set "dependencies_issue=1"
+        )
+    )
+) else (
+    echo File package.json không tồn tại, không thể kiểm tra dependencies
+    set "dependencies_issue=1"
+)
+
 exit /b 0
 
 :fix_webpack
@@ -56,8 +238,6 @@ echo ========================================================
 echo     HOÀN THÀNH SỬA LỖI WEBPACK 'CALL' ERROR
 echo ========================================================
 echo.
-REM pause <- Đã xóa
-REM if "%choice%"=="1" goto menu <- Đã xóa
 exit /b 0
 
 :fix_swc_babel
@@ -149,8 +329,6 @@ echo ========================================================
 echo LƯU Ý: Không sử dụng file .babelrc khi bạn cần các tính năng yêu cầu SWC.
 echo Nếu bạn cần cấu hình babel, hãy sử dụng next.config.js thay thế.
 echo.
-REM pause <- Đã xóa
-REM if "%choice%"=="2" goto menu <- Đã xóa
 exit /b 0
 
 :fix_swcminify
@@ -179,8 +357,6 @@ echo ========================================================
 echo     HOÀN THÀNH SỬA LỖI TÙY CHỌN SWCMINIFY
 echo ========================================================
 echo.
-REM pause <- Đã xóa
-REM if "%choice%"=="3" goto menu <- Đã xóa
 exit /b 0
 
 :clean_cache
@@ -197,20 +373,20 @@ rd /s /q .next >nul 2>&1
 echo Đã xóa thư mục .next
 echo.
 echo [3/3] Xóa cache trong node_modules\.cache...
-for /d %%i in (node_modules\.cache\*) do (
-    rd /s /q "%%i" >nul 2>&1
+if exist node_modules\.cache (
+    for /d %%i in (node_modules\.cache\*) do (
+        rd /s /q "%%i" >nul 2>&1
+    )
+    echo Đã xóa cache trong node_modules\.cache
+) else (
+    echo Thư mục node_modules\.cache không tồn tại, bỏ qua
 )
-echo Đã xóa cache trong node_modules\.cache
 echo.
 echo ========================================================
 echo     HOÀN THÀNH XÓA CACHE VÀ FILE TẠM
 echo ========================================================
 echo.
-REM pause <- Đã xóa
-REM if "%choice%"=="4" goto menu <- Đã xóa
 exit /b 0
-
-REM --- Khối :reinstall_deps đã bị xóa vì không còn dùng menu ---
 
 :reinstall_all_auto
 cls
@@ -227,13 +403,10 @@ echo ========================================================
 echo     HOÀN THÀNH CÀI ĐẶT LẠI DEPENDENCIES
 echo ========================================================
 echo.
-REM Không cần pause ở đây vì được gọi từ run_all
 exit /b 0
-
-REM --- Khối :start_dev đã bị xóa vì không còn dùng menu ---
 
 :eof
 echo.
-echo Tạm biệt!
+echo Quá trình sửa lỗi đã hoàn tất!
 timeout /t 2 >nul
 exit /b 0
