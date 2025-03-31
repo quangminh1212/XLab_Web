@@ -78,10 +78,10 @@ export default function Header() {
         : 'bg-white/90 backdrop-blur-sm py-2'
         }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 shrink-0">
             <Link href="/" className="flex items-center">
               <span className="text-2xl font-bold">
                 <span className="text-gray-800">X</span>
@@ -100,7 +100,7 @@ export default function Header() {
           </div>
 
           {/* Menu desktop */}
-          <nav className="hidden md:flex items-center justify-center space-x-2">
+          <nav className="hidden md:flex items-center justify-center space-x-1 shrink-0">
             {menuItems.map(item => (
               <Link
                 key={item.path}
@@ -113,7 +113,7 @@ export default function Header() {
           </nav>
 
           {/* Buttons */}
-          <div className="flex items-center justify-center space-x-3">
+          <div className="flex items-center justify-center space-x-3 shrink-0">
             {/* Language Switcher */}
             <LanguageSwitcher />
 
@@ -190,16 +190,16 @@ export default function Header() {
                 </div>
               </div>
             ) : (
-              <div className="hidden sm:flex items-center justify-center space-x-3">
+              <div className="hidden sm:flex items-center justify-center space-x-3 overflow-hidden">
                 <Link
                   href="/login"
-                  className="px-3 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center whitespace-nowrap"
+                  className="px-3.5 py-1.5 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center whitespace-nowrap text-sm"
                 >
                   {uiText.login}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-3 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center whitespace-nowrap"
+                  className="px-3.5 py-1.5 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center whitespace-nowrap text-sm"
                 >
                   {uiText.register}
                 </Link>
@@ -251,13 +251,13 @@ export default function Header() {
               <div className="flex space-x-3 mt-3 px-3">
                 <Link
                   href="/login"
-                  className="flex-1 px-4 py-2.5 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium text-sm"
                 >
                   {uiText.login}
                 </Link>
                 <Link
                   href="/register"
-                  className="flex-1 px-4 py-2.5 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium text-sm"
                 >
                   {uiText.register}
                 </Link>
