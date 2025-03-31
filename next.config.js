@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: false,\n  compiler: {\n    styledComponents: true\n  },
   images: {
     remotePatterns: [
       {
@@ -57,7 +57,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  swcMinify: true,
+
   poweredByHeader: false,
   webpack: (config, { dev, isServer }) => {
     // Vô hiệu hóa các alias có thể gây xung đột
