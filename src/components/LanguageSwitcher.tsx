@@ -15,7 +15,9 @@ export default function LanguageSwitcher({
     const menuRef = useRef<HTMLDivElement>(null)
 
     const toggleLanguage = () => {
-        setLanguage(language === 'vi' ? 'en' : 'vi')
+        const newLang = language === 'vi' ? 'en' : 'vi'
+        console.log('Switching language from', language, 'to', newLang)
+        setLanguage(newLang)
         setShowOptions(false)
     }
 

@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  
+
   // Kiểm tra xem có cần hiển thị header và footer không
   const showLayout = !noLayoutPaths.includes(pathname || '')
 
@@ -45,12 +45,12 @@ export default function RootLayout({
   useEffect(() => {
     // Kiểm tra môi trường client một cách rõ ràng
     if (typeof window !== 'undefined') {
-      // Thiết lập ngôn ngữ cho thẻ html
-      document.documentElement.lang = 'vi'
-      
+      // Không thiết lập ngôn ngữ cho thẻ html ở đây để tránh xung đột với LanguageContext
+      // Thiết lập sẽ được thực hiện bởi LanguageContext
+
       // Thiết lập tiêu đề trang
       document.title = siteConfig.seo.defaultTitle
-      
+
       // Khởi tạo Partytown nếu cần
       setupPartytown()
     }
