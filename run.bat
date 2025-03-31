@@ -1,57 +1,37 @@
 @echo off
 setlocal enabledelayedexpansion
 
-title XLab Web - Công cụ sửa lỗi tổng hợp
+title XLab Web - Tự động sửa lỗi và cài đặt
 color 0A
 
-:menu
-cls
+REM --- Bắt đầu thực thi tự động ---
 echo ========================================================
-echo     XLab Web - CÔNG CỤ SỬA LỖI TỔNG HỢP
-echo ========================================================
-echo.
-echo  [1] Sửa lỗi WEBPACK (Cannot read properties of undefined (reading 'call'))
-echo  [2] Sửa lỗi xung đột SWC/BABEL (next/font yêu cầu SWC thay vì Babel)
-echo  [3] Sửa lỗi tùy chọn SWCMINIFY không được hỗ trợ
-echo  [4] Xóa cache và file NEXT.JS tạm
-echo  [5] Cài đặt lại các DEPENDENCIES
-echo  [6] Chạy tất cả các bước sửa lỗi theo thứ tự
-echo  [7] Chạy dự án (npm run dev)
-echo  [0] Thoát
-echo.
+echo     BẮT ĐẦU QUÁ TRÌNH SỬA LỖI VÀ CÀI ĐẶT TỰ ĐỘNG
 echo ========================================================
 echo.
 
-set /p choice=Nhập lựa chọn của bạn (0-7): 
+call :run_all
 
-if "%choice%"=="0" goto :eof
-if "%choice%"=="1" goto fix_webpack
-if "%choice%"=="2" goto fix_swc_babel
-if "%choice%"=="3" goto fix_swcminify
-if "%choice%"=="4" goto clean_cache
-if "%choice%"=="5" goto reinstall_deps
-if "%choice%"=="6" goto run_all
-if "%choice%"=="7" goto start_dev
-goto menu
+echo.
+echo ========================================================
+echo     QUÁ TRÌNH TỰ ĐỘNG HOÀN TẤT!
+echo ========================================================
+
+goto :eof
+REM --- Kết thúc thực thi tự động ---
 
 :run_all
-cls
-echo ========================================================
-echo     ĐANG CHẠY TẤT CẢ CÁC BƯỚC SỬA LỖI
-echo ========================================================
+REM Khối lệnh này giờ chỉ đóng vai trò điều phối
+echo.
+echo --- Chạy các bước sửa lỗi --- 
 echo.
 call :fix_webpack
 call :fix_swc_babel
 call :fix_swcminify
 call :clean_cache
-call :reinstall_deps
-echo.
-echo ========================================================
-echo     HOÀN THÀNH TẤT CẢ CÁC BƯỚC SỬA LỖI
-echo ========================================================
-echo.
-pause
-goto menu
+call :reinstall_all_auto
+REM Không còn pause hay goto menu ở đây
+exit /b 0
 
 :fix_webpack
 cls
@@ -76,8 +56,8 @@ echo ========================================================
 echo     HOÀN THÀNH SỬA LỖI WEBPACK 'CALL' ERROR
 echo ========================================================
 echo.
-pause
-if "%choice%"=="1" goto menu
+REM pause <- Đã xóa
+REM if "%choice%"=="1" goto menu <- Đã xóa
 exit /b 0
 
 :fix_swc_babel
@@ -169,8 +149,8 @@ echo ========================================================
 echo LƯU Ý: Không sử dụng file .babelrc khi bạn cần các tính năng yêu cầu SWC.
 echo Nếu bạn cần cấu hình babel, hãy sử dụng next.config.js thay thế.
 echo.
-pause
-if "%choice%"=="2" goto menu
+REM pause <- Đã xóa
+REM if "%choice%"=="2" goto menu <- Đã xóa
 exit /b 0
 
 :fix_swcminify
@@ -199,8 +179,8 @@ echo ========================================================
 echo     HOÀN THÀNH SỬA LỖI TÙY CHỌN SWCMINIFY
 echo ========================================================
 echo.
-pause
-if "%choice%"=="3" goto menu
+REM pause <- Đã xóa
+REM if "%choice%"=="3" goto menu <- Đã xóa
 exit /b 0
 
 :clean_cache
@@ -226,85 +206,34 @@ echo ========================================================
 echo     HOÀN THÀNH XÓA CACHE VÀ FILE TẠM
 echo ========================================================
 echo.
-pause
-if "%choice%"=="4" goto menu
+REM pause <- Đã xóa
+REM if "%choice%"=="4" goto menu <- Đã xóa
 exit /b 0
 
-:reinstall_deps
+REM --- Khối :reinstall_deps đã bị xóa vì không còn dùng menu ---
+
+:reinstall_all_auto
 cls
 echo ========================================================
-echo     CÀI ĐẶT LẠI CÁC DEPENDENCIES
+echo     TỰ ĐỘNG CÀI ĐẶT LẠI TẤT CẢ DEPENDENCIES
 echo ========================================================
 echo.
-echo Chọn các dependency cần cài đặt:
-echo  [1] Cài đặt lại React và React DOM (phiên bản 18.2.0)
-echo  [2] Cài đặt Webpack phiên bản 5.82.1
-echo  [3] Cài đặt Next.js phiên bản 13.4.8
-echo  [4] Cài đặt styled-components
-echo  [5] Cài đặt các UI components (@radix-ui/react-slot, class-variance-authority, clsx, tailwind-merge)
-echo  [6] Xóa node_modules và cài đặt lại tất cả dependencies
-echo  [0] Quay lại menu chính
+echo Xóa thư mục node_modules...
+rd /s /q node_modules >nul 2>&1
+echo Cài đặt lại tất cả dependencies (npm install)...
+call npm install
 echo.
-set /p deps_choice=Nhập lựa chọn của bạn (0-6): 
+echo ========================================================
+echo     HOÀN THÀNH CÀI ĐẶT LẠI DEPENDENCIES
+echo ========================================================
+echo.
+REM Không cần pause ở đây vì được gọi từ run_all
+exit /b 0
 
-if "%deps_choice%"=="0" goto menu
-if "%deps_choice%"=="1" (
-    echo Cài đặt lại React và React DOM (phiên bản 18.2.0)...
-    call npm install react@18.2.0 react-dom@18.2.0
-)
-if "%deps_choice%"=="2" (
-    echo Cài đặt Webpack phiên bản 5.82.1...
-    call npm install --save-dev webpack@5.82.1
-)
-if "%deps_choice%"=="3" (
-    echo Cài đặt Next.js phiên bản 13.4.8...
-    call npm install next@13.4.8
-)
-if "%deps_choice%"=="4" (
-    echo Cài đặt styled-components...
-    call npm install styled-components
-)
-if "%deps_choice%"=="5" (
-    echo Cài đặt các UI components...
-    call npm install @radix-ui/react-slot class-variance-authority clsx tailwind-merge
-)
-if "%deps_choice%"=="6" (
-    echo Xóa node_modules và cài đặt lại tất cả dependencies...
-    echo CẢNH BÁO: Quá trình này có thể mất nhiều thời gian!
-    
-    echo Bạn có chắc chắn muốn tiếp tục? (y/n)
-    set /p confirm=
-    if /i "%confirm%"=="y" (
-        echo Xóa thư mục node_modules...
-        rd /s /q node_modules >nul 2>&1
-        echo Cài đặt lại tất cả dependencies...
-        call npm install
-    ) else (
-        echo Đã hủy thao tác.
-    )
-)
-echo.
-echo ========================================================
-echo     HOÀN THÀNH CÀI ĐẶT DEPENDENCIES
-echo ========================================================
-echo.
-pause
-goto reinstall_deps
-
-:start_dev
-cls
-echo ========================================================
-echo     KHỞI ĐỘNG DỰ ÁN - NPM RUN DEV
-echo ========================================================
-echo.
-echo Khởi động dự án với lệnh npm run dev...
-call npm run dev
-
-pause
-goto menu
+REM --- Khối :start_dev đã bị xóa vì không còn dùng menu ---
 
 :eof
 echo.
-echo Cảm ơn bạn đã sử dụng công cụ sửa lỗi XLab Web!
+echo Tạm biệt!
 timeout /t 2 >nul
 exit /b 0
