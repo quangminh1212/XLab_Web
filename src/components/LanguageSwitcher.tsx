@@ -17,6 +17,14 @@ export default function LanguageSwitcher({
     const toggleLanguage = () => {
         const newLang = language === 'vi' ? 'en' : 'vi'
         console.log('Switching language from', language, 'to', newLang)
+
+        // Lưu trực tiếp vào localStorage trước khi setLanguage
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('language', newLang)
+            console.log('Language saved to localStorage:', newLang)
+        }
+
+        // Thiết lập ngôn ngữ qua context
         setLanguage(newLang)
         setShowOptions(false)
     }
@@ -38,6 +46,27 @@ export default function LanguageSwitcher({
             document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [])
+
+    // Debug language status
+    useEffect(() => {
+        const debugLanguage = () => {
+            console.log('=== LANGUAGE STATUS ===')
+            console.log('Current language in context:', language)
+            console.log('Current language in localStorage:', localStorage.getItem('language'))
+            console.log('Current lang attribute:', document.documentElement.lang)
+            console.log('=====================')
+        }
+
+        debugLanguage()
+
+        // Thêm event listener để debug khi ngôn ngữ thay đổi
+        const handleLanguageChange = () => debugLanguage()
+        document.addEventListener('languageChange', handleLanguageChange)
+
+        return () => {
+            document.removeEventListener('languageChange', handleLanguageChange)
+        }
+    }, [language])
 
     // Hiển thị ngôn ngữ hiện tại một cách đầy đủ
     const currentLanguageDisplay = language === 'vi' ? 'VI' : 'EN'

@@ -57,7 +57,7 @@ export default function RootLayout({
   }, [])
 
   return (
-    <html lang="vi" className={`${inter.variable} ${roboto.variable} scroll-smooth`}>
+    <html className={`${inter.variable} ${roboto.variable} scroll-smooth`}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
