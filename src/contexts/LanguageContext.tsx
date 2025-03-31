@@ -40,12 +40,15 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
             // Kiểm tra localStorage chỉ ở phía client
             if (typeof window !== 'undefined') {
-                const savedLanguage = localStorage.getItem('language') as Language
+                // Force đọc từ localStorage mỗi khi component được mount
+                const savedLanguage = localStorage.getItem('language')
                 console.log('Saved language from localStorage:', savedLanguage)
 
-                if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+                if (savedLanguage === 'en' || savedLanguage === 'vi') {
                     console.log('Setting language from localStorage:', savedLanguage)
-                    setLanguageState(savedLanguage)
+                    setLanguageState(savedLanguage as Language)
+                    // Đảm bảo ngôn ngữ được thiết lập trên thẻ html
+                    document.documentElement.lang = savedLanguage
                 } else {
                     // Nếu không có ngôn ngữ lưu trong localStorage, kiểm tra ngôn ngữ trình duyệt
                     const browserLang = window.navigator.language.split('-')[0]
@@ -55,11 +58,13 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
                         console.log('Setting language to English from browser')
                         setLanguageState('en')
                         localStorage.setItem('language', 'en')
+                        document.documentElement.lang = 'en'
                     } else {
                         // Đặt mặc định là tiếng Việt và lưu vào localStorage
                         console.log('Setting default language to Vietnamese')
                         setLanguageState('vi')
                         localStorage.setItem('language', 'vi')
+                        document.documentElement.lang = 'vi'
                     }
                 }
             }
@@ -88,14 +93,19 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     const setLanguage = (lang: Language) => {
         if (lang !== language) {
             console.log('Changing language to:', lang)
+            // Cập nhật state
             setLanguageState(lang)
 
             try {
                 if (typeof window !== 'undefined') {
+                    // Cập nhật localStorage
+                    localStorage.removeItem('language') // Xóa cũ trước
                     localStorage.setItem('language', lang)
+                    console.log('Language saved to localStorage:', lang, 'Current in storage:', localStorage.getItem('language'))
 
                     // Cập nhật thuộc tính lang trên thẻ html
                     document.documentElement.lang = lang
+                    console.log('HTML lang attribute set to:', document.documentElement.lang)
 
                     // Phát sự kiện thay đổi ngôn ngữ
                     const event = new CustomEvent('languageChange', { detail: { language: lang } })
