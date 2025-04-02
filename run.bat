@@ -25,15 +25,32 @@ if not exist node_modules (
 echo.
 
 echo [3/4] Tao file next.config.js moi...
-echo // next.config.js > next.config.js
-echo const nextConfig = { >> next.config.js
-echo   reactStrictMode: true, >> next.config.js
-echo   compiler: { >> next.config.js
-echo     styledComponents: true >> next.config.js
-echo   } >> next.config.js
-echo } >> next.config.js
-echo. >> next.config.js
-echo module.exports = nextConfig >> next.config.js
+(
+echo // next.config.js
+echo const nextConfig = {
+echo   reactStrictMode: true,
+echo   webpack: function(config) {
+echo     // Fix for "Cannot read properties of undefined (reading 'call')" error
+echo     if (config.resolve ^&^& config.resolve.alias) {
+echo       // Remove problematic aliases
+echo       delete config.resolve.alias["react"];
+echo       delete config.resolve.alias["react-dom"];
+echo     }
+echo     // Make webpack more tolerant
+echo     config.module = {
+echo       ...config.module,
+echo       exprContextCritical: false
+echo     };
+echo     return config;
+echo   },
+echo   compiler: {
+echo     styledComponents: true
+echo   }
+echo };
+echo.
+echo module.exports = nextConfig;
+) > next.config.js
+
 echo Da tao file next.config.js moi
 echo.
 
@@ -54,7 +71,11 @@ echo     Press Ctrl+C to stop
 echo ========================================================
 echo.
 
-call npm run dev
+if "%1"=="build" (
+    call npm run build
+) else (
+    call npm run dev
+)
 
 echo.
 echo ========================================================
