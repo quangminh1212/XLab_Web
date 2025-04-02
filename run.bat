@@ -24,34 +24,8 @@ if not exist node_modules (
 )
 echo.
 
-echo [3/4] Tao file next.config.js moi...
-(
-echo // next.config.js
-echo const nextConfig = {
-echo   reactStrictMode: true,
-echo   webpack: function(config) {
-echo     // Fix for "Cannot read properties of undefined (reading 'call')" error
-echo     if (config.resolve ^&^& config.resolve.alias) {
-echo       // Remove problematic aliases
-echo       delete config.resolve.alias["react"];
-echo       delete config.resolve.alias["react-dom"];
-echo     }
-echo     // Make webpack more tolerant
-echo     config.module = {
-echo       ...config.module,
-echo       exprContextCritical: false
-echo     };
-echo     return config;
-echo   },
-echo   compiler: {
-echo     styledComponents: true
-echo   }
-echo };
-echo.
-echo module.exports = nextConfig;
-) > next.config.js
-
-echo Da tao file next.config.js moi
+rem Skip creating next.config.js since we now have the optimized version from fix-webpack-manual.js
+echo [3/4] Dung cau hinh next.config.js hien tai...
 echo.
 
 if "%need_install%"=="1" (

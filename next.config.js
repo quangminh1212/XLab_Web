@@ -1,41 +1,51 @@
-// next.config.js
-const path = require('path');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  // Disable static optimization to avoid prerendering errors
-  output: 'standalone',
-  
-  webpack: (config) => {
-    // Simple fix for "Cannot read properties of undefined (reading 'call')" error
+  reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      }
+    ],
+    unoptimized: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  compiler: {
+    styledComponents: true,
+  },
+  poweredByHeader: false,
+  // Cấu hình webpack an toàn
+  webpack: (config, { dev, isServer }) => {
+    // Vô hiệu hóa các alias có thể gây xung đột
+    if (!isServer && config.resolve && config.resolve.alias) {
+      delete config.resolve.alias['react'];
+      delete config.resolve.alias['react-dom'];
+    }
     
-    // Ensure webpack can properly handle module resolution
-    config.resolve = {
-      ...config.resolve,
-      // Explicitly set modules to include node_modules
-      modules: ['node_modules', path.resolve(__dirname, 'node_modules')],
-      // Add stable extensions resolution
-      extensions: ['.js', '.jsx', '.json', '.ts', '.tsx']
-    };
+    // Điều chỉnh cấu hình webpack
+    config.infrastructureLogging = { level: 'error' };
     
-    // Prevent webpack from trying to process certain modules
-    config.module = {
-      ...config.module,
-      exprContextCritical: false
-    };
+    // Giảm thiểu tối ưu hóa trong môi trường phát triển
+    if (dev) {
+      config.optimization = {
+        ...config.optimization,
+        minimize: false,
+        sideEffects: false
+      };
+    }
     
     return config;
   },
-  compiler: {
-    styledComponents: true
-  },
-  typescript: {
-    ignoreBuildErrors: true
-  },
-  eslint: {
-    ignoreDuringBuilds: true
-  }
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;
