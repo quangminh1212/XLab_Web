@@ -2,9 +2,9 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const productName = searchParams.get("product") || "Sản phẩm XLab";
   const amountString = searchParams.get("amount") || "0";
@@ -78,5 +78,26 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function PaymentSuccessLoading() {
+  return (
+    <div className="container mx-auto px-4 py-12 flex justify-center items-center">
+      <div className="animate-pulse flex flex-col items-center">
+        <div className="h-16 w-16 bg-gray-200 rounded-full mb-4"></div>
+        <div className="h-8 w-48 bg-gray-200 rounded mb-4"></div>
+        <div className="h-4 w-64 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<PaymentSuccessLoading />}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 } 
