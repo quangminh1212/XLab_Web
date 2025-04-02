@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
-export default function ContactPage() {
+// Separate component that will be wrapped in Suspense
+function ContactForm() {
   const { translate, isLoaded } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
@@ -12,13 +13,6 @@ export default function ContactPage() {
     subject: '',
     message: ''
   })
-
-  // Set page title
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      document.title = 'Liên hệ | XLab - Phần mềm và Dịch vụ'
-    }
-  }, [])
 
   // Fallback text cho trường hợp dịch không thành công
   const getTranslation = (key, fallback) => {
@@ -224,5 +218,20 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
+  )
+}
+
+export default function ContactPage() {
+  // Set page title
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      document.title = 'Liên hệ | XLab - Phần mềm và Dịch vụ'
+    }
+  }, [])
+
+  return (
+    <Suspense fallback={<div className="p-10 text-center">Đang tải...</div>}>
+      <ContactForm />
+    </Suspense>
   )
 } 

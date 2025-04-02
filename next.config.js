@@ -26,20 +26,20 @@ const nextConfig = {
   poweredByHeader: false,
   // Fix cho lỗi "Cannot read properties of undefined (reading 'call')"
   webpack: (config, { dev, isServer, webpack }) => {
-    // Vô hiệu hóa các alias có thể gây xung đột
+    // Fix cho options.factory - nguyên nhân chính của lỗi "Cannot read properties of undefined (reading 'call')"
+    if (config.output) {
+      // Đảm bảo factory không bị undefined
+      config.output.strictModuleExceptionHandling = true;
+    }
+    
+    // Fix cho vấn đề module resolution
     if (config.resolve && config.resolve.alias) {
-      // Xóa các alias React để tránh xung đột
+      // Xóa các alias có thể gây xung đột
       delete config.resolve.alias['react'];
       delete config.resolve.alias['react-dom'];
     }
     
-    // Fix cho vấn đề factory - là nguyên nhân chính gây lỗi 'call'
-    config.plugins = config.plugins || [];
-    config.plugins.push(new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-    }));
-    
-    // Vô hiệu hóa các cảnh báo và lỗi nghiêm trọng về context
+    // Fix cho vấn đề context trong module
     config.module = {
       ...config.module,
       exprContextCritical: false,
@@ -47,33 +47,44 @@ const nextConfig = {
       strictExportPresence: false
     };
     
-    // Giảm thiểu tối ưu hóa trong môi trường phát triển
-    if (dev) {
-      config.optimization = {
-        ...config.optimization,
-        minimize: false,
-        sideEffects: false
-      };
+    // Cài đặt DefinePlugin để đảm bảo môi trường
+    config.plugins = config.plugins || [];
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+      })
+    );
+    
+    // Fix cho tác động của JSON.parse
+    if (webpack.ids) {
+      config.plugins.push(
+        new webpack.ids.DeterministicModuleIdsPlugin({
+          maxLength: 5
+        })
+      );
     }
     
-    // Fix cho vấn đề JSON.parse
-    const JsonpTemplatePlugin = webpack.JsonpTemplatePlugin;
-    if (JsonpTemplatePlugin) {
-      config.plugins.push(new JsonpTemplatePlugin({
-        requireFn: '__webpack_require__'
-      }));
-    }
-    
-    // Đảm bảo fallback cho các module Node.js
+    // Đảm bảo các fallback cho module Node.js core
     config.resolve = {
       ...config.resolve,
       fallback: {
         ...config.resolve?.fallback,
         fs: false,
         path: false,
-        os: false
+        os: false,
+        util: false,
+        stream: false,
+        buffer: false
       }
     };
+    
+    // Tối ưu trong môi trường development
+    if (dev) {
+      config.optimization = {
+        ...config.optimization,
+        minimize: false
+      };
+    }
     
     return config;
   }

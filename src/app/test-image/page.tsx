@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Image from 'next/image';
 import { ProductImage } from '@/components/ProductImage';
 
-const TestImagePage = () => {
+// Separate component that will be wrapped in Suspense
+const TestImageContent = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Kiểm tra hiển thị hình ảnh</h1>
@@ -84,6 +85,14 @@ const TestImagePage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const TestImagePage = () => {
+  return (
+    <Suspense fallback={<div className="p-10 text-center">Đang tải hình ảnh...</div>}>
+      <TestImageContent />
+    </Suspense>
   );
 };
 

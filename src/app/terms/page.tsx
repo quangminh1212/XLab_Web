@@ -1,7 +1,11 @@
+'use client'
+
+import React, { Suspense } from 'react'
 import Link from 'next/link'
 import { siteConfig } from '@/config/siteConfig'
 
-export default function TermsPage() {
+// Separate component that will be wrapped in Suspense
+function TermsContent() {
     return (
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="container max-w-4xl mx-auto px-4">
@@ -76,5 +80,13 @@ export default function TermsPage() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function TermsPage() {
+    return (
+        <Suspense fallback={<div className="p-10 text-center">Đang tải nội dung...</div>}>
+            <TermsContent />
+        </Suspense>
     )
 } 

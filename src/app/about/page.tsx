@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useLanguage } from '@/contexts/LanguageContext'
 
-export default function AboutPage() {
+// Separate component that will be wrapped in Suspense
+function AboutContent() {
   const { translate, isLoaded } = useLanguage()
   
   // Set page title
@@ -339,5 +340,13 @@ export default function AboutPage() {
         `
       }} />
     </div>
+  )
+}
+
+export default function AboutPage() {
+  return (
+    <Suspense fallback={<div className="p-10 text-center">Đang tải nội dung...</div>}>
+      <AboutContent />
+    </Suspense>
   )
 } 
