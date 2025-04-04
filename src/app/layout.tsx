@@ -44,10 +44,21 @@ export default function RootLayout({
   // Thêm use client directive để tránh lỗi hydration và useLayoutEffect
   useEffect(() => {
     // Kiểm tra môi trường client một cách rõ ràng
-    if (typeof window !== 'undefined') {
+    if (typeof window === 'undefined' || !document) {
+      return; // Đảm bảo không thực hiện code phía dưới nếu đang trong SSR
+    }
+
+    try {
       // Thiết lập ngôn ngữ mặc định cho thẻ html nếu chưa được thiết lập
       if (!document.documentElement.lang) {
-        const savedLanguage = localStorage.getItem('language') as 'vi' | 'en' | null;
+        let savedLanguage: string | null = null;
+        
+        try {
+          savedLanguage = localStorage.getItem('language');
+        } catch (error) {
+          console.error('Error accessing localStorage:', error);
+        }
+        
         document.documentElement.lang = savedLanguage || 'vi';
         console.log('Initial HTML lang set to:', document.documentElement.lang);
       }
@@ -56,7 +67,11 @@ export default function RootLayout({
       document.title = siteConfig.seo.defaultTitle
 
       // Khởi tạo Partytown nếu cần
-      setupPartytown()
+      if (typeof setupPartytown === 'function') {
+        setupPartytown()
+      }
+    } catch (error) {
+      console.error('Error in RootLayout useEffect:', error);
     }
   }, [])
 

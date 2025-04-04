@@ -4,17 +4,30 @@ import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import ScriptComponent from './ScriptComponent';
 
+// Mở rộng interface Window để thêm gtag
+declare global {
+  interface Window {
+    gtag: (command: string, id: string, config?: any) => void;
+    dataLayer: any[];
+  }
+}
+
 export default function Analytics() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    // Kiểm tra xem có đang chạy trong trình duyệt không
+    if (typeof window === 'undefined') {
+      return; // Không thực hiện gì nếu đang trong môi trường server
+    }
+
     if (pathname) {
       // Gửi sự kiện theo dõi lượt xem trang
       console.log('Page view:', pathname);
       
-      // Nếu cần gọi analytics thì gọi ở đây
-      if (typeof window !== 'undefined' && window.gtag) {
+      // Kiểm tra window và gtag tồn tại
+      if (window.gtag && typeof window.gtag === 'function') {
         try {
           window.gtag('config', 'G-XXXXXXXXXX', {
             page_path: pathname,

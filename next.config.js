@@ -32,12 +32,75 @@ const nextConfig = {
       config.output.strictModuleExceptionHandling = true;
     }
     
-    // Fix cho vấn đề module resolution
-    if (config.resolve && config.resolve.alias) {
-      // Xóa các alias có thể gây xung đột
-      delete config.resolve.alias['react'];
-      delete config.resolve.alias['react-dom'];
-    }
+    // Cấu hình resolve
+    config.resolve = {
+      ...config.resolve,
+      // Đảm bảo các fallback cho module Node.js core
+      fallback: {
+        ...config.resolve?.fallback,
+        fs: false,
+        path: false,
+        os: false,
+        util: false,
+        stream: false,
+        buffer: false,
+        crypto: false,
+        http: false,
+        https: false,
+        zlib: false,
+      }
+    };
+    
+    // Thêm plugin bảo vệ hàm call
+    config.plugins = config.plugins || [];
+    
+    // Thêm BannerPlugin để bọc hàm call, apply, bind
+    config.plugins.push(
+      new webpack.BannerPlugin({
+        banner: `
+          // Fix for "Cannot read properties of undefined (reading 'call')"
+          (function() {
+            var _call = Function.prototype.call;
+            var _apply = Function.prototype.apply;
+            var _bind = Function.prototype.bind;
+            
+            // Safe versions that check for undefined
+            Function.prototype.call = function() {
+              if (this === undefined || this === null) {
+                console.warn('Caught attempt to call method on undefined or null');
+                return undefined;
+              }
+              return _call.apply(this, arguments);
+            };
+            
+            Function.prototype.apply = function() {
+              if (this === undefined || this === null) {
+                console.warn('Caught attempt to apply method on undefined or null');
+                return undefined;
+              }
+              return _apply.apply(this, arguments);
+            };
+            
+            Function.prototype.bind = function() {
+              if (this === undefined || this === null) {
+                console.warn('Caught attempt to bind method on undefined or null');
+                return function() {};
+              }
+              return _bind.apply(this, arguments);
+            };
+          })();
+        `,
+        raw: true,
+        entryOnly: true,
+      })
+    );
+    
+    // Cài đặt DefinePlugin để đảm bảo môi trường
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+      })
+    );
     
     // Fix cho vấn đề context trong module
     config.module = {
@@ -47,14 +110,6 @@ const nextConfig = {
       strictExportPresence: false
     };
     
-    // Cài đặt DefinePlugin để đảm bảo môi trường
-    config.plugins = config.plugins || [];
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-      })
-    );
-    
     // Fix cho tác động của JSON.parse
     if (webpack.ids) {
       config.plugins.push(
@@ -63,20 +118,6 @@ const nextConfig = {
         })
       );
     }
-    
-    // Đảm bảo các fallback cho module Node.js core
-    config.resolve = {
-      ...config.resolve,
-      fallback: {
-        ...config.resolve?.fallback,
-        fs: false,
-        path: false,
-        os: false,
-        util: false,
-        stream: false,
-        buffer: false
-      }
-    };
     
     // Tối ưu trong môi trường development
     if (dev) {

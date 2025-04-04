@@ -113,6 +113,13 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
       {categories.map((category) => {
+        // Kiểm tra xem category có hợp lệ không trước khi render
+        if (!category || !category.id) {
+          // Log cảnh báo nếu muốn theo dõi dữ liệu không hợp lệ
+          // console.warn('Invalid category data found:', category);
+          return null; // Bỏ qua category không hợp lệ
+        }
+
         const categoryTranslation = getCategoryTranslation(category);
 
         return (
