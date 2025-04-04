@@ -31,6 +31,21 @@ const roboto = Roboto({
 // Các trang không hiển thị header và footer (ví dụ: trang đăng nhập)
 const noLayoutPaths = ['/login', '/register', '/admin/login']
 
+// Tách Client side effect thành một component riêng
+function ClientOnly({ children }) {
+  const [hasMounted, setHasMounted] = React.useState(false)
+  
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+  
+  if (!hasMounted) {
+    return null
+  }
+  
+  return <>{children}</>
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -41,28 +56,17 @@ export default function RootLayout({
   // Kiểm tra xem có cần hiển thị header và footer không
   const showLayout = !noLayoutPaths.includes(pathname || '')
 
-  // Thêm use client directive để tránh lỗi hydration và useLayoutEffect
+  // Sử dụng useEffect một cách an toàn để xử lý các tác động phía client
   useEffect(() => {
-    // Kiểm tra môi trường client một cách rõ ràng
-    if (typeof window === 'undefined' || !document) {
-      return; // Đảm bảo không thực hiện code phía dưới nếu đang trong SSR
+    // Chỉ chạy trên phía client
+    if (typeof window === 'undefined') {
+      return
     }
 
     try {
-      // Thiết lập ngôn ngữ mặc định cho thẻ html nếu chưa được thiết lập
-      if (!document.documentElement.lang) {
-        let savedLanguage: string | null = null;
-        
-        try {
-          savedLanguage = localStorage.getItem('language');
-        } catch (error) {
-          console.error('Error accessing localStorage:', error);
-        }
-        
-        document.documentElement.lang = savedLanguage || 'vi';
-        console.log('Initial HTML lang set to:', document.documentElement.lang);
-      }
-
+      // Thiết lập ngôn ngữ cho thẻ html
+      document.documentElement.lang = 'vi'
+      
       // Thiết lập tiêu đề trang
       document.title = siteConfig.seo.defaultTitle
 
@@ -71,7 +75,7 @@ export default function RootLayout({
         setupPartytown()
       }
     } catch (error) {
-      console.error('Error in RootLayout useEffect:', error);
+      console.error('Error in RootLayout useEffect:', error)
     }
   }, [])
 
@@ -82,7 +86,6 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <meta name="description" content={siteConfig.seo.defaultDescription} />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        {/* Thêm vào các script cần thiết mà không sử dụng next/script */}
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
         <noscript>
@@ -98,7 +101,9 @@ export default function RootLayout({
           <LanguageProvider>
             {showLayout && <Header />}
             <main id="main-content" className="flex-grow">
-              {children}
+              <ClientOnly>
+                {children}
+              </ClientOnly>
             </main>
             {showLayout && <Footer />}
           </LanguageProvider>
