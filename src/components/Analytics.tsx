@@ -22,6 +22,18 @@ export default function Analytics() {
       return; // Không thực hiện gì nếu đang trong môi trường server
     }
 
+    // Kiểm tra dataLayer tồn tại
+    if (!window.dataLayer) {
+      window.dataLayer = [];
+    }
+
+    // Khởi tạo gtag nếu chưa tồn tại
+    if (!window.gtag) {
+      window.gtag = function() {
+        window.dataLayer.push(arguments);
+      };
+    }
+
     if (pathname) {
       // Gửi sự kiện theo dõi lượt xem trang
       console.log('Page view:', pathname);

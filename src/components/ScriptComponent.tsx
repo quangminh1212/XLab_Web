@@ -38,49 +38,90 @@ const ScriptComponent: React.FC<ScriptProps> = ({
     // Không làm gì nếu script đã được tạo
     if (scriptRef.current) return;
 
+    // Sử dụng try/catch bọc toàn bộ logic
     try {
       // Tạo và thêm script vào DOM
       const script = document.createElement('script');
       if (id) script.id = id;
       if (src) script.src = src;
-      if (content) script.innerHTML = content;
       
+      // Đảm bảo content tồn tại trước khi gán
+      if (content && typeof content === 'string') {
+        script.innerHTML = content;
+      }
+      
+      // Bọc callbacks trong try/catch
       script.onload = () => {
-        console.log(`Script ${src || id || 'inline'} loaded successfully`);
-        if (onLoad && typeof onLoad === 'function') onLoad();
+        try {
+          console.log(`Script ${src || id || 'inline'} loaded successfully`);
+          if (onLoad && typeof onLoad === 'function') onLoad();
+        } catch (err) {
+          console.error('Error in script onload handler:', err);
+        }
       };
       
       script.onerror = () => {
-        console.error(`Error loading script ${src || id || 'inline'}`);
-        if (onError && typeof onError === 'function') onError();
+        try {
+          console.error(`Error loading script ${src || id || 'inline'}`);
+          if (onError && typeof onError === 'function') onError();
+        } catch (err) {
+          console.error('Error in script onerror handler:', err);
+        }
       };
 
       // Áp dụng chiến lược
       if (strategy === 'lazyOnload') {
-        // Sử dụng Intersection Observer để load script khi nó trở nên visible
-        const observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-            document.body.appendChild(script);
-            observer.disconnect();
-          }
-        });
-        
-        const dummy = document.createElement('div');
-        document.body.appendChild(dummy);
-        observer.observe(dummy);
-        
-        return () => {
-          observer.disconnect();
-          if (dummy.parentNode) dummy.parentNode.removeChild(dummy);
-        };
+        // Kiểm tra IntersectionObserver tồn tại
+        if (typeof IntersectionObserver === 'function') {
+          const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+              try {
+                document.body.appendChild(script);
+                observer.disconnect();
+              } catch (err) {
+                console.error('Error appending script in observer:', err);
+              }
+            }
+          });
+          
+          const dummy = document.createElement('div');
+          document.body.appendChild(dummy);
+          observer.observe(dummy);
+          
+          return () => {
+            try {
+              observer.disconnect();
+              if (dummy.parentNode) dummy.parentNode.removeChild(dummy);
+            } catch (err) {
+              console.error('Error cleaning up observer:', err);
+            }
+          };
+        } else {
+          // Fallback nếu IntersectionObserver không được hỗ trợ
+          setTimeout(() => {
+            try {
+              document.body.appendChild(script);
+            } catch (err) {
+              console.error('Error appending script in fallback:', err);
+            }
+          }, 2000);
+        }
       } else {
         // afterInteractive là mặc định - chạy ngay sau khi component mount
-        document.body.appendChild(script);
-        scriptRef.current = script;
+        try {
+          document.body.appendChild(script);
+          scriptRef.current = script;
+        } catch (err) {
+          console.error('Error appending script:', err);
+        }
         
         return () => {
-          if (script.parentNode) {
-            script.parentNode.removeChild(script);
+          try {
+            if (script.parentNode) {
+              script.parentNode.removeChild(script);
+            }
+          } catch (err) {
+            console.error('Error removing script:', err);
           }
         };
       }
