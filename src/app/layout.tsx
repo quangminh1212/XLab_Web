@@ -13,6 +13,7 @@ import { errorLog } from '@/utils/debugHelper'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { ensureJSONMethods } from '@/utils/safeJSON'
 import { Providers } from './providers'
+import { applyPolyfills } from '@/utils/polyfill'
 
 // Load Inter font
 const inter = Inter({
@@ -43,18 +44,20 @@ export default function RootLayout({
   // Kiểm tra xem có cần hiển thị header và footer không
   const showLayout = !noLayoutPaths.includes(pathname || '')
 
-  // Đảm bảo JSON methods hoạt động đúng - Chạy sớm nhất có thể
+  // Đảm bảo môi trường client hoạt động đúng - Chạy sớm nhất có thể
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
+        // Áp dụng tất cả polyfill cần thiết
+        applyPolyfills();
+        
         // Đảm bảo JSON hoạt động đúng
         ensureJSONMethods();
-        console.log('JSON methods đã được kiểm tra và chuẩn hóa');
         
-        // Đặt biến global để theo dõi
+        console.log('Đã khởi tạo polyfill và JSON methods');
         window._jsonChecked = true;
       } catch (e) {
-        errorLog('Lỗi khi đảm bảo JSON methods:', e);
+        errorLog('Lỗi khi khởi tạo polyfill và JSON methods:', e);
       }
     }
   }, []);
@@ -93,47 +96,6 @@ export default function RootLayout({
     if (typeof window !== 'undefined') {
       console.log('Next.js version:', process.env.NEXT_PUBLIC_DEBUG ? '15.2.4' : 'production');
       console.log('Browser user agent:', window.navigator.userAgent);
-      
-      // Đăng ký polyfill cho JSON nếu cần thiết
-      if (!('JSON' in window)) {
-        console.warn('Không có đối tượng JSON, đang tạo polyfill');
-        window.JSON = {
-          parse: (text: string) => {
-            try {
-              return Function('"use strict";return (' + text + ')')();
-            } catch (e) {
-              console.error('JSON.parse polyfill failed:', e);
-              return null;
-            }
-          },
-          stringify: (obj: any) => {
-            try {
-              const result = [];
-              if (obj === null) return 'null';
-              if (typeof obj === 'string') return '"' + obj.replace(/"/g, '\\"') + '"';
-              if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
-              if (Array.isArray(obj)) {
-                obj.forEach((item) => {
-                  result.push(window.JSON.stringify(item));
-                });
-                return '[' + result.join(',') + ']';
-              }
-              if (typeof obj === 'object') {
-                for (const key in obj) {
-                  if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                    result.push('"' + key + '":' + window.JSON.stringify(obj[key]));
-                  }
-                }
-                return '{' + result.join(',') + '}';
-              }
-              return '{}';
-            } catch (e) {
-              console.error('JSON.stringify polyfill failed:', e);
-              return '{}';
-            }
-          }
-        } as JSON;
-      }
     }
   }, []);
 
