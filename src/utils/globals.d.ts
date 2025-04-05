@@ -14,6 +14,9 @@ declare global {
     fbq?: (...args: any[]) => void;
     ga?: (...args: any[]) => void;
     gtm?: (...args: any[]) => void;
+    
+    // Debug flags
+    _jsonChecked?: boolean;
   }
 }
 
