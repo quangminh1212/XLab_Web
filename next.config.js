@@ -102,12 +102,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  experimental: {
-    // Tránh lỗi với SSR và React 18
-    esmExternals: 'loose',
-    serverComponents: false
-  },
-  poweredByHeader: false,
+  poweredByHeader: false
 };
 
 module.exports = nextConfig;
