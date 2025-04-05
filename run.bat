@@ -10,11 +10,44 @@ echo     DANG CAI DAT XLAB WEB
 echo ========================================================
 echo.
 
-echo [1/4] Dung cac tien trinh Node.js dang chay...
+echo [1/5] Dung cac tien trinh Node.js dang chay...
 taskkill /F /IM node.exe >nul 2>&1
+timeout /t 1 >nul
 echo.
 
-echo [2/4] Kiem tra thu muc node_modules...
+REM Đảm bảo có quyền admin
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+if '%errorlevel%' NEQ '0' (
+    echo Can quyen admin, dang mo lai voi quyen admin...
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+    "%temp%\getadmin.vbs"
+    del "%temp%\getadmin.vbs"
+    exit /B
+)
+
+echo [2/5] Xoa thu muc .next de tranh loi quyen truy cap...
+if exist ".next" (
+    echo Dang xoa thu muc .next...
+    attrib -r -s -h ".next\*.*" /s /d >nul 2>&1
+    
+    REM Xóa từng thư mục con trước
+    if exist ".next\trace" rd /s /q ".next\trace" >nul 2>&1
+    if exist ".next\cache" rd /s /q ".next\cache" >nul 2>&1
+    if exist ".next\server" rd /s /q ".next\server" >nul 2>&1
+    if exist ".next\static" rd /s /q ".next\static" >nul 2>&1
+    
+    REM Xóa toàn bộ thư mục .next
+    rd /s /q ".next" >nul 2>&1
+    
+    if exist ".next" (
+        del /f /s /q ".next\*.*" >nul 2>&1
+        rd /s /q ".next" >nul 2>&1
+    )
+)
+echo.
+
+echo [3/5] Kiem tra thu muc node_modules...
 if not exist node_modules (
     echo Thu muc node_modules khong ton tai, se cai dat moi
     set need_install=1
@@ -24,16 +57,17 @@ if not exist node_modules (
 )
 echo.
 
-rem Skip creating next.config.js since we now have the optimized version from fix-webpack-manual.js
-echo [3/4] Dung cau hinh next.config.js hien tai...
+echo [4/5] Thiet lap bien moi truong...
+set NEXT_TELEMETRY_DISABLED=1
+set NODE_OPTIONS=--max-old-space-size=4096 --no-warnings
 echo.
 
 if "%need_install%"=="1" (
-    echo [4/4] Cai dat dependencies...
+    echo [5/5] Cai dat dependencies...
     call npm install
     echo.
 ) else (
-    echo [4/4] Bo qua cai dat dependencies
+    echo [5/5] Bo qua cai dat dependencies
     echo.
 )
 
