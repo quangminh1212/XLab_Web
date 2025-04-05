@@ -203,7 +203,9 @@ Thumbs.db
 /.swc-*/
 
 # Batch files
-*.bat
+# *.bat
+clean-start.bat
+run.bat
 
 # Thêm các file được tạo ra khi dự án đang chạy
 .next/
@@ -247,3 +249,7 @@ package.json.backup-*
 .next/server/npm.next.js
 .next/trace
 .next/cache/webpack/*
+
+# Run scripts
+clean-start.bat
+run.bat
