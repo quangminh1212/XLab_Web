@@ -11,11 +11,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  swcMinify: false,
-  experimental: {
-    appDir: false, // Không sử dụng App Router
-    esmExternals: false,
-  }
+  swcMinify: false
 };
 
 module.exports = nextConfig; 
