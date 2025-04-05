@@ -239,3 +239,11 @@ run-fix.bat
 next.config.js.backup-*
 package.json.backup-*
 *.backup-*
+
+# Thêm các file webpack runtime được tạo ra khi chạy dự án
+*.webpack.hot-update.json
+*.webpack.hot-update.js
+.next/server/webpack-runtime.js
+.next/server/npm.next.js
+.next/trace
+.next/cache/webpack/*
