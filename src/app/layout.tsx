@@ -1,34 +1,19 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import '@/styles/globals.css'
-import { Inter, Roboto } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Analytics from '@/components/Analytics'
-import SessionProvider from '@/components/SessionProvider'
 import { LanguageProvider } from '@/contexts/LanguageContext'
-import { siteConfig } from '@/config/siteConfig'
-import { usePathname } from 'next/navigation'
-import ScriptComponent from '@/components/ScriptComponent'
-import { setupPartytown } from '@/utils/partytown'
 
-// Load Inter font
+// Đơn giản hóa cấu hình font
 const inter = Inter({
   subsets: ['latin', 'vietnamese'],
   display: 'swap',
-  variable: '--font-inter',
 })
 
-// Cấu hình font Roboto
-const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin', 'vietnamese'],
-  display: 'swap',
-  variable: '--font-roboto',
-})
-
-// Các trang không hiển thị header và footer (ví dụ: trang đăng nhập)
+// Các trang không hiển thị header và footer
 const noLayoutPaths = ['/login', '/register', '/admin/login']
 
 export default function RootLayout({
@@ -36,71 +21,27 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const pathname = usePathname()
-
-  // Kiểm tra xem có cần hiển thị header và footer không
-  const showLayout = !noLayoutPaths.includes(pathname || '')
-
-  // Chỉ chạy useEffect phía client
-  useEffect(() => {
-    // Bảo vệ không chạy ở server-side
-    if (typeof window === 'undefined') return;
-
-    try {
-      // Thiết lập ngôn ngữ mặc định cho thẻ html nếu chưa được thiết lập
-      if (!document.documentElement.lang) {
-        let savedLanguage = null;
-        
-        try {
-          savedLanguage = localStorage.getItem('language');
-        } catch (error) {
-          console.error('Error accessing localStorage:', error);
-        }
-        
-        document.documentElement.lang = savedLanguage || 'vi';
-        console.log('Initial HTML lang set to:', document.documentElement.lang);
-      }
-
-      // Thiết lập tiêu đề trang
-      document.title = siteConfig.seo.defaultTitle;
-
-      // Khởi tạo Partytown nếu cần
-      if (typeof setupPartytown === 'function') {
-        setupPartytown();
-      }
-    } catch (error) {
-      console.error('Error in RootLayout useEffect:', error);
-    }
-  }, []);
+  // Tránh sử dụng usePathname vì có thể gây lỗi hydration
+  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  const showLayout = !noLayoutPaths.includes(pathname);
 
   return (
-    <html className={`${inter.variable} ${roboto.variable} scroll-smooth`} lang="vi">
+    <html lang="vi" className={inter.className}>
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-        <meta name="description" content={siteConfig.seo.defaultDescription} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>XLab Web</title>
+        <meta name="description" content="XLab Web Application" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
-        <noscript>
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 text-white p-4">
-            <div className="max-w-md p-6 bg-gray-800 rounded-lg text-center">
-              <h2 className="text-xl font-bold mb-4">{siteConfig.noJavaScriptTitle}</h2>
-              <p>{siteConfig.noJavaScriptMessage}</p>
-            </div>
-          </div>
-        </noscript>
-
-        <SessionProvider>
-          <LanguageProvider>
-            {showLayout && <Header />}
-            <main id="main-content" className="flex-grow">
-              {children}
-            </main>
-            {showLayout && <Footer />}
-          </LanguageProvider>
-        </SessionProvider>
-        <Analytics />
+        <LanguageProvider>
+          {showLayout && <Header />}
+          <main id="main-content" className="flex-grow">
+            {children}
+          </main>
+          {showLayout && <Footer />}
+        </LanguageProvider>
       </body>
     </html>
   )
