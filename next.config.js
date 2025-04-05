@@ -25,6 +25,32 @@ const nextConfig = {
     styledComponents: true,
   },
   poweredByHeader: false,
+  experimental: {
+    outputFileTracingExcludes: {
+      '*': [
+        './**/.next/trace',
+        'node_modules/**/*',
+        '.git/**/*',
+        'dist/**/*',
+        '.next/trace',
+        '.next/cache/**/*'
+      ],
+    },
+    outputFileTracingIgnores: [
+      'node_modules/**',
+      '.git/**',
+      '.next/trace',
+      '.next/cache/**'
+    ],
+    tracingIgnores: [
+      '.next/trace',
+      'node_modules/**',
+      '.git/**'
+    ],
+  },
+  generateBuildId: async () => {
+    return `build-${Date.now()}`;
+  },
   webpack: (config, { dev, isServer, webpack }) => {
     if (config.output) {
       config.output.strictModuleExceptionHandling = true;
