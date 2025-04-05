@@ -12,6 +12,7 @@ interface LanguageContextType {
     isLoaded: boolean
 }
 
+// Đảm bảo giá trị mặc định hợp lệ và có thể sử dụng được
 const defaultValue: LanguageContextType = {
     language: 'vi',
     setLanguage: () => { },
@@ -21,7 +22,15 @@ const defaultValue: LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType>(defaultValue)
 
-export const useLanguage = () => useContext(LanguageContext)
+// useLanguage hook với kiểm tra context không phải undefined
+export const useLanguage = () => {
+    const context = useContext(LanguageContext)
+    if (context === undefined) {
+        console.warn('useLanguage hook used outside of LanguageProvider')
+        return defaultValue
+    }
+    return context
+}
 
 interface LanguageProviderProps {
     children: React.ReactNode
@@ -29,43 +38,56 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
     const [language, setLanguageState] = useState<Language>('vi')
-    const [translations, setTranslations] = useState<any>(commonTranslations)
+    const [translations, setTranslations] = useState<any>(commonTranslations || {})
     const [isLoaded, setIsLoaded] = useState(false)
 
     // Khởi tạo ngôn ngữ từ localStorage hoặc ngôn ngữ trình duyệt
     useEffect(() => {
+        // Bảo vệ useEffect đầu tiên chỉ chạy ở client
+        if (typeof window === 'undefined') return
+        
         try {
             // Đánh dấu là đã tải
             setIsLoaded(true)
 
-            // Kiểm tra localStorage chỉ ở phía client
-            if (typeof window !== 'undefined') {
-                // Force đọc từ localStorage mỗi khi component được mount
-                const savedLanguage = localStorage.getItem('language')
+            // Đảm bảo chỉ truy cập localStorage khi ở môi trường client
+            let savedLanguage = null
+            try {
+                savedLanguage = localStorage.getItem('language')
                 console.log('Saved language from localStorage:', savedLanguage)
+            } catch (error) {
+                console.warn('Cannot access localStorage:', error)
+            }
 
-                if (savedLanguage === 'en' || savedLanguage === 'vi') {
-                    console.log('Setting language from localStorage:', savedLanguage)
-                    setLanguageState(savedLanguage as Language)
-                    // Đảm bảo ngôn ngữ được thiết lập trên thẻ html
-                    document.documentElement.lang = savedLanguage
-                } else {
-                    // Nếu không có ngôn ngữ lưu trong localStorage, kiểm tra ngôn ngữ trình duyệt
-                    const browserLang = window.navigator.language.split('-')[0]
-                    console.log('Browser language:', browserLang)
+            if (savedLanguage === 'en' || savedLanguage === 'vi') {
+                console.log('Setting language from localStorage:', savedLanguage)
+                setLanguageState(savedLanguage as Language)
+                // Đảm bảo ngôn ngữ được thiết lập trên thẻ html
+                document.documentElement.lang = savedLanguage
+            } else {
+                // Nếu không có ngôn ngữ lưu trong localStorage, kiểm tra ngôn ngữ trình duyệt
+                const browserLang = window.navigator.language.split('-')[0]
+                console.log('Browser language:', browserLang)
 
-                    if (browserLang === 'en') {
-                        console.log('Setting language to English from browser')
-                        setLanguageState('en')
+                if (browserLang === 'en') {
+                    console.log('Setting language to English from browser')
+                    setLanguageState('en')
+                    try {
                         localStorage.setItem('language', 'en')
-                        document.documentElement.lang = 'en'
-                    } else {
-                        // Đặt mặc định là tiếng Việt và lưu vào localStorage
-                        console.log('Setting default language to Vietnamese')
-                        setLanguageState('vi')
-                        localStorage.setItem('language', 'vi')
-                        document.documentElement.lang = 'vi'
+                    } catch (e) {
+                        console.warn('Failed to save language to localStorage', e)
                     }
+                    document.documentElement.lang = 'en'
+                } else {
+                    // Đặt mặc định là tiếng Việt và lưu vào localStorage
+                    console.log('Setting default language to Vietnamese')
+                    setLanguageState('vi')
+                    try {
+                        localStorage.setItem('language', 'vi')
+                    } catch (e) {
+                        console.warn('Failed to save language to localStorage', e)
+                    }
+                    document.documentElement.lang = 'vi'
                 }
             }
         } catch (error) {
@@ -75,8 +97,10 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         }
     }, [])
 
-    // Theo dõi thay đổi từ tab khác
+    // Theo dõi thay đổi từ tab khác - chỉ thiết lập ở client
     useEffect(() => {
+        if (typeof window === 'undefined') return
+        
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === 'language' && e.newValue && (e.newValue === 'vi' || e.newValue === 'en')) {
                 console.log('Language changed from another tab:', e.newValue)
@@ -97,12 +121,11 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
             console.log('Changing language to:', lang)
 
             try {
-                // Đảm bảo update localStorage trước
+                // Đảm bảo update localStorage chỉ ở client
                 if (typeof window !== 'undefined') {
                     try {
-                        window.localStorage.clear(); // Xóa tất cả để đảm bảo không có xung đột
-                        window.localStorage.setItem('language', lang);
-                        console.log('localStorage after update:', window.localStorage.getItem('language'));
+                        localStorage.setItem('language', lang);
+                        console.log('localStorage after update:', localStorage.getItem('language'));
                     } catch (err) {
                         console.error('Error updating localStorage:', err);
                     }
@@ -115,7 +138,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
                 // Cập nhật state sau khi đã xử lý localStorage
                 setLanguageState(lang)
 
-                // Phát sự kiện thay đổi ngôn ngữ
+                // Phát sự kiện thay đổi ngôn ngữ chỉ ở client
                 if (typeof window !== 'undefined' && document) {
                     const event = new CustomEvent('languageChange', { detail: { language: lang } })
                     document.dispatchEvent(event)

@@ -41,17 +41,15 @@ export default function RootLayout({
   // Kiểm tra xem có cần hiển thị header và footer không
   const showLayout = !noLayoutPaths.includes(pathname || '')
 
-  // Thêm use client directive để tránh lỗi hydration và useLayoutEffect
+  // Chỉ chạy useEffect phía client
   useEffect(() => {
-    // Kiểm tra môi trường client một cách rõ ràng
-    if (typeof window === 'undefined' || !document) {
-      return; // Đảm bảo không thực hiện code phía dưới nếu đang trong SSR
-    }
+    // Bảo vệ không chạy ở server-side
+    if (typeof window === 'undefined') return;
 
     try {
       // Thiết lập ngôn ngữ mặc định cho thẻ html nếu chưa được thiết lập
       if (!document.documentElement.lang) {
-        let savedLanguage: string | null = null;
+        let savedLanguage = null;
         
         try {
           savedLanguage = localStorage.getItem('language');
@@ -64,25 +62,24 @@ export default function RootLayout({
       }
 
       // Thiết lập tiêu đề trang
-      document.title = siteConfig.seo.defaultTitle
+      document.title = siteConfig.seo.defaultTitle;
 
       // Khởi tạo Partytown nếu cần
       if (typeof setupPartytown === 'function') {
-        setupPartytown()
+        setupPartytown();
       }
     } catch (error) {
       console.error('Error in RootLayout useEffect:', error);
     }
-  }, [])
+  }, []);
 
   return (
-    <html className={`${inter.variable} ${roboto.variable} scroll-smooth`}>
+    <html className={`${inter.variable} ${roboto.variable} scroll-smooth`} lang="vi">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
         <meta name="description" content={siteConfig.seo.defaultDescription} />
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        {/* Thêm vào các script cần thiết mà không sử dụng next/script */}
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
         <noscript>
