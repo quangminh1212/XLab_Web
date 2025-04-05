@@ -3,7 +3,14 @@
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import ScriptComponent from './ScriptComponent';
-import { errorLog, safeExecute } from '@/utils/debugHelper';
+
+// Mở rộng interface Window để thêm gtag
+declare global {
+  interface Window {
+    gtag: (command: string, id: string, config?: any) => void;
+    dataLayer: any[];
+  }
+}
 
 export default function Analytics() {
   const pathname = usePathname();
@@ -15,38 +22,20 @@ export default function Analytics() {
       return; // Không thực hiện gì nếu đang trong môi trường server
     }
 
-    try {
-      // Kiểm tra dataLayer tồn tại
-      if (!window.dataLayer) {
-        window.dataLayer = [];
-      }
-
-      // Khởi tạo gtag nếu chưa tồn tại
-      if (!window.gtag) {
-        window.gtag = function() {
-          try {
-            window.dataLayer.push(arguments);
-          } catch (e) {
-            errorLog('Lỗi khi push vào dataLayer', e);
-          }
-        };
-      }
-
-      if (pathname) {
-        // Gửi sự kiện theo dõi lượt xem trang
-        console.log('Page view:', pathname);
-        
-        // Kiểm tra window và gtag tồn tại
-        if (window.gtag && typeof window.gtag === 'function') {
-          safeExecute(() => {
-            window.gtag('config', 'G-XXXXXXXXXX', {
-              page_path: pathname,
-            });
-          }, 'gtag config');
+    if (pathname) {
+      // Gửi sự kiện theo dõi lượt xem trang
+      console.log('Page view:', pathname);
+      
+      // Kiểm tra window và gtag tồn tại
+      if (window.gtag && typeof window.gtag === 'function') {
+        try {
+          window.gtag('config', 'G-XXXXXXXXXX', {
+            page_path: pathname,
+          });
+        } catch (e) {
+          console.error('Analytics error:', e);
         }
       }
-    } catch (error) {
-      errorLog('Lỗi trong Analytics useEffect', error);
     }
   }, [pathname, searchParams]);
 
@@ -61,14 +50,10 @@ export default function Analytics() {
         id="google-analytics"
         strategy="afterInteractive"
         content={`
-          try {
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-XXXXXXXXXX');
-          } catch(e) {
-            console.error('Lỗi khởi tạo Google Analytics:', e);
-          }
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-XXXXXXXXXX');
         `}
       />
     </>
