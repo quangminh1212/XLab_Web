@@ -14,6 +14,7 @@ import ScriptComponent from '@/components/ScriptComponent'
 import { setupPartytown } from '@/utils/partytown'
 import { errorLog } from '@/utils/debugHelper'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { ensureJSONMethods } from '@/utils/safeJSON'
 
 // Load Inter font
 const inter = Inter({
@@ -43,6 +44,18 @@ export default function RootLayout({
 
   // Kiểm tra xem có cần hiển thị header và footer không
   const showLayout = !noLayoutPaths.includes(pathname || '')
+
+  // Đảm bảo JSON methods hoạt động đúng
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        ensureJSONMethods();
+        console.log('Đã kiểm tra và đảm bảo JSON methods hoạt động đúng');
+      } catch (e) {
+        errorLog('Lỗi khi đảm bảo JSON methods:', e);
+      }
+    }
+  }, []);
 
   // Sử dụng useEffect một cách an toàn để xử lý các tác động phía client
   useEffect(() => {

@@ -23,6 +23,37 @@ const nextConfig = {
       console.log('Webpack config mode:', config.mode);
     }
     
+    // Cấu hình fallback cho các module có thể gây lỗi
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        child_process: false,
+      };
+    }
+    
+    // Thêm plugin để khởi tạo window.JSON nếu không tồn tại
+    config.module.rules.push({
+      test: /\.(js|jsx|ts|tsx)$/,
+      exclude: /node_modules/,
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: ['next/babel'],
+            plugins: [
+              // Plugin an toàn cho JSON và các global objects
+              ['transform-define', {
+                'process.env.BROWSER': true
+              }]
+            ]
+          }
+        }
+      ]
+    });
+    
     return config;
   },
   async headers() {
@@ -73,7 +104,8 @@ const nextConfig = {
   },
   experimental: {
     // Tránh lỗi với SSR và React 18
-    esmExternals: true,
+    esmExternals: 'loose',
+    serverComponents: false
   },
   poweredByHeader: false,
 };
