@@ -1,14 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 export default function Loading() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  
+  const { translate } = useLanguage();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
       <div className="w-full max-w-md p-8 mx-auto text-center">
@@ -18,12 +15,8 @@ export default function Loading() {
             <div className="double-bounce2"></div>
           </div>
         </div>
-        <h2 className="text-2xl font-bold mb-3 text-gray-800">
-          {mounted ? "Đang tải dữ liệu..." : "Loading..."}
-        </h2>
-        <p className="text-gray-600">
-          {mounted ? "Vui lòng đợi trong giây lát..." : "Please wait..."}
-        </p>
+        <h2 className="text-2xl font-bold mb-3 text-gray-800">{translate('loading.title')}</h2>
+        <p className="text-gray-600">{translate('loading.message')}</p>
       </div>
 
       <style jsx>{`
@@ -70,5 +63,5 @@ export default function Loading() {
         }
       `}</style>
     </div>
-  );
+  )
 } 

@@ -1,24 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
-
-// Client-only component to avoid hydration issues
-function ClientOnly({ children }) {
-  const [hasMounted, setHasMounted] = useState(false)
-  
-  useEffect(() => {
-    setHasMounted(true)
-  }, [])
-  
-  if (!hasMounted) {
-    return null
-  }
-  
-  return <>{children}</>
-}
 
 export default function ServicesPage() {
   const { translate, isLoaded } = useLanguage();
@@ -118,120 +103,118 @@ export default function ServicesPage() {
   };
 
   return (
-    <ClientOnly>
-      <div>
-        {/* Page Header */}
-        <section className="bg-secondary-600 text-white py-16">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col items-center justify-center">
-              <div className="mb-6">
-                <Image
-                  src="/images/logo.jpg"
-                  alt="XLab Logo"
-                  width={160}
-                  height={160}
-                  className="rounded-lg shadow-lg"
-                  priority
-                />
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-                {getTranslation('services.pageTitle', 'Dịch vụ của chúng tôi')}
-              </h1>
-              <p className="text-xl max-w-3xl text-center">
-                {getTranslation('services.pageDescription', 'XLab cung cấp các dịch vụ phần mềm chất lượng cao cho cá nhân và doanh nghiệp.')}
-              </p>
+    <div>
+      {/* Page Header */}
+      <section className="bg-secondary-600 text-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col items-center justify-center">
+            <div className="mb-6">
+              <Image
+                src="/images/logo.jpg"
+                alt="XLab Logo"
+                width={160}
+                height={160}
+                className="rounded-lg shadow-lg"
+                priority
+              />
             </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 text-center">
+              {getTranslation('services.pageTitle', 'Dịch vụ của chúng tôi')}
+            </h1>
+            <p className="text-xl max-w-3xl text-center">
+              {getTranslation('services.pageDescription', 'XLab cung cấp các dịch vụ phần mềm chất lượng cao cho cá nhân và doanh nghiệp.')}
+            </p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Main Services */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {mainServices.map((service) => (
-                <div key={service.id} className="flex flex-col md:flex-row gap-6">
-                  <div className="md:w-1/4 flex-shrink-0">
-                    <div className="bg-secondary-100 text-secondary-600 rounded-full w-20 h-20 flex items-center justify-center">
-                      {service.icon}
-                    </div>
-                  </div>
-                  <div className="md:w-3/4">
-                    <h3 className="text-xl font-bold mb-3">{getTranslation(service.title, 'Dịch vụ')}</h3>
-                    <p className="text-gray-600 mb-4">
-                      {getTranslation(service.description, 'Mô tả dịch vụ')}
-                    </p>
-                    <Link
-                      href={service.link}
-                      className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
-                    >
-                      {getTranslation('actions.learnMore', 'Tìm hiểu thêm')}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 ml-1"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </Link>
+      {/* Main Services */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {mainServices.map((service) => (
+              <div key={service.id} className="flex flex-col md:flex-row gap-6">
+                <div className="md:w-1/4 flex-shrink-0">
+                  <div className="bg-secondary-100 text-secondary-600 rounded-full w-20 h-20 flex items-center justify-center">
+                    {service.icon}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Additional Services */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                {getTranslation('services.additionalServices', 'Các dịch vụ khác')}
-              </h2>
-              <p className="text-gray-600 max-w-3xl mx-auto">
-                {getTranslation('services.additionalServicesDesc', 'Ngoài các dịch vụ chính, chúng tôi còn cung cấp nhiều dịch vụ bổ sung để đáp ứng mọi nhu cầu của bạn.')}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {additionalServices.map((service) => (
-                <div key={service.id} className="bg-white p-6 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold mb-3">
-                    {getTranslation(service.title, 'Dịch vụ bổ sung')}
-                  </h3>
-                  <p className="text-gray-600">
-                    {getTranslation(service.description, 'Mô tả dịch vụ bổ sung')}
+                <div className="md:w-3/4">
+                  <h3 className="text-xl font-bold mb-3">{getTranslation(service.title, 'Dịch vụ')}</h3>
+                  <p className="text-gray-600 mb-4">
+                    {getTranslation(service.description, 'Mô tả dịch vụ')}
                   </p>
+                  <Link
+                    href={service.link}
+                    className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
+                  >
+                    {getTranslation('actions.learnMore', 'Tìm hiểu thêm')}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 ml-1"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Link>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <section className="py-16 bg-secondary-600 text-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold mb-6">
-                {getTranslation('services.ctaTitle', 'Bạn cần hỗ trợ?')}
-              </h2>
-              <p className="text-xl max-w-3xl mx-auto mb-8">
-                {getTranslation('services.ctaDescription', 'Liên hệ với chúng tôi ngay hôm nay để được tư vấn miễn phí về dịch vụ phù hợp với nhu cầu của bạn.')}
-              </p>
-              <Link
-                href="/contact"
-                className="inline-block bg-white text-secondary-600 hover:bg-gray-100 font-medium px-8 py-3 rounded-full transition-colors"
-              >
-                {getTranslation('services.contactUs', 'Liên hệ với chúng tôi')}
-              </Link>
-            </div>
+      {/* Additional Services */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">
+              {getTranslation('services.additionalServices', 'Các dịch vụ khác')}
+            </h2>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              {getTranslation('services.additionalServicesDesc', 'Ngoài các dịch vụ chính, chúng tôi còn cung cấp nhiều dịch vụ bổ sung để đáp ứng mọi nhu cầu của bạn.')}
+            </p>
           </div>
-        </section>
-      </div>
-    </ClientOnly>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {additionalServices.map((service) => (
+              <div key={service.id} className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold mb-3">
+                  {getTranslation(service.title, 'Dịch vụ bổ sung')}
+                </h3>
+                <p className="text-gray-600">
+                  {getTranslation(service.description, 'Mô tả dịch vụ bổ sung')}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-secondary-600 text-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold mb-6">
+              {getTranslation('services.ctaTitle', 'Bạn cần hỗ trợ?')}
+            </h2>
+            <p className="text-xl max-w-3xl mx-auto mb-8">
+              {getTranslation('services.ctaDescription', 'Liên hệ với chúng tôi ngay hôm nay để được tư vấn miễn phí về dịch vụ phù hợp với nhu cầu của bạn.')}
+            </p>
+            <Link
+              href="/contact"
+              className="inline-block bg-white text-secondary-600 hover:bg-gray-100 font-medium px-8 py-3 rounded-full transition-colors"
+            >
+              {getTranslation('services.contactUs', 'Liên hệ với chúng tôi')}
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   )
 } 
