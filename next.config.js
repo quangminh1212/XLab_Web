@@ -33,7 +33,17 @@ const nextConfig = {
     config.plugins.push(
       new webpack.ProvidePlugin({
         global: 'globalThis',
-        exports: 'exports',
+        exports: 'globalThis.exports = globalThis.exports || {};',
+        require: 'globalThis.require || (()=>{})',
+        process: 'globalThis.process || {env:{}}',
+        Buffer: ['buffer', 'Buffer'],
+      })
+    );
+    
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+        'global': 'globalThis',
       })
     );
     
@@ -51,6 +61,20 @@ const nextConfig = {
         http: false,
         https: false,
         zlib: false,
+        net: false,
+        tls: false,
+        async_hooks: false,
+        console: false,
+        vm: false,
+        module: false,
+        dns: false,
+        dgram: false,
+        child_process: false,
+        cluster: false,
+        tty: false,
+        readline: false,
+        repl: false,
+        worker_threads: false,
       },
       symlinks: false,
       preferRelative: true
@@ -60,19 +84,19 @@ const nextConfig = {
     
     config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
     
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-        'global': 'globalThis',
-      })
-    );
-    
     config.module = {
       ...config.module,
       exprContextCritical: false,
       unknownContextCritical: false,
       strictExportPresence: false
     };
+    
+    config.ignoreWarnings = [
+      /Failed to parse source map/,
+      /Can't resolve '.*' in/,
+      /Critical dependency/,
+      /Can't redefine property/
+    ];
     
     if (webpack.ids) {
       config.plugins.push(
