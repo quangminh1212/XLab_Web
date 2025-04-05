@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import '@/styles/globals.css'
 import { Inter, Roboto } from 'next/font/google'
 import Header from '@/components/Header'
@@ -31,27 +31,13 @@ const roboto = Roboto({
 // Các trang không hiển thị header và footer (ví dụ: trang đăng nhập)
 const noLayoutPaths = ['/login', '/register', '/admin/login']
 
-// Tách Client side effect thành một component riêng
-function ClientOnly({ children }) {
-  const [hasMounted, setHasMounted] = React.useState(false)
-  
-  useEffect(() => {
-    setHasMounted(true)
-  }, [])
-  
-  if (!hasMounted) {
-    return null
-  }
-  
-  return <>{children}</>
-}
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const [mounted, setMounted] = useState(false);
 
   // Kiểm tra xem có cần hiển thị header và footer không
   const showLayout = !noLayoutPaths.includes(pathname || '')
@@ -77,10 +63,12 @@ export default function RootLayout({
     } catch (error) {
       console.error('Error in RootLayout useEffect:', error)
     }
+
+    setMounted(true);
   }, [])
 
   return (
-    <html className={`${inter.variable} ${roboto.variable} scroll-smooth`}>
+    <html lang="vi" className={`${inter.variable} ${roboto.variable} scroll-smooth`}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
@@ -101,9 +89,9 @@ export default function RootLayout({
           <LanguageProvider>
             {showLayout && <Header />}
             <main id="main-content" className="flex-grow">
-              <ClientOnly>
-                {children}
-              </ClientOnly>
+              {mounted ? children : <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-600"></div>
+              </div>}
             </main>
             {showLayout && <Footer />}
           </LanguageProvider>
