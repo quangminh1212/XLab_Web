@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { errorLog } from '@/utils/debugHelper';
+import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 
 interface ScriptProps {
   src?: string;
@@ -26,7 +27,7 @@ const ScriptComponent: React.FC<ScriptProps> = ({
 }) => {
   const scriptRef = useRef<HTMLScriptElement | null>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     // Kiểm tra xem có đang chạy trong trình duyệt không
     if (typeof window === 'undefined') {
       return; // Không thực hiện gì nếu đang trong môi trường server
