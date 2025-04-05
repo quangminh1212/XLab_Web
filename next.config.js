@@ -14,6 +14,85 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  env: {
+    NEXT_PUBLIC_DEBUG: 'true',
+  },
+  webpack: (config, { isServer, dev }) => {
+    // Log cấu hình webpack trong quá trình build
+    if (dev) {
+      console.log('Webpack config mode:', config.mode);
+    }
+    
+    // Cấu hình fallback cho các module có thể gây lỗi
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        child_process: false,
+      };
+    }
+    
+    // Thêm plugin để khởi tạo window.JSON nếu không tồn tại
+    config.module.rules.push({
+      test: /\.(js|jsx|ts|tsx)$/,
+      exclude: /node_modules/,
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {
+            presets: ['next/babel'],
+            plugins: [
+              // Plugin an toàn cho JSON và các global objects
+              ['transform-define', {
+                'process.env.BROWSER': true
+              }]
+            ]
+          }
+        }
+      ]
+    });
+    
+    return config;
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self';"
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'same-origin'
+          }
+        ]
+      }
+    ];
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -23,6 +102,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+<<<<<<< HEAD
   poweredByHeader: false,
   // Fix cho lỗi "Cannot read properties of undefined (reading 'call')"
   webpack: (config, { dev, isServer, webpack }) => {
@@ -106,6 +186,9 @@ const nextConfig = {
   experimental: {
     esmExternals: false
   }
+=======
+  poweredByHeader: false
+>>>>>>> b2c5a0f4d856fe5443ef3a806c1251de14c04a65
 };
 
 module.exports = nextConfig;
