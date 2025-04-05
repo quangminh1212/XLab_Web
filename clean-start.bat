@@ -33,7 +33,6 @@ echo NODE_OPTIONS=--max-old-space-size=4096 > .env.local
 echo NEXT_TELEMETRY_DISABLED=1 >> .env.local 
 echo NODE_ENV=development >> .env.local
 echo NEXT_DEVELOPMENT_MODE=1 >> .env.local
-echo NEXT_MINIMAL=1 >> .env.local
 echo NEXT_WEBPACK_ERROR_HANDLING=1 >> .env.local
 echo.
 
@@ -100,7 +99,6 @@ set NODE_OPTIONS=--max-old-space-size=4096
 set NEXT_TELEMETRY_DISABLED=1
 set NODE_ENV=development
 set NEXT_DEVELOPMENT_MODE=1
-set NEXT_MINIMAL=1
 set NEXT_WEBPACK_ERROR_HANDLING=1
 echo.
 
