@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  // Cấu hình cơ bản cho Next.js
   images: {
+    domains: ['*'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -14,26 +16,23 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  // Bỏ qua lỗi TypeScript và ESLint trong quá trình build
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
+  swcMinify: false,
+  // Hỗ trợ styled-components
   compiler: {
     styledComponents: true,
   },
+  // Tắt header powered by Next.js
   poweredByHeader: false,
-  // Đơn giản hóa các tùy chọn webpack
-  webpack: (config, { dev, isServer, webpack }) => {
-    // Thêm plugin để xử lý các biến toàn cục
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        global: 'globalThis',
-      })
-    );
-    
-    // Thêm các fallback cần thiết
+  // Webpack cơ bản nhất có thể
+  webpack: (config) => {
+    // Đảm bảo có fallback cho các module Node.js
     config.resolve = {
       ...config.resolve,
       fallback: {
@@ -43,13 +42,6 @@ const nextConfig = {
         os: false,
       }
     };
-    
-    // Bỏ qua các cảnh báo không cần thiết
-    config.ignoreWarnings = [
-      /Failed to parse source map/,
-      /Can't resolve '.*' in/,
-      /Critical dependency/,
-    ];
     
     return config;
   }
