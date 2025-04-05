@@ -25,28 +25,21 @@ const nextConfig = {
     styledComponents: true,
   },
   poweredByHeader: false,
+  outputFileTracingExcludes: {
+    '*': [
+      './**/.next/trace',
+      'node_modules/**/*',
+      '.git/**/*',
+      'dist/**/*',
+      '.next/trace',
+      '.next/cache/**/*'
+    ],
+  },
   experimental: {
-    outputFileTracingExcludes: {
-      '*': [
-        './**/.next/trace',
-        'node_modules/**/*',
-        '.git/**/*',
-        'dist/**/*',
-        '.next/trace',
-        '.next/cache/**/*'
-      ],
-    },
-    outputFileTracingIgnores: [
-      'node_modules/**',
-      '.git/**',
-      '.next/trace',
-      '.next/cache/**'
-    ],
-    tracingIgnores: [
-      '.next/trace',
-      'node_modules/**',
-      '.git/**'
-    ],
+    esmExternals: 'loose',
+    optimizePackageImports: true,
+    instrumentationHook: false,
+    serverComponentsExternalPackages: []
   },
   generateBuildId: async () => {
     return `build-${Date.now()}`;
