@@ -13,6 +13,7 @@ import { usePathname } from 'next/navigation'
 import ScriptComponent from '@/components/ScriptComponent'
 import { setupPartytown } from '@/utils/partytown'
 import { errorLog } from '@/utils/debugHelper'
+import ErrorBoundary from '@/components/ErrorBoundary'
 
 // Load Inter font
 const inter = Inter({
@@ -72,6 +73,14 @@ export default function RootLayout({
     setMounted(true);
   }, [])
 
+  // In phiên bản Next.js khi debug
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('Next.js version:', process.env.NEXT_PUBLIC_DEBUG ? '15.2.4' : 'production');
+      console.log('Browser user agent:', window.navigator.userAgent);
+    }
+  }, []);
+
   return (
     <html lang="vi" className={`${inter.variable} ${roboto.variable} scroll-smooth`}>
       <head>
@@ -90,18 +99,23 @@ export default function RootLayout({
           </div>
         </noscript>
 
-        <SessionProvider>
-          <LanguageProvider>
-            {showLayout && <Header />}
-            <main id="main-content" className="flex-grow">
-              {mounted ? children : <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-600"></div>
-              </div>}
-            </main>
-            {showLayout && <Footer />}
-          </LanguageProvider>
-        </SessionProvider>
-        <Analytics />
+        <ErrorBoundary>
+          <SessionProvider>
+            <LanguageProvider>
+              {showLayout && <Header />}
+              <main id="main-content" className="flex-grow">
+                {mounted ? children : <div className="flex justify-center items-center min-h-screen">
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-600"></div>
+                </div>}
+              </main>
+              {showLayout && <Footer />}
+            </LanguageProvider>
+          </SessionProvider>
+        </ErrorBoundary>
+        
+        <ErrorBoundary>
+          <Analytics />
+        </ErrorBoundary>
       </body>
     </html>
   )
