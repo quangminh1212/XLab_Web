@@ -10,8 +10,11 @@ echo     DANG CAI DAT XLAB WEB
 echo ========================================================
 echo.
 
-REM Lưu đường dẫn hiện tại
-set "CURRENT_DIR=%CD%"
+REM Nhớ đường dẫn tuyệt đối từ gốc ổ đĩa
+set "SCRIPT_DIR=%~dp0"
+cd /d "%SCRIPT_DIR%"
+echo Dang chay tu: %CD%
+echo.
 
 echo [1/5] Dung cac tien trinh Node.js dang chay...
 taskkill /F /IM node.exe >nul 2>&1
@@ -55,9 +58,28 @@ set NEXT_TELEMETRY_DISABLED=1
 set NODE_OPTIONS=--max-old-space-size=4096 --no-warnings
 echo.
 
-REM Đảm bảo chạy lệnh npm trong thư mục dự án
-cd /d "%CURRENT_DIR%"
+REM Tạo file .npmrc để cấu hình npm
+echo registry=https://registry.npmjs.org/ > .npmrc
+echo progress=true >> .npmrc
+echo fund=false >> .npmrc
+echo legacy-peer-deps=true >> .npmrc
+echo fund=false >> .npmrc
+echo prefer-offline=true >> .npmrc
+echo engine-strict=false >> .npmrc
+echo audit=false >> .npmrc
 
+echo [5/5] Chac chan dang o dung thu muc du an: %CD%
+if exist "package.json" (
+    echo Tim thay package.json, co the tiep tuc
+) else (
+    echo FATAL ERROR: Khong tim thay package.json. Ban dang o dung thu muc du an?
+    echo Duong dan hien tai: %CD%
+    echo.
+    pause
+    exit /b 1
+)
+
+echo.
 if "%need_install%"=="1" (
     echo [5/5] Cai dat dependencies...
     call npm install
