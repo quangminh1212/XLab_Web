@@ -9,7 +9,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "clean": "rimraf .next .next-dev node_modules/.cache",
-    "win": "cross-env NODE_OPTIONS='--max-old-space-size=4096 --no-warnings --trace-warnings' NEXT_TELEMETRY_DISABLED=1 NEXT_DEVELOPMENT_MODE=1 NEXT_WEBPACK_ERROR_HANDLING=1 CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true node win-fix.js && next dev",
+    "win": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" NEXT_TELEMETRY_DISABLED=1 NEXT_DEVELOPMENT_MODE=1 NEXT_WEBPACK_ERROR_HANDLING=1 CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true node win-fix.js && next dev",
     "fix-windows": "node win-fix.js"
   },
   "dependencies": {
