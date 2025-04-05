@@ -11,12 +11,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Tắt telemetry, tracing và các tính năng không cần thiết
-  experimental: {
-    serverComponentsExternalPackages: [], // Đảm bảo không có xung đột với packages
-    optimizePackageImports: false, // Tắt tạm để cải thiện ổn định
-    esmExternals: "loose" // Linh hoạt hơn với việc import module
-  },
   // Cấu hình webpack cơ bản và ổn định
   webpack: (config, { dev, isServer }) => {
     config.resolve.fallback = { 
