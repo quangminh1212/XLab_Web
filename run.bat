@@ -10,22 +10,15 @@ echo     DANG CAI DAT XLAB WEB
 echo ========================================================
 echo.
 
+REM Lưu đường dẫn hiện tại
+set "CURRENT_DIR=%CD%"
+
 echo [1/5] Dung cac tien trinh Node.js dang chay...
 taskkill /F /IM node.exe >nul 2>&1
 timeout /t 1 >nul
 echo.
 
-REM Đảm bảo có quyền admin
->nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
-if '%errorlevel%' NEQ '0' (
-    echo Can quyen admin, dang mo lai voi quyen admin...
-    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
-    "%temp%\getadmin.vbs"
-    del "%temp%\getadmin.vbs"
-    exit /B
-)
-
+REM Bỏ qua phần yêu cầu quyền admin
 echo [2/5] Xoa thu muc .next de tranh loi quyen truy cap...
 if exist ".next" (
     echo Dang xoa thu muc .next...
@@ -61,6 +54,9 @@ echo [4/5] Thiet lap bien moi truong...
 set NEXT_TELEMETRY_DISABLED=1
 set NODE_OPTIONS=--max-old-space-size=4096 --no-warnings
 echo.
+
+REM Đảm bảo chạy lệnh npm trong thư mục dự án
+cd /d "%CURRENT_DIR%"
 
 if "%need_install%"=="1" (
     echo [5/5] Cai dat dependencies...
