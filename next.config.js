@@ -51,49 +51,11 @@ const nextConfig = {
       }
     };
     
-    // Thêm plugin bảo vệ hàm call
+    // Thêm các plugins để tránh lỗi
     config.plugins = config.plugins || [];
     
-    // Thêm BannerPlugin để bọc hàm call, apply, bind
-    config.plugins.push(
-      new webpack.BannerPlugin({
-        banner: `
-          // Fix for "Cannot read properties of undefined (reading 'call')"
-          (function() {
-            var _call = Function.prototype.call;
-            var _apply = Function.prototype.apply;
-            var _bind = Function.prototype.bind;
-            
-            // Safe versions that check for undefined
-            Function.prototype.call = function() {
-              if (this === undefined || this === null) {
-                console.warn('Caught attempt to call method on undefined or null');
-                return undefined;
-              }
-              return _call.apply(this, arguments);
-            };
-            
-            Function.prototype.apply = function() {
-              if (this === undefined || this === null) {
-                console.warn('Caught attempt to apply method on undefined or null');
-                return undefined;
-              }
-              return _apply.apply(this, arguments);
-            };
-            
-            Function.prototype.bind = function() {
-              if (this === undefined || this === null) {
-                console.warn('Caught attempt to bind method on undefined or null');
-                return function() {};
-              }
-              return _bind.apply(this, arguments);
-            };
-          })();
-        `,
-        raw: true,
-        entryOnly: true,
-      })
-    );
+    // Thêm NoEmitOnErrorsPlugin để tránh emit code khi có lỗi
+    config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
     
     // Cài đặt DefinePlugin để đảm bảo môi trường
     config.plugins.push(
@@ -119,15 +81,30 @@ const nextConfig = {
       );
     }
     
-    // Tối ưu trong môi trường development
-    if (dev) {
-      config.optimization = {
-        ...config.optimization,
-        minimize: false
-      };
-    }
+    // Thêm cấu hình để tối ưu và tránh lỗi vòng lặp đệ quy
+    config.optimization = {
+      ...config.optimization,
+      // Tránh circular dependencies
+      checkWasmTypes: false,
+      // Tắt các tối ưu có thể gây lỗi trong môi trường development
+      ...(dev ? { minimize: false } : {}),
+      // Đảm bảo cung cấp tên cho các modules
+      moduleIds: 'deterministic'
+    };
+    
+    // Thêm cấu hình strict mode cho node
+    config.node = {
+      ...config.node,
+      global: false,
+      __filename: false,
+      __dirname: false,
+    };
     
     return config;
+  },
+  // Tắt experimental features có thể gây lỗi
+  experimental: {
+    esmExternals: false
   }
 };
 
