@@ -14,8 +14,27 @@ export const partytownConfig = {
  * Gọi hàm này trong _app.tsx hoặc layout.tsx
  */
 export function setupPartytown() {
-  if (typeof window !== 'undefined') {
-    // Khởi tạo Partytown khi cần thiết
-    console.log('Partytown được khởi tạo');
+  try {
+    if (typeof window !== 'undefined') {
+      // Kiểm tra window tồn tại và thực hiện các thao tác an toàn
+      console.log('Partytown được khởi tạo');
+      
+      // Khởi tạo window.dataLayer nếu chưa tồn tại
+      if (!window.dataLayer) {
+        window.dataLayer = [];
+      }
+    }
+  } catch (error) {
+    console.error('Error initializing Partytown:', error);
+  }
+}
+
+// Thêm interface cho window global để TypeScript không báo lỗi
+declare global {
+  interface Window {
+    dataLayer: any[];
+    fbq?: (...args: any[]) => void;
+    ga?: (...args: any[]) => void;
+    gtm?: (...args: any[]) => void;
   }
 } 
