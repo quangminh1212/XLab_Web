@@ -1,22 +1,44 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import CategoryList from '@/components/CategoryList';
 import { categories } from '@/data/mockData';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { errorLog } from '@/utils/debugHelper';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 function HomePage() {
   const { translate, isLoaded } = useLanguage();
+  const [loaded, setLoaded] = useState(false);
+  const [lastVisit, setLastVisit] = useLocalStorage<string>('lastVisit', '');
   
-  // Log translations status to debug
+  // Kiểm tra và debug browser environment
   useEffect(() => {
-    if (isLoaded) {
-      console.log('Translations loaded in HomePage');
-    } else {
-      console.log('Translations not loaded yet in HomePage');
+    try {
+      if (typeof window !== 'undefined') {
+        // Ghi nhận thời gian truy cập
+        setLastVisit(new Date().toISOString());
+        
+        // Kiểm tra JSON methods
+        try {
+          const testObj = { test: true };
+          const jsonStr = JSON.stringify(testObj);
+          const parsed = JSON.parse(jsonStr);
+          console.log('JSON methods hoạt động tốt:', parsed.test === true);
+        } catch (jsonError) {
+          errorLog('Lỗi với JSON methods:', jsonError);
+        }
+        
+        // In thông tin browser
+        console.log('User Agent:', navigator.userAgent);
+        
+        setLoaded(true);
+      }
+    } catch (error) {
+      errorLog('Lỗi trong useEffect của Home:', error);
     }
-  }, [isLoaded]);
+  }, [setLastVisit]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -112,6 +134,20 @@ function HomePage() {
           </div>
         </section>
       </div>
+
+      {/* Phần debug - chỉ hiển thị trong môi trường development */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 p-4 border border-red-300 rounded-md bg-red-50">
+          <h3 className="text-lg font-semibold text-red-700 mb-2">Debug Info</h3>
+          <p className="text-sm text-gray-700">
+            JSON object available: {typeof JSON !== 'undefined' ? 'Yes' : 'No'}<br />
+            JSON.parse method: {typeof JSON !== 'undefined' && typeof JSON.parse === 'function' ? 'Available' : 'Not available'}<br />
+            Browser: {typeof window !== 'undefined' ? navigator.userAgent : 'Server Side Rendering'}<br />
+            Last Visit: {lastVisit || 'None'}<br />
+            Component Loaded: {loaded ? 'Yes' : 'No'}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

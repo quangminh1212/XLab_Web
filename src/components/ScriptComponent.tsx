@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { errorLog } from '@/utils/debugHelper';
+import useIsomorphicLayoutEffect from '@/hooks/useIsomorphicLayoutEffect';
 
 interface ScriptProps {
   src?: string;
@@ -25,7 +27,7 @@ const ScriptComponent: React.FC<ScriptProps> = ({
 }) => {
   const scriptRef = useRef<HTMLScriptElement | null>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     // Kiểm tra xem có đang chạy trong trình duyệt không
     if (typeof window === 'undefined') {
       return; // Không thực hiện gì nếu đang trong môi trường server
@@ -38,54 +40,99 @@ const ScriptComponent: React.FC<ScriptProps> = ({
     // Không làm gì nếu script đã được tạo
     if (scriptRef.current) return;
 
+    // Sử dụng try/catch bọc toàn bộ logic
     try {
+      console.log(`ScriptComponent: Đang tạo script ${id || src || 'inline'}`);
+      
       // Tạo và thêm script vào DOM
       const script = document.createElement('script');
       if (id) script.id = id;
       if (src) script.src = src;
-      if (content) script.innerHTML = content;
       
+      // Đảm bảo content tồn tại trước khi gán
+      if (content && typeof content === 'string') {
+        script.innerHTML = content;
+      }
+      
+      // Bọc callbacks trong try/catch
       script.onload = () => {
-        console.log(`Script ${src || id || 'inline'} loaded successfully`);
-        if (onLoad && typeof onLoad === 'function') onLoad();
+        try {
+          console.log(`Script ${src || id || 'inline'} loaded successfully`);
+          console.log(`window.gtag tồn tại sau khi script load:`, typeof window.gtag !== 'undefined');
+          if (onLoad && typeof onLoad === 'function') onLoad();
+        } catch (err) {
+          errorLog('Error in script onload handler:', err);
+        }
       };
       
       script.onerror = () => {
-        console.error(`Error loading script ${src || id || 'inline'}`);
-        if (onError && typeof onError === 'function') onError();
+        try {
+          errorLog(`Error loading script ${src || id || 'inline'}`);
+          if (onError && typeof onError === 'function') onError();
+        } catch (err) {
+          errorLog('Error in script onerror handler:', err);
+        }
       };
 
       // Áp dụng chiến lược
       if (strategy === 'lazyOnload') {
-        // Sử dụng Intersection Observer để load script khi nó trở nên visible
-        const observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-            document.body.appendChild(script);
-            observer.disconnect();
-          }
-        });
-        
-        const dummy = document.createElement('div');
-        document.body.appendChild(dummy);
-        observer.observe(dummy);
-        
-        return () => {
-          observer.disconnect();
-          if (dummy.parentNode) dummy.parentNode.removeChild(dummy);
-        };
+        // Kiểm tra IntersectionObserver tồn tại
+        if (typeof IntersectionObserver === 'function') {
+          const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+              try {
+                document.body.appendChild(script);
+                observer.disconnect();
+              } catch (err) {
+                errorLog('Error appending script in observer:', err);
+              }
+            }
+          });
+          
+          const dummy = document.createElement('div');
+          document.body.appendChild(dummy);
+          observer.observe(dummy);
+          
+          return () => {
+            try {
+              observer.disconnect();
+              if (dummy.parentNode) dummy.parentNode.removeChild(dummy);
+            } catch (err) {
+              errorLog('Error cleaning up observer:', err);
+            }
+          };
+        } else {
+          // Fallback nếu IntersectionObserver không được hỗ trợ
+          setTimeout(() => {
+            try {
+              document.body.appendChild(script);
+            } catch (err) {
+              errorLog('Error appending script in fallback:', err);
+            }
+          }, 2000);
+        }
       } else {
         // afterInteractive là mặc định - chạy ngay sau khi component mount
-        document.body.appendChild(script);
-        scriptRef.current = script;
+        try {
+          document.body.appendChild(script);
+          scriptRef.current = script;
+          console.log(`ScriptComponent: Đã thêm script ${id || src || 'inline'} vào body`);
+        } catch (err) {
+          errorLog('Error appending script:', err);
+        }
         
         return () => {
-          if (script.parentNode) {
-            script.parentNode.removeChild(script);
+          try {
+            if (script.parentNode) {
+              script.parentNode.removeChild(script);
+            }
+          } catch (err) {
+            errorLog('Error removing script:', err);
           }
         };
       }
     } catch (error) {
-      console.error('Error in ScriptComponent:', error);
+      errorLog('Error in ScriptComponent:', error);
     }
   }, [src, id, content, strategy, onLoad, onError]);
 

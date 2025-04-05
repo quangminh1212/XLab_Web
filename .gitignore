@@ -235,7 +235,37 @@ fix-*.js
 fix-*.bat
 run-fix.bat
 
+<<<<<<< HEAD
 # Thêm các file timestamp backup cụ thể
 next.config.js.backup-*
 package.json.backup-*
 *.backup-*
+=======
+# Build cache
+.swc/
+
+# IDE config files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# editor backup files
+*~
+*.bak
+*.swp
+
+# Các file tạm thời khi dự án đang chạy
+.next/
+.next/trace
+.next/cache/
+.vercel/
+
+# File và thư mục do môi trường tạo ra
+.env.development.local
+.env.test.local
+.env.production.local
+.vercel
+*.log
+logs/
+>>>>>>> b2c5a0f4d856fe5443ef3a806c1251de14c04a65
