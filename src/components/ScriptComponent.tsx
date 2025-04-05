@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { errorLog } from '@/utils/debugHelper';
 
 interface ScriptProps {
   src?: string;
@@ -40,6 +41,8 @@ const ScriptComponent: React.FC<ScriptProps> = ({
 
     // Sử dụng try/catch bọc toàn bộ logic
     try {
+      console.log(`ScriptComponent: Đang tạo script ${id || src || 'inline'}`);
+      
       // Tạo và thêm script vào DOM
       const script = document.createElement('script');
       if (id) script.id = id;
@@ -54,18 +57,19 @@ const ScriptComponent: React.FC<ScriptProps> = ({
       script.onload = () => {
         try {
           console.log(`Script ${src || id || 'inline'} loaded successfully`);
+          console.log(`window.gtag tồn tại sau khi script load:`, typeof window.gtag !== 'undefined');
           if (onLoad && typeof onLoad === 'function') onLoad();
         } catch (err) {
-          console.error('Error in script onload handler:', err);
+          errorLog('Error in script onload handler:', err);
         }
       };
       
       script.onerror = () => {
         try {
-          console.error(`Error loading script ${src || id || 'inline'}`);
+          errorLog(`Error loading script ${src || id || 'inline'}`);
           if (onError && typeof onError === 'function') onError();
         } catch (err) {
-          console.error('Error in script onerror handler:', err);
+          errorLog('Error in script onerror handler:', err);
         }
       };
 
@@ -79,7 +83,7 @@ const ScriptComponent: React.FC<ScriptProps> = ({
                 document.body.appendChild(script);
                 observer.disconnect();
               } catch (err) {
-                console.error('Error appending script in observer:', err);
+                errorLog('Error appending script in observer:', err);
               }
             }
           });
@@ -93,7 +97,7 @@ const ScriptComponent: React.FC<ScriptProps> = ({
               observer.disconnect();
               if (dummy.parentNode) dummy.parentNode.removeChild(dummy);
             } catch (err) {
-              console.error('Error cleaning up observer:', err);
+              errorLog('Error cleaning up observer:', err);
             }
           };
         } else {
@@ -102,7 +106,7 @@ const ScriptComponent: React.FC<ScriptProps> = ({
             try {
               document.body.appendChild(script);
             } catch (err) {
-              console.error('Error appending script in fallback:', err);
+              errorLog('Error appending script in fallback:', err);
             }
           }, 2000);
         }
@@ -111,8 +115,9 @@ const ScriptComponent: React.FC<ScriptProps> = ({
         try {
           document.body.appendChild(script);
           scriptRef.current = script;
+          console.log(`ScriptComponent: Đã thêm script ${id || src || 'inline'} vào body`);
         } catch (err) {
-          console.error('Error appending script:', err);
+          errorLog('Error appending script:', err);
         }
         
         return () => {
@@ -121,12 +126,12 @@ const ScriptComponent: React.FC<ScriptProps> = ({
               script.parentNode.removeChild(script);
             }
           } catch (err) {
-            console.error('Error removing script:', err);
+            errorLog('Error removing script:', err);
           }
         };
       }
     } catch (error) {
-      console.error('Error in ScriptComponent:', error);
+      errorLog('Error in ScriptComponent:', error);
     }
   }, [src, id, content, strategy, onLoad, onError]);
 

@@ -12,6 +12,7 @@ import { siteConfig } from '@/config/siteConfig'
 import { usePathname } from 'next/navigation'
 import ScriptComponent from '@/components/ScriptComponent'
 import { setupPartytown } from '@/utils/partytown'
+import { errorLog } from '@/utils/debugHelper'
 
 // Load Inter font
 const inter = Inter({
@@ -44,7 +45,6 @@ export default function RootLayout({
 
   // Sử dụng useEffect một cách an toàn để xử lý các tác động phía client
   useEffect(() => {
-    // Chỉ chạy trên phía client
     if (typeof window === 'undefined') {
       return
     }
@@ -57,11 +57,16 @@ export default function RootLayout({
       document.title = siteConfig.seo.defaultTitle
 
       // Khởi tạo Partytown nếu cần
-      if (typeof setupPartytown === 'function') {
-        setupPartytown()
+      try {
+        if (typeof setupPartytown === 'function') {
+          console.log('Gọi setupPartytown');
+          setupPartytown()
+        }
+      } catch (partytownError) {
+        errorLog('Lỗi khi gọi setupPartytown', partytownError);
       }
     } catch (error) {
-      console.error('Error in RootLayout useEffect:', error)
+      errorLog('Error in RootLayout useEffect:', error)
     }
 
     setMounted(true);

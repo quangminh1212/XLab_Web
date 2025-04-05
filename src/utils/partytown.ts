@@ -2,6 +2,7 @@
  * Cấu hình Partytown cho Next.js 15.2.4
  * Được sử dụng để chạy các script bên thứ ba trong một web worker
  */
+import { errorLog } from './debugHelper';
 
 export const partytownConfig = {
   debug: process.env.NODE_ENV === 'development',
@@ -22,19 +23,14 @@ export function setupPartytown() {
       // Khởi tạo window.dataLayer nếu chưa tồn tại
       if (!window.dataLayer) {
         window.dataLayer = [];
+        console.log('Đã khởi tạo window.dataLayer');
       }
+      
+      // Log trạng thái các window objects
+      console.log('window.gtag tồn tại:', typeof window.gtag !== 'undefined');
+      console.log('window.dataLayer tồn tại:', typeof window.dataLayer !== 'undefined');
     }
   } catch (error) {
-    console.error('Error initializing Partytown:', error);
-  }
-}
-
-// Thêm interface cho window global để TypeScript không báo lỗi
-declare global {
-  interface Window {
-    dataLayer: any[];
-    fbq?: (...args: any[]) => void;
-    ga?: (...args: any[]) => void;
-    gtm?: (...args: any[]) => void;
+    errorLog('Error initializing Partytown:', error);
   }
 } 
