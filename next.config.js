@@ -30,6 +30,13 @@ const nextConfig = {
       config.output.strictModuleExceptionHandling = true;
     }
     
+    config.plugins.push(
+      new webpack.ProvidePlugin({
+        global: 'globalThis',
+        exports: 'exports',
+      })
+    );
+    
     config.resolve = {
       ...config.resolve,
       fallback: {
@@ -55,7 +62,8 @@ const nextConfig = {
     
     config.plugins.push(
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+        'global': 'globalThis',
       })
     );
     
