@@ -46,7 +46,7 @@ echo.
 
 REM Đặt biến môi trường cụ thể cho Windows 10
 echo [3/7] Thiết lập biến môi trường cho Windows 10...
-set NODE_OPTIONS=--max-old-space-size=4096 --no-warnings --trace-warnings
+set NODE_OPTIONS=--max-old-space-size=4096
 set NEXT_TELEMETRY_DISABLED=1
 set NODE_ENV=development
 echo.
