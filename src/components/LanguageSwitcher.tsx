@@ -18,11 +18,11 @@ export default function LanguageSwitcher({
         const newLang = language === 'vi' ? 'en' : 'vi'
         console.log('Switching language from', language, 'to', newLang)
 
-        // Lưu trực tiếp vào localStorage trước khi setLanguage
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('language', newLang)
-            console.log('Language saved to localStorage:', newLang)
-        }
+        // Bỏ ghi localStorage ở đây, để Context xử lý
+        // if (typeof window !== 'undefined') {
+        //     localStorage.setItem('language', newLang)
+        //     console.log('Language saved to localStorage:', newLang)
+        // }
 
         // Thiết lập ngôn ngữ qua context
         setLanguage(newLang)
