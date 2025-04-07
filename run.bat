@@ -1,30 +1,30 @@
 @echo off
-rem Khong su dung tieng Viet co dau trong file .bat
 setlocal enabledelayedexpansion
 
 title XLab Web - Launcher
 color 0A
 
 echo ========================================================
-echo     XLab Web - Launcher
+echo     XLab Web - Launcher 
+echo     (khoi dong tren Windows)
 echo ========================================================
 echo.
 
-REM Xác định đường dẫn hiện tại
+REM Xac dinh duong dan hien tai
 cd /d "%~dp0"
-echo Thư mục hiện tại: %CD%
+echo Thu muc hien tai: %CD%
 echo.
 
-REM Dừng các tiến trình Node.js
-echo [1/5] Dừng tất cả các tiến trình Node.js...
+REM Dung cac tien trinh Node.js
+echo [1/4] Dung cac tien trinh Node.js...
 taskkill /F /IM node.exe >nul 2>&1
 timeout /t 1 >nul
 echo.
 
-REM Xóa cache Next.js
-echo [2/5] Xóa thư mục .next...
+REM Xoa cache Next.js
+echo [2/4] Xoa cache Next.js...
 if exist ".next" (
-    echo Đang xóa thư mục .next...
+    echo Dang xoa thu muc .next...
     rmdir /S /Q .next 2>nul
     if exist ".next" (
         del /F /S /Q ".next\*.*" >nul 2>&1
@@ -33,18 +33,16 @@ if exist ".next" (
 )
 echo.
 
-REM Đặt biến môi trường cụ thể cho Node.js và Next.js
-echo [3/5] Thiết lập biến môi trường...
+REM Thiet lap bien moi truong
+echo [3/4] Thiet lap moi truong...
 set "NODE_OPTIONS=--max-old-space-size=4096 --no-warnings --no-experimental-fetch"
 set "NEXT_TELEMETRY_DISABLED=1"
 set "NEXT_SWCMINIFY=false"
 set "NODE_ENV=development"
 set "CHOKIDAR_USEPOLLING=true"
 set "WATCHPACK_POLLING=true"
-echo.
 
-REM Tạo file cấu hình môi trường
-echo [4/5] Tạo file cấu hình...
+REM Tao file cau hinh moi truong
 (
 echo NODE_OPTIONS=--max-old-space-size=4096 --no-warnings --no-experimental-fetch
 echo NEXT_TELEMETRY_DISABLED=1
@@ -54,7 +52,7 @@ echo CHOKIDAR_USEPOLLING=true
 echo WATCHPACK_POLLING=true
 ) > .env.local
 
-REM Đặt cấu hình npm
+REM Tao file cau hinh npm
 (
 echo registry=https://registry.npmjs.org/
 echo legacy-peer-deps=true
@@ -66,29 +64,21 @@ echo progress=false
 ) > .npmrc
 echo.
 
-REM Sửa lỗi webpack trực tiếp
-echo [5/5] Sửa lỗi Webpack...
-
-REM Chạy script sửa lỗi webpack
-if exist "fix-webpack-direct.js" (
-    node fix-webpack-direct.js
-) else (
-    echo ⚠️ Không tìm thấy file fix-webpack-direct.js
-)
-
+REM Khoi dong ung dung
+echo [4/4] Sua loi va khoi dong ung dung...
 echo.
 echo ========================================================
-echo     KHỞI ĐỘNG XLAB WEB
-echo     Nhấn Ctrl+C để dừng lại
+echo     KHOI DONG XLAB WEB
+echo     Nhan Ctrl+C de dung lai
 echo ========================================================
 echo.
 
-REM Khởi động dự án sử dụng script dev:win tương thích với Windows
-call npm run dev:win
+REM Chay rieng script sua loi webpack roi khoi dong
+node fix-webpack-direct.js && npm run dev:win
 
 echo.
 echo ========================================================
-echo     ỨNG DỤNG ĐÃ DỪNG
+echo     UNG DUNG DA DUNG
 echo ========================================================
 echo.
 pause
