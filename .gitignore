@@ -5,26 +5,21 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-package-lock.json
 
 # testing
 /coverage
 
 # next.js
 /.next/
+/.next-dev/
 /out/
-/.swc/
-.next/
-# Thêm các file và thư mục Next.js cụ thể cần bỏ qua
-/.next-server/
-/.next-static/
-/.next-trace/
-/.next-caching/
 /.swc-win32-x64-msvc*
-/next-font-manifest*.json
-/next-font-manifest*.js
-.next/server/next-font-manifest.json
-.next/server/webpack-runtime.js
+/.swc/
+.next-server/
+.next-static/
+.next-caching/
+.next-trace/
+.next-dev/
 
 # production
 /build
@@ -62,6 +57,15 @@ package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
 # Generated files
 /public/sitemap*.xml
 /public/robots.txt
@@ -70,27 +74,19 @@ pnpm-lock.yaml
 .cache/
 .turbo
 
-# Generated files during runtime
-/public/sw.js
-/public/workbox-*.js
-/public/sw.js.map
-/public/workbox-*.js.map
-/public/fallback-*.js
-
-# Webpack
-/.webpack/
-trace-*.json
-
-# Next.js runtime manifests
-/*.json.gz
-*.buildmanifest.json
-**/webpack-runtime*.js
-
 # environment variables
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Generated files during runtime
+/.vercel_build_output/
+/public/sw.js
+/public/workbox-*.js
+/public/sw.js.map
+/public/workbox-*.js.map
+/public/fallback-*.js
 
 # Analysis files
 /analyze/
@@ -105,6 +101,12 @@ node_modules/
 .yarn/
 .pnp
 .pnp.js
+
+# Next.js build outputs
+/.next/
+/.next-dev/
+/out/
+/build
 
 # Development files
 .DS_Store
@@ -203,11 +205,6 @@ Thumbs.db
 **/.swc/
 /.swc-*/
 
-# Batch files
-# *.bat
-clean-start.bat
-run.bat
-
 # Thêm các file được tạo ra khi dự án đang chạy
 .next/
 node_modules/
@@ -221,79 +218,3 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.pem
-
-# Temporary files
-*.tmp
-*.temp
-*.log
-.eslintcache
-
-# Thêm các file được tạo ra khi chạy dự án
-*.backup
-*.bat
-*.js.backup
-.babelrc.backup
-next.config.js.backup
-fix-*.js
-fix-*.bat
-run-fix.bat
-
-# Thêm các file timestamp backup cụ thể
-next.config.js.backup-*
-package.json.backup-*
-*.backup-*
-
-# Thêm các file webpack runtime được tạo ra khi chạy dự án
-*.webpack.hot-update.json
-*.webpack.hot-update.js
-.next/server/webpack-runtime.js
-.next/server/npm.next.js
-.next/trace
-
-# Thêm cache và các file tạm thời khác
-.swc/
-.node-version
-.npm/
-.eslintcache
-tsconfig.tsbuildinfo
-.cache/
-*.log
-**/.next/cache/**
-**/.next/server/**
-
-# Các file tạm và cache
-.swc/
-tsconfig.tsbuildinfo
-.next/cache/
-.next/server/
-
-# Thêm các file được tạo ra khi dự án chạy
-/tmp/*
-/.next/*
-/.next-dev/
-/.next-server/
-/.next-static/
-/.next-trace/
-.next/cache/
-.next/server/
-.swc/
-**/webpack-runtime*.js
-*.hot-update.*
-.eslintcache
-.swc-win32-x64-msvc*
-fix-webpack-temp.js
-tsconfig.tsbuildinfo
-
-# Fix script files
-fix-webpack-extreme.js
-fix-bundle-files.js
-fix-next-server.js
-fix-webpack-main.js
-webpack-node-default.js
-check-webpack.js
-fix-node-modules.bat
-clean-start.bat
-start-win.bat
-
-# Fixed node modules
-node_modules/next/webpack-node-default.js

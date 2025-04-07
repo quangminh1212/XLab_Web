@@ -1,83 +1,103 @@
 @echo off
 setlocal enabledelayedexpansion
 
-title XLab Web - Launcher
-color 0A
+echo XLab Web - Next.js 15.2.4 Startup Tool
+echo ------------------------------
+echo [Running in Next.js 15.2.4 DEVELOPMENT mode]
 
-echo ========================================================
-echo     XLab Web - Launcher 
-echo     (khoi dong tren Windows)
-echo ========================================================
-echo.
+:: Cài đặt mặc định phiên bản Next.js 15.2.4 và dùng development
+set NEXT_VERSION_FULL=15.2.4
+set RUN_MODE=dev
 
-REM Xac dinh duong dan hien tai
-cd /d "%~dp0"
-echo Thu muc hien tai: %CD%
-echo.
-
-REM Dung cac tien trinh Node.js
-echo [1/4] Dung cac tien trinh Node.js...
-taskkill /F /IM node.exe >nul 2>&1
-timeout /t 1 >nul
-echo.
-
-REM Xoa cache Next.js
-echo [2/4] Xoa cache Next.js...
-if exist ".next" (
-    echo Dang xoa thu muc .next...
-    rmdir /S /Q .next 2>nul
-    if exist ".next" (
-        del /F /S /Q ".next\*.*" >nul 2>&1
-        rmdir /S /Q ".next" >nul 2>&1
-    )
+:: Bước 1: Kiểm tra cài đặt Node.js
+echo [1/9] Checking Node.js installation...
+node -v > nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo Node.js is not installed or not in PATH. Please install Node.js from https://nodejs.org/
+    exit /b 1
 )
-echo.
+echo Node.js version: 
+node -v
 
-REM Thiet lap bien moi truong
-echo [3/4] Thiet lap moi truong...
-set "NODE_OPTIONS=--max-old-space-size=4096 --no-warnings"
-set "NEXT_TELEMETRY_DISABLED=1"
-set "NODE_ENV=development"
-set "CHOKIDAR_USEPOLLING=true"
-set "WATCHPACK_POLLING=true"
+:: Bước 2: Dừng tất cả các tiến trình Node đang chạy
+echo [2/9] Stopping any running Node.js processes...
+taskkill /f /im node.exe >nul 2>&1
 
-REM Tao file cau hinh moi truong
-(
-echo NODE_OPTIONS=--max-old-space-size=4096 --no-warnings
-echo NEXT_TELEMETRY_DISABLED=1
-echo NODE_ENV=development
-echo CHOKIDAR_USEPOLLING=true
-echo WATCHPACK_POLLING=true
-) > .env.local
+:: Bước 3: Dọn dẹp môi trường
+echo [3/9] Cleaning up environment...
+echo Cleaning cache folders...
+if exist .next rmdir /s /q .next 2>nul
+if exist .next-dev rmdir /s /q .next-dev 2>nul
+if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul
+if exist .vercel rmdir /s /q .vercel 2>nul
+if exist .turbo rmdir /s /q .turbo 2>nul
 
-REM Tao file cau hinh npm
-(
-echo registry=https://registry.npmjs.org/
-echo legacy-peer-deps=true
-echo fund=false
-echo save-exact=true
-echo prefer-offline=true
-echo cache-min=3600
-echo progress=false
-) > .npmrc
-echo.
+:: Xóa các file cache TypeScript
+if exist *.tsbuildinfo del /f /q *.tsbuildinfo 2>nul
 
-REM Khoi dong ung dung
-echo [4/4] Khoi dong ung dung...
-echo.
-echo ========================================================
-echo     KHOI DONG XLAB WEB
-echo     Nhan Ctrl+C de dung lai
-echo ========================================================
-echo.
+:: Xóa các file cache webpack
+if exist .webpack rmdir /s /q .webpack 2>nul
 
-REM Chay thang ung dung ma khong sua loi webpack
-npm run dev:win
+:: Xóa các file lock
+if exist package-lock.json del /f /q package-lock.json 2>nul
+if exist yarn.lock del /f /q yarn.lock 2>nul
+if exist pnpm-lock.yaml del /f /q pnpm-lock.yaml 2>nul
 
-echo.
-echo ========================================================
-echo     UNG DUNG DA DUNG
-echo ========================================================
-echo.
-pause
-exit /b 0
+:: Bước 4: Tạo .npmrc để tắt warning và thiết lập cài đặt
+echo [4/9] Configuring Next.js %NEXT_VERSION_FULL%...
+echo loglevel=error > .npmrc
+echo fund=false >> .npmrc
+echo audit=false >> .npmrc
+echo update-notifier=false >> .npmrc
+echo legacy-peer-deps=true >> .npmrc
+echo engine-strict=false >> .npmrc
+echo save-exact=true >> .npmrc
+
+:: Bước 5: Cài đặt các dependencies
+echo [5/9] Installing Next.js %NEXT_VERSION_FULL% and dependencies...
+
+:: Cài đặt Next.js và dependencies chính
+call npm install next@%NEXT_VERSION_FULL% --save-exact --no-fund --no-audit --quiet
+if %ERRORLEVEL% NEQ 0 (
+    echo Failed to install Next.js
+    exit /b 1
+)
+
+call npm install --no-fund --no-audit --quiet
+if %ERRORLEVEL% NEQ 0 (
+    echo Failed to install dependencies
+    exit /b 1
+)
+
+:: Bước 6: Xóa cache của npm
+echo [6/9] Clearing npm cache...
+call npm cache clean --force
+
+:: Bước 7: Kiểm tra cài đặt Next.js
+echo [7/9] Verifying Next.js installation...
+call npm ls next
+if %ERRORLEVEL% NEQ 0 (
+    echo Failed to verify Next.js installation
+    exit /b 1
+)
+
+:: Bước 8: Kiểm tra môi trường
+echo [8/9] Checking environment...
+if not exist node_modules\.bin\next.cmd (
+    echo Next.js binary not found
+    exit /b 1
+)
+
+:: Bước 9: Chạy ứng dụng
+echo [9/9] Starting application in %RUN_MODE% mode...
+echo Starting Next.js %NEXT_VERSION_FULL% development server...
+echo [Press Ctrl+C to stop the server]
+
+:: Đặt biến môi trường
+set NODE_ENV=development
+set NEXT_TELEMETRY_DISABLED=1
+
+:: Chạy ứng dụng với đường dẫn đầy đủ
+call node_modules\.bin\next.cmd dev
+
+endlocal 

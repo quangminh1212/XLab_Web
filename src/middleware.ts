@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 // Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
 const protectedPaths = [
@@ -27,58 +28,106 @@ const publicPaths = [
 
 // Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
 const isProtectedPath = (path: string) => {
-  for (let i = 0; i < protectedPaths.length; i++) {
-    const protectedPath = protectedPaths[i];
-    if (path === protectedPath || path.startsWith(`${protectedPath}/`)) {
-      return true;
-    }
-  }
-  return false;
+  return protectedPaths.some((protectedPath) => 
+    path === protectedPath || path.startsWith(`${protectedPath}/`)
+  );
 };
 
 // Kiểm tra xem đường dẫn có thuộc danh sách admin hay không
 const isAdminPath = (path: string) => {
-  for (let i = 0; i < adminPaths.length; i++) {
-    const adminPath = adminPaths[i];
-    if (path === adminPath || path.startsWith(`${adminPath}/`)) {
-      return true;
-    }
-  }
-  return false;
+  return adminPaths.some((adminPath) => 
+    path === adminPath || path.startsWith(`${adminPath}/`)
+  );
 };
 
 // Kiểm tra xem đường dẫn có thuộc danh sách công khai hay không
 const isPublicPath = (path: string) => {
-  for (let i = 0; i < publicPaths.length; i++) {
-    const publicPath = publicPaths[i];
-    if (path === publicPath || path.startsWith(`${publicPath}/`)) {
-      return true;
-    }
-  }
-  return false;
+  return publicPaths.some((publicPath) => 
+    path === publicPath || path.startsWith(`${publicPath}/`)
+  );
 };
 
+// Define public routes that don't require authentication
+const publicRoutes = [
+  '/',
+  '/login',
+  '/register',
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/reset-password',
+  '/about',
+  '/contact',
+  '/products',
+  '/products/.+',
+  '/services',
+  '/services/.+',
+];
+
 export default async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  const { pathname } = request.nextUrl;
   
   // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
   if (
     pathname.startsWith('/_next') || 
-    (pathname.startsWith('/api/') && !pathname.startsWith('/api/protected')) ||
+    pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
     pathname.startsWith('/static') || 
     pathname.includes('.')
   ) {
     return NextResponse.next();
   }
 
-  // Đơn giản hóa middleware để tránh lỗi
-  // Middleware này chỉ thêm header bảo mật cơ bản và cho phép mọi request
+  // Lấy token xác thực
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  // Kiểm tra quyền admin cho các đường dẫn admin
+  if (isAdminPath(pathname)) {
+    if (!token) {
+      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
+      const url = new URL('/login', request.url);
+      url.searchParams.set('callbackUrl', encodeURI(pathname));
+      return NextResponse.redirect(url);
+    } else if (token.email !== 'xlab.rnd@gmail.com') {
+      // Nếu đã đăng nhập nhưng không phải email admin, chuyển đến trang chủ
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
+
+  // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
+  if (isProtectedPath(pathname) && !token) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', encodeURI(pathname));
+    return NextResponse.redirect(url);
+  }
+
+  // Nếu đường dẫn công khai (login/register) và người dùng đã đăng nhập
+  if ((pathname === '/login' || pathname === '/register') && token) {
+    return NextResponse.redirect(new URL('/account', request.url));
+  }
+
+  // Thêm security headers
   const response = NextResponse.next();
   
-  // Set basic security headers
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'origin-when-cross-origin');
+  // CSP Header
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https: blob:;
+    font-src 'self' data:;
+    connect-src 'self' https://www.google-analytics.com;
+    frame-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim();
+
+  response.headers.set('Content-Security-Policy', cspHeader);
   
   return response;
 } 

@@ -11,7 +11,7 @@ interface ProductImageProps {
   className?: string
 }
 
-const ProductImage: React.FC<ProductImageProps> = ({
+export const ProductImage: React.FC<ProductImageProps> = ({
   src,
   alt,
   width,
@@ -98,7 +98,4 @@ const ProductImage: React.FC<ProductImageProps> = ({
       )}
     </div>
   )
-}
-
-export default ProductImage;
-export { ProductImage }; 
+} 
