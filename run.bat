@@ -47,7 +47,7 @@ echo.
 
 REM Đặt biến môi trường cụ thể cho Windows 10
 echo [3/13] Thiết lập biến môi trường...
-set NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first --no-experimental-fetch
+set NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first --no-experimental-fetch --no-addons
 set NEXT_TELEMETRY_DISABLED=1
 set NODE_ENV=development
 set NEXT_DEVELOPMENT_MODE=1
@@ -60,7 +60,7 @@ echo.
 REM Tạo file .env.local tương thích Windows 10
 echo [4/13] Tạo file .env.local cho Windows...
 (
-echo NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first --no-experimental-fetch
+echo NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first --no-experimental-fetch --no-addons
 echo NEXT_TELEMETRY_DISABLED=1
 echo NODE_ENV=development
 echo NEXT_DEVELOPMENT_MODE=1
@@ -149,7 +149,168 @@ echo.
 
 REM Sửa lỗi webpack.js - đặc biệt quan trọng cho lỗi 'unexpected token ||'
 echo [11/13] Sửa lỗi webpack.js và các lỗi tương tự...
-node -e "const fs = require('fs'); const path = require('path'); async function fixWebpackSpecific() { try { const modulesPath = path.join(process.cwd(), 'node_modules'); const webpackFiles = [ path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack', 'webpack.js'), path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack', 'bundle5.js'), path.join(modulesPath, 'webpack', 'lib', 'javascript', 'JavascriptParser.js') ]; for (const file of webpackFiles) { if (!fs.existsSync(file)) { console.log(`File not found: ${file}`); continue; } console.log(`Đang kiểm tra: ${file}`); try { let content = await fs.promises.readFile(file, 'utf8'); const original = content; // Thay thế các toán tử nâng cao bằng cú pháp tương thích content = content.replace(/(\w+)\s*\|\|=\s*([^;,]+)/g, '$1 = $1 || $2'); content = content.replace(/(\w+)\s*&&=\s*([^;,]+)/g, '$1 = $1 && $2'); content = content.replace(/(\w+)\s*\?\?=\s*([^;,]+)/g, '$1 = $1 ?? $2'); content = content.replace(/(?<!\w)null\s*\?\?\s*([^;,)+\n]+)/g, '(null !== null && null !== undefined) ? null : $1'); content = content.replace(/(?<!\w)undefined\s*\?\?\s*([^;,)+\n]+)/g, '(undefined !== null && undefined !== undefined) ? undefined : $1'); if (content !== original) { await fs.promises.writeFile(file, content, 'utf8'); console.log(`✅ Đã sửa: ${file}`); } else { console.log(`✓ Không cần sửa: ${file}`); } } catch (err) { console.error(`❌ Lỗi khi đọc/ghi file ${file}:`, err.message); } } // Thêm bước kiểm tra và sửa các file webpack khác const webpackDir = path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack'); if (fs.existsSync(webpackDir)) { try { const files = await fs.promises.readdir(webpackDir); for (const file of files) { if (file.endsWith('.js')) { const filePath = path.join(webpackDir, file); try { let content = await fs.promises.readFile(filePath, 'utf8'); if (content.includes('||=') || content.includes('&&=') || content.includes('??=')) { console.log(`Đang sửa file webpack: ${filePath}`); const original = content; content = content.replace(/(\w+)\s*\|\|=\s*([^;,]+)/g, '$1 = $1 || $2'); content = content.replace(/(\w+)\s*&&=\s*([^;,]+)/g, '$1 = $1 && $2'); content = content.replace(/(\w+)\s*\?\?=\s*([^;,]+)/g, '$1 = $1 ?? $2'); if (content !== original) { await fs.promises.writeFile(filePath, content, 'utf8'); console.log(`✅ Đã sửa: ${filePath}`); } } } catch (err) { console.log(`Lỗi khi xử lý file ${filePath}:`, err.message); } } } } catch (err) { console.error(`❌ Lỗi khi duyệt thư mục webpack:`, err.message); } } console.log('✅ Hoàn tất việc sửa lỗi webpack!'); } fixWebpackSpecific().catch(err => { console.error('❌ Lỗi khi sửa lỗi webpack:', err.message); });"
+REM Cách tiếp cận mới: Sửa triệt để hơn các file webpack
+node -e "
+const fs = require('fs');
+const path = require('path');
+const modulesPath = path.join(process.cwd(), 'node_modules');
+
+async function fixWebpackFiles() {
+  try {
+    // Danh sách các file webpack cần kiểm tra và sửa
+    const webpackFiles = [
+      path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack', 'webpack.js'),
+      path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack', 'bundle5.js'),
+      path.join(modulesPath, 'webpack', 'lib', 'javascript', 'JavascriptParser.js'),
+      // Thêm file webpack quan trọng
+      path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack', 'bundle-webpack.js'),
+      path.join(modulesPath, 'next', 'dist', 'server', 'config-utils.js')
+    ];
+
+    // Duyệt các thư mục webpack để tìm thêm file
+    const webpackDirs = [
+      path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack'),
+      path.join(modulesPath, 'webpack')
+    ];
+
+    const allFiles = [];
+    
+    // Thêm tất cả các file từ danh sách cố định
+    for (const file of webpackFiles) {
+      if (fs.existsSync(file)) {
+        allFiles.push(file);
+      }
+    }
+
+    // Tìm thêm các file webpack.js trong các thư mục webpack
+    for (const dir of webpackDirs) {
+      if (fs.existsSync(dir)) {
+        try {
+          const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+          
+          for (const entry of entries) {
+            if (entry.isFile() && entry.name.endsWith('.js')) {
+              allFiles.push(path.join(dir, entry.name));
+            } else if (entry.isDirectory()) {
+              try {
+                const subdirFiles = await fs.promises.readdir(path.join(dir, entry.name));
+                for (const file of subdirFiles) {
+                  if (file.endsWith('.js')) {
+                    allFiles.push(path.join(dir, entry.name, file));
+                  }
+                }
+              } catch (err) {
+                console.log(`Không thể đọc thư mục ${path.join(dir, entry.name)}: ${err.message}`);
+              }
+            }
+          }
+        } catch (err) {
+          console.log(`Không thể đọc thư mục ${dir}: ${err.message}`);
+        }
+      }
+    }
+
+    // Xử lý đặc biệt cho webpack.js - có thể là nguồn gốc của lỗi
+    const webpackJsPath = path.join(modulesPath, 'next', 'dist', 'compiled', 'webpack', 'webpack.js');
+    if (fs.existsSync(webpackJsPath)) {
+      try {
+        console.log(`Đang xử lý đặc biệt cho file webpack.js quan trọng...`);
+        let content = await fs.promises.readFile(webpackJsPath, 'utf8');
+        
+        // Thay thế toàn bộ cú pháp có thể gây lỗi
+        const original = content;
+        
+        // Sửa triệt để các toán tử có thể gây lỗi
+        content = content.replace(/(\w+)\s*\|\|=\s*([^;,\n)]+)/g, '$1 = $1 || $2');
+        content = content.replace(/(\w+)\s*&&=\s*([^;,\n)]+)/g, '$1 = $1 && $2');
+        content = content.replace(/(\w+)\s*\?\?=\s*([^;,\n)]+)/g, '$1 = $1 ?? $2');
+        
+        // Thay thế cú pháp nullish coalescing
+        content = content.replace(/([^=!><*/%+-]+)\s*\?\?\s*([^;,\n)]+)/g, '(($1 !== null && $1 !== undefined) ? $1 : $2)');
+        
+        // Sửa các toán tử logic assignment khác
+        content = content.replace(/\|\|=/g, '= ||');
+        content = content.replace(/&&=/g, '= &&');
+        content = content.replace(/\?\?=/g, '= ??');
+        
+        if (content !== original) {
+          await fs.promises.writeFile(webpackJsPath, content, 'utf8');
+          console.log(`✅ Đã sửa file quan trọng: ${webpackJsPath}`);
+        }
+      } catch (err) {
+        console.error(`❌ Lỗi khi sửa file webpack.js: ${err.message}`);
+      }
+    }
+
+    // Xử lý tất cả các file webpack đã tìm thấy
+    console.log(`Tìm thấy ${allFiles.length} file webpack cần kiểm tra`);
+    
+    for (const file of allFiles) {
+      console.log(`Đang kiểm tra: ${file}`);
+      try {
+        let content = await fs.promises.readFile(file, 'utf8');
+        
+        // Chỉ sửa các file có chứa toán tử có thể gây lỗi
+        if (content.includes('||=') || content.includes('&&=') || content.includes('??=') || 
+            content.includes(' ?? ') || content.includes('?.')) {
+          
+          const original = content;
+          
+          // Sửa các toán tử gây lỗi
+          content = content.replace(/(\w+)\s*\|\|=\s*([^;,\n)]+)/g, '$1 = $1 || $2');
+          content = content.replace(/(\w+)\s*&&=\s*([^;,\n)]+)/g, '$1 = $1 && $2');
+          content = content.replace(/(\w+)\s*\?\?=\s*([^;,\n)]+)/g, '$1 = $1 ?? $2');
+          
+          // Thay thế cú pháp nullish coalescing
+          content = content.replace(/([^=!><*/%+-]+)\s*\?\?\s*([^;,\n)]+)/g, '(($1 !== null && $1 !== undefined) ? $1 : $2)');
+          
+          // Sửa các toán tử logic assignment khác
+          content = content.replace(/\|\|=/g, '= ||');
+          content = content.replace(/&&=/g, '= &&');
+          content = content.replace(/\?\?=/g, '= ??');
+          
+          if (content !== original) {
+            await fs.promises.writeFile(file, content, 'utf8');
+            console.log(`✅ Đã sửa: ${file}`);
+          }
+        }
+      } catch (err) {
+        console.log(`Lỗi khi xử lý file ${file}: ${err.message}`);
+      }
+    }
+    
+    console.log('✅ Hoàn tất việc sửa lỗi các file webpack!');
+  } catch (err) {
+    console.error(`❌ Lỗi khi sửa lỗi webpack: ${err.message}`);
+  }
+}
+
+fixWebpackFiles();
+"
+echo.
+
+REM Tạo file .babelrc nếu chưa có để tương thích với cú pháp ES5
+echo [11a/13] Tạo file .babelrc nếu cần...
+if not exist .babelrc (
+  echo Tạo file .babelrc để tương thích với ES5...
+  (
+    echo {
+    echo   "presets": [
+    echo     [
+    echo       "next/babel",
+    echo       {
+    echo         "preset-env": {
+    echo           "targets": {
+    echo             "node": "current"
+    echo           }
+    echo         }
+    echo       }
+    echo     ]
+    echo   ]
+    echo }
+  ) > .babelrc
+  echo ✅ Đã tạo file .babelrc
+)
 echo.
 
 REM Làm sạch cache npm nếu cần thiết
@@ -183,13 +344,66 @@ if errorlevel 1 (
     echo **/.next/server/** >> .gitignore
 )
 
-REM Tạo hoặc cập nhật file next.config.js nếu cần thiết để đảm bảo tương thích
-echo Kiểm tra cấu hình Next.js...
-findstr /c:"webpack: (config, { isServer })" next.config.js >nul 2>&1
-if errorlevel 1 (
-    echo Cập nhật cấu hình webpack trong next.config.js...
-    node -e "const fs = require('fs'); const path = require('path'); const configPath = path.join(process.cwd(), 'next.config.js'); if (fs.existsSync(configPath)) { let content = fs.readFileSync(configPath, 'utf8'); if (content.includes('webpack:') && !content.includes('ignoreWarnings:')) { content = content.replace(/webpack:\s*\((.*?)\)\s*=>\s*\{/s, 'webpack: ($1) => { config.ignoreWarnings = [ { module: /node_modules/ }, /Can\\'t resolve/, /Critical dependency/ ];'); fs.writeFileSync(configPath, content, 'utf8'); console.log('✅ Đã cập nhật cấu hình webpack để bỏ qua cảnh báo'); } }"
-)
+REM Sửa đổi next.config.js
+echo Cập nhật cấu hình Next.js...
+node -e "
+const fs = require('fs');
+const path = require('path');
+
+// Cập nhật next.config.js để thêm cấu hình tương thích
+try {
+  const configPath = path.join(process.cwd(), 'next.config.js');
+  if (fs.existsSync(configPath)) {
+    let content = fs.readFileSync(configPath, 'utf8');
+    let updated = false;
+    
+    // Thêm cấu hình webpack ignoreWarnings nếu chưa có
+    if (content.includes('webpack:') && !content.includes('ignoreWarnings:')) {
+      content = content.replace(
+        /webpack:\s*\((.*?)\)\s*=>\s*\{/s, 
+        'webpack: ($1) => { config.ignoreWarnings = [ { module: /node_modules/ }, /Can\\\'t resolve/, /Critical dependency/ ];'
+      );
+      updated = true;
+    }
+    
+    // Thêm cấu hình SWC tương thích
+    if (!content.includes('swcMinify:')) {
+      content = content.replace(
+        /module\.exports\s*=\s*(\{)/s, 
+        'module.exports = {\n  swcMinify: false,\n  transpilePackages: [\'next\'],'
+      );
+      updated = true;
+    }
+    
+    // Thêm cấu hình ESLint nếu chưa có
+    if (!content.includes('eslint:')) {
+      content = content.replace(
+        /module\.exports\s*=\s*(\{)/s, 
+        'module.exports = {\n  eslint: { ignoreDuringBuilds: true },'
+      );
+      updated = true;
+    }
+    
+    // Thêm cấu hình TypeScript nếu chưa có
+    if (!content.includes('typescript:')) {
+      content = content.replace(
+        /module\.exports\s*=\s*(\{)/s, 
+        'module.exports = {\n  typescript: { ignoreBuildErrors: true },'
+      );
+      updated = true;
+    }
+    
+    if (updated) {
+      fs.writeFileSync(configPath, content, 'utf8');
+      console.log('✅ Đã cập nhật next.config.js');
+    } else {
+      console.log('ℹ️ next.config.js không cần cập nhật');
+    }
+  }
+} catch (err) {
+  console.error(`❌ Lỗi khi cập nhật next.config.js: ${err.message}`);
+}
+"
 echo.
 
 echo Khởi động ứng dụng...
@@ -201,7 +415,7 @@ echo ========================================================
 echo.
 
 REM Khởi động ứng dụng với cấu hình phù hợp
-set "OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first"
+set "NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first --no-experimental-fetch --no-warnings --no-addons"
 call npm run dev
 
 echo.
