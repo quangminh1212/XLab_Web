@@ -296,3 +296,15 @@ start-win.bat
 
 # Fixed node modules
 node_modules/next/webpack-node-default.js
+
+# Additional runtime generated files
+.next/cache/
+.next/server/middleware*.js
+.next/server/pages/*.js
+.next/server/app/*.js
+.next/static/development/
+.next/static/webpack/
+.next/static/chunks/
+app.log.*
+*.log.[0-9]*
+.swc/
