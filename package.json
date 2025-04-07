@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--no-experimental-fetch --max-old-space-size=4096' NEXT_SWCMINIFY=false next dev",
+    "dev": "cross-env NODE_OPTIONS='--no-experimental-fetch --max-old-space-size=4096 --no-warnings' NEXT_SWCMINIFY=false next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
