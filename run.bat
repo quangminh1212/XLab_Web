@@ -64,147 +64,58 @@ echo.
 
 REM Sửa lỗi Webpack - khắc phục triệt để lỗi "Unexpected token '||'"
 echo [5/6] Sửa lỗi Webpack (Unexpected token '||')...
-node -e "
-try {
-  const fs = require('fs');
-  const path = require('path');
-  
-  // Sửa next.config.js nếu cần
-  const configPath = path.join(process.cwd(), 'next.config.js');
-  if (fs.existsSync(configPath)) {
-    let content = fs.readFileSync(configPath, 'utf8');
-    let modified = false;
+
+REM Kiểm tra tồn tại của script
+if exist "fix-webpack.js" (
+    node fix-webpack.js
+) else (
+    REM Script chính không tồn tại - tạo script tạm thời để sửa webpack
+    echo "Script fix-webpack.js không tồn tại. Sử dụng cách sửa trực tiếp..."
     
-    // Đảm bảo tắt SWC minify
-    if (!content.includes('swcMinify: false')) {
-      content = content.replace(
-        /module\.exports\s*=\s*(\{)/s,
-        'module.exports = {\n  swcMinify: false,\n'
-      );
-      modified = true;
-    }
+    REM Tạo file script tạm thời
+    (
+    echo const fs = require('fs'^);
+    echo const path = require('path'^);
+    echo try {
+    echo   // Tìm file webpack.js chính
+    echo   const webpackMainPath = path.join(process.cwd(^), 'node_modules', 'next', 'dist', 'compiled', 'webpack', 'webpack.js'^);
+    echo   if (fs.existsSync(webpackMainPath^)^) {
+    echo     console.log('Sửa trực tiếp file webpack.js...'^);
+    echo     let content = fs.readFileSync(webpackMainPath, 'utf8'^);
+    echo     // Thay thế các phép toán có thể gây lỗi
+    echo     content = content.replace(/\|\|=/g, "= ||"^);
+    echo     fs.writeFileSync(webpackMainPath, content, 'utf8'^);
+    echo     console.log('Đã sửa file webpack.js thành công!'^);
+    echo   } else {
+    echo     console.log('Không tìm thấy file webpack.js!'^);
+    echo   }
+    echo   // Thêm file config-utils
+    echo   const configUtilsPath = path.join(process.cwd(^), 'node_modules', 'next', 'dist', 'server', 'config-utils.js'^);
+    echo   if (fs.existsSync(configUtilsPath^)^) {
+    echo     let content = fs.readFileSync(configUtilsPath, 'utf8'^);
+    echo     if (content.includes('||='^)^) {
+    echo       content = content.replace(/\|\|=/g, "= ||"^);
+    echo       fs.writeFileSync(configUtilsPath, content, 'utf8'^);
+    echo       console.log('Đã sửa file config-utils.js!'^);
+    echo     }
+    echo   }
+    echo } catch (error^) {
+    echo   console.error('Lỗi:', error.message^);
+    echo }
+    ) > temp-fix.js
     
-    if (modified) {
-      fs.writeFileSync(configPath, content, 'utf8');
-      console.log('✅ Đã cập nhật next.config.js');
-    }
-  }
-  
-  // Đảm bảo file .babelrc tồn tại
-  const babelrcPath = path.join(process.cwd(), '.babelrc');
-  if (!fs.existsSync(babelrcPath)) {
-    const babelConfig = {
-      presets: [
-        [
-          'next/babel',
-          {
-            'preset-env': {
-              targets: {
-                browsers: [
-                  '>0.3%',
-                  'not ie 11',
-                  'not dead',
-                  'not op_mini all'
-                ],
-                node: 'current'
-              },
-              useBuiltIns: 'usage',
-              corejs: 3
-            }
-          }
-        ]
-      ],
-      plugins: []
-    };
+    REM Chạy script tạm thời
+    node temp-fix.js
     
-    fs.writeFileSync(babelrcPath, JSON.stringify(babelConfig, null, 2), 'utf8');
-    console.log('✅ Đã tạo file .babelrc');
-  }
-  
-  // Tìm và sửa tất cả file webpack.js có vấn đề
-  const targetWebpackFiles = [
-    path.join(process.cwd(), 'node_modules', 'next', 'dist', 'compiled', 'webpack', 'webpack.js'),
-    path.join(process.cwd(), 'node_modules', 'webpack', 'lib', 'javascript', 'JavascriptParser.js')
-  ];
-  
-  // Hàm sửa lỗi toán tử trong file webpack
-  function fixWebpackFile(filePath) {
-    if (!fs.existsSync(filePath)) return false;
-    
-    try {
-      console.log(`🔍 Kiểm tra file: ${filePath}`);
-      let content = fs.readFileSync(filePath, 'utf8');
-      const original = content;
-      
-      // Sửa các toán tử
-      // Thay thế ||= bằng dạng tương thích
-      content = content.replace(/(\w+)\s*\|\|=\s*([^;,\n)]+)/g, '$1 = $1 || $2');
-      
-      // Thay thế &&= bằng dạng tương thích
-      content = content.replace(/(\w+)\s*&&=\s*([^;,\n)]+)/g, '$1 = $1 && $2');
-      
-      // Thay thế ??= bằng dạng tương thích
-      content = content.replace(/(\w+)\s*\?\?=\s*([^;,\n)]+)/g, '$1 = $1 ?? $2');
-      
-      // Thay thế nullish coalescing ?? bằng dạng tương thích
-      content = content.replace(/([^=!><*\/%-+]+)\s*\?\?\s*([^;,\n)]+)/g, 
-        '(($1 !== null && $1 !== undefined) ? $1 : $2)');
-      
-      // Thay thế các toán tử assignment khác
-      content = content.replace(/\|\|=/g, '= ||');
-      content = content.replace(/&&=/g, '= &&');
-      content = content.replace(/\?\?=/g, '= ??');
-      
-      if (content !== original) {
-        fs.writeFileSync(filePath, content, 'utf8');
-        console.log(`✅ Đã sửa: ${filePath}`);
-        return true;
-      }
-      
-      return false;
-    } catch (error) {
-      console.error(`❌ Lỗi khi sửa file ${filePath}:`, error.message);
-      return false;
-    }
-  }
-  
-  // Sửa các file webpack cụ thể
-  let fixedCount = 0;
-  for (const file of targetWebpackFiles) {
-    if (fixWebpackFile(file)) {
-      fixedCount++;
-    }
-  }
-  
-  // Tìm kiếm thêm các file webpack
-  const webpackDirs = [
-    path.join(process.cwd(), 'node_modules', 'next', 'dist', 'compiled', 'webpack'),
-    path.join(process.cwd(), 'node_modules', 'webpack')
-  ];
-  
-  for (const dir of webpackDirs) {
-    if (fs.existsSync(dir)) {
-      try {
-        const files = fs.readdirSync(dir);
-        for (const file of files) {
-          if (file.endsWith('.js')) {
-            const filePath = path.join(dir, file);
-            if (fixWebpackFile(filePath)) {
-              fixedCount++;
-            }
-          }
-        }
-      } catch (error) {
-        console.error(`❌ Lỗi khi duyệt thư mục ${dir}:`, error.message);
-      }
-    }
-  }
-  
-  console.log(`✅ Đã kiểm tra và sửa ${fixedCount} file webpack`);
-} catch (error) {
-  console.error('❌ Lỗi:', error.message);
-}
-"
+    REM Xóa file tạm sau khi sử dụng
+    del /F /Q temp-fix.js >nul 2>&1
+)
+
+REM Thử sửa trực tiếp nếu vẫn cần thiết
+if exist "fix-webpack-direct.js" (
+    echo Thực hiện sửa lỗi trực tiếp file webpack.js...
+    node fix-webpack-direct.js
+)
 echo.
 
 REM Cập nhật .gitignore
