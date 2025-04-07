@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  swcMinify: false,
   reactStrictMode: false,
   images: {
     domains: ['*'],
@@ -70,11 +69,6 @@ const nextConfig = {
       level: 'error',
     };
 
-    // Tắt source maps trong development để tăng tốc
-    if (dev) {
-      config.devtool = false;
-    }
-
     // Giới hạn các workers để tránh lỗi memory
     if (!isServer) {
       config.parallelism = 1;
@@ -96,8 +90,12 @@ const nextConfig = {
     esmExternals: false,
     externalDir: true,
     cpus: 1,
+<<<<<<< HEAD
     forceSwcTransforms: true,
     serverComponentsExternalPackages: ['next']
+=======
+    forceSwcTransforms: true
+>>>>>>> dc796d7f32065314e44999b1fdd22042398102f8
   },
   poweredByHeader: false
 };
