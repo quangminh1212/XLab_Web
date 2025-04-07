@@ -43,14 +43,42 @@ const nextConfig = {
       ...config.watchOptions,
       poll: 1000, // Kiểm tra thay đổi mỗi giây
       aggregateTimeout: 300, // Trì hoãn rebuild sau thay đổi
+      ignored: ['node_modules/**', '.git/**', '.next/**']
     };
 
     // Tắt cảnh báo không cần thiết
     config.ignoreWarnings = [
       { module: /node_modules/ },
       /Can't resolve/,
-      /Critical dependency/
+      /Critical dependency/,
+      /Module not found/
     ];
+
+    // Sửa lỗi cache
+    if (dev) {
+      config.cache = {
+        type: 'filesystem',
+        allowCollectingMemory: true,
+        compression: false,
+        profile: false
+      };
+    }
+
+    // Cấu hình webpack tối ưu cho Windows
+    config.infrastructureLogging = {
+      ...config.infrastructureLogging,
+      level: 'error',
+    };
+
+    // Tắt source maps trong development để tăng tốc
+    if (dev) {
+      config.devtool = false;
+    }
+
+    // Giới hạn các workers để tránh lỗi memory
+    if (!isServer) {
+      config.parallelism = 1;
+    }
 
     return config;
   },
@@ -62,7 +90,25 @@ const nextConfig = {
     maxInactiveAge: 60 * 1000,
     // number of pages that should be kept simultaneously without being disposed
     pagesBufferLength: 5,
-  }
+  },
+  // Hỗ trợ môi trường Windows
+  experimental: {
+    esmExternals: false,
+    externalDir: true,
+    cpus: 1,
+    forceSwcTransforms: true
+  },
+  // Cấu hình cho dev server
+  webpackDevMiddleware: config => {
+    config.watchOptions = {
+      ...config.watchOptions,
+      poll: 1000,
+      aggregateTimeout: 300,
+      ignored: /node_modules/
+    };
+    return config;
+  },
+  poweredByHeader: false
 };
 
 module.exports = nextConfig; 

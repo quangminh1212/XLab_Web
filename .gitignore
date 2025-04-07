@@ -259,3 +259,26 @@ tsconfig.tsbuildinfo
 *.log
 **/.next/cache/**
 **/.next/server/**
+
+# Các file tạm và cache
+.swc/
+tsconfig.tsbuildinfo
+.next/cache/
+.next/server/
+
+# Thêm các file được tạo ra khi dự án chạy
+/tmp/*
+/.next/*
+/.next-dev/
+/.next-server/
+/.next-static/
+/.next-trace/
+.next/cache/
+.next/server/
+.swc/
+**/webpack-runtime*.js
+*.hot-update.*
+.eslintcache
+.swc-win32-x64-msvc*
+fix-webpack-temp.js
+tsconfig.tsbuildinfo
