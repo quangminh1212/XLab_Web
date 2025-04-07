@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
+import { SessionProvider as NextAuthSessionProvider } from 'next-auth/react';
 
-// Tạo mock SessionProvider đơn giản
 export default function SessionProvider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <NextAuthSessionProvider>{children}</NextAuthSessionProvider>;
 } 
