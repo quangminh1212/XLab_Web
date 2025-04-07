@@ -11,24 +11,13 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  // Cấu hình đơn giản hơn cho webpack
+  swcMinify: false,
+  // Cấu hình webpack tối thiểu
   webpack: (config) => {
-    // Fallback cơ bản
     config.resolve.fallback = { 
-      ...config.resolve.fallback,
       fs: false,
-      net: false,
-      dns: false,
-      tls: false,
-      child_process: false,
     };
-
     return config;
-  },
-  // Vô hiệu hóa tracing để tránh lỗi EPERM
-  experimental: {
-    disableOptimizedLoading: true,
-    disablePostcssPresetEnv: true
   }
 };
 
