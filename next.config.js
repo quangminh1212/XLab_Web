@@ -31,6 +31,13 @@ const nextConfig = {
       zlib: false
     };
 
+    // Tắt tối ưu hóa và sử dụng các tùy chọn tương thích
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: []
+    };
+
     // Xử lý lỗi webpack trên Windows
     config.watchOptions = {
       ...config.watchOptions,
