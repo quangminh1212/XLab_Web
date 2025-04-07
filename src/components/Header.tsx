@@ -12,10 +12,18 @@ import LanguageSwitcher from './LanguageSwitcher'
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+<<<<<<< HEAD
   // Tạm thời vô hiệu hóa useSession
   // const { data: session, status } = useSession()
   const session = null // Giả lập không có session
   const isLoading = false // Giả lập không loading
+=======
+  
+  // Auth đang được vô hiệu hóa tạm thời để khắc phục lỗi
+  const isLoading = false
+  const session = null  // Giả lập không có session
+  
+>>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
   const { language, translate, isLoaded } = useLanguage()
@@ -89,6 +97,7 @@ export default function Header() {
                 <span className="text-teal-600">Lab</span>
               </span>
             </Link>
+<<<<<<< HEAD
 
             {/* Lời chào và tên người dùng trên desktop */}
             {/* Bỏ hiển thị lời chào khi chưa có session */}
@@ -99,6 +108,8 @@ export default function Header() {
                 </span>
               </div>
             )} */}
+=======
+>>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
           </div>
 
           {/* Menu desktop */}
@@ -129,12 +140,16 @@ export default function Header() {
               </svg>
             </button>
 
+<<<<<<< HEAD
             {/* {!isLoading && session ? ( */}
             {/* Tạm thời ẩn phần user dropdown và thông báo */}
             {/* <div className="flex items-center justify-center space-x-3"> */}
               {/* ... (nội dung dropdown) ... */}
             {/* </div> */}
             {/* ) : ( */}
+=======
+            {/* Hiển thị nút đăng nhập/đăng ký */}
+>>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
             <div className="hidden sm:flex items-center justify-center space-x-3 overflow-hidden">
               <Link
                 href="/login"
@@ -172,6 +187,7 @@ export default function Header() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
+<<<<<<< HEAD
             {/* Bỏ hiển thị lời chào mobile */}
             {/* {!isLoading && session && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 rounded-md text-center">
@@ -179,6 +195,8 @@ export default function Header() {
               </div>
             )} */}
 
+=======
+>>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
             {menuItems.map(item => (
               <Link
                 key={item.path}
@@ -192,23 +210,39 @@ export default function Header() {
             {/* Ngôn ngữ (mobile) */}
             <LanguageSwitcher className="w-full flex justify-center items-center" />
 
+<<<<<<< HEAD
             {/* {!isLoading && !session && ( */}
             {/* Luôn hiển thị nút login/register khi session là null */}
              <div className="flex space-x-3 mt-3 px-3">
               <Link
                 href="/login"
                 className="flex-1 px-4 py-2 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium text-sm min-w-[100px]"
+=======
+            {/* Auth trên mobile */}
+            <div className="flex space-x-3 mt-3 px-3">
+              <Link
+                href="/login"
+                className="flex-1 py-2.5 border border-teal-500 text-teal-600 rounded-md hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
+>>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
               >
                 {uiText.login}
               </Link>
               <Link
                 href="/register"
+<<<<<<< HEAD
                 className="flex-1 px-4 py-2 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium text-sm min-w-[100px]"
               >
                 {uiText.register}
               </Link>
              </div>
             {/* )} */}
+=======
+                className="flex-1 py-2.5 bg-teal-500 text-white rounded-md hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center"
+              >
+                {uiText.register}
+              </Link>
+            </div>
+>>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
           </div>
         )}
       </div>

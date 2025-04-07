@@ -35,18 +35,16 @@ echo.
 
 REM Thiet lap bien moi truong
 echo [3/4] Thiet lap moi truong...
-set "NODE_OPTIONS=--max-old-space-size=4096 --no-warnings --no-experimental-fetch"
+set "NODE_OPTIONS=--max-old-space-size=4096 --no-warnings"
 set "NEXT_TELEMETRY_DISABLED=1"
-set "NEXT_SWCMINIFY=false"
 set "NODE_ENV=development"
 set "CHOKIDAR_USEPOLLING=true"
 set "WATCHPACK_POLLING=true"
 
 REM Tao file cau hinh moi truong
 (
-echo NODE_OPTIONS=--max-old-space-size=4096 --no-warnings --no-experimental-fetch
+echo NODE_OPTIONS=--max-old-space-size=4096 --no-warnings
 echo NEXT_TELEMETRY_DISABLED=1
-echo NEXT_SWCMINIFY=false
 echo NODE_ENV=development
 echo CHOKIDAR_USEPOLLING=true
 echo WATCHPACK_POLLING=true
@@ -65,7 +63,7 @@ echo progress=false
 echo.
 
 REM Khoi dong ung dung
-echo [4/4] Sua loi va khoi dong ung dung...
+echo [4/4] Khoi dong ung dung...
 echo.
 echo ========================================================
 echo     KHOI DONG XLAB WEB
@@ -73,8 +71,8 @@ echo     Nhan Ctrl+C de dung lai
 echo ========================================================
 echo.
 
-REM Chay rieng script sua loi webpack roi khoi dong
-node fix-webpack-direct.js && npm run dev:win
+REM Chay thang ung dung ma khong sua loi webpack
+npm run dev:win
 
 echo.
 echo ========================================================
