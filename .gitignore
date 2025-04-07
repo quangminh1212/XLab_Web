@@ -282,3 +282,17 @@ tsconfig.tsbuildinfo
 .swc-win32-x64-msvc*
 fix-webpack-temp.js
 tsconfig.tsbuildinfo
+
+# Fix script files
+fix-webpack-extreme.js
+fix-bundle-files.js
+fix-next-server.js
+fix-webpack-main.js
+webpack-node-default.js
+check-webpack.js
+fix-node-modules.bat
+clean-start.bat
+start-win.bat
+
+# Fixed node modules
+node_modules/next/webpack-node-default.js
