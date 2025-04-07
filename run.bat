@@ -59,6 +59,10 @@ REM Đặt cấu hình npm
 echo registry=https://registry.npmjs.org/
 echo legacy-peer-deps=true
 echo fund=false
+echo save-exact=true
+echo prefer-offline=true
+echo cache-min=3600
+echo progress=false
 ) > .npmrc
 echo.
 
@@ -79,8 +83,8 @@ echo     Nhấn Ctrl+C để dừng lại
 echo ========================================================
 echo.
 
-REM Khởi động dự án
-call npm run dev
+REM Khởi động dự án sử dụng script dev:win tương thích với Windows
+call npm run dev:win
 
 echo.
 echo ========================================================
