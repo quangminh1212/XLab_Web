@@ -7,10 +7,6 @@ import { Inter } from 'next/font/google'
 // import Header from '@/components/Header'
 // import Footer from '@/components/Footer'
 import { LanguageProvider } from '@/contexts/LanguageContext'
-<<<<<<< HEAD
-// Giữ lại các import từ HEAD
-=======
->>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
 import { SessionProvider } from 'next-auth/react'
 import LayoutWrapper from '@/components/LayoutWrapper' // Import LayoutWrapper
 
@@ -40,10 +36,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
-<<<<<<< HEAD
         {/* Giữ lại cấu trúc từ HEAD */}
-=======
->>>>>>> parent of ce6908a (Merge branch 'main' of https://github.com/quangminh1212/XLab_Web)
         <SessionProvider session={null} refetchInterval={0} refetchOnWindowFocus={false}>
           <LanguageProvider>
             <LayoutWrapper>{children}</LayoutWrapper>
