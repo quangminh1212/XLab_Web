@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096 --no-warnings\" CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev",
-    "dev:win": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096 --no-warnings\" CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev",
+    "dev": "cross-env NODE_OPTIONS='--no-experimental-fetch --max-old-space-size=4096 --no-warnings' NEXT_SWCMINIFY=false CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev",
+    "dev:win": "cross-env NODE_OPTIONS=\"--no-experimental-fetch --max-old-space-size=4096 --no-warnings\" NEXT_SWCMINIFY=false CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -21,10 +21,10 @@
     "clsx": "2.0.0",
     "cross-env": "^7.0.3",
     "next": "14.0.4",
-    "next-auth": "4.24.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwind-merge": "2.1.0"
+    "tailwind-merge": "2.1.0",
+    "undici": "7.7.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "0.5.7",

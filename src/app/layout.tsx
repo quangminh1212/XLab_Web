@@ -7,8 +7,11 @@ import { Inter } from 'next/font/google'
 // import Header from '@/components/Header'
 // import Footer from '@/components/Footer'
 import { LanguageProvider } from '@/contexts/LanguageContext'
+<<<<<<< HEAD
 import { SessionProvider } from 'next-auth/react'
 import LayoutWrapper from '@/components/LayoutWrapper' // Import LayoutWrapper
+=======
+>>>>>>> b46e3797be64ec64427b29dc9652ecdb07972b69
 
 // Đơn giản hóa cấu hình font
 const inter = Inter({
@@ -38,6 +41,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
+<<<<<<< HEAD
         <SessionProvider session={null} refetchInterval={0} refetchOnWindowFocus={false}>
           <LanguageProvider>
             {/* Sử dụng LayoutWrapper để bao bọc children */}
@@ -50,6 +54,15 @@ export default function RootLayout({
             {/* {showLayout && <Footer />} */}
           </LanguageProvider>
         </SessionProvider>
+=======
+        <LanguageProvider>
+          {showLayout && <Header />}
+          <main id="main-content" className="flex-grow">
+            {children}
+          </main>
+          {showLayout && <Footer />}
+        </LanguageProvider>
+>>>>>>> b46e3797be64ec64427b29dc9652ecdb07972b69
       </body>
     </html>
   )
