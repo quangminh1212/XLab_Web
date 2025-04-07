@@ -6,10 +6,13 @@ import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
+import { LanguageProvider } from '@/context/LanguageContext'
+import SkipNavigation from '@/components/SkipNavigation'
+import NoScriptMessage from '@/components/NoScriptMessage'
 
 // Load Inter font
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ['latin', 'vietnamese'],
   display: 'swap',
   variable: '--font-inter',
 })
@@ -86,30 +89,40 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+    <html lang="vi" className={`${inter.variable} scroll-smooth`} data-language="vi">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        
+        {/* Minimal script to handle language initialization even if JavaScript is disabled */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var savedLang = localStorage.getItem('language');
+                if (savedLang && (savedLang === 'vi' || savedLang === 'en')) {
+                  document.documentElement.setAttribute('data-language', savedLang);
+                  document.documentElement.setAttribute('lang', savedLang);
+                }
+              } catch (e) {
+                console.error('Error initializing language:', e);
+              }
+            })();
+          `
+        }} />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
-        <noscript>
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 text-white p-4">
-            <div className="bg-red-600 p-6 rounded-lg max-w-md text-center">
-              <h2 className="text-xl font-bold mb-2">JavaScript Bị Vô Hiệu Hóa</h2>
-              <p>Website này yêu cầu JavaScript để hoạt động đúng. Vui lòng bật JavaScript và tải lại trang.</p>
-            </div>
-          </div>
-        </noscript>
+        <NoScriptMessage />
 
         <SessionProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
-          <Header />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
+          <LanguageProvider>
+            <SkipNavigation />
+            <Header />
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </LanguageProvider>
         </SessionProvider>
         <Analytics />
       </body>
