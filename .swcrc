@@ -1,1 +1,36 @@
-{ "swcMinify": false, "preset-env": { "targets": { "node": "current" } } }
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true,
+      "react": {
+        "runtime": "automatic",
+        "pragma": "React.createElement",
+        "pragmaFrag": "React.Fragment",
+        "throwIfNamespace": true,
+        "development": false,
+        "useBuiltins": false
+      }
+    },
+    "target": "es2015",
+    "loose": true,
+    "externalHelpers": false,
+    "keepClassNames": true
+  },
+  "minify": false,
+  "isModule": true,
+  "module": {
+    "type": "commonjs",
+    "strict": false,
+    "strictMode": false,
+    "lazy": false,
+    "noInterop": false
+  },
+  "sourceMaps": false
+}

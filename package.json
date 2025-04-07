@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--no-experimental-fetch --max-old-space-size=4096 --no-warnings' NEXT_SWCMINIFY=false CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev",
+    "dev:win": "cross-env NODE_OPTIONS=\"--no-experimental-fetch --max-old-space-size=4096 --no-warnings\" NEXT_SWCMINIFY=false CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -11,8 +12,8 @@
     "clean": "rimraf .next .swc node_modules/.cache",
     "fix-webpack": "node fix-webpack.js",
     "fix-direct": "node fix-webpack-direct.js",
-    "setup": "npm run clean && npm run fix-webpack && npm run dev",
-    "dev:win": "cross-env NODE_OPTIONS=\"--no-experimental-fetch --max-old-space-size=4096\" NEXT_SWCMINIFY=false CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev"
+    "setup": "npm run clean && npm run fix-direct && npm run dev:win",
+    "start:win": "node fix-webpack-direct.js && npm run dev:win"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.0.2",
