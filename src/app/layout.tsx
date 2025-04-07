@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
@@ -24,8 +22,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Bỏ logic kiểm tra pathname ở đây
-
   return (
     <html lang="vi" className={inter.className}>
       <head>
@@ -35,13 +31,14 @@ export default function RootLayout({
         <meta name="description" content="XLab Web Application" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
-        {/* Giữ lại cấu trúc từ HEAD */}
-        <SessionProvider session={null} refetchInterval={0} refetchOnWindowFocus={false}>
-          <LanguageProvider>
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </LanguageProvider>
-        </SessionProvider>
+      <body>
+        <div className="p-4 bg-white">
+          <h1 className="text-2xl font-bold">XLab Web - Debug Mode</h1>
+          <p className="mb-4">Đơn giản hóa layout để khắc phục lỗi</p>
+          <div className="border border-gray-300 p-4 rounded-md">
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   )
