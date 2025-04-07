@@ -36,7 +36,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
-        <SessionProvider>
+        <SessionProvider session={null} refetchInterval={0} refetchOnWindowFocus={false}>
           <LanguageProvider>
             {showLayout && <Header />}
             <main id="main-content" className="flex-grow">

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+// import { useSession, signOut } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
 import { useLanguage } from '@/contexts/LanguageContext'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -12,7 +12,11 @@ import LanguageSwitcher from './LanguageSwitcher'
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session, status } = useSession()
+  
+  // Auth đang được vô hiệu hóa tạm thời để khắc phục lỗi
+  const isLoading = false
+  const session = null  // Giả lập không có session
+  
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
   const { language, translate, isLoaded } = useLanguage()
@@ -51,8 +55,6 @@ export default function Header() {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const isLoading = status === 'loading'
-
   // Danh sách menu dựa theo ngôn ngữ
   const menuItems = [
     { path: '/', label: isLoaded ? translate('navigation.home') : 'Trang chủ' },
@@ -88,15 +90,6 @@ export default function Header() {
                 <span className="text-teal-600">Lab</span>
               </span>
             </Link>
-
-            {/* Lời chào và tên người dùng trên desktop */}
-            {!isLoading && session?.user && (
-              <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
-                <span className="bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full shadow-sm text-center">
-                  {greeting}, {session.user.name?.split(' ')[0] || (language === 'vi' ? 'bạn' : 'you')}!
-                </span>
-              </div>
-            )}
           </div>
 
           {/* Menu desktop */}
@@ -127,84 +120,21 @@ export default function Header() {
               </svg>
             </button>
 
-            {!isLoading && session ? (
-              <div className="flex items-center justify-center space-x-3">
-                {/* Thông báo */}
-                <button
-                  className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors relative flex items-center justify-center"
-                  aria-label="Thông báo"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-teal-500 ring-2 ring-white"></span>
-                </button>
-
-                {/* User dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => toggleMobileMenu()}
-                    className="flex items-center justify-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-teal-300 transition-all"
-                  >
-                    {session.user?.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.name || 'Avatar'}
-                        width={36}
-                        height={36}
-                        className="rounded-full shadow-sm"
-                      />
-                    ) : (
-                      <div className="w-9 h-9 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
-                        {session.user?.name?.charAt(0) || 'U'}
-                      </div>
-                    )}
-                    <span className="hidden sm:inline-block text-sm font-medium text-gray-700 text-center">
-                      {session.user?.name?.split(' ')[0] || 'User'}
-                    </span>
-                    <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {mobileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black/5 z-50">
-                      <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
-                        {uiText.loggedInAs} {session.user?.email}
-                      </div>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
-                        {uiText.myAccount}
-                      </Link>
-                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
-                        {uiText.settings}
-                      </Link>
-                      <div className="border-t border-gray-100"></div>
-                      <button
-                        onClick={() => signOut()}
-                        className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        {uiText.logout}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="hidden sm:flex items-center justify-center space-x-3 overflow-hidden">
-                <Link
-                  href="/login"
-                  className="px-3.5 py-1.5 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center whitespace-nowrap text-sm min-w-[90px]"
-                >
-                  {uiText.login}
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-3.5 py-1.5 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center whitespace-nowrap text-sm min-w-[90px]"
-                >
-                  {uiText.register}
-                </Link>
-              </div>
-            )}
+            {/* Hiển thị nút đăng nhập/đăng ký */}
+            <div className="hidden sm:flex items-center justify-center space-x-3 overflow-hidden">
+              <Link
+                href="/login"
+                className="px-3.5 py-1.5 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center whitespace-nowrap text-sm min-w-[90px]"
+              >
+                {uiText.login}
+              </Link>
+              <Link
+                href="/register"
+                className="px-3.5 py-1.5 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center whitespace-nowrap text-sm min-w-[90px]"
+              >
+                {uiText.register}
+              </Link>
+            </div>
 
             {/* Hamburger menu for mobile */}
             <button
@@ -228,12 +158,6 @@ export default function Header() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
-            {!isLoading && session && (
-              <div className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 rounded-md text-center">
-                {greeting}, {session.user?.name?.split(' ')[0] || (language === 'vi' ? 'bạn' : 'you')}!
-              </div>
-            )}
-
             {menuItems.map(item => (
               <Link
                 key={item.path}
@@ -247,22 +171,21 @@ export default function Header() {
             {/* Ngôn ngữ (mobile) */}
             <LanguageSwitcher className="w-full flex justify-center items-center" />
 
-            {!isLoading && !session && (
-              <div className="flex space-x-3 mt-3 px-3">
-                <Link
-                  href="/login"
-                  className="flex-1 px-4 py-2 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium text-sm min-w-[100px]"
-                >
-                  {uiText.login}
-                </Link>
-                <Link
-                  href="/register"
-                  className="flex-1 px-4 py-2 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium text-sm min-w-[100px]"
-                >
-                  {uiText.register}
-                </Link>
-              </div>
-            )}
+            {/* Auth trên mobile */}
+            <div className="flex space-x-3 mt-3 px-3">
+              <Link
+                href="/login"
+                className="flex-1 py-2.5 border border-teal-500 text-teal-600 rounded-md hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
+              >
+                {uiText.login}
+              </Link>
+              <Link
+                href="/register"
+                className="flex-1 py-2.5 bg-teal-500 text-white rounded-md hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center"
+              >
+                {uiText.register}
+              </Link>
+            </div>
           </div>
         )}
       </div>
