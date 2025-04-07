@@ -46,7 +46,7 @@ echo.
 
 REM Đặt biến môi trường cụ thể cho Windows 10
 echo [3/7] Thiết lập biến môi trường cho Windows 10...
-set NODE_OPTIONS=--max-old-space-size=4096
+set NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first
 set NEXT_TELEMETRY_DISABLED=1
 set NODE_ENV=development
 echo.
@@ -54,7 +54,7 @@ echo.
 REM Tạo file .env.local tương thích Windows 10
 echo [4/7] Tạo file .env.local cho Windows 10...
 (
-echo NODE_OPTIONS=--max-old-space-size=4096 --no-warnings
+echo NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first
 echo NEXT_TELEMETRY_DISABLED=1
 echo NODE_ENV=development
 echo NEXT_DEVELOPMENT_MODE=1
