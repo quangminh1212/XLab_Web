@@ -248,8 +248,14 @@ package.json.backup-*
 .next/server/webpack-runtime.js
 .next/server/npm.next.js
 .next/trace
-.next/cache/webpack/*
 
-# Run scripts
-clean-start.bat
-run.bat
+# Thêm cache và các file tạm thời khác
+.swc/
+.node-version
+.npm/
+.eslintcache
+tsconfig.tsbuildinfo
+.cache/
+*.log
+**/.next/cache/**
+**/.next/server/**

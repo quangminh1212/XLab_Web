@@ -15,13 +15,13 @@ echo Thư mục hiện tại: %CD%
 echo.
 
 REM Dừng các tiến trình Node.js
-echo [1/7] Dừng tất cả các tiến trình Node.js...
+echo [1/9] Dừng tất cả các tiến trình Node.js...
 taskkill /F /IM node.exe >nul 2>&1
 timeout /t 2 >nul
 echo.
 
 REM Xóa cache Next.js
-echo [2/7] Xóa thư mục .next...
+echo [2/9] Xóa thư mục .next...
 if exist ".next" (
     echo Đang xóa thư mục .next...
     rmdir /S /Q .next 2>nul
@@ -45,14 +45,14 @@ if exist ".next" (
 echo.
 
 REM Đặt biến môi trường cụ thể cho Windows 10
-echo [3/7] Thiết lập biến môi trường cho Windows 10...
+echo [3/9] Thiết lập biến môi trường cho Windows 10...
 set NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first
 set NEXT_TELEMETRY_DISABLED=1
 set NODE_ENV=development
 echo.
 
 REM Tạo file .env.local tương thích Windows 10
-echo [4/7] Tạo file .env.local cho Windows 10...
+echo [4/9] Tạo file .env.local cho Windows 10...
 (
 echo NODE_OPTIONS=--max-old-space-size=4096 --dns-result-order=ipv4first
 echo NEXT_TELEMETRY_DISABLED=1
@@ -65,7 +65,7 @@ echo WATCHPACK_POLLING=true
 echo.
 
 REM Tạo npmrc tương thích Windows 10
-echo [5/7] Cấu hình npm cho Windows 10...
+echo [5/9] Cấu hình npm cho Windows 10...
 (
 echo registry=https://registry.npmjs.org/
 echo legacy-peer-deps=true
@@ -84,12 +84,32 @@ if not exist "tmp" mkdir tmp
 set TEMP=%CD%\tmp
 set TMP=%CD%\tmp
 
+REM Kiểm tra phiên bản Node.js
+echo [6/9] Kiểm tra phiên bản Node.js...
+node node-version-check.js
+if %ERRORLEVEL% neq 0 (
+    echo.
+    echo ========================================================
+    echo     LỖI: Phiên bản Node.js không tương thích!
+    echo     Vui lòng cập nhật Node.js
+    echo ========================================================
+    echo.
+    pause
+    exit /b 1
+)
+echo.
+
 REM Chạy script sửa lỗi Windows
-echo [6/7] Chạy script sửa lỗi Windows...
+echo [7/9] Chạy script sửa lỗi Windows...
 node win-fix.js
 echo.
 
-echo [7/7] Khởi động ứng dụng với tùy chọn Windows 10...
+REM Chạy script sửa lỗi toán tử
+echo [8/9] Chạy script sửa lỗi toán tử logic...
+node fix-operators.js
+echo.
+
+echo [9/9] Khởi động ứng dụng với tùy chọn Windows 10...
 echo.
 echo ========================================================
 echo     STARTING XLAB WEB
