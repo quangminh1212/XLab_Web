@@ -3,7 +3,7 @@
 import React from 'react'
 import { useLanguage } from '@/context/LanguageContext'
 
-export default function SkipNavigation() {
+const SkipNavigation = () => {
   const { t } = useLanguage()
   
   return (
@@ -14,4 +14,6 @@ export default function SkipNavigation() {
       {t('skipNavigation')}
     </a>
   )
-} 
+}
+
+export default SkipNavigation 
