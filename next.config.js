@@ -96,17 +96,8 @@ const nextConfig = {
     esmExternals: false,
     externalDir: true,
     cpus: 1,
-    forceSwcTransforms: true
-  },
-  // Cấu hình cho dev server
-  webpackDevMiddleware: config => {
-    config.watchOptions = {
-      ...config.watchOptions,
-      poll: 1000,
-      aggregateTimeout: 300,
-      ignored: /node_modules/
-    };
-    return config;
+    forceSwcTransforms: true,
+    serverComponentsExternalPackages: ['next']
   },
   poweredByHeader: false
 };
