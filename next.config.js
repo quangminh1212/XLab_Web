@@ -70,11 +70,6 @@ const nextConfig = {
       level: 'error',
     };
 
-    // Tắt source maps trong development để tăng tốc
-    if (dev) {
-      config.devtool = false;
-    }
-
     // Giới hạn các workers để tránh lỗi memory
     if (!isServer) {
       config.parallelism = 1;
@@ -97,16 +92,6 @@ const nextConfig = {
     externalDir: true,
     cpus: 1,
     forceSwcTransforms: true
-  },
-  // Cấu hình cho dev server
-  webpackDevMiddleware: config => {
-    config.watchOptions = {
-      ...config.watchOptions,
-      poll: 1000,
-      aggregateTimeout: 300,
-      ignored: /node_modules/
-    };
-    return config;
   },
   poweredByHeader: false
 };
