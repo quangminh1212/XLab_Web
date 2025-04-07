@@ -63,7 +63,7 @@ echo progress=false
 echo.
 
 REM Khoi dong ung dung
-echo [4/4] Sua loi va khoi dong ung dung...
+echo [4/4] Khoi dong ung dung...
 echo.
 echo ========================================================
 echo     KHOI DONG XLAB WEB
@@ -71,8 +71,8 @@ echo     Nhan Ctrl+C de dung lai
 echo ========================================================
 echo.
 
-REM Chay rieng script sua loi webpack roi khoi dong
-node fix-webpack-direct.js && npm run dev:win
+REM Chay thang ung dung ma khong sua loi webpack
+npm run dev:win
 
 echo.
 echo ========================================================
