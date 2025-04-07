@@ -7,11 +7,9 @@ import { Inter } from 'next/font/google'
 // import Header from '@/components/Header'
 // import Footer from '@/components/Footer'
 import { LanguageProvider } from '@/contexts/LanguageContext'
-<<<<<<< HEAD
+// Giữ lại các import từ HEAD
 import { SessionProvider } from 'next-auth/react'
 import LayoutWrapper from '@/components/LayoutWrapper' // Import LayoutWrapper
-=======
->>>>>>> b46e3797be64ec64427b29dc9652ecdb07972b69
 
 // Đơn giản hóa cấu hình font
 const inter = Inter({
@@ -20,7 +18,7 @@ const inter = Inter({
 })
 
 // Các trang không hiển thị header và footer
-const noLayoutPaths = ['/login', '/register', '/admin/login']
+// const noLayoutPaths = ['/login', '/register', '/admin/login'] // Logic này đã chuyển vào LayoutWrapper
 
 export default function RootLayout({
   children,
@@ -28,8 +26,6 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   // Bỏ logic kiểm tra pathname ở đây
-  // const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  // const showLayout = !noLayoutPaths.includes(pathname);
 
   return (
     <html lang="vi" className={inter.className}>
@@ -41,28 +37,12 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
-<<<<<<< HEAD
+        {/* Giữ lại cấu trúc từ HEAD */}
         <SessionProvider session={null} refetchInterval={0} refetchOnWindowFocus={false}>
           <LanguageProvider>
-            {/* Sử dụng LayoutWrapper để bao bọc children */}
             <LayoutWrapper>{children}</LayoutWrapper>
-            {/* Bỏ Header, Footer, main ở đây */}
-            {/* {showLayout && <Header />} */}
-            {/* <main id="main-content" className="flex-grow"> */}
-            {/*   {children} */}
-            {/* </main> */}
-            {/* {showLayout && <Footer />} */}
           </LanguageProvider>
         </SessionProvider>
-=======
-        <LanguageProvider>
-          {showLayout && <Header />}
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          {showLayout && <Footer />}
-        </LanguageProvider>
->>>>>>> b46e3797be64ec64427b29dc9652ecdb07972b69
       </body>
     </html>
   )
