@@ -3,10 +3,12 @@
 import React from 'react'
 import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+// Bỏ Header và Footer vì đã chuyển vào LayoutWrapper
+// import Header from '@/components/Header'
+// import Footer from '@/components/Footer'
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import { SessionProvider } from 'next-auth/react'
+import LayoutWrapper from '@/components/LayoutWrapper' // Import LayoutWrapper
 
 // Đơn giản hóa cấu hình font
 const inter = Inter({
@@ -22,9 +24,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Tránh sử dụng usePathname vì có thể gây lỗi hydration
-  const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const showLayout = !noLayoutPaths.includes(pathname);
+  // Bỏ logic kiểm tra pathname ở đây
+  // const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+  // const showLayout = !noLayoutPaths.includes(pathname);
 
   return (
     <html lang="vi" className={inter.className}>
@@ -38,11 +40,14 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col text-gray-900 bg-gray-50">
         <SessionProvider session={null} refetchInterval={0} refetchOnWindowFocus={false}>
           <LanguageProvider>
-            {showLayout && <Header />}
-            <main id="main-content" className="flex-grow">
-              {children}
-            </main>
-            {showLayout && <Footer />}
+            {/* Sử dụng LayoutWrapper để bao bọc children */}
+            <LayoutWrapper>{children}</LayoutWrapper>
+            {/* Bỏ Header, Footer, main ở đây */}
+            {/* {showLayout && <Header />} */}
+            {/* <main id="main-content" className="flex-grow"> */}
+            {/*   {children} */}
+            {/* </main> */}
+            {/* {showLayout && <Footer />} */}
           </LanguageProvider>
         </SessionProvider>
       </body>
