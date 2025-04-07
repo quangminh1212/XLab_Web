@@ -3,12 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--no-experimental-fetch --max-old-space-size=4096 --no-warnings' NEXT_SWCMINIFY=false next dev",
+    "dev": "cross-env NODE_OPTIONS='--no-experimental-fetch --max-old-space-size=4096 --no-warnings' NEXT_SWCMINIFY=false CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "clean": "rimraf .next .next-dev node_modules/.cache"
+    "clean": "rimraf .next .swc node_modules/.cache",
+    "fix-webpack": "node fix-webpack.js",
+    "fix-direct": "node fix-webpack-direct.js",
+    "setup": "npm run clean && npm run fix-webpack && npm run dev",
+    "dev:win": "cross-env NODE_OPTIONS=\"--no-experimental-fetch --max-old-space-size=4096\" NEXT_SWCMINIFY=false CHOKIDAR_USEPOLLING=true WATCHPACK_POLLING=true next dev"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.0.2",
