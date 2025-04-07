@@ -129,12 +129,6 @@ export default function Header() {
               </svg>
             </button>
 
-            {/* {!isLoading && session ? ( */}
-            {/* Tạm thời ẩn phần user dropdown và thông báo */}
-            {/* <div className="flex items-center justify-center space-x-3"> */}
-              {/* ... (nội dung dropdown) ... */}
-            {/* </div> */}
-            {/* ) : ( */}
             {/* Luôn hiển thị đăng nhập/đăng ký khi session là null */}
             <div className="hidden sm:flex items-center justify-center space-x-3 overflow-hidden">
               <Link
@@ -150,7 +144,6 @@ export default function Header() {
                 {uiText.register}
               </Link>
             </div>
-            {/* )} */}
 
             {/* Hamburger menu for mobile */}
             <button
