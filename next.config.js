@@ -72,9 +72,7 @@ const nextConfig = {
       '*': ['**/*.map', '**/*.d.ts', '**/node_modules/**/*'],
     },
   },
-  telemetry: {
-    telemetry: false,
-  },
+  telemetry: false,
   webpack: (config, { dev, isServer }) => {
     config.optimization = {
       ...config.optimization,
