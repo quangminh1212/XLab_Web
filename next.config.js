@@ -23,6 +23,11 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
+  i18n: {
+    locales: ['vi', 'en'],
+    defaultLocale: 'vi',
+    localeDetection: true
+  },
   async headers() {
     return [
       {
