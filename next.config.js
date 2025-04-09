@@ -23,11 +23,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
-  i18n: {
-    locales: ['vi', 'en'],
-    defaultLocale: 'vi',
-    localeDetection: true
-  },
   async headers() {
     return [
       {
@@ -100,9 +95,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
     removeConsole: process.env.NODE_ENV === 'production',
-  },
-  env: {
-    NODE_TLS_REJECT_UNAUTHORIZED: '0'
   }
 };
 
