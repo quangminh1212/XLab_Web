@@ -66,13 +66,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    outputFileTracingRoot: undefined,
-    outputFileTracingExcludes: {
-      '*': ['**/*.map', '**/*.d.ts', '**/node_modules/**/*'],
-    },
-  },
   telemetry: false,
+  distDir: '.next',
+  trailingSlash: false,
   webpack: (config, { dev, isServer }) => {
     config.optimization = {
       ...config.optimization,
