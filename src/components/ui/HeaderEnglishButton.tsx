@@ -12,41 +12,36 @@ export default function HeaderEnglishButton() {
   }, []);
 
   const handleTranslate = () => {
-    // Không sử dụng e.preventDefault() vì có thể ngăn chặn hành động mặc định
-    console.log('Translate button clicked', new Date().toISOString()); // Debug với timestamp
+    console.log('Translate button clicked', new Date().toISOString());
     
     try {
-      // Sử dụng Google Translate miễn phí
+      // Lấy URL hiện tại
       const currentUrl = window.location.href;
-      const targetLang = 'en'; // Luôn dịch sang tiếng Anh từ nút này
+      const targetLang = 'en'; // Luôn dịch sang tiếng Anh
       
-      // Cập nhật ngôn ngữ ưa thích
+      // Cập nhật ngôn ngữ ưa thích trong context
       setPreferredLanguage(targetLang);
       setTranslated(true);
       
       // URL Google Translate
       const translateUrl = `https://translate.google.com/translate?sl=auto&tl=${targetLang}&u=${encodeURIComponent(currentUrl)}`;
       
-      // Mở URL trong tab mới
-      const newWindow = window.open(translateUrl, '_blank');
-      if (!newWindow) {
-        alert('Popup bị chặn. Vui lòng cho phép popup cho trang web này.');
-      }
+      // Chuyển hướng trực tiếp thay vì mở tab mới để tránh bị chặn popup
+      window.location.href = translateUrl;
     } catch (error) {
       console.error('Lỗi khi chuyển hướng đến Google Translate:', error);
-      // Phương án dự phòng nếu window.open() không hoạt động
-      window.location.href = `https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(document.title)}`;
+      alert('Đã xảy ra lỗi khi chuyển hướng. Vui lòng thử lại sau.');
     }
   };
 
   if (!mounted) return null;
 
-  // Style nút giống hệt như trong hình ảnh
   return (
     <button
       onClick={handleTranslate}
       type="button"
       className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
+      aria-label="Dịch sang tiếng Anh"
     >
       <span role="img" aria-label="Globe" className="text-base">🌐</span>
       <span>English</span>

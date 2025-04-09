@@ -10,6 +10,8 @@ import TranslateButton from './ui/TranslateButton'
 import EnglishButton from './ui/EnglishButton'
 import HeaderEnglishButton from './ui/HeaderEnglishButton'
 import SimpleEnglishButton from './ui/SimpleEnglishButton'
+import DirectEnglishButton from './ui/DirectEnglishButton'
+import HtmlEnglishLink from './ui/HtmlEnglishLink'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -99,10 +101,7 @@ export default function Header() {
             <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
               Liên hệ
             </Link>
-            <div className="flex items-center space-x-2">
-              <HeaderEnglishButton />
-              <SimpleEnglishButton />
-            </div>
+            <HtmlEnglishLink />
           </nav>
 
           {/* Buttons */}
@@ -242,14 +241,10 @@ export default function Header() {
               Liên hệ
             </Link>
             
-            {/* EnglishButton cho mobile - thay bằng HeaderEnglishButton */}
-            <div className="flex justify-center mt-2">
-              <HeaderEnglishButton />
-            </div>
-            
             {/* Translate Button cho mobile */}
-            <div className="flex justify-center mt-2">
+            <div className="flex justify-center mt-2 gap-2">
               <TranslateButton />
+              <HtmlEnglishLink />
             </div>
 
             {!isLoading && !session && (
