@@ -139,22 +139,4 @@
 
 .animation-delay-500 {
   animation-delay: 0.5s;
-}
-
-/* Language-specific visibility */
-html[data-language="vi"] [lang="en"] {
-  display: none !important;
-}
-
-html[data-language="en"] [lang="vi"] {
-  display: none !important;
-}
-
-/* Show elements conditionally based on language */
-html[data-language="en"] [data-show-when-lang="en"] {
-  display: block !important;
-}
-
-html[data-language="vi"] [data-show-when-lang="vi"] {
-  display: block !important;
 } 
