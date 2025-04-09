@@ -14,6 +14,9 @@ import DirectEnglishButton from './ui/DirectEnglishButton'
 import HtmlEnglishLink from './ui/HtmlEnglishLink'
 import DirectEnglishLink from './ui/DirectEnglishLink'
 import SimpleLink from './ui/SimpleLink'
+import StaticEnglishLink from './ui/StaticEnglishLink'
+import PureHtmlLink from './ui/PureHtmlLink'
+import HardcodedLink from './ui/HardcodedLink'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -107,6 +110,8 @@ export default function Header() {
               <HtmlEnglishLink />
               <SimpleLink />
               <DirectEnglishLink />
+              <StaticEnglishLink />
+              <PureHtmlLink />
             </div>
           </nav>
 
@@ -248,11 +253,14 @@ export default function Header() {
             </Link>
             
             {/* Translate Button cho mobile */}
-            <div className="flex justify-center mt-2 gap-2">
+            <div className="flex flex-wrap justify-center mt-2 gap-2">
               <TranslateButton />
               <HtmlEnglishLink />
               <SimpleLink />
               <DirectEnglishLink />
+              <StaticEnglishLink />
+              <PureHtmlLink />
+              <HardcodedLink />
             </div>
 
             {!isLoading && !session && (
