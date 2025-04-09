@@ -52,7 +52,6 @@ echo update-notifier=false >> .npmrc
 echo legacy-peer-deps=true >> .npmrc
 echo engine-strict=false >> .npmrc
 echo save-exact=true >> .npmrc
-echo strict-ssl=false >> .npmrc
 
 :: Bước 5: Cài đặt các dependencies
 echo [5/9] Installing Next.js %NEXT_VERSION_FULL% and dependencies...
@@ -89,11 +88,6 @@ if not exist node_modules\.bin\next.cmd (
     exit /b 1
 )
 
-:: Tạo thư mục trace để tránh lỗi quyền truy cập
-if not exist .next mkdir .next
-if not exist .next\trace mkdir .next\trace
-icacls .next\trace /grant Everyone:F
-
 :: Bước 9: Chạy ứng dụng
 echo [9/9] Starting application in %RUN_MODE% mode...
 echo Starting Next.js %NEXT_VERSION_FULL% development server...
@@ -102,9 +96,6 @@ echo [Press Ctrl+C to stop the server]
 :: Đặt biến môi trường
 set NODE_ENV=development
 set NEXT_TELEMETRY_DISABLED=1
-set NODE_TLS_REJECT_UNAUTHORIZED=0
-set NEXTAUTH_URL=http://localhost:3000
-set NEXTAUTH_SECRET=K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT
 
 :: Chạy ứng dụng với đường dẫn đầy đủ
 call node_modules\.bin\next.cmd dev
