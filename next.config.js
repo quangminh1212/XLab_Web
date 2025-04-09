@@ -66,6 +66,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    outputFileTracingRoot: undefined,
+    outputFileTracingExcludes: {
+      '*': ['**/*.map', '**/*.d.ts', '**/node_modules/**/*'],
+    },
+  },
+  telemetry: {
+    telemetry: false,
+  },
   webpack: (config, { dev, isServer }) => {
     config.optimization = {
       ...config.optimization,
@@ -81,15 +90,15 @@ const nextConfig = {
       innerGraph: false,
       mangleExports: false,
     };
-    
+
     if (dev) {
       config.mode = 'none';
     }
-    
+
     if (!isServer) {
       config.output.libraryTarget = 'var';
     }
-    
+
     return config;
   },
   compiler: {
