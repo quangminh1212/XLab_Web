@@ -8,6 +8,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
 import TranslateButton from './ui/TranslateButton'
 import EnglishButton from './ui/EnglishButton'
+import HeaderEnglishButton from './ui/HeaderEnglishButton'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -97,7 +98,7 @@ export default function Header() {
             <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
               Liên hệ
             </Link>
-            <EnglishButton />
+            <HeaderEnglishButton />
           </nav>
 
           {/* Buttons */}
@@ -237,9 +238,9 @@ export default function Header() {
               Liên hệ
             </Link>
             
-            {/* EnglishButton cho mobile */}
+            {/* EnglishButton cho mobile - thay bằng HeaderEnglishButton */}
             <div className="flex justify-center mt-2">
-              <EnglishButton />
+              <HeaderEnglishButton />
             </div>
             
             {/* Translate Button cho mobile */}
