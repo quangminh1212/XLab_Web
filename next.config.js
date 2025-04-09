@@ -66,9 +66,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  telemetry: false,
-  distDir: '.next',
-  trailingSlash: false,
   webpack: (config, { dev, isServer }) => {
     config.optimization = {
       ...config.optimization,
