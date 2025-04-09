@@ -52,6 +52,7 @@ echo update-notifier=false >> .npmrc
 echo legacy-peer-deps=true >> .npmrc
 echo engine-strict=false >> .npmrc
 echo save-exact=true >> .npmrc
+echo strict-ssl=false >> .npmrc
 
 :: Bước 5: Cài đặt các dependencies
 echo [5/9] Installing Next.js %NEXT_VERSION_FULL% and dependencies...
@@ -96,6 +97,7 @@ echo [Press Ctrl+C to stop the server]
 :: Đặt biến môi trường
 set NODE_ENV=development
 set NEXT_TELEMETRY_DISABLED=1
+set NODE_TLS_REJECT_UNAUTHORIZED=0
 
 :: Chạy ứng dụng với đường dẫn đầy đủ
 call node_modules\.bin\next.cmd dev
