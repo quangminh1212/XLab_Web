@@ -6,17 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
-import TranslateButton from './ui/TranslateButton'
-import EnglishButton from './ui/EnglishButton'
-import HeaderEnglishButton from './ui/HeaderEnglishButton'
-import SimpleEnglishButton from './ui/SimpleEnglishButton'
-import DirectEnglishButton from './ui/DirectEnglishButton'
-import HtmlEnglishLink from './ui/HtmlEnglishLink'
-import DirectEnglishLink from './ui/DirectEnglishLink'
-import SimpleLink from './ui/SimpleLink'
-import StaticEnglishLink from './ui/StaticEnglishLink'
-import PureHtmlLink from './ui/PureHtmlLink'
-import HardcodedLink from './ui/HardcodedLink'
+import TranslationLink from './ui/TranslationLink'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -106,20 +96,11 @@ export default function Header() {
             <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
               Liên hệ
             </Link>
-            <div className="flex items-center space-x-2">
-              <HtmlEnglishLink />
-              <SimpleLink />
-              <DirectEnglishLink />
-              <StaticEnglishLink />
-              <PureHtmlLink />
-            </div>
+            <TranslationLink />
           </nav>
 
           {/* Buttons */}
           <div className="flex items-center justify-center space-x-3">
-            {/* Translate Button */}
-            <TranslateButton className="hidden sm:flex" />
-
             {/* Tìm kiếm */}
             <button
               className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
@@ -252,15 +233,9 @@ export default function Header() {
               Liên hệ
             </Link>
             
-            {/* Translate Button cho mobile */}
-            <div className="flex flex-wrap justify-center mt-2 gap-2">
-              <TranslateButton />
-              <HtmlEnglishLink />
-              <SimpleLink />
-              <DirectEnglishLink />
-              <StaticEnglishLink />
-              <PureHtmlLink />
-              <HardcodedLink />
+            {/* Translation cho mobile */}
+            <div className="flex justify-center mt-2">
+              <TranslationLink />
             </div>
 
             {!isLoading && !session && (
