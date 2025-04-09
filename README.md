@@ -119,7 +119,7 @@ yarn dev
 pnpm dev
 ```
 
-4. Mở trình duyệt và truy cập [http://localhost:3000](http://localhost:3000)
+4. Mở trình duyệt và truy cập [http://localhost:3001](http://localhost:3001)
 
 ### Build và chạy ở môi trường production
 
@@ -179,19 +179,19 @@ Copyright © 2023 XLab. All rights reserved.
 5. Chọn "Web application" làm loại ứng dụng
 6. Thêm tên cho ứng dụng của bạn (ví dụ: "XLab Web")
 7. Thêm các URL sau vào phần "Authorized JavaScript origins":
-   - `http://localhost:3000` (cho môi trường phát triển)
-   - `http://58.186.71.93:3000` (cho môi trường hiện tại nếu cần)
+   - `http://localhost:3001` (cho môi trường phát triển)
+   - `http://58.186.71.93:3001` (cho môi trường hiện tại nếu cần)
    - `https://your-production-domain.com` (cho môi trường sản xuất)
 8. Thêm các URL sau vào phần "Authorized redirect URIs":
-   - `http://localhost:3000/api/auth/callback/google` (cho môi trường phát triển)
-   - `http://58.186.71.93:3000/api/auth/callback/google` (cho môi trường hiện tại nếu cần)
+   - `http://localhost:3001/api/auth/callback/google` (cho môi trường phát triển)
+   - `http://58.186.71.93:3001/api/auth/callback/google` (cho môi trường hiện tại nếu cần)
    - `https://your-production-domain.com/api/auth/callback/google` (cho môi trường sản xuất)
 9. Click "Create"
 10. Sao chép Client ID và Client Secret
 11. Thêm chúng vào file `.env.local`:
 
 ```
-NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_URL=http://localhost:3001
 NEXTAUTH_SECRET=K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT
 
 # Google OAuth credentials
@@ -241,7 +241,7 @@ run.bat -c
    - Đã được sửa trong cấu hình webpack
 
 2. Lỗi "Port 3000 is in use":
-   - Hệ thống sẽ tự động chuyển sang cổng khác
+   - Hệ thống sẽ tự động chuyển sang cổng 3001
 
 3. Lỗi EPERM khi xóa hoặc cài đặt:
    - Chạy lại với quyền admin hoặc đóng tất cả ứng dụng đang sử dụng tệp 
