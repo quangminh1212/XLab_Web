@@ -13,7 +13,6 @@ export default function HeaderEnglishButton() {
 
   const handleTranslate = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();
     
     console.log('Translate button clicked'); // Debug
     
@@ -25,20 +24,19 @@ export default function HeaderEnglishButton() {
     setPreferredLanguage(targetLang);
     setTranslated(true);
     
-    // Chuyển hướng đến Google Translate
-    setTimeout(() => {
-      window.location.href = `https://translate.google.com/translate?sl=auto&tl=${targetLang}&u=${encodeURIComponent(currentUrl)}`;
-    }, 100);
+    // Dùng window.open thay vì window.location để tránh lỗi chuyển hướng
+    window.open(`https://translate.google.com/translate?sl=auto&tl=${targetLang}&u=${encodeURIComponent(currentUrl)}`, '_blank');
   };
 
   if (!mounted) return null;
 
+  // Style nút giống hệt như trong hình ảnh
   return (
     <button
       onClick={handleTranslate}
-      className="inline-flex items-center space-x-1 rounded-full px-2 py-1 text-sm text-gray-800 hover:text-teal-600 transition-colors"
+      className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
     >
-      <span className="text-base mr-1">🌐</span>
+      <span role="img" aria-label="Globe" className="text-base">🌐</span>
       <span>English</span>
     </button>
   );
