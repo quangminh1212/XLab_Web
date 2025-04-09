@@ -18,6 +18,27 @@ XLab là một website giới thiệu các sản phẩm và dịch vụ phần m
 - [Tailwind CSS](https://tailwindcss.com/)
 - [React](https://reactjs.org/)
 
+## Môi trường
+
+Dự án sử dụng các biến môi trường để cấu hình:
+
+- `.env.development`: Cấu hình cho môi trường phát triển
+- `.env.production`: Cấu hình cho môi trường sản phẩm
+- `.env.test`: Cấu hình cho môi trường test
+
+Các biến môi trường chính:
+
+- `NODE_ENV`: Môi trường chạy (development/production/test)
+- `NEXT_PUBLIC_API_URL`: URL của API
+- `NEXT_PUBLIC_SITE_URL`: URL của website
+
+### Bảo mật
+
+- Không sử dụng `NODE_TLS_REJECT_UNAUTHORIZED=0` trong môi trường development
+- Sử dụng SSL certificate hợp lệ cho môi trường development
+- Không commit các file `.env*` lên git repository
+- Sử dụng các biến môi trường an toàn cho production
+
 ## Cài đặt và chạy dự án
 
 ### Yêu cầu
