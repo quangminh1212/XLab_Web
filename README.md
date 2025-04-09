@@ -18,71 +18,6 @@ XLab là một website giới thiệu các sản phẩm và dịch vụ phần m
 - [Tailwind CSS](https://tailwindcss.com/)
 - [React](https://reactjs.org/)
 
-## Môi trường
-
-Dự án sử dụng các biến môi trường để cấu hình:
-
-- `.env.development`: Cấu hình cho môi trường phát triển
-- `.env.production`: Cấu hình cho môi trường sản phẩm
-- `.env.test`: Cấu hình cho môi trường test
-
-Các biến môi trường chính:
-
-- `NODE_ENV`: Môi trường chạy (development/production/test)
-- `NEXT_PUBLIC_API_URL`: URL của API
-- `NEXT_PUBLIC_SITE_URL`: URL của website
-
-### Bảo mật
-
-- Không sử dụng `NODE_TLS_REJECT_UNAUTHORIZED=0` trong môi trường development
-- Sử dụng SSL certificate hợp lệ cho môi trường development
-- Không commit các file `.env*` lên git repository
-- Sử dụng các biến môi trường an toàn cho production
-
-### Cấu hình SSL cho Development
-
-1. Tạo SSL certificate cho local development:
-```bash
-# Tạo thư mục certificates
-mkdir certificates
-cd certificates
-
-# Tạo private key
-openssl genrsa -out localhost.key 2048
-
-# Tạo CSR (Certificate Signing Request)
-openssl req -new -key localhost.key -out localhost.csr -subj "/CN=localhost"
-
-# Tạo self-signed certificate
-openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
-```
-
-2. Cấu hình Next.js để sử dụng SSL certificate:
-```javascript
-// next.config.js
-const fs = require('fs');
-const path = require('path');
-
-module.exports = {
-  server: {
-    https: {
-      key: fs.readFileSync(path.join(__dirname, 'certificates', 'localhost.key')),
-      cert: fs.readFileSync(path.join(__dirname, 'certificates', 'localhost.crt')),
-    },
-  },
-  // ... other config
-};
-```
-
-3. Thêm certificates vào .gitignore:
-```
-# SSL certificates
-certificates/
-*.key
-*.crt
-*.csr
-```
-
 ## Cài đặt và chạy dự án
 
 ### Yêu cầu
@@ -119,7 +54,7 @@ yarn dev
 pnpm dev
 ```
 
-4. Mở trình duyệt và truy cập [http://localhost:3001](http://localhost:3001)
+4. Mở trình duyệt và truy cập [http://localhost:3000](http://localhost:3000)
 
 ### Build và chạy ở môi trường production
 
@@ -179,19 +114,19 @@ Copyright © 2023 XLab. All rights reserved.
 5. Chọn "Web application" làm loại ứng dụng
 6. Thêm tên cho ứng dụng của bạn (ví dụ: "XLab Web")
 7. Thêm các URL sau vào phần "Authorized JavaScript origins":
-   - `http://localhost:3001` (cho môi trường phát triển)
-   - `http://58.186.71.93:3001` (cho môi trường hiện tại nếu cần)
+   - `http://localhost:3000` (cho môi trường phát triển)
+   - `http://58.186.71.93:3000` (cho môi trường hiện tại nếu cần)
    - `https://your-production-domain.com` (cho môi trường sản xuất)
 8. Thêm các URL sau vào phần "Authorized redirect URIs":
-   - `http://localhost:3001/api/auth/callback/google` (cho môi trường phát triển)
-   - `http://58.186.71.93:3001/api/auth/callback/google` (cho môi trường hiện tại nếu cần)
+   - `http://localhost:3000/api/auth/callback/google` (cho môi trường phát triển)
+   - `http://58.186.71.93:3000/api/auth/callback/google` (cho môi trường hiện tại nếu cần)
    - `https://your-production-domain.com/api/auth/callback/google` (cho môi trường sản xuất)
 9. Click "Create"
 10. Sao chép Client ID và Client Secret
 11. Thêm chúng vào file `.env.local`:
 
 ```
-NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT
 
 # Google OAuth credentials
@@ -241,7 +176,7 @@ run.bat -c
    - Đã được sửa trong cấu hình webpack
 
 2. Lỗi "Port 3000 is in use":
-   - Hệ thống sẽ tự động chuyển sang cổng 3001
+   - Hệ thống sẽ tự động chuyển sang cổng khác
 
 3. Lỗi EPERM khi xóa hoặc cài đặt:
    - Chạy lại với quyền admin hoặc đóng tất cả ứng dụng đang sử dụng tệp 

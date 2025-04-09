@@ -37,9 +37,6 @@ app.log
 
 # local env files
 .env*.local
-.env.development
-.env.production
-.env.test
 .env
 
 # vercel
@@ -49,20 +46,11 @@ app.log
 *.tsbuildinfo
 next-env.d.ts
 
-# IDE
-.idea
+# VS Code
 .vscode
-*.swp
-*.swo
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# IntelliJ IDEA
+.idea
 
 # Package manager
 package-lock.json
@@ -216,13 +204,6 @@ Thumbs.db
 .swc/
 **/.swc/
 /.swc-*/
-
-# SSL certificates
-certificates/
-*.key
-*.crt
-*.csr
-*.pem
 
 # Thêm các file được tạo ra khi dự án đang chạy
 .next/
