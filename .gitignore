@@ -217,6 +217,13 @@ Thumbs.db
 **/.swc/
 /.swc-*/
 
+# SSL certificates
+certificates/
+*.key
+*.crt
+*.csr
+*.pem
+
 # Thêm các file được tạo ra khi dự án đang chạy
 .next/
 node_modules/

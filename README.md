@@ -39,6 +39,50 @@ Các biến môi trường chính:
 - Không commit các file `.env*` lên git repository
 - Sử dụng các biến môi trường an toàn cho production
 
+### Cấu hình SSL cho Development
+
+1. Tạo SSL certificate cho local development:
+```bash
+# Tạo thư mục certificates
+mkdir certificates
+cd certificates
+
+# Tạo private key
+openssl genrsa -out localhost.key 2048
+
+# Tạo CSR (Certificate Signing Request)
+openssl req -new -key localhost.key -out localhost.csr -subj "/CN=localhost"
+
+# Tạo self-signed certificate
+openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
+```
+
+2. Cấu hình Next.js để sử dụng SSL certificate:
+```javascript
+// next.config.js
+const fs = require('fs');
+const path = require('path');
+
+module.exports = {
+  server: {
+    https: {
+      key: fs.readFileSync(path.join(__dirname, 'certificates', 'localhost.key')),
+      cert: fs.readFileSync(path.join(__dirname, 'certificates', 'localhost.crt')),
+    },
+  },
+  // ... other config
+};
+```
+
+3. Thêm certificates vào .gitignore:
+```
+# SSL certificates
+certificates/
+*.key
+*.crt
+*.csr
+```
+
 ## Cài đặt và chạy dự án
 
 ### Yêu cầu
