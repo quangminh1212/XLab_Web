@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-const webpack = require('webpack');
-
 const nextConfig = {
   reactStrictMode: false,
   images: {
@@ -86,12 +84,6 @@ const nextConfig = {
 
     if (dev) {
       config.mode = 'none';
-      if (!isServer) {
-        config.plugins = config.plugins || [];
-        config.plugins.push(new webpack.DefinePlugin({
-          'process.env.NODE_TLS_REJECT_UNAUTHORIZED': '0'
-        }));
-      }
     }
 
     if (!isServer) {
