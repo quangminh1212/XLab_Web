@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from '@/context/TranslationContext';
 
 interface TranslationBannerProps {
@@ -9,24 +9,36 @@ interface TranslationBannerProps {
 }
 
 export default function TranslationBanner({ className = '' }: TranslationBannerProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const { showBanner, hideBanner, setTranslated } = useTranslation();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+    
+    // Kiểm tra nếu URL hiện tại chứa translate.googleusercontent.com
+    // điều này chỉ ra rằng trang đang được hiển thị qua Google Translate
+    if (typeof window !== 'undefined') {
+      if (window.location.hostname.includes('translate.googleusercontent.com')) {
+        setTranslated(true);
+      }
+    }
+  }, []);
   
   const handleSwitchToEnglish = () => {
-    // Redirect to Google's translated version of the page
+    // Redirect to Google's translated version of the page - miễn phí
     const currentUrl = window.location.href;
     setTranslated(true);
     window.location.href = `https://translate.google.com/translate?sl=vi&tl=en&u=${encodeURIComponent(currentUrl)}`;
   };
 
-  if (!showBanner) return null;
+  if (!mounted || !showBanner) return null;
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 flex items-center justify-between ${className} z-50`}>
       <div className="flex items-center text-sm text-gray-700">
         <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" alt="Google" className="h-5 mr-2" />
-        <span>Trang này được dịch bởi Cloud Translation API.</span>
+        <span>Trang này có thể được dịch bởi Google Translate.</span>
       </div>
       <div className="flex space-x-2">
         <button
