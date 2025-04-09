@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
 import TranslateButton from './ui/TranslateButton'
+import EnglishButton from './ui/EnglishButton'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -96,6 +97,7 @@ export default function Header() {
             <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
               Liên hệ
             </Link>
+            <EnglishButton />
           </nav>
 
           {/* Buttons */}
@@ -234,6 +236,11 @@ export default function Header() {
             <Link href="/contact" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Liên hệ
             </Link>
+            
+            {/* EnglishButton cho mobile */}
+            <div className="flex justify-center mt-2">
+              <EnglishButton />
+            </div>
             
             {/* Translate Button cho mobile */}
             <div className="flex justify-center mt-2">
