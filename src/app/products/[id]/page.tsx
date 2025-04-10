@@ -20,12 +20,38 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           return;
         }
 
-        // Kiểm tra trong database hoặc API thực tế nên được triển khai tại đây
-        // Hiện tại chỉ hiển thị thông báo không tìm thấy sản phẩm
-        setError('Không tìm thấy sản phẩm');
+        // Lấy sản phẩm từ localStorage
+        const storedProducts = localStorage.getItem('admin_products');
+        let foundProduct = null;
         
-        // Cập nhật title cho trang
-        document.title = `Sản phẩm | XLab - Phần mềm và Dịch vụ`;
+        if (storedProducts) {
+          const products = JSON.parse(storedProducts);
+          foundProduct = products.find((p) => p.slug === params.id);
+        }
+        
+        if (foundProduct) {
+          setProduct(foundProduct);
+          
+          // Cập nhật title cho trang
+          document.title = `${foundProduct.name} | XLab - Phần mềm và Dịch vụ`;
+          
+          // Cập nhật số lượt xem
+          if (foundProduct.id) {
+            try {
+              const updatedProducts = JSON.parse(storedProducts);
+              const productIndex = updatedProducts.findIndex((p) => p.id === foundProduct.id);
+              
+              if (productIndex !== -1) {
+                updatedProducts[productIndex].viewCount = (updatedProducts[productIndex].viewCount || 0) + 1;
+                localStorage.setItem('admin_products', JSON.stringify(updatedProducts));
+              }
+            } catch (err) {
+              console.error('Lỗi khi cập nhật số lượt xem:', err);
+            }
+          }
+        } else {
+          setError('Không tìm thấy sản phẩm');
+        }
       } catch (err) {
         console.error('Error loading product:', err);
         setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
@@ -92,8 +118,24 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     if (!product.slug) return;
     
     try {
-      // Tăng số lượt tải
-      incrementDownloadCount(product.slug);
+      // Tăng số lượt tải trong localStorage
+      const storedProducts = localStorage.getItem('admin_products');
+      if (storedProducts && product.id) {
+        const products = JSON.parse(storedProducts);
+        const productIndex = products.findIndex((p) => p.id === product.id);
+        
+        if (productIndex !== -1) {
+          // Tăng số lượt tải
+          products[productIndex].downloadCount = (products[productIndex].downloadCount || 0) + 1;
+          localStorage.setItem('admin_products', JSON.stringify(products));
+          
+          // Cập nhật giá trị trong state
+          setProduct({
+            ...product,
+            downloadCount: (product.downloadCount || 0) + 1
+          });
+        }
+      }
       
       // Mô phỏng tải xuống
       console.log(`Tải xuống sản phẩm: ${product.slug}`);
