@@ -76,11 +76,17 @@ export default function CreateProductPage() {
   useEffect(() => {
     const token = searchParams.get('token');
     
-    if (token !== 'xlab-admin-secret' && status === 'authenticated') {
+    // Nếu có token đặc biệt, cho phép truy cập
+    if (token === 'xlab-admin-secret') {
+      return; // Cho phép truy cập
+    }
+    
+    // Kiểm tra quyền admin nếu không có token đặc biệt
+    if (status === 'authenticated') {
       if (session?.user?.email !== 'xlab.rnd@gmail.com') {
         router.push('/');
       }
-    } else if (token !== 'xlab-admin-secret' && status === 'unauthenticated') {
+    } else if (status === 'unauthenticated') {
       router.push('/login');
     }
   }, [session, status, router, searchParams]);
