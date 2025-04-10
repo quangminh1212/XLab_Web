@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
+import TranslationLink from './ui/TranslationLink'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -95,6 +96,7 @@ export default function Header() {
             <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
               Liên hệ
             </Link>
+            <TranslationLink />
           </nav>
 
           {/* Buttons */}
@@ -230,6 +232,11 @@ export default function Header() {
             <Link href="/contact" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
               Liên hệ
             </Link>
+            
+            {/* Translation cho mobile */}
+            <div className="flex justify-center mt-2">
+              <TranslationLink />
+            </div>
 
             {!isLoading && !session && (
               <div className="flex space-x-3 mt-3 px-3">
