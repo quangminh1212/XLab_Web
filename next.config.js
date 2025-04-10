@@ -67,10 +67,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
-    if (dev && !isServer) {
-      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-    }
-
     config.optimization = {
       ...config.optimization,
       minimize: false,
@@ -85,21 +81,20 @@ const nextConfig = {
       innerGraph: false,
       mangleExports: false,
     };
-
+    
     if (dev) {
       config.mode = 'none';
     }
-
+    
     if (!isServer) {
       config.output.libraryTarget = 'var';
     }
-
+    
     return config;
   },
   compiler: {
     styledComponents: true,
-    removeConsole: process.env.NODE_ENV === 'production',
-  }
+  },
 };
 
 module.exports = nextConfig;
