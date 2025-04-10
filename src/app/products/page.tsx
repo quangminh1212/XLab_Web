@@ -16,22 +16,21 @@ export default function ProductsPage() {
   useEffect(() => {
     document.title = 'Sản phẩm | XLab - Phần mềm và Dịch vụ'
     
-    // Lấy sản phẩm từ localStorage hoặc API
+    // Mô phỏng việc lấy sản phẩm từ API
     const fetchProducts = async () => {
       try {
-        // Giả lập chờ tải
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Giả lập gọi API
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Lấy sản phẩm từ localStorage (do admin đã thêm)
-        const adminProducts = localStorage.getItem('admin_products');
-        if (adminProducts) {
-          const parsedProducts = JSON.parse(adminProducts);
-          setProducts(parsedProducts);
-        } else {
-          // Nếu không có sản phẩm nào từ admin, hiển thị danh sách sản phẩm rỗng
-          setProducts([]);
+        // Mô phỏng lỗi khi không tải được dữ liệu (ngẫu nhiên để test)
+        const shouldFail = false; // Đặt thành true để test trạng thái lỗi
+        
+        if (shouldFail) {
+          throw new Error('Không thể kết nối đến máy chủ');
         }
         
+        // Hiện tại để trống danh sách sản phẩm
+        setProducts([]);
         setLoading(false);
       } catch (err: any) {
         console.error('Lỗi khi tải sản phẩm:', err);

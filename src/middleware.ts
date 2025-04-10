@@ -66,13 +66,6 @@ const publicRoutes = [
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Kiểm tra token đặc biệt trước tiên, trước khi kiểm tra các quy tắc khác
-  const urlToken = request.nextUrl.searchParams.get('token');
-  if (urlToken === 'xlab-admin-secret' && (pathname === '/admin/create-product' || pathname.startsWith('/admin/'))) {
-    // Cho phép truy cập nếu có token đặc biệt cho đường dẫn admin
-    return NextResponse.next();
-  }
-
   // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
   if (
     pathname.startsWith('/_next') || 
