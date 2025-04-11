@@ -218,10 +218,3 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.pem
-
-# XLab specific files
-# LocalStorage files in Chrome/Edge/Firefox
-**/*/Local Storage/
-**/*/IndexedDB/
-**/*/Session Storage/
-**/*/Cache Storage/
