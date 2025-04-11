@@ -34,85 +34,22 @@ export default function AdminPage() {
     }
   }, [session, status, router]);
 
-<<<<<<< HEAD
-=======
-  // Tải danh sách sản phẩm khi trang được tải
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const data = await response.json();
-          setProducts(data);
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
->>>>>>> 101bbd58a6ca690050450cd29ff08e1092238add
   // Xử lý khi gửi form
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     setIsLoading(true);
     
     // Tạo form data từ form
     const formData = new FormData(event.target);
     
-<<<<<<< HEAD
     // Tại đây sẽ gửi API request để thêm sản phẩm
     // Mô phỏng thêm sản phẩm thành công
     setTimeout(() => {
-=======
-    // Chuyển FormData thành object
-    const formDataObj = {};
-    formData.forEach((value, key) => {
-      if (key === 'isFeatured' || key === 'isNew') {
-        formDataObj[key] = Boolean(value);
-      } else if (key === 'price' || key === 'salePrice') {
-        formDataObj[key] = value ? Number(value) : 0;
-      } else {
-        formDataObj[key] = value;
-      }
-    });
-    
-    try {
-      // Gửi request đến API endpoint
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formDataObj),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Có lỗi xảy ra khi thêm sản phẩm');
-      }
-      
-      const data = await response.json();
-      
-      // Thêm sản phẩm mới vào danh sách
-      setProducts(prevProducts => [...prevProducts, data.product]);
-      
->>>>>>> 101bbd58a6ca690050450cd29ff08e1092238add
       alert('Đã thêm sản phẩm thành công!');
+      setIsLoading(false);
       setShowForm(false);
       event.target.reset();
-<<<<<<< HEAD
     }, 1000);
-=======
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Lỗi: ' + (error.message || 'Không thể thêm sản phẩm'));
-    } finally {
-      setIsLoading(false);
-    }
->>>>>>> 101bbd58a6ca690050450cd29ff08e1092238add
   }
   
   if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
@@ -478,7 +415,6 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-<<<<<<< HEAD
                       <tr>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
@@ -550,65 +486,6 @@ export default function AdminPage() {
                           </div>
                         </td>
                       </tr>
-=======
-                      {products.length === 0 ? (
-                        <tr>
-                          <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                            Không có sản phẩm nào
-                          </td>
-                        </tr>
-                      ) : (
-                        products.map((product) => (
-                          <tr key={product.id}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 relative">
-                                  <Image
-                                    src={product.imageUrl || "/images/placeholder-product.jpg"}
-                                    alt={product.name}
-                                    fill
-                                    className="rounded-md"
-                                    onError={(e) => {
-                                      e.currentTarget.src = "/images/placeholder-product.jpg"
-                                    }}
-                                  />
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                  <div className="text-sm text-gray-500">{product.slug}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">
-                                {product.categoryId === 'cat-1' && 'Phần mềm doanh nghiệp'}
-                                {product.categoryId === 'cat-2' && 'Ứng dụng văn phòng'}
-                                {product.categoryId === 'cat-3' && 'Phần mềm đồ họa'}
-                                {product.categoryId === 'cat-4' && 'Bảo mật & Antivirus'}
-                                {product.categoryId === 'cat-5' && 'Ứng dụng giáo dục'}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
-                              {product.salePrice > 0 && (
-                                <div className="text-sm text-gray-500">{formatCurrency(product.salePrice)} (Sale)</div>
-                              )}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Đang bán
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-2">
-                                <button className="text-primary-600 hover:text-primary-900">Sửa</button>
-                                <button className="text-red-600 hover:text-red-900">Xóa</button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
->>>>>>> 101bbd58a6ca690050450cd29ff08e1092238add
                     </tbody>
                   </table>
                 </div>
