@@ -48,27 +48,25 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     try {
       setLoading(true);
       setError('');
       
-      console.log('Bắt đầu đăng nhập Google với callbackUrl:', callbackUrl);
+      // Hiển thị thông báo cho người dùng
+      const messageElement = document.createElement('div');
+      messageElement.className = 'fixed top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded shadow-lg z-50';
+      messageElement.innerText = 'Đang chuyển hướng đến trang đăng nhập Google...';
+      document.body.appendChild(messageElement);
       
-      const result = await signIn('google', { 
-        callbackUrl, 
-        redirect: true
-      });
+      // Chuyển hướng trực tiếp thay vì sử dụng API
+      const googleAuthUrl = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+      console.log('Đang chuyển hướng đến:', googleAuthUrl);
       
-      // Note: Đoạn code bên dưới sẽ không chạy nếu redirect: true
-      // vì trình duyệt sẽ được chuyển hướng bởi NextAuth
-      console.log('Kết quả đăng nhập Google:', result);
+      // Chuyển hướng trực tiếp
+      window.location.href = googleAuthUrl;
       
-      if (result?.error) {
-        console.error('Lỗi đăng nhập Google:', result.error);
-        setError(`Lỗi đăng nhập: ${result.error}`);
-        setLoading(false);
-      }
+      // Note: Đoạn code bên dưới sẽ không chạy vì đã chuyển hướng
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập Google. Vui lòng thử lại.');
