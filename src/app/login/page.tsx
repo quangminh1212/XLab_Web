@@ -168,13 +168,11 @@ export default function LoginPage() {
                 method="GET"
                 className="mt-4 w-full"
               >
-                {/* Tham số OAuth cần thiết */}
+                {/* Tham số OAuth cần thiết - đảm bảo dùng URL chính xác trong Google Console */}
                 <input type="hidden" name="client_id" value="909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" />
                 <input type="hidden" name="redirect_uri" value="https://xlab-web.vercel.app/api/auth/callback/google" />
                 <input type="hidden" name="response_type" value="code" />
-                <input type="hidden" name="scope" value="https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email" />
-                <input type="hidden" name="access_type" value="offline" />
-                <input type="hidden" name="prompt" value="select_account" />
+                <input type="hidden" name="scope" value="email profile" />
                 <input type="hidden" name="state" value="google-auth" />
                 
                 {/* Nút đăng nhập Google */}
@@ -189,7 +187,7 @@ export default function LoginPage() {
               
               {/* Link trực tiếp với cùng tham số chính xác */}
               <a
-                href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email&access_type=offline&prompt=select_account&state=direct-link"
+                href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=email+profile&state=direct-link"
                 className="mt-2 text-center block text-teal-600 text-sm underline"
               >
                 Nhấn vào đây nếu nút trên không hoạt động
