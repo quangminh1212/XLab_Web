@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,6 +15,35 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [oauthStatus, setOauthStatus] = useState<any>(null);
+
+  // Kiểm tra trạng thái OAuth khi trang tải
+  useEffect(() => {
+    const checkOauthStatus = async () => {
+      try {
+        const response = await fetch('/api/auth/test');
+        if (response.ok) {
+          const data = await response.json();
+          setOauthStatus(data);
+          
+          // Kiểm tra nếu không có cấu hình Google OAuth
+          if (!data.env.GOOGLE_CLIENT_ID || !data.env.GOOGLE_CLIENT_SECRET) {
+            console.warn('Cấu hình Google OAuth không đầy đủ:', data.env);
+          }
+        }
+      } catch (err) {
+        console.error('Không thể kiểm tra trạng thái OAuth:', err);
+      }
+    };
+    
+    checkOauthStatus();
+    
+    // Kiểm tra nếu có lỗi từ URL (nextauth error)
+    const errorParam = searchParams?.get('error');
+    if (errorParam) {
+      setError(`Lỗi xác thực: ${errorParam}`);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,13 +88,32 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      // Khi đăng nhập với Google, chỉ cần gọi signIn không cần chỉ định callback
-      console.log('Bắt đầu đăng nhập Google...');
+      // Kiểm tra cấu hình OAuth trước
+      if (oauthStatus && (!oauthStatus.env.GOOGLE_CLIENT_ID || !oauthStatus.env.GOOGLE_CLIENT_SECRET)) {
+        setError('Cấu hình Google OAuth chưa đầy đủ. Vui lòng kiểm tra file .env.local');
+        setLoading(false);
+        return;
+      }
       
-      await signIn('google', { redirect: true });
-    } catch (err) {
-      console.error('Lỗi đăng nhập Google:', err);
-      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
+      console.log('Bắt đầu đăng nhập Google...', { callbackUrl });
+      
+      // Thêm thời gian timeout dài hơn và debug log
+      await signIn('google', { 
+        callbackUrl,
+        redirect: true
+      }).catch((err: any) => {
+        console.error('Lỗi đăng nhập Google (signIn catch):', err);
+        setError('Lỗi kết nối Google OAuth: ' + (err.message || 'Không rõ lỗi'));
+        setLoading(false);
+      });
+
+      // Code sau signIn sẽ không chạy nếu redirect: true
+      // Chỉ chạy nếu có lỗi hoặc redirect: false
+      console.log('SignIn không redirect hoặc có lỗi');
+      setLoading(false);
+    } catch (err: any) {
+      console.error('Lỗi đăng nhập Google (try/catch):', err);
+      setError('Có lỗi xảy ra khi đăng nhập với Google: ' + (err.message || 'Không rõ lỗi'));
       setLoading(false);
     }
   };
@@ -96,6 +144,27 @@ export default function LoginPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <span>{error}</span>
+            </div>
+          )}
+
+          {error && oauthStatus && (
+            <div className="mb-4 p-3 bg-amber-50 text-amber-700 text-xs rounded-md border border-amber-200">
+              <details>
+                <summary className="cursor-pointer font-medium">Thông tin debug OAuth</summary>
+                <div className="mt-2 overflow-x-auto">
+                  <p className="mb-1 font-semibold">Trạng thái cấu hình:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Google Client ID: {oauthStatus.env.GOOGLE_CLIENT_ID ? 'Đã cấu hình' : 'Thiếu'}</li>
+                    <li>Google Client Secret: {oauthStatus.env.GOOGLE_CLIENT_SECRET ? 'Đã cấu hình' : 'Thiếu'}</li>
+                    <li>NextAuth URL: {oauthStatus.env.NEXTAUTH_URL || 'Thiếu'}</li>
+                  </ul>
+                  <p className="mt-2 mb-1 font-semibold">URL callback:</p>
+                  <code className="block bg-gray-100 p-1 rounded text-xs font-mono overflow-auto">
+                    {oauthStatus.callback_urls?.configured_callback || 'N/A'}
+                  </code>
+                  <p className="mt-2 text-xs">Đảm bảo URL trên được thêm vào Authorized redirect URIs trong Google Cloud Console</p>
+                </div>
+              </details>
             </div>
           )}
 

@@ -11,9 +11,11 @@ const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key-xlab-web
 
 // Hiển thị thông tin debug khi khởi động
 console.log("NextAuth đang khởi tạo...");
-console.log("GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID);
-console.log("GOOGLE_CLIENT_SECRET có giá trị:", !!GOOGLE_CLIENT_SECRET);
+console.log("GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID.substring(0, 10) + "..." : "KHÔNG CÓ");
+console.log("GOOGLE_CLIENT_SECRET:", GOOGLE_CLIENT_SECRET ? "CÓ GIÁ TRỊ" : "KHÔNG CÓ");
 console.log("NEXTAUTH_URL:", NEXTAUTH_URL);
+console.log("NEXTAUTH_SECRET có giá trị:", !!NEXTAUTH_SECRET);
+console.log("Callback URL Google:", `${NEXTAUTH_URL}/api/auth/callback/google`);
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -30,6 +32,7 @@ declare module "next-auth" {
 
 if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
   console.error("THIẾU THÔNG TIN GOOGLE OAUTH! Vui lòng kiểm tra file .env");
+  console.error("Đảm bảo hai biến GOOGLE_CLIENT_ID và GOOGLE_CLIENT_SECRET được cấu hình trong .env.local");
 }
 
 const handler = NextAuth({
@@ -45,6 +48,7 @@ const handler = NextAuth({
         }
       },
       profile(profile) {
+        console.log("Google profile:", JSON.stringify(profile, null, 2));
         return {
           id: profile.sub,
           name: profile.name,
@@ -120,11 +124,13 @@ const handler = NextAuth({
         
         // Cho phép đăng nhập bằng Google
         if (account?.provider === "google" && profile?.email) {
+          console.log("Đăng nhập Google thành công, email:", profile.email);
           return true;
         }
         
         // Cho phép đăng nhập bằng credentials
         if (account?.provider === "credentials" && credentials?.email) {
+          console.log("Đăng nhập Credentials thành công, email:", credentials.email);
           return true;
         }
         
@@ -150,7 +156,7 @@ const handler = NextAuth({
       }
     }
   },
-  debug: false, // Tắt debug để dễ theo dõi
+  debug: true, // Bật debug để xem chi tiết lỗi
   secret: NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
