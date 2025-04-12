@@ -19,9 +19,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [origin, setOrigin] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
 
   // Thêm Google Client ID vào môi trường client
   const GOOGLE_CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
@@ -75,35 +77,28 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = () => {
+    setIsLoading(true);
+    setError('');
+    
     try {
-      setLoading(true);
-      setError('');
+      console.log("Bắt đầu đăng nhập với Google...");
       
-      // Sử dụng cách tiếp cận trực tiếp với Google OAuth
-      const clientId = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-      // Sử dụng callback URL đã đăng ký trong Google Console
-      const redirectUri = "https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google";
+      // Lấy domain động từ window location cho môi trường hiện tại
+      const currentDomain = typeof window !== 'undefined' ? window.location.origin : '';
+      const REDIRECT_URI = `${currentDomain}/api/auth/callback/google`;
+      const CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
       
-      // Tạo URL đăng nhập Google với các tham số cần thiết
-      const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth?" +
-        "client_id=" + encodeURIComponent(clientId) +
-        "&redirect_uri=" + encodeURIComponent(redirectUri) +
-        "&response_type=code" +
-        "&scope=email+profile+openid" +
-        "&access_type=offline" +
-        "&prompt=consent";
+      console.log("Sử dụng redirect URI:", REDIRECT_URI);
       
-      console.log("Chuyển hướng đến:", googleAuthUrl);
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
       
-      // Chuyển hướng trực tiếp đến Google
-      if (typeof window !== 'undefined') {
-        window.location.href = googleAuthUrl;
-      }
-      
+      // Hiển thị thông báo và chuyển hướng
+      setMessage("Đang chuyển hướng đến trang đăng nhập Google...");
+      window.location.href = googleAuthUrl;
     } catch (error) {
       console.error("Lỗi khi đăng nhập với Google:", error);
-      setError('Không thể kết nối đến dịch vụ đăng nhập Google');
-      setLoading(false);
+      setError("Không thể kết nối với Google. Vui lòng thử lại sau.");
+      setIsLoading(false);
     }
   };
 
