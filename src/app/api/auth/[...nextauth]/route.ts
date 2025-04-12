@@ -31,7 +31,17 @@ const handler = NextAuth({
           access_type: "offline",
           response_type: "code"
         }
-      }
+      },
+      idToken: true,
+      checks: ["pkce", "state"],
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
     }),
   ],
   pages: {
@@ -68,17 +78,23 @@ const handler = NextAuth({
       }
       return token;
     },
-    async signIn({ account, profile, user }) {
+    async signIn({ account, profile, user, credentials }) {
       console.log('NextAuth callback: signIn', {
         provider: account?.provider,
         profileEmail: profile?.email,
         userId: user?.id,
-        userName: user?.name
+        userName: user?.name,
+        hasCredentials: !!credentials
       });
       
-      if (account?.provider === "google" && profile?.email) {
+      if (account?.provider === "google") {
         return true;
       }
+      
+      if (credentials) {
+        return true;
+      }
+      
       return false;
     },
     async redirect({ url, baseUrl }) {
