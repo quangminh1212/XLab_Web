@@ -16,8 +16,14 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  // URL đăng nhập Google trực tiếp
-  const googleLoginUrl = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+  // Tạo URL đăng nhập Google trực tiếp
+  const directGoogleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth?" +
+    "client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" +
+    "&redirect_uri=http://localhost:3000/api/auth/callback/google" +
+    "&response_type=code" +
+    "&scope=openid email profile" +
+    "&access_type=offline" +
+    "&prompt=consent";
 
   // Kiểm tra lỗi từ URL khi trang được tải
   useEffect(() => {
@@ -79,7 +85,7 @@ export default function LoginPage() {
       console.log('Chuyển hướng đến đăng nhập Google');
       
       // Trực tiếp chuyển hướng đến URL đăng nhập Google thay vì dùng signIn()
-      window.location.href = googleLoginUrl;
+      window.location.href = directGoogleLoginUrl;
     } catch (error) {
       console.error('Lỗi khi đăng nhập Google:', error);
       setError('Không thể kết nối với dịch vụ Google. Vui lòng thử lại sau.');
@@ -116,9 +122,9 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Nút đăng nhập Google */}
+          {/* Nút đăng nhập Google - sử dụng liên kết trực tiếp đến Google */}
           <a
-            href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={directGoogleLoginUrl}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
             onClick={(e) => {
               // Thêm thông báo trực quan khi người dùng nhấn nút
