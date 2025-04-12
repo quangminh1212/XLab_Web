@@ -61,24 +61,25 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    // Không bắt try/catch để có thể thấy lỗi thực tế trong console
-    setLoading(true);
-    setError('');
-    
+  const handleGoogleSignIn = () => {
     // Hiển thị loading message
     const notification = document.createElement('div');
     notification.className = 'fixed top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded shadow-lg z-50';
     notification.textContent = 'Đang chuyển hướng đến trang đăng nhập Google...';
     document.body.appendChild(notification);
     
-    console.log("Bắt đầu đăng nhập Google...");
+    console.log("Chuyển hướng trực tiếp đến Google OAuth...");
     
-    // Sử dụng callbackUrl là "/" và thêm redirect: true để debug
-    await signIn('google', { 
-      callbackUrl: '/',
-      redirect: true
-    });
+    // Link trực tiếp để đăng nhập Google, với redirect_uri chính xác
+    const CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+    const REDIRECT_URI = "https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google";
+    
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
+    
+    console.log("Google Auth URL:", googleAuthUrl);
+    
+    // Chuyển hướng đến URL xác thực Google
+    window.location.href = googleAuthUrl;
   };
 
   return (
