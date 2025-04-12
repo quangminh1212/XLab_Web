@@ -1,11 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
+import { toast, Toaster } from 'react-hot-toast';
+import { addProduct, updateProduct } from "@/utils/api";
+import { HiPlusCircle } from "react-icons/hi";
 
 export const metadata = {
   title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
@@ -21,6 +24,7 @@ export default function AdminPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formError, setFormError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [newImage, setNewImage] = useState<File | null>(null);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -30,12 +34,16 @@ export default function AdminPage() {
   // Kiểm tra quyền admin
   useEffect(() => {
     if (status === 'authenticated') {
-      if (session?.user?.email !== 'xlab.rnd@gmail.com') {
-        router.push('/');
-      } else {
-        // Nếu là admin, tải danh sách sản phẩm
-        fetchProducts();
-      }
+      // Bỏ kiểm tra email cụ thể, cho phép tất cả người dùng đã đăng nhập
+      // if (session?.user?.email !== 'xlab.rnd@gmail.com') {
+      //   router.push('/');
+      // } else {
+      //   // Nếu là admin, tải danh sách sản phẩm
+      //   fetchProducts();
+      // }
+      
+      // Tải danh sách sản phẩm cho tất cả người dùng đã đăng nhập
+      fetchProducts();
     } else if (status === 'unauthenticated') {
       router.push('/login');
     }
@@ -61,14 +69,14 @@ export default function AdminPage() {
   };
 
   // Xử lý khi gửi form
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
     setIsLoading(true);
     setFormError('');
     
     try {
-      // Tạo form data từ form
-      const formData = new FormData(event.target);
       const productData = {
         name: formData.get('name'),
         slug: formData.get('slug'),
@@ -85,51 +93,18 @@ export default function AdminPage() {
         isNew: formData.get('isNew') === 'on',
       };
       
-      // Nếu đang chỉnh sửa sản phẩm
       if (editingProduct) {
-        const response = await fetch(`/api/products/${editingProduct.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(productData),
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          // Cập nhật lại danh sách sản phẩm
-          await fetchProducts();
-          setShowForm(false);
-          setEditingProduct(null);
-          event.target.reset();
-        } else {
-          setFormError(result.message || 'Lỗi khi cập nhật sản phẩm');
-        }
-      } 
-      // Nếu đang tạo sản phẩm mới
-      else {
-        const response = await fetch('/api/products', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(productData),
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          // Cập nhật lại danh sách sản phẩm
-          await fetchProducts();
-          setShowForm(false);
-          event.target.reset();
-        } else {
-          setFormError(result.message || 'Lỗi khi thêm sản phẩm');
-        }
+        await updateProduct(editingProduct.id, productData);
+        toast.success("Sản phẩm đã được cập nhật thành công!");
+      } else {
+        await addProduct(productData);
+        toast.success("Sản phẩm đã được thêm thành công!");
       }
+      form.reset();
+      setNewImage(null);
+      setEditingProduct(null);
     } catch (error) {
-      console.error('Lỗi khi gửi form:', error);
+      console.error("Error submitting form:", error);
       setFormError('Đã xảy ra lỗi khi xử lý yêu cầu');
     } finally {
       setIsLoading(false);
@@ -179,7 +154,7 @@ export default function AdminPage() {
     setFormError('');
   };
   
-  if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
@@ -188,7 +163,9 @@ export default function AdminPage() {
   }
   
   return (
-    <div>
+    <div className="container mx-auto p-4">
+      <Toaster position="top-right" />
+      
       {/* Page Header */}
       <section className="bg-primary-800 text-white py-10">
         <div className="container">
