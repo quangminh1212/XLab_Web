@@ -58,15 +58,18 @@ export default function LoginPage() {
     try {
       setLoading(true);
       setError('');
-      console.log('Bắt đầu đăng nhập với Google, callbackUrl =', callbackUrl);
       
-      // Thay đổi redirect thành true để chuyển hướng trực tiếp
+      // Xác định callbackUrl chính xác
+      const redirectUrl = `${window.location.origin}`;
+      console.log('Đăng nhập Google với callback:', redirectUrl);
+      
+      // Sử dụng redirect: true để để NextAuth xử lý chuyển hướng
       await signIn('google', { 
-        callbackUrl,
+        callbackUrl: redirectUrl,
         redirect: true
       });
       
-      // Code phía dưới sẽ không được thực thi khi redirect: true
+      // Không cần code xử lý sau khi redirect vì NextAuth sẽ tự xử lý
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');

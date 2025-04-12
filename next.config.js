@@ -8,9 +8,6 @@ const nextConfig = {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   },
-  experimental: {
-    serverExternalPackages: ['@prisma/client'],
-  },
   async redirects() {
     return [];
   },
