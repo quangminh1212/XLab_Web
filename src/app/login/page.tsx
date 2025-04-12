@@ -84,12 +84,12 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <Link href="/" className="inline-flex items-center justify-center">
-            <div className="w-16 h-16 rounded-lg overflow-hidden flex items-center justify-center">
+            <div className="w-24 h-24 rounded-lg overflow-hidden flex items-center justify-center">
               <Image
                 src="/images/logo.jpg"
                 alt="XLab Logo"
-                width={70}
-                height={70}
+                width={120}
+                height={120}
                 className="object-contain"
                 priority
               />
