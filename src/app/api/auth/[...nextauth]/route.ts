@@ -19,20 +19,31 @@ declare module "next-auth" {
   }
 }
 
+// Kiểm tra biến môi trường
+const NEXTAUTH_URL = process.env.NEXTAUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
 // In ra đầy đủ thông tin môi trường để debug
 console.log("=== DEBUG: FULL NEXTAUTH ENVIRONMENT INFO ===");
-console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
-console.log("NEXTAUTH_SECRET:", process.env.NEXTAUTH_SECRET ? "Đã cấu hình" : "Chưa cấu hình");
+console.log("NEXTAUTH_URL:", NEXTAUTH_URL);
+console.log("GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID.substring(0, 8) + "..." : "Missing");
+console.log("GOOGLE_CLIENT_SECRET:", GOOGLE_CLIENT_SECRET ? "Configured" : "Missing");
+console.log("NEXTAUTH_SECRET:", process.env.NEXTAUTH_SECRET ? "Configured" : "Missing");
 console.log("VERCEL_URL:", process.env.VERCEL_URL || "Not available");
 console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log("PUBLIC_URL:", process.env.PUBLIC_URL || "Not available");
+console.log("====================================");
+
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  console.error("GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET is missing!");
+}
 
 // Cấu hình NextAuth đơn giản nhất
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId: GOOGLE_CLIENT_ID || '',
+      clientSecret: GOOGLE_CLIENT_SECRET || '',
       authorization: {
         params: {
           prompt: "consent",
@@ -74,8 +85,8 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile }) {
       console.log("=== DEBUG: SIGN IN CALLBACK ===");
       console.log("User:", JSON.stringify(user, null, 2));
-      console.log("Account:", JSON.stringify(account, null, 2));
-      console.log("Profile:", profile ? "Profile exists" : "No profile");
+      console.log("Account provider:", account?.provider);
+      console.log("Profile email:", profile?.email);
       
       // Luôn cho phép đăng nhập
       return true;
@@ -86,24 +97,17 @@ export const authOptions: NextAuthOptions = {
       console.log("URL:", url);
       console.log("BaseURL:", baseUrl);
       
-      // Logic đơn giản: nếu URL bắt đầu với baseUrl, sử dụng URL đó
-      // Nếu không, sử dụng baseUrl
-      if (url.startsWith(baseUrl)) {
-        console.log("Chuyển hướng đến trang trong app:", url);
-        return url;
-      }
-      
-      console.log("Chuyển hướng về trang chủ:", baseUrl);
-      return baseUrl;
+      // Luôn chuyển hướng về trang chủ sau khi đăng nhập thành công
+      return '/';
     },
     
     async jwt({ token, user, account }) {
       console.log("=== DEBUG: JWT CALLBACK ===");
-      console.log("Token:", JSON.stringify(token, null, 2));
+      console.log("TokenSub:", token.sub);
       
       // Nếu đây là lần đầu đăng nhập, thêm thông tin account vào token
       if (account) {
-        console.log("Adding account info to token");
+        console.log("Adding account info to token, provider:", account.provider);
         token.accessToken = account.access_token;
         token.providerId = account.providerAccountId;
       }
@@ -113,7 +117,7 @@ export const authOptions: NextAuthOptions = {
     
     async session({ session, token }) {
       console.log("=== DEBUG: SESSION CALLBACK ===");
-      console.log("Session before:", JSON.stringify(session, null, 2));
+      console.log("Session user email:", session.user?.email);
       
       // Thêm accessToken và ID vào session
       if (token.accessToken) {
@@ -124,7 +128,6 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub;
       }
       
-      console.log("Session after:", JSON.stringify(session, null, 2));
       return session;
     },
   },
