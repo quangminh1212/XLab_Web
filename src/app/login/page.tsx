@@ -19,18 +19,19 @@ export default function LoginPage() {
   const [directLinkUrl, setDirectLinkUrl] = useState('');
 
   useEffect(() => {
-    // Hard-code trực tiếp client ID để đảm bảo không bị lỗi
-    const googleUrl = "https://accounts.google.com/o/oauth2/v2/auth?" +
-      "client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" +
-      "&redirect_uri=" + encodeURIComponent(window.location.origin + "/api/auth/callback/google") +
+    // Sử dụng URL cố định để đảm bảo khớp với cấu hình trong Google Console
+    // QUAN TRỌNG: URL redirect phải CHÍNH XÁC khớp với cấu hình trong Google Console
+    const googleUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
+      "?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" +
+      "&redirect_uri=https%3A%2F%2Fxlab-web.vercel.app%2Fapi%2Fauth%2Fcallback%2Fgoogle" + // URL đã mã hóa
       "&response_type=code" +
-      "&scope=openid email profile" +
+      "&scope=openid%20email%20profile" +
       "&access_type=offline" +
       "&prompt=consent";
     
     setDirectGoogleLoginUrl(googleUrl);
     setDirectLinkUrl(googleUrl);
-    console.log("Google Login URL đã được tạo:", googleUrl.substring(0, 50) + "...");
+    console.log("Google Login URL đã được cố định:", googleUrl);
 
     // Kiểm tra lỗi từ URL khi trang được tải
     const errorFromUrl = searchParams?.get('error');
@@ -87,27 +88,22 @@ export default function LoginPage() {
       notification.textContent = 'Đang chuyển hướng đến trang đăng nhập Google...';
       document.body.appendChild(notification);
       
-      console.log("Đang chuyển hướng đến URL Google...");
+      console.log("Đang chuyển hướng đến URL Google cố định");
       
-      // Tạo URL trực tiếp để đảm bảo không có vấn đề với biến môi trường
-      const directUrl = "https://accounts.google.com/o/oauth2/v2/auth?" +
-        "client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" +
-        "&redirect_uri=" + encodeURIComponent(window.location.origin + "/api/auth/callback/google") +
+      // URL cố định đã được mã hóa sẵn, khớp chính xác với cấu hình Google Console
+      const directUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
+        "?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" +
+        "&redirect_uri=https%3A%2F%2Fxlab-web.vercel.app%2Fapi%2Fauth%2Fcallback%2Fgoogle" +
         "&response_type=code" +
-        "&scope=openid email profile" +
+        "&scope=openid%20email%20profile" +
         "&access_type=offline" +
         "&prompt=consent";
       
-      // Sử dụng window.open thay vì window.location để đảm bảo chuyển trang
-      window.location.replace(directUrl);
-      
-      // Phương án dự phòng nếu location.replace không hoạt động
-      setTimeout(() => {
-        window.open(directUrl, "_self");
-      }, 1000);
+      // Chuyển hướng đến trang đăng nhập Google
+      window.location.href = directUrl;
     } catch (error) {
       console.error('Lỗi khi đăng nhập Google:', error);
-      setError('Không thể kết nối với dịch vụ Google. Vui lòng thử phương án B bên dưới.');
+      setError('Không thể kết nối với dịch vụ Google. Vui lòng thử phương án trực tiếp bên dưới.');
       setLoading(false);
     }
   };
