@@ -1,80 +1,65 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import { NextAuthOptions } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
-import { Session } from 'next-auth';
-import { Account, Profile } from 'next-auth';
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import { JWT } from "next-auth/jwt";
 
-// Mở rộng kiểu dữ liệu cho token JWT
-interface ExtendedJWT extends JWT {
-  accessToken?: string;
-  id?: string;
+// Extend the Session interface
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    }
+  }
 }
 
-// Mở rộng kiểu dữ liệu cho Session
-interface ExtendedSession extends Session {
-  user?: {
-    id?: string;
-    accessToken?: string;
-    name?: string;
-    email?: string;
-    image?: string;
-  };
-}
-
-export const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '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',
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       authorization: {
         params: {
-          prompt: 'consent',
-          access_type: 'offline',
-          response_type: 'code'
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
         }
       }
     }),
   ],
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
   pages: {
-    signIn: '/login',
-    signOut: '/',
-    error: '/login', // Error code passed in query string as ?error=
-    verifyRequest: '/auth/verify-request', 
-    newUser: '/account' // New users will be directed here on first sign in
+    signIn: "/login",
+    error: "/auth/error",
   },
   callbacks: {
-    async jwt({ token, account, profile }) {
-      // Persist the OAuth access_token and or the user id to the token right after signin
-      if (account) {
-        token.accessToken = account.access_token;
-        token.id = profile?.sub;
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
+    async jwt({ token, user, account }) {
+      // Initial sign in
+      if (user && account) {
+        token.id = user.id;
+        token.provider = account.provider;
       }
       return token;
     },
-    async session({ session, token }) {
-      // Send properties to the client, like an access_token and user id from a provider.
-      // @ts-ignore - Thêm các thuộc tính mới vào đối tượng session.user
-      session.user.id = token.id;
-      // @ts-ignore - Thêm các thuộc tính mới vào đối tượng session.user
-      session.user.accessToken = token.accessToken;
-      return session;
+    async signIn({ account, profile }) {
+      if (account?.provider === "google" && profile?.email) {
+        return true;
+      }
+      return false;
     },
-    async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
-    }
   },
-  secret: process.env.NEXTAUTH_SECRET || '121200',
-  debug: process.env.NODE_ENV === 'development',
-};
+  debug: false,
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+});
 
-const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }; 
