@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
@@ -83,8 +84,15 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <Link href="/" className="inline-flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white font-bold text-2xl">
-              X
+            <div className="w-16 h-16 rounded-lg overflow-hidden flex items-center justify-center">
+              <Image
+                src="/images/logo.jpg"
+                alt="XLab Logo"
+                width={70}
+                height={70}
+                className="object-contain"
+                priority
+              />
             </div>
           </Link>
           <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
