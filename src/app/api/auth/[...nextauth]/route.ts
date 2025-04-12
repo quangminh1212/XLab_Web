@@ -1,21 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
-
-// Sử dụng giá trị cứng thay vì đọc từ biến môi trường
-const GOOGLE_CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
-const NEXTAUTH_URL = "http://localhost:3000"; 
-const NEXTAUTH_SECRET = "121200";
-
-// Hiển thị thông tin debug khi khởi động
-console.log("NextAuth đang khởi tạo...");
-console.log("GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID.substring(0, 10) + "..." : "KHÔNG CÓ");
-console.log("GOOGLE_CLIENT_SECRET:", GOOGLE_CLIENT_SECRET ? "CÓ GIÁ TRỊ" : "KHÔNG CÓ");
-console.log("NEXTAUTH_URL:", NEXTAUTH_URL);
-console.log("NEXTAUTH_SECRET có giá trị:", !!NEXTAUTH_SECRET);
-console.log("Callback URL Google:", `${NEXTAUTH_URL}/api/auth/callback/google`);
+import type { NextAuthOptions } from "next-auth";
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -30,149 +16,90 @@ declare module "next-auth" {
   }
 }
 
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-  console.error("THIẾU THÔNG TIN GOOGLE OAUTH! Vui lòng kiểm tra file .env");
-  console.error("Đảm bảo hai biến GOOGLE_CLIENT_ID và GOOGLE_CLIENT_SECRET được cấu hình trong .env.local");
-}
+// Cấu hình GoogleProvider
+const googleClientId = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+const googleClientSecret = "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"; 
 
-const handler = NextAuth({
+console.log("[Route] Khởi tạo NextAuth với Google OAuth");
+console.log("[Route] Client ID:", googleClientId.substring(0, 15) + "...");
+console.log("[Route] Client Secret có giá trị:", !!googleClientSecret);
+
+// Khai báo cấu hình NextAuth
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
       authorization: {
         params: {
-          prompt: "select_account",
+          prompt: "consent",
           access_type: "offline",
           response_type: "code",
-        }
-      },
-      profile(profile) {
-        console.log("Google profile:", JSON.stringify(profile, null, 2));
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture,
+          scope: "openid email profile"
         }
       },
     }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "jsmith@example.com" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials, req) {
-        try {
-          // Trong thực tế, bạn sẽ kiểm tra thông tin đăng nhập với cơ sở dữ liệu
-          if (credentials?.email && credentials?.password === "password") {
-            const username = credentials.email.split('@')[0];
-            return {
-              id: "1",
-              name: username.charAt(0).toUpperCase() + username.slice(1),
-              email: credentials.email,
-              image: "/images/avatar-placeholder.svg"
-            }
+      async authorize(credentials) {
+        if (credentials?.email && credentials?.password === "password") {
+          return {
+            id: "1",
+            name: credentials.email.split('@')[0],
+            email: credentials.email,
+            image: "/images/avatar-placeholder.svg"
           }
-          return null;
-        } catch (error) {
-          console.error("Lỗi xác thực:", error);
-          return null;
         }
+        return null;
       }
     }),
   ],
-  pages: {
-    signIn: "/login",
-    error: "/auth/error",
-  },
   callbacks: {
-    async session({ session, token }) {
-      try {
-        if (token && session.user) {
-          session.user.id = token.id as string;
-          if (token.provider) {
-            session.user.provider = token.provider as string;
-          }
-        }
-        return session;
-      } catch (error) {
-        console.error("Lỗi session callback:", error);
-        return session;
-      }
+    async signIn({ account, profile, credentials }) {
+      console.log("[NextAuth] SignIn callback:", { 
+        provider: account?.provider,
+        email: profile?.email || credentials?.email
+      });
+      return true;
     },
     async jwt({ token, user, account }) {
-      try {
-        // Initial sign in
-        if (user && account) {
-          token.id = user.id;
-          token.provider = account.provider;
-        }
-        return token;
-      } catch (error) {
-        console.error("Lỗi jwt callback:", error);
-        return token;
+      if (user && account) {
+        token.id = user.id as string;
+        token.provider = account.provider;
       }
+      return token;
     },
-    async signIn({ account, profile, credentials, user }) {
-      try {
-        console.log("signIn callback được gọi:", { 
-          provider: account?.provider,
-          email: profile?.email || credentials?.email
-        });
-        
-        // Cho phép đăng nhập bằng Google
-        if (account?.provider === "google" && profile?.email) {
-          console.log("Đăng nhập Google thành công, email:", profile.email);
-          return true;
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        if (token.provider) {
+          session.user.provider = token.provider as string;
         }
-        
-        // Cho phép đăng nhập bằng credentials
-        if (account?.provider === "credentials" && credentials?.email) {
-          console.log("Đăng nhập Credentials thành công, email:", credentials.email);
-          return true;
-        }
-        
-        console.log("Không tìm thấy phương thức đăng nhập hợp lệ");
-        return false;
-      } catch (error) {
-        console.error("Lỗi đăng nhập:", error);
-        return false;
       }
+      return session;
     },
     async redirect({ url, baseUrl }) {
-      try {
-        console.log("redirect callback:", { url, baseUrl });
-        // Nếu URL là tương đối hoặc thuộc cùng origin, sử dụng nó
-        if (url.startsWith(baseUrl) || url.startsWith('/')) {
-          return url;
-        }
-        // Mặc định chuyển hướng về trang chủ
-        return baseUrl;
-      } catch (error) {
-        console.error("Lỗi redirect callback:", error);
-        return baseUrl;
-      }
+      console.log("[NextAuth] Redirect callback:", { url, baseUrl });
+      return url.startsWith(baseUrl) ? url : baseUrl;
     }
   },
-  debug: true, // Bật debug để xem chi tiết lỗi
-  secret: NEXTAUTH_SECRET,
+  debug: true,
+  secret: "121200",
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: false
-      }
-    }
-  }
-});
+  pages: {
+    signIn: "/login",
+    error: "/auth/error",
+  },
+};
+
+// Tạo handler
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
