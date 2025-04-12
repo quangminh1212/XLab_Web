@@ -58,10 +58,29 @@ export default function LoginPage() {
     try {
       setLoading(true);
       setError('');
-      await signIn('google', { 
+      console.log('Bắt đầu đăng nhập với Google, callbackUrl =', callbackUrl);
+      
+      // Thêm timeout để đảm bảo chuyển hướng được thực hiện
+      const result = await signIn('google', { 
         callbackUrl,
-        redirect: true
+        redirect: false
       });
+      
+      console.log('Kết quả đăng nhập Google:', result);
+      
+      if (result?.error) {
+        console.error('Lỗi đăng nhập Google:', result.error);
+        setError(`Lỗi đăng nhập Google: ${result.error}`);
+        setLoading(false);
+        return;
+      }
+      
+      if (result?.url) {
+        console.log('Chuyển hướng đến:', result.url);
+        router.push(result.url);
+      } else {
+        router.push(callbackUrl);
+      }
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
