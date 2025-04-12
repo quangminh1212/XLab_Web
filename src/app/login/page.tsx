@@ -57,10 +57,8 @@ export default function LoginPage() {
     try {
       setLoading(true);
       setError('');
-      signIn('google', { 
-        callbackUrl,
-        redirect: true
-      });
+      const baseUrl = process.env.NEXT_PUBLIC_NEXTAUTH_URL || window.location.origin;
+      window.location.href = `${baseUrl}/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
