@@ -2,32 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 const GOOGLE_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
-const GOOGLE_USERINFO_ENDPOINT = 'https://www.googleapis.com/oauth2/v1/userinfo';
+const GOOGLE_USERINFO_ENDPOINT = 'https://www.googleapis.com/oauth2/v2/userinfo';
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-// Lấy REDIRECT_URI động dựa trên môi trường
-const getRedirectUri = (req: NextRequest) => {
-  // Nếu có biến môi trường, ưu tiên sử dụng
-  if (process.env.NEXTAUTH_URL) {
-    return `${process.env.NEXTAUTH_URL}/api/auth/callback/google`;
-  }
-  
-  // Nếu không, lấy từ request
-  const protocol = req.headers.get('x-forwarded-proto') || 'http';
-  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'localhost:3000';
-  
-  return `${protocol}://${host}/api/auth/callback/google`;
-};
+// Sử dụng redirect URI cố định giống như đã đăng ký trong Google Console
+const REDIRECT_URI = 'https://xlab-web.vercel.app/api/auth/callback/google';
 
-console.log("Google callback handler loaded with REDIRECT_URI:", getRedirectUri);
+console.log('Google callback handler loaded with REDIRECT_URI:', REDIRECT_URI);
 
 export async function GET(req: NextRequest) {
   console.log('Google OAuth callback received');
-  
-  // Lấy REDIRECT_URI động
-  const REDIRECT_URI = getRedirectUri(req);
-  console.log('Sử dụng REDIRECT_URI:', REDIRECT_URI);
   
   // Extract authorization code from the URL parameters
   const searchParams = req.nextUrl.searchParams;
@@ -61,14 +46,25 @@ export async function GET(req: NextRequest) {
       }),
     });
     
+    // Log chi tiết kết quả token để debug
+    const tokenResponseText = await tokenResponse.text();
+    console.log('Token response status:', tokenResponse.status);
+    console.log('Token response text:', tokenResponseText);
+    
     if (!tokenResponse.ok) {
-      const errorData = await tokenResponse.text();
-      console.error('Token exchange failed:', errorData);
+      console.error('Token exchange failed:', tokenResponseText);
       return NextResponse.redirect(new URL('/login?error=token_exchange_failed', req.url));
     }
     
-    const tokenData = await tokenResponse.json();
-    console.log('Tokens received successfully');
+    // Parse token data from response text
+    let tokenData;
+    try {
+      tokenData = JSON.parse(tokenResponseText);
+      console.log('Tokens received successfully');
+    } catch (e) {
+      console.error('Failed to parse token data:', e);
+      return NextResponse.redirect(new URL('/login?error=token_parse_failed', req.url));
+    }
     
     // Get user information using the access token
     const userInfoResponse = await fetch(GOOGLE_USERINFO_ENDPOINT, {
@@ -78,7 +74,9 @@ export async function GET(req: NextRequest) {
     });
     
     if (!userInfoResponse.ok) {
-      console.error('Failed to get user info');
+      console.error('Failed to get user info, status:', userInfoResponse.status);
+      const userInfoError = await userInfoResponse.text();
+      console.error('User info error:', userInfoError);
       return NextResponse.redirect(new URL('/login?error=userinfo_failed', req.url));
     }
     
@@ -97,7 +95,7 @@ export async function GET(req: NextRequest) {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
     };
     
-    console.log('Session cookie set, redirecting to home page');
+    console.log('Session created successfully, redirecting to home page');
     // Create response with redirect
     const response = NextResponse.redirect(new URL('/', req.url));
     
