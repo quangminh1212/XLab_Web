@@ -70,16 +70,19 @@ export default async function middleware(request: NextRequest) {
   if (
     pathname.startsWith('/api/auth') || 
     pathname.includes('/callback') ||
-    pathname.includes('oauth')
+    pathname.includes('oauth') ||
+    pathname.includes('/auth') ||
+    pathname.includes('/signin') ||
+    pathname.includes('/signout')
   ) {
     console.log("Middleware: Bỏ qua đường dẫn OAuth:", pathname);
     return NextResponse.next();
   }
   
-  // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
+  // Bỏ qua tất cả tài nguyên tĩnh
   if (
     pathname.startsWith('/_next') || 
-    pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
+    pathname.startsWith('/api/') ||
     pathname.startsWith('/static') || 
     pathname.includes('.')
   ) {
@@ -89,56 +92,17 @@ export default async function middleware(request: NextRequest) {
   // Lấy token xác thực
   const token = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: "121200", // Hardcoded secret
   });
 
   console.log("Middleware: Kiểm tra đường dẫn:", pathname, "- Token:", !!token);
 
-  // Kiểm tra quyền admin cho các đường dẫn admin
-  if (isAdminPath(pathname)) {
-    if (!token) {
-      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
-      const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', encodeURI(pathname));
-      return NextResponse.redirect(url);
-    } else if (token.email !== 'xlab.rnd@gmail.com') {
-      // Nếu đã đăng nhập nhưng không phải email admin, chuyển đến trang chủ
-      return NextResponse.redirect(new URL('/', request.url));
-    }
+  // Không chuyển hướng các trang đăng nhập (tạm thời)
+  if ((pathname === '/login' || pathname === '/register')) {
+    return NextResponse.next();
   }
 
-  // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
-  if (isProtectedPath(pathname) && !token) {
-    const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', encodeURI(pathname));
-    return NextResponse.redirect(url);
-  }
-
-  // Nếu đường dẫn công khai (login/register) và người dùng đã đăng nhập
-  if ((pathname === '/login' || pathname === '/register') && token) {
-    return NextResponse.redirect(new URL('/account', request.url));
-  }
-
-  // Thêm security headers
+  // Thêm security headers - bỏ qua CSP
   const response = NextResponse.next();
-  
-  // CSP Header - Cho phép các nội dung từ Google OAuth
-  const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com;
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' data: https: blob:;
-    font-src 'self' data:;
-    connect-src 'self' https://www.google-analytics.com https://accounts.google.com;
-    frame-src 'self' https://accounts.google.com;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self' https://accounts.google.com;
-    frame-ancestors 'self';
-    upgrade-insecure-requests;
-  `.replace(/\s{2,}/g, ' ').trim();
-
-  response.headers.set('Content-Security-Policy', cspHeader);
-  
   return response;
 } 
