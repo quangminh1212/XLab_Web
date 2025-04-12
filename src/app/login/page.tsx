@@ -47,24 +47,18 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      console.log('Bắt đầu đăng nhập Google...');
-      setLoading(true);
-      setError('');
-      
-      // Sử dụng cách tiếp cận đơn giản nhất với signIn
-      await signIn('google', { 
-        callbackUrl,
-        redirect: true
-      });
-      
-      console.log('Đã gọi signIn Google');
-    } catch (err) {
-      console.error('Lỗi đăng nhập Google:', err);
-      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
-      setLoading(false);
-    }
+  const handleGoogleSignIn = () => {
+    console.log('Bắt đầu đăng nhập Google...');
+    setLoading(true);
+    
+    // Chuyển hướng trực tiếp đến trang đăng nhập Google
+    window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+    
+    // Bỏ qua đoạn này vì chúng ta đã chuyển hướng
+    // signIn('google', { 
+    //   callbackUrl,
+    //   redirect: true
+    // });
   };
 
   return (
