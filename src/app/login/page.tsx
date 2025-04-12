@@ -54,8 +54,18 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = () => {
-    setLoading(true);
-    signIn('google', { callbackUrl });
+    try {
+      setLoading(true);
+      setError('');
+      signIn('google', { 
+        callbackUrl,
+        redirect: true
+      });
+    } catch (err) {
+      console.error('Lỗi đăng nhập Google:', err);
+      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
+      setLoading(false);
+    }
   };
 
   return (
