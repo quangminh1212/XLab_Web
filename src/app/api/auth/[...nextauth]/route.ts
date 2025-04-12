@@ -14,6 +14,9 @@ declare module "next-auth" {
   }
 }
 
+console.log('NextAuth: Đang khởi tạo với Google Client ID:', process.env.GOOGLE_CLIENT_ID?.substring(0, 10) + '...');
+console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -34,12 +37,14 @@ const handler = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
+      console.log('NextAuth callback: session', { hasToken: !!token, hasUser: !!session.user });
       if (token && session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
     async jwt({ token, user, account }) {
+      console.log('NextAuth callback: jwt', { hasUser: !!user, hasAccount: !!account, provider: account?.provider });
       // Initial sign in
       if (user && account) {
         token.id = user.id;
@@ -48,13 +53,14 @@ const handler = NextAuth({
       return token;
     },
     async signIn({ account, profile }) {
+      console.log('NextAuth callback: signIn', { provider: account?.provider, hasProfile: !!profile, email: profile?.email });
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
       return false;
     },
   },
-  debug: false,
+  debug: true, // Bật chế độ debug để xem các log
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
