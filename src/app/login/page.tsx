@@ -139,7 +139,7 @@ export default function LoginPage() {
 
           {/* Nút đăng nhập Google */}
           <a
-            href={`https://accounts.google.com/o/oauth2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=${encodeURIComponent("https://xlab-web.vercel.app/api/auth/callback/google")}&response_type=code&scope=profile%20email&access_type=offline&prompt=consent`}
+            href="/api/auth/signin/google?callbackUrl=/"
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
