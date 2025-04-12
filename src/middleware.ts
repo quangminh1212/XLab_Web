@@ -1,21 +1,24 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-// Các đường dẫn không cần kiểm tra phiên làm việc
+// Các đường dẫn không yêu cầu xác thực
 const publicPaths = [
+  '/',
   '/login',
   '/register',
+  '/forgot-password',
   '/about',
+  '/contact',
   '/products',
   '/services',
-  '/support',
-  '/contact',
+  '/terms',
+  '/privacy',
+  '/api'
 ];
 
-// Các đường dẫn cần quyền admin
+// Các đường dẫn chỉ dành cho admin
 const adminPaths = [
-  '/admin',
+  '/admin'
 ];
 
 // Cấu hình matcher của middleware
@@ -57,32 +60,48 @@ export async function middleware(request: NextRequest) {
   }
   
   try {
-    // Kiểm tra token xác thực
+    // Kiểm tra token xác thực từ NextAuth
     const token = await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET || '121200',
     });
+
+    // Kiểm tra cookie session tùy chỉnh
+    const sessionCookie = request.cookies.get('xlab_session');
+    let customSession = null;
     
-    // Nếu không có token và đường dẫn không phải công khai
-    if (!token && !isPublicPath) {
-      // Chuyển hướng đến trang đăng nhập
-      const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', encodeURI(pathname));
-      return NextResponse.redirect(url);
-    }
-    
-    // Kiểm tra quyền admin
-    if (adminPaths.some(path => pathname.startsWith(path))) {
-      // Kiểm tra nếu người dùng có quyền admin
-      const isAdmin = token?.email?.endsWith('@xlab.vn') || false;
-      
-      if (!isAdmin) {
-        // Chuyển hướng về trang chủ nếu không có quyền admin
-        return NextResponse.redirect(new URL('/', request.url));
+    if (sessionCookie) {
+      try {
+        const decodedSession = Buffer.from(sessionCookie.value, 'base64').toString('utf-8');
+        customSession = JSON.parse(decodedSession);
+        console.log("Phát hiện session cookie tùy chỉnh:", customSession?.user?.email);
+      } catch (e) {
+        console.error("Lỗi khi parse cookie session:", e);
       }
     }
     
-    return NextResponse.next();
+    // Cho phép truy cập nếu có token từ NextAuth hoặc session cookie hợp lệ
+    if ((token || (customSession && customSession.user)) && !isPublicPath) {
+      // Kiểm tra quyền admin cho các đường dẫn admin
+      if (adminPaths.some(path => pathname.startsWith(path))) {
+        // Kiểm tra quyền admin từ email
+        const email = token?.email || customSession?.user?.email || '';
+        const isAdmin = email.endsWith('@xlab.vn') || email === 'xlab.rnd@gmail.com';
+        
+        if (!isAdmin) {
+          // Chuyển hướng về trang chủ nếu không có quyền admin
+          return NextResponse.redirect(new URL('/', request.url));
+        }
+      }
+      
+      return NextResponse.next();
+    }
+    
+    // Nếu không có token/session và đường dẫn không phải công khai
+    // Chuyển hướng đến trang đăng nhập
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', encodeURI(pathname));
+    return NextResponse.redirect(url);
   } catch (error) {
     console.error('Middleware error:', error);
     // Trong trường hợp lỗi, cho phép tiếp tục
