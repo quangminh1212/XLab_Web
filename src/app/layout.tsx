@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
+import { Suspense } from 'react'
 
 // Load Inter font
 const inter = Inter({
@@ -111,7 +112,9 @@ export default function RootLayout({
           </main>
           <Footer />
         </SessionProvider>
-        <Analytics />
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
       </body>
     </html>
   )
