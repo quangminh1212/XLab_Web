@@ -69,8 +69,20 @@ export default function LoginPage() {
       setError('');
       console.log("Bắt đầu quá trình đăng nhập với Google...");
       
-      // Sử dụng phương thức đăng nhập đơn giản nhất
-      signIn('google');
+      // Chuyển hướng trực tiếp đến trang đăng nhập Google
+      const clientId = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+      const redirectUri = `${window.location.origin}/api/auth/callback/google`;
+      
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${clientId}` +
+        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+        `&response_type=code` +
+        `&scope=${encodeURIComponent('openid email profile')}` +
+        `&prompt=select_account` +
+        `&access_type=offline`;
+      
+      console.log("Chuyển hướng đến:", googleAuthUrl);
+      window.location.href = googleAuthUrl;
       
     } catch (error) {
       console.error("Lỗi khi đăng nhập với Google:", error);
