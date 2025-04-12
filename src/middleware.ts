@@ -66,6 +66,16 @@ const publicRoutes = [
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
+  // Bỏ qua tất cả các đường dẫn auth và callback để đảm bảo OAuth hoạt động
+  if (
+    pathname.startsWith('/api/auth') || 
+    pathname.includes('/callback') ||
+    pathname.includes('oauth')
+  ) {
+    console.log("Middleware: Bỏ qua đường dẫn OAuth:", pathname);
+    return NextResponse.next();
+  }
+  
   // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
   if (
     pathname.startsWith('/_next') || 
@@ -81,6 +91,8 @@ export default async function middleware(request: NextRequest) {
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });
+
+  console.log("Middleware: Kiểm tra đường dẫn:", pathname, "- Token:", !!token);
 
   // Kiểm tra quyền admin cho các đường dẫn admin
   if (isAdminPath(pathname)) {
@@ -110,20 +122,19 @@ export default async function middleware(request: NextRequest) {
   // Thêm security headers
   const response = NextResponse.next();
   
-  // CSP Header
+  // CSP Header - Cho phép các nội dung từ Google OAuth
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' data: https: blob:;
     font-src 'self' data:;
-    connect-src 'self' https://www.google-analytics.com;
-    frame-src 'self';
+    connect-src 'self' https://www.google-analytics.com https://accounts.google.com;
+    frame-src 'self' https://accounts.google.com;
     object-src 'none';
     base-uri 'self';
-    form-action 'self';
+    form-action 'self' https://accounts.google.com;
     frame-ancestors 'self';
-    block-all-mixed-content;
     upgrade-insecure-requests;
   `.replace(/\s{2,}/g, ' ').trim();
 
