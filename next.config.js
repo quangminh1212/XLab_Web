@@ -33,11 +33,15 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self' https:;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https: accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com;"
           },
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
           },
           {
             key: 'X-XSS-Protection',
@@ -71,14 +75,40 @@ const nextConfig = {
       }
     ];
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config) => {
+  webpack: (config, { dev, isServer }) => {
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
+    if (dev) {
+      config.mode = 'none';
+    }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
+    }
+    
     return config;
   },
-  typescript: {
-    ignoreBuildErrors: true,
+  compiler: {
+    styledComponents: true,
   },
 };
 
