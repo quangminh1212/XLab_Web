@@ -47,24 +47,33 @@ const isPublicPath = (path: string) => {
   );
 };
 
-// Define public routes that don't require authentication
-const publicRoutes = [
-  '/',
-  '/login',
-  '/register',
-  '/auth/signin',
-  '/auth/signup',
-  '/auth/reset-password',
-  '/about',
-  '/contact',
-  '/products',
-  '/products/.+',
-  '/services',
-  '/services/.+',
-];
+export const config = {
+  matcher: [
+    /*
+     * Khớp với tất cả các đường dẫn ngoại trừ:
+     * 1. /api (API routes)
+     * 2. /_next (Next.js internals)
+     * 3. /_static (typically static files)
+     * 4. /_vercel (Vercel internals)
+     * 5. /favicon.ico, /sitemap.xml (thường là static files)
+     * 6. Bất kỳ tệp tĩnh nào có phần mở rộng
+     */
+    '/((?!api|_next|_static|_vercel|favicon.ico|sitemap.xml|.*\\..*|auth).*)',
+  ],
+};
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Kiểm tra xem đường dẫn có phải là tệp tĩnh không
+  if (
+    pathname.includes('.') || // Có phần mở rộng tệp
+    pathname.startsWith('/_next') || 
+    pathname.startsWith('/static') ||
+    pathname.includes('favicon')
+  ) {
+    return NextResponse.next();
+  }
   
   // Bỏ qua tất cả các đường dẫn auth và callback để đảm bảo OAuth hoạt động
   if (
@@ -75,17 +84,6 @@ export async function middleware(request: NextRequest) {
     pathname.includes('/signin') ||
     pathname.includes('/signout')
   ) {
-    console.log("Middleware: Bỏ qua đường dẫn OAuth:", pathname);
-    return NextResponse.next();
-  }
-  
-  // Bỏ qua tất cả tài nguyên tĩnh
-  if (
-    pathname.startsWith('/_next') || 
-    pathname.includes('.') ||
-    pathname.startsWith('/static') || 
-    pathname.startsWith('/api/') && !isProtectedPath(pathname)
-  ) {
     return NextResponse.next();
   }
 
@@ -95,8 +93,6 @@ export async function middleware(request: NextRequest) {
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
     });
-
-    console.log("Middleware: Kiểm tra đường dẫn:", pathname, "- Token:", !!token);
 
     // Chuyển hướng trang admin nếu không phải admin
     if (isAdminPath(pathname)) {
