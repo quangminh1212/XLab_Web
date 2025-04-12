@@ -65,17 +65,27 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = () => {
     try {
-      // Hiển thị thông báo đang xử lý
-      toast('Đang chuyển hướng đến trang đăng nhập Google...');
+      setLoading(true);
       
+      // Tạo URL trực tiếp để đăng nhập Google
+      const CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+      const REDIRECT_URI = "https://xlab-web.vercel.app/api/auth/callback/google";
+      
+      // Hiển thị thông báo đang xử lý
+      setError('Đang chuyển hướng đến trang đăng nhập Google...');
       console.log("Bắt đầu quá trình đăng nhập với Google...");
       
-      // Sử dụng hàm signIn của NextAuth thay vì tự tạo URL
-      signIn('google', { callbackUrl: '/' });
+      // Chuyển hướng trực tiếp đến URL đăng nhập Google
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
+      console.log("Google Auth URL:", googleAuthUrl);
+      
+      // Chuyển hướng
+      window.location.href = googleAuthUrl;
       
     } catch (error) {
       console.error("Lỗi khi chuyển hướng đến Google:", error);
       setError('Không thể kết nối đến dịch vụ đăng nhập Google');
+      setLoading(false);
     }
   };
 
