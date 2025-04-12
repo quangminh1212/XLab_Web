@@ -103,44 +103,40 @@ XLab Development Team
 
 Copyright © 2023 XLab. All rights reserved.
 
-## Cài đặt Google OAuth đăng nhập
+## Cấu hình Google OAuth
 
-Để thiết lập đăng nhập bằng Google, bạn cần tạo Google OAuth credentials:
+Để đăng nhập bằng Google hoạt động đúng, bạn cần thực hiện các bước sau:
 
-1. Đi đến [Google Cloud Console](https://console.cloud.google.com/)
-2. Tạo dự án mới hoặc chọn dự án hiện có
-3. Từ menu bên trái, chọn "APIs & Services" > "Credentials"
-4. Click "Create Credentials" và chọn "OAuth client ID"
+1. Truy cập [Google Cloud Console](https://console.cloud.google.com/)
+2. Tạo một dự án mới hoặc chọn dự án hiện có
+3. Đi tới "APIs & Services" > "Credentials" 
+4. Nhấp vào "Create Credentials" và chọn "OAuth client ID"
 5. Chọn "Web application" làm loại ứng dụng
-6. Thêm tên cho ứng dụng của bạn (ví dụ: "XLab Web")
-7. Thêm các URL sau vào phần "Authorized JavaScript origins":
-   - `http://localhost:3000` (cho môi trường phát triển)
-   - `http://58.186.71.93:3000` (cho môi trường hiện tại nếu cần)
-   - `https://your-production-domain.com` (cho môi trường sản xuất)
-8. Thêm các URL sau vào phần "Authorized redirect URIs":
+6. Đặt tên cho OAuth client
+7. Thêm URL chuyển hướng được phép:
    - `http://localhost:3000/api/auth/callback/google` (cho môi trường phát triển)
-   - `http://58.186.71.93:3000/api/auth/callback/google` (cho môi trường hiện tại nếu cần)
-   - `https://your-production-domain.com/api/auth/callback/google` (cho môi trường sản xuất)
-9. Click "Create"
-10. Sao chép Client ID và Client Secret
-11. Thêm chúng vào file `.env.local`:
+   - `https://your-domain.com/api/auth/callback/google` (cho môi trường sản xuất)
+8. Nhấp vào "Create"
+9. Sau khi tạo, sao chép "Client ID" và "Client Secret" vào file `.env.local` của bạn
+
+Đảm bảo các biến môi trường được cài đặt đúng trong file `.env.local`:
 
 ```
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT
-
-# Google OAuth credentials
-GOOGLE_CLIENT_ID=your_client_id_here
-GOOGLE_CLIENT_SECRET=your_client_secret_here
+GOOGLE_CLIENT_ID=your-client-id-here
+GOOGLE_CLIENT_SECRET=your-client-secret-here
+NEXTAUTH_URL=http://localhost:3000 (or your production URL)
+NEXTAUTH_SECRET=your-secret-key
 ```
 
-12. Khởi động lại server để các thay đổi có hiệu lực
+## Xử lý lỗi OAuth thường gặp
 
-## Lưu ý bảo mật
+Nếu bạn gặp lỗi khi đăng nhập bằng Google:
 
-- **KHÔNG** commit file `.env.local` lên git repository
-- **KHÔNG** chia sẻ Google Client Secret với bất kỳ ai
-- Trong môi trường sản xuất, hãy tạo một NEXTAUTH_SECRET mạnh và duy nhất
+1. Kiểm tra console để xem log lỗi chi tiết
+2. Đảm bảo URL callback được cấu hình đúng trong Google Cloud Console
+3. Xác nhận rằng các biến môi trường được thiết lập đúng
+4. Đảm bảo ứng dụng khởi động lại sau khi thay đổi các biến môi trường
+5. Nếu đang phát triển local, đảm bảo bạn đang sử dụng http://localhost:3000
 
 ## Hướng dẫn chạy ứng dụng
 
