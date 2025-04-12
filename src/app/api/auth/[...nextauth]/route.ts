@@ -3,11 +3,17 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 
+// Lấy biến môi trường 
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
+const NEXTAUTH_URL = process.env.NEXTAUTH_URL || "http://localhost:3000";
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key-xlab-web-app";
+
 // Hiển thị thông tin debug khi khởi động
 console.log("NextAuth đang khởi tạo...");
-console.log("GOOGLE_CLIENT_ID có tồn tại:", !!process.env.GOOGLE_CLIENT_ID);
-console.log("GOOGLE_CLIENT_SECRET có tồn tại:", !!process.env.GOOGLE_CLIENT_SECRET);
-console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
+console.log("GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET có giá trị:", !!GOOGLE_CLIENT_SECRET);
+console.log("NEXTAUTH_URL:", NEXTAUTH_URL);
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -22,18 +28,31 @@ declare module "next-auth" {
   }
 }
 
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  console.error("THIẾU THÔNG TIN GOOGLE OAUTH! Vui lòng kiểm tra file .env");
+}
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           prompt: "select_account",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
         }
-      }
+      },
+      allowDangerousEmailAccountLinking: true,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        }
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -102,7 +121,7 @@ const handler = NextAuth({
     },
   },
   debug: true, // Luôn bật debug để dễ phát hiện lỗi
-  secret: process.env.NEXTAUTH_SECRET || "your-secret-key-xlab-web-app",
+  secret: NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
