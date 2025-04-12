@@ -272,3 +272,13 @@ tmp
 .netlify
 .now
 .cache
+
+# Thêm những file khác để đảm bảo
+.vercel
+.env
+.env.*
+!.env.example
+.turbo
+
+# NextAuth
+.next-auth
