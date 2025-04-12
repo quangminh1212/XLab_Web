@@ -88,22 +88,18 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      console.log('Bắt đầu đăng nhập Google...', { callbackUrl });
+      console.log('Bắt đầu đăng nhập Google...');
       
-      // Sử dụng cách trực tiếp để tránh vấn đề với signIn
-      window.location.href = '/api/auth/signin/google';
+      // Sử dụng đường dẫn đầy đủ
+      const fullUrl = window.location.origin + '/api/auth/signin/google';
+      console.log('Chuyển hướng đến:', fullUrl);
       
-      // Code bên dưới sẽ không chạy nếu redirect thành công
-      // Chỉ để xử lý trong trường hợp không redirect được
-      setTimeout(() => {
-        console.log('Không redirect được đến trang đăng nhập Google sau 3 giây');
-        setLoading(false);
-        setError('Không thể chuyển hướng đến trang đăng nhập Google. Vui lòng kiểm tra console để xem chi tiết.');
-      }, 3000);
+      // Chuyển hướng trực tiếp
+      window.location.href = fullUrl;
     } catch (err: any) {
-      console.error('Lỗi đăng nhập Google (try/catch):', err);
-      setError('Có lỗi xảy ra khi đăng nhập với Google: ' + (err.message || 'Không rõ lỗi'));
+      console.error('Lỗi đăng nhập Google:', err);
       setLoading(false);
+      setError('Có lỗi xảy ra: ' + (err.message || 'Không rõ lỗi'));
     }
   };
 
