@@ -1,12 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 export default function AuthErrorPage() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
+  const [errorId, setErrorId] = useState<string>("");
+
+  useEffect(() => {
+    // Tạo ID lỗi ngẫu nhiên để theo dõi
+    const randomId = Math.random().toString(36).substring(2, 10);
+    setErrorId(randomId);
+    
+    // Có thể gửi log lỗi đến hệ thống phân tích
+    console.error(`Auth error [${randomId}]: ${error}`);
+  }, [error]);
 
   // Map error codes to user-friendly messages
   const getErrorMessage = (errorCode: string | null) => {
@@ -60,6 +70,9 @@ export default function AuthErrorPage() {
             <div className="flex">
               <div className="ml-3">
                 <p className="text-sm text-red-700">{getErrorMessage(error)}</p>
+                {errorId && (
+                  <p className="text-xs text-gray-500 mt-1">Mã lỗi: {errorId}</p>
+                )}
               </div>
             </div>
           </div>
@@ -72,13 +85,13 @@ export default function AuthErrorPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/login"
-                className="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
               >
                 Thử lại
               </Link>
               <Link
                 href="/"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
               >
                 Trang chủ
               </Link>
@@ -89,7 +102,7 @@ export default function AuthErrorPage() {
         <div className="text-center text-sm text-gray-500">
           <p>
             Nếu bạn vẫn gặp vấn đề, vui lòng{' '}
-            <Link href="/contact" className="font-medium text-primary-600 hover:text-primary-500">
+            <Link href="/contact" className="font-medium text-teal-600 hover:text-teal-500">
               liên hệ hỗ trợ
             </Link>
             .
