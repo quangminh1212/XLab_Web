@@ -1,118 +1,175 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { NextAuthOptions } from 'next-auth';
+// import { compare } from 'bcrypt';
+// import { PrismaAdapter } from '@next-auth/prisma-adapter';
+// import prisma from '@/lib/prisma';
 
-// Mở rộng type Session để thêm accessToken
+// Mở rộng type Session để thêm accessToken và id
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
+    user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    }
   }
 }
 
-// Định nghĩa các client ID và callback URL
-const GOOGLE_CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
+// Kiểm tra biến môi trường cho Google OAuth
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-// Địa chỉ redirect chuẩn cho môi trường production
-const REDIRECT_URI = "https://xlab-web.vercel.app/api/auth/callback/google";
+// Kiểm tra và ghi log client ID để debug
+console.log("GOOGLE_CLIENT_ID có tồn tại:", !!GOOGLE_CLIENT_ID);
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  console.error("GOOGLE_CLIENT_ID hoặc GOOGLE_CLIENT_SECRET không được cấu hình");
+}
 
-// Log thông số cấu hình để debug
-console.log("=====================================");
-console.log("Khởi tạo NextAuth với Google OAuth");
-console.log("ClientID:", GOOGLE_CLIENT_ID);
-console.log("Sử dụng redirect URI:", REDIRECT_URI);
-console.log("=====================================");
+console.log("Initializing NextAuth...");
 
-// Cấu hình NextAuth với OAuth chính xác
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
+  debug: true,
+  
+  // Tạm thời comment PrismaAdapter nếu chưa cài đặt
+  // adapter: PrismaAdapter(prisma),
+  
   providers: [
     GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       authorization: {
         params: {
-          redirect_uri: REDIRECT_URI,
           prompt: "consent",
           access_type: "offline",
-          response_type: "code",
-          scope: "email profile openid"
+          response_type: "code"
         }
-      }
+      },
     }),
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' }
+      },
+      async authorize(credentials) {
+        console.log("Bắt đầu xác thực với credentials");
+        
+        if (!credentials?.email || !credentials?.password) {
+          console.error("Thiếu email hoặc mật khẩu");
+          throw new Error("Vui lòng nhập đầy đủ thông tin");
+        }
+        
+        // Đơn giản hóa xác thực để tránh lỗi từ Prisma
+        // Trong thực tế, nên sử dụng xác thực database
+        if (credentials.email === "test@example.com" && credentials.password === "password") {
+          console.log("Đăng nhập thành công với tài khoản test");
+          return {
+            id: "1",
+            name: "Test User",
+            email: credentials.email
+          };
+        }
+        
+        console.log("Thông tin đăng nhập không chính xác");
+        return null;
+        
+        // try {
+        //   const user = await prisma.user.findUnique({
+        //     where: { email: credentials.email }
+        //   });
+        //   
+        //   if (!user) {
+        //     console.log("Không tìm thấy người dùng");
+        //     return null;
+        //   }
+        //   
+        //   // Nếu người dùng đăng nhập bằng Google trước đó, không có mật khẩu
+        //   if (!user.password) {
+        //     console.log("Người dùng không có mật khẩu (đăng nhập bằng Google)");
+        //     throw new Error("Tài khoản này đã được đăng ký với Google. Vui lòng sử dụng tính năng đăng nhập bằng Google.");
+        //   }
+        //   
+        //   const passwordValid = await compare(credentials.password, user.password);
+        //   
+        //   if (!passwordValid) {
+        //     console.log("Mật khẩu không chính xác");
+        //     return null;
+        //   }
+        //   
+        //   console.log("Đăng nhập thành công:", user.email);
+        //   return user;
+        // } catch (error) {
+        //   console.error("Lỗi trong quá trình xác thực:", error);
+        //   return null;
+        // }
+      }
+    })
   ],
-  pages: {
-    signIn: "/login",
-    error: "/login",
-    signOut: "/login",
-  },
-  secret: process.env.NEXTAUTH_SECRET || "121200",
-  debug: true, // Bật debug để xem các lỗi chi tiết
-  logger: {
-    error(code, metadata) {
-      console.error("🔴 [ERROR]:", { code, metadata });
-    },
-    warn(code) {
-      console.warn("🟠 [WARNING]:", { code });
-    },
-    debug(code, metadata) {
-      console.log("🔵 [DEBUG]:", { code, metadata });
-    }
-  },
+  
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  
   callbacks: {
-    async signIn({ user, account, profile }) {
-      console.log("=== SIGN IN CALLBACK ===");
-      console.log("User info:", JSON.stringify(user, null, 2));
-      console.log("Account info:", account);
-      
-      // Luôn đăng nhập nếu có thông tin người dùng
-      return !!user;
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log("signIn callback called", { user, account, profile, email, credentials });
+      return true;
     },
+    
     async redirect({ url, baseUrl }) {
-      console.log("=== REDIRECT CALLBACK ===");
-      console.log("URL:", url);
-      console.log("Base URL:", baseUrl);
+      console.log("redirect callback called", { url, baseUrl });
       
-      // Kiểm tra nếu URL bắt đầu với baseUrl hoặc là URL tương đối
-      if (url.startsWith(baseUrl) || url.startsWith('/')) {
-        console.log("Chuyển hướng đến:", url);
-        return url;
+      // Xác định baseUrl dựa trên môi trường
+      const productionUrl = "https://xlab-web.vercel.app";
+      const effectiveBaseUrl = process.env.NODE_ENV === "production" ? productionUrl : baseUrl;
+      
+      console.log("Environment:", process.env.NODE_ENV);
+      console.log("Effective baseUrl:", effectiveBaseUrl);
+      
+      // Ensure we redirect back to the home page after login
+      if (url.startsWith("/api/auth") || url.startsWith(baseUrl) || url.startsWith(productionUrl)) {
+        let targetUrl = "/";
+        try {
+          // Attempt to extract callbackUrl from the URL
+          const urlObj = new URL(url);
+          targetUrl = urlObj.searchParams.get("callbackUrl") || "/";
+        } catch (error) {
+          console.error("Error parsing URL:", error);
+        }
+        
+        console.log("Redirecting to:", targetUrl);
+        return targetUrl;
       }
       
-      // Trường hợp mặc định, quay về trang chủ
-      console.log("Chuyển hướng về trang chủ");
-      return baseUrl;
+      return effectiveBaseUrl;
     },
-    async jwt({ token, account }) {
-      console.log("=== JWT CALLBACK ===");
-      console.log("Token:", token);
-      
-      // Thêm accessToken vào JWT token
+    
+    async jwt({ token, user, account, profile }) {
+      console.log("jwt callback called", { token, user, account, profile });
       if (account) {
-        token.accessToken = account.access_token as string;
-        console.log("Access token added to JWT");
+        token.accessToken = account.access_token;
+        token.id = user?.id;
       }
-      
       return token;
     },
-    async session({ session, token }) {
-      console.log("=== SESSION CALLBACK ===");
-      console.log("Session:", session);
-      
-      // Thêm accessToken vào session để client có thể sử dụng
-      if (token) {
-        session.accessToken = token.accessToken as string;
-        console.log("Access token added to session");
-      }
-      
+    
+    async session({ session, token, user }) {
+      console.log("session callback called", { session, token, user });
       return session;
     },
-  }
+  },
+  
+  pages: {
+    signIn: '/login',
+    error: '/login',
+  },
 };
 
-console.log("NextAuth config loaded and ready");
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }; 
