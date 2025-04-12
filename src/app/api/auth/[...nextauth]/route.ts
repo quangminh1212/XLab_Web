@@ -3,11 +3,11 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 
-// Lấy biến môi trường 
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
+// Lấy biến môi trường hoặc sử dụng giá trị cứng nếu không tìm thấy
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "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";
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || "http://localhost:3000";
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key-xlab-web-app";
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "121200";
 
 // Hiển thị thông tin debug khi khởi động
 console.log("NextAuth đang khởi tạo...");
