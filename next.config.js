@@ -2,6 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  trailingSlash: true,
+  experimental: {
+    externalDir: true,
+  },
+  outputFileTracingRoot: process.cwd(),
   env: {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
@@ -82,28 +87,40 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
-    config.optimization = {
-      ...config.optimization,
-      minimize: false,
-      minimizer: [],
-      splitChunks: false,
-      runtimeChunk: false,
-      flagIncludedChunks: false,
-      concatenateModules: false,
-      usedExports: false,
-      sideEffects: false,
-      providedExports: false,
-      innerGraph: false,
-      mangleExports: false,
-    };
-    
     if (dev) {
-      config.mode = 'none';
-      console.log('Webpack config đang chạy ở dev mode');
+      // Cấu hình cho môi trường phát triển
+      config.mode = 'development';
+      
+      config.optimization = {
+        ...config.optimization,
+        minimize: false,
+        splitChunks: {
+          chunks: 'all',
+        },
+        runtimeChunk: {
+          name: 'runtime',
+        },
+      };
+    } else {
+      // Cấu hình cho môi trường sản xuất
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+        },
+        runtimeChunk: {
+          name: 'runtime',
+        },
+      };
     }
     
+    // Cấu hình middleware
     if (!isServer) {
-      config.output.libraryTarget = 'var';
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        child_process: false,
+      };
     }
     
     // For SVG support
