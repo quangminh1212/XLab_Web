@@ -47,24 +47,25 @@ const isPublicPath = (path: string) => {
   );
 };
 
-// Kiểm tra xem đường dẫn có phải là tài nguyên tĩnh không
-const isStaticResource = (pathname: string) => {
-  return (
-    pathname.startsWith('/_next') || 
-    pathname.startsWith('/static') ||
-    pathname.includes('.') ||
-    pathname.startsWith('/api/auth')
-  );
-};
+// Define public routes that don't require authentication
+const publicRoutes = [
+  '/',
+  '/login',
+  '/register',
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/reset-password',
+  '/about',
+  '/contact',
+  '/products',
+  '/products/.+',
+  '/services',
+  '/services/.+',
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Bỏ qua các tài nguyên tĩnh
-  if (isStaticResource(pathname)) {
-    return NextResponse.next();
-  }
-
   // Bỏ qua tất cả các đường dẫn auth và callback để đảm bảo OAuth hoạt động
   if (
     pathname.startsWith('/api/auth') || 
@@ -75,6 +76,16 @@ export async function middleware(request: NextRequest) {
     pathname.includes('/signout')
   ) {
     console.log("Middleware: Bỏ qua đường dẫn OAuth:", pathname);
+    return NextResponse.next();
+  }
+  
+  // Bỏ qua tất cả tài nguyên tĩnh
+  if (
+    pathname.startsWith('/_next') || 
+    pathname.includes('.') ||
+    pathname.startsWith('/static') || 
+    pathname.startsWith('/api/') && !isProtectedPath(pathname)
+  ) {
     return NextResponse.next();
   }
 
