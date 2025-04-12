@@ -62,21 +62,17 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     try {
       setLoading(true);
       setError('Đang chuyển hướng đến trang đăng nhập Google...');
       console.log("Bắt đầu quá trình đăng nhập với Google...");
       
-      // Sử dụng signIn của NextAuth để xử lý đăng nhập Google
-      const result = await signIn('google', { 
-        callbackUrl: '/',  // Chuyển hướng về trang chủ sau khi đăng nhập
-        redirect: true     // Cho phép NextAuth tự động chuyển hướng
+      // Sử dụng signIn của NextAuth nhưng với các tham số cụ thể hơn
+      signIn('google', { 
+        callbackUrl: window.location.origin,  // Sử dụng origin hiện tại để đảm bảo URL callback chính xác
+        redirect: true
       });
-      
-      // Lưu ý: với redirect: true, code bên dưới sẽ không được thực thi
-      // vì trình duyệt sẽ chuyển hướng đến Google
-      console.log("Kết quả đăng nhập:", result);
       
     } catch (error) {
       console.error("Lỗi khi đăng nhập với Google:", error);
