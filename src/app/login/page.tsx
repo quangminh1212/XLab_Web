@@ -66,11 +66,11 @@ export default function LoginPage() {
   const handleGoogleSignIn = () => {
     try {
       setLoading(true);
-      setError('Đang chuyển hướng đến trang đăng nhập Google...');
+      setError('');
       console.log("Bắt đầu quá trình đăng nhập với Google...");
       
-      // Dùng cách tiếp cận khác - chuyển hướng trực tiếp đến URL đăng nhập
-      window.location.href = "/api/auth/signin/google";
+      // Sử dụng phương thức đăng nhập đơn giản nhất
+      signIn('google');
       
     } catch (error) {
       console.error("Lỗi khi đăng nhập với Google:", error);
