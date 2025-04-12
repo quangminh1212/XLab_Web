@@ -40,13 +40,23 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-      // Đơn giản hóa thông số OAuth để tránh lỗi
+      // Xác định trực tiếp URL callback
       authorization: {
         params: {
-          prompt: "consent", // Luôn hiển thị màn hình consent
+          prompt: "consent",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
         }
+      },
+      // Hạn chế các vấn đề với URL callback bằng cách xử lý token trực tiếp
+      async profile(profile) {
+        console.log("Profile callback của Google:", profile.email);
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture
+        };
       }
     }),
     CredentialsProvider({
