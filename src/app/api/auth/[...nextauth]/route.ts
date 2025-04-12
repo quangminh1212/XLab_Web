@@ -3,6 +3,12 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 
+// Hiển thị thông tin debug khi khởi động
+console.log("NextAuth đang khởi tạo...");
+console.log("GOOGLE_CLIENT_ID có tồn tại:", !!process.env.GOOGLE_CLIENT_ID);
+console.log("GOOGLE_CLIENT_SECRET có tồn tại:", !!process.env.GOOGLE_CLIENT_SECRET);
+console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
+
 // Extend the Session interface
 declare module "next-auth" {
   interface Session {
@@ -77,6 +83,11 @@ const handler = NextAuth({
     },
     async signIn({ account, profile, credentials }) {
       try {
+        console.log("signIn callback được gọi:", { 
+          provider: account?.provider,
+          email: profile?.email || credentials?.email 
+        });
+        
         if (account?.provider === "google" && profile?.email) {
           return true;
         }
@@ -90,7 +101,7 @@ const handler = NextAuth({
       }
     },
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: true, // Luôn bật debug để dễ phát hiện lỗi
   secret: process.env.NEXTAUTH_SECRET || "your-secret-key-xlab-web-app",
   session: {
     strategy: "jwt",
