@@ -2,6 +2,10 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 
+// Hiển thị log đầy đủ để debug
+console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com");
+console.log("Khởi tạo NextAuth...");
+
 // Cấu hình NextAuth với OAuth chính xác
 const authOptions: NextAuthOptions = {
   providers: [
@@ -12,7 +16,8 @@ const authOptions: NextAuthOptions = {
         params: {
           prompt: "consent",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
+          redirect_uri: "https://xlab-web.vercel.app/api/auth/callback/google"
         }
       }
     }),
@@ -21,7 +26,7 @@ const authOptions: NextAuthOptions = {
     signIn: "/login",
     error: "/login",
   },
-  secret: "121200",
+  secret: process.env.NEXTAUTH_SECRET || "121200",
   debug: true,
   logger: {
     error(code, metadata) {
@@ -43,12 +48,19 @@ const authOptions: NextAuthOptions = {
       console.log("[auth] SignIn callback:", { 
         hasUser: !!user, 
         hasAccount: !!account, 
-        hasProfile: !!profile 
+        hasProfile: !!profile,
+        user,
+        account,
+        profile
       });
       return true;
     },
     async redirect({ url, baseUrl }) {
       console.log("[auth] Redirect callback:", { url, baseUrl });
+      // Xử lý redirect đúng cách, đảm bảo trở về trang chủ sau khi đăng nhập thành công
+      if (url.startsWith("/api/auth") || url === "/api/auth/signin/google") {
+        return baseUrl;
+      }
       if (url.startsWith(baseUrl) || url.startsWith("/")) {
         return url;
       }
@@ -57,5 +69,6 @@ const authOptions: NextAuthOptions = {
   }
 };
 
+console.log("NextAuth config loaded");
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }; 
