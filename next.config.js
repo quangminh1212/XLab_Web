@@ -30,7 +30,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https: accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
           },
           {
             key: 'X-DNS-Prefetch-Control',
@@ -54,7 +54,7 @@ const nextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'same-origin'
+            value: 'origin-when-cross-origin'
           }
         ]
       }
