@@ -125,29 +125,25 @@ export const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       console.log("redirect callback called", { url, baseUrl });
       
-      // Xác định baseUrl dựa trên môi trường
-      const productionUrl = "https://xlab-web.vercel.app";
-      const effectiveBaseUrl = process.env.NODE_ENV === "production" ? productionUrl : baseUrl;
+      // Đơn giản hóa logic chuyển hướng
+      if (url.startsWith("/api/auth") || url.includes("/api/auth")) {
+        // Nếu là URL liên quan đến xác thực, chuyển về trang chủ
+        return "/";
+      }
       
-      console.log("Environment:", process.env.NODE_ENV);
-      console.log("Effective baseUrl:", effectiveBaseUrl);
-      
-      // Ensure we redirect back to the home page after login
-      if (url.startsWith("/api/auth") || url.startsWith(baseUrl) || url.startsWith(productionUrl)) {
-        let targetUrl = "/";
+      // Nếu có callbackUrl trong URL, sử dụng nó
+      if (url.includes("callbackUrl")) {
         try {
-          // Attempt to extract callbackUrl from the URL
           const urlObj = new URL(url);
-          targetUrl = urlObj.searchParams.get("callbackUrl") || "/";
+          const callbackUrl = urlObj.searchParams.get("callbackUrl");
+          if (callbackUrl) return callbackUrl;
         } catch (error) {
           console.error("Error parsing URL:", error);
         }
-        
-        console.log("Redirecting to:", targetUrl);
-        return targetUrl;
       }
       
-      return effectiveBaseUrl;
+      // Mặc định là về trang chủ
+      return "/";
     },
     
     async jwt({ token, user, account, profile }) {
