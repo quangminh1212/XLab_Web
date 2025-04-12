@@ -69,8 +69,8 @@ export default function LoginPage() {
       setError('Đang chuyển hướng đến trang đăng nhập Google...');
       console.log("Bắt đầu quá trình đăng nhập với Google...");
       
-      // Sử dụng đường dẫn trực tiếp tới API của NextAuth
-      window.location.href = `${window.location.origin}/api/auth/signin/google?callbackUrl=${encodeURIComponent(window.location.origin)}`;
+      // Sử dụng trực tiếp signIn từ NextAuth
+      signIn('google', { callbackUrl: '/' });
       
     } catch (error) {
       console.error("Lỗi khi đăng nhập với Google:", error);

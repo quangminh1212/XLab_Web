@@ -31,6 +31,7 @@ if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
 
 console.log("Initializing NextAuth...");
 
+// Khởi tạo NextAuth Options
 export const authOptions: NextAuthOptions = {
   debug: true,
   
@@ -41,9 +42,10 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      // Xác định rõ thông số OAuth
       authorization: {
         params: {
-          prompt: "consent",
+          prompt: "select_account",
           access_type: "offline",
           response_type: "code",
           scope: "openid email profile"
@@ -65,7 +67,6 @@ export const authOptions: NextAuthOptions = {
         }
         
         // Đơn giản hóa xác thực để tránh lỗi từ Prisma
-        // Trong thực tế, nên sử dụng xác thực database
         if (credentials.email === "test@example.com" && credentials.password === "password") {
           console.log("Đăng nhập thành công với tài khoản test");
           return {
@@ -113,50 +114,47 @@ export const authOptions: NextAuthOptions = {
   
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60, // 30 ngày
   },
   
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("signIn callback called", { user, account, profile, email, credentials });
+      // Ghi nhật ký thông tin đăng nhập
+      console.log("signIn callback:", { 
+        user: user?.email, 
+        provider: account?.provider,
+        profileEmail: profile?.email
+      });
       return true;
     },
     
     async redirect({ url, baseUrl }) {
-      console.log("redirect callback called", { url, baseUrl });
+      // Ghi nhật ký thông tin chuyển hướng
+      console.log("redirect callback:", { url, baseUrl });
       
-      // Đơn giản hóa logic chuyển hướng
-      if (url.startsWith("/api/auth") || url.includes("/api/auth")) {
-        // Nếu là URL liên quan đến xác thực, chuyển về trang chủ
-        return "/";
-      }
-      
-      // Nếu có callbackUrl trong URL, sử dụng nó
-      if (url.includes("callbackUrl")) {
-        try {
-          const urlObj = new URL(url);
-          const callbackUrl = urlObj.searchParams.get("callbackUrl");
-          if (callbackUrl) return callbackUrl;
-        } catch (error) {
-          console.error("Error parsing URL:", error);
-        }
-      }
-      
-      // Mặc định là về trang chủ
+      // Luôn về trang chủ sau khi đăng nhập
       return "/";
     },
     
-    async jwt({ token, user, account, profile }) {
-      console.log("jwt callback called", { token, user, account, profile });
+    async jwt({ token, user, account }) {
+      // Ghi nhật ký token JWT
+      console.log("jwt callback:", { tokenUserId: token.sub });
+      
+      // Thêm thông tin vào token
       if (account) {
         token.accessToken = account.access_token;
-        token.id = user?.id;
       }
       return token;
     },
     
-    async session({ session, token, user }) {
-      console.log("session callback called", { session, token, user });
+    async session({ session, token }) {
+      // Thêm accessToken vào session để client có thể sử dụng
+      session.accessToken = token.accessToken as string;
+      // Đảm bảo user.id được lưu vào session
+      if (session.user) {
+        session.user.id = token.sub;
+      }
+      
       return session;
     },
   },
