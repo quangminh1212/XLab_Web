@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [directGoogleLoginUrl, setDirectGoogleLoginUrl] = useState('');
+  const [directLinkUrl, setDirectLinkUrl] = useState('');
 
   useEffect(() => {
     // Hard-code trực tiếp client ID để đảm bảo không bị lỗi
@@ -28,6 +29,7 @@ export default function LoginPage() {
       "&prompt=consent";
     
     setDirectGoogleLoginUrl(googleUrl);
+    setDirectLinkUrl(googleUrl);
     console.log("Google Login URL đã được tạo:", googleUrl.substring(0, 50) + "...");
 
     // Kiểm tra lỗi từ URL khi trang được tải
@@ -155,9 +157,7 @@ export default function LoginPage() {
 
           {/* Nút đăng nhập Google phương án B - sử dụng href thay vì JavaScript */}
           <a
-            href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
-              window.location.origin + "/api/auth/callback/google"
-            )}&response_type=code&scope=openid email profile&access_type=offline&prompt=consent`}
+            href={directLinkUrl}
             className="w-full flex justify-center items-center py-2.5 px-4 mt-4 border border-orange-300 rounded-full shadow-sm text-sm font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 relative"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
