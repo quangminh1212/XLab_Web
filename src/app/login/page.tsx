@@ -21,6 +21,14 @@ export default function LoginPage() {
   useEffect(() => {
     const checkOauthStatus = async () => {
       try {
+        // Kiểm tra API debug để lấy trạng thái biến môi trường
+        const debugResponse = await fetch('/api/auth/debug');
+        if (debugResponse.ok) {
+          const debugData = await debugResponse.json();
+          console.log('Debug server env:', debugData);
+        }
+        
+        // Kiểm tra API test để lấy các thông tin khác
         const response = await fetch('/api/auth/test');
         if (response.ok) {
           const data = await response.json();
@@ -90,12 +98,12 @@ export default function LoginPage() {
       
       console.log('Bắt đầu đăng nhập Google...');
       
-      // Sử dụng đường dẫn đầy đủ
-      const fullUrl = window.location.origin + '/api/auth/signin/google';
-      console.log('Chuyển hướng đến:', fullUrl);
+      // Sử dụng endpoint test thay vì endpoint NextAuth
+      const testUrl = window.location.origin + '/api/auth/testsignin';
+      console.log('Chuyển hướng đến:', testUrl);
       
       // Chuyển hướng trực tiếp
-      window.location.href = fullUrl;
+      window.location.href = testUrl;
     } catch (err: any) {
       console.error('Lỗi đăng nhập Google:', err);
       setLoading(false);
