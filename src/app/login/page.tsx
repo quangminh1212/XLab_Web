@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,6 +15,15 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Kiểm tra lỗi từ URL khi trang được tải
+  useEffect(() => {
+    // Lấy thông báo lỗi từ URL nếu có
+    const errorFromUrl = searchParams?.get('error');
+    if (errorFromUrl) {
+      setError(`Lỗi đăng nhập: ${errorFromUrl}`);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,20 +62,9 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      // Hiển thị thông báo cho người dùng
-      const messageElement = document.createElement('div');
-      messageElement.className = 'fixed top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded shadow-lg z-50';
-      messageElement.innerText = 'Đang chuyển hướng đến trang đăng nhập Google...';
-      document.body.appendChild(messageElement);
+      // Gọi signIn một cách đơn giản nhất
+      signIn('google', { callbackUrl });
       
-      // Chuyển hướng trực tiếp thay vì sử dụng API
-      const googleAuthUrl = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-      console.log('Đang chuyển hướng đến:', googleAuthUrl);
-      
-      // Chuyển hướng trực tiếp
-      window.location.href = googleAuthUrl;
-      
-      // Note: Đoạn code bên dưới sẽ không chạy vì đã chuyển hướng
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập Google. Vui lòng thử lại.');
