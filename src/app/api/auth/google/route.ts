@@ -2,17 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   try {
-    // Xác định origin dựa trên host
-    const isLocalhost = request.headers.get('host')?.includes('localhost') || false;
-    const origin = isLocalhost ? 'http://localhost:3000' : `https://${request.headers.get('host')}`;
+    // Sử dụng URL cố định cho production, đảm bảo khớp với cấu hình Google Console
+    const redirectUri = 'https://xlab-web.vercel.app/api/auth/callback/google';
     
-    console.log("Google Auth API - Origin:", origin);
-    console.log("Host header:", request.headers.get('host'));
+    console.log("Google Auth API - Sử dụng redirect URI:", redirectUri);
     
-    // Xây dựng URL đăng nhập Google với origin đã tính toán
-    const redirectUri = `${origin}/api/auth/callback/google`;
-    
-    // Hardcode URL đăng nhập Google
+    // Hardcode URL đăng nhập Google với URL redirect cố định
     const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth" +
       "?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" +
       "&redirect_uri=" + encodeURIComponent(redirectUri) +
@@ -28,9 +23,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(googleAuthUrl, { status: 302 });
   } catch (error) {
     console.error("Lỗi khi tạo URL chuyển hướng Google:", error);
-    // Xác định origin dựa trên host khi có lỗi
-    const isLocalhost = request.headers.get('host')?.includes('localhost') || false;
-    const origin = isLocalhost ? 'http://localhost:3000' : `https://${request.headers.get('host')}`;
-    return NextResponse.redirect(`${origin}/login?error=redirect_failed`, { status: 302 });
+    return NextResponse.redirect(`https://xlab-web.vercel.app/login?error=redirect_failed`, { status: 302 });
   }
 } 
