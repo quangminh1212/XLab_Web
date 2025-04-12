@@ -22,12 +22,13 @@ declare module "next-auth" {
 // Kiểm tra biến môi trường cho Google OAuth
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const NEXTAUTH_URL = process.env.NEXTAUTH_URL;
 
-// Kiểm tra và ghi log client ID để debug
-console.log("GOOGLE_CLIENT_ID có tồn tại:", !!GOOGLE_CLIENT_ID);
-if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
-  console.error("GOOGLE_CLIENT_ID hoặc GOOGLE_CLIENT_SECRET không được cấu hình");
-}
+// Ghi log rõ ràng để debug
+console.log("=== THÔNG TIN CẤU HÌNH NEXTAUTH ===");
+console.log("GOOGLE_CLIENT_ID:", GOOGLE_CLIENT_ID ? "Đã cấu hình" : "Chưa cấu hình");
+console.log("GOOGLE_CLIENT_SECRET:", GOOGLE_CLIENT_SECRET ? "Đã cấu hình" : "Chưa cấu hình");
+console.log("NEXTAUTH_URL:", NEXTAUTH_URL || "Chưa cấu hình");
 
 console.log("Initializing NextAuth...");
 
@@ -35,22 +36,18 @@ console.log("Initializing NextAuth...");
 export const authOptions: NextAuthOptions = {
   debug: true,
   
-  // Tạm thời comment PrismaAdapter nếu chưa cài đặt
-  // adapter: PrismaAdapter(prisma),
-  
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-      // Xác định rõ thông số OAuth
+      // Đơn giản hóa thông số OAuth để tránh lỗi
       authorization: {
         params: {
-          prompt: "select_account",
+          prompt: "consent", // Luôn hiển thị màn hình consent
           access_type: "offline",
-          response_type: "code",
-          scope: "openid email profile"
+          response_type: "code"
         }
-      },
+      }
     }),
     CredentialsProvider({
       name: 'Credentials',
@@ -119,39 +116,56 @@ export const authOptions: NextAuthOptions = {
   
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // Ghi nhật ký thông tin đăng nhập
-      console.log("signIn callback:", { 
-        user: user?.email, 
-        provider: account?.provider,
-        profileEmail: profile?.email
-      });
+      console.log("=== CALLBACK: SIGN IN ===");
+      console.log("User:", JSON.stringify(user, null, 2));
+      console.log("Account:", account ? `Provider: ${account.provider}` : "No account data");
+      console.log("Profile:", profile ? `Email: ${(profile as any).email}` : "No profile data");
+      
+      // Luôn cho phép đăng nhập
       return true;
     },
     
     async redirect({ url, baseUrl }) {
-      // Ghi nhật ký thông tin chuyển hướng
-      console.log("redirect callback:", { url, baseUrl });
+      console.log("=== CALLBACK: REDIRECT ===");
+      console.log("URL gốc:", url);
+      console.log("Base URL:", baseUrl);
       
-      // Luôn về trang chủ sau khi đăng nhập
-      return "/";
+      // Xác định trang chuyển hướng đến sau đăng nhập
+      if (url.startsWith(baseUrl)) {
+        // Nếu URL thuộc cùng domain, chuyển hướng đến URL đó
+        console.log("Chuyển hướng đến:", url);
+        return url;
+      } else {
+        // Nếu không, chuyển hướng về trang chủ
+        console.log("Chuyển hướng về trang chủ");
+        return baseUrl;
+      }
     },
     
     async jwt({ token, user, account }) {
-      // Ghi nhật ký token JWT
-      console.log("jwt callback:", { tokenUserId: token.sub });
+      console.log("=== CALLBACK: JWT ===");
+      console.log("Token user ID:", token.sub);
       
-      // Thêm thông tin vào token
-      if (account) {
+      // Thêm thông tin access token vào JWT token
+      if (account && account.access_token) {
+        console.log("Đã cập nhật access token trong JWT");
         token.accessToken = account.access_token;
       }
+      
       return token;
     },
     
     async session({ session, token }) {
-      // Thêm accessToken vào session để client có thể sử dụng
-      session.accessToken = token.accessToken as string;
+      console.log("=== CALLBACK: SESSION ===");
+      console.log("Session user:", session.user ? session.user.email : "No user");
+      
+      // Cập nhật session với thông tin từ token
+      if (token.accessToken) {
+        session.accessToken = token.accessToken as string;
+      }
+      
       // Đảm bảo user.id được lưu vào session
-      if (session.user) {
+      if (session.user && token.sub) {
         session.user.id = token.sub;
       }
       
