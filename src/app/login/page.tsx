@@ -79,25 +79,9 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      // Đảm bảo origin đã được set ở client side
-      const currentOrigin = origin || '';
-      
-      // Phương pháp sử dụng đường dẫn trực tiếp qua OAuth
-      const redirectUri = `${currentOrigin}/api/auth/callback/google`;
-      
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${GOOGLE_CLIENT_ID}` +
-        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&response_type=code` +
-        `&scope=${encodeURIComponent('openid email profile')}` +
-        `&prompt=select_account` +
-        `&access_type=offline`;
-      
-      console.log("Chuyển hướng đến:", googleAuthUrl);
-      
-      // Đảm bảo chúng ta đang ở client side
+      // Sử dụng API của NextAuth trực tiếp
       if (typeof window !== 'undefined') {
-        window.location.href = googleAuthUrl;
+        window.location.href = '/api/auth/signin/google';
       }
       
     } catch (error) {
