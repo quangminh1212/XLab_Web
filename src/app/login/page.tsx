@@ -55,10 +55,25 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = () => {
     try {
+      console.log('Bắt đầu đăng nhập Google...');
       setLoading(true);
       setError('');
-      const baseUrl = process.env.NEXT_PUBLIC_NEXTAUTH_URL || window.location.origin;
-      window.location.href = `${baseUrl}/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+      
+      // Thiết lập URL trực tiếp đến Google OAuth
+      const redirectUri = encodeURIComponent(`${window.location.origin}/api/auth/callback/google`);
+      const googleClientId = '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com';
+      const scope = encodeURIComponent('https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
+      
+      // Log URL để debug
+      console.log(`Redirect URI: ${redirectUri}`);
+      
+      // Tạo URL đến Google OAuth trực tiếp
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&prompt=consent`;
+      
+      console.log(`Chuyển hướng đến: ${authUrl}`);
+      
+      // Chuyển hướng đến URL xác thực
+      window.location.href = authUrl;
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
