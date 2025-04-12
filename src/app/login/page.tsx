@@ -48,17 +48,26 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = () => {
-    console.log('Bắt đầu đăng nhập Google...');
-    setLoading(true);
-    
-    // Chuyển hướng trực tiếp đến trang đăng nhập Google
-    window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-    
-    // Bỏ qua đoạn này vì chúng ta đã chuyển hướng
-    // signIn('google', { 
-    //   callbackUrl,
-    //   redirect: true
-    // });
+    try {
+      console.log('Bắt đầu đăng nhập Google...');
+      
+      // Lưu trạng thái loading
+      setLoading(true);
+      
+      // Khởi tạo URL Google OAuth
+      const baseUrl = window.location.origin;
+      const callbackPath = encodeURIComponent(callbackUrl);
+      const googleAuthUrl = `${baseUrl}/api/auth/signin/google?callbackUrl=${callbackPath}`;
+      
+      console.log('Chuyển hướng đến:', googleAuthUrl);
+      
+      // Chuyển hướng trực tiếp
+      window.location.href = googleAuthUrl;
+    } catch (error) {
+      console.error('Lỗi khi chuyển hướng đến Google:', error);
+      setError('Có lỗi xảy ra khi cố gắng đăng nhập bằng Google. Vui lòng thử lại sau.');
+      setLoading(false);
+    }
   };
 
   return (
