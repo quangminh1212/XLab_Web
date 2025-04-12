@@ -79,9 +79,25 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      // Sử dụng API của NextAuth trực tiếp
+      // Sử dụng cách tiếp cận trực tiếp với Google OAuth
+      const clientId = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+      // Sử dụng callback URL đã đăng ký trong Google Console
+      const redirectUri = "https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google";
+      
+      // Tạo URL đăng nhập Google với các tham số cần thiết
+      const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth?" +
+        "client_id=" + encodeURIComponent(clientId) +
+        "&redirect_uri=" + encodeURIComponent(redirectUri) +
+        "&response_type=code" +
+        "&scope=email+profile+openid" +
+        "&access_type=offline" +
+        "&prompt=consent";
+      
+      console.log("Chuyển hướng đến:", googleAuthUrl);
+      
+      // Chuyển hướng trực tiếp đến Google
       if (typeof window !== 'undefined') {
-        window.location.href = '/api/auth/signin/google';
+        window.location.href = googleAuthUrl;
       }
       
     } catch (error) {
