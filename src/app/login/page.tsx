@@ -80,19 +80,25 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
       setError('');
-      setMessage("Đang kết nối với Google...");
+      setMessage("Đang chuyển hướng đến Google...");
       
-      console.log("Đang thực hiện đăng nhập với Google thông qua NextAuth.js");
+      console.log("Bắt đầu chuyển hướng đến trang đăng nhập Google");
       
-      // Sử dụng API NextAuth trực tiếp thay vì URL thủ công
-      signIn('google', { 
-        callbackUrl: '/',
-        redirect: true 
-      });
+      // Lấy domain động từ window location
+      const currentDomain = typeof window !== 'undefined' ? window.location.origin : '';
       
-      // Lưu ý: Không cần set window.location vì signIn đã xử lý
+      // Tạo URL chuyển hướng động dựa trên môi trường hiện tại
+      const redirectUri = `${currentDomain}/api/auth/callback/google`;
+      
+      // Tạo URL OAuth thủ công với tham số đầy đủ
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
+      
+      console.log("Đang chuyển hướng đến:", googleAuthUrl);
+      
+      // Chuyển hướng trực tiếp đến trang đăng nhập Google
+      window.location.href = googleAuthUrl;
     } catch (error) {
-      console.error("Lỗi khi đăng nhập với Google:", error);
+      console.error("Lỗi khi chuyển hướng đến Google:", error);
       setError("Không thể kết nối với Google. Vui lòng thử lại sau.");
       setIsLoading(false);
     }
