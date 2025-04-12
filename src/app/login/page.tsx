@@ -15,8 +15,11 @@ const LoginPage = () => {
 
   // Lấy domain hiện tại khi component được mount
   useEffect(() => {
+    // Get the current domain for dynamic redirect URI construction
     if (typeof window !== 'undefined') {
-      setCurrentDomain(window.location.origin);
+      const host = window.location.host;
+      const protocol = window.location.protocol;
+      setCurrentDomain(`${protocol}//${host}`);
     }
   }, []);
 
@@ -26,17 +29,14 @@ const LoginPage = () => {
     console.log('Bắt đầu đăng nhập với Google...');
     console.log('Sử dụng domain:', currentDomain);
     
-    // Sử dụng cách tiếp cận trực tiếp thay vì qua NextAuth
     const CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-    
-    // Sử dụng domain hiện tại để tạo redirect URI
+    // Use dynamically constructed redirect URI based on current domain
     const REDIRECT_URI = `${currentDomain}/api/auth/callback/google`;
-    console.log('Redirecting to Google with URI:', REDIRECT_URI);
+    console.log("Using redirect URI:", REDIRECT_URI);
     
-    // Tạo URL xác thực Google
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
     
-    // Chuyển hướng người dùng đến URL xác thực Google
+    console.log("Redirecting to Google Auth URL:", googleAuthUrl);
     window.location.href = googleAuthUrl;
   };
 
