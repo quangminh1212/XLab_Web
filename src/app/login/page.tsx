@@ -59,16 +59,10 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      // Sử dụng chính xác URL callback mà đã đăng ký trong Google Cloud Console
-      const callbackUrl = "/api/auth/callback/google";
-      console.log('Đăng nhập Google với callback được đăng ký:', callbackUrl);
+      // Khi đăng nhập với Google, chỉ cần gọi signIn không cần chỉ định callback
+      console.log('Bắt đầu đăng nhập Google...');
       
-      // Không chỉ định callbackUrl để để NextAuth tự xử lý theo cấu hình
-      await signIn('google', { 
-        redirect: true
-      });
-      
-      // Không cần code xử lý sau khi redirect vì NextAuth sẽ tự xử lý
+      await signIn('google', { redirect: true });
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
