@@ -172,9 +172,9 @@ export default function LoginPage() {
                 <input type="hidden" name="client_id" value="909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" />
                 <input type="hidden" name="redirect_uri" value={`${origin}/api/auth/callback/google`} />
                 <input type="hidden" name="response_type" value="code" />
-                <input type="hidden" name="scope" value="openid email profile" />
-                <input type="hidden" name="access_type" value="offline" />
-                <input type="hidden" name="prompt" value="consent" />
+                <input type="hidden" name="scope" value="profile email" />
+                <input type="hidden" name="include_granted_scopes" value="true" />
+                <input type="hidden" name="state" value={Math.random().toString(36).substring(7)} />
                 
                 {/* Nút đăng nhập Google */}
                 <button
@@ -186,11 +186,10 @@ export default function LoginPage() {
                 </button>
               </form>
               
-              {/* Link trực tiếp đến Google đăng nhập (dự phòng) */}
+              {/* Link trực tiếp với URL đơn giản hóa */}
               <a
-                href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`}
+                href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=profile email&state=auth&include_granted_scopes=true`}
                 className="mt-2 text-center block text-teal-600 text-sm underline"
-                target="_blank"
                 rel="noopener noreferrer"
               >
                 Nhấn vào đây nếu nút trên không hoạt động
