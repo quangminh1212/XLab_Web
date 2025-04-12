@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     console.log("Đã nhận code callback từ Google:", code.substring(0, 10) + "...");
 
     // Bước 1: Trao đổi code lấy token
-    const response = await fetch('https://oauth2.googleapis.com/token', {
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -27,9 +27,9 @@ export async function GET(request: NextRequest) {
       }).toString(),
     });
 
-    const tokenResult = await response.json();
+    const tokenResult = await tokenResponse.json();
     
-    if (!response.ok) {
+    if (!tokenResponse.ok) {
       console.error("Lỗi khi trao đổi code:", tokenResult);
       return NextResponse.redirect(`${request.nextUrl.origin}/login?error=token_exchange_failed`);
     }
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     // Bước 3: Tạo session cookie cho người dùng
     // Trong môi trường thực tế, bạn sẽ cần một giải pháp lưu trữ phiên làm việc
     // Ở đây, chúng ta tạo một cookie đơn giản
-    const response = NextResponse.redirect(`${request.nextUrl.origin}/`);
+    const redirectResponse = NextResponse.redirect(`${request.nextUrl.origin}/`);
     
     // Tạo cookie với thông tin cơ bản của người dùng
     const sessionData = {
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
     const encodedSession = Buffer.from(JSON.stringify(sessionData)).toString('base64');
     
     // Đặt cookie
-    response.cookies.set('user-session', encodedSession, {
+    redirectResponse.cookies.set('user-session', encodedSession, {
       path: '/',
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60, // 30 ngày
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production'
     });
     
-    return response;
+    return redirectResponse;
   } catch (error) {
     console.error("Lỗi trong quá trình xử lý callback:", error);
     return NextResponse.redirect(`${request.nextUrl.origin}/login?error=callback_failed`);
