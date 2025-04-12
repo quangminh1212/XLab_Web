@@ -62,8 +62,23 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      // Gọi signIn một cách đơn giản nhất
-      signIn('google', { callbackUrl });
+      // Tạo một thông báo hiển thị cho người dùng
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded shadow-lg z-50 animate-pulse';
+      notification.textContent = 'Đang chuyển hướng đến Google...';
+      document.body.appendChild(notification);
+      
+      // Log để debug
+      console.log('Bắt đầu quá trình đăng nhập Google');
+      
+      // Chuyển hướng trực tiếp đến URL đăng nhập Google thay vì sử dụng API
+      const googleLoginUrl = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+      console.log('Đang chuyển hướng đến:', googleLoginUrl);
+      
+      // Chuyển hướng sau một khoảng thời gian ngắn để người dùng thấy thông báo
+      setTimeout(() => {
+        window.location.href = googleLoginUrl;
+      }, 500);
       
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
