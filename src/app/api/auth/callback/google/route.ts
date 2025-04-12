@@ -5,14 +5,29 @@ const GOOGLE_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token';
 const GOOGLE_USERINFO_ENDPOINT = 'https://www.googleapis.com/oauth2/v2/userinfo';
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const REDIRECT_URI = process.env.NEXTAUTH_URL 
-  ? `${process.env.NEXTAUTH_URL}/api/auth/callback/google` 
-  : 'https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google';
 
-console.log("Google callback handler loaded with REDIRECT_URI:", REDIRECT_URI);
+// Lấy REDIRECT_URI động dựa trên môi trường
+const getRedirectUri = (req: NextRequest) => {
+  // Nếu có biến môi trường, ưu tiên sử dụng
+  if (process.env.NEXTAUTH_URL) {
+    return `${process.env.NEXTAUTH_URL}/api/auth/callback/google`;
+  }
+  
+  // Nếu không, lấy từ request
+  const protocol = req.headers.get('x-forwarded-proto') || 'http';
+  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'localhost:3000';
+  
+  return `${protocol}://${host}/api/auth/callback/google`;
+};
+
+console.log("Google callback handler loaded with REDIRECT_URI:", getRedirectUri);
 
 export async function GET(req: NextRequest) {
   console.log('Google OAuth callback received');
+  
+  // Lấy REDIRECT_URI động
+  const REDIRECT_URI = getRedirectUri(req);
+  console.log('Sử dụng REDIRECT_URI:', REDIRECT_URI);
   
   // Extract authorization code from the URL parameters
   const searchParams = req.nextUrl.searchParams;
