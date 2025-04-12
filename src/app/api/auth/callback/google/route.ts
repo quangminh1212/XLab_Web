@@ -18,10 +18,6 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const code = searchParams.get('code');
   const error = searchParams.get('error');
-  const state = searchParams.get('state'); // Lấy state để xác thực
-  
-  console.log('Code received:', code ? 'yes' : 'no');
-  console.log('State received:', state);
   
   // If there's an error or no code, redirect back to login with error message
   if (error || !code) {
@@ -31,6 +27,7 @@ export async function GET(req: NextRequest) {
   
   try {
     console.log('Exchanging authorization code for tokens');
+    
     // Exchange the authorization code for tokens
     const tokenResponse = await fetch(GOOGLE_TOKEN_ENDPOINT, {
       method: 'POST',
@@ -49,7 +46,6 @@ export async function GET(req: NextRequest) {
     // Log chi tiết kết quả token để debug
     const tokenResponseText = await tokenResponse.text();
     console.log('Token response status:', tokenResponse.status);
-    console.log('Token response text:', tokenResponseText);
     
     if (!tokenResponse.ok) {
       console.error('Token exchange failed:', tokenResponseText);
@@ -75,8 +71,6 @@ export async function GET(req: NextRequest) {
     
     if (!userInfoResponse.ok) {
       console.error('Failed to get user info, status:', userInfoResponse.status);
-      const userInfoError = await userInfoResponse.text();
-      console.error('User info error:', userInfoError);
       return NextResponse.redirect(new URL('/login?error=userinfo_failed', req.url));
     }
     
