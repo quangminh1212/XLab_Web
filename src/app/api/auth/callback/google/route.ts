@@ -6,10 +6,7 @@ const GOOGLE_USERINFO_ENDPOINT = 'https://www.googleapis.com/oauth2/v2/userinfo'
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-// Sử dụng redirect URI đúng với URL trong Google Cloud Console
-const REDIRECT_URI = 'https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google';
-
-console.log('Google callback handler loaded with REDIRECT_URI:', REDIRECT_URI);
+console.log('Google callback handler loaded');
 
 export async function GET(req: NextRequest) {
   console.log('Google OAuth callback received');
@@ -18,6 +15,13 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const code = searchParams.get('code');
   const error = searchParams.get('error');
+  
+  // Get the host from the request to construct the redirect URI dynamically
+  const host = req.headers.get('host') || '';
+  const protocol = host.includes('localhost') ? 'http' : 'https';
+  const REDIRECT_URI = `${protocol}://${host}/api/auth/callback/google`;
+  
+  console.log('Using dynamically constructed REDIRECT_URI:', REDIRECT_URI);
   
   // If there's an error or no code, redirect back to login with error message
   if (error || !code) {
@@ -43,7 +47,7 @@ export async function GET(req: NextRequest) {
       }),
     });
     
-    // Lưu cả nội dung response để debug
+    // Log response for debugging
     const tokenResponseText = await tokenResponse.text();
     console.log('Token response status:', tokenResponse.status);
     console.log('Token response:', tokenResponseText);
@@ -71,7 +75,7 @@ export async function GET(req: NextRequest) {
     });
     
     if (!userInfoResponse.ok) {
-      // Log cả response text để debug
+      // Log response text for debugging
       const userInfoErrorText = await userInfoResponse.text();
       console.error('Failed to get user info, status:', userInfoResponse.status);
       console.error('User info error:', userInfoErrorText);
