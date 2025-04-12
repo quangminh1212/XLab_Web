@@ -60,51 +60,62 @@ export async function middleware(request: NextRequest) {
   }
   
   try {
-    // Kiểm tra token xác thực từ NextAuth
+    // 1. Kiểm tra token xác thực từ NextAuth
     const token = await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET || '121200',
     });
 
-    // Kiểm tra cookie session tùy chỉnh
-    const sessionCookie = request.cookies.get('xlab_session');
+    // 2. Kiểm tra cookie session tùy chỉnh
     let customSession = null;
     
-    if (sessionCookie) {
-      try {
-        const decodedSession = Buffer.from(sessionCookie.value, 'base64').toString('utf-8');
-        customSession = JSON.parse(decodedSession);
-        console.log("Phát hiện session cookie tùy chỉnh:", customSession?.user?.email);
-      } catch (e) {
-        console.error("Lỗi khi parse cookie session:", e);
+    // Kiểm tra cả hai cookie có thể được sử dụng
+    const sessionCookies = ['session', 'xlab_session'];
+    
+    for (const cookieName of sessionCookies) {
+      const cookieValue = request.cookies.get(cookieName)?.value;
+      if (cookieValue) {
+        try {
+          const decodedCookie = Buffer.from(cookieValue, 'base64').toString('utf-8');
+          const parsedSession = JSON.parse(decodedCookie);
+          if (parsedSession?.user?.email) {
+            customSession = parsedSession;
+            console.log("Đã tìm thấy session:", cookieName, parsedSession.user.email);
+            break;
+          }
+        } catch (e) {
+          console.error("Lỗi khi parse cookie:", cookieName, e);
+        }
       }
     }
     
     // Cho phép truy cập nếu có token từ NextAuth hoặc session cookie hợp lệ
-    if ((token || (customSession && customSession.user)) && !isPublicPath) {
-      // Kiểm tra quyền admin cho các đường dẫn admin
-      if (adminPaths.some(path => pathname.startsWith(path))) {
-        // Kiểm tra quyền admin từ email
-        const email = token?.email || customSession?.user?.email || '';
-        const isAdmin = email.endsWith('@xlab.vn') || email === 'xlab.rnd@gmail.com';
-        
-        if (!isAdmin) {
-          // Chuyển hướng về trang chủ nếu không có quyền admin
-          return NextResponse.redirect(new URL('/', request.url));
-        }
-      }
-      
-      return NextResponse.next();
+    const hasValidAuth = token || (customSession && customSession.user);
+    
+    if (!hasValidAuth) {
+      // Nếu không có xác thực hợp lệ, chuyển hướng đến trang đăng nhập
+      const url = new URL('/login', request.url);
+      url.searchParams.set('callbackUrl', encodeURI(pathname));
+      return NextResponse.redirect(url);
     }
     
-    // Nếu không có token/session và đường dẫn không phải công khai
-    // Chuyển hướng đến trang đăng nhập
-    const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', encodeURI(pathname));
-    return NextResponse.redirect(url);
+    // Kiểm tra quyền admin cho các đường dẫn admin
+    if (adminPaths.some(path => pathname.startsWith(path))) {
+      // Lấy email từ nguồn xác thực
+      const email = token?.email || customSession?.user?.email || '';
+      const isAdmin = email.endsWith('@xlab.vn') || email === 'xlab.rnd@gmail.com';
+      
+      if (!isAdmin) {
+        // Chuyển hướng về trang chủ nếu không có quyền admin
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+    }
+    
+    // Nếu mọi thứ hợp lệ, cho phép truy cập
+    return NextResponse.next();
   } catch (error) {
     console.error('Middleware error:', error);
-    // Trong trường hợp lỗi, cho phép tiếp tục
+    // Trong trường hợp lỗi, cho phép tiếp tục để tránh chặn người dùng
     return NextResponse.next();
   }
 } 
