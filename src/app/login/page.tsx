@@ -20,7 +20,7 @@ export default function LoginPage() {
   useEffect(() => {
     // Tạo URL đăng nhập Google với origin động
     setDirectGoogleLoginUrl("https://accounts.google.com/o/oauth2/v2/auth?" +
-      "client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" +
+      "client_id=" + process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID +
       "&redirect_uri=" + encodeURIComponent(window.location.origin + "/api/auth/callback/google") +
       "&response_type=code" +
       "&scope=openid email profile" +
@@ -122,17 +122,7 @@ export default function LoginPage() {
 
           {/* Nút đăng nhập Google - sử dụng liên kết trực tiếp đến Google */}
           <button
-            onClick={(e) => {
-              e.preventDefault();
-              // Thêm thông báo trực quan khi người dùng nhấn nút
-              const notification = document.createElement('div');
-              notification.className = 'fixed top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded shadow-lg z-50';
-              notification.textContent = 'Đang chuyển hướng đến trang đăng nhập Google...';
-              document.body.appendChild(notification);
-              
-              // Chuyển hướng đến trang đăng nhập Google
-              window.location.href = directGoogleLoginUrl;
-            }}
+            onClick={handleGoogleSignIn}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
