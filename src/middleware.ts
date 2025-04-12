@@ -1,121 +1,133 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-// Các đường dẫn không yêu cầu xác thực
+// Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
+const protectedPaths = [
+  '/account',
+  '/checkout',
+  '/api/protected',
+];
+
+// Danh sách các đường dẫn chỉ dành cho admin
+const adminPaths = [
+  '/admin',
+];
+
+// Danh sách các đường dẫn công khai (không cần đăng nhập)
 const publicPaths = [
+  '/login',
+  '/register',
+  '/about',
+  '/products',
+  '/services',
+  '/support',
+  '/contact',
+  '/api/auth',
+];
+
+// Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
+const isProtectedPath = (path: string) => {
+  return protectedPaths.some((protectedPath) => 
+    path === protectedPath || path.startsWith(`${protectedPath}/`)
+  );
+};
+
+// Kiểm tra xem đường dẫn có thuộc danh sách admin hay không
+const isAdminPath = (path: string) => {
+  return adminPaths.some((adminPath) => 
+    path === adminPath || path.startsWith(`${adminPath}/`)
+  );
+};
+
+// Kiểm tra xem đường dẫn có thuộc danh sách công khai hay không
+const isPublicPath = (path: string) => {
+  return publicPaths.some((publicPath) => 
+    path === publicPath || path.startsWith(`${publicPath}/`)
+  );
+};
+
+// Define public routes that don't require authentication
+const publicRoutes = [
   '/',
   '/login',
   '/register',
-  '/forgot-password',
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/reset-password',
   '/about',
   '/contact',
   '/products',
+  '/products/.+',
   '/services',
-  '/terms',
-  '/privacy',
-  '/api'
+  '/services/.+',
 ];
 
-// Các đường dẫn chỉ dành cho admin
-const adminPaths = [
-  '/admin'
-];
-
-// Cấu hình matcher của middleware
-export const config = {
-  matcher: [
-    /*
-     * Loại trừ tất cả các đường dẫn sau:
-     * 1. Các api route
-     * 2. Các tệp tĩnh của Next.js /_next
-     * 3. Các tệp tĩnh trong /static
-     * 4. Các tệp có phần mở rộng (ví dụ: favicon.ico)
-     * 5. Các route xác thực của NextAuth
-     */
-    '/((?!api|_next|static|.*\\..*|auth).*)',
-  ],
-};
-
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Bỏ qua các route xác thực
+  // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
   if (
-    pathname.includes('/api/auth') ||
-    pathname.startsWith('/auth') ||
-    pathname.includes('signin') ||
-    pathname.includes('signout') ||
-    pathname.includes('callback')
+    pathname.startsWith('/_next') || 
+    pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
+    pathname.startsWith('/static') || 
+    pathname.includes('.')
   ) {
     return NextResponse.next();
   }
-  
-  // Luôn cho phép truy cập vào các trang công khai
-  const isPublicPath = publicPaths.some(path => 
-    pathname === path || pathname.startsWith(`${path}/`)
-  );
-  
-  if (isPublicPath) {
-    return NextResponse.next();
-  }
-  
-  try {
-    // 1. Kiểm tra token xác thực từ NextAuth
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET || '121200',
-    });
 
-    // 2. Kiểm tra cookie session tùy chỉnh
-    let customSession = null;
-    
-    // Kiểm tra cả hai cookie có thể được sử dụng
-    const sessionCookies = ['session', 'xlab_session'];
-    
-    for (const cookieName of sessionCookies) {
-      const cookieValue = request.cookies.get(cookieName)?.value;
-      if (cookieValue) {
-        try {
-          const decodedCookie = Buffer.from(cookieValue, 'base64').toString('utf-8');
-          const parsedSession = JSON.parse(decodedCookie);
-          if (parsedSession?.user?.email) {
-            customSession = parsedSession;
-            console.log("Đã tìm thấy session:", cookieName, parsedSession.user.email);
-            break;
-          }
-        } catch (e) {
-          console.error("Lỗi khi parse cookie:", cookieName, e);
-        }
-      }
-    }
-    
-    // Cho phép truy cập nếu có token từ NextAuth hoặc session cookie hợp lệ
-    const hasValidAuth = token || (customSession && customSession.user);
-    
-    if (!hasValidAuth) {
-      // Nếu không có xác thực hợp lệ, chuyển hướng đến trang đăng nhập
+  // Lấy token xác thực
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  // Kiểm tra quyền admin cho các đường dẫn admin
+  if (isAdminPath(pathname)) {
+    if (!token) {
+      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
       const url = new URL('/login', request.url);
       url.searchParams.set('callbackUrl', encodeURI(pathname));
       return NextResponse.redirect(url);
+    } else if (token.email !== 'xlab.rnd@gmail.com') {
+      // Nếu đã đăng nhập nhưng không phải email admin, chuyển đến trang chủ
+      return NextResponse.redirect(new URL('/', request.url));
     }
-    
-    // Kiểm tra quyền admin cho các đường dẫn admin
-    if (adminPaths.some(path => pathname.startsWith(path))) {
-      // Lấy email từ nguồn xác thực
-      const email = token?.email || customSession?.user?.email || '';
-      const isAdmin = email.endsWith('@xlab.vn') || email === 'xlab.rnd@gmail.com';
-      
-      if (!isAdmin) {
-        // Chuyển hướng về trang chủ nếu không có quyền admin
-        return NextResponse.redirect(new URL('/', request.url));
-      }
-    }
-    
-    // Nếu mọi thứ hợp lệ, cho phép truy cập
-    return NextResponse.next();
-  } catch (error) {
-    console.error('Middleware error:', error);
-    // Trong trường hợp lỗi, cho phép tiếp tục để tránh chặn người dùng
-    return NextResponse.next();
   }
+
+  // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
+  if (isProtectedPath(pathname) && !token) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', encodeURI(pathname));
+    return NextResponse.redirect(url);
+  }
+
+  // Nếu đường dẫn công khai (login/register) và người dùng đã đăng nhập
+  if ((pathname === '/login' || pathname === '/register') && token) {
+    return NextResponse.redirect(new URL('/account', request.url));
+  }
+
+  // Thêm security headers
+  const response = NextResponse.next();
+  
+  // CSP Header
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https: blob:;
+    font-src 'self' data:;
+    connect-src 'self' https://www.google-analytics.com;
+    frame-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim();
+
+  response.headers.set('Content-Security-Policy', cspHeader);
+  
+  return response;
 } 
