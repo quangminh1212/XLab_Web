@@ -1,22 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
-    // Lấy code xác thực từ URL
+    console.log("Google OAuth Callback đã được gọi");
     const searchParams = request.nextUrl.searchParams;
-    const code = searchParams.get('code');
+    console.log("Params nhận được:", Object.fromEntries(searchParams.entries()));
     
-    console.log("Google OAuth Callback được gọi");
-    console.log("Code exists:", !!code);
-    
-    if (!code) {
-      console.error("Không nhận được code từ Google OAuth");
-      return NextResponse.redirect(`${new URL(request.url).origin}/login?error=no_code`);
+    // Kiểm tra xem có lỗi từ Google không
+    const errorParam = searchParams.get('error');
+    if (errorParam) {
+      console.error("Lỗi từ Google OAuth:", errorParam);
+      const errorDescription = searchParams.get('error_description') || 'Unknown error';
+      console.error("Chi tiết lỗi:", errorDescription);
+      return NextResponse.redirect(new URL(`/login?error=google&message=${encodeURIComponent(errorDescription)}`, request.url));
     }
-
-    console.log("Đã nhận code callback từ Google:", code.substring(0, 10) + "...");
-
-    // Bước 1: Trao đổi code lấy token
+    
+    // Lấy authentication code từ URL
+    const code = searchParams.get('code');
+    if (!code) {
+      console.error("Không có code trong URL callback");
+      return NextResponse.redirect(new URL('/login?error=google&message=No+authentication+code+provided', request.url));
+    }
+    
+    console.log("Đã nhận được authentication code từ Google");
+    
+    // Thiết lập thông tin OAuth2
+    const CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+    const CLIENT_SECRET = "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";
+    const REDIRECT_URI = "https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google";
+    
+    // Lấy access token từ Google
+    console.log("Đang trao đổi code lấy access token...");
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
@@ -24,67 +39,86 @@ export async function GET(request: NextRequest) {
       },
       body: new URLSearchParams({
         code,
-        client_id: '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com',
-        client_secret: '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',
-        redirect_uri: 'https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google',
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+        redirect_uri: REDIRECT_URI,
         grant_type: 'authorization_code',
-      }).toString(),
+      }),
     });
-
-    const tokenResult = await tokenResponse.json();
     
     if (!tokenResponse.ok) {
-      console.error("Lỗi khi trao đổi code:", tokenResult);
-      return NextResponse.redirect(`${new URL(request.url).origin}/login?error=token_exchange_failed`);
+      const errorData = await tokenResponse.text();
+      console.error("Lỗi khi trao đổi token:", errorData);
+      return NextResponse.redirect(new URL(`/login?error=google&message=${encodeURIComponent('Failed to exchange token: ' + errorData)}`, request.url));
     }
-
-    const { access_token, id_token } = tokenResult;
-    console.log("Đã nhận được access token:", access_token ? "CÓ" : "KHÔNG");
     
-    // Bước 2: Lấy thông tin người dùng từ Google
+    const tokenData = await tokenResponse.json();
+    console.log("Nhận được token thành công:", JSON.stringify({
+      access_token: tokenData.access_token ? "✓ Received" : "✗ Missing",
+      id_token: tokenData.id_token ? "✓ Received" : "✗ Missing",
+      refresh_token: tokenData.refresh_token ? "✓ Received" : "✗ Missing",
+      expires_in: tokenData.expires_in
+    }));
+    
+    // Lấy thông tin người dùng từ Google
+    console.log("Đang lấy thông tin người dùng...");
     const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
     });
-
-    const userInfo = await userInfoResponse.json();
     
     if (!userInfoResponse.ok) {
-      console.error("Lỗi khi lấy thông tin người dùng:", userInfo);
-      return NextResponse.redirect(`${new URL(request.url).origin}/login?error=user_info_failed`);
+      const errorData = await userInfoResponse.text();
+      console.error("Lỗi khi lấy thông tin người dùng:", errorData);
+      return NextResponse.redirect(new URL(`/login?error=google&message=${encodeURIComponent('Failed to get user info: ' + errorData)}`, request.url));
     }
-
-    console.log("Đăng nhập thành công với email:", userInfo.email);
     
-    // Bước 3: Tạo session cookie
-    const session = {
+    const userData = await userInfoResponse.json();
+    console.log("Thông tin người dùng Google:", JSON.stringify({
+      email: userData.email,
+      name: userData.name,
+      id: userData.id,
+      verified_email: userData.verified_email,
+      picture: userData.picture ? "✓ Available" : "✗ Missing"
+    }));
+    
+    // Tạo phiên đăng nhập (tại đây bạn nên tạo hoặc đăng nhập người dùng trong cơ sở dữ liệu)
+    // Tạo cookie phiên với thông tin người dùng
+    const sessionData = {
       user: {
-        name: userInfo.name,
-        email: userInfo.email,
-        image: userInfo.picture,
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        picture: userData.picture,
       },
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      token: tokenData.access_token,
+      provider: 'google',
+      expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 ngày
     };
-
-    // Mã hóa session thành JSON string, sau đó encode base64
-    const encodedSession = Buffer.from(JSON.stringify(session)).toString('base64');
     
-    // Tạo cookie và chuyển hướng người dùng về trang chủ
-    const response = NextResponse.redirect(`${new URL(request.url).origin}/`);
+    console.log("Tạo phiên người dùng thành công");
+    
+    // Đặt cookie phiên bằng cách tạo response mới
+    const response = NextResponse.redirect(new URL('/', request.url));
+    
+    // Đặt cookie vào response
     response.cookies.set({
-      name: 'xlab_session',
-      value: encodedSession,
+      name: 'session',
+      value: Buffer.from(JSON.stringify(sessionData)).toString('base64'),
       httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60, // 30 ngày tính bằng giây
       path: '/',
-      secure: true,
-      maxAge: 30 * 24 * 60 * 60, // 30 days
       sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
     });
     
+    console.log("Đã đặt cookie phiên, chuyển hướng đến trang chủ");
+    
+    // Trả về response với cookie đã đặt
     return response;
   } catch (error) {
-    console.error("Lỗi xử lý callback:", error);
-    return NextResponse.redirect(`${new URL(request.url).origin}/login?error=callback_failed&details=${encodeURIComponent(String(error))}`);
+    console.error("Lỗi không mong đợi trong quá trình xử lý callback Google:", error);
+    return NextResponse.redirect(new URL(`/login?error=google&message=${encodeURIComponent('Unexpected error during authentication')}`, request.url));
   }
 } 
