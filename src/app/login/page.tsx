@@ -96,10 +96,19 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      console.log('Đang đăng nhập với Google...');
+      console.log('Đang kiểm tra cấu hình đăng nhập Google...');
       
-      // Sử dụng cách trực tiếp nhất - redirect đến URL đầy đủ
-      window.location.href = window.location.origin + '/api/auth/signin/google';
+      // Dùng endpoint mới để lấy URL đăng nhập Google
+      const response = await fetch('/api/auth/check-config');
+      if (response.ok) {
+        const data = await response.json();
+        console.log('URL Google OAuth:', data.googleUrl);
+        
+        // Chuyển hướng người dùng đến URL Google OAuth
+        window.location.href = data.googleUrl;
+      } else {
+        throw new Error('Không thể lấy cấu hình đăng nhập Google');
+      }
     } catch (err: any) {
       console.error('Lỗi:', err);
       setLoading(false);
