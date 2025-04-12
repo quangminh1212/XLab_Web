@@ -17,7 +17,7 @@ const authOptions: NextAuthOptions = {
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
-          redirect_uri: "https://xlab-web.vercel.app/api/auth/callback/google"
+          redirect_uri: "https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google"
         }
       }
     }),
