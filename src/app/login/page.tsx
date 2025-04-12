@@ -170,11 +170,12 @@ export default function LoginPage() {
               >
                 {/* Tham số OAuth cần thiết */}
                 <input type="hidden" name="client_id" value="909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" />
-                <input type="hidden" name="redirect_uri" value={`${origin}/api/auth/callback/google`} />
+                <input type="hidden" name="redirect_uri" value="https://xlab-web.vercel.app/api/auth/callback/google" />
                 <input type="hidden" name="response_type" value="code" />
-                <input type="hidden" name="scope" value="profile email" />
-                <input type="hidden" name="include_granted_scopes" value="true" />
-                <input type="hidden" name="state" value={Math.random().toString(36).substring(7)} />
+                <input type="hidden" name="scope" value="https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email" />
+                <input type="hidden" name="access_type" value="offline" />
+                <input type="hidden" name="prompt" value="select_account" />
+                <input type="hidden" name="state" value="google-auth" />
                 
                 {/* Nút đăng nhập Google */}
                 <button
@@ -186,11 +187,10 @@ export default function LoginPage() {
                 </button>
               </form>
               
-              {/* Link trực tiếp với URL đơn giản hóa */}
+              {/* Link trực tiếp với cùng tham số chính xác */}
               <a
-                href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=profile email&state=auth&include_granted_scopes=true`}
+                href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email&access_type=offline&prompt=select_account&state=direct-link"
                 className="mt-2 text-center block text-teal-600 text-sm underline"
-                rel="noopener noreferrer"
               >
                 Nhấn vào đây nếu nút trên không hoạt động
               </a>
