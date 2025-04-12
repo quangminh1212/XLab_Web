@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 
-// Cấu hình NextAuth với chi tiết đầy đủ
+// Cấu hình NextAuth với OAuth chính xác
 const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -34,10 +34,14 @@ const authOptions: NextAuthOptions = {
       console.log("[auth] Debug:", { code, metadata });
     }
   },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   callbacks: {
-    async signIn({ user, account, profile, email }) {
+    async signIn({ user, account, profile }) {
       console.log("[auth] SignIn callback:", { 
-        user: user?.email, 
+        hasUser: !!user, 
         hasAccount: !!account, 
         hasProfile: !!profile 
       });
@@ -45,7 +49,10 @@ const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       console.log("[auth] Redirect callback:", { url, baseUrl });
-      return url.startsWith(baseUrl) ? url : baseUrl;
+      if (url.startsWith(baseUrl) || url.startsWith("/")) {
+        return url;
+      }
+      return baseUrl;
     }
   }
 };
