@@ -66,24 +66,16 @@ export default function LoginPage() {
   const handleGoogleSignIn = () => {
     try {
       // Hiển thị thông báo đang xử lý
-      toast.info('Đang chuyển hướng đến trang đăng nhập Google...', {
-        position: 'top-right',
-        autoClose: 2000,
-      });
+      toast('Đang chuyển hướng đến trang đăng nhập Google...');
       
-      console.log("Đang chuyển hướng đến đăng nhập Google...");
+      console.log("Bắt đầu quá trình đăng nhập với Google...");
       
-      // Sử dụng NextAuth API route để xử lý đăng nhập Google
-      const callbackUrl = encodeURIComponent('/');
-      const authUrl = `/api/auth/signin/google?callbackUrl=${callbackUrl}`;
+      // Sử dụng hàm signIn của NextAuth thay vì tự tạo URL
+      signIn('google', { callbackUrl: '/' });
       
-      console.log("URL đăng nhập:", authUrl);
-      
-      // Chuyển hướng đến trang đăng nhập Google qua NextAuth
-      window.location.href = authUrl;
     } catch (error) {
       console.error("Lỗi khi chuyển hướng đến Google:", error);
-      toast.error('Không thể kết nối đến dịch vụ đăng nhập Google');
+      setError('Không thể kết nối đến dịch vụ đăng nhập Google');
     }
   };
 
