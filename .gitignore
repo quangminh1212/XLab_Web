@@ -106,3 +106,6 @@ node_modules/
 # Thêm những file khác để đảm bảo
 .turbo
 .next-auth
+
+# middleware-manifest
+middleware-manifest.json
