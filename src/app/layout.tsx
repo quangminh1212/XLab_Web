@@ -7,6 +7,7 @@ import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
 import { Suspense } from 'react'
+import { ToastProvider } from './ToastProvider'
 
 // Load Inter font
 const inter = Inter({
@@ -111,6 +112,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <ToastProvider />
         </SessionProvider>
         <Suspense fallback={null}>
           <Analytics />
