@@ -4,109 +4,131 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function AuthErrorPage() {
+export default function AuthError() {
   const searchParams = useSearchParams();
-  const error = searchParams.get('error');
-  const [errorId, setErrorId] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [oauthStatus, setOauthStatus] = useState<any>(null);
 
   useEffect(() => {
-    // Tạo ID lỗi ngẫu nhiên để theo dõi
-    const randomId = Math.random().toString(36).substring(2, 10);
-    setErrorId(randomId);
-    
-    // Có thể gửi log lỗi đến hệ thống phân tích
-    console.error(`Auth error [${randomId}]: ${error}`);
-  }, [error]);
+    // Lấy lỗi từ URL
+    const errorParam = searchParams?.get('error');
+    if (errorParam) {
+      setError(errorParam);
+    }
 
-  // Map error codes to user-friendly messages
-  const getErrorMessage = (errorCode: string | null) => {
+    // Kiểm tra trạng thái OAuth
+    const checkOauthStatus = async () => {
+      try {
+        const response = await fetch('/api/auth/test');
+        if (response.ok) {
+          const data = await response.json();
+          setOauthStatus(data);
+        }
+      } catch (err) {
+        console.error('Không thể kiểm tra trạng thái OAuth:', err);
+      }
+    };
+    
+    checkOauthStatus();
+  }, [searchParams]);
+
+  const getErrorMessage = (errorCode: string): string => {
     switch (errorCode) {
       case 'Configuration':
-        return 'Có lỗi trong cấu hình máy chủ. Vui lòng thử lại sau.';
+        return 'Có vấn đề với cấu hình NextAuth. Vui lòng kiểm tra GOOGLE_CLIENT_ID và GOOGLE_CLIENT_SECRET.';
       case 'AccessDenied':
-        return 'Bạn không có quyền truy cập. Vui lòng liên hệ quản trị viên.';
+        return 'Bạn đã từ chối cấp quyền truy cập.';
       case 'Verification':
-        return 'Không thể xác thực email của bạn. Vui lòng thử lại.';
+        return 'Không thể xác minh email của bạn.';
       case 'OAuthSignin':
-        return 'Lỗi khi bắt đầu phiên đăng nhập OAuth. Vui lòng thử lại.';
+        return 'Lỗi bắt đầu quá trình đăng nhập OAuth.';
       case 'OAuthCallback':
-        return 'Lỗi trong quá trình xử lý OAuth. Vui lòng thử lại.';
+        return 'Lỗi trong quá trình xử lý callback từ OAuth.';
       case 'OAuthCreateAccount':
-        return 'Không thể tạo tài khoản người dùng. Vui lòng thử lại sau.';
+        return 'Không thể tạo tài khoản OAuth.';
       case 'EmailCreateAccount':
-        return 'Không thể tạo tài khoản bằng email. Vui lòng thử phương thức khác.';
+        return 'Không thể tạo tài khoản email.';
       case 'Callback':
-        return 'Lỗi xử lý xác thực. Vui lòng thử lại sau.';
+        return 'Lỗi xảy ra trong quá trình callback.';
       case 'OAuthAccountNotLinked':
-        return 'Email đã được sử dụng với nhà cung cấp khác. Vui lòng đăng nhập bằng nhà cung cấp ban đầu.';
-      case 'EmailSignin':
-        return 'Lỗi gửi email. Vui lòng thử lại sau.';
-      case 'CredentialsSignin':
-        return 'Thông tin đăng nhập không hợp lệ. Vui lòng kiểm tra lại thông tin và thử lại.';
+        return 'Email đã được sử dụng với tài khoản khác.';
       case 'SessionRequired':
-        return 'Yêu cầu đăng nhập để truy cập trang này.';
+        return 'Bạn cần đăng nhập để truy cập trang này.';
+      case 'google':
+        return 'Lỗi khi đăng nhập bằng Google. Vui lòng thử lại sau.';
       default:
-        return 'Đã xảy ra lỗi không xác định trong quá trình xác thực. Vui lòng thử lại.';
+        return `Lỗi xác thực: ${errorCode}`;
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="bg-white shadow-lg rounded-lg p-8">
-          <div className="flex justify-center mb-8">
-            <div className="h-16 w-16 bg-red-100 flex items-center justify-center rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center">
+          <Link href="/" className="inline-flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-2xl">
+              X
             </div>
-          </div>
-          
-          <h2 className="text-center text-2xl font-bold text-gray-900 mb-3">
-            Lỗi xác thực
+          </Link>
+          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
+            Đã xảy ra lỗi
           </h2>
-          
-          <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+          <p className="mt-2 text-center text-sm text-gray-600 max-w">
+            Chúng tôi không thể hoàn tất quá trình đăng nhập
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10 border border-gray-100">
+          <div className="rounded-md bg-red-50 p-4 mb-6">
             <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
               <div className="ml-3">
-                <p className="text-sm text-red-700">{getErrorMessage(error)}</p>
-                {errorId && (
-                  <p className="text-xs text-gray-500 mt-1">Mã lỗi: {errorId}</p>
-                )}
+                <h3 className="text-sm font-medium text-red-800">
+                  Lỗi xác thực
+                </h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>{error ? getErrorMessage(error) : 'Đã xảy ra lỗi trong quá trình xác thực.'}</p>
+                </div>
               </div>
             </div>
           </div>
-          
-          <div className="text-center space-y-4">
-            <p className="text-gray-600">
-              Bạn có thể thử lại việc đăng nhập hoặc quay lại trang chủ.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/login"
-                className="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-              >
-                Thử lại
-              </Link>
-              <Link
-                href="/"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-              >
-                Trang chủ
-              </Link>
+
+          {oauthStatus && (
+            <div className="mb-4 p-3 bg-amber-50 text-amber-700 text-xs rounded-md border border-amber-200">
+              <details>
+                <summary className="cursor-pointer font-medium">Thông tin debug OAuth</summary>
+                <div className="mt-2 overflow-x-auto">
+                  <p className="mb-1 font-semibold">Trạng thái cấu hình:</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Google Client ID: {oauthStatus.env.GOOGLE_CLIENT_ID ? 'Đã cấu hình' : 'Thiếu'}</li>
+                    <li>Google Client Secret: {oauthStatus.env.GOOGLE_CLIENT_SECRET ? 'Đã cấu hình' : 'Thiếu'}</li>
+                    <li>NextAuth URL: {oauthStatus.env.NEXTAUTH_URL || 'Thiếu'}</li>
+                  </ul>
+                  <p className="mt-2 mb-1 font-semibold">URL callback:</p>
+                  <code className="block bg-gray-100 p-1 rounded text-xs font-mono overflow-auto">
+                    {oauthStatus.callback_urls?.configured_callback || 'N/A'}
+                  </code>
+                  <p className="mt-2 text-xs">Đảm bảo URL trên được thêm vào Authorized redirect URIs trong Google Cloud Console</p>
+                </div>
+              </details>
             </div>
-          </div>
-        </div>
-        
-        <div className="text-center text-sm text-gray-500">
-          <p>
-            Nếu bạn vẫn gặp vấn đề, vui lòng{' '}
-            <Link href="/contact" className="font-medium text-teal-600 hover:text-teal-500">
-              liên hệ hỗ trợ
+          )}
+
+          <div className="mt-6 flex flex-col space-y-4">
+            <Link href="/login" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+              Quay lại trang đăng nhập
             </Link>
-            .
-          </p>
+            
+            <Link href="/" className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+              Về trang chủ
+            </Link>
+          </div>
         </div>
       </div>
     </div>

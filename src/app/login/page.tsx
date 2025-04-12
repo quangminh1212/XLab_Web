@@ -88,29 +88,18 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      // Kiểm tra cấu hình OAuth trước
-      if (oauthStatus && (!oauthStatus.env.GOOGLE_CLIENT_ID || !oauthStatus.env.GOOGLE_CLIENT_SECRET)) {
-        setError('Cấu hình Google OAuth chưa đầy đủ. Vui lòng kiểm tra file .env.local');
-        setLoading(false);
-        return;
-      }
-      
       console.log('Bắt đầu đăng nhập Google...', { callbackUrl });
       
-      // Thêm thời gian timeout dài hơn và debug log
-      await signIn('google', { 
-        callbackUrl,
-        redirect: true
-      }).catch((err: any) => {
-        console.error('Lỗi đăng nhập Google (signIn catch):', err);
-        setError('Lỗi kết nối Google OAuth: ' + (err.message || 'Không rõ lỗi'));
+      // Sử dụng cách trực tiếp để tránh vấn đề với signIn
+      window.location.href = '/api/auth/signin/google';
+      
+      // Code bên dưới sẽ không chạy nếu redirect thành công
+      // Chỉ để xử lý trong trường hợp không redirect được
+      setTimeout(() => {
+        console.log('Không redirect được đến trang đăng nhập Google sau 3 giây');
         setLoading(false);
-      });
-
-      // Code sau signIn sẽ không chạy nếu redirect: true
-      // Chỉ chạy nếu có lỗi hoặc redirect: false
-      console.log('SignIn không redirect hoặc có lỗi');
-      setLoading(false);
+        setError('Không thể chuyển hướng đến trang đăng nhập Google. Vui lòng kiểm tra console để xem chi tiết.');
+      }, 3000);
     } catch (err: any) {
       console.error('Lỗi đăng nhập Google (try/catch):', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google: ' + (err.message || 'Không rõ lỗi'));
