@@ -13,26 +13,23 @@ export async function GET(request: NextRequest) {
     console.log("Đã nhận code callback từ Google:", code.substring(0, 10) + "...");
 
     // Bước 1: Trao đổi code lấy token
-    const tokenEndpoint = 'https://oauth2.googleapis.com/token';
-    const tokenData = {
-      code,
-      client_id: '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com',
-      client_secret: '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',
-      redirect_uri: `${request.nextUrl.origin}/api/auth/callback/google`,
-      grant_type: 'authorization_code'
-    };
-
-    const tokenResponse = await fetch(tokenEndpoint, {
+    const response = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify(tokenData)
+      body: new URLSearchParams({
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID!,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        redirect_uri: `${request.nextUrl.origin}/api/auth/callback/google`,
+        grant_type: 'authorization_code',
+      }).toString(),
     });
 
-    const tokenResult = await tokenResponse.json();
+    const tokenResult = await response.json();
     
-    if (!tokenResponse.ok) {
+    if (!response.ok) {
       console.error("Lỗi khi trao đổi code:", tokenResult);
       return NextResponse.redirect(`${request.nextUrl.origin}/login?error=token_exchange_failed`);
     }
