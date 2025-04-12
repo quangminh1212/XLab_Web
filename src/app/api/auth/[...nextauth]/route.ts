@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 
 // Extend the Session interface
@@ -27,6 +28,25 @@ const handler = NextAuth({
         }
       }
     }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text", placeholder: "jsmith@example.com" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (credentials?.email && credentials?.password === "password") {
+          const username = credentials.email.split('@')[0];
+          return {
+            id: "1",
+            name: username.charAt(0).toUpperCase() + username.slice(1),
+            email: credentials.email,
+            image: "/images/avatar-placeholder.svg"
+          }
+        }
+        return null;
+      }
+    }),
   ],
   pages: {
     signIn: "/login",
@@ -47,15 +67,18 @@ const handler = NextAuth({
       }
       return token;
     },
-    async signIn({ account, profile }) {
+    async signIn({ account, profile, credentials }) {
       if (account?.provider === "google" && profile?.email) {
+        return true;
+      }
+      if (account?.provider === "credentials" && credentials?.email) {
         return true;
       }
       return false;
     },
   },
   debug: false,
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "your-secret-key-xlab-web-app",
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days

@@ -31,16 +31,15 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
-        callbackUrl,
       });
 
-      if (result?.error) {
+      if (!result?.ok) {
         setError('Email hoặc mật khẩu không chính xác');
         setLoading(false);
         return;
       }
 
-      if (result?.url) router.push(callbackUrl);
+      router.push(callbackUrl);
     } catch (err) {
       console.error('Lỗi đăng nhập:', err);
       setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
@@ -112,7 +111,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit} method="POST">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
@@ -165,6 +164,9 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              <p className="mt-1 text-sm text-teal-600">
+                <span className="font-medium">Mật khẩu mặc định:</span> password
+              </p>
             </div>
 
             <div className="flex items-center justify-between">
