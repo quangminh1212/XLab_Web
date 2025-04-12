@@ -157,7 +157,7 @@ export default function LoginPage() {
 
           {/* Phương án trực tiếp với URL hardcode */}
           <a
-            href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=http://localhost:3000/api/auth/callback/google&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent"
+            href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fxlab-web.vercel.app%2Fapi%2Fauth%2Fcallback%2Fgoogle&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent"
             className="w-full flex justify-center items-center py-2.5 px-4 border border-orange-300 rounded-full shadow-sm text-sm font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 mb-6 relative"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">

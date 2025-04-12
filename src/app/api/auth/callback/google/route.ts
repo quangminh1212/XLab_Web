@@ -6,16 +6,15 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
     
-    // Xác định origin dựa trên host
-    const isLocalhost = request.headers.get('host')?.includes('localhost') || false;
-    const origin = isLocalhost ? 'http://localhost:3000' : `https://${request.headers.get('host')}`;
+    // Sử dụng URL cố định cho production, đảm bảo khớp với cấu hình Google Console
+    // URL này phải chính xác khớp với cấu hình Authorized redirect URIs trong Google Cloud Console
+    const redirectUri = 'https://xlab-web.vercel.app/api/auth/callback/google';
     
-    console.log("Google OAuth Callback - Origin:", origin);
-    console.log("Host header:", request.headers.get('host'));
+    console.log("Google OAuth Callback được sử dụng:", redirectUri);
     
     if (!code) {
       console.error("Không nhận được code từ Google OAuth");
-      return NextResponse.redirect(`${origin}/login?error=no_code`);
+      return NextResponse.redirect(`https://xlab-web.vercel.app/login?error=no_code`);
     }
 
     console.log("Đã nhận code callback từ Google:", code.substring(0, 10) + "...");
@@ -30,7 +29,7 @@ export async function GET(request: NextRequest) {
         code,
         client_id: '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com',
         client_secret: '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',
-        redirect_uri: `${origin}/api/auth/callback/google`,
+        redirect_uri: redirectUri,
         grant_type: 'authorization_code',
       }).toString(),
     });
@@ -39,7 +38,7 @@ export async function GET(request: NextRequest) {
     
     if (!tokenResponse.ok) {
       console.error("Lỗi khi trao đổi code:", tokenResult);
-      return NextResponse.redirect(`${origin}/login?error=token_exchange_failed`);
+      return NextResponse.redirect(`https://xlab-web.vercel.app/login?error=token_exchange_failed`);
     }
 
     const { access_token, id_token } = tokenResult;
@@ -57,13 +56,13 @@ export async function GET(request: NextRequest) {
     
     if (!userInfoResponse.ok) {
       console.error("Lỗi khi lấy thông tin người dùng:", userInfo);
-      return NextResponse.redirect(`${origin}/login?error=user_info_failed`);
+      return NextResponse.redirect(`https://xlab-web.vercel.app/login?error=user_info_failed`);
     }
 
     console.log("Đăng nhập thành công với email:", userInfo.email);
     
     // Bước 3: Tạo session cookie cho người dùng
-    const redirectResponse = NextResponse.redirect(`${origin}/`);
+    const redirectResponse = NextResponse.redirect(`https://xlab-web.vercel.app/`);
     
     // Tạo cookie với thông tin cơ bản của người dùng
     const sessionData = {
@@ -86,15 +85,12 @@ export async function GET(request: NextRequest) {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60, // 30 ngày
       sameSite: 'lax',
-      secure: !isLocalhost // Chỉ bật secure trên môi trường production
+      secure: true // Luôn bật secure vì đây là URL production
     });
     
     return redirectResponse;
   } catch (error) {
     console.error("Lỗi trong quá trình xử lý callback:", error);
-    // Xác định origin dựa trên host
-    const isLocalhost = request.headers.get('host')?.includes('localhost') || false;
-    const origin = isLocalhost ? 'http://localhost:3000' : `https://${request.headers.get('host')}`;
-    return NextResponse.redirect(`${origin}/login?error=callback_failed&details=${encodeURIComponent(String(error))}`);
+    return NextResponse.redirect(`https://xlab-web.vercel.app/login?error=callback_failed&details=${encodeURIComponent(String(error))}`);
   }
 } 
