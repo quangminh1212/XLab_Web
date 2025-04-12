@@ -162,52 +162,39 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {/* Nút đăng nhập Google dùng Identity Services */}
-              <div className="mt-4 w-full">
-                {/* Sử dụng nút đăng nhập thông thường với sự kiện click */}
+              {/* Form đăng nhập Google */}
+              <form 
+                action="https://accounts.google.com/o/oauth2/v2/auth" 
+                method="GET"
+                className="mt-4 w-full"
+              >
+                {/* Tham số OAuth cần thiết */}
+                <input type="hidden" name="client_id" value="909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" />
+                <input type="hidden" name="redirect_uri" value={`${origin}/api/auth/callback/google`} />
+                <input type="hidden" name="response_type" value="code" />
+                <input type="hidden" name="scope" value="openid email profile" />
+                <input type="hidden" name="access_type" value="offline" />
+                <input type="hidden" name="prompt" value="consent" />
+                
+                {/* Nút đăng nhập Google */}
                 <button
-                  onClick={handleGoogleSignIn}
-                  type="button"
-                  disabled={isLoading}
+                  type="submit"
                   className="w-full flex justify-center items-center py-2.5 border border-gray-300 rounded-md shadow-sm bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
                 >
                   <FcGoogle className="mr-2 text-xl" />
                   <span>Đăng nhập với Google</span>
                 </button>
-                
-                {/* Link trực tiếp đến Google đăng nhập (dự phòng) */}
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const currentDomain = window.location.origin;
-                    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(`${currentDomain}/api/auth/callback/google`)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
-                  }}
-                  className="mt-2 text-center block text-teal-600 text-sm underline"
-                >
-                  Nhấn vào đây nếu nút trên không hoạt động
-                </a>
-                
-                {/* Google Identity Services button (ẩn) - Chỉ hiển thị khi ở client side */}
-                {origin && (
-                  <div className="hidden">
-                    <div 
-                      id="g_id_onload"
-                      data-client_id={GOOGLE_CLIENT_ID}
-                      data-login_uri={loginUri}
-                      data-auto_prompt="false"
-                    ></div>
-                    <div 
-                      className="g_id_signin"
-                      data-type="standard"
-                      data-size="large"
-                      data-text="sign_in_with"
-                      data-shape="rectangular"
-                      data-theme="outline"
-                    ></div>
-                  </div>
-                )}
-              </div>
+              </form>
+              
+              {/* Link trực tiếp đến Google đăng nhập (dự phòng) */}
+              <a
+                href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`}
+                className="mt-2 text-center block text-teal-600 text-sm underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Nhấn vào đây nếu nút trên không hoạt động
+              </a>
             </div>
 
             <div className="relative mt-4 mb-6">
