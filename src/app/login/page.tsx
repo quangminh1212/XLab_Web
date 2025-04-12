@@ -162,18 +162,17 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {/* Form đăng nhập Google */}
+              {/* Form đăng nhập Google đơn giản hóa */}
               <form 
                 action="https://accounts.google.com/o/oauth2/v2/auth" 
                 method="GET"
                 className="mt-4 w-full"
               >
-                {/* Tham số OAuth cần thiết - đảm bảo dùng URL chính xác trong Google Console */}
                 <input type="hidden" name="client_id" value="909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com" />
-                <input type="hidden" name="redirect_uri" value="https://xlab-web.vercel.app/api/auth/callback/google" />
+                <input type="hidden" name="redirect_uri" value="https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google" />
                 <input type="hidden" name="response_type" value="code" />
                 <input type="hidden" name="scope" value="email profile" />
-                <input type="hidden" name="state" value="google-auth" />
+                <input type="hidden" name="prompt" value="select_account" />
                 
                 {/* Nút đăng nhập Google */}
                 <button
@@ -185,9 +184,9 @@ export default function LoginPage() {
                 </button>
               </form>
               
-              {/* Link trực tiếp với cùng tham số chính xác */}
+              {/* Link trực tiếp với URL đơn giản */}
               <a
-                href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web.vercel.app/api/auth/callback/google&response_type=code&scope=email+profile&state=direct-link"
+                href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google&response_type=code&scope=email+profile&prompt=select_account"
                 className="mt-2 text-center block text-teal-600 text-sm underline"
               >
                 Nhấn vào đây nếu nút trên không hoạt động
