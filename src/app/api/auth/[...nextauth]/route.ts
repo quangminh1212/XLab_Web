@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 
 // Log chi tiết để debug
@@ -25,23 +26,29 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      authorization: {
-        params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code"
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
-      },
-      idToken: true,
-      checks: ["pkce", "state"],
-      profile(profile) {
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture,
+        
+        // This is a placeholder for your actual authentication logic
+        // In a real app, you would validate credentials against your database
+        // For now, just accepting any login to test NextAuth flow
+        const user = {
+          id: "1",
+          name: "Test User",
+          email: credentials.email,
         };
-      },
+        
+        return user;
+      }
     }),
   ],
   pages: {
