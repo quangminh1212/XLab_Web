@@ -96,18 +96,14 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
-      console.log('Bắt đầu đăng nhập Google...');
+      console.log('Đang đăng nhập với Google...');
       
-      // Sử dụng endpoint test thay vì endpoint NextAuth
-      const testUrl = window.location.origin + '/api/auth/testsignin';
-      console.log('Chuyển hướng đến:', testUrl);
-      
-      // Chuyển hướng trực tiếp
-      window.location.href = testUrl;
+      // Sử dụng cách trực tiếp nhất - redirect đến URL đầy đủ
+      window.location.href = window.location.origin + '/api/auth/signin/google';
     } catch (err: any) {
-      console.error('Lỗi đăng nhập Google:', err);
+      console.error('Lỗi:', err);
       setLoading(false);
-      setError('Có lỗi xảy ra: ' + (err.message || 'Không rõ lỗi'));
+      setError('Lỗi: ' + (err.message || 'Không xác định'));
     }
   };
 
