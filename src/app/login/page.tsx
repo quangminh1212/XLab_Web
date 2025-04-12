@@ -21,9 +21,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [origin, setOrigin] = useState('');
 
   // Thêm Google Client ID vào môi trường client
   const GOOGLE_CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+
+  // Lấy origin khi component được mount ở client
+  useEffect(() => {
+    // Code này chỉ chạy ở phía client
+    setOrigin(window.location.origin);
+  }, []);
 
   useEffect(() => {
     // Kiểm tra lỗi từ URL khi trang được tải
@@ -72,8 +79,11 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
       
+      // Đảm bảo origin đã được set ở client side
+      const currentOrigin = origin || '';
+      
       // Phương pháp sử dụng đường dẫn trực tiếp qua OAuth
-      const redirectUri = `${window.location.origin}/api/auth/callback/google`;
+      const redirectUri = `${currentOrigin}/api/auth/callback/google`;
       
       const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${GOOGLE_CLIENT_ID}` +
@@ -84,7 +94,11 @@ export default function LoginPage() {
         `&access_type=offline`;
       
       console.log("Chuyển hướng đến:", googleAuthUrl);
-      window.location.href = googleAuthUrl;
+      
+      // Đảm bảo chúng ta đang ở client side
+      if (typeof window !== 'undefined') {
+        window.location.href = googleAuthUrl;
+      }
       
     } catch (error) {
       console.error("Lỗi khi đăng nhập với Google:", error);
@@ -92,6 +106,9 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  // Login URI cho Google Identity Services, đảm bảo không sử dụng window trong server side
+  const loginUri = origin ? `${origin}/api/auth/callback/google` : '';
 
   return (
     <>
@@ -146,23 +163,25 @@ export default function LoginPage() {
                   <span>Đăng nhập với Google</span>
                 </button>
                 
-                {/* Google Identity Services button (ẩn) */}
-                <div className="hidden">
-                  <div 
-                    id="g_id_onload"
-                    data-client_id={GOOGLE_CLIENT_ID}
-                    data-login_uri={`${window.location.origin}/api/auth/callback/google`}
-                    data-auto_prompt="false"
-                  ></div>
-                  <div 
-                    className="g_id_signin"
-                    data-type="standard"
-                    data-size="large"
-                    data-text="sign_in_with"
-                    data-shape="rectangular"
-                    data-theme="outline"
-                  ></div>
-                </div>
+                {/* Google Identity Services button (ẩn) - Chỉ hiển thị khi ở client side */}
+                {origin && (
+                  <div className="hidden">
+                    <div 
+                      id="g_id_onload"
+                      data-client_id={GOOGLE_CLIENT_ID}
+                      data-login_uri={loginUri}
+                      data-auto_prompt="false"
+                    ></div>
+                    <div 
+                      className="g_id_signin"
+                      data-type="standard"
+                      data-size="large"
+                      data-text="sign_in_with"
+                      data-shape="rectangular"
+                      data-theme="outline"
+                    ></div>
+                  </div>
+                )}
               </div>
             </div>
 
