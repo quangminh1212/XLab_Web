@@ -27,14 +27,21 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
 
+      const rememberMe = document.getElementById('remember-me') as HTMLInputElement;
+      
       const result = await signIn('credentials', {
         redirect: false,
         email,
         password,
+        callbackUrl,
       });
 
       if (!result?.ok) {
-        setError('Email hoặc mật khẩu không chính xác');
+        if (result?.error === 'CredentialsSignin') {
+          setError('Email hoặc mật khẩu không chính xác');
+        } else {
+          setError(`Lỗi đăng nhập: ${result?.error || 'Không thể đăng nhập'}`);
+        }
         setLoading(false);
         return;
       }
@@ -47,9 +54,19 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    setLoading(true);
-    signIn('google', { callbackUrl });
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      await signIn('google', { 
+        callbackUrl,
+        redirect: true
+      });
+    } catch (err) {
+      console.error('Lỗi đăng nhập Google:', err);
+      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
+      setLoading(false);
+    }
   };
 
   return (

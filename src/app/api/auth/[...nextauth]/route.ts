@@ -11,6 +11,7 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      provider?: string;
     }
   }
 }
@@ -34,17 +35,23 @@ const handler = NextAuth({
         email: { label: "Email", type: "text", placeholder: "jsmith@example.com" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials) {
-        if (credentials?.email && credentials?.password === "password") {
-          const username = credentials.email.split('@')[0];
-          return {
-            id: "1",
-            name: username.charAt(0).toUpperCase() + username.slice(1),
-            email: credentials.email,
-            image: "/images/avatar-placeholder.svg"
+      async authorize(credentials, req) {
+        try {
+          // Trong thực tế, bạn sẽ kiểm tra thông tin đăng nhập với cơ sở dữ liệu
+          if (credentials?.email && credentials?.password === "password") {
+            const username = credentials.email.split('@')[0];
+            return {
+              id: "1",
+              name: username.charAt(0).toUpperCase() + username.slice(1),
+              email: credentials.email,
+              image: "/images/avatar-placeholder.svg"
+            }
           }
+          return null;
+        } catch (error) {
+          console.error("Lỗi xác thực:", error);
+          return null;
         }
-        return null;
       }
     }),
   ],
@@ -56,6 +63,7 @@ const handler = NextAuth({
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.provider = token.provider as string;
       }
       return session;
     },
@@ -68,16 +76,21 @@ const handler = NextAuth({
       return token;
     },
     async signIn({ account, profile, credentials }) {
-      if (account?.provider === "google" && profile?.email) {
-        return true;
+      try {
+        if (account?.provider === "google" && profile?.email) {
+          return true;
+        }
+        if (account?.provider === "credentials" && credentials?.email) {
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error("Lỗi đăng nhập:", error);
+        return false;
       }
-      if (account?.provider === "credentials" && credentials?.email) {
-        return true;
-      }
-      return false;
     },
   },
-  debug: false,
+  debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET || "your-secret-key-xlab-web-app",
   session: {
     strategy: "jwt",
@@ -85,4 +98,4 @@ const handler = NextAuth({
   },
 });
 
-export { handler as GET, handler as POST }; 
+export { handler as GET, handler as POST };
