@@ -85,10 +85,14 @@ export default function LoginPage() {
       setError('');
       setMessage("Đang chuyển hướng đến Google...");
       
-      // URL cố định thay vì tạo động
-      const googleUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fxlab-web.vercel.app%2Fapi%2Fauth%2Fcallback%2Fgoogle&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent";
+      // Thay đổi URL với redirect_uri là domain hiện tại
+      const currentDomain = typeof window !== 'undefined' ? window.location.origin : '';
+      
+      // URL cố định với client_id nhưng redirect_uri lấy từ môi trường hiện tại
+      const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(`${currentDomain}/api/auth/callback/google`)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
       
       console.log("Đang chuyển hướng đến:", googleUrl);
+      console.log("Redirect URI:", `${currentDomain}/api/auth/callback/google`);
       
       // Thêm timeout ngắn để đảm bảo DOM được cập nhật trước khi chuyển hướng
       setTimeout(() => {
@@ -173,7 +177,12 @@ export default function LoginPage() {
                 
                 {/* Link trực tiếp đến Google đăng nhập (dự phòng) */}
                 <a
-                  href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fxlab-web.vercel.app%2Fapi%2Fauth%2Fcallback%2Fgoogle&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent"
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const currentDomain = window.location.origin;
+                    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(`${currentDomain}/api/auth/callback/google`)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
+                  }}
                   className="mt-2 text-center block text-teal-600 text-sm underline"
                 >
                   Nhấn vào đây nếu nút trên không hoạt động
