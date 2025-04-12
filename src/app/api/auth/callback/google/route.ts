@@ -6,8 +6,8 @@ const GOOGLE_USERINFO_ENDPOINT = 'https://www.googleapis.com/oauth2/v2/userinfo'
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-// Sử dụng redirect URI cố định giống như đã đăng ký trong Google Console
-const REDIRECT_URI = 'https://xlab-web.vercel.app/api/auth/callback/google';
+// Sử dụng redirect URI đúng với URL trong Google Cloud Console
+const REDIRECT_URI = 'https://xlab-web-git-main-viet-thanhs-projects.vercel.app/api/auth/callback/google';
 
 console.log('Google callback handler loaded with REDIRECT_URI:', REDIRECT_URI);
 
@@ -43,9 +43,10 @@ export async function GET(req: NextRequest) {
       }),
     });
     
-    // Log chi tiết kết quả token để debug
+    // Lưu cả nội dung response để debug
     const tokenResponseText = await tokenResponse.text();
     console.log('Token response status:', tokenResponse.status);
+    console.log('Token response:', tokenResponseText);
     
     if (!tokenResponse.ok) {
       console.error('Token exchange failed:', tokenResponseText);
@@ -70,7 +71,10 @@ export async function GET(req: NextRequest) {
     });
     
     if (!userInfoResponse.ok) {
+      // Log cả response text để debug
+      const userInfoErrorText = await userInfoResponse.text();
       console.error('Failed to get user info, status:', userInfoResponse.status);
+      console.error('User info error:', userInfoErrorText);
       return NextResponse.redirect(new URL('/login?error=userinfo_failed', req.url));
     }
     
