@@ -49,6 +49,7 @@ const handler = NextAuth({
     },
     async signIn({ account, profile }) {
       if (account?.provider === "google" && profile?.email) {
+        console.log("Đăng nhập Google thành công:", profile.email);
         return true;
       }
       return false;
@@ -56,8 +57,10 @@ const handler = NextAuth({
     async redirect({ url, baseUrl }) {
       // Cho phép redirect về trang chủ hoặc các URL cùng origin
       if (url.startsWith(baseUrl) || url.startsWith("/")) {
+        console.log("Chuyển hướng đến:", url);
         return url;
       }
+      console.log("Chuyển hướng đến baseUrl:", baseUrl);
       return baseUrl;
     },
   },
@@ -66,6 +69,17 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
   },
   logger: {
     error(code, metadata) {
