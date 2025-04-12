@@ -2,50 +2,52 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 
-// Cấu hình NextAuth với một số tùy chọn bổ sung
+// Cấu hình NextAuth với chi tiết đầy đủ
 const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
+      clientSecret: "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",
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
   ],
   pages: {
     signIn: "/login",
     error: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: "121200",
   debug: true,
+  logger: {
+    error(code, metadata) {
+      console.error("[auth] Error:", { code, metadata });
+    },
+    warn(code) {
+      console.warn("[auth] Warning:", { code });
+    },
+    debug(code, metadata) {
+      console.log("[auth] Debug:", { code, metadata });
+    }
+  },
   callbacks: {
-    async signIn({ user, account, profile }) {
-      console.log("SignIn callback được gọi:", { user, account });
+    async signIn({ user, account, profile, email }) {
+      console.log("[auth] SignIn callback:", { 
+        user: user?.email, 
+        hasAccount: !!account, 
+        hasProfile: !!profile 
+      });
       return true;
     },
     async redirect({ url, baseUrl }) {
-      console.log("Redirect callback được gọi:", { url, baseUrl });
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      else if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
-    },
-    async jwt({ token, account, user }) {
-      console.log("JWT callback được gọi:", { token, account });
-      if (account) {
-        token.accessToken = account.access_token;
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      console.log("Session callback được gọi:", { session, token });
-      if (token && session.user) {
-        session.user = {
-          ...session.user,
-          id: token.id as string
-        };
-      }
-      return session;
-    },
-  },
+      console.log("[auth] Redirect callback:", { url, baseUrl });
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    }
+  }
 };
 
 const handler = NextAuth(authOptions);
