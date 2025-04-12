@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
+import styles from './login.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('Vui lòng nhập email và mật khẩu');
+      setError('Vui lòng nhập đầy đủ thông tin');
       return;
     }
 
@@ -46,44 +47,39 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
-        callbackUrl,
       });
 
       if (result?.error) {
-        setError('Email hoặc mật khẩu không chính xác');
-        setLoading(false);
-        return;
+        setError(result.error);
+      } else {
+        window.location.href = '/';
       }
-
-      if (result?.url) router.push(callbackUrl);
-    } catch (err) {
-      console.error('Lỗi đăng nhập:', err);
-      setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
+    } catch (error) {
+      setError('Đã xảy ra lỗi khi đăng nhập');
+      console.error('Lỗi đăng nhập:', error);
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      
-      // Tạo URL trực tiếp để đăng nhập Google
-      const CLIENT_ID = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-      const REDIRECT_URI = "https://xlab-web.vercel.app/api/auth/callback/google";
-      
-      // Hiển thị thông báo đang xử lý
       setError('Đang chuyển hướng đến trang đăng nhập Google...');
       console.log("Bắt đầu quá trình đăng nhập với Google...");
       
-      // Chuyển hướng trực tiếp đến URL đăng nhập Google
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
-      console.log("Google Auth URL:", googleAuthUrl);
+      // Sử dụng signIn của NextAuth để xử lý đăng nhập Google
+      const result = await signIn('google', { 
+        callbackUrl: '/',  // Chuyển hướng về trang chủ sau khi đăng nhập
+        redirect: true     // Cho phép NextAuth tự động chuyển hướng
+      });
       
-      // Chuyển hướng
-      window.location.href = googleAuthUrl;
+      // Lưu ý: với redirect: true, code bên dưới sẽ không được thực thi
+      // vì trình duyệt sẽ chuyển hướng đến Google
+      console.log("Kết quả đăng nhập:", result);
       
     } catch (error) {
-      console.error("Lỗi khi chuyển hướng đến Google:", error);
+      console.error("Lỗi khi đăng nhập với Google:", error);
       setError('Không thể kết nối đến dịch vụ đăng nhập Google');
       setLoading(false);
     }
