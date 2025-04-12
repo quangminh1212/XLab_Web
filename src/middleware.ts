@@ -63,7 +63,7 @@ const publicRoutes = [
   '/services/.+',
 ];
 
-export default async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // Bỏ qua tất cả các đường dẫn auth và callback để đảm bảo OAuth hoạt động
@@ -82,27 +82,55 @@ export default async function middleware(request: NextRequest) {
   // Bỏ qua tất cả tài nguyên tĩnh
   if (
     pathname.startsWith('/_next') || 
-    pathname.startsWith('/api/') ||
+    pathname.includes('.') ||
     pathname.startsWith('/static') || 
-    pathname.includes('.')
+    pathname.startsWith('/api/') && !isProtectedPath(pathname)
   ) {
     return NextResponse.next();
   }
 
-  // Lấy token xác thực
-  const token = await getToken({
-    req: request,
-    secret: "121200", // Hardcoded secret
-  });
+  try {
+    // Lấy token xác thực
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
 
-  console.log("Middleware: Kiểm tra đường dẫn:", pathname, "- Token:", !!token);
+    console.log("Middleware: Kiểm tra đường dẫn:", pathname, "- Token:", !!token);
 
-  // Không chuyển hướng các trang đăng nhập (tạm thời)
-  if ((pathname === '/login' || pathname === '/register')) {
+    // Chuyển hướng trang admin nếu không phải admin
+    if (isAdminPath(pathname)) {
+      if (!token) {
+        // Nếu không có token, chuyển hướng đến trang đăng nhập
+        return NextResponse.redirect(new URL(`/login?callbackUrl=${encodeURIComponent(pathname)}`, request.url));
+      }
+      
+      // Kiểm tra quyền admin (thêm logic tùy theo cách xác định admin trong hệ thống)
+      const isAdmin = token?.email?.endsWith('@xlab.vn') || false;
+      
+      if (!isAdmin) {
+        // Nếu không phải admin, chuyển hướng đến trang chủ
+        return NextResponse.redirect(new URL('/', request.url));
+      }
+    }
+
+    // Chuyển hướng các trang được bảo vệ nếu chưa đăng nhập
+    if (isProtectedPath(pathname) && !token) {
+      return NextResponse.redirect(new URL(`/login?callbackUrl=${encodeURIComponent(pathname)}`, request.url));
+    }
+
+    // Thêm security headers
+    const response = NextResponse.next();
+    
+    // Thêm các headers bảo mật
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    
+    return response;
+  } catch (error) {
+    console.error('Middleware error:', error);
     return NextResponse.next();
   }
-
-  // Thêm security headers - bỏ qua CSP
-  const response = NextResponse.next();
-  return response;
 } 
