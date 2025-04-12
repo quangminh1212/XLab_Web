@@ -1,8 +1,14 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { NextAuthOptions } from "next-auth";
 
-// Hiển thị log đầy đủ để debug
+// Mở rộng type Session để thêm accessToken
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+  }
+}
+
+// Log thông số cấu hình để debug
 console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com");
 console.log("Khởi tạo NextAuth...");
 
@@ -60,19 +66,38 @@ const authOptions: NextAuthOptions = {
       return true;
     },
     async redirect({ url, baseUrl }) {
-      console.log("[auth] Redirect callback:", { url, baseUrl });
+      console.log("REDIRECT CALLBACK:", { url, baseUrl });
       
-      // Luôn về trang chủ sau khi đăng nhập thành công
-      return "/";
+      // Kiểm tra xem URL có phải là đường dẫn nội bộ hay URL đầy đủ
+      if (url.startsWith('/')) {
+        // Trả về URL đầy đủ cho đường dẫn nội bộ
+        return `${baseUrl}${url}`;
+      } else if (url.startsWith(baseUrl)) {
+        // Trả về URL nếu đã là URL đầy đủ với baseUrl
+        return url;
+      }
+      
+      // Mặc định trả về baseUrl
+      return baseUrl;
     },
-    async jwt({ token, account, profile }) {
-      console.log("[auth] JWT callback:", { hasToken: !!token, hasAccount: !!account, hasProfile: !!profile });
+    async jwt({ token, account }) {
+      console.log("JWT CALLBACK:", { token, account });
+      
+      // Khi đăng nhập thành công, lưu access token vào token
+      if (account) {
+        token.accessToken = account.access_token as string;
+      }
       return token;
     },
     async session({ session, token }) {
-      console.log("[auth] Session callback:", { hasSession: !!session, hasToken: !!token });
+      console.log("SESSION CALLBACK:", { session, token });
+      
+      // Thêm access token vào session
+      if (token) {
+        session.accessToken = token.accessToken as string;
+      }
       return session;
-    }
+    },
   }
 };
 
