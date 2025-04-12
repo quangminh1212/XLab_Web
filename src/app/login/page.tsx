@@ -49,20 +49,7 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = () => {
     setLoading(true);
-    
-    // Tạo URL chuyển hướng tới Google OAuth trực tiếp
-    const googleClientId = '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com';
-    const redirectUri = encodeURIComponent(`${window.location.origin}/api/auth/callback/google`);
-    const scopes = encodeURIComponent('email profile');
-    
-    // Lưu thông tin state và redirect URL vào localStorage để lấy lại sau khi xác thực
-    localStorage.setItem('oauth_callback_url', callbackUrl);
-    
-    // Tạo URL xác thực Google OAuth dựa trên các thông số
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scopes}&access_type=offline&prompt=consent`;
-    
-    // Chuyển hướng browser tới URL xác thực Google
-    window.location.href = googleAuthUrl;
+    signIn('google', { callbackUrl });
   };
 
   return (
