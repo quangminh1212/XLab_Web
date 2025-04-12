@@ -62,23 +62,23 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      setError('');
-      
-      // Hiển thị loading message tùy chỉnh
-      const notification = document.createElement('div');
-      notification.className = 'fixed top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded shadow-lg z-50';
-      notification.textContent = 'Đang chuyển hướng đến trang đăng nhập Google...';
-      document.body.appendChild(notification);
-      
-      // Sử dụng signIn từ NextAuth.js để đăng nhập với Google
-      await signIn('google', { callbackUrl: '/' });
-    } catch (error) {
-      console.error('Lỗi khi đăng nhập với Google:', error);
-      setError('Đã xảy ra lỗi khi đăng nhập với Google. Vui lòng thử lại sau.');
-      setLoading(false);
-    }
+    // Không bắt try/catch để có thể thấy lỗi thực tế trong console
+    setLoading(true);
+    setError('');
+    
+    // Hiển thị loading message
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 bg-teal-600 text-white px-4 py-2 rounded shadow-lg z-50';
+    notification.textContent = 'Đang chuyển hướng đến trang đăng nhập Google...';
+    document.body.appendChild(notification);
+    
+    console.log("Bắt đầu đăng nhập Google...");
+    
+    // Sử dụng callbackUrl là "/" và thêm redirect: true để debug
+    await signIn('google', { 
+      callbackUrl: '/',
+      redirect: true
+    });
   };
 
   return (

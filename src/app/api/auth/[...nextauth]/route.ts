@@ -49,21 +49,29 @@ const authOptions: NextAuthOptions = {
         hasAccount: !!account, 
         hasProfile: !!profile,
         user,
-        account,
-        profile
+        account
       });
+      
+      if (!user) {
+        console.error("[auth] SignIn callback: User is null or undefined");
+        return false;
+      }
+      
       return true;
     },
     async redirect({ url, baseUrl }) {
       console.log("[auth] Redirect callback:", { url, baseUrl });
-      // Xử lý redirect đúng cách, đảm bảo trở về trang chủ sau khi đăng nhập thành công
-      if (url.startsWith("/api/auth") || url === "/api/auth/signin/google") {
-        return baseUrl;
-      }
-      if (url.startsWith(baseUrl) || url.startsWith("/")) {
-        return url;
-      }
-      return baseUrl;
+      
+      // Luôn về trang chủ sau khi đăng nhập thành công
+      return "/";
+    },
+    async jwt({ token, account, profile }) {
+      console.log("[auth] JWT callback:", { hasToken: !!token, hasAccount: !!account, hasProfile: !!profile });
+      return token;
+    },
+    async session({ session, token }) {
+      console.log("[auth] Session callback:", { hasSession: !!session, hasToken: !!token });
+      return session;
     }
   }
 };
