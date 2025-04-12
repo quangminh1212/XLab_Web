@@ -76,27 +76,26 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = (e: React.MouseEvent) => {
+    // Ngăn chặn hành vi mặc định của button
+    e.preventDefault();
+    
     try {
       setIsLoading(true);
       setError('');
       setMessage("Đang chuyển hướng đến Google...");
       
-      console.log("Bắt đầu chuyển hướng đến trang đăng nhập Google");
+      // URL cố định thay vì tạo động
+      const googleUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fxlab-web.vercel.app%2Fapi%2Fauth%2Fcallback%2Fgoogle&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent";
       
-      // Lấy domain động từ window location
-      const currentDomain = typeof window !== 'undefined' ? window.location.origin : '';
+      console.log("Đang chuyển hướng đến:", googleUrl);
       
-      // Tạo URL chuyển hướng động dựa trên môi trường hiện tại
-      const redirectUri = `${currentDomain}/api/auth/callback/google`;
+      // Thêm timeout ngắn để đảm bảo DOM được cập nhật trước khi chuyển hướng
+      setTimeout(() => {
+        // Chuyển hướng trực tiếp đến trang đăng nhập Google
+        window.location.href = googleUrl;
+      }, 100);
       
-      // Tạo URL OAuth thủ công với tham số đầy đủ
-      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent`;
-      
-      console.log("Đang chuyển hướng đến:", googleAuthUrl);
-      
-      // Chuyển hướng trực tiếp đến trang đăng nhập Google
-      window.location.href = googleAuthUrl;
     } catch (error) {
       console.error("Lỗi khi chuyển hướng đến Google:", error);
       setError("Không thể kết nối với Google. Vui lòng thử lại sau.");
@@ -171,6 +170,14 @@ export default function LoginPage() {
                   <FcGoogle className="mr-2 text-xl" />
                   <span>Đăng nhập với Google</span>
                 </button>
+                
+                {/* Link trực tiếp đến Google đăng nhập (dự phòng) */}
+                <a
+                  href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fxlab-web.vercel.app%2Fapi%2Fauth%2Fcallback%2Fgoogle&response_type=code&scope=openid%20email%20profile&access_type=offline&prompt=consent"
+                  className="mt-2 text-center block text-teal-600 text-sm underline"
+                >
+                  Nhấn vào đây nếu nút trên không hoạt động
+                </a>
                 
                 {/* Google Identity Services button (ẩn) - Chỉ hiển thị khi ở client side */}
                 {origin && (
