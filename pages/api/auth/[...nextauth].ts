@@ -11,7 +11,7 @@ export default NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: '/auth/signin', // Trang đăng nhập tùy chỉnh (tùy chọn)
+    signIn: '/login', // Sửa từ '/auth/signin' thành '/login'
   },
   // Thêm các cấu hình khác nếu cần, ví dụ: callbacks, adapter, ...
 }); 

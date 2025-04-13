@@ -1,21 +1,36 @@
-import { signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { signIn, useSession } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image'; // Nếu bạn dùng Image component của Next.js
+import Navbar from '../../components/Navbar';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+  const { data: session } = useSession();
+  
+  // Nếu người dùng đã đăng nhập, chuyển hướng đến trang chủ hoặc callbackUrl
+  useEffect(() => {
+    if (session) {
+      const callbackUrl = router.query.callbackUrl as string || '/account';
+      router.push(callbackUrl);
+    }
+  }, [session, router]);
 
   const handleGoogleSignIn = () => {
-    signIn('google', { callbackUrl: '/account' }); // Chuyển hướng đến /account sau khi đăng nhập thành công
+    // Lấy callbackUrl từ query params nếu có
+    const callbackUrl = router.query.callbackUrl as string || '/account';
+    console.log('Signing in with Google, callbackUrl:', callbackUrl);
+    signIn('google', { callbackUrl });
   };
 
   const handleEmailSignIn = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Triển khai logic đăng nhập bằng email/password nếu cần
     console.log('Login with email:', email, password);
-    // signIn('credentials', { email, password, callbackUrl: '/account' }); // Ví dụ nếu dùng credentials provider
+    // signIn('credentials', { email, password, callbackUrl: router.query.callbackUrl as string || '/account' });
   };
 
   return (
@@ -23,7 +38,10 @@ export default function LoginPage() {
       <Head>
         <title>Đăng nhập - XLab</title>
       </Head>
-      <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-50">
+      
+      <Navbar />
+      
+      <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-gray-50">
         <main className="flex flex-col items-center justify-center w-full flex-1 px-4 sm:px-20 text-center">
           {/* Logo và Tiêu đề */} 
           <div className="mb-8">
