@@ -121,7 +121,16 @@ export async function middleware(request: NextRequest) {
 // Chỉ áp dụng middleware cho các route cần kiểm tra
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(svg|png|jpg|jpeg|gif|webp)).*)',
-    '/auth/callback'
+    '/',
+    '/login',
+    '/register',
+    '/account/:path*',
+    '/checkout/:path*',
+    '/admin/:path*',
+    '/auth/callback',
+    '/products/:path*',
+    '/services/:path*',
+    '/about',
+    '/contact',
   ],
 } 
