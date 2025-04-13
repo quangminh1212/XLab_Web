@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -14,6 +14,34 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Check for auth errors
+  useEffect(() => {
+    if (searchParams?.has('error')) {
+      const errorType = searchParams.get('error');
+      console.error('Login error detected:', errorType);
+      
+      switch (errorType) {
+        case 'OAuthSignin':
+          setError('Lỗi khi bắt đầu đăng nhập với Google. Vui lòng thử lại.');
+          break;
+        case 'OAuthCallback':
+          setError('Lỗi trong quá trình xác thực Google. Vui lòng thử lại.');
+          break;
+        case 'token_error':
+          setError('Không thể xác thực với Google. Kiểm tra lại tài khoản và thử lại.');
+          break;
+        case 'missing_code':
+          setError('Thiếu mã xác thực từ Google. Vui lòng thử lại.');
+          break;
+        case 'server_error':
+          setError('Lỗi máy chủ khi xử lý đăng nhập. Vui lòng thử lại sau.');
+          break;
+        default:
+          setError(`Lỗi đăng nhập: ${errorType}`);
+      }
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,8 +77,24 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = () => {
     setLoading(true);
-    // Direct call to Google provider with explicit redirect
-    signIn('google', { callbackUrl, redirect: true });
+    setError('');
+    try {
+      console.log('Starting Google sign-in process...');
+      
+      // Thêm tham số redirect và callbackUrl rõ ràng
+      signIn('google', {
+        callbackUrl: callbackUrl || window.location.origin,
+        redirect: true,
+      }).catch(err => {
+        console.error('Google sign-in promise rejected:', err);
+        setError('Không thể kết nối với Google. Vui lòng thử lại sau.');
+        setLoading(false);
+      });
+    } catch (err) {
+      console.error('Error initiating Google sign-in:', err);
+      setError('Không thể bắt đầu quá trình đăng nhập Google. Vui lòng thử lại.');
+      setLoading(false);
+    }
   };
 
   return (
