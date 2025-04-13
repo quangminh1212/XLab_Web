@@ -29,15 +29,20 @@ declare global {
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get('callbackUrl') || '/';
+  const [effectiveCallbackUrl, setEffectiveCallbackUrl] = useState('/');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  // Check for auth errors
+  // Check for auth errors and set callbackUrl
   useEffect(() => {
+    // Đặt callbackUrl từ searchParams chỉ ở phía client
+    const cbUrl = searchParams?.get('callbackUrl') || '/';
+    setEffectiveCallbackUrl(cbUrl);
+
+    // Kiểm tra lỗi đăng nhập
     if (searchParams?.has('error')) {
       const errorType = searchParams.get('error');
       console.error('Login error detected:', errorType);
@@ -79,7 +84,7 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
-        callbackUrl,
+        callbackUrl: effectiveCallbackUrl,
       });
 
       if (result?.error) {
@@ -88,7 +93,7 @@ export default function LoginPage() {
         return;
       }
 
-      if (result?.url) router.push(callbackUrl);
+      if (result?.url) router.push(effectiveCallbackUrl);
     } catch (err) {
       console.error('Lỗi đăng nhập:', err);
       setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
@@ -100,10 +105,10 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     
-    console.log('Bắt đầu quá trình đăng nhập Google với callback:', callbackUrl);
+    console.log('Bắt đầu quá trình đăng nhập Google với callback:', effectiveCallbackUrl);
     // Trực tiếp chuyển hướng đến Google OAuth
     signIn('google', {
-      callbackUrl,
+      callbackUrl: effectiveCallbackUrl,
     });
   };
 
@@ -272,7 +277,7 @@ export default function LoginPage() {
             <div className="font-medium mb-1">Debug info:</div>
             <div>NEXTAUTH_URL: {process.env.NEXT_PUBLIC_NEXTAUTH_URL}</div>
             <div>Google Client ID: {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.substring(0, 8) + '...' : 'Not set'}</div>
-            <div>Callback URL: {callbackUrl}</div>
+            <div>Callback URL: {effectiveCallbackUrl}</div>
           </div>
         )}
       </div>
