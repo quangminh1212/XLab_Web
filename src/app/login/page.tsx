@@ -48,18 +48,19 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     try {
       setLoading(true);
       console.log('Đang bắt đầu đăng nhập với Google...');
       
       // Gọi signIn với provider 'google' và tùy chọn callbackUrl
-      await signIn('google', { 
+      // Không sử dụng async/await ở đây vì signIn sẽ tự xử lý redirect
+      signIn('google', { 
         callbackUrl: callbackUrl,
         redirect: true
       });
       
-      // Lưu ý: Không cần xử lý sau khi gọi signIn vì redirect: true
+      // Không cần xử lý sau khi gọi signIn vì redirect: true
       // sẽ chuyển hướng trình duyệt
     } catch (error) {
       console.error('Lỗi khi đăng nhập với Google:', error);
