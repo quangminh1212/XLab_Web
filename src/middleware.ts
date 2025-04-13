@@ -110,22 +110,22 @@ export default async function middleware(request: NextRequest) {
   // Thêm security headers
   const response = NextResponse.next();
   
-  // CSP Header - Nới lỏng để cho phép Google Sign-In
-  const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.google.com https://www.google-analytics.com https://www.googletagmanager.com;
-    style-src 'self' 'unsafe-inline' https://accounts.google.com https://fonts.googleapis.com;
-    img-src 'self' data: https: blob:;
-    font-src 'self' data: https://fonts.gstatic.com;
-    connect-src 'self' https://accounts.google.com https://*.google.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
-    frame-src 'self' https://accounts.google.com https://*.google.com;
-    object-src 'none';
-    base-uri 'self';
-    form-action 'self';
-    frame-ancestors 'none'; // Thay đổi từ 'self' thành 'none' hoặc chỉ định nguồn gốc cụ thể nếu cần nhúng
-    block-all-mixed-content;
-    upgrade-insecure-requests;
-  `.replace(/\s{2,}/g, ' ').trim();
+  // Đơn giản hóa CSP Header để tránh lỗi ký tự không hợp lệ
+  const cspHeader = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.google.com https://www.google-analytics.com https://www.googletagmanager.com", // Cho phép script từ Google
+    "style-src 'self' 'unsafe-inline' https://accounts.google.com https://fonts.googleapis.com", // Cho phép style từ Google
+    "img-src 'self' data: https: blob:",
+    "font-src 'self' data: https://fonts.gstatic.com", // Cho phép font từ Google
+    "connect-src 'self' https://accounts.google.com https://*.google.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com", // Cho phép kết nối đến Google
+    "frame-src 'self' https://accounts.google.com https://*.google.com", // Cho phép frame từ Google
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "block-all-mixed-content",
+    "upgrade-insecure-requests",
+  ].join('; '); // Nối các directive bằng dấu chấm phẩy và khoảng trắng
 
   response.headers.set('Content-Security-Policy', cspHeader);
   
