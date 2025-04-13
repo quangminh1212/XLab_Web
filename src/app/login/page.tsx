@@ -81,18 +81,26 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = () => {
-    console.log('[CLIENT] handleGoogleSignIn: Bắt đầu.');
+    // Debug logs với cú pháp đơn giản
+    console.log("[DEBUG] Bắt đầu đăng nhập Google");
+    
     setLoading(true);
-    setError('');
-    console.log("[CLIENT] handleGoogleSignIn: Chuẩn bị gọi signIn('google') với callback:", effectiveCallbackUrl);
+    setError("");
+    
+    console.log("[DEBUG] CallbackUrl:", effectiveCallbackUrl);
+    
+    // Cố gắng gọi hàm signIn của NextAuth
     try {
-      signIn('google', {
+      // Gọi API NextAuth
+      signIn("google", {
         callbackUrl: effectiveCallbackUrl,
       });
-      console.log("[CLIENT] handleGoogleSignIn: Đã gọi signIn('google'). Chờ chuyển hướng...");
-    } catch (error) {
-      console.error('[CLIENT] handleGoogleSignIn: Lỗi TRỰC TIẾP khi gọi signIn:', error);
-      setError('Có lỗi xảy ra khi cố gắng bắt đầu đăng nhập Google.');
+      
+      console.log("[DEBUG] Đã gọi signIn, đang chờ chuyển hướng");
+    } catch (err) {
+      // Xử lý lỗi nếu có
+      console.error("[DEBUG] Lỗi khi gọi signIn:", err);
+      setError("Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.");
       setLoading(false);
     }
   };
