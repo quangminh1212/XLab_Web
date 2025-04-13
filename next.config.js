@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
+  swcMinify: true,
   images: {
     remotePatterns: [
       {
@@ -21,7 +22,8 @@ const nextConfig = {
     formats: ['image/webp'],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'],
   },
   async headers() {
     return [
@@ -64,7 +66,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: process.env.NODE_ENV === 'development',
   },
   webpack: (config, { dev, isServer }) => {
     config.optimization = {
@@ -94,6 +96,9 @@ const nextConfig = {
   },
   compiler: {
     styledComponents: true,
+  },
+  experimental: {
+    instrumentationHook: true,
   },
 };
 

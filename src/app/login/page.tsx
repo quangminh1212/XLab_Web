@@ -12,18 +12,6 @@ interface GoogleCredentialResponse {
   select_by: string;
 }
 
-interface Window {
-  google?: {
-    accounts: {
-      id: {
-        initialize: (config: any) => void;
-        renderButton: (element: HTMLElement | null, options: any) => void;
-        prompt: () => void;
-      }
-    }
-  }
-}
-
 declare global {
   interface Window {
     google?: {
@@ -47,6 +35,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
 
   // Check for auth errors
   useEffect(() => {
@@ -76,31 +65,24 @@ export default function LoginPage() {
     }
   }, [searchParams]);
 
-  // Khởi tạo Google One Tap
+  // Khởi tạo Google One Tap khi script đã được tải
   useEffect(() => {
-    // Kiểm tra nếu Google đã load
-    if (typeof window !== 'undefined' && window.google && document.getElementById('googleLoginButton')) {
+    if (googleScriptLoaded && document.getElementById('googleLoginButton')) {
       try {
-        window.google.accounts.id.initialize({
-          client_id: '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com',
+        console.log('Initializing Google Sign-In...');
+        window.google?.accounts.id.initialize({
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
           callback: async (response: GoogleCredentialResponse) => {
-            console.log("Google One Tap callback received", { credential: !!response.credential });
+            console.log("Google One Tap callback received", { hasCredential: !!response.credential });
             if (response.credential) {
               setLoading(true);
-              // Gọi NextAuth để xác thực với Google
               try {
+                // Đơn giản hóa quá trình - sử dụng luồng đăng nhập thông thường
                 const result = await signIn('google', { 
-                  credential: response.credential,
-                  redirect: false,
+                  redirect: true,
                   callbackUrl: callbackUrl || '/' 
                 });
                 console.log("NextAuth signIn result:", result);
-                if (result?.error) {
-                  setError(`Lỗi xác thực Google: ${result.error}`);
-                  setLoading(false);
-                } else if (result?.url) {
-                  router.push(result.url);
-                }
               } catch (error) {
                 console.error("Error during NextAuth signIn:", error);
                 setError('Lỗi xác thực Google. Vui lòng thử lại.');
@@ -112,7 +94,7 @@ export default function LoginPage() {
         });
 
         // Hiển thị nút đăng nhập
-        window.google.accounts.id.renderButton(
+        window.google?.accounts.id.renderButton(
           document.getElementById('googleLoginButton'),
           { 
             type: 'standard',
@@ -121,14 +103,15 @@ export default function LoginPage() {
             text: 'continue_with',
             shape: 'pill',
             logo_alignment: 'center',
-            width: document.getElementById('googleButton')?.offsetWidth || 250
+            width: 250
           }
         );
+        console.log('Google Sign-In initialized successfully');
       } catch (error) {
         console.error("Error initializing Google One Tap:", error);
       }
     }
-  }, [callbackUrl, router]);
+  }, [googleScriptLoaded, callbackUrl, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,48 +150,11 @@ export default function LoginPage() {
     setError('');
     
     console.log('Bắt đầu quá trình đăng nhập Google');
-    
-    // Sử dụng Google Identity Services nếu đã được khởi tạo
-    if (window.google?.accounts?.id) {
-      try {
-        // Hiển thị Google One Tap
-        window.google.accounts.id.prompt();
-        
-        // Nếu đang loading và không có lỗi ngay lập tức, đặt timeout để tắt trạng thái loading
-        // trong trường hợp người dùng đóng One Tap mà không đăng nhập
-        setTimeout(() => {
-          setLoading(false);
-        }, 5000);
-      } catch (error) {
-        console.error('Lỗi khi hiển thị Google One Tap:', error);
-        setError('Không thể hiển thị cửa sổ đăng nhập Google. Vui lòng thử lại.');
-        setLoading(false);
-      }
-    } else {
-      // Fallback nếu Google One Tap chưa khởi tạo
-      try {
-        signIn('google', {
-          callbackUrl: callbackUrl || window.location.origin,
-          redirect: true,
-        })
-        .then(result => {
-          console.log('Kết quả đăng nhập Google:', result);
-          if (result?.error) {
-            setError(`Lỗi đăng nhập Google: ${result.error}`);
-            setLoading(false);
-          }
-        })
-        .catch(error => {
-          console.error('Lỗi khi đăng nhập Google:', error);
-          setError('Không thể bắt đầu quá trình đăng nhập Google. Vui lòng kiểm tra kết nối và thử lại.');
-          setLoading(false);
-        });
-      } catch (error) {
-        console.error('Lỗi bất ngờ khi gọi signIn:', error);
-        setError('Lỗi hệ thống khi đăng nhập Google. Vui lòng thử lại sau.');
-        setLoading(false);
-      }
-    }
+    // Sử dụng phương thức đơn giản - redirect trực tiếp
+    signIn('google', {
+      callbackUrl: callbackUrl || '/',
+      redirect: true,
+    });
   };
 
   return (
@@ -218,6 +164,7 @@ export default function LoginPage() {
         strategy="afterInteractive"
         onLoad={() => {
           console.log("Google GSI Client loaded successfully");
+          setGoogleScriptLoaded(true);
         }}
         onError={(e) => {
           console.error("Error loading Google GSI Client:", e);
@@ -275,7 +222,7 @@ export default function LoginPage() {
                   <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
                 </svg>
               )}
-              <span>Đăng nhập với Google</span>
+              <span>Đăng nhập với Google (Cách thông thường)</span>
             </button>
           </div>
 
@@ -387,6 +334,15 @@ export default function LoginPage() {
             </Link>
           </p>
         </div>
+
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-6 bg-gray-50 p-4 border border-gray-200 rounded-lg text-xs text-gray-500">
+            <div className="font-medium mb-1">Debug info:</div>
+            <div>NEXTAUTH_URL: {process.env.NEXT_PUBLIC_NEXTAUTH_URL}</div>
+            <div>Google Client ID: {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.substring(0, 8) + '...' : 'Not set'}</div>
+            <div>Callback URL: {callbackUrl}</div>
+          </div>
+        )}
 
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-500">
