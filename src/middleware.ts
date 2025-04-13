@@ -130,4 +130,9 @@ export default async function middleware(request: NextRequest) {
   response.headers.set('Content-Security-Policy', cspHeader);
   
   return response;
-} 
+}
+
+// Không cần matcher nữa, vì logic đã xử lý trong hàm middleware
+// export const config = {
+//   matcher: '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+// }; 
