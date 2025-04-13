@@ -63,86 +63,71 @@ const publicRoutes = [
   '/services/.+',
 ];
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Debug
-  console.log('Middleware xử lý đường dẫn:', pathname);
-  
-  // Xử lý đặc biệt cho callback từ Google OAuth
-  if (pathname.startsWith('/auth/callback') || pathname.includes('callback/google')) {
-    console.log('Google callback được phát hiện, chuyển hướng:', pathname, 'Tham số:', request.nextUrl.search);
-    
-    // Chuyển hướng đến endpoint chính thức của NextAuth
-    const url = new URL('/api/auth/callback/google', request.url);
-    url.search = request.nextUrl.search;
-    
-    console.log('Middleware chuyển hướng đến:', url.toString());
-    return NextResponse.redirect(url);
-  }
-
-  // Bỏ qua các api routes của NextAuth
-  if (pathname.startsWith('/api/auth')) {
-    console.log('Bỏ qua middleware cho API NextAuth:', pathname);
-    return NextResponse.next();
-  }
-
-  // Bỏ qua các tài nguyên tĩnh
+  // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
   if (
     pathname.startsWith('/_next') || 
+    pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
     pathname.startsWith('/static') || 
-    pathname.includes('.') ||
-    pathname.startsWith('/api/') // Bỏ qua tất cả API routes khác
+    pathname.includes('.')
   ) {
     return NextResponse.next();
   }
 
-  // Xác thực với NextAuth
-  try {
-    // Lấy token xác thực      
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-    
-    console.log('Token xác thực:', !!token, 'Đường dẫn:', pathname);
-    
-    // Chuyển hướng người dùng đã đăng nhập từ trang login
-    if ((pathname === '/login' || pathname === '/register') && token) {
-      console.log('Đã đăng nhập, chuyển hướng từ trang đăng nhập/đăng ký đến trang chủ');
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-    
-    // Nếu truy cập vào trang cần xác thực nhưng không có token
-    const protectedRoutes = ['/account', '/checkout', '/admin'];
-    
-    if (protectedRoutes.some(route => pathname.startsWith(route)) && !token) {
-      console.log('Yêu cầu đăng nhập để truy cập trang bảo vệ:', pathname);
+  // Lấy token xác thực
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  // Kiểm tra quyền admin cho các đường dẫn admin
+  if (isAdminPath(pathname)) {
+    if (!token) {
+      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
       const url = new URL('/login', request.url);
       url.searchParams.set('callbackUrl', encodeURI(pathname));
       return NextResponse.redirect(url);
+    } else if (token.email !== 'xlab.rnd@gmail.com') {
+      // Nếu đã đăng nhập nhưng không phải email admin, chuyển đến trang chủ
+      return NextResponse.redirect(new URL('/', request.url));
     }
-  } catch (error) {
-    console.error('Lỗi xác thực:', error);
   }
 
-  return NextResponse.next();
-}
+  // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
+  if (isProtectedPath(pathname) && !token) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', encodeURI(pathname));
+    return NextResponse.redirect(url);
+  }
 
-// Chỉ áp dụng middleware cho các route cần kiểm tra
-export const config = {
-  matcher: [
-    '/',
-    '/login',
-    '/register',
-    '/account/:path*',
-    '/checkout/:path*',
-    '/admin/:path*',
-    '/auth/callback/:path*',
-    '/api/auth/callback/:path*', 
-    '/products/:path*',
-    '/services/:path*',
-    '/about',
-    '/contact',
-  ],
+  // Nếu đường dẫn công khai (login/register) và người dùng đã đăng nhập
+  if ((pathname === '/login' || pathname === '/register') && token) {
+    return NextResponse.redirect(new URL('/account', request.url));
+  }
+
+  // Thêm security headers
+  const response = NextResponse.next();
+  
+  // CSP Header
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https: blob:;
+    font-src 'self' data:;
+    connect-src 'self' https://www.google-analytics.com;
+    frame-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim();
+
+  response.headers.set('Content-Security-Policy', cspHeader);
+  
+  return response;
 } 
