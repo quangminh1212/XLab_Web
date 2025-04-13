@@ -63,18 +63,21 @@ const publicRoutes = [
   '/services/.+',
 ];
 
-export async function middleware(request: NextRequest) {
+// Hàm middleware đơn giản hóa, chỉ xử lý đường dẫn callback Google
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // Debug
   console.log('Middleware xử lý đường dẫn:', pathname);
 
-  // Xử lý đường dẫn callback từ Google OAuth - xử lý trước bất kỳ phần nào khác
+  // Xử lý đường dẫn callback từ Google OAuth - chỉ xử lý đường dẫn này
   if (pathname === '/auth/callback') {
+    console.log('Google callback được phát hiện, chuyển hướng:', pathname);
+    
     // Tạo URL mới chuyển hướng đến endpoint chính thức của NextAuth
     const url = new URL('/api/auth/callback/google', request.url);
     
-    // Sao chép tất cả các query params bằng cách lấy chuỗi search
+    // Sao chép tất cả các query params
     url.search = request.nextUrl.search;
     
     console.log('Middleware chuyển hướng đến:', url.toString());
@@ -154,12 +157,9 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-// Chỉ áp dụng middleware cho các đường dẫn xác thực và cơ bản
+// Chỉ áp dụng middleware cho đường dẫn auth/callback, tránh xử lý quá nhiều
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg).*)',
     '/auth/callback',
-    '/auth/signin/:path*',
-    '/auth/error'
   ],
 } 
