@@ -101,11 +101,9 @@ export default function LoginPage() {
     setError('');
     
     console.log('Bắt đầu quá trình đăng nhập Google với callback:', callbackUrl);
-    
     // Trực tiếp chuyển hướng đến Google OAuth
     signIn('google', {
       callbackUrl,
-      redirect: true,
     });
   };
 
