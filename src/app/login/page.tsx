@@ -47,20 +47,10 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      console.log('Starting Google sign-in...');
-      const result = await signIn('google', { 
-        callbackUrl,
-        redirect: true 
-      });
-      console.log('Google sign-in result:', result);
-    } catch (error) {
-      console.error('Google sign-in error:', error);
-      setError('Đăng nhập Google thất bại. Vui lòng thử lại.');
-      setLoading(false);
-    }
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    // Direct call to Google provider with explicit redirect
+    signIn('google', { callbackUrl, redirect: true });
   };
 
   return (
