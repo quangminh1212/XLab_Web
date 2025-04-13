@@ -4,27 +4,6 @@ import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Script from 'next/script';
-
-// Type definitions for Google Identity Services
-interface GoogleCredentialResponse {
-  credential: string;
-  select_by: string;
-}
-
-declare global {
-  interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (config: any) => void;
-          renderButton: (element: HTMLElement | null, options: any) => void;
-          prompt: () => void;
-        }
-      }
-    }
-  }
-}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -105,8 +84,8 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     
-    console.log('Bắt đầu quá trình đăng nhập Google với callback:', effectiveCallbackUrl);
-    // Trực tiếp chuyển hướng đến Google OAuth
+    console.log('Bắt đầu quá trình đăng nhập Google (NextAuth) với callback:', effectiveCallbackUrl);
+    // Chỉ sử dụng signIn của NextAuth
     signIn('google', {
       callbackUrl: effectiveCallbackUrl,
     });
