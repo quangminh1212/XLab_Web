@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function UserMenu() {
@@ -37,12 +36,12 @@ export default function UserMenu() {
       >
         <div className="flex items-center">
           {session.user?.image ? (
-            <Image
+            <img
               src={session.user.image}
               alt={session.user.name || 'User avatar'}
               width={32}
               height={32}
-              className="rounded-full"
+              className="rounded-full h-8 w-8"
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white font-bold text-sm">

@@ -110,24 +110,8 @@ export default async function middleware(request: NextRequest) {
   // Thêm security headers
   const response = NextResponse.next();
   
-  // Đơn giản hóa CSP Header để tránh lỗi ký tự không hợp lệ
-  const cspHeader = [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://*.google.com https://www.google-analytics.com https://www.googletagmanager.com", // Cho phép script từ Google
-    "style-src 'self' 'unsafe-inline' https://accounts.google.com https://fonts.googleapis.com", // Cho phép style từ Google
-    "img-src 'self' data: https: blob:",
-    "font-src 'self' data: https://fonts.gstatic.com", // Cho phép font từ Google
-    "connect-src 'self' https://accounts.google.com https://*.google.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com", // Cho phép kết nối đến Google
-    "frame-src 'self' https://accounts.google.com https://*.google.com", // Cho phép frame từ Google
-    "object-src 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "frame-ancestors 'none'",
-    "block-all-mixed-content",
-    "upgrade-insecure-requests",
-  ].join('; '); // Nối các directive bằng dấu chấm phẩy và khoảng trắng
-
-  response.headers.set('Content-Security-Policy', cspHeader);
+  // Bỏ đặt CSP tại đây để tránh xung đột với next.config.js
+  // Đã được cấu hình trong next.config.js
   
   return response;
 } 
