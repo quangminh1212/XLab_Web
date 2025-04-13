@@ -80,13 +80,41 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    // Tránh sử dụng e.preventDefault() để cho phép chuyển trang thông thường
-    console.log("[DEBUG] Bắt đầu đăng nhập Google bằng link trực tiếp");
+  const handleGoogleSignIn = async () => {
+    console.log("[DEBUG] Bắt đầu đăng nhập Google bằng NextAuth API trực tiếp");
     setLoading(true);
     
-    // Chuyển hướng đến trang đăng nhập Google của NextAuth
-    window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(effectiveCallbackUrl || '/')}`;
+    try {
+      // Thử phương pháp trực tiếp đến endpoint NextAuth
+      const response = await fetch('/api/auth/signin/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          callbackUrl: effectiveCallbackUrl || '/',
+          json: true,
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("[DEBUG] Response từ NextAuth:", data);
+        
+        // Nếu có URL, chuyển hướng đến đó
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      } else {
+        console.error("[DEBUG] Lỗi khi gọi API NextAuth:", response.status);
+        setError(`Lỗi khi đăng nhập với Google (${response.status})`);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("[DEBUG] Lỗi exception:", error);
+      setError("Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -139,6 +167,13 @@ export default function LoginPage() {
             )}
             <span>Đăng nhập với Google</span>
           </button>
+          
+          <a 
+            href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(effectiveCallbackUrl || '/')}`}
+            className="block w-full text-center py-2 px-4 border border-blue-300 rounded-full shadow-sm text-sm font-medium text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mb-6"
+          >
+            Đăng nhập Google (Phương pháp dự phòng)
+          </a>
           
           <div className="relative mt-4 mb-6">
             <div className="absolute inset-0 flex items-center">
