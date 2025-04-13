@@ -3,10 +3,11 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 
-// Log chi tiết để debug
+// Log chi tiết để debug - ghi đầy đủ thông tin cấu hình
 console.log('NextAuth: Khởi tạo module...');
-console.log('Google Client ID:', process.env.GOOGLE_CLIENT_ID?.substring(0, 10) + '...');
-console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+console.log('Google Client ID đầy đủ:', process.env.GOOGLE_CLIENT_ID);
+console.log('NEXTAUTH_URL đầy đủ:', process.env.NEXTAUTH_URL);
+console.log('AUTH_REDIRECT_PROXY_URL:', process.env.AUTH_REDIRECT_PROXY_URL);
 console.log('NEXT_PUBLIC_NEXTAUTH_URL:', process.env.NEXT_PUBLIC_NEXTAUTH_URL);
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('DEBUG Mode:', process.env.NEXTAUTH_DEBUG === 'true' ? 'Enabled' : 'Disabled');
@@ -30,7 +31,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       authorization: {
         params: {
-          prompt: "select_account",
+          prompt: "consent",
           access_type: "offline",
           response_type: "code"
         }
@@ -105,6 +106,10 @@ const handler = NextAuth({
           profileEmail: profile?.email,
           profileName: profile?.name,
           profileImage: profile?.image,
+          scopes: account.scope?.split(' '),
+          tokenType: account.token_type,
+          hasRefreshToken: !!account.refresh_token,
+          hasIdToken: !!account.id_token,
         });
       }
       
@@ -114,26 +119,30 @@ const handler = NextAuth({
         });
       }
       
+      // Luôn cho phép đăng nhập để debug
       return true;
     },
     async redirect({ url, baseUrl }) {
-      console.log('NextAuth callback: redirect', { url, baseUrl });
-      
-      // Log để debug
-      console.log('NextAuth debug URL info:', {
-        url,
+      // Log đầy đủ để debug
+      console.log('NextAuth callback: redirect với thông tin chi tiết:', { 
+        url, 
         baseUrl,
-        startsWithSlash: url.startsWith('/'),
-        startsWithBase: url.startsWith(baseUrl),
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL
+        startsWith_slash: url.startsWith('/'),
+        startsWith_baseUrl: url.startsWith(baseUrl),
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+        FULL_URL: url
       });
       
       // Đảm bảo redirect về application
       if (url.startsWith('/')) {
-        return `${baseUrl}${url}`;
+        const result = `${baseUrl}${url}`;
+        console.log('NextAuth redirect result:', result);
+        return result;
       } else if (url.startsWith(baseUrl)) {
+        console.log('NextAuth redirect result:', url);
         return url;
       }
+      console.log('NextAuth redirect fallback:', baseUrl);
       return baseUrl;
     }
   },
