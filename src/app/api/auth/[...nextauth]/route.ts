@@ -96,12 +96,15 @@ const handler = NextAuth({
     },
     async redirect({ url, baseUrl }) {
       console.log('NextAuth callback: redirect', { url, baseUrl });
-      // Đảm bảo redirect về application
+      // Sửa lỗi xử lý redirect
       if (url.startsWith('/')) {
+        // Nếu là đường dẫn tương đối, thêm baseUrl vào trước
         return `${baseUrl}${url}`;
-      } else if (url.startsWith(baseUrl)) {
+      } else if (new URL(url).origin === baseUrl) {
+        // Nếu cùng origin, sử dụng URL gốc
         return url;
       }
+      // Trong các trường hợp khác, về trang chủ
       return baseUrl;
     }
   },
