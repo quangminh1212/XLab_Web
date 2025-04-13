@@ -81,28 +81,12 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = () => {
-    // Debug logs với cú pháp đơn giản
-    console.log("[DEBUG] Bắt đầu đăng nhập Google");
-    
+    // Tránh sử dụng e.preventDefault() để cho phép chuyển trang thông thường
+    console.log("[DEBUG] Bắt đầu đăng nhập Google bằng link trực tiếp");
     setLoading(true);
-    setError("");
     
-    console.log("[DEBUG] CallbackUrl:", effectiveCallbackUrl);
-    
-    // Cố gắng gọi hàm signIn của NextAuth
-    try {
-      // Gọi API NextAuth
-      signIn("google", {
-        callbackUrl: effectiveCallbackUrl,
-      });
-      
-      console.log("[DEBUG] Đã gọi signIn, đang chờ chuyển hướng");
-    } catch (err) {
-      // Xử lý lỗi nếu có
-      console.error("[DEBUG] Lỗi khi gọi signIn:", err);
-      setError("Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.");
-      setLoading(false);
-    }
+    // Chuyển hướng đến trang đăng nhập Google của NextAuth
+    window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(effectiveCallbackUrl || '/')}`;
   };
 
   return (
@@ -155,7 +139,7 @@ export default function LoginPage() {
             )}
             <span>Đăng nhập với Google</span>
           </button>
-
+          
           <div className="relative mt-4 mb-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200"></div>
