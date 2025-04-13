@@ -28,29 +28,6 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      authorization: {
-        params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code",
-          scope: "openid email profile"
-        }
-      },
-      profile(profile) {
-        // Thêm log để theo dõi thông tin profile từ Google
-        console.log('Google profile received:', { 
-          email: profile.email, 
-          name: profile.name,
-          hasImage: !!profile.picture
-        });
-        
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture,
-        }
-      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -84,8 +61,7 @@ const handler = NextAuth({
     async session({ session, token }) {
       console.log('NextAuth callback: session', {
         hasToken: !!token,
-        hasUser: !!session?.user,
-        user: session?.user?.email
+        hasUser: !!session?.user
       });
       
       if (token && session.user) {
@@ -98,9 +74,7 @@ const handler = NextAuth({
         hasToken: !!token,
         hasUser: !!user,
         hasAccount: !!account,
-        provider: account?.provider,
-        userId: user?.id,
-        accountType: account?.type
+        provider: account?.provider
       });
       
       // Initial sign in
@@ -110,53 +84,28 @@ const handler = NextAuth({
       }
       return token;
     },
-    async signIn({ account, profile, user, credentials }) {
-      console.log('NextAuth callback: signIn', {
+    async signIn({ account, profile, user }) {
+      console.log('NextAuth callback: signIn attempt', {
         provider: account?.provider,
-        profileEmail: profile?.email,
-        userId: user?.id,
-        userName: user?.name,
-        profileDetails: profile ? { 
-          name: profile.name, 
-          email: profile.email,
-          hasImage: !!(profile as any)?.picture 
-        } : null,
-        hasCredentials: !!credentials
+        hasProfile: !!profile,
+        hasUser: !!user
       });
       
-      // Luôn cho phép đăng nhập để kiểm tra
-      if (account?.provider === "google") {
-        console.log('Google sign-in attempt', { 
-          hasProfile: !!profile,
-          hasEmail: !!profile?.email
-        });
-        return true;
-      }
-      
-      if (credentials) {
-        return true;
-      }
-      
-      console.log('Sign-in rejected - unknown provider or missing credentials');
-      return false;
+      // Luôn cho phép đăng nhập để debug
+      return true;
     },
     async redirect({ url, baseUrl }) {
       console.log('NextAuth callback: redirect', { url, baseUrl });
-      return url.startsWith(baseUrl) ? url : baseUrl;
+      // Đảm bảo redirect về application
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      } else if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      return baseUrl;
     }
   },
   debug: true,
-  logger: {
-    error(code, metadata) {
-      console.error('NextAuth ERROR:', { code, metadata });
-    },
-    warn(code) {
-      console.warn('NextAuth WARNING:', code);
-    },
-    debug(code, metadata) {
-      console.log('NextAuth DEBUG:', { code, metadata });
-    },
-  },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
