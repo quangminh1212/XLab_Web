@@ -14,11 +14,20 @@ declare module "next-auth" {
   }
 }
 
+// Thông tin OAuth từ Google Console
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
+
+// Kiểm tra nếu Google Client ID và Secret chưa được cấu hình
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  console.warn("Cảnh báo: Google Client ID hoặc Client Secret chưa được cấu hình!");
+}
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           prompt: "select_account",
@@ -48,13 +57,35 @@ const handler = NextAuth({
       return token;
     },
     async signIn({ account, profile }) {
-      if (account?.provider === "google" && profile?.email) {
-        return true;
+      try {
+        if (account?.provider === "google" && profile?.email) {
+          console.log("Google đăng nhập thành công:", profile.email);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.error("Lỗi trong quá trình đăng nhập:", error);
+        return false;
       }
-      return false;
     },
+    async redirect({ url, baseUrl }) {
+      // Log thông tin debug
+      console.log("NextAuth redirect:", { url, baseUrl });
+      
+      // Nếu URL bắt đầu bằng /, nó là đường dẫn tương đối
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      }
+      // Nếu URL bắt đầu bằng http, kiểm tra nó có thuộc cùng domain không
+      else if (url.startsWith('http')) {
+        return url.startsWith(baseUrl) ? url : baseUrl;
+      }
+      
+      // Mặc định về trang chủ
+      return baseUrl;
+    }
   },
-  debug: false,
+  debug: process.env.NODE_ENV === 'development',
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
