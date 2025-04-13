@@ -221,3 +221,14 @@ yarn-error.log*
 .DS_Store
 *.pem
 node_modules
+
+# Thêm mới: Các file tạm thời khác có thể được tạo ra khi dự án chạy
+.next/cache/
+.next-error.log
+.next-server-running.txt
+.next-build-trace.json
+.next-lock
+.next-server-build.json
+instrumentation.js
+server.js.nft.json
+middleware.js.nft.json

@@ -96,6 +96,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  experimental: {
+    // instrumentationHook đã bị loại bỏ
+  }
 };
 
 module.exports = nextConfig;
