@@ -84,14 +84,29 @@ const handler = NextAuth({
       }
       return token;
     },
-    async signIn({ account, profile, user }) {
+    async signIn({ account, profile, user, credentials }) {
       console.log('NextAuth callback: signIn attempt', {
         provider: account?.provider,
         hasProfile: !!profile,
-        hasUser: !!user
+        hasUser: !!user,
+        hasCredentials: !!credentials
       });
       
-      // Luôn cho phép đăng nhập để debug
+      if (account?.provider === 'google') {
+        console.log('Google Sign In Details:', {
+          accountId: account.providerAccountId,
+          profileEmail: profile?.email,
+          profileName: profile?.name,
+          profileImage: profile?.image,
+        });
+      }
+      
+      if (account?.provider === 'credentials') {
+        console.log('Credentials Sign In Details:', {
+          providedEmail: credentials?.email,
+        });
+      }
+      
       return true;
     },
     async redirect({ url, baseUrl }) {
