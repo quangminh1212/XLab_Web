@@ -78,23 +78,16 @@ export default function LoginPage() {
   const handleGoogleSignIn = () => {
     setLoading(true);
     setError('');
-    try {
-      console.log('Starting Google sign-in process...');
-      
-      // Thêm tham số redirect và callbackUrl rõ ràng
-      signIn('google', {
-        callbackUrl: callbackUrl || window.location.origin,
-        redirect: true,
-      }).catch(err => {
-        console.error('Google sign-in promise rejected:', err);
-        setError('Không thể kết nối với Google. Vui lòng thử lại sau.');
-        setLoading(false);
-      });
-    } catch (err) {
-      console.error('Error initiating Google sign-in:', err);
-      setError('Không thể bắt đầu quá trình đăng nhập Google. Vui lòng thử lại.');
+    console.log('Starting Google sign-in process...', { callbackUrl: callbackUrl || window.location.origin });
+
+    signIn('google', {
+      callbackUrl: callbackUrl || window.location.origin,
+      redirect: true,
+    }).catch(error => {
+      console.error('Error initiating Google Sign-In:', error);
+      setError('Không thể bắt đầu quá trình đăng nhập Google. Vui lòng kiểm tra kết nối và thử lại.');
       setLoading(false);
-    }
+    });
   };
 
   return (
