@@ -6,8 +6,22 @@ export async function GET(request: NextRequest) {
   
   console.log('Google Callback trực tiếp được nhận', {
     url: request.url,
+    fullUrl: request.nextUrl.toString(),
+    pathname: request.nextUrl.pathname,
     params: Object.fromEntries(searchParams.entries())
   });
+  
+  // Kiểm tra nếu có lỗi từ Google OAuth
+  if (searchParams.has('error')) {
+    const error = searchParams.get('error');
+    console.error('Google OAuth trả về lỗi:', error);
+    
+    // Chuyển hướng về trang đăng nhập với thông báo lỗi
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('error', 'google');
+    loginUrl.searchParams.set('error_description', error || 'unknown_error');
+    return NextResponse.redirect(loginUrl);
+  }
   
   // Tạo URL mới đến NextAuth callback endpoint
   const nextAuthCallbackUrl = new URL('/api/auth/callback/google', request.url);
