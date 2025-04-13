@@ -148,7 +148,39 @@ const handler = NextAuth({
         });
       }
       
-      // Đơn giản hóa logic redirect để luôn chuyển về trang chủ sau khi đăng nhập
+      // Xử lý redirect sau khi đăng nhập
+      
+      // Nếu URL bắt đầu bằng /, nó là một relative path
+      if (url.startsWith('/')) {
+        const fullUrl = `${baseUrl}${url}`;
+        if (isDebugEnabled) {
+          console.log("NextAuth redirect to relative path:", fullUrl);
+        }
+        return fullUrl;
+      }
+      
+      // Nếu URL bắt đầu bằng http:// hoặc https://, nó là absolute URL
+      if (url.startsWith('http')) {
+        // Chỉ cho phép redirect đến domain cùng với baseUrl
+        if (url.startsWith(baseUrl)) {
+          if (isDebugEnabled) {
+            console.log("NextAuth redirect to absolute URL:", url);
+          }
+          return url;
+        } else {
+          // Nếu không cùng domain, chuyển về trang chủ an toàn
+          if (isDebugEnabled) {
+            console.log("NextAuth redirect blocked (different domain):", url);
+            console.log("Redirecting to baseUrl instead:", baseUrl);
+          }
+          return baseUrl;
+        }
+      }
+      
+      // Mặc định trả về baseUrl
+      if (isDebugEnabled) {
+        console.log("NextAuth redirect fallback to baseUrl:", baseUrl);
+      }
       return baseUrl;
     }
   },
