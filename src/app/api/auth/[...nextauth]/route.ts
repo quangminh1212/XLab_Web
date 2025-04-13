@@ -28,6 +28,13 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -111,6 +118,16 @@ const handler = NextAuth({
     },
     async redirect({ url, baseUrl }) {
       console.log('NextAuth callback: redirect', { url, baseUrl });
+      
+      // Log để debug
+      console.log('NextAuth debug URL info:', {
+        url,
+        baseUrl,
+        startsWithSlash: url.startsWith('/'),
+        startsWithBase: url.startsWith(baseUrl),
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL
+      });
+      
       // Đảm bảo redirect về application
       if (url.startsWith('/')) {
         return `${baseUrl}${url}`;
