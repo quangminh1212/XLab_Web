@@ -1,30 +1,31 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
 
-// Log chi tiết để debug - ghi đầy đủ thông tin cấu hình
-console.log('NextAuth: Khởi tạo module...');
-console.log('Google Client ID đầy đủ:', process.env.GOOGLE_CLIENT_ID);
-console.log('NEXTAUTH_URL đầy đủ:', process.env.NEXTAUTH_URL);
-console.log('AUTH_REDIRECT_PROXY_URL:', process.env.AUTH_REDIRECT_PROXY_URL);
-console.log('NEXT_PUBLIC_NEXTAUTH_URL:', process.env.NEXT_PUBLIC_NEXTAUTH_URL);
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('DEBUG Mode:', process.env.NEXTAUTH_DEBUG === 'true' ? 'Enabled' : 'Disabled');
+// Debug logging
+console.log("[NextAuth] Initializing with env variables:");
+console.log(`GOOGLE_CLIENT_ID: ${process.env.GOOGLE_CLIENT_ID ? "Set (starts with " + process.env.GOOGLE_CLIENT_ID.substring(0, 5) + "...)" : "Not set"}`);
+console.log(`GOOGLE_CLIENT_SECRET: ${process.env.GOOGLE_CLIENT_SECRET ? "Set" : "Not set"}`);
+console.log(`NEXTAUTH_URL: ${process.env.NEXTAUTH_URL || "Not set"}`);
+console.log(`NEXTAUTH_SECRET: ${process.env.NEXTAUTH_SECRET ? "Set" : "Not set"}`);
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 
-// Extend the Session interface
+// Extend Session interface to include user details
 declare module "next-auth" {
   interface Session {
     user: {
       id?: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    }
+      name?: string;
+      email?: string;
+      image?: string;
+      provider?: string;
+    };
+    token: JWT;
   }
 }
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -35,7 +36,11 @@ const handler = NextAuth({
           access_type: "offline",
           response_type: "code"
         }
-      }
+      },
+      // Chắc chắn callback URL đã được cấu hình đúng trong Google Cloud Console
+      // Đảm bảo các URL này khớp với cấu hình trong Google Cloud Console:
+      // - http://localhost:3000/api/auth/callback/google (cho môi trường phát triển)
+      // - https://your-production-domain.com/api/auth/callback/google (cho production)
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -44,114 +49,102 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
+        // Thêm logic xác thực thực tế ở đây
+        // Đây chỉ là mẫu để demo
+        if (credentials?.email === "admin@example.com" && credentials?.password === "password") {
+          return {
+            id: "1",
+            name: "Admin User",
+            email: "admin@example.com",
+          };
         }
-        
-        // This is a placeholder for your actual authentication logic
-        // In a real app, you would validate credentials against your database
-        // For now, just accepting any login to test NextAuth flow
-        const user = {
-          id: "1",
-          name: "Test User",
-          email: credentials.email,
-        };
-        
-        return user;
+        return null;
       }
     }),
   ],
   pages: {
     signIn: "/login",
-    error: "/auth/error",
+    error: "/login",
   },
   callbacks: {
     async session({ session, token }) {
-      console.log('NextAuth callback: session', {
-        hasToken: !!token,
-        hasUser: !!session?.user
-      });
+      console.log("[NextAuth] session callback", { sessionUser: session.user, token });
       
-      if (token && session.user) {
-        session.user.id = token.id as string;
+      // Gán thông tin từ token vào session
+      if (token) {
+        session.user.id = token.sub;
+        session.user.provider = token.provider as string;
+        session.token = token;
       }
+      
       return session;
     },
     async jwt({ token, user, account }) {
-      console.log('NextAuth callback: jwt', {
-        hasToken: !!token,
-        hasUser: !!user,
-        hasAccount: !!account,
-        provider: account?.provider
-      });
+      console.log("[NextAuth] jwt callback", { token, user, account });
       
-      // Initial sign in
-      if (user && account) {
-        token.id = user.id;
+      // Lưu thông tin provider vào token khi đăng nhập
+      if (account) {
         token.provider = account.provider;
       }
+      
+      // Gán thông tin user vào token khi đăng nhập
+      if (user) {
+        token.name = user.name;
+        token.email = user.email;
+        token.picture = user.image;
+      }
+      
       return token;
     },
-    async signIn({ account, profile, user, credentials }) {
-      console.log('NextAuth callback: signIn attempt', {
-        provider: account?.provider,
-        hasProfile: !!profile,
-        hasUser: !!user,
-        hasCredentials: !!credentials
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log("[NextAuth] signIn callback", { 
+        user, 
+        accountProvider: account?.provider,
+        profileEmail: profile?.email,
+        credentials 
       });
       
-      if (account?.provider === 'google') {
-        console.log('Google Sign In Details:', {
-          accountId: account.providerAccountId,
-          profileEmail: profile?.email,
-          profileName: profile?.name,
-          profileImage: profile?.image,
-          scopes: account.scope?.split(' '),
-          tokenType: account.token_type,
-          hasRefreshToken: !!account.refresh_token,
-          hasIdToken: !!account.id_token,
-        });
+      try {
+        // Thêm logic kiểm tra tài khoản nếu cần
+        if (account?.provider === "google" && profile?.email) {
+          // Có thể thêm logic kiểm tra email đã tồn tại trong hệ thống hay chưa
+          // Hoặc tạo tài khoản tự động trong cơ sở dữ liệu nếu chưa tồn tại
+          return true;
+        }
+        
+        // Xử lý credential provider riêng 
+        if (account?.provider === "credentials") {
+          return !!user;
+        }
+        
+        return true;
+      } catch (error) {
+        console.error("[NextAuth] Error in signIn callback:", error);
+        return false;
       }
-      
-      if (account?.provider === 'credentials') {
-        console.log('Credentials Sign In Details:', {
-          providedEmail: credentials?.email,
-        });
-      }
-      
-      // Luôn cho phép đăng nhập để debug
-      return true;
     },
     async redirect({ url, baseUrl }) {
-      // Log đầy đủ để debug
-      console.log('NextAuth callback: redirect với thông tin chi tiết:', { 
-        url, 
-        baseUrl,
-        startsWith_slash: url.startsWith('/'),
-        startsWith_baseUrl: url.startsWith(baseUrl),
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-        FULL_URL: url
-      });
+      console.log("[NextAuth] redirect callback", { url, baseUrl });
       
-      // Đảm bảo redirect về application
-      if (url.startsWith('/')) {
-        const result = `${baseUrl}${url}`;
-        console.log('NextAuth redirect result:', result);
-        return result;
+      // Đảm bảo xử lý chính xác các URL redirect
+      if (url.startsWith("/")) {
+        // URL tương đối - thêm baseUrl
+        return `${baseUrl}${url}`;
       } else if (url.startsWith(baseUrl)) {
-        console.log('NextAuth redirect result:', url);
+        // URL có base đúng
         return url;
       }
-      console.log('NextAuth redirect fallback:', baseUrl);
+      
+      // Mặc định trở về trang chủ
       return baseUrl;
     }
   },
-  debug: true,
-  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-});
+  debug: process.env.NODE_ENV === "development",
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }; 
