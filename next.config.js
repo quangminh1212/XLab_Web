@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     remotePatterns: [
       {
@@ -21,55 +21,7 @@ const nextConfig = {
     formats: ['image/webp'],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    domains: [
-      'lh3.googleusercontent.com', // Google profile pictures
-      'avatars.githubusercontent.com',
-      'images.unsplash.com',
-      'source.unsplash.com',
-      'tailwindui.com',
-      'res.cloudinary.com',
-      'localhost',
-    ],
-  },
-  env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
-    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-  },
-  trailingSlash: false,
-  experimental: {
-    serverComponentsExternalPackages: ['next-auth'],
-  },
-  async redirects() {
-    return [
-      {
-        source: '/auth/callback',
-        destination: '/api/auth/callback/google',
-        permanent: true,
-      },
-      {
-        source: '/signin',
-        destination: '/login',
-        permanent: true,
-      },
-      {
-        source: '/signup',
-        destination: '/register',
-        permanent: true,
-      },
-    ];
-  },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          source: '/auth/google/callback',
-          destination: '/api/auth/callback/google',
-        },
-      ],
-    };
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
   async headers() {
     return [
@@ -94,7 +46,7 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY'
+            value: 'SAMEORIGIN'
           },
           {
             key: 'X-Content-Type-Options',
@@ -108,13 +60,11 @@ const nextConfig = {
       }
     ];
   },
-  swcMinify: true,
-  output: 'standalone',
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
     config.optimization = {
