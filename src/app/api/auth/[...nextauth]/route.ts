@@ -32,9 +32,25 @@ const handler = NextAuth({
         params: {
           prompt: "select_account",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
+          scope: "openid email profile"
         }
-      }
+      },
+      profile(profile) {
+        // Thêm log để theo dõi thông tin profile từ Google
+        console.log('Google profile received:', { 
+          email: profile.email, 
+          name: profile.name,
+          hasImage: !!profile.picture
+        });
+        
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        }
+      },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -108,9 +124,12 @@ const handler = NextAuth({
         hasCredentials: !!credentials
       });
       
-      // Kiểm tra chi tiết nếu có lỗi
-      if (account?.provider === "google" && profile?.email) {
-        console.log('Google sign-in successful', { email: profile.email });
+      // Luôn cho phép đăng nhập để kiểm tra
+      if (account?.provider === "google") {
+        console.log('Google sign-in attempt', { 
+          hasProfile: !!profile,
+          hasEmail: !!profile?.email
+        });
         return true;
       }
       
@@ -118,7 +137,7 @@ const handler = NextAuth({
         return true;
       }
       
-      console.log('Sign-in rejected - unknown provider or missing profile');
+      console.log('Sign-in rejected - unknown provider or missing credentials');
       return false;
     },
     async redirect({ url, baseUrl }) {
