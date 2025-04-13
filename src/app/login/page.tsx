@@ -1,295 +1,226 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { signIn } from 'next-auth/react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [effectiveCallbackUrl, setEffectiveCallbackUrl] = useState('/');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Check for auth errors and set callbackUrl
+  // Xử lý các error từ callback
   useEffect(() => {
-    // Đặt callbackUrl từ searchParams chỉ ở phía client
-    const cbUrl = searchParams?.get('callbackUrl') || '/';
-    setEffectiveCallbackUrl(cbUrl);
+    const error = searchParams.get("error");
+    const callbackUrl = searchParams.get("callbackUrl");
+    const errorDescription = searchParams.get("error_description");
 
-    // Kiểm tra lỗi đăng nhập
-    if (searchParams?.has('error')) {
-      const errorType = searchParams.get('error');
-      console.error('Login error detected:', errorType);
-      
-      switch (errorType) {
-        case 'OAuthSignin':
-          setError('Lỗi khi bắt đầu đăng nhập với Google. Vui lòng thử lại.');
+    // Thu thập thông tin debug
+    const paramsObj: Record<string, string> = {};
+    searchParams.forEach((value, key) => {
+      paramsObj[key] = value;
+    });
+    setDebugInfo(JSON.stringify(paramsObj, null, 2));
+    
+    if (error) {
+      console.error("Login error:", error, "Description:", errorDescription);
+      switch (error) {
+        case "CredentialsSignin":
+          setErrorMessage("Email hoặc mật khẩu không đúng.");
           break;
-        case 'OAuthCallback':
-          setError('Lỗi trong quá trình xác thực Google. Vui lòng thử lại.');
+        case "OAuthSignin":
+          setErrorMessage("Lỗi khi khởi tạo đăng nhập OAuth. Vui lòng thử lại sau.");
           break;
-        case 'token_error':
-          setError('Không thể xác thực với Google. Kiểm tra lại tài khoản và thử lại.');
+        case "OAuthCallback":
+          setErrorMessage("Lỗi trong quá trình xử lý callback từ nhà cung cấp OAuth.");
           break;
-        case 'missing_code':
-          setError('Thiếu mã xác thực từ Google. Vui lòng thử lại.');
+        case "OAuthCreateAccount":
+          setErrorMessage("Không thể tạo tài khoản OAuth. Tài khoản có thể đã tồn tại.");
           break;
-        case 'server_error':
-          setError('Lỗi máy chủ khi xử lý đăng nhập. Vui lòng thử lại sau.');
+        case "EmailCreateAccount":
+          setErrorMessage("Không thể tạo tài khoản đăng nhập bằng email. Email có thể đã được sử dụng.");
+          break;
+        case "Callback":
+          setErrorMessage("Lỗi trong quá trình xử lý callback. Vui lòng thử lại sau.");
+          break;
+        case "AccessDenied":
+          setErrorMessage("Bạn không có quyền truy cập tài nguyên này.");
+          break;
+        case "google":
+          setErrorMessage("Lỗi khi đăng nhập với Google. Vui lòng thử lại.");
           break;
         default:
-          setError(`Lỗi đăng nhập: ${errorType}`);
+          setErrorMessage(`Lỗi đăng nhập: ${error}${errorDescription ? ` - ${errorDescription}` : ''}`);
       }
+    }
+
+    if (callbackUrl) {
+      console.log("Callback URL:", callbackUrl);
     }
   }, [searchParams]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError('Vui lòng nhập email và mật khẩu');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError('');
-
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-        callbackUrl: effectiveCallbackUrl,
-      });
-
-      if (result?.error) {
-        setError('Email hoặc mật khẩu không chính xác');
-        setLoading(false);
-        return;
-      }
-
-      if (result?.url) router.push(effectiveCallbackUrl);
-    } catch (err) {
-      console.error('Lỗi đăng nhập:', err);
-      setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
-      setLoading(false);
-    }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleGoogleSignIn = async () => {
-    console.log("[DEBUG] Bắt đầu đăng nhập Google bằng NextAuth API trực tiếp");
-    setLoading(true);
-    
+    setIsLoading(true);
+    setErrorMessage(null);
+
     try {
-      // Thử phương pháp trực tiếp đến endpoint NextAuth
-      const response = await fetch('/api/auth/signin/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          callbackUrl: effectiveCallbackUrl || '/',
-          json: true,
-        }),
+      const callbackUrl = searchParams.get("callbackUrl") || "/";
+      console.log("Google sign-in with callback URL:", callbackUrl);
+
+      // Thử đăng nhập Google với redirect thay vì gọi trực tiếp
+      await signIn("google", {
+        callbackUrl,
+        redirect: true,
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        console.log("[DEBUG] Response từ NextAuth:", data);
-        
-        // Nếu có URL, chuyển hướng đến đó
-        if (data.url) {
-          window.location.href = data.url;
-        }
-      } else {
-        console.error("[DEBUG] Lỗi khi gọi API NextAuth:", response.status);
-        setError(`Lỗi khi đăng nhập với Google (${response.status})`);
-        setLoading(false);
+      // Lưu ý: Không cần xử lý kết quả ở đây vì redirect:true
+      // đã chuyển hướng người dùng đi rồi
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      setErrorMessage("Lỗi khi đăng nhập với Google. Vui lòng thử lại sau.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleCredentialsSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    try {
+      const callbackUrl = searchParams.get("callbackUrl") || "/";
+      const result = await signIn("credentials", {
+        email: loginData.email,
+        password: loginData.password,
+        redirect: false,
+        callbackUrl,
+      });
+
+      console.log("Credentials sign-in result:", result);
+
+      if (result?.error) {
+        setErrorMessage("Email hoặc mật khẩu không đúng.");
+      } else if (result?.url) {
+        router.push(result.url);
       }
     } catch (error) {
-      console.error("[DEBUG] Lỗi exception:", error);
-      setError("Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.");
-      setLoading(false);
+      console.error("Login error:", error);
+      setErrorMessage("Lỗi đăng nhập. Vui lòng thử lại sau.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-md">
         <div className="text-center">
-          <Link href="/" className="inline-flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white font-bold text-2xl">
-              X
-            </div>
-          </Link>
-          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
-            Chào mừng trở lại!
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600 max-w">
-            Đăng nhập để tiếp tục sử dụng các dịch vụ của XLab
-          </p>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Đăng nhập</h2>
         </div>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10 border border-gray-100">
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-md border border-red-200 flex items-start">
-              <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span>{error}</span>
+        {errorMessage && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+            <div className="flex">
+              <div className="ml-3">
+                <p className="text-sm text-red-700">{errorMessage}</p>
+              </div>
             </div>
-          )}
+          </div>
+        )}
 
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-            className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
-          >
-            {loading ? (
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : (
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
-                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-              </svg>
-            )}
-            <span>Đăng nhập với Google</span>
-          </button>
-          
-          <a 
-            href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(effectiveCallbackUrl || '/')}`}
-            className="block w-full text-center py-2 px-4 border border-blue-300 rounded-full shadow-sm text-sm font-medium text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mb-6"
-          >
-            Đăng nhập Google (Phương pháp dự phòng)
-          </a>
-          
-          <div className="relative mt-4 mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+        <form className="mt-8 space-y-6" onSubmit={handleCredentialsSignIn}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Địa chỉ email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Địa chỉ email"
+                value={loginData.email}
+                onChange={handleInputChange}
+              />
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Hoặc đăng nhập bằng email</span>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Mật khẩu
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Mật khẩu"
+                value={loginData.password}
+                onChange={handleInputChange}
+              />
             </div>
           </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <div className="mt-1">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
-                  placeholder="ten@email.com"
-                />
-              </div>
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
             </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Mật khẩu
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm pr-10"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
-                >
-                  {showPassword ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    </svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Hoặc đăng nhập với</span>
             </div>
+          </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                  Ghi nhớ đăng nhập
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <Link href="/forgot-password" className="font-medium text-teal-600 hover:text-teal-500">
-                  Quên mật khẩu?
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 relative"
-              >
-                {loading && (
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                )}
-                Đăng nhập
-              </button>
-            </div>
-          </form>
-
-          <p className="mt-8 text-sm text-center">
-            <span className="text-gray-500">Chưa có tài khoản?</span>{' '}
-            <Link href="/register" className="font-medium text-teal-600 hover:text-teal-500">
-              Đăng ký ngay
-            </Link>
-          </p>
+          <div className="mt-6">
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={isLoading}
+              className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <Image 
+                src="/google.svg" 
+                alt="Google" 
+                width={20} 
+                height={20} 
+                className="mr-2" 
+              />
+              Google
+            </button>
+          </div>
         </div>
 
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-6 bg-gray-50 p-4 border border-gray-200 rounded-lg text-xs text-gray-500">
-            <div className="font-medium mb-1">Debug info:</div>
-            <div>NEXTAUTH_URL: {process.env.NEXT_PUBLIC_NEXTAUTH_URL}</div>
-            <div>Google Client ID: {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.substring(0, 8) + '...' : 'Not set'}</div>
-            <div>Callback URL: {effectiveCallbackUrl}</div>
+        {process.env.NODE_ENV === "development" && debugInfo && (
+          <div className="mt-8 p-4 bg-gray-100 rounded">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Debug Information:</h3>
+            <pre className="text-xs overflow-auto max-h-40">{debugInfo}</pre>
           </div>
         )}
       </div>
