@@ -7,6 +7,8 @@ import { JWT } from "next-auth/jwt";
 console.log('NextAuth: Khởi tạo module...');
 console.log('Google Client ID:', process.env.GOOGLE_CLIENT_ID?.substring(0, 10) + '...');
 console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
+console.log('NEXT_PUBLIC_NEXTAUTH_URL:', process.env.NEXT_PUBLIC_NEXTAUTH_URL);
+console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('DEBUG Mode:', process.env.NEXTAUTH_DEBUG === 'true' ? 'Enabled' : 'Disabled');
 
 // Extend the Session interface
@@ -28,7 +30,9 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       authorization: {
         params: {
-          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code",
+          prompt: "consent"
         }
       }
     }),
@@ -99,7 +103,9 @@ const handler = NextAuth({
         hasCredentials: !!credentials
       });
       
-      if (account?.provider === "google") {
+      // Kiểm tra chi tiết nếu có lỗi
+      if (account?.provider === "google" && profile?.email) {
+        console.log('Google sign-in successful', { email: profile.email });
         return true;
       }
       
@@ -107,6 +113,7 @@ const handler = NextAuth({
         return true;
       }
       
+      console.log('Sign-in rejected - unknown provider or missing profile');
       return false;
     },
     async redirect({ url, baseUrl }) {
