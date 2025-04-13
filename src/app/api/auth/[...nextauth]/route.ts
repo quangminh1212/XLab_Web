@@ -30,9 +30,9 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       authorization: {
         params: {
+          prompt: "select_account",
           access_type: "offline",
-          response_type: "code",
-          prompt: "consent"
+          response_type: "code"
         }
       }
     }),
@@ -100,6 +100,11 @@ const handler = NextAuth({
         profileEmail: profile?.email,
         userId: user?.id,
         userName: user?.name,
+        profileDetails: profile ? { 
+          name: profile.name, 
+          email: profile.email,
+          hasImage: !!(profile as any)?.picture 
+        } : null,
         hasCredentials: !!credentials
       });
       
