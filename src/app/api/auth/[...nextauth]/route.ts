@@ -14,11 +14,29 @@ declare module "next-auth" {
   }
 }
 
+// Kiểm tra và hiển thị thông tin debug
+const isDebugEnabled = process.env.AUTH_DEBUG === 'true';
+const googleClientId = process.env.GOOGLE_CLIENT_ID || "";
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET || "";
+const nextAuthUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+const authRedirectProxyUrl = process.env.AUTH_REDIRECT_PROXY_URL || nextAuthUrl;
+
+// Log thông tin debug nếu được bật
+if (isDebugEnabled) {
+  console.log("NextAuth: Khởi tạo module...");
+  console.log("Google Client ID đầy đủ:", googleClientId);
+  console.log("NEXTAUTH_URL đầy đủ:", nextAuthUrl);
+  console.log("AUTH_REDIRECT_PROXY_URL:", authRedirectProxyUrl);
+  console.log("NEXT_PUBLIC_NEXTAUTH_URL:", process.env.NEXT_PUBLIC_NEXTAUTH_URL);
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+  console.log("DEBUG Mode:", isDebugEnabled ? "Enabled" : "Disabled");
+}
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
       authorization: {
         params: {
           prompt: "select_account",
@@ -53,8 +71,44 @@ const handler = NextAuth({
       }
       return false;
     },
+    async redirect({ url, baseUrl }) {
+      // Log thông tin debug về redirect
+      if (isDebugEnabled) {
+        console.log("NextAuth callback: redirect với thông tin chi tiết:", {
+          url,
+          baseUrl,
+          startsWith_slash: url.startsWith('/'),
+          startsWith_baseUrl: url.startsWith(baseUrl),
+          NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+          FULL_URL: url
+        });
+      }
+      
+      // Nếu URL bắt đầu bằng /, nó là một relative path
+      if (url.startsWith('/')) {
+        const fullUrl = `${baseUrl}${url}`;
+        if (isDebugEnabled) {
+          console.log("NextAuth redirect result:", fullUrl);
+        }
+        return fullUrl;
+      }
+      
+      // Nếu URL bắt đầu bằng http:// hoặc https://, nó là absolute URL
+      if (url.startsWith('http')) {
+        if (isDebugEnabled) {
+          console.log("NextAuth redirect to absolute URL:", url);
+        }
+        return url;
+      }
+      
+      // Mặc định trả về baseUrl
+      if (isDebugEnabled) {
+        console.log("NextAuth redirect fallback to baseUrl:", baseUrl);
+      }
+      return baseUrl;
+    }
   },
-  debug: false,
+  debug: isDebugEnabled,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",

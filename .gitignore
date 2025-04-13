@@ -36,7 +36,7 @@ yarn-error.log*
 app.log
 
 # local env files
-.env*.local
+# .env*.local  # Tạm thời cho phép push file .env.local
 .env
 
 # vercel
@@ -75,7 +75,7 @@ pnpm-lock.yaml
 .turbo
 
 # environment variables
-.env.local
+# .env.local  # Tạm thời cho phép push file .env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -111,8 +111,8 @@ node_modules/
 # Development files
 .DS_Store
 *.pem
-.env*.local
-.env.local
+# .env*.local  # Tạm thời cho phép push file .env.local
+# .env.local  # Tạm thời cho phép push file .env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -209,7 +209,7 @@ Thumbs.db
 .next/
 node_modules/
 .vercel/
-.env.local
+# .env.local  # Tạm thời cho phép push file .env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -218,3 +218,21 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.pem
+
+# Files tạm thời từ trình soạn thảo
+/.vscode/settings.json.tmp
+*.code-workspace
+/.history
+/sessions/
+
+# Cache files từ NextJS
+/.next/cache/
+/.next/server/pages/
+/.next/static/development/
+/.next/static/chunks/
+/.next/trace-*.json
+
+# Log files và debug
+/logs/
+*.log.*
+/.next/server/error-*
