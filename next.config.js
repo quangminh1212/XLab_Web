@@ -40,7 +40,7 @@ const nextConfig = {
   },
   trailingSlash: false,
   experimental: {
-    serverExternalPackages: ['next-auth'],
+    serverComponentsExternalPackages: ['next-auth'],
   },
   async redirects() {
     return [
@@ -108,6 +108,7 @@ const nextConfig = {
       }
     ];
   },
+  swcMinify: true,
   output: 'standalone',
   eslint: {
     ignoreDuringBuilds: true,
@@ -116,12 +117,27 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   webpack: (config, { dev, isServer }) => {
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
     if (dev) {
-      config.optimization = {
-        ...config.optimization,
-        minimize: false,
-        runtimeChunk: 'single',
-      };
+      config.mode = 'none';
+    }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
     }
     
     return config;
