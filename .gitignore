@@ -4,7 +4,10 @@
 /node_modules
 /.pnp
 .pnp.js
-.yarn/install-state.gz
+.yarn/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # testing
 /coverage
@@ -51,11 +54,6 @@ next-env.d.ts
 
 # IntelliJ IDEA
 .idea
-
-# Package manager
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # Editor directories and files
 .idea/
