@@ -30,6 +30,14 @@ if (isDebugEnabled) {
   console.log("NEXT_PUBLIC_NEXTAUTH_URL:", process.env.NEXT_PUBLIC_NEXTAUTH_URL);
   console.log("NODE_ENV:", process.env.NODE_ENV);
   console.log("DEBUG Mode:", isDebugEnabled ? "Enabled" : "Disabled");
+  
+  if (!googleClientId || googleClientId.trim() === "") {
+    console.error("CẢNH BÁO: GOOGLE_CLIENT_ID chưa được cấu hình!");
+  }
+  
+  if (!googleClientSecret || googleClientSecret.trim() === "") {
+    console.error("CẢNH BÁO: GOOGLE_CLIENT_SECRET chưa được cấu hình!");
+  }
 }
 
 const handler = NextAuth({
@@ -66,10 +74,33 @@ const handler = NextAuth({
       return token;
     },
     async signIn({ account, profile }) {
-      if (account?.provider === "google" && profile?.email) {
-        return true;
+      try {
+        if (isDebugEnabled) {
+          console.log("NextAuth: signIn callback được gọi với:", { 
+            provider: account?.provider, 
+            email: profile?.email 
+          });
+        }
+        
+        if (account?.provider === "google" && profile?.email) {
+          if (isDebugEnabled) {
+            console.log("NextAuth: Đăng nhập Google thành công với email:", profile.email);
+          }
+          return true;
+        }
+        
+        if (isDebugEnabled) {
+          console.log("NextAuth: Đăng nhập thất bại:", { 
+            provider: account?.provider, 
+            hasProfile: !!profile,
+            hasEmail: !!profile?.email 
+          });
+        }
+        return false;
+      } catch (error) {
+        console.error("NextAuth: Lỗi trong signIn callback:", error);
+        return false;
       }
-      return false;
     },
     async redirect({ url, baseUrl }) {
       // Log thông tin debug về redirect
@@ -113,6 +144,19 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  logger: {
+    error(code, metadata) {
+      console.error(`NextAuth ERROR [${code}]:`, metadata);
+    },
+    warn(code) {
+      console.warn(`NextAuth WARNING [${code}]`);
+    },
+    debug(code, metadata) {
+      if (isDebugEnabled) {
+        console.log(`NextAuth DEBUG [${code}]:`, metadata);
+      }
+    },
   },
 });
 
