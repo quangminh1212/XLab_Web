@@ -49,7 +49,8 @@ export default function LoginPage() {
           {/* Form Đăng nhập */} 
           <div className="bg-white rounded-lg shadow-md p-8 w-full max-w-md">
             {/* Sử dụng form GET thay vì button với onClick để đăng nhập Google */}
-            <form action="/api/auth/signin/google" method="GET">
+            <form method="POST" action="/api/auth/signin/google">
+              <input type="hidden" name="csrfToken" value={process.env.NEXTAUTH_SECRET} />
               <input type="hidden" name="callbackUrl" value={(router.query.callbackUrl as string) || '/account'} />
               <button 
                 type="submit"
