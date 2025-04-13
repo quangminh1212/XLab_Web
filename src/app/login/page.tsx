@@ -1,52 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [effectiveCallbackUrl, setEffectiveCallbackUrl] = useState('/');
+  const callbackUrl = searchParams?.get('callbackUrl') || '/';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  // Check for auth errors and set callbackUrl
-  useEffect(() => {
-    // Đặt callbackUrl từ searchParams chỉ ở phía client
-    const cbUrl = searchParams?.get('callbackUrl') || '/';
-    setEffectiveCallbackUrl(cbUrl);
-
-    // Kiểm tra lỗi đăng nhập
-    if (searchParams?.has('error')) {
-      const errorType = searchParams.get('error');
-      console.error('Login error detected:', errorType);
-      
-      switch (errorType) {
-        case 'OAuthSignin':
-          setError('Lỗi khi bắt đầu đăng nhập với Google. Vui lòng thử lại.');
-          break;
-        case 'OAuthCallback':
-          setError('Lỗi trong quá trình xác thực Google. Vui lòng thử lại.');
-          break;
-        case 'token_error':
-          setError('Không thể xác thực với Google. Kiểm tra lại tài khoản và thử lại.');
-          break;
-        case 'missing_code':
-          setError('Thiếu mã xác thực từ Google. Vui lòng thử lại.');
-          break;
-        case 'server_error':
-          setError('Lỗi máy chủ khi xử lý đăng nhập. Vui lòng thử lại sau.');
-          break;
-        default:
-          setError(`Lỗi đăng nhập: ${errorType}`);
-      }
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +31,7 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
-        callbackUrl: effectiveCallbackUrl,
+        callbackUrl,
       });
 
       if (result?.error) {
@@ -72,7 +40,7 @@ export default function LoginPage() {
         return;
       }
 
-      if (result?.url) router.push(effectiveCallbackUrl);
+      if (result?.url) router.push(callbackUrl);
     } catch (err) {
       console.error('Lỗi đăng nhập:', err);
       setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
@@ -80,41 +48,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    console.log("[DEBUG] Bắt đầu đăng nhập Google bằng NextAuth API trực tiếp");
+  const handleGoogleSignIn = () => {
     setLoading(true);
-    
-    try {
-      // Thử phương pháp trực tiếp đến endpoint NextAuth
-      const response = await fetch('/api/auth/signin/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          callbackUrl: effectiveCallbackUrl || '/',
-          json: true,
-        }),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log("[DEBUG] Response từ NextAuth:", data);
-        
-        // Nếu có URL, chuyển hướng đến đó
-        if (data.url) {
-          window.location.href = data.url;
-        }
-      } else {
-        console.error("[DEBUG] Lỗi khi gọi API NextAuth:", response.status);
-        setError(`Lỗi khi đăng nhập với Google (${response.status})`);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error("[DEBUG] Lỗi exception:", error);
-      setError("Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.");
-      setLoading(false);
-    }
+    signIn('google', { callbackUrl });
   };
 
   return (
@@ -147,7 +83,6 @@ export default function LoginPage() {
           )}
 
           <button
-            type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
@@ -165,16 +100,9 @@ export default function LoginPage() {
                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
               </svg>
             )}
-            <span>Đăng nhập với Google</span>
+            <span>Tiếp tục với Google</span>
           </button>
-          
-          <a 
-            href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(effectiveCallbackUrl || '/')}`}
-            className="block w-full text-center py-2 px-4 border border-blue-300 rounded-full shadow-sm text-sm font-medium text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mb-6"
-          >
-            Đăng nhập Google (Phương pháp dự phòng)
-          </a>
-          
+
           <div className="relative mt-4 mb-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200"></div>
@@ -284,14 +212,15 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-6 bg-gray-50 p-4 border border-gray-200 rounded-lg text-xs text-gray-500">
-            <div className="font-medium mb-1">Debug info:</div>
-            <div>NEXTAUTH_URL: {process.env.NEXT_PUBLIC_NEXTAUTH_URL}</div>
-            <div>Google Client ID: {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID.substring(0, 8) + '...' : 'Not set'}</div>
-            <div>Callback URL: {effectiveCallbackUrl}</div>
-          </div>
-        )}
+        <div className="mt-6 text-center">
+          <p className="text-xs text-gray-500">
+            Bằng cách đăng nhập, bạn đồng ý với{' '}
+            <Link href="/terms" className="text-teal-600 hover:underline">Điều khoản dịch vụ</Link>{' '}
+            và{' '}
+            <Link href="/privacy" className="text-teal-600 hover:underline">Chính sách bảo mật</Link>{' '}
+            của chúng tôi.
+          </p>
+        </div>
       </div>
     </div>
   );

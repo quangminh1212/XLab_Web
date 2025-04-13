@@ -66,13 +66,12 @@ const publicRoutes = [
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
-  // Bỏ qua các tài nguyên tĩnh và các api routes không yêu cầu xác thực
+  // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
   if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/static') ||
-    pathname.includes('.') || // Bỏ qua các file như favicon.ico
-    pathname.startsWith('/api/auth/') || // Bỏ qua tất cả các API route của NextAuth
-    (pathname.startsWith('/api/') && !pathname.startsWith('/api/protected')) // Bỏ qua các API khác ngoại trừ protected
+    pathname.startsWith('/_next') || 
+    pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
+    pathname.startsWith('/static') || 
+    pathname.includes('.')
   ) {
     return NextResponse.next();
   }
