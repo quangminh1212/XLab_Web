@@ -49,17 +49,8 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = () => {
-    console.log('Attempting Google Sign In...');
-    try {
-      setLoading(true);
-      setError('');
-      signIn('google', { callbackUrl });
-      console.log("signIn('google') called successfully.");
-    } catch (error) {
-      console.error('Error during Google Sign In initiation:', error);
-      setError('Có lỗi xảy ra khi bắt đầu đăng nhập Google.');
-      setLoading(false);
-    }
+    setLoading(true);
+    signIn('google', { callbackUrl });
   };
 
   return (

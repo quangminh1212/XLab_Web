@@ -1,5 +1,3 @@
-const path = require('path');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -84,19 +82,6 @@ const nextConfig = {
       mangleExports: false,
     };
     
-    // Thêm alias để fix lỗi invalid hook
-    const reactPaths = {
-      react: path.join(__dirname, "node_modules/react"),
-      "react-dom": path.join(__dirname, "node_modules/react-dom"),
-    };
-    config.resolve = {
-      ...config.resolve,
-      alias: {
-        ...config.resolve.alias,
-        ...reactPaths,
-      },
-    };
-    
     if (dev) {
       config.mode = 'none';
     }
@@ -109,9 +94,6 @@ const nextConfig = {
   },
   compiler: {
     styledComponents: true,
-  },
-  serverExternalPackages: ['bcrypt'],
-  experimental: {
   },
 };
 
