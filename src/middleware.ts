@@ -69,9 +69,9 @@ export async function middleware(request: NextRequest) {
   // Debug
   console.log('Middleware xử lý đường dẫn:', pathname);
   
-  // Xử lý đặc biệt cho callback Google
-  if (pathname === '/auth/callback') {
-    console.log('Google callback được phát hiện, chuyển hướng:', pathname);
+  // Xử lý đặc biệt cho callback từ Google OAuth
+  if (pathname.startsWith('/auth/callback') || pathname.includes('callback/google')) {
+    console.log('Google callback được phát hiện, chuyển hướng:', pathname, 'Tham số:', request.nextUrl.search);
     
     // Chuyển hướng đến endpoint chính thức của NextAuth
     const url = new URL('/api/auth/callback/google', request.url);
@@ -81,25 +81,35 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Bỏ qua các tài nguyên tĩnh và api routes
+  // Bỏ qua các api routes của NextAuth
+  if (pathname.startsWith('/api/auth')) {
+    console.log('Bỏ qua middleware cho API NextAuth:', pathname);
+    return NextResponse.next();
+  }
+
+  // Bỏ qua các tài nguyên tĩnh
   if (
     pathname.startsWith('/_next') || 
-    pathname.startsWith('/api/') ||
     pathname.startsWith('/static') || 
-    pathname.includes('.')
+    pathname.includes('.') ||
+    pathname.startsWith('/api/') // Bỏ qua tất cả API routes khác
   ) {
     return NextResponse.next();
   }
 
   // Xác thực với NextAuth
   try {
+    // Lấy token xác thực      
     const token = await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
     });
     
+    console.log('Token xác thực:', !!token, 'Đường dẫn:', pathname);
+    
     // Chuyển hướng người dùng đã đăng nhập từ trang login
     if ((pathname === '/login' || pathname === '/register') && token) {
+      console.log('Đã đăng nhập, chuyển hướng từ trang đăng nhập/đăng ký đến trang chủ');
       return NextResponse.redirect(new URL('/', request.url));
     }
     
@@ -107,6 +117,7 @@ export async function middleware(request: NextRequest) {
     const protectedRoutes = ['/account', '/checkout', '/admin'];
     
     if (protectedRoutes.some(route => pathname.startsWith(route)) && !token) {
+      console.log('Yêu cầu đăng nhập để truy cập trang bảo vệ:', pathname);
       const url = new URL('/login', request.url);
       url.searchParams.set('callbackUrl', encodeURI(pathname));
       return NextResponse.redirect(url);
@@ -127,7 +138,8 @@ export const config = {
     '/account/:path*',
     '/checkout/:path*',
     '/admin/:path*',
-    '/auth/callback',
+    '/auth/callback/:path*',
+    '/api/auth/callback/:path*', 
     '/products/:path*',
     '/services/:path*',
     '/about',
