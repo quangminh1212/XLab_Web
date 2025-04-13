@@ -40,6 +40,29 @@ if (isDebugEnabled) {
   }
 }
 
+// Khắc phục và log lỗi cho đường dẫn callback
+// Kiểm tra xem có lỗi nào xảy ra khi nhận callback từ Google không
+const logCallbackErrorDetails = (error: any) => {
+  if (isDebugEnabled) {
+    console.error("Lỗi trong xử lý callback", error);
+    
+    // Chi tiết về lỗi
+    if (error.response) {
+      console.error("Chi tiết response:", {
+        status: error.response.status,
+        headers: error.response.headers,
+        data: error.response.data,
+      });
+    }
+    
+    // Thông tin lỗi
+    console.error("Chi tiết lỗi:", {
+      message: error.message,
+      stack: error.stack,
+    });
+  }
+};
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -63,6 +86,9 @@ const handler = NextAuth({
   pages: {
     signIn: "/login",
     error: "/auth/error",
+    // Đặt callback tùy chỉnh để phù hợp với cấu hình trong Google Cloud Console
+    // Đường dẫn này cần match với Authorized Redirect URI trong console Google
+    newUser: "/auth/new-user",
   },
   callbacks: {
     async session({ session, token }) {
@@ -105,6 +131,8 @@ const handler = NextAuth({
         return false;
       } catch (error) {
         console.error("NextAuth: Lỗi trong signIn callback:", error);
+        // Ghi log chi tiết
+        logCallbackErrorDetails(error);
         return false;
       }
     },
@@ -119,6 +147,15 @@ const handler = NextAuth({
           NEXTAUTH_URL: process.env.NEXTAUTH_URL,
           FULL_URL: url
         });
+      }
+      
+      // Xử lý đặc biệt cho đường dẫn callback từ Google
+      if (url.includes('/auth/callback') || url.includes('/auth/signin/google/callback')) {
+        const homeUrl = `${baseUrl}/`;
+        if (isDebugEnabled) {
+          console.log("NextAuth: callback Google được phát hiện, chuyển hướng về trang chủ:", homeUrl);
+        }
+        return homeUrl;
       }
       
       // Luôn chuyển hướng về trang chủ khi đăng nhập thành công 
@@ -168,6 +205,15 @@ const handler = NextAuth({
   logger: {
     error(code, metadata) {
       console.error(`NextAuth ERROR [${code}]:`, metadata);
+      
+      // Log thêm thông tin để debug
+      if (code === "CALLBACK_OAUTH_ERROR") {
+        console.error("Chi tiết lỗi OAuth:", {
+          ...metadata,
+          googleClientId: googleClientId?.substring(0, 10) + "..." || "không có",
+          authUrl: nextAuthUrl,
+        });
+      }
     },
     warn(code) {
       console.warn(`NextAuth WARNING [${code}]`);
