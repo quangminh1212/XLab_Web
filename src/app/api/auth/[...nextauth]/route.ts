@@ -88,7 +88,6 @@ const handler = NextAuth({
     error: "/auth/error",
     // Đặt callback tùy chỉnh để phù hợp với cấu hình trong Google Cloud Console
     // Đường dẫn này cần match với Authorized Redirect URI trong console Google
-    newUser: "/auth/new-user",
   },
   callbacks: {
     async session({ session, token }) {
@@ -149,46 +148,7 @@ const handler = NextAuth({
         });
       }
       
-      // Xử lý đặc biệt cho đường dẫn callback từ Google
-      if (url.includes('/auth/callback') || url.includes('/auth/signin/google/callback')) {
-        const homeUrl = `${baseUrl}/`;
-        if (isDebugEnabled) {
-          console.log("NextAuth: callback Google được phát hiện, chuyển hướng về trang chủ:", homeUrl);
-        }
-        return homeUrl;
-      }
-      
-      // Luôn chuyển hướng về trang chủ khi đăng nhập thành công 
-      // hoặc khi URL không rõ ràng (để tránh lỗi redirect)
-      if (url === '/' || url.startsWith('/api/auth/signin') || url.includes('error=')) {
-        const homeUrl = `${baseUrl}/`;
-        if (isDebugEnabled) {
-          console.log("NextAuth redirect to home:", homeUrl);
-        }
-        return homeUrl;
-      }
-      
-      // Nếu URL bắt đầu bằng /, nó là một relative path
-      if (url.startsWith('/')) {
-        const fullUrl = `${baseUrl}${url}`;
-        if (isDebugEnabled) {
-          console.log("NextAuth redirect result:", fullUrl);
-        }
-        return fullUrl;
-      }
-      
-      // Nếu URL bắt đầu bằng http:// hoặc https://, nó là absolute URL
-      if (url.startsWith('http')) {
-        if (isDebugEnabled) {
-          console.log("NextAuth redirect to absolute URL:", url);
-        }
-        return url;
-      }
-      
-      // Mặc định trả về baseUrl
-      if (isDebugEnabled) {
-        console.log("NextAuth redirect fallback to baseUrl:", baseUrl);
-      }
+      // Đơn giản hóa logic redirect để luôn chuyển về trang chủ sau khi đăng nhập
       return baseUrl;
     }
   },
