@@ -26,33 +26,52 @@ export default function AdminProductsPage() {
     setIsLoading(true);
     setFormError('');
     
-    // Tạo form data từ form
-    const formData = new FormData(event.currentTarget);
-    const productData = {
-      id: isEditing && currentProduct ? currentProduct.id : `prod-${Date.now()}`,
-      name: formData.get('name') as string,
-      slug: formData.get('slug') as string || formData.get('name') as string,
-      description: formData.get('description') as string,
-      longDescription: formData.get('longDescription') as string,
-      price: Number(formData.get('price')),
-      salePrice: Number(formData.get('salePrice')) || Number(formData.get('price')),
-      categoryId: formData.get('categoryId') as string,
-      imageUrl: formData.get('imageUrl') as string || '/images/placeholder-product.jpg',
-      version: formData.get('version') as string || '1.0.0',
-      size: formData.get('size') as string || '0MB',
-      licenseType: formData.get('licenseType') as string || 'Thương mại',
-      isFeatured: formData.get('isFeatured') === 'on',
-      isNew: formData.get('isNew') === 'on',
-      storeId: '1', // Mặc định sử dụng storeId là 1
-      downloadCount: currentProduct?.downloadCount || 0,
-      viewCount: currentProduct?.viewCount || 0,
-      rating: currentProduct?.rating || 0,
-      createdAt: currentProduct?.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    } as Product;
-    
     try {
+      // Tạo form data từ form
+      const formData = new FormData(event.currentTarget);
+      
+      // Xử lý giá trị từ form để đảm bảo kiểu dữ liệu chính xác
+      const price = Number(formData.get('price')) || 0;
+      const salePrice = Number(formData.get('salePrice')) || price;
+      
+      const productData = {
+        id: isEditing && currentProduct ? String(currentProduct.id) : `prod-${Date.now()}`,
+        name: (formData.get('name') as string).trim(),
+        slug: (formData.get('slug') as string).trim() || (formData.get('name') as string).trim().toLowerCase().replace(/\s+/g, '-'),
+        description: (formData.get('description') as string).trim(),
+        longDescription: (formData.get('longDescription') as string).trim(),
+        price: price,
+        salePrice: salePrice,
+        categoryId: formData.get('categoryId') as string,
+        imageUrl: (formData.get('imageUrl') as string).trim() || '/images/placeholder-product.jpg',
+        version: (formData.get('version') as string).trim() || '1.0.0',
+        size: (formData.get('size') as string).trim() || '0MB',
+        licenseType: (formData.get('licenseType') as string) || 'Thương mại',
+        isFeatured: formData.get('isFeatured') === 'on',
+        isNew: formData.get('isNew') === 'on',
+        storeId: currentProduct?.storeId || '1', // Mặc định sử dụng storeId là 1
+        downloadCount: currentProduct?.downloadCount || 0,
+        viewCount: currentProduct?.viewCount || 0,
+        rating: currentProduct?.rating || 0,
+        createdAt: currentProduct?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      } as Product;
+      
       console.log("Submitting product:", productData);
+      
+      // Kiểm tra dữ liệu đầu vào
+      if (!productData.name) {
+        throw new Error('Tên sản phẩm không được để trống');
+      }
+      
+      if (!productData.categoryId) {
+        throw new Error('Vui lòng chọn danh mục cho sản phẩm');
+      }
+      
+      if (productData.price <= 0) {
+        throw new Error('Giá sản phẩm phải lớn hơn 0');
+      }
+      
       if (isEditing && currentProduct) {
         // Cập nhật sản phẩm qua context
         updateProduct(productData);
@@ -89,8 +108,10 @@ export default function AdminProductsPage() {
     
     setIsLoading(true);
     try {
+      // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
+      const productId = String(id);
       // Xóa sản phẩm qua context
-      deleteProduct(String(id));
+      deleteProduct(productId);
       console.log("Product deleted successfully:", id);
       alert('Đã xóa sản phẩm thành công!');
     } catch (error: any) {
@@ -110,10 +131,18 @@ export default function AdminProductsPage() {
     }
     
     console.log("Editing product:", product);
-    setCurrentProduct({...product});
-    setIsEditing(true);
-    setShowForm(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    try {
+      // Tạo bản sao sâu của product để tránh thay đổi trực tiếp vào state
+      const productCopy = JSON.parse(JSON.stringify(product));
+      setCurrentProduct(productCopy);
+      setIsEditing(true);
+      setShowForm(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error: any) {
+      console.error("Error in edit handling:", error);
+      alert(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm');
+    }
   };
 
   // Reset form

@@ -6,11 +6,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export const metadata = {
-  title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
-}
-
 export default function AdminPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
