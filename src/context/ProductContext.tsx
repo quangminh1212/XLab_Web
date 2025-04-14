@@ -144,19 +144,37 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(productData)
       });
       
-      const data = await response.json();
+      // Lấy response body
+      let responseData;
+      try {
+        responseData = await response.json();
+      } catch (parseError) {
+        console.error("[ProductContext] Error parsing response:", parseError);
+        throw new Error("Không thể đọc phản hồi từ server");
+      }
       
+      // Kiểm tra response status
       if (!response.ok) {
-        console.error("[ProductContext] API Error:", data);
-        throw new Error(data.error || "Không thể thêm sản phẩm");
+        console.error("[ProductContext] API Error:", responseData);
+        throw new Error(responseData.error || `Lỗi khi thêm sản phẩm: ${response.status}`);
+      }
+      
+      // Bảo đảm responseData có đủ trường cần thiết của Product
+      if (!responseData.id || !responseData.name) {
+        console.error("[ProductContext] Invalid product data returned:", responseData);
+        throw new Error("Dữ liệu sản phẩm trả về không hợp lệ");
       }
       
       // Lấy sản phẩm đã được thêm từ response
-      const addedProduct = data;
+      const addedProduct = responseData as Product;
       console.log("[ProductContext] Product added via API:", addedProduct);
       
       // Cập nhật state
-      setProducts(prevProducts => [...prevProducts, addedProduct]);
+      setProducts(prevProducts => {
+        const newProducts = [...prevProducts, addedProduct];
+        console.log("[ProductContext] Products state after adding:", newProducts.length);
+        return newProducts;
+      });
       
       return addedProduct;
     } catch (error) {

@@ -24,10 +24,10 @@ export default function AdminProductsPage() {
   // Tự động tải lại trang sau khi thực hiện thao tác thành công
   const reloadAfterSuccess = (message: string) => {
     showSuccess(message);
-    // Đặt timeout để người dùng thấy thông báo thành công trước khi reload
+    // Đặt timeout dài hơn (3 giây) để đảm bảo API và localStorage đã được cập nhật
     setTimeout(() => {
       window.location.reload();
-    }, 1000);
+    }, 3000);
   };
   
   // Chuyển đổi số thành định dạng tiền tệ
@@ -113,29 +113,35 @@ export default function AdminProductsPage() {
         } else {
           // Tạo product mới không bao gồm id client-side
           const createData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'> = { 
-            name: productData.name,
-            slug: productData.slug,
-            description: productData.description,
-            longDescription: productData.longDescription,
-            price: productData.price,
-            salePrice: productData.salePrice,
-            categoryId: productData.categoryId,
-            imageUrl: productData.imageUrl,
-            version: productData.version,
-            size: productData.size,
-            licenseType: productData.licenseType,
-            isFeatured: productData.isFeatured,
-            isNew: productData.isNew,
-            storeId: productData.storeId, // Đảm bảo storeId có giá trị hợp lệ
-            downloadCount: 0, // Giá trị mặc định
-            viewCount: 0,     // Giá trị mặc định
-            rating: 0,        // Giá trị mặc định
+            name: name,
+            slug: slug,
+            description: (formData.get('description') as string || '').trim(),
+            longDescription: (formData.get('longDescription') as string || '').trim(),
+            price: price,
+            salePrice: salePrice,
+            categoryId: categoryId,
+            imageUrl: (formData.get('imageUrl') as string || '').trim() || '/images/placeholder-product.jpg',
+            version: (formData.get('version') as string || '').trim() || '1.0.0',
+            size: (formData.get('size') as string || '').trim() || '0MB',
+            licenseType: (formData.get('licenseType') as string) || 'Thương mại',
+            isFeatured: formData.get('isFeatured') === 'on',
+            isNew: formData.get('isNew') === 'on',
+            storeId: '1', // Giá trị mặc định cho storeId
+            downloadCount: 0, 
+            viewCount: 0,
+            rating: 0
           };
           
-          console.log("Data sent to addProduct context function:", createData);
+          console.log("[AdminProductsPage] Data sent to addProduct context function:", createData);
           
-          await addProduct(createData); // Gọi hàm từ context với đúng kiểu dữ liệu
-          reloadAfterSuccess('Đã thêm sản phẩm mới thành công!');
+          try {
+            const newProduct = await addProduct(createData);
+            console.log("[AdminProductsPage] Product added successfully:", newProduct);
+            reloadAfterSuccess('Đã thêm sản phẩm mới thành công!');
+          } catch (addError) {
+            console.error("[AdminProductsPage] Error from addProduct:", addError);
+            throw addError; // Re-throw để xử lý ở catch bên ngoài
+          }
         }
         
         // Reset form
