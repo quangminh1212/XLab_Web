@@ -8,20 +8,20 @@ import { products as mockProducts, categories as mockCategories } from '@/data/m
 interface ProductContextType {
   products: Product[];
   categories: Category[];
-  updateProducts: (newProducts: Product[]) => void;
-  addProduct: (product: Product) => void;
-  updateProduct: (product: Product) => void;
-  deleteProduct: (id: string | number) => void;
+  updateProducts: (newProducts: Product[]) => Promise<boolean>;
+  addProduct: (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Product>;
+  updateProduct: (product: Product) => Promise<Product>;
+  deleteProduct: (id: string | number) => Promise<boolean>;
 }
 
 // Tạo giá trị mặc định cho context để tránh lỗi undefined
 const defaultContextValue: ProductContextType = {
   products: [],
   categories: [],
-  updateProducts: () => {},
-  addProduct: () => {},
-  updateProduct: () => {},
-  deleteProduct: () => {},
+  updateProducts: async () => { console.warn("updateProducts called on default context"); return false; },
+  addProduct: async () => { console.warn("addProduct called on default context"); throw new Error('Context not ready'); },
+  updateProduct: async () => { console.warn("updateProduct called on default context"); throw new Error('Context not ready'); },
+  deleteProduct: async () => { console.warn("deleteProduct called on default context"); return false; },
 };
 
 // Tạo context với giá trị mặc định
@@ -93,8 +93,8 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Thêm sản phẩm mới
-  const addProduct = async (product: Product) => {
-    console.log("[ProductContext] Adding product:", product);
+  const addProduct = async (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> => {
+    console.log("[ProductContext] Adding product data:", productData);
     
     try {
       // Gọi API thêm sản phẩm
@@ -103,24 +103,32 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(product)
+        // Gửi dữ liệu không bao gồm id, createdAt, updatedAt
+        body: JSON.stringify(productData) 
       });
       
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("[ProductContext] API Error adding product:", errorData);
         throw new Error(errorData.error || "Không thể thêm sản phẩm");
       }
       
-      // Lấy sản phẩm đã được thêm từ response
+      // Lấy sản phẩm đã được thêm từ response (bao gồm id và timestamps được tạo bởi server)
       const addedProduct = await response.json();
+      console.log("[ProductContext] Product added via API:", addedProduct);
       
-      // Cập nhật state
+      // Cập nhật state với sản phẩm đầy đủ
       setProducts(prevProducts => {
         const newProducts = [...prevProducts, addedProduct];
+        console.log("[ProductContext] Products state after adding:", newProducts);
         
         // Lưu vào localStorage
         if (typeof window !== 'undefined') {
-          localStorage.setItem('xlab_products', JSON.stringify(newProducts));
+          try {
+            localStorage.setItem('xlab_products', JSON.stringify(newProducts));
+          } catch (storageError) {
+            console.error("[ProductContext] Error saving to localStorage after add:", storageError);
+          }
         }
         
         return newProducts;
@@ -128,8 +136,9 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       
       return addedProduct;
     } catch (error) {
-      console.error("[ProductContext] Error adding product:", error);
-      throw error;
+      console.error("[ProductContext] Error in addProduct function:", error);
+      // Ném lỗi ra ngoài để component có thể bắt và hiển thị
+      throw error instanceof Error ? error : new Error("Lỗi không xác định khi thêm sản phẩm"); 
     }
   };
 
