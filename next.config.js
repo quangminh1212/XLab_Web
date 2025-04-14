@@ -67,20 +67,27 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
-    // Giảm bớt các tùy chỉnh tối ưu hóa quá mức để tránh lỗi
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
     if (dev) {
-      // Chỉ áp dụng các cấu hình tối ưu hóa bất thường trong chế độ development
-      config.optimization = {
-        ...config.optimization,
-        runtimeChunk: 'single',
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            vendors: false,
-            default: false,
-          },
-        },
-      };
+      config.mode = 'none';
+    }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
     }
     
     return config;
@@ -88,13 +95,6 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  experimental: {
-    // Tắt các tính năng thử nghiệm có thể gây ra lỗi
-    serverActions: false,
-    serverComponentsExternalPackages: [],
-  },
-  poweredByHeader: false,
-  outputFileTracing: true,
 };
 
 module.exports = nextConfig;
