@@ -9,6 +9,11 @@ const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      authorization: {
+        params: {
+          prompt: "select_account",
+        }
+      }
     }),
   ],
   pages: {
@@ -32,6 +37,7 @@ const authOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ account, profile }) {
+      console.log('SignIn callback called with account provider:', account?.provider);
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
@@ -39,7 +45,14 @@ const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       console.log('Redirect callback called with:', { url, baseUrl });
-      return baseUrl;
+      
+      // Nếu URL liên quan đến auth API, chuyển hướng đến callback được cấu hình trong Google Console
+      if (url.includes('/api/auth') && url.includes('/callback')) {
+        return 'http://localhost:3000/auth';
+      }
+      
+      // Trả về URL chỉ định hoặc URL gốc nếu không có
+      return url || baseUrl;
     },
   },
   debug: true,

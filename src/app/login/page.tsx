@@ -68,11 +68,19 @@ export default function LoginPage() {
   const handleGoogleSignIn = () => {
     try {
       setLoading(true);
+      console.log('Bắt đầu đăng nhập bằng Google...');
+      
+      // Thay đổi callbackUrl để chỉ định rõ callback URI mà Google API chấp nhận
       signIn('google', { 
-        callbackUrl: window.location.origin
+        callbackUrl: 'http://localhost:3000/auth',
+        redirect: true
       });
+      
+      // Đoạn code dưới đây có thể không được thực thi nếu chuyển hướng thành công
+      console.log('Đã gửi yêu cầu đăng nhập Google');
     } catch (error) {
       console.error('Lỗi khi đăng nhập với Google:', error);
+      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
       setLoading(false);
     }
   };
