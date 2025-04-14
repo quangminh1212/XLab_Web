@@ -487,12 +487,14 @@ export default function AdminProductsPage() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
                               <div className="flex justify-end space-x-2">
                                 <button 
+                                  type="button"
                                   className="text-primary-600 hover:text-primary-900"
                                   onClick={() => handleEdit(product)}
                                 >
                                   Sửa
                                 </button>
                                 <button 
+                                  type="button"
                                   className="text-red-600 hover:text-red-900"
                                   onClick={() => handleDelete(product.id)}
                                 >
