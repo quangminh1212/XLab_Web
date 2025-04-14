@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, Category } from '@/types';
 import { products as mockProducts, categories as mockCategories } from '@/data/mockData';
 
@@ -30,9 +30,6 @@ export const ProductContext = createContext<ProductContextType>(defaultContextVa
 // Hook để sử dụng context
 export function useProducts() {
   const context = useContext(ProductContext);
-  if (context === undefined) {
-    throw new Error('useProducts must be used within a ProductProvider');
-  }
   return context;
 }
 
@@ -41,84 +38,63 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   // Khởi tạo state từ dữ liệu mẫu
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [categories] = useState<Category[]>(mockCategories);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const initialRenderRef = useRef(true);
 
-  // Helper function để lưu vào localStorage
-  const saveToLocalStorage = (data: Product[]) => {
+  // Debug function để kiểm tra state
+  const logState = (action: string, data?: any) => {
+    console.log(`[ProductContext] ${action}:`, data || products);
+  };
+
+  // Lưu trữ danh sách sản phẩm vào localStorage khi có thay đổi
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
-        localStorage.setItem('xlab_products', JSON.stringify(data));
-        console.log("Products saved to localStorage:", data);
+        console.log("Saving products to localStorage:", products);
+        localStorage.setItem('xlab_products', JSON.stringify(products));
       } catch (error) {
         console.error('Lỗi khi lưu vào localStorage:', error);
       }
     }
-  };
+  }, [products]);
 
   // Khôi phục danh sách sản phẩm từ localStorage khi component được mount
   useEffect(() => {
-    if (typeof window !== 'undefined' && !isInitialized) {
+    if (typeof window !== 'undefined') {
       try {
         const savedProducts = localStorage.getItem('xlab_products');
         if (savedProducts) {
           const parsedProducts = JSON.parse(savedProducts);
           console.log("Loaded products from localStorage:", parsedProducts);
           setProducts(parsedProducts);
-        } else {
-          // Nếu không có sản phẩm được lưu, sử dụng dữ liệu mẫu và lưu vào localStorage
-          console.log("No products found in localStorage, using mock data");
-          setProducts(mockProducts);
-          saveToLocalStorage(mockProducts);
         }
-        setIsInitialized(true);
       } catch (error) {
         console.error('Lỗi khi phân tích dữ liệu sản phẩm từ localStorage:', error);
-        // Fallback to mock data
-        setProducts(mockProducts);
-        saveToLocalStorage(mockProducts);
-        setIsInitialized(true);
       }
     }
-  }, [isInitialized]);
+  }, []);
 
   // Cập nhật toàn bộ danh sách sản phẩm
   const updateProducts = (newProducts: Product[]) => {
     console.log("[ProductContext] Updating all products:", newProducts);
     setProducts(newProducts);
-    saveToLocalStorage(newProducts);
   };
 
   // Thêm sản phẩm mới
   const addProduct = (product: Product) => {
     console.log("[ProductContext] Adding product:", product);
-    
     try {
-      // Kiểm tra sản phẩm đã tồn tại chưa
-      const existingProduct = products.find(p => String(p.id) === String(product.id));
-      if (existingProduct) {
-        throw new Error(`Sản phẩm với ID ${product.id} đã tồn tại`);
-      }
-      
-      // Đảm bảo ID là duy nhất
-      const productToAdd = {
-        ...product,
-        id: product.id || `prod-${Date.now()}`,
-        createdAt: product.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      
-      // Cập nhật state
-      const updatedProducts = [...products, productToAdd];
-      setProducts(updatedProducts);
-      
-      // Lưu vào localStorage
-      saveToLocalStorage(updatedProducts);
-      
-      return productToAdd;
+      setProducts(prevProducts => {
+        const newProducts = [...prevProducts, product];
+        
+        // Lưu vào localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('xlab_products', JSON.stringify(newProducts));
+        }
+        
+        return newProducts;
+      });
     } catch (error) {
       console.error("[ProductContext] Error adding product:", error);
-      throw error;
+      throw new Error("Không thể thêm sản phẩm. Vui lòng thử lại.");
     }
   };
 
@@ -130,29 +106,35 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       // Normalize ID to string for comparison
       const productId = String(product.id);
       
-      // Tìm sản phẩm trong danh sách
-      const existingProductIndex = products.findIndex(p => String(p.id) === productId);
+      setProducts(prevProducts => {
+        // Tìm sản phẩm trong danh sách
+        const existingProductIndex = prevProducts.findIndex(p => String(p.id) === productId);
+        
+        // Nếu không tìm thấy sản phẩm
+        if (existingProductIndex === -1) {
+          console.error(`[ProductContext] Product with ID ${productId} not found`);
+          throw new Error(`Không tìm thấy sản phẩm với ID ${productId}`);
+        }
+        
+        // Cập nhật sản phẩm
+        const updated = [...prevProducts];
+        updated[existingProductIndex] = {
+          ...prevProducts[existingProductIndex],
+          ...product,
+          updatedAt: new Date().toISOString()
+        };
+        
+        console.log("[ProductContext] Products after update:", updated);
+        
+        // Lưu vào localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('xlab_products', JSON.stringify(updated));
+        }
+        
+        return updated;
+      });
       
-      // Nếu không tìm thấy sản phẩm
-      if (existingProductIndex === -1) {
-        throw new Error(`Không tìm thấy sản phẩm với ID ${productId}`);
-      }
-      
-      // Cập nhật sản phẩm
-      const updatedProducts = [...products];
-      updatedProducts[existingProductIndex] = {
-        ...products[existingProductIndex],
-        ...product,
-        updatedAt: new Date().toISOString()
-      };
-      
-      // Cập nhật state
-      setProducts(updatedProducts);
-      
-      // Lưu vào localStorage
-      saveToLocalStorage(updatedProducts);
-      
-      return updatedProducts[existingProductIndex];
+      return true;
     } catch (error) {
       console.error("[ProductContext] Error updating product:", error);
       throw error;
@@ -167,21 +149,26 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       // Normalize ID to string for comparison
       const productId = String(id);
       
-      // Kiểm tra sản phẩm tồn tại hay không
-      const existingProduct = products.find(p => String(p.id) === productId);
-      
-      if (!existingProduct) {
-        throw new Error(`Không tìm thấy sản phẩm với ID ${productId} để xóa`);
-      }
-      
-      // Xóa sản phẩm
-      const filteredProducts = products.filter(p => String(p.id) !== productId);
-      
-      // Cập nhật state
-      setProducts(filteredProducts);
-      
-      // Lưu vào localStorage
-      saveToLocalStorage(filteredProducts);
+      setProducts(prevProducts => {
+        // Kiểm tra xem sản phẩm có tồn tại không
+        const existingProduct = prevProducts.find(p => String(p.id) === productId);
+        
+        if (!existingProduct) {
+          console.error(`[ProductContext] Product with ID ${productId} not found for deletion`);
+          throw new Error(`Không tìm thấy sản phẩm với ID ${productId} để xóa`);
+        }
+        
+        // Xóa sản phẩm
+        const filtered = prevProducts.filter(p => String(p.id) !== productId);
+        console.log("[ProductContext] Products after deletion:", filtered);
+        
+        // Lưu vào localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('xlab_products', JSON.stringify(filtered));
+        }
+        
+        return filtered;
+      });
       
       return true;
     } catch (error) {
