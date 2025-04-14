@@ -24,10 +24,9 @@ interface ProductFormProps {
     imageUrl?: string;
     size?: string;
     license?: string;
-    description?: string;
-    content?: string;
-    category?: string;
     shortDescription?: string;
+    longDescription?: string;
+    category?: string;
     [key: string]: string | undefined; // Cho phép truy cập dynamic các field error
   };
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -275,11 +274,11 @@ const ProductForm = ({
                 id="longDescription"
                 name="longDescription"
                 rows={5}
-                className={`w-full p-2 border rounded ${formError.description ? 'border-red-500' : 'border-gray-300'}`}
-                defaultValue={currentProduct?.description || ''}
+                className={`w-full p-2 border rounded ${formError.longDescription ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.longDescription || ''}
               ></textarea>
-              {formError.description && (
-                <p className="text-red-500 text-xs mt-1">{formError.description}</p>
+              {formError.longDescription && (
+                <p className="text-red-500 text-sm mt-1">{formError.longDescription}</p>
               )}
             </div>
             
@@ -701,6 +700,7 @@ export default function AdminProductsPage() {
   // Hàm xử lý khi nhấn nút thêm sản phẩm
   const handleAddProductClick = () => {
     console.log("Add product button clicked");
+    setClickCount(prevCount => prevCount + 1);
     resetForm();
     setShowForm(true);
     console.log("showForm set to:", true);
@@ -1212,8 +1212,8 @@ export default function AdminProductsPage() {
                   </div>
                   
                   <div className="mt-4">
-                    <h3 className="text-lg font-medium text-gray-900">Mô tả ngắn</h3>
-                    <p className="text-gray-600 mt-1">{selectedProduct.description}</p>
+                    <h3 className="text-lg font-semibold text-gray-900">Mô tả ngắn</h3>
+                    <p className="text-gray-600 mt-2">{selectedProduct.description}</p>
                   </div>
                   
                   <div className="mt-4">
