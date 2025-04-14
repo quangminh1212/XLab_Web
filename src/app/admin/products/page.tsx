@@ -146,7 +146,7 @@ export default function AdminProductsPage() {
       event.stopPropagation();
     }
     
-    console.log("Attempting to delete product with ID:", id);
+    console.log("[AdminProductsPage] Attempting to delete product with ID:", id);
     
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
       setIsLoading(true);
@@ -156,15 +156,17 @@ export default function AdminProductsPage() {
       try {
         // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
         const productId = String(id);
+        console.log("[AdminProductsPage] Calling deleteProduct from context with ID:", productId);
         
         await deleteProduct(productId); // Gọi hàm từ context
         
-        console.log("Product deleted successfully:", id);
+        console.log("[AdminProductsPage] Product deleted successfully via context, ID:", productId);
         showSuccess('Sản phẩm đã được xóa thành công!');
       } catch (contextError: any) {
-        console.error("Error deleting product via context:", contextError);
+        console.error("[AdminProductsPage] Error calling deleteProduct from context:", contextError);
         setFormError(contextError.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
       } finally {
+        console.log("[AdminProductsPage] Finished delete attempt, resetting loading state.");
         setIsLoading(false);
       }
     }
@@ -178,24 +180,28 @@ export default function AdminProductsPage() {
       event.stopPropagation();
     }
     
-    console.log("Editing product:", product);
+    console.log("[AdminProductsPage] handleEdit called for product:", product);
     
     try {
       // Tạo bản sao sâu của product để tránh thay đổi trực tiếp vào state
       const productCopy = JSON.parse(JSON.stringify(product));
-      console.log("Product copy to edit:", productCopy);
+      console.log("[AdminProductsPage] Product copy to edit:", productCopy);
       
       setIsEditing(true);
       setCurrentProduct(productCopy);
       setShowForm(true);
+      setFormError(''); // Xóa lỗi cũ khi mở form sửa
+      setSuccessMessage(''); // Xóa thông báo thành công cũ
       
       // Đảm bảo UI được cập nhật trước khi scroll
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 100);
     } catch (error: any) {
-      console.error("Error in edit handling:", error);
-      alert(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm');
+      console.error("[AdminProductsPage] Error in handleEdit:", error);
+      // Hiển thị lỗi ở form thay vì alert
+      setFormError(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm'); 
+      setShowForm(true); // Vẫn hiển thị form để người dùng thấy lỗi
     }
   };
 
@@ -650,17 +656,7 @@ export default function AdminProductsPage() {
                                   onClick={(e) => handleDelete(product.id, e)}
                                   disabled={isLoading}
                                 >
-                                  {isLoading ? (
-                                    <span className="flex items-center">
-                                      <svg className="animate-spin h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                      </svg>
-                                      Đang xóa...
-                                    </span>
-                                  ) : (
-                                    'Xóa'
-                                  )}
+                                  Xóa
                                 </button>
                               </div>
                             </td>
