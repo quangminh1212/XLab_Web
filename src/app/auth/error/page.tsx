@@ -1,99 +1,77 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function AuthErrorPage() {
+export default function AuthError() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const error = searchParams.get('error');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Map error codes to user-friendly messages
-  const getErrorMessage = (errorCode: string | null) => {
-    switch (errorCode) {
-      case 'Configuration':
-        return 'Có lỗi trong cấu hình máy chủ. Vui lòng thử lại sau.';
-      case 'AccessDenied':
-        return 'Bạn không có quyền truy cập. Vui lòng liên hệ quản trị viên.';
-      case 'Verification':
-        return 'Không thể xác thực email của bạn. Vui lòng thử lại.';
-      case 'OAuthSignin':
-        return 'Lỗi khi bắt đầu phiên đăng nhập OAuth. Vui lòng thử lại.';
-      case 'OAuthCallback':
-        return 'Lỗi trong quá trình xử lý OAuth. Vui lòng thử lại.';
-      case 'OAuthCreateAccount':
-        return 'Không thể tạo tài khoản người dùng. Vui lòng thử lại sau.';
-      case 'EmailCreateAccount':
-        return 'Không thể tạo tài khoản bằng email. Vui lòng thử phương thức khác.';
-      case 'Callback':
-        return 'Lỗi xử lý xác thực. Vui lòng thử lại sau.';
-      case 'OAuthAccountNotLinked':
-        return 'Email đã được sử dụng với nhà cung cấp khác. Vui lòng đăng nhập bằng nhà cung cấp ban đầu.';
-      case 'EmailSignin':
-        return 'Lỗi gửi email. Vui lòng thử lại sau.';
-      case 'CredentialsSignin':
-        return 'Thông tin đăng nhập không hợp lệ. Vui lòng kiểm tra lại thông tin và thử lại.';
-      case 'SessionRequired':
-        return 'Yêu cầu đăng nhập để truy cập trang này.';
-      default:
-        return 'Đã xảy ra lỗi không xác định trong quá trình xác thực. Vui lòng thử lại.';
+  useEffect(() => {
+    const error = searchParams?.get('error');
+    
+    if (error) {
+      switch(error) {
+        case 'OAuthAccountNotLinked':
+          setErrorMessage('Email này đã được sử dụng với phương thức đăng nhập khác.');
+          break;
+        case 'AccessDenied':
+          setErrorMessage('Quyền truy cập bị từ chối.');
+          break;
+        case 'Verification':
+          setErrorMessage('Liên kết xác thực đã hết hạn hoặc đã được sử dụng.');
+          break;
+        default:
+          setErrorMessage('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
+      }
+    } else {
+      setErrorMessage('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
     }
-  };
-
+  }, [searchParams]);
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="bg-white shadow-lg rounded-lg p-8">
-          <div className="flex justify-center mb-8">
-            <div className="h-16 w-16 bg-red-100 flex items-center justify-center rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center">
+          <Link href="/" className="inline-flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white font-bold text-2xl">
+              X
             </div>
-          </div>
-          
-          <h2 className="text-center text-2xl font-bold text-gray-900 mb-3">
+          </Link>
+          <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
             Lỗi xác thực
           </h2>
-          
-          <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
-            <div className="flex">
-              <div className="ml-3">
-                <p className="text-sm text-red-700">{getErrorMessage(error)}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="text-center space-y-4">
-            <p className="text-gray-600">
-              Bạn có thể thử lại việc đăng nhập hoặc quay lại trang chủ.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/login"
-                className="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
-                Thử lại
-              </Link>
-              <Link
-                href="/"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-              >
-                Trang chủ
-              </Link>
-            </div>
-          </div>
         </div>
-        
-        <div className="text-center text-sm text-gray-500">
-          <p>
-            Nếu bạn vẫn gặp vấn đề, vui lòng{' '}
-            <Link href="/contact" className="font-medium text-primary-600 hover:text-primary-500">
-              liên hệ hỗ trợ
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow-xl sm:rounded-lg sm:px-10 border border-gray-100">
+          <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm rounded-md border border-red-200">
+            <div className="flex items-start">
+              <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{errorMessage}</span>
+            </div>
+          </div>
+          
+          <div className="mt-6 flex flex-col space-y-4">
+            <Link 
+              href="/login"
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+            >
+              Quay lại trang đăng nhập
             </Link>
-            .
-          </p>
+            
+            <Link 
+              href="/"
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+            >
+              Về trang chủ
+            </Link>
+          </div>
         </div>
       </div>
     </div>
