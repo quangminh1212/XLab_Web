@@ -4,31 +4,23 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, Category } from '@/types';
-// Import mock data directly to avoid API call issues
+// Import dữ liệu từ mockData
 import { products, categories } from '@/data/mockData';
 
 export default function AdminProductsPage() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formError, setFormError] = useState('');
-  const [localProducts, setLocalProducts] = useState<Product[]>([]);
-  const [localCategories, setLocalCategories] = useState<Category[]>([]);
+  const [localProducts, setLocalProducts] = useState<Product[]>(products);
+  const [localCategories, setLocalCategories] = useState<Category[]>(categories);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
   
-  // Khởi tạo dữ liệu mẫu thay vì gọi API
-  useEffect(() => {
-    // Sử dụng dữ liệu trực tiếp từ mockData thay vì gọi API
-    setLocalProducts(products);
-    setLocalCategories(categories);
-    setIsLoading(false);
-  }, []);
-
   // Xử lý khi gửi form
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,7 +30,7 @@ export default function AdminProductsPage() {
     // Tạo form data từ form
     const formData = new FormData(event.currentTarget);
     const productData = {
-      id: `prod-${Date.now()}`, // Generate a new ID for new products
+      id: isEditing && currentProduct ? currentProduct.id : `prod-${Date.now()}`,
       name: formData.get('name') as string,
       slug: formData.get('slug') as string || formData.get('name') as string,
       description: formData.get('description') as string,
@@ -53,24 +45,24 @@ export default function AdminProductsPage() {
       isFeatured: formData.get('isFeatured') === 'on',
       isNew: formData.get('isNew') === 'on',
       storeId: '1', // Mặc định sử dụng storeId là 1
-      downloadCount: 0,
-      viewCount: 0,
-      rating: 0,
-      createdAt: new Date().toISOString(),
+      downloadCount: currentProduct?.downloadCount || 0,
+      viewCount: currentProduct?.viewCount || 0,
+      rating: currentProduct?.rating || 0,
+      createdAt: currentProduct?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString()
-    };
+    } as Product;
     
     try {
       if (isEditing && currentProduct) {
         // Cập nhật sản phẩm trong mảng localProducts
         setLocalProducts(localProducts.map(p => 
-          p.id === currentProduct.id ? {...productData, id: currentProduct.id} : p
+          p.id === currentProduct.id ? productData : p
         ));
         
         alert('Đã cập nhật sản phẩm thành công!');
       } else {
         // Thêm sản phẩm mới vào mảng localProducts
-        setLocalProducts([...localProducts, productData as Product]);
+        setLocalProducts([...localProducts, productData]);
         
         alert('Đã thêm sản phẩm thành công!');
       }
@@ -117,14 +109,6 @@ export default function AdminProductsPage() {
     setCurrentProduct(null);
     setFormError('');
   };
-  
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -288,7 +272,7 @@ export default function AdminProductsPage() {
                         id="product-image-url"
                         name="imageUrl"
                         defaultValue={currentProduct?.imageUrl || ''}
-                        placeholder="https://example.com/image.jpg"
+                        placeholder="/images/placeholder-product.jpg"
                         className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                         required
                       />
@@ -414,7 +398,7 @@ export default function AdminProductsPage() {
             )}
             
             {/* Danh sách sản phẩm */}
-            {isLoading && !showForm ? (
+            {isLoading ? (
               <div className="flex justify-center py-10">
                 <svg className="animate-spin h-10 w-10 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -459,10 +443,12 @@ export default function AdminProductsPage() {
                                   <Image
                                     src={product.imageUrl || '/images/placeholder-product.jpg'}
                                     alt={product.name}
-                                    fill
+                                    width={40}
+                                    height={40}
                                     className="rounded-md object-cover"
                                     onError={(e) => {
-                                      (e.target as HTMLImageElement).src = '/images/placeholder-product.jpg'
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = '/images/placeholder-product.jpg';
                                     }}
                                   />
                                 </div>
@@ -513,8 +499,7 @@ export default function AdminProductsPage() {
                               </div>
                             </td>
                           </tr>
-                        )}
-                      )}
+                        )})}
                     </tbody>
                   </table>
                 )}
