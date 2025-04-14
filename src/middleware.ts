@@ -52,32 +52,31 @@ const isPublicPath = (path: string) => {
   );
 };
 
-// Define public routes that don't require authentication
-const publicRoutes = [
-  '/',
-  '/login',
-  '/register',
-  '/auth/signin',
-  '/auth/signup',
-  '/auth/reset-password',
-  '/about',
-  '/contact',
-  '/products',
-  '/products/.+',
-  '/services',
-  '/services/.+',
-];
+// Kiểm tra xem đường dẫn có phải là tài nguyên tĩnh hay không
+const isStaticAsset = (path: string) => {
+  return (
+    path.startsWith('/_next') || 
+    path.startsWith('/__nextjs') || 
+    path.startsWith('/static') || 
+    path.includes('.') ||
+    path === '/favicon.ico'
+  );
+};
+
+export const config = {
+  matcher: [
+    // Bỏ qua các route tĩnh như hình ảnh, assets và API chứng thực
+    '/((?!_next/static|_next/image|api/auth|favicon.ico).*)',
+  ],
+};
 
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
   if (
-    pathname.startsWith('/_next') || 
-    pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
-    pathname.startsWith('/static') || 
-    pathname.includes('.') ||
-    pathname === '/favicon.ico'
+    isStaticAsset(pathname) || 
+    (pathname.startsWith('/api/') && !pathname.startsWith('/api/protected'))
   ) {
     return NextResponse.next();
   }
@@ -125,7 +124,7 @@ export default async function middleware(request: NextRequest) {
       img-src 'self' data: https: blob:;
       font-src 'self' data: https://fonts.gstatic.com;
       connect-src 'self' https://*.google-analytics.com https://*.googleapis.com;
-      frame-src 'self' https://*.google.com;
+      frame-src 'self' https://*.google.com accounts.google.com;
       object-src 'none';
       base-uri 'self';
       form-action 'self';
