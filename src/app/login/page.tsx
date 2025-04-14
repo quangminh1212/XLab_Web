@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -29,7 +30,7 @@ export default function LoginPage() {
       } else if (errorMessage === 'Configuration') {
         setError('Lỗi cấu hình máy chủ. Vui lòng thử lại sau.');
       } else {
-        setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
+        setError(`Có lỗi xảy ra khi đăng nhập: ${errorMessage}`);
       }
     }
   }, [errorMessage]);
@@ -67,79 +68,83 @@ export default function LoginPage() {
   };
 
   // Hàm xử lý đăng nhập bằng NextAuth
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     try {
-      setLoading(true);
+      setGoogleLoading(true);
       console.log('Bắt đầu đăng nhập bằng Google qua NextAuth...');
       
-      // Thử với redirect động dựa trên host hiện tại
-      const origin = window.location.origin;
-      const redirectUrl = `${origin}/account`;
+      // Sử dụng đường dẫn callback đã cấu hình trong Google Console
+      // => Đã cấu hình http://localhost:3000/auth trong Google Console
+      const redirectUrl = '/auth';
       
-      console.log('Đang sử dụng callback URL:', redirectUrl);
+      console.log('NextAuth sử dụng callback URL:', redirectUrl);
+      toast.loading('Đang chuyển hướng đến đăng nhập Google...');
       
-      // Thêm toast thông báo
-      toast.loading('Đang chuyển hướng đến Google...');
-      
-      signIn('google', { 
+      // Gọi signIn với callbackUrl
+      await signIn('google', { 
         callbackUrl: redirectUrl,
         redirect: true
       });
-    } catch (error) {
-      console.error('Lỗi khi đăng nhập với Google:', error);
-      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
-      setLoading(false);
+      
+    } catch (error: any) {
+      console.error('Lỗi khi đăng nhập với Google NextAuth:', error);
+      toast.error(`Lỗi NextAuth: ${error?.message || 'Không thể kết nối Google'}`);
+      setError(`Lỗi NextAuth: ${error?.message || 'Không thể kết nối Google'}`);
+      setGoogleLoading(false);
     }
   };
   
   // Hàm xử lý đăng nhập OAuth thủ công (không qua NextAuth)
   const handleManualGoogleSignIn = () => {
     try {
-      setLoading(true);
+      setGoogleLoading(true);
       console.log('Bắt đầu đăng nhập bằng Google OAuth thủ công...');
       
       // Lấy client ID từ biến môi trường 
       const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
       
       if (!clientId) {
-        console.error('Thiếu Google Client ID trong biến môi trường');
-        setError('Cấu hình Google Client ID bị thiếu');
-        setLoading(false);
+        console.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID không tìm thấy');
         toast.error('Lỗi cấu hình: Thiếu Google Client ID');
+        setError('Cấu hình Google Client ID bị thiếu. Kiểm tra NEXT_PUBLIC_GOOGLE_CLIENT_ID');
+        setGoogleLoading(false);
         return;
       }
       
-      console.log('Client ID có sẵn:', !!clientId);
+      console.log('Client ID có sẵn, độ dài:', clientId.length);
       
-      // Tạo URL redirect động
+      // Sử dụng /google-callback như đã cấu hình trong Google Console
       const origin = window.location.origin;
-      const redirectUri = `${origin}/api/auth/callback/google`;
+      const redirectUri = `${origin}/google-callback`;
       
-      console.log('Sử dụng redirect URI:', redirectUri);
+      console.log('Sử dụng redirect URI OAuth thủ công:', redirectUri);
       
-      // Các tham số OAuth
+      // Các tham số OAuth - cần dùng response_type=token cho implicit flow
       const oauthParams = new URLSearchParams({
         client_id: clientId,
         redirect_uri: redirectUri,
-        response_type: 'code',
-        scope: 'openid email profile',
-        prompt: 'select_account'
+        response_type: 'token',
+        scope: 'email profile',
+        prompt: 'select_account',
+        access_type: 'online'
       });
       
       // URL đăng nhập OAuth của Google  
       const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${oauthParams.toString()}`;
       
-      console.log('Chuyển hướng đến URL:', authUrl);
-      toast.loading('Đang chuyển hướng đến Google...');
+      console.log('Chuyển hướng OAuth đến URL:', authUrl);
+      toast.loading('Đang chuyển hướng đến đăng nhập Google...');
       
       // Chuyển hướng đến trang đăng nhập Google
-      window.location.href = authUrl;
+      setTimeout(() => {
+        window.location.href = authUrl;
+      }, 1000);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Lỗi khi khởi tạo đăng nhập Google thủ công:', error);
-      setError('Không thể kết nối với Google. Vui lòng thử lại sau.');
-      setLoading(false);
-      toast.error('Lỗi kết nối với Google');
+      toast.error(`Lỗi OAuth: ${error?.message || 'Không thể kết nối Google'}`);
+      setError(`Lỗi OAuth: ${error?.message || 'Không thể kết nối Google'}`);
+      setGoogleLoading(false);
     }
   };
 
@@ -174,10 +179,10 @@ export default function LoginPage() {
 
           <button
             onClick={handleGoogleSignIn}
-            disabled={loading}
+            disabled={loading || googleLoading}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-3"
           >
-            {loading ? (
+            {googleLoading ? (
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -195,10 +200,10 @@ export default function LoginPage() {
           
           <button
             onClick={handleManualGoogleSignIn}
-            disabled={loading}
+            disabled={loading || googleLoading}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6"
           >
-            {loading ? (
+            {googleLoading ? (
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
