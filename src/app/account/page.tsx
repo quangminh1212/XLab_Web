@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 export const metadata = {
   title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
@@ -68,46 +67,19 @@ const purchaseHistory = [
 ]
 
 export default function AccountPage() {
-  const router = useRouter();
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
-  const [localUser, setLocalUser] = useState<any>(null);
-  const [loginMethod, setLoginMethod] = useState<string>('Chưa xác định');
 
   useEffect(() => {
-    // Kiểm tra nếu có session (NextAuth) hoặc user trong localStorage
+    // Khi session thay đổi, cập nhật trạng thái loading
     if (status !== 'loading') {
-      // Kiểm tra thông tin trong localStorage (Google OAuth thủ công)
-      try {
-        const storedUser = localStorage.getItem('user_profile');
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        
-        if (storedUser && isLoggedIn === 'true') {
-          setLocalUser(JSON.parse(storedUser));
-          setLoginMethod('OAuth 2.0 thủ công');
-        } else if (session) {
-          setLoginMethod('NextAuth.js');
-        }
-      } catch (e) {
-        console.error('Lỗi khi đọc thông tin người dùng từ localStorage:', e);
-      }
-      
       setLoading(false);
     }
-  }, [status, session]);
+  }, [status]);
 
   // Xử lý đăng xuất
   const handleSignOut = () => {
-    if (session) {
-      // Đăng xuất NextAuth
-      signOut({ callbackUrl: '/login' });
-    } else if (localUser) {
-      // Đăng xuất từ OAuth thủ công
-      localStorage.removeItem('user_profile');
-      localStorage.removeItem('google_access_token');
-      localStorage.removeItem('isLoggedIn');
-      router.push('/login');
-    }
+    signOut({ callbackUrl: '/login' });
   };
 
   // Hiển thị loading state
@@ -122,8 +94,8 @@ export default function AccountPage() {
     );
   }
 
-  // Nếu không có session hoặc localUser, chuyển hướng về trang đăng nhập
-  if (!session && !localUser) {
+  // Nếu không có session, chuyển hướng về trang đăng nhập
+  if (!session) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
         <div className="text-center max-w-md p-8 bg-white rounded-lg shadow-md">
@@ -141,9 +113,6 @@ export default function AccountPage() {
     );
   }
 
-  // Lấy thông tin user từ session hoặc localStorage
-  const user = session?.user || localUser;
-
   // Hiển thị thông tin người dùng khi đã đăng nhập
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -157,38 +126,33 @@ export default function AccountPage() {
           <div className="p-6 sm:p-8">
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
               <div className="flex-shrink-0">
-                {user?.image || user?.picture ? (
+                {session.user?.image ? (
                   <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg">
                     <Image
-                      src={user.image || user.picture}
-                      alt={user.name || 'Avatar'}
+                      src={session.user.image}
+                      alt={session.user.name || 'Avatar'}
                       fill
                       className="object-cover"
                     />
                   </div>
                 ) : (
                   <div className="w-28 h-28 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-3xl font-bold border-4 border-white shadow-lg">
-                    {user?.name?.charAt(0) || 'U'}
+                    {session.user?.name?.charAt(0) || 'U'}
                   </div>
                 )}
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h2 className="text-2xl font-bold text-gray-800">{user?.name || 'Người dùng'}</h2>
-                <p className="text-gray-500 mb-2">{user?.email || 'Email không có sẵn'}</p>
-                <div className="inline-block px-3 py-1 bg-teal-100 text-teal-800 text-sm rounded-full">
-                  Đăng nhập qua {loginMethod}
-                </div>
+                <h2 className="text-2xl font-bold text-gray-800">{session.user?.name || 'Người dùng'}</h2>
+                <p className="text-gray-500 mb-4">{session.user?.email || 'Email không có sẵn'}</p>
                 
                 <div className="mt-6 space-y-4">
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="font-medium text-gray-700 mb-2">Thông tin chi tiết từ Google:</h3>
                     <div className="text-sm text-gray-600 space-y-2">
-                      <p><span className="font-medium">ID:</span> {user?.id || user?.sub || 'Không có sẵn'}</p>
+                      <p><span className="font-medium">ID:</span> {session.user?.id || 'Không có sẵn'}</p>
                       <p><span className="font-medium">Provider:</span> Google</p>
-                      <p><span className="font-medium">Phương thức xác thực:</span> {loginMethod}</p>
-                      <p><span className="font-medium">Email đã xác minh:</span> {(user?.email_verified || user?.email) ? 'Có' : 'Không'}</p>
-                      <p><span className="font-medium">Thời gian đăng nhập:</span> {new Date().toLocaleString('vi-VN')}</p>
+                      <p><span className="font-medium">Email đã xác minh:</span> {session.user?.email ? 'Có' : 'Không'}</p>
                     </div>
                   </div>
 
@@ -214,7 +178,7 @@ export default function AccountPage() {
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500">
-            Thông tin này được lấy từ tài khoản Google của bạn thông qua {loginMethod}
+            Thông tin này được lấy từ tài khoản Google của bạn thông qua OAuth 2.0
           </p>
         </div>
       </div>
