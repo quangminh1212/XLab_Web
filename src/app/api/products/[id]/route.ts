@@ -2,17 +2,52 @@ import { NextResponse } from 'next/server';
 import { products as mockProducts } from '@/data/mockData'; // Import mock data
 import { Product } from '@/types';
 
-// Sử dụng array để có thể thay đổi dữ liệu
-// Reset productsData mỗi khi module được load (chỉ hữu ích trong dev)
-let productsData = [...mockProducts];
-console.log(`[API /api/products/[id]] Initializing productsData with length: ${productsData.length}`);
+// Tạo key duy nhất trong quá trình phát triển - PHẢI GIỐNG VỚI FILE route.ts CHÍNH
+const PRODUCTS_STORAGE_KEY = 'xlab_server_products_v1';
+
+// Khởi tạo hoặc lấy dữ liệu từ global object
+let productsData: Product[];
+
+// Hàm khởi tạo dữ liệu - logic giống với file route.ts chính
+const initializeProductsData = () => {
+  try {
+    // Trong môi trường server-side, kiểm tra global object hoặc khởi tạo lại
+    if (typeof global !== 'undefined' && (global as any)[PRODUCTS_STORAGE_KEY]) {
+      productsData = (global as any)[PRODUCTS_STORAGE_KEY];
+      console.log(`[API /api/products/[id]] Using existing global productsData: ${productsData.length}`);
+      return;
+    }
+    
+    // Nếu không có dữ liệu, khởi tạo từ mockData
+    productsData = [...mockProducts];
+    
+    // Lưu vào global object để tránh reset khi module được reload
+    if (typeof global !== 'undefined') {
+      (global as any)[PRODUCTS_STORAGE_KEY] = productsData;
+    }
+    
+    console.log(`[API /api/products/[id]] Initialized productsData with mock data: ${productsData.length}`);
+  } catch (error) {
+    console.error(`[API /api/products/[id]] Error initializing productsData:`, error);
+    productsData = [...mockProducts]; // Fallback
+  }
+};
+
+// Khởi tạo dữ liệu khi module được load
+initializeProductsData();
 
 // GET - Lấy chi tiết sản phẩm theo ID
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  // Đảm bảo productsData đã được khởi tạo
+  if (!productsData) {
+    initializeProductsData();
+  }
+
   try {
+    console.log(`[API /api/products/${params.id}] GET request, searching in ${productsData.length} products`);
     const product = productsData.find(p => p.id.toString() === params.id);
     
     if (!product) {
@@ -36,6 +71,11 @@ export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  // Đảm bảo productsData đã được khởi tạo
+  if (!productsData) {
+    initializeProductsData();
+  }
+
   console.log(`[API /api/products/${params.id}] Received PATCH request`);
   try {
     const body = await req.json();
@@ -58,6 +98,11 @@ export async function PATCH(
     console.log(`[API /api/products/${params.id}] Updating product at index ${productIndex}:`, updatedProduct);
     productsData[productIndex] = updatedProduct;
     
+    // Cập nhật dữ liệu trong global object
+    if (typeof global !== 'undefined') {
+      (global as any)[PRODUCTS_STORAGE_KEY] = productsData;
+    }
+    
     return NextResponse.json(updatedProduct);
   } catch (error: any) {
     console.error(`[API /api/products/${params.id}] Error in PATCH handler:`, error);
@@ -73,6 +118,11 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  // Đảm bảo productsData đã được khởi tạo
+  if (!productsData) {
+    initializeProductsData();
+  }
+
   console.log(`[API /api/products/${params.id}] Received DELETE request`);
   try {
     const productIndex = productsData.findIndex(p => String(p.id) === params.id);
@@ -85,6 +135,12 @@ export async function DELETE(
     console.log(`[API /api/products/${params.id}] Deleting product at index ${productIndex}:`, productsData[productIndex]);
     // Xóa sản phẩm khỏi mảng (mô phỏng database)
     productsData.splice(productIndex, 1);
+    
+    // Cập nhật dữ liệu trong global object
+    if (typeof global !== 'undefined') {
+      (global as any)[PRODUCTS_STORAGE_KEY] = productsData;
+    }
+    
     console.log(`[API /api/products/${params.id}] productsData length after splice:`, productsData.length);
     
     // Trả về thành công (không cần nội dung)

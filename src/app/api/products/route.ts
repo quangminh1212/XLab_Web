@@ -2,12 +2,53 @@ import { NextResponse } from 'next/server';
 import { products as mockProducts } from '@/data/mockData'; // Import mock data
 import { Product } from '@/types';
 
-// Reset productsData mỗi khi module được load (chỉ hữu ích trong dev)
-let productsData = [...mockProducts];
-console.log("[API /api/products] Initializing productsData with length:", productsData.length);
+// Tạo một biến toàn cục để lưu trữ dữ liệu sản phẩm giữa các lần gọi API
+// Đây là giải pháp tạm thời cho môi trường phát triển, không dùng cho production
+// Trong thực tế, dữ liệu sẽ được lưu trong cơ sở dữ liệu
+
+// Tạo key duy nhất trong quá trình phát triển
+const PRODUCTS_STORAGE_KEY = 'xlab_server_products_v1';
+
+// Khởi tạo hoặc lấy dữ liệu từ global object
+let productsData: Product[];
+
+// Hàm khởi tạo dữ liệu
+const initializeProductsData = () => {
+  try {
+    // Trong môi trường server-side, kiểm tra global object hoặc khởi tạo lại
+    if (typeof global !== 'undefined' && (global as any)[PRODUCTS_STORAGE_KEY]) {
+      productsData = (global as any)[PRODUCTS_STORAGE_KEY];
+      console.log("[API /api/products] Using existing global productsData:", productsData.length);
+      return;
+    }
+    
+    // Nếu không có dữ liệu, khởi tạo từ mockData
+    productsData = [...mockProducts];
+    
+    // Lưu vào global object để tránh reset khi module được reload
+    if (typeof global !== 'undefined') {
+      (global as any)[PRODUCTS_STORAGE_KEY] = productsData;
+    }
+    
+    console.log("[API /api/products] Initialized productsData with mock data:", productsData.length);
+  } catch (error) {
+    console.error("[API /api/products] Error initializing productsData:", error);
+    productsData = [...mockProducts]; // Fallback
+  }
+};
+
+// Khởi tạo dữ liệu khi module được load
+initializeProductsData();
 
 // GET - Lấy danh sách sản phẩm
 export async function GET(req: Request) {
+  // Đảm bảo productsData đã được khởi tạo
+  if (!productsData) {
+    initializeProductsData();
+  }
+  
+  console.log("[API /api/products] GET request, serving", productsData.length, "products");
+  
   const { searchParams } = new URL(req.url);
   const storeId = searchParams.get('storeId');
   const categoryId = searchParams.get('categoryId');
@@ -33,6 +74,11 @@ export async function GET(req: Request) {
 
 // POST - Thêm sản phẩm mới
 export async function POST(req: Request) {
+  // Đảm bảo productsData đã được khởi tạo
+  if (!productsData) {
+    initializeProductsData();
+  }
+  
   console.log("[API /api/products] Received POST request");
   try {
     // Đọc dữ liệu từ request
@@ -83,6 +129,12 @@ export async function POST(req: Request) {
     
     // Thêm sản phẩm vào danh sách (mô phỏng database)
     productsData.push(newProduct);
+    
+    // Cập nhật dữ liệu trong global object
+    if (typeof global !== 'undefined') {
+      (global as any)[PRODUCTS_STORAGE_KEY] = productsData;
+    }
+    
     console.log("[API /api/products] productsData length after push:", productsData.length);
     
     // Trả về sản phẩm vừa tạo với đầy đủ thông tin
