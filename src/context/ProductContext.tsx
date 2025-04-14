@@ -136,6 +136,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     
     try {
       // Gọi API thêm sản phẩm
+      console.log("[ProductContext] Sending POST request to API...");
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: {
@@ -144,10 +145,13 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(productData)
       });
       
+      console.log("[ProductContext] API response status:", response.status);
+      
       // Lấy response body
       let responseData;
       try {
         responseData = await response.json();
+        console.log("[ProductContext] API response data:", responseData);
       } catch (parseError) {
         console.error("[ProductContext] Error parsing response:", parseError);
         throw new Error("Không thể đọc phản hồi từ server");

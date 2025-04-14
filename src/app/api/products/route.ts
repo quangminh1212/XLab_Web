@@ -87,7 +87,10 @@ export async function POST(req: Request) {
     
     // Kiểm tra dữ liệu đầu vào chi tiết hơn
     const requiredFields = ['name', 'price', 'categoryId'];
-    const missingFields = requiredFields.filter(field => !body[field]);
+    const missingFields = requiredFields.filter(field => {
+      console.log(`[API /api/products] Checking field ${field}:`, body[field]);
+      return body[field] === undefined || body[field] === null || body[field] === '';
+    });
     
     if (missingFields.length > 0) {
       console.error(`[API /api/products] Missing required fields: ${missingFields.join(', ')}`, body);
@@ -104,19 +107,19 @@ export async function POST(req: Request) {
     // Tạo sản phẩm mới với dữ liệu từ request và các giá trị mặc định
     const newProduct: Product = {
       id: productId,
-      name: String(body.name),
-      slug: body.slug || String(body.name).toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, ''),
+      name: String(body.name || ''),
+      slug: body.slug || String(body.name || '').toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, ''),
       description: body.description || '',
       longDescription: body.longDescription || '',
-      price: Number(body.price),
-      salePrice: Number(body.salePrice) || Number(body.price),
-      categoryId: body.categoryId,
+      price: Number(body.price || 0),
+      salePrice: Number(body.salePrice || body.price || 0),
+      categoryId: body.categoryId || '',
       imageUrl: body.imageUrl || '/images/placeholder-product.jpg',
       isFeatured: Boolean(body.isFeatured),
       isNew: body.isNew === undefined ? true : Boolean(body.isNew),
-      downloadCount: Number(body.downloadCount) || 0,
-      viewCount: Number(body.viewCount) || 0,
-      rating: Number(body.rating) || 0,
+      downloadCount: Number(body.downloadCount || 0),
+      viewCount: Number(body.viewCount || 0),
+      rating: Number(body.rating || 0),
       version: body.version || '1.0.0',
       size: body.size || '0MB',
       licenseType: body.licenseType || 'Thương mại',

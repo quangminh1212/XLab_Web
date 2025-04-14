@@ -145,50 +145,40 @@ export default function AdminProductsPage() {
         throw new Error(errors.join('<br>'));
       }
       
-      // Tạo đối tượng sản phẩm
-      const productData = {
-        // ID sẽ được tạo bởi API khi thêm mới, hoặc giữ nguyên khi cập nhật
-        id: isEditing && currentProduct ? String(currentProduct.id) : undefined, 
-        name,
-        slug,
-        description: (formData.get('description') as string || '').trim(),
-        longDescription: (formData.get('longDescription') as string || '').trim(),
-        price,
-        salePrice,
-        categoryId,
-        imageUrl: (formData.get('imageUrl') as string || '').trim() || '/images/placeholder-product.jpg',
-        version: (formData.get('version') as string || '').trim() || '1.0.0',
-        size: (formData.get('size') as string || '').trim() || '0MB',
-        licenseType: (formData.get('licenseType') as string) || 'Thương mại',
-        isFeatured: formData.get('isFeatured') === 'on',
-        isNew: formData.get('isNew') === 'on',
-        // storeId nên được lấy từ user session hoặc form nếu cần
-        storeId: currentProduct?.storeId || '1', 
-        downloadCount: currentProduct?.downloadCount || 0,
-        viewCount: currentProduct?.viewCount || 0,
-        rating: currentProduct?.rating || 0,
-        createdAt: currentProduct?.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      } as Omit<Product, 'id'> & { id?: string }; // Cho phép id là optional khi tạo mới
-      
-      console.log("Submitting product data:", productData);
-      
       try {
         if (isEditing && currentProduct) {
           // Đảm bảo id tồn tại khi chỉnh sửa
-          const updateData = { ...productData, id: String(currentProduct.id) } as Product;
+          const updateData = { 
+            ...currentProduct,
+            name,
+            slug,
+            description: (formData.get('description') as string || '').trim(),
+            longDescription: (formData.get('longDescription') as string || '').trim(),
+            price,
+            salePrice,
+            categoryId,
+            imageUrl: (formData.get('imageUrl') as string || '').trim() || '/images/placeholder-product.jpg',
+            version: (formData.get('version') as string || '').trim() || '1.0.0',
+            size: (formData.get('size') as string || '').trim() || '0MB',
+            licenseType: (formData.get('licenseType') as string) || 'Thương mại',
+            isFeatured: formData.get('isFeatured') === 'on',
+            isNew: formData.get('isNew') === 'on',
+            updatedAt: new Date().toISOString()
+          } as Product;
+          
+          console.log("[AdminProductsPage] Updating product:", updateData);
           await updateProduct(updateData); // Gọi hàm từ context
           showSuccessAndReset('Đã cập nhật sản phẩm thành công!');
         } else {
           // Tạo product mới không bao gồm id client-side
-          const createData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'> = { 
-            name: name,
-            slug: slug,
+          const createData = { 
+            name,
+            slug,
             description: (formData.get('description') as string || '').trim(),
             longDescription: (formData.get('longDescription') as string || '').trim(),
-            price: price,
-            salePrice: salePrice,
-            categoryId: categoryId,
+            price,
+            salePrice,
+            categoryId,
             imageUrl: (formData.get('imageUrl') as string || '').trim() || '/images/placeholder-product.jpg',
             version: (formData.get('version') as string || '').trim() || '1.0.0',
             size: (formData.get('size') as string || '').trim() || '0MB',
@@ -201,20 +191,17 @@ export default function AdminProductsPage() {
             rating: 0
           };
           
-          console.log("[AdminProductsPage] Data sent to addProduct context function:", createData);
+          console.log("[AdminProductsPage] Creating new product:", createData);
           
           try {
             const newProduct = await addProduct(createData);
             console.log("[AdminProductsPage] Product added successfully:", newProduct);
             showSuccessAndReset('Đã thêm sản phẩm mới thành công!');
-          } catch (addError) {
+          } catch (addError: any) {
             console.error("[AdminProductsPage] Error from addProduct:", addError);
-            throw addError; // Re-throw để xử lý ở catch bên ngoài
+            throw new Error(addError.message || 'Lỗi khi thêm sản phẩm');
           }
         }
-        
-        // Reset form
-        resetForm();
       } catch (contextError: any) {
         console.error("Context operation error:", contextError);
         setFormError(contextError.message || 'Đã xảy ra lỗi khi xử lý sản phẩm, vui lòng thử lại');
