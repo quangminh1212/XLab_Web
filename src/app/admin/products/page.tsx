@@ -152,6 +152,7 @@ export default function AdminProductsPage() {
   // Xử lý khi gửi form
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    alert('Form đã được submit');
     setIsLoading(true);
     setFormError('');
     setSuccessMessage('');
@@ -435,18 +436,34 @@ export default function AdminProductsPage() {
                   className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
                   onClick={(e) => {
                     e.preventDefault();
-                    // Đặt trạng thái form về mặc định
+                    
+                    // Đặt trạng thái mặc định
                     setIsEditing(false);
                     setCurrentProduct(null);
                     setFormError('');
                     setSuccessMessage('');
                     
-                    // Hiển thị form sau một timeout ngắn
-                    console.log("Chuẩn bị hiển thị form thêm sản phẩm đầu tiên");
-                    setTimeout(() => {
-                      setShowForm(true);
-                      console.log("Đã kích hoạt hiển thị form, showForm:", true);
-                    }, 10);
+                    alert('Đang hiển thị form thêm sản phẩm...');
+                    
+                    // Tạo form container trực tiếp nếu không tồn tại
+                    let formContainer = document.getElementById('product-form-container');
+                    
+                    if (!formContainer) {
+                      formContainer = document.createElement('div');
+                      formContainer.id = 'product-form-container';
+                      formContainer.className = 'fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center';
+                      formContainer.style.position = 'fixed';
+                      formContainer.style.inset = '0';
+                      formContainer.style.display = 'flex';
+                      formContainer.style.zIndex = '99999';
+                      
+                      document.body.appendChild(formContainer);
+                    } else {
+                      formContainer.style.display = 'flex';
+                    }
+                    
+                    // Chuyển state để kích hoạt render
+                    setShowForm(true);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -501,7 +518,7 @@ export default function AdminProductsPage() {
               <div 
                 id="product-form-container" 
                 className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center z-[9999]"
-                style={{ position: 'fixed', inset: 0, display: 'flex' }}
+                style={{ position: 'fixed', inset: 0, display: 'flex !important', zIndex: 99999 }}
               >
                 <div className="bg-white rounded-lg shadow-2xl overflow-auto max-h-[90vh] w-full max-w-5xl border-4 border-primary-500 m-4">
                   <div className="relative p-6">
