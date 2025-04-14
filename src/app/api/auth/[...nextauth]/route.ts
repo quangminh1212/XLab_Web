@@ -28,7 +28,6 @@ const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user.id = token.id as string;
       }
-      console.log("Session callback:", { session, token });
       return session;
     },
     async jwt({ token, user, account }: { token: any; user: any; account: any }) {
@@ -37,31 +36,31 @@ const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.provider = account.provider;
       }
-      console.log("JWT callback:", { token, hasUser: !!user, hasAccount: !!account });
       return token;
     },
     async signIn({ account, profile }) {
-      console.log("SignIn callback:", { accountProvider: account?.provider, hasProfile: !!profile, email: profile?.email });
       if (account?.provider === "google" && profile?.email) {
-        // Có thể thêm logic kiểm tra người dùng ở đây nếu cần
         return true;
       }
       return false;
     },
     async redirect({ url, baseUrl }) {
-      console.log("Redirect callback:", { url, baseUrl });
-      // Đảm bảo URL là tuyệt đối
+      // Luôn chuyển hướng về trang chủ sau khi đăng nhập thành công
+      if (url.startsWith('/api/auth') || url.startsWith('/auth')) {
+        return baseUrl;
+      }
+      // Nếu là URL nội bộ, cho phép chuyển hướng
       if (url.startsWith('/')) {
         return `${baseUrl}${url}`;
       }
-      // Cho phép callback đến các subdomains của host
-      else if (new URL(url).origin === baseUrl) {
+      // Nếu URL từ cùng origin, cho phép
+      if (url.startsWith(baseUrl)) {
         return url;
       }
       return baseUrl;
     },
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: true,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
