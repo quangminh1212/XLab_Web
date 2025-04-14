@@ -110,8 +110,24 @@ export default async function middleware(request: NextRequest) {
   // Thêm security headers
   const response = NextResponse.next();
   
-  // Bỏ đặt CSP tại đây để tránh xung đột với next.config.js
-  // Đã được cấu hình trong next.config.js
+  // CSP Header
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https: blob:;
+    font-src 'self' data:;
+    connect-src 'self' https://www.google-analytics.com;
+    frame-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'self';
+    block-all-mixed-content;
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim();
+
+  response.headers.set('Content-Security-Policy', cspHeader);
   
   return response;
 } 
