@@ -82,7 +82,6 @@ export default async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  /* // Bỏ comment đoạn này nếu muốn bật lại kiểm tra quyền admin
   // Kiểm tra quyền admin cho các đường dẫn admin
   if (isAdminPath(pathname)) {
     if (!token) {
@@ -95,7 +94,6 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/', request.url));
     }
   }
-  */
 
   // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
   if (isProtectedPath(pathname) && !token) {
