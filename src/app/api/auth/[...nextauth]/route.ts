@@ -9,13 +9,6 @@ const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      authorization: {
-        params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code"
-        }
-      }
     }),
   ],
   pages: {
@@ -45,18 +38,7 @@ const authOptions: NextAuthOptions = {
       return false;
     },
     async redirect({ url, baseUrl }) {
-      // Luôn chuyển hướng về trang chủ sau khi đăng nhập thành công
-      if (url.startsWith('/api/auth') || url.startsWith('/auth')) {
-        return baseUrl;
-      }
-      // Nếu là URL nội bộ, cho phép chuyển hướng
-      if (url.startsWith('/')) {
-        return `${baseUrl}${url}`;
-      }
-      // Nếu URL từ cùng origin, cho phép
-      if (url.startsWith(baseUrl)) {
-        return url;
-      }
+      console.log('Redirect callback called with:', { url, baseUrl });
       return baseUrl;
     },
   },

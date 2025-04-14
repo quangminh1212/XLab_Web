@@ -66,10 +66,15 @@ export default function LoginPage() {
   };
 
   const handleGoogleSignIn = () => {
-    setLoading(true);
-    signIn('google', { 
-      callbackUrl,
-    });
+    try {
+      setLoading(true);
+      signIn('google', { 
+        callbackUrl: window.location.origin
+      });
+    } catch (error) {
+      console.error('Lỗi khi đăng nhập với Google:', error);
+      setLoading(false);
+    }
   };
 
   return (
