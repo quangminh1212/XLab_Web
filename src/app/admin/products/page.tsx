@@ -426,7 +426,7 @@ export default function AdminProductsPage() {
                     setSuccessMessage('');
                     
                     // Hiển thị form
-                    console.log("Hiển thị form thêm sản phẩm đầu tiên");
+                    console.log("Hiển thị form thêm sản phẩm mới");
                     setShowForm(true);
                     console.log("Giá trị showForm sau khi set:", true);
                   }}
@@ -434,7 +434,7 @@ export default function AdminProductsPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  Thêm sản phẩm đầu tiên
+                  Thêm sản phẩm mới
                 </button>
               </div>
             </div>
