@@ -5,12 +5,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { siteConfig } from '@/config/siteConfig'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
+  const { data: session, status } = useSession()
+  const isLoading = status === 'loading'
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
@@ -116,12 +119,52 @@ export default function Header() {
             </button>
 
             <div className="hidden sm:flex items-center justify-center space-x-3">
-              <Link
-                href="/admin"
-                className="px-5 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
-              >
-                Quản trị
-              </Link>
+              {isLoading ? (
+                <div className="w-8 h-8 rounded-full border-2 border-t-teal-500 animate-spin"></div>
+              ) : session ? (
+                <>
+                  <Link
+                    href="/account"
+                    className="relative group"
+                  >
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-teal-100 hover:border-teal-300 transition-all">
+                      <Image
+                        src={session.user?.image || "/images/avatar-placeholder.png"}
+                        alt={session.user?.name || "Tài khoản"}
+                        width={40}
+                        height={40}
+                        className="object-cover"
+                      />
+                    </div>
+                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 min-w-max bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {session.user?.name || "Tài khoản"}
+                    </span>
+                  </Link>
+                  <button
+                    onClick={() => signOut()}
+                    className="px-4 py-2 border border-red-400 text-red-500 rounded-full hover:bg-red-50 hover:shadow-sm transition-all font-medium text-center"
+                  >
+                    Đăng xuất
+                  </button>
+                  {session.user?.email === 'xlab.rnd@gmail.com' && (
+                    <Link
+                      href="/admin"
+                      className="px-5 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
+                    >
+                      Quản trị
+                    </Link>
+                  )}
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => signIn('google')}
+                    className="px-5 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
+                  >
+                    Đăng nhập
+                  </button>
+                </>
+              )}
               <Link
                 href="/admin/products"
                 className="px-5 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center"
@@ -193,13 +236,52 @@ export default function Header() {
               >
                 Liên hệ
               </Link>
-              <Link
-                href="/admin"
-                className="px-4 py-2 bg-teal-50 text-teal-600 rounded-md text-center"
-                onClick={toggleMobileMenu}
-              >
-                Quản trị
-              </Link>
+              
+              {isLoading ? (
+                <div className="flex justify-center">
+                  <div className="w-8 h-8 rounded-full border-2 border-t-teal-500 animate-spin"></div>
+                </div>
+              ) : session ? (
+                <>
+                  <div className="flex items-center justify-center space-x-3 px-4 py-2">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-teal-100">
+                      <Image
+                        src={session.user?.image || "/images/avatar-placeholder.png"}
+                        alt={session.user?.name || "Tài khoản"}
+                        width={40}
+                        height={40}
+                        className="object-cover"
+                      />
+                    </div>
+                    <span className="text-sm font-medium">
+                      {session.user?.name}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => signOut()}
+                    className="px-4 py-2 border border-red-400 text-red-500 rounded-md text-center"
+                  >
+                    Đăng xuất
+                  </button>
+                  {session.user?.email === 'xlab.rnd@gmail.com' && (
+                    <Link
+                      href="/admin"
+                      className="px-4 py-2 bg-teal-50 text-teal-600 rounded-md text-center"
+                      onClick={toggleMobileMenu}
+                    >
+                      Quản trị
+                    </Link>
+                  )}
+                </>
+              ) : (
+                <button
+                  onClick={() => signIn('google')}
+                  className="px-4 py-2 border border-teal-500 text-teal-600 rounded-md text-center"
+                >
+                  Đăng nhập
+                </button>
+              )}
+              
               <Link
                 href="/admin/products"
                 className="px-4 py-2 bg-teal-500 text-white rounded-md text-center"
