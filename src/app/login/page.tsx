@@ -1,77 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { toast, Toaster } from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl') || '/';
-  const errorMessage = searchParams?.get('error');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [googleLoading, setGoogleLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [clientInfo, setClientInfo] = useState<string>('');
-  const [isDirectGoogleLoading, setIsDirectGoogleLoading] = useState<boolean>(false);
-
-  // Lấy link token theo cách thủ công của video
-  const getLinkToken = () => {
-    // ID Client từ Google Cloud Console (thay thế hoặc đặt trong biến môi trường)
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '538047962504-pma5q9bhn5jsj8dtqpek4aqvbe0f3j8j.apps.googleusercontent.com';
-    
-    // URI chuyển hướng đã đăng ký trong Google Cloud Console
-    const redirectUri = `${window.location.origin}/google-callback`;
-    
-    // Phạm vi quyền truy cập (scope) - email, profile, openid là cơ bản
-    const scope = encodeURIComponent('email profile openid');
-    
-    // Response type: 'token' để nhận access token qua URL fragment
-    const responseType = 'token';
-    
-    // Access type: 'offline' để nhận refresh token
-    const accessType = 'offline';
-    
-    // Prompt: 'consent' bắt buộc người dùng chọn lại tài khoản mỗi lần
-    const prompt = 'consent';
-    
-    // Tạo URL OAuth hoàn chỉnh
-    const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&scope=${scope}&access_type=${accessType}&prompt=${prompt}`;
-    
-    return oauthUrl;
-  };
-
-  useEffect(() => {
-    // Kiểm tra và hiển thị thông tin client ID cho debug
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    if (clientId) {
-      setClientInfo(`Client ID có sẵn (${clientId.substring(0, 8)}...)`);
-    } else {
-      setClientInfo('Thiếu Client ID');
-      console.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID không được cấu hình');
-    }
-
-    // Xử lý thông báo lỗi từ URL nếu có
-    if (errorMessage) {
-      if (errorMessage === 'OAuthAccountNotLinked') {
-        setError('Email này đã được sử dụng với phương thức đăng nhập khác.');
-      } else if (errorMessage === 'AccessDenied') {
-        setError('Quyền truy cập bị từ chối.');
-      } else if (errorMessage === 'Verification') {
-        setError('Liên kết xác thực đã hết hạn hoặc đã được sử dụng.');
-      } else if (errorMessage === 'Configuration') {
-        setError('Lỗi cấu hình máy chủ. Vui lòng thử lại sau.');
-      } else {
-        setError(`Có lỗi xảy ra khi đăng nhập: ${errorMessage}`);
-      }
-    }
-  }, [errorMessage]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,39 +48,9 @@ export default function LoginPage() {
     }
   };
 
-  // Đăng nhập bằng Google OAuth trực tiếp không qua NextAuth
-  const handleGoogleDirectLogin = () => {
-    setIsDirectGoogleLoading(true);
-    try {
-      // Tạo URL OAuth và chuyển hướng
-      const oauthUrl = getLinkToken();
-      console.log('Google OAuth URL:', oauthUrl);
-      
-      // Chuyển hướng đến trang đăng nhập Google
-      window.location.href = oauthUrl;
-    } catch (error) {
-      console.error('Lỗi đăng nhập Google trực tiếp:', error);
-      toast.error('Không thể kết nối đến Google');
-      setIsDirectGoogleLoading(false);
-    }
-  };
-
-  // Đăng nhập NextAuth với hàm signIn
-  const handleNextAuthLogin = () => {
-    try {
-      setGoogleLoading(true);
-      console.log('Đăng nhập với NextAuth...');
-      
-      signIn('google', { 
-        callbackUrl: '/account'
-      });
-      
-      toast.loading('Đang chuyển hướng đến Google...');
-    } catch (error: any) {
-      console.error('Lỗi NextAuth:', error);
-      toast.error(`Lỗi: ${error?.message || 'Không thể kết nối'}`);
-      setGoogleLoading(false);
-    }
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    signIn('google', { callbackUrl });
   };
 
   return (
@@ -155,9 +68,6 @@ export default function LoginPage() {
           <p className="mt-2 text-center text-sm text-gray-600 max-w">
             Đăng nhập để tiếp tục sử dụng các dịch vụ của XLab
           </p>
-          {clientInfo && (
-            <p className="mt-1 text-xs text-gray-500">{clientInfo}</p>
-          )}
         </div>
       </div>
 
@@ -173,11 +83,11 @@ export default function LoginPage() {
           )}
 
           <button
-            onClick={handleNextAuthLogin}
-            disabled={loading || googleLoading}
-            className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-3"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
           >
-            {googleLoading ? (
+            {loading ? (
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -190,28 +100,7 @@ export default function LoginPage() {
                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
               </svg>
             )}
-            <span>Đăng nhập với NextAuth</span>
-          </button>
-          
-          <button
-            onClick={handleGoogleDirectLogin}
-            disabled={loading || isDirectGoogleLoading}
-            className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6"
-          >
-            {isDirectGoogleLoading ? (
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : (
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
-                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-              </svg>
-            )}
-            <span>Đăng nhập với Google (Trực tiếp)</span>
+            <span>Tiếp tục với Google</span>
           </button>
 
           <div className="relative mt-4 mb-6">
@@ -333,7 +222,6 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      <Toaster position="top-center" />
     </div>
   );
 } 
