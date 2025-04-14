@@ -67,27 +67,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
-    config.optimization = {
-      ...config.optimization,
-      minimize: false,
-      minimizer: [],
-      splitChunks: false,
-      runtimeChunk: false,
-      flagIncludedChunks: false,
-      concatenateModules: false,
-      usedExports: false,
-      sideEffects: false,
-      providedExports: false,
-      innerGraph: false,
-      mangleExports: false,
-    };
-    
     if (dev) {
-      config.mode = 'none';
-    }
-    
-    if (!isServer) {
-      config.output.libraryTarget = 'var';
+      // Trong môi trường dev, giữ nguyên mode mặc định 
+      // Không đặt mode thành 'none' nữa
     }
     
     return config;

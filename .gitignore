@@ -230,3 +230,14 @@ dist/
 build/
 public/uploads/*
 !public/uploads/.gitkeep
+
+# Bổ sung thêm các file webpack
+.next/server/webpack-runtime.js
+.next/server/webpack-api-runtime.js
+.next/server/pages-manifest.json
+.next/build-manifest.json
+.next/react-loadable-manifest.json
+.next/server/middleware-build-manifest.js
+.next/server/middleware-manifest.json
+.next/server/middleware-react-loadable-manifest.json
+.next/trace
