@@ -371,35 +371,102 @@ export default function AdminProductsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
-  // Sử dụng useState đơn giản thay vì useReducer 
-  const [clickCount, setClickCount] = useState(0);
-  
-  // Hàm cập nhật clickCount với ghi log chi tiết
-  const incrementClickCount = () => {
-    console.log('incrementClickCount called with current count:', clickCount);
-    // Ghi trực tiếp vào DOM để kiểm tra xem state có cập nhật hay không
-    const counterElement = document.getElementById('click-counter');
-    if (counterElement) {
-      const newCount = clickCount + 1;
-      counterElement.textContent = String(newCount);
-      console.log('Updated DOM directly with count:', newCount);
+  // Sử dụng state nhưng kết hợp với localStorage
+  const [clickCount, setClickCount] = useState<number>(() => {
+    // Khởi tạo từ localStorage nếu chạy ở client-side
+    if (typeof window !== 'undefined') {
+      const savedCount = localStorage.getItem('clickCount');
+      return savedCount ? parseInt(savedCount, 10) : 0;
     }
-    // Cập nhật state để React render lại component
-    setClickCount(prevCount => {
-      const newCount = prevCount + 1;
-      console.log('setClickCount called with new value:', newCount);
-      return newCount;
+    return 0;
+  });
+  
+  // Hàm cập nhật clickCount kết hợp với localStorage
+  const incrementClickCount = () => {
+    // Sử dụng biến đếm độc lập với React state
+    const currentCount = localStorage.getItem('clickCount') 
+      ? parseInt(localStorage.getItem('clickCount')!, 10) 
+      : 0;
+      
+    const newCount = currentCount + 1;
+    
+    // Lưu vào localStorage
+    localStorage.setItem('clickCount', newCount.toString());
+    console.log(`[STORAGE] Saved count ${currentCount} -> ${newCount}`);
+    
+    // Cập nhật DOM trực tiếp
+    const elements = document.querySelectorAll('.text-red-600');
+    elements.forEach(el => {
+      el.textContent = String(newCount);
     });
+    
+    // Cập nhật React state
+    setClickCount(newCount);
+    
+    document.title = `Count: ${newCount}`;
   };
   
   const resetClickCount = () => {
-    console.log('resetClickCount called');
-    const counterElement = document.getElementById('click-counter');
-    if (counterElement) {
-      counterElement.textContent = '0';
-    }
+    // Reset trong localStorage
+    localStorage.setItem('clickCount', '0');
+    
+    // Reset trong DOM
+    const elements = document.querySelectorAll('.text-red-600');
+    elements.forEach(el => {
+      el.textContent = '0';
+    });
+    
+    // Reset state
     setClickCount(0);
   };
+  
+  // Effect để đồng bộ lại giá trị khi component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedCount = localStorage.getItem('clickCount');
+      if (storedCount) {
+        const parsedCount = parseInt(storedCount, 10);
+        if (parsedCount !== clickCount) {
+          setClickCount(parsedCount);
+          
+          // Cập nhật cả DOM
+          const elements = document.querySelectorAll('.text-red-600');
+          elements.forEach(el => {
+            el.textContent = storedCount;
+          });
+        }
+      }
+    }
+  }, []);
+  
+  // Effect để theo dõi thay đổi localStorage từ các cửa sổ khác
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'clickCount' && e.newValue) {
+          const newCount = parseInt(e.newValue, 10);
+          console.log(`Storage changed externally: ${e.oldValue} -> ${e.newValue}`);
+          
+          // Cập nhật React state
+          setClickCount(newCount);
+          
+          // Cập nhật DOM
+          const elements = document.querySelectorAll('.text-red-600');
+          elements.forEach(el => {
+            el.textContent = e.newValue!;
+          });
+        }
+      };
+      
+      // Thêm listener
+      window.addEventListener('storage', handleStorageChange);
+      
+      // Cleanup
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    }
+  }, []);
   
   // Thêm state để debug showForm
   const [isDebug, setIsDebug] = useState(true);
@@ -813,18 +880,6 @@ export default function AdminProductsPage() {
               className="bg-green-500 text-white px-3 py-1 rounded-md text-sm"
               onClick={() => {
                 console.log("CLICK TEST BUTTON");
-                const timestamp = new Date().toISOString();
-                
-                // Cập nhật DOM trực tiếp để kiểm tra
-                const counterElement = document.getElementById('click-counter');
-                if (counterElement) {
-                  const currentValue = parseInt(counterElement.textContent || '0', 10);
-                  const newValue = currentValue + 1;
-                  counterElement.textContent = String(newValue);
-                  console.log(`[${timestamp}] DOM updated directly: ${currentValue} -> ${newValue}`);
-                }
-                
-                // Vẫn cập nhật state
                 incrementClickCount();
               }}
             >
@@ -833,18 +888,35 @@ export default function AdminProductsPage() {
             <button 
               className="bg-orange-500 text-white px-3 py-1 rounded-md text-sm"
               id="direct-dom-update"
-              data-count="0"
-              onClick={(e) => {
-                // Hoàn toàn bỏ qua React state, chỉ cập nhật DOM
-                const btn = e.currentTarget;
-                const currentCount = parseInt(btn.dataset.count || '0', 10);
+              onClick={() => {
+                // Tăng giá trị trực tiếp trong localStorage
+                const currentCount = localStorage.getItem('clickCount') 
+                  ? parseInt(localStorage.getItem('clickCount')!, 10) 
+                  : 0;
+                
                 const newCount = currentCount + 1;
-                btn.dataset.count = String(newCount);
-                btn.textContent = `DOM Only: ${newCount}`;
-                console.log(`Direct DOM update: ${currentCount} -> ${newCount}`);
+                localStorage.setItem('clickCount', newCount.toString());
+                
+                // Cập nhật DOM
+                const elements = document.querySelectorAll('.text-red-600');
+                elements.forEach(el => {
+                  el.textContent = String(newCount);
+                });
+                
+                document.title = `DOM Only: ${newCount}`;
               }}
             >
-              DOM Only: 0
+              DOM Only
+            </button>
+            <button 
+              className="bg-purple-500 text-white px-3 py-1 rounded-md text-sm"
+              onClick={() => {
+                const currentCount = localStorage.getItem('clickCount') || '0';
+                alert(`Current localStorage count: ${currentCount}`);
+                console.log('localStorage:', currentCount);
+              }}
+            >
+              Show Storage
             </button>
           </div>
         </div>
@@ -891,32 +963,11 @@ export default function AdminProductsPage() {
                   Quay lại
                 </Link>
                 <button
-                  onClick={(e) => {
-                    // 1. Log đầu tiên
-                    console.log("THÊM SẢN PHẨM MỚI CLICKED", { current: clickCount });
+                  onClick={() => {
+                    // Tăng clickCount một cách đơn giản
+                    incrementClickCount();
                     
-                    // 2. Cập nhật DOM trực tiếp 
-                    const timestamp = new Date().toLocaleTimeString();
-                    const counterElements = document.querySelectorAll('.text-red-600');
-                    counterElements.forEach(el => {
-                      const currentValue = parseInt(el.textContent || '0', 10);
-                      const newValue = currentValue + 1;
-                      el.textContent = String(newValue);
-                      console.log(`[${timestamp}] DOM counter updated: ${currentValue} -> ${newValue}`);
-                      
-                      // Update title để theo dõi
-                      document.title = `Count: ${newValue} @ ${timestamp}`;
-                    });
-                    
-                    // 3. Cập nhật state React
-                    setClickCount(oldCount => {
-                      const newValue = oldCount + 1;
-                      console.log(`React setState: ${oldCount} -> ${newValue}`);
-                      return newValue;
-                    });
-                    
-                    // 4. Xử lý chức năng thêm sản phẩm
-                    resetForm();
+                    // Xử lý chức năng thêm sản phẩm
                     setIsEditing(false);
                     setCurrentProduct(null);
                     setFormError({});
@@ -1072,31 +1123,11 @@ export default function AdminProductsPage() {
                         <p className="text-gray-500 mb-4">Chưa có sản phẩm nào trong hệ thống</p>
                         <button 
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
-                          onClick={(e) => {
-                            // 1. Log đầu tiên 
-                            console.log("THÊM SẢN PHẨM ĐẦU TIÊN CLICKED", { current: clickCount });
+                          onClick={() => {
+                            // Tăng clickCount một cách đơn giản
+                            incrementClickCount();
                             
-                            // 2. Cập nhật DOM trực tiếp 
-                            const timestamp = new Date().toLocaleTimeString();
-                            const counterElements = document.querySelectorAll('.text-red-600');
-                            counterElements.forEach(el => {
-                              const currentValue = parseInt(el.textContent || '0', 10);
-                              const newValue = currentValue + 1;
-                              el.textContent = String(newValue);
-                              console.log(`[${timestamp}] DOM counter updated: ${currentValue} -> ${newValue}`);
-                              
-                              // Update title để theo dõi
-                              document.title = `Count: ${newValue} @ ${timestamp}`;
-                            });
-                            
-                            // 3. Cập nhật state React
-                            setClickCount(oldCount => {
-                              const newValue = oldCount + 1;
-                              console.log(`React setState: ${oldCount} -> ${newValue}`);
-                              return newValue;
-                            });
-                            
-                            // 4. Xử lý chức năng thêm sản phẩm
+                            // Xử lý chức năng thêm sản phẩm
                             setIsEditing(false);
                             setCurrentProduct(null);
                             setFormError({});
