@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,36 +13,52 @@ export const metadata = {
 
 export default function AdminPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
   
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    if (status === 'authenticated') {
+      if (session?.user?.email !== 'xlab.rnd@gmail.com') {
+        router.push('/');
+      }
+    } else if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [session, status, router]);
+
   // Xử lý khi gửi form
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     setIsLoading(true);
     
     // Tạo form data từ form
-    const formData = new FormData(event.target as HTMLFormElement);
+    const formData = new FormData(event.target);
     
     // Tại đây sẽ gửi API request để thêm sản phẩm
     // Mô phỏng thêm sản phẩm thành công
     setTimeout(() => {
       alert('Đã thêm sản phẩm thành công!');
       setIsLoading(false);
-      
-      // Reset form
-      (event.target as HTMLFormElement).reset();
-      
       setShowForm(false);
-    }, 1500);
-  };
+      event.target.reset();
+    }, 1000);
+  }
+  
+  if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
   
   return (
     <div>
@@ -65,8 +82,8 @@ export default function AdminPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src="/images/avatar-placeholder.svg"
-                      alt="Admin"
+                      src={session?.user?.image || '/images/avatar-placeholder.svg'}
+                      alt={session?.user?.name || 'Admin'}
                       fill
                       className="rounded-full"
                       onError={(e) => {
@@ -74,8 +91,8 @@ export default function AdminPage() {
                       }}
                     />
                   </div>
-                  <h2 className="text-xl font-bold">Quản trị viên</h2>
-                  <p className="text-gray-600">admin@xlab.vn</p>
+                  <h2 className="text-xl font-bold">{session?.user?.name || 'Admin'}</h2>
+                  <p className="text-gray-600">{session?.user?.email}</p>
                   <p className="text-sm text-gray-500 mt-1">Quản trị viên</p>
                 </div>
                 
@@ -86,7 +103,7 @@ export default function AdminPage() {
                     </svg>
                     Tổng quan
                   </a>
-                  <a href="/admin/products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
+                  <a href="#products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
@@ -157,12 +174,12 @@ export default function AdminPage() {
                   <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
                   <button 
                     className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                    onClick={() => router.push('/admin/products')}
+                    onClick={() => setShowForm(!showForm)}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
-                    Quản lý chi tiết
+                    {showForm ? 'Đóng form' : 'Thêm sản phẩm mới'}
                   </button>
                 </div>
                 
