@@ -27,6 +27,8 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -57,7 +59,17 @@ export default function AdminPage() {
     // Tạo form data từ form
     const formData = new FormData(event.currentTarget);
     
-    // Tại đây sẽ gửi API request để thêm sản phẩm
+    // Tạo sản phẩm mới từ dữ liệu form
+    const newProduct: Product = {
+      id: `prod-${Date.now()}`, // Tạo ID tạm thời
+      name: formData.get('name') as string,
+      categoryId: formData.get('categoryId') as string,
+      price: parseFloat(formData.get('price') as string) || 0,
+    };
+    
+    // Thêm sản phẩm mới vào danh sách
+    setProducts((prevProducts) => [...prevProducts, newProduct]);
+    
     // Mô phỏng thêm sản phẩm thành công
     setTimeout(() => {
       alert('Đã thêm sản phẩm thành công!');
@@ -68,6 +80,49 @@ export default function AdminPage() {
       }
     }, 1000);
   }
+  
+  // Xử lý khi nhấn nút Sửa
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product);
+    setShowEditForm(true);
+  };
+
+  // Xử lý khi gửi form chỉnh sửa
+  const handleEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    
+    const formData = new FormData(event.currentTarget);
+    const updatedProduct: Product = {
+      id: editingProduct?.id || '',
+      name: formData.get('name') as string,
+      categoryId: formData.get('categoryId') as string,
+      price: parseFloat(formData.get('price') as string) || 0,
+    };
+    
+    // Cập nhật sản phẩm trong danh sách
+    setProducts((prevProducts) => 
+      prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+    
+    setTimeout(() => {
+      alert('Đã cập nhật sản phẩm thành công!');
+      setIsLoading(false);
+      setShowEditForm(false);
+      setEditingProduct(null);
+      if (event.currentTarget) {
+        event.currentTarget.reset();
+      }
+    }, 1000);
+  };
+  
+  // Xử lý khi nhấn nút Xóa
+  const handleDelete = (productId: string) => {
+    if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+      setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
+      alert('Đã xóa sản phẩm thành công!');
+    }
+  };
   
   if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
     return (
@@ -409,6 +464,91 @@ export default function AdminPage() {
                   </div>
                 )}
                 
+                {/* Form chỉnh sửa sản phẩm */}
+                {showEditForm && editingProduct && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+                    <h3 className="text-lg font-semibold mb-4">Chỉnh sửa sản phẩm</h3>
+                    
+                    <form onSubmit={handleEditSubmit}>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label htmlFor="edit-product-name" className="block mb-2 font-medium text-gray-700">
+                            Tên phần mềm <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="edit-product-name"
+                            name="name"
+                            defaultValue={editingProduct.name}
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="edit-product-category" className="block mb-2 font-medium text-gray-700">
+                            Danh mục <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            id="edit-product-category"
+                            name="categoryId"
+                            defaultValue={editingProduct.categoryId}
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          >
+                            <option value="">-- Chọn danh mục --</option>
+                            <option value="office">Văn phòng</option>
+                            <option value="design">Thiết kế</option>
+                            <option value="development">Phát triển</option>
+                            <option value="security">Bảo mật</option>
+                            <option value="utility">Tiện ích</option>
+                          </select>
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="edit-product-price" className="block mb-2 font-medium text-gray-700">
+                            Giá (VNĐ) <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="edit-product-price"
+                            name="price"
+                            defaultValue={editingProduct.price}
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 flex justify-end space-x-4">
+                        <button 
+                          type="button" 
+                          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                          onClick={() => {
+                            setShowEditForm(false);
+                            setEditingProduct(null);
+                          }}
+                        >
+                          Hủy
+                        </button>
+                        <button 
+                          type="submit" 
+                          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
+                          disabled={isLoading}
+                        >
+                          {isLoading && (
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          )}
+                          Cập nhật sản phẩm
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+                
                 {/* Danh sách sản phẩm */}
                 <div className="mt-6">
                   <h3 className="text-lg font-semibold mb-4">Danh sách sản phẩm</h3>
@@ -430,8 +570,8 @@ export default function AdminPage() {
                               <td className="py-2 px-4 border-b">{product.categoryId}</td>
                               <td className="py-2 px-4 border-b">{formatCurrency(product.price)}</td>
                               <td className="py-2 px-4 border-b">
-                                <button className="text-blue-600 hover:text-blue-800 mr-2">Sửa</button>
-                                <button className="text-red-600 hover:text-red-800">Xóa</button>
+                                <button className="text-blue-600 hover:text-blue-800 mr-2" onClick={() => handleEdit(product)}>Sửa</button>
+                                <button className="text-red-600 hover:text-red-800" onClick={() => handleDelete(product.id)}>Xóa</button>
                               </td>
                             </tr>
                           ))}
