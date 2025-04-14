@@ -18,8 +18,17 @@ export default function AdminProductsPage() {
   
   // Log products state whenever it changes
   useEffect(() => {
-    console.log("[AdminProductsPage] Products state updated:", products);
+    console.log("[AdminProductsPage] Products state updated:", products.length);
   }, [products]);
+  
+  // Tự động tải lại trang sau khi thực hiện thao tác thành công
+  const reloadAfterSuccess = (message: string) => {
+    showSuccess(message);
+    // Đặt timeout để người dùng thấy thông báo thành công trước khi reload
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  };
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -100,7 +109,7 @@ export default function AdminProductsPage() {
           // Đảm bảo id tồn tại khi chỉnh sửa
           const updateData = { ...productData, id: String(currentProduct.id) } as Product;
           await updateProduct(updateData); // Gọi hàm từ context
-          showSuccess('Sản phẩm đã được cập nhật thành công!');
+          reloadAfterSuccess('Đã cập nhật sản phẩm thành công!');
         } else {
           // Tạo product mới không bao gồm id client-side
           const createData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'> = { 
@@ -126,7 +135,7 @@ export default function AdminProductsPage() {
           console.log("Data sent to addProduct context function:", createData);
           
           await addProduct(createData); // Gọi hàm từ context với đúng kiểu dữ liệu
-          showSuccess('Sản phẩm mới đã được thêm thành công!');
+          reloadAfterSuccess('Đã thêm sản phẩm mới thành công!');
         }
         
         // Reset form
@@ -166,7 +175,7 @@ export default function AdminProductsPage() {
         await deleteProduct(productId); // Gọi hàm từ context
         
         console.log("[AdminProductsPage] Product deleted successfully via context, ID:", productId);
-        showSuccess('Sản phẩm đã được xóa thành công!');
+        reloadAfterSuccess('Đã xóa sản phẩm thành công!');
       } catch (contextError: any) {
         console.error("[AdminProductsPage] Error calling deleteProduct from context:", contextError);
         setFormError(contextError.message || 'Đã xảy ra lỗi khi xóa sản phẩm');

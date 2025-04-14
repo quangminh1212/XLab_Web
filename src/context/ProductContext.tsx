@@ -30,61 +30,99 @@ export const ProductContext = createContext<ProductContextType>(defaultContextVa
 // Hook để sử dụng context
 export function useProducts() {
   const context = useContext(ProductContext);
+  
+  if (!context) {
+    console.error("[useProducts] Context used outside of provider");
+    throw new Error("useProducts must be used within a ProductProvider");
+  }
+  
   return context;
 }
 
 // Provider component
 export function ProductProvider({ children }: { children: React.ReactNode }) {
-  // Khởi tạo state từ dữ liệu mẫu
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [categories] = useState<Category[]>(mockCategories);
+  // Khởi tạo state từ dữ liệu mẫu hoặc từ localStorage nếu có
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>(mockCategories);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Tải dữ liệu từ API khi component được mount
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        // Trước tiên, thử lấy từ localStorage nếu có
+        let initialProducts = [];
+        if (typeof window !== 'undefined') {
+          try {
+            const savedProducts = localStorage.getItem('xlab_products');
+            if (savedProducts) {
+              initialProducts = JSON.parse(savedProducts);
+              console.log("[ProductContext] Loaded products from localStorage:", initialProducts.length);
+            }
+          } catch (storageError) {
+            console.error('[ProductContext] Error loading from localStorage:', storageError);
+          }
+        }
+
+        // Nếu không có dữ liệu trong localStorage, lấy từ API
+        if (initialProducts.length === 0) {
+          console.log("[ProductContext] Fetching products from API");
+          const response = await fetch('/api/products');
+          if (!response.ok) {
+            throw new Error("Failed to fetch products");
+          }
+          initialProducts = await response.json();
+          console.log("[ProductContext] Loaded products from API:", initialProducts.length);
+          
+          // Lưu vào localStorage
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.setItem('xlab_products', JSON.stringify(initialProducts));
+            } catch (storageError) {
+              console.error('[ProductContext] Error saving to localStorage:', storageError);
+            }
+          }
+        }
+        
+        setProducts(initialProducts);
+        setIsInitialized(true);
+      } catch (error) {
+        console.error("[ProductContext] Error initializing products:", error);
+        // Fallback to mockData
+        setProducts(mockProducts);
+        setIsInitialized(true);
+      }
+    };
+    
+    initializeData();
+  }, []);
 
   // Debug function để kiểm tra state
   const logState = (action: string, data?: any) => {
     console.log(`[ProductContext] ${action}:`, data || products);
   };
 
-  // Lưu trữ danh sách sản phẩm vào localStorage khi có thay đổi
+  // Cập nhật localStorage mỗi khi products thay đổi 
   useEffect(() => {
+    if (!isInitialized) return; // Skip initial render
+    
     if (typeof window !== 'undefined') {
       try {
-        console.log("Saving products to localStorage:", products);
+        console.log("[ProductContext] Saving products to localStorage:", products.length);
         localStorage.setItem('xlab_products', JSON.stringify(products));
       } catch (error) {
-        console.error('Lỗi khi lưu vào localStorage:', error);
+        console.error('[ProductContext] Error saving to localStorage:', error);
       }
     }
-  }, [products]);
+  }, [products, isInitialized]);
 
-  // Khôi phục danh sách sản phẩm từ localStorage khi component được mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const savedProducts = localStorage.getItem('xlab_products');
-        if (savedProducts) {
-          const parsedProducts = JSON.parse(savedProducts);
-          console.log("Loaded products from localStorage:", parsedProducts);
-          setProducts(parsedProducts);
-        }
-      } catch (error) {
-        console.error('Lỗi khi phân tích dữ liệu sản phẩm từ localStorage:', error);
-      }
-    }
-  }, []);
-
-  // Cập nhật toàn bộ danh sách sản phẩm
-  const updateProducts = async (newProducts: Product[]) => {
-    console.log("[ProductContext] Updating all products:", newProducts);
+  // Cập nhật toàn bộ danh sách sản phẩm - hữu ích khi cần reset hoặc bulk update
+  const updateProducts = async (newProducts: Product[]): Promise<boolean> => {
+    console.log("[ProductContext] Updating all products:", newProducts.length);
     
     try {
-      // Cập nhật state
+      // Direct state update without API call
       setProducts(newProducts);
-      
-      // Lưu vào localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('xlab_products', JSON.stringify(newProducts));
-      }
-      
       return true;
     } catch (error) {
       console.error("[ProductContext] Error updating all products:", error);
@@ -103,41 +141,26 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json'
         },
-        // Gửi dữ liệu không bao gồm id, createdAt, updatedAt
-        body: JSON.stringify(productData) 
+        body: JSON.stringify(productData)
       });
+      
+      const data = await response.json();
       
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error("[ProductContext] API Error adding product:", errorData);
-        throw new Error(errorData.error || "Không thể thêm sản phẩm");
+        console.error("[ProductContext] API Error:", data);
+        throw new Error(data.error || "Không thể thêm sản phẩm");
       }
       
-      // Lấy sản phẩm đã được thêm từ response (bao gồm id và timestamps được tạo bởi server)
-      const addedProduct = await response.json();
+      // Lấy sản phẩm đã được thêm từ response
+      const addedProduct = data;
       console.log("[ProductContext] Product added via API:", addedProduct);
       
-      // Cập nhật state với sản phẩm đầy đủ
-      setProducts(prevProducts => {
-        const newProducts = [...prevProducts, addedProduct];
-        console.log("[ProductContext] Products state after adding:", newProducts);
-        
-        // Lưu vào localStorage
-        if (typeof window !== 'undefined') {
-          try {
-            localStorage.setItem('xlab_products', JSON.stringify(newProducts));
-          } catch (storageError) {
-            console.error("[ProductContext] Error saving to localStorage after add:", storageError);
-          }
-        }
-        
-        return newProducts;
-      });
+      // Cập nhật state
+      setProducts(prevProducts => [...prevProducts, addedProduct]);
       
       return addedProduct;
     } catch (error) {
       console.error("[ProductContext] Error in addProduct function:", error);
-      // Ném lỗi ra ngoài để component có thể bắt và hiển thị
       throw error instanceof Error ? error : new Error("Lỗi không xác định khi thêm sản phẩm"); 
     }
   };
@@ -157,17 +180,18 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(product) // Gửi toàn bộ object product
+        body: JSON.stringify(product)
       });
       
+      const data = await response.json();
+      
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error(`[ProductContext] API Error updating product ${productId}:`, errorData);
-        throw new Error(errorData.error || `Không thể cập nhật sản phẩm với ID ${productId}`);
+        console.error(`[ProductContext] API Error updating product ${productId}:`, data);
+        throw new Error(data.error || `Không thể cập nhật sản phẩm với ID ${productId}`);
       }
       
       // Lấy sản phẩm đã được cập nhật từ response
-      const updatedProduct = await response.json();
+      const updatedProduct = data;
       console.log("[ProductContext] Product updated via API:", updatedProduct);
       
       // Cập nhật state
@@ -176,27 +200,17 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         
         if (existingProductIndex === -1) {
           console.error(`[ProductContext] Product with ID ${productId} not found in state after successful API update`);
-          // Có thể thêm lại sản phẩm vào state nếu cần, hoặc log lỗi
-          return prevProducts; // Hoặc quyết định cách xử lý khác
+          return prevProducts;
         }
         
         const updatedState = [...prevProducts];
         updatedState[existingProductIndex] = updatedProduct;
-        console.log("[ProductContext] Products state after update:", updatedState);
-        
-        // Lưu vào localStorage
-        if (typeof window !== 'undefined') {
-          try {
-            localStorage.setItem('xlab_products', JSON.stringify(updatedState));
-          } catch (storageError) {
-            console.error("[ProductContext] Error saving to localStorage after update:", storageError);
-          }
-        }
+        console.log("[ProductContext] Products state after update:", updatedState.length);
         
         return updatedState;
       });
       
-      return updatedProduct;
+      return product;
     } catch (error) {
       console.error("[ProductContext] Error in updateProduct function:", error);
       throw error instanceof Error ? error : new Error("Lỗi không xác định khi cập nhật sản phẩm"); 
@@ -211,13 +225,6 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       // Normalize ID to string for comparison
       const productId = String(id);
       
-      // Kiểm tra xem sản phẩm có tồn tại trong state không (chỉ để log)
-      const existingProduct = products.find(p => String(p.id) === productId);
-      if (!existingProduct) {
-        console.warn(`[ProductContext] Product with ID ${productId} not found in state before calling API`);
-        // Vẫn tiếp tục gọi API vì sản phẩm có thể tồn tại ở server nhưng chưa có trong state
-      }
-      
       console.log("[ProductContext] Calling DELETE API for ID:", productId);
       // Gọi API xóa sản phẩm
       const response = await fetch(`/api/products/${productId}`, {
@@ -225,28 +232,17 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       });
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({})); // Bắt lỗi nếu response không có body json
+        const errorData = await response.json().catch(() => ({}));
         console.error(`[ProductContext] API Error deleting product ${productId}:`, errorData, response.status, response.statusText);
         throw new Error(errorData.error || `Không thể xóa sản phẩm với ID ${productId}`);
       }
       
       console.log("[ProductContext] Product deleted via API successfully for ID:", productId);
       
-      // Cập nhật state
+      // Cập nhật state - PHẢI ĐẢM BẢO STATE ĐƯỢC CẬP NHẬT
       setProducts(prevProducts => {
-        // Xóa sản phẩm khỏi state
         const filtered = prevProducts.filter(p => String(p.id) !== productId);
-        console.log("[ProductContext] Products state after deletion:", filtered);
-        
-        // Lưu vào localStorage
-        if (typeof window !== 'undefined') {
-          try {
-            localStorage.setItem('xlab_products', JSON.stringify(filtered));
-          } catch (storageError) {
-            console.error("[ProductContext] Error saving to localStorage after delete:", storageError);
-          }
-        }
-        
+        console.log("[ProductContext] Products state after deletion:", filtered.length);
         return filtered;
       });
       
