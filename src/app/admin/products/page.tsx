@@ -7,6 +7,7 @@ import { Product, Category } from '@/types';
 import { useProducts } from '@/context/ProductContext';
 import { FiPlus, FiEdit, FiTrash2, FiInfo, FiFilter } from 'react-icons/fi';
 import { createPortal } from 'react-dom';
+import ClickTracker from './click-tracker';
 
 // Định nghĩa interface cho ProductFormProps
 interface ProductFormProps {
@@ -32,6 +33,13 @@ interface ProductFormProps {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   onCancel: () => void;
   setFormError: React.Dispatch<React.SetStateAction<any>>;
+}
+
+// Thêm khai báo kiểu cho Window
+declare global {
+  interface Window {
+    updateClickCount: () => number;
+  }
 }
 
 // Component ProductForm
@@ -381,43 +389,81 @@ export default function AdminProductsPage() {
     return 0;
   });
   
-  // Hàm cập nhật clickCount kết hợp với localStorage
-  const incrementClickCount = () => {
-    // Sử dụng biến đếm độc lập với React state
-    const currentCount = localStorage.getItem('clickCount') 
-      ? parseInt(localStorage.getItem('clickCount')!, 10) 
-      : 0;
-      
-    const newCount = currentCount + 1;
-    
-    // Lưu vào localStorage
-    localStorage.setItem('clickCount', newCount.toString());
-    console.log(`[STORAGE] Saved count ${currentCount} -> ${newCount}`);
-    
-    // Cập nhật DOM trực tiếp
-    const elements = document.querySelectorAll('.text-red-600');
-    elements.forEach(el => {
-      el.textContent = String(newCount);
-    });
-    
-    // Cập nhật React state
-    setClickCount(newCount);
-    
-    document.title = `Count: ${newCount}`;
+  // Thêm useEffect để tạo phần tử input đếm số lần click nằm ngoài React 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Tạo hidden input để lưu trữ click count
+      let clickInput = document.getElementById('click-counter-input');
+      if (!clickInput) {
+        clickInput = document.createElement('input');
+        (clickInput as HTMLInputElement).id = 'click-counter-input';
+        (clickInput as HTMLInputElement).type = 'hidden';
+        (clickInput as HTMLInputElement).value = '0';
+        document.body.appendChild(clickInput);
+        
+        // Tạo một global function để cập nhật giá trị
+        window.updateClickCount = function() {
+          const input = document.getElementById('click-counter-input') as HTMLInputElement;
+          if (input) {
+            const currentValue = parseInt(input.value || '0', 10);
+            const newValue = currentValue + 1;
+            input.value = String(newValue);
+            
+            // Cập nhật tất cả các phần tử hiển thị
+            const displays = document.querySelectorAll('.text-red-600');
+            displays.forEach(el => {
+              el.textContent = String(newValue);
+            });
+            
+            // Cập nhật title
+            document.title = `Count: ${newValue}`;
+            
+            // Thông báo
+            console.log(`[DOM API] Click count updated: ${currentValue} -> ${newValue}`);
+            
+            // Tự động gửi event để React biết có sự thay đổi
+            const event = new Event('storage');
+            window.dispatchEvent(event);
+            
+            return newValue;
+          }
+          return 0;
+        };
+      }
+    }
+  }, []);
+  
+  // Hàm đơn giản để gọi function từ window object
+  const directUpdateClickCount = () => {
+    if (typeof window !== 'undefined' && window.updateClickCount) {
+      const newCount = window.updateClickCount();
+      setClickCount(newCount); // Vẫn cập nhật React state để hỗ trợ
+    }
   };
   
+  // Hàm cập nhật clickCount qua DOM API
+  const incrementClickCount = () => {
+    directUpdateClickCount();
+  };
+  
+  // Hàm reset click count
   const resetClickCount = () => {
-    // Reset trong localStorage
-    localStorage.setItem('clickCount', '0');
-    
-    // Reset trong DOM
-    const elements = document.querySelectorAll('.text-red-600');
-    elements.forEach(el => {
-      el.textContent = '0';
-    });
-    
-    // Reset state
-    setClickCount(0);
+    // Tìm input và reset giá trị
+    const input = document.getElementById('click-counter-input') as HTMLInputElement;
+    if (input) {
+      input.value = '0';
+      
+      // Cập nhật DOM
+      const elements = document.querySelectorAll('.text-red-600');
+      elements.forEach(el => {
+        el.textContent = '0';
+      });
+      
+      // Cập nhật React state
+      setClickCount(0);
+      
+      console.log('[DOM API] Click count reset to 0');
+    }
   };
   
   // Effect để đồng bộ lại giá trị khi component mount
@@ -838,6 +884,9 @@ export default function AdminProductsPage() {
   
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Add ClickTracker component */}
+      <ClickTracker />
+      
       {/* DEBUG INFO */}
       <div className="fixed top-0 right-0 bg-black bg-opacity-75 text-white p-2 z-[999999] font-mono">
         showForm: {showForm ? 'true' : 'false'}<br/>
@@ -889,21 +938,10 @@ export default function AdminProductsPage() {
               className="bg-orange-500 text-white px-3 py-1 rounded-md text-sm"
               id="direct-dom-update"
               onClick={() => {
-                // Tăng giá trị trực tiếp trong localStorage
-                const currentCount = localStorage.getItem('clickCount') 
-                  ? parseInt(localStorage.getItem('clickCount')!, 10) 
-                  : 0;
-                
-                const newCount = currentCount + 1;
-                localStorage.setItem('clickCount', newCount.toString());
-                
-                // Cập nhật DOM
-                const elements = document.querySelectorAll('.text-red-600');
-                elements.forEach(el => {
-                  el.textContent = String(newCount);
-                });
-                
-                document.title = `DOM Only: ${newCount}`;
+                // Gọi trực tiếp window function, không qua React
+                if (window.updateClickCount) {
+                  window.updateClickCount();
+                }
               }}
             >
               DOM Only
@@ -911,12 +949,13 @@ export default function AdminProductsPage() {
             <button 
               className="bg-purple-500 text-white px-3 py-1 rounded-md text-sm"
               onClick={() => {
-                const currentCount = localStorage.getItem('clickCount') || '0';
-                alert(`Current localStorage count: ${currentCount}`);
-                console.log('localStorage:', currentCount);
+                const input = document.getElementById('click-counter-input') as HTMLInputElement;
+                const currentCount = input ? input.value : 'không tìm thấy input';
+                alert(`Current click count (from input): ${currentCount}`);
+                console.log('Click count from input:', currentCount);
               }}
             >
-              Show Storage
+              Show Count
             </button>
           </div>
         </div>
