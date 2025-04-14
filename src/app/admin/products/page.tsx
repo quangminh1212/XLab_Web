@@ -371,30 +371,34 @@ export default function AdminProductsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
-  // Thêm state đếm số lần click - sử dụng useReducer thay vì useState
-  const clickCountReducer = (state: number, action: { type: string }): number => {
-    console.log('clickCountReducer called with action:', action);
-    switch (action.type) {
-      case 'INCREMENT':
-        return state + 1;
-      case 'RESET':
-        return 0;
-      default:
-        return state;
-    }
-  };
+  // Sử dụng useState đơn giản thay vì useReducer 
+  const [clickCount, setClickCount] = useState(0);
   
-  const [clickCount, dispatchClickCount] = useReducer(clickCountReducer, 0);
-  
-  // Hàm cập nhật clickCount 
+  // Hàm cập nhật clickCount với ghi log chi tiết
   const incrementClickCount = () => {
-    console.log('incrementClickCount called');
-    dispatchClickCount({ type: 'INCREMENT' });
+    console.log('incrementClickCount called with current count:', clickCount);
+    // Ghi trực tiếp vào DOM để kiểm tra xem state có cập nhật hay không
+    const counterElement = document.getElementById('click-counter');
+    if (counterElement) {
+      const newCount = clickCount + 1;
+      counterElement.textContent = String(newCount);
+      console.log('Updated DOM directly with count:', newCount);
+    }
+    // Cập nhật state để React render lại component
+    setClickCount(prevCount => {
+      const newCount = prevCount + 1;
+      console.log('setClickCount called with new value:', newCount);
+      return newCount;
+    });
   };
   
   const resetClickCount = () => {
     console.log('resetClickCount called');
-    dispatchClickCount({ type: 'RESET' });
+    const counterElement = document.getElementById('click-counter');
+    if (counterElement) {
+      counterElement.textContent = '0';
+    }
+    setClickCount(0);
   };
   
   // Thêm state để debug showForm
@@ -809,10 +813,38 @@ export default function AdminProductsPage() {
               className="bg-green-500 text-white px-3 py-1 rounded-md text-sm"
               onClick={() => {
                 console.log("CLICK TEST BUTTON");
+                const timestamp = new Date().toISOString();
+                
+                // Cập nhật DOM trực tiếp để kiểm tra
+                const counterElement = document.getElementById('click-counter');
+                if (counterElement) {
+                  const currentValue = parseInt(counterElement.textContent || '0', 10);
+                  const newValue = currentValue + 1;
+                  counterElement.textContent = String(newValue);
+                  console.log(`[${timestamp}] DOM updated directly: ${currentValue} -> ${newValue}`);
+                }
+                
+                // Vẫn cập nhật state
                 incrementClickCount();
               }}
             >
               Test Click +1
+            </button>
+            <button 
+              className="bg-orange-500 text-white px-3 py-1 rounded-md text-sm"
+              id="direct-dom-update"
+              data-count="0"
+              onClick={(e) => {
+                // Hoàn toàn bỏ qua React state, chỉ cập nhật DOM
+                const btn = e.currentTarget;
+                const currentCount = parseInt(btn.dataset.count || '0', 10);
+                const newCount = currentCount + 1;
+                btn.dataset.count = String(newCount);
+                btn.textContent = `DOM Only: ${newCount}`;
+                console.log(`Direct DOM update: ${currentCount} -> ${newCount}`);
+              }}
+            >
+              DOM Only: 0
             </button>
           </div>
         </div>
@@ -859,9 +891,31 @@ export default function AdminProductsPage() {
                   Quay lại
                 </Link>
                 <button
-                  onClick={() => {
-                    console.log("BUTTON CLICKED DIRECTLY");
-                    incrementClickCount();
+                  onClick={(e) => {
+                    // 1. Log đầu tiên
+                    console.log("THÊM SẢN PHẨM MỚI CLICKED", { current: clickCount });
+                    
+                    // 2. Cập nhật DOM trực tiếp 
+                    const timestamp = new Date().toLocaleTimeString();
+                    const counterElements = document.querySelectorAll('.text-red-600');
+                    counterElements.forEach(el => {
+                      const currentValue = parseInt(el.textContent || '0', 10);
+                      const newValue = currentValue + 1;
+                      el.textContent = String(newValue);
+                      console.log(`[${timestamp}] DOM counter updated: ${currentValue} -> ${newValue}`);
+                      
+                      // Update title để theo dõi
+                      document.title = `Count: ${newValue} @ ${timestamp}`;
+                    });
+                    
+                    // 3. Cập nhật state React
+                    setClickCount(oldCount => {
+                      const newValue = oldCount + 1;
+                      console.log(`React setState: ${oldCount} -> ${newValue}`);
+                      return newValue;
+                    });
+                    
+                    // 4. Xử lý chức năng thêm sản phẩm
                     resetForm();
                     setIsEditing(false);
                     setCurrentProduct(null);
@@ -1018,21 +1072,35 @@ export default function AdminProductsPage() {
                         <p className="text-gray-500 mb-4">Chưa có sản phẩm nào trong hệ thống</p>
                         <button 
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
-                          onClick={() => {
-                            console.log("EMPTY STATE BUTTON CLICKED DIRECTLY");
-                            incrementClickCount();
+                          onClick={(e) => {
+                            // 1. Log đầu tiên 
+                            console.log("THÊM SẢN PHẨM ĐẦU TIÊN CLICKED", { current: clickCount });
+                            
+                            // 2. Cập nhật DOM trực tiếp 
+                            const timestamp = new Date().toLocaleTimeString();
+                            const counterElements = document.querySelectorAll('.text-red-600');
+                            counterElements.forEach(el => {
+                              const currentValue = parseInt(el.textContent || '0', 10);
+                              const newValue = currentValue + 1;
+                              el.textContent = String(newValue);
+                              console.log(`[${timestamp}] DOM counter updated: ${currentValue} -> ${newValue}`);
+                              
+                              // Update title để theo dõi
+                              document.title = `Count: ${newValue} @ ${timestamp}`;
+                            });
+                            
+                            // 3. Cập nhật state React
+                            setClickCount(oldCount => {
+                              const newValue = oldCount + 1;
+                              console.log(`React setState: ${oldCount} -> ${newValue}`);
+                              return newValue;
+                            });
+                            
+                            // 4. Xử lý chức năng thêm sản phẩm
                             setIsEditing(false);
                             setCurrentProduct(null);
                             setFormError({});
                             setShowForm(true);
-                            
-                            // Force a re-render and check DOM
-                            setTimeout(() => {
-                              console.log("Checking DOM after click:", {
-                                formVisible: showForm,
-                                formElement: document.getElementById('product-form-modal')
-                              });
-                            }, 100);
                           }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
