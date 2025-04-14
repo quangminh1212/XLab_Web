@@ -14,8 +14,8 @@ interface ProductContextType {
   deleteProduct: (id: string | number) => void;
 }
 
-// Tạo context
-const ProductContext = createContext<ProductContextType | undefined>(undefined);
+// Tạo context với giá trị mặc định là null hoặc thực hiện kiểm tra trong hook
+export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 // Hook để sử dụng context
 export const useProducts = () => {
@@ -92,6 +92,4 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       {children}
     </ProductContext.Provider>
   );
-}
-
-export default ProductContext; 
+} 
