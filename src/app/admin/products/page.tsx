@@ -29,6 +29,9 @@ export default function AdminProductsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
+  // Thêm state mới để hiển thị form
+  const [forceShowForm, setForceShowForm] = useState(false);
+  
   // Tạo một style global cho animation
   useEffect(() => {
     // Log trạng thái ban đầu
@@ -406,310 +409,214 @@ export default function AdminProductsPage() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* FORM THÊM/SỬA SẢN PHẨM - CHỈ HIỂN THỊ KHI CẦN */}
-      {showForm && (
+      {/* FORM ĐỘC LẬP - KHÔNG PHỤ THUỘC VÀO STATE showForm */}
+      {forceShowForm && (
         <div 
-          id="product-form-container" 
-          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center z-[99999]"
-          style={{ 
-            position: 'fixed', 
-            inset: 0, 
-            display: 'flex !important', 
-            zIndex: 99999,
-            visibility: 'visible',
-            opacity: 1,
-            overflow: 'auto',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          className="fixed top-0 left-0 w-full h-full z-[99999]"
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            position: 'fixed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
           }}
         >
-          <div className="bg-white rounded-lg shadow-2xl overflow-auto max-h-[90vh] w-full max-w-5xl border-4 border-primary-500 m-4">
-            <div className="sticky top-0 bg-white p-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-2xl font-bold text-center flex-grow">
+          <div 
+            className="bg-white p-6 rounded-lg w-full max-w-4xl mx-auto"
+            style={{
+              maxHeight: '90vh',
+              overflow: 'auto',
+              border: '5px solid #10b981',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+            }}
+          >
+            <div className="flex justify-between items-center mb-6 border-b pb-4">
+              <h2 className="text-2xl font-bold">
                 {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
-              </h3>
+              </h2>
               <button 
-                type="button" 
-                className="bg-gray-200 text-gray-700 rounded-full p-2 hover:bg-gray-300"
-                onClick={() => {
-                  console.log("Closing form...");
-                  document.body.style.overflow = 'auto';
-                  setShowForm(false);
-                  setIsEditing(false);
-                  setCurrentProduct(null);
-                  setFormError('');
-                }}
+                className="bg-gray-200 text-gray-800 p-2 rounded-full hover:bg-gray-300"
+                onClick={() => setForceShowForm(false)}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
-            <div className="p-6">
-              {formError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
-                  <div dangerouslySetInnerHTML={{ __html: formError }} />
-                </div>
-              )}
-              
-              <form onSubmit={handleSubmit} id="product-form">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="md:col-span-2 bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-                    <div className="flex">
-                      <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <div className="ml-3">
-                        <p className="text-sm text-blue-700">
-                          Vui lòng điền đầy đủ thông tin cho các trường bắt buộc (có dấu <span className="text-red-500">*</span>).
-                          Nếu gặp lỗi khi thêm sản phẩm, hãy thử tải lại trang.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
-                      Tên sản phẩm <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="product-name"
-                      name="name"
-                      defaultValue={currentProduct?.name || ''}
-                      placeholder="Ví dụ: XLab Office Suite"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      onChange={(e) => {
-                        // Tự động sinh slug từ tên sản phẩm
-                        const slugInput = document.getElementById('product-slug') as HTMLInputElement;
-                        if (slugInput && (!slugInput.value || !isEditing)) {
-                          slugInput.value = e.target.value
-                            .toLowerCase()
-                            .replace(/\s+/g, '-')
-                            .replace(/[^\w\-]+/g, '');
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-slug" className="block mb-2 font-medium text-gray-700">
-                      Slug <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="product-slug"
-                      name="slug"
-                      defaultValue={currentProduct?.slug || ''}
-                      placeholder="Ví dụ: xlab-office-suite"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
-                      Danh mục <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="product-category"
-                      name="categoryId"
-                      defaultValue={currentProduct?.categoryId || ''}
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    >
-                      <option value="">-- Chọn danh mục --</option>
-                      {categories.map((category: Category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-price" className="block mb-2 font-medium text-gray-700">
-                      Giá (VNĐ) <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      id="product-price"
-                      name="price"
-                      defaultValue={currentProduct?.price || ''}
-                      placeholder="Ví dụ: 1200000"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
-                      Giá khuyến mãi (VNĐ)
-                    </label>
-                    <input
-                      type="number"
-                      id="product-sale-price"
-                      name="salePrice"
-                      defaultValue={currentProduct?.salePrice || ''}
-                      placeholder="Để trống nếu không có khuyến mãi"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-version" className="block mb-2 font-medium text-gray-700">
-                      Phiên bản <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="product-version"
-                      name="version"
-                      defaultValue={currentProduct?.version || ''}
-                      placeholder="Ví dụ: 1.0.0"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-image-url" className="block mb-2 font-medium text-gray-700">
-                      URL hình ảnh <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="product-image-url"
-                      name="imageUrl"
-                      defaultValue={currentProduct?.imageUrl || ''}
-                      placeholder="/images/placeholder-product.jpg"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-size" className="block mb-2 font-medium text-gray-700">
-                      Dung lượng <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="product-size"
-                      name="size"
-                      defaultValue={currentProduct?.size || ''}
-                      placeholder="Ví dụ: 50MB"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
-                      Loại giấy phép <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                      id="product-license"
-                      name="licenseType"
-                      defaultValue={currentProduct?.licenseType || ''}
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    >
-                      <option value="">-- Chọn loại giấy phép --</option>
-                      <option value="Thương mại">Thương mại</option>
-                      <option value="Cá nhân">Cá nhân</option>
-                      <option value="Doanh nghiệp">Doanh nghiệp</option>
-                      <option value="Doanh nghiệp lớn">Doanh nghiệp lớn</option>
-                    </select>
-                  </div>
-                  
-                  <div className="md:col-span-2">
-                    <label htmlFor="product-description" className="block mb-2 font-medium text-gray-700">
-                      Mô tả ngắn <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="product-description"
-                      name="description"
-                      rows={3}
-                      defaultValue={currentProduct?.description || ''}
-                      placeholder="Mô tả ngắn gọn về sản phẩm của bạn"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    ></textarea>
-                  </div>
-                  
-                  <div className="md:col-span-2">
-                    <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
-                      Mô tả chi tiết <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="product-long-description"
-                      name="longDescription"
-                      rows={6}
-                      defaultValue={currentProduct?.longDescription || ''}
-                      placeholder="Mô tả chi tiết về tính năng, lợi ích của sản phẩm"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      required
-                    ></textarea>
-                  </div>
-                  
-                  <div className="md:col-span-2 flex space-x-6">
-                    <div className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        id="product-featured" 
-                        name="isFeatured" 
-                        className="mr-2 h-4 w-4" 
-                        defaultChecked={currentProduct?.isFeatured || false}
-                      />
-                      <label htmlFor="product-featured" className="text-gray-700">
-                        Đánh dấu là sản phẩm nổi bật
-                      </label>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <input 
-                        type="checkbox" 
-                        id="product-new" 
-                        name="isNew" 
-                        className="mr-2 h-4 w-4" 
-                        defaultChecked={currentProduct?.isNew || false}
-                      />
-                      <label htmlFor="product-new" className="text-gray-700">
-                        Đánh dấu là sản phẩm mới
-                      </label>
-                    </div>
-                  </div>
+            
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block mb-2">Tên sản phẩm <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    name="name" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.name || ''}
+                    required
+                  />
                 </div>
                 
-                <div className="mt-6 flex justify-end space-x-4">
-                  <button 
-                    type="button" 
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    onClick={() => {
-                      setShowForm(false);
-                      setIsEditing(false);
-                      setCurrentProduct(null);
-                      setFormError('');
-                    }}
-                  >
-                    Hủy
-                  </button>
-                  <button 
-                    type="submit" 
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
-                    disabled={isLoading}
-                  >
-                    {isLoading && (
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                    )}
-                    {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}
-                  </button>
+                <div>
+                  <label className="block mb-2">Slug <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    name="slug" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.slug || ''}
+                    required
+                  />
                 </div>
-              </form>
-            </div>
+                
+                <div>
+                  <label className="block mb-2">Danh mục <span className="text-red-500">*</span></label>
+                  <select 
+                    name="categoryId" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.categoryId || ''}
+                    required
+                  >
+                    <option value="">-- Chọn danh mục --</option>
+                    {categories.map((category: Category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block mb-2">Giá <span className="text-red-500">*</span></label>
+                  <input 
+                    type="number" 
+                    name="price" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.price || ''}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block mb-2">Giá khuyến mãi</label>
+                  <input 
+                    type="number" 
+                    name="salePrice" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.salePrice || ''}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block mb-2">Phiên bản <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    name="version" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.version || ''}
+                    required
+                  />
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block mb-2">Mô tả <span className="text-red-500">*</span></label>
+                  <textarea 
+                    name="description" 
+                    rows={3}
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.description || ''}
+                    required
+                  ></textarea>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <label className="block mb-2">Mô tả chi tiết <span className="text-red-500">*</span></label>
+                  <textarea 
+                    name="longDescription" 
+                    rows={5}
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.longDescription || ''}
+                    required
+                  ></textarea>
+                </div>
+                
+                <div>
+                  <label className="block mb-2">URL hình ảnh <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    name="imageUrl" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.imageUrl || ''}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block mb-2">Dung lượng <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    name="size" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.size || ''}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block mb-2">Loại giấy phép <span className="text-red-500">*</span></label>
+                  <select 
+                    name="licenseType" 
+                    className="w-full p-2 border rounded"
+                    defaultValue={currentProduct?.licenseType || ''}
+                    required
+                  >
+                    <option value="">-- Chọn loại giấy phép --</option>
+                    <option value="Thương mại">Thương mại</option>
+                    <option value="Cá nhân">Cá nhân</option>
+                    <option value="Doanh nghiệp">Doanh nghiệp</option>
+                  </select>
+                </div>
+                
+                <div className="md:col-span-2">
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        name="isFeatured" 
+                        className="mr-2" 
+                        defaultChecked={currentProduct?.isFeatured || false}
+                      />
+                      Sản phẩm nổi bật
+                    </label>
+                    <label className="flex items-center">
+                      <input 
+                        type="checkbox" 
+                        name="isNew" 
+                        className="mr-2" 
+                        defaultChecked={currentProduct?.isNew || false}
+                      />
+                      Sản phẩm mới
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-end space-x-4">
+                <button 
+                  type="button" 
+                  className="px-4 py-2 bg-gray-200 rounded"
+                  onClick={() => setForceShowForm(false)}
+                >
+                  Hủy
+                </button>
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-green-600 text-white rounded"
+                >
+                  {isEditing ? 'Cập nhật' : 'Thêm sản phẩm'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -743,32 +650,13 @@ export default function AdminProductsPage() {
                 <button 
                   className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
                   onClick={() => {
-                    // Đặt trạng thái form về mặc định
+                    // Reset state
                     setIsEditing(false);
                     setCurrentProduct(null);
                     setFormError('');
-                    setSuccessMessage('');
                     
-                    // Force show form
-                    document.body.style.overflow = 'hidden';
-                    setShowForm(true);
-                    
-                    // Log
-                    console.log('Set showForm = true');
-                    
-                    // Force render bằng timeout
-                    setTimeout(() => {
-                      console.log('Checking if form exists after timeout:', 
-                        document.getElementById('product-form-container') ? 'yes' : 'no');
-                      
-                      // Force show bằng display style
-                      const formContainer = document.getElementById('product-form-container');
-                      if (formContainer) {
-                        formContainer.style.display = 'flex';
-                        formContainer.style.visibility = 'visible';
-                        formContainer.style.opacity = '1';
-                      }
-                    }, 100);
+                    // Hiển thị form độc lập mới
+                    setForceShowForm(true);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -929,18 +817,14 @@ export default function AdminProductsPage() {
                         <p className="text-gray-500 mb-4">Chưa có sản phẩm nào trong hệ thống</p>
                         <button 
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            console.log("Đang mở form thêm sản phẩm đầu tiên");
-                            
-                            // Reset toàn bộ state liên quan đến form
+                          onClick={() => {
+                            // Reset state
                             setIsEditing(false);
                             setCurrentProduct(null);
                             setFormError('');
-                            setSuccessMessage('');
                             
-                            // Hiển thị form
-                            setShowForm(true);
+                            // Hiển thị form độc lập mới
+                            setForceShowForm(true);
                           }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
