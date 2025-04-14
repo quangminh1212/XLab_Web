@@ -6,11 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
 
-// Không sử dụng metadata trong client component
-// export const metadata = {
-//   title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-//   description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
-// }
+// Đã xóa export metadata vì không thể sử dụng trong client component
 
 export default function AdminPage() {
   const router = useRouter();
@@ -61,64 +57,79 @@ export default function AdminPage() {
     setSuccessMessage('');
     setErrorMessage('');
     
-    // Tạo form data từ form
-    const formData = new FormData(event.currentTarget);
-    
-    // Thêm file vào formData nếu có
-    if (file) {
-      formData.append('productFile', file);
-    }
-    
-    // Tạo đối tượng sản phẩm từ formData
-    const productData = {
-      name: formData.get('name') as string,
-      slug: formData.get('slug') as string,
-      description: formData.get('description') as string,
-      longDescription: formData.get('longDescription') as string,
-      price: Number(formData.get('price')),
-      salePrice: formData.get('salePrice') ? Number(formData.get('salePrice')) : 0,
-      categoryId: formData.get('categoryId') as string,
-      imageUrl: formData.get('imageUrl') as string || '/images/placeholder-product.jpg',
-      isFeatured: formData.get('isFeatured') === 'on',
-      isNew: formData.get('isNew') === 'on',
-      downloadCount: 0,
-      viewCount: 0,
-      rating: 0,
-      version: formData.get('version') as string,
-      size: formData.get('size') as string,
-      licenseType: formData.get('licenseType') as string,
-      storeId: '1' // Mặc định là cửa hàng XLab
-    };
-    
-    // Gửi API request để thêm sản phẩm
-    fetch('/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productData),
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        // Thêm sản phẩm mới vào danh sách hiển thị
-        setProducts(prevProducts => [...prevProducts, data.data]);
-        setSuccessMessage('Đã đăng sản phẩm thành công!');
-        setFile(null);
-        setFilePreview('');
-        // Reset form sau khi đăng sản phẩm
-        event.currentTarget.reset();
-      } else {
-        setErrorMessage(data.message || 'Có lỗi xảy ra khi đăng sản phẩm.');
+    try {
+      // Tạo form data từ form
+      const formData = new FormData(event.currentTarget);
+      
+      // Thêm file vào formData nếu có
+      if (file) {
+        formData.append('productFile', file);
       }
-    })
-    .catch(error => {
-      console.error('Error creating product:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ.');
-    })
-    .finally(() => {
+      
+      // Tạo đối tượng sản phẩm từ formData
+      const productData = {
+        name: formData.get('name') as string,
+        slug: formData.get('slug') as string,
+        description: formData.get('description') as string,
+        longDescription: formData.get('longDescription') as string,
+        price: Number(formData.get('price')),
+        salePrice: formData.get('salePrice') ? Number(formData.get('salePrice')) : 0,
+        categoryId: formData.get('categoryId') as string,
+        imageUrl: formData.get('imageUrl') as string || '/images/placeholder-product.jpg',
+        isFeatured: formData.get('isFeatured') === 'on',
+        isNew: formData.get('isNew') === 'on',
+        downloadCount: 0,
+        viewCount: 0,
+        rating: 0,
+        version: formData.get('version') as string,
+        size: formData.get('size') as string,
+        licenseType: formData.get('licenseType') as string,
+        storeId: '1' // Mặc định là cửa hàng XLab
+      };
+      
+      console.log('Sending product data:', productData);
+      
+      // Gửi API request để thêm sản phẩm
+      fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+        cache: 'no-store'
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Success:', data);
+        if (data.success) {
+          // Thêm sản phẩm mới vào danh sách hiển thị
+          setProducts(prevProducts => [...prevProducts, data.data]);
+          setSuccessMessage('Đã đăng sản phẩm thành công!');
+          setFile(null);
+          setFilePreview('');
+          // Reset form sau khi đăng sản phẩm
+          event.currentTarget.reset();
+        } else {
+          setErrorMessage(data.message || 'Có lỗi xảy ra khi đăng sản phẩm.');
+        }
+      })
+      .catch(error => {
+        console.error('Error creating product:', error);
+        setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ: ' + error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+    } catch (error) {
+      console.error('Error in form submission:', error);
+      setErrorMessage('Đã xảy ra lỗi khi xử lý form.');
       setIsLoading(false);
-    });
+    }
   }
   
   return (
@@ -180,7 +191,7 @@ export default function AdminPage() {
                       </div>
                     )}
                     
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} method="POST">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
