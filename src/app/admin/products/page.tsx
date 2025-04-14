@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useReducer } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, Category } from '@/types';
@@ -371,8 +371,31 @@ export default function AdminProductsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
-  // Thêm state đếm số lần click
-  const [clickCount, setClickCount] = useState(0);
+  // Thêm state đếm số lần click - sử dụng useReducer thay vì useState
+  const clickCountReducer = (state: number, action: { type: string }): number => {
+    console.log('clickCountReducer called with action:', action);
+    switch (action.type) {
+      case 'INCREMENT':
+        return state + 1;
+      case 'RESET':
+        return 0;
+      default:
+        return state;
+    }
+  };
+  
+  const [clickCount, dispatchClickCount] = useReducer(clickCountReducer, 0);
+  
+  // Hàm cập nhật clickCount 
+  const incrementClickCount = () => {
+    console.log('incrementClickCount called');
+    dispatchClickCount({ type: 'INCREMENT' });
+  };
+  
+  const resetClickCount = () => {
+    console.log('resetClickCount called');
+    dispatchClickCount({ type: 'RESET' });
+  };
   
   // Thêm state để debug showForm
   const [isDebug, setIsDebug] = useState(true);
@@ -717,7 +740,7 @@ export default function AdminProductsPage() {
   // Hàm chung để xử lý việc thêm sản phẩm từ các nút khác nhau
   const handleAddProduct = (source: string) => {
     console.log(`Add product button clicked from: ${source}`);
-    setClickCount(prevCount => prevCount + 1);
+    incrementClickCount();
     setIsEditing(false);
     setCurrentProduct(null);
     setFormError({});
@@ -747,7 +770,8 @@ export default function AdminProductsPage() {
       {/* DEBUG INFO */}
       <div className="fixed top-0 right-0 bg-black bg-opacity-75 text-white p-2 z-[999999] font-mono">
         showForm: {showForm ? 'true' : 'false'}<br/>
-        clickCount: <span className="font-bold text-red-600">{clickCount}</span>
+        clickCount: <span className="font-bold text-red-600" id="click-counter">{clickCount}</span><br/>
+        version: <span className="font-bold text-green-400">{Math.random().toString(36).substring(2, 8)}</span>
       </div>
       
       {/* Debug section */}
@@ -755,7 +779,7 @@ export default function AdminProductsPage() {
         <div className="bg-yellow-100 p-4 mb-4 rounded-lg border border-yellow-400">
           <h3 className="font-bold">Debug Info:</h3>
           <p>showForm: {showForm ? 'true' : 'false'}</p>
-          <p>clickCount: <span className="font-bold text-red-600">{clickCount}</span></p>
+          <p>clickCount: <span className="font-bold text-red-600">{clickCount}</span> (Timestamp: {new Date().toLocaleTimeString()})</p>
           <div className="flex gap-2 mt-2">
             <button 
               className="bg-purple-500 text-white px-3 py-1 rounded-md text-sm"
@@ -777,9 +801,18 @@ export default function AdminProductsPage() {
             </button>
             <button 
               className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm"
-              onClick={() => setClickCount(0)}
+              onClick={() => resetClickCount()}
             >
               Reset Clicks
+            </button>
+            <button 
+              className="bg-green-500 text-white px-3 py-1 rounded-md text-sm"
+              onClick={() => {
+                console.log("CLICK TEST BUTTON");
+                incrementClickCount();
+              }}
+            >
+              Test Click +1
             </button>
           </div>
         </div>
@@ -828,11 +861,7 @@ export default function AdminProductsPage() {
                 <button
                   onClick={() => {
                     console.log("BUTTON CLICKED DIRECTLY");
-                    setClickCount(prevCount => {
-                      const newCount = prevCount + 1;
-                      console.log("Setting clickCount to:", newCount);
-                      return newCount;
-                    });
+                    incrementClickCount();
                     resetForm();
                     setIsEditing(false);
                     setCurrentProduct(null);
@@ -991,11 +1020,7 @@ export default function AdminProductsPage() {
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
                           onClick={() => {
                             console.log("EMPTY STATE BUTTON CLICKED DIRECTLY");
-                            setClickCount(prevCount => {
-                              const newCount = prevCount + 1;
-                              console.log("Setting clickCount to:", newCount);
-                              return newCount;
-                            });
+                            incrementClickCount();
                             setIsEditing(false);
                             setCurrentProduct(null);
                             setFormError({});
