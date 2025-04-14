@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function AuthError() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
     const error = searchParams?.get('error');
@@ -22,6 +22,12 @@ export default function AuthError() {
           break;
         case 'Verification':
           setErrorMessage('Liên kết xác thực đã hết hạn hoặc đã được sử dụng.');
+          break;
+        case 'Configuration':
+          setErrorMessage('Lỗi cấu hình máy chủ. Vui lòng thử lại sau.');
+          break;
+        case 'EmailSignin':
+          setErrorMessage('Không thể gửi email đăng nhập. Vui lòng thử lại sau.');
           break;
         default:
           setErrorMessage('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
