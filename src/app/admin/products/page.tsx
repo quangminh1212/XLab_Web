@@ -75,6 +75,11 @@ export default function AdminProductsPage() {
     console.log("[AdminProductsPage] Products state updated:", products.length);
   }, [products]);
   
+  // Log form state để debug
+  useEffect(() => {
+    console.log("[AdminProductsPage] Form state:", { showForm, isEditing, currentProduct });
+  }, [showForm, isEditing, currentProduct]);
+  
   // Hiển thị thông báo thành công và cập nhật UI thay vì reload trang
   const showSuccessAndReset = (message: string, shouldResetForm = true) => {
     showSuccess(message);
@@ -368,10 +373,18 @@ export default function AdminProductsPage() {
                 </Link>
                 <button 
                   className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log("Nút thêm sản phẩm mới được nhấn");
                     setIsEditing(false);
                     setCurrentProduct(null);
                     setShowForm(!showForm);
+                    // Đảm bảo UI được cập nhật trước khi scroll
+                    if (!showForm) {
+                      setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }, 100);
+                    }
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -450,6 +463,22 @@ export default function AdminProductsPage() {
                 
                 <form onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2 bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <svg className="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm text-blue-700">
+                            Vui lòng điền đầy đủ thông tin cho các trường bắt buộc (có dấu <span className="text-red-500">*</span>).
+                            Nếu gặp lỗi khi thêm sản phẩm, hãy thử công cụ khắc phục ở cuối trang.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
                     <div>
                       <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
                         Tên sản phẩm <span className="text-red-500">*</span>
@@ -792,10 +821,16 @@ export default function AdminProductsPage() {
                         <p className="text-gray-500 mb-4">Chưa có sản phẩm nào trong hệ thống</p>
                         <button 
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault();
+                            console.log("Nút thêm sản phẩm đầu tiên được nhấn");
                             setIsEditing(false);
                             setCurrentProduct(null);
                             setShowForm(true);
+                            // Đảm bảo UI được cập nhật trước khi scroll
+                            setTimeout(() => {
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }, 100);
                           }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
