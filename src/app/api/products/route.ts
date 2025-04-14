@@ -35,31 +35,39 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   console.log("[API /api/products] Received POST request");
   try {
+    // Đọc dữ liệu từ request
     const body = await req.json();
     console.log("[API /api/products] Request body:", body);
     
-    // Kiểm tra dữ liệu đầu vào
-    if (!body.name || !body.price || !body.categoryId || !body.storeId) {
-      console.error("[API /api/products] Missing required fields:", body);
+    // Kiểm tra dữ liệu đầu vào chi tiết hơn
+    const requiredFields = ['name', 'price', 'categoryId'];
+    const missingFields = requiredFields.filter(field => !body[field]);
+    
+    if (missingFields.length > 0) {
+      console.error(`[API /api/products] Missing required fields: ${missingFields.join(', ')}`, body);
       return NextResponse.json(
-        { error: 'Thiếu thông tin bắt buộc (name, price, categoryId, storeId)' },
+        { error: `Thiếu thông tin bắt buộc: ${missingFields.join(', ')}` },
         { status: 400 }
       );
     }
     
-    // Tạo sản phẩm mới
+    // Tạo ID sản phẩm mới với timestamp và chuỗi ngẫu nhiên để đảm bảo duy nhất
+    const productId = `prod-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    console.log(`[API /api/products] Generated new product ID: ${productId}`);
+
+    // Tạo sản phẩm mới với dữ liệu từ request và các giá trị mặc định
     const newProduct: Product = {
-      id: `prod-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`, // Thêm random để tránh trùng ID nếu gọi nhanh
-      name: body.name,
-      slug: body.slug || body.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, ''),
+      id: productId,
+      name: String(body.name),
+      slug: body.slug || String(body.name).toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, ''),
       description: body.description || '',
       longDescription: body.longDescription || '',
       price: Number(body.price),
       salePrice: Number(body.salePrice) || Number(body.price),
       categoryId: body.categoryId,
       imageUrl: body.imageUrl || '/images/placeholder-product.jpg',
-      isFeatured: body.isFeatured || false,
-      isNew: body.isNew === undefined ? true : body.isNew, // Mặc định là true nếu không có
+      isFeatured: Boolean(body.isFeatured),
+      isNew: body.isNew === undefined ? true : Boolean(body.isNew),
       downloadCount: Number(body.downloadCount) || 0,
       viewCount: Number(body.viewCount) || 0,
       rating: Number(body.rating) || 0,
@@ -68,7 +76,7 @@ export async function POST(req: Request) {
       licenseType: body.licenseType || 'Thương mại',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      storeId: body.storeId
+      storeId: body.storeId || '1'
     };
     
     console.log("[API /api/products] Creating new product:", newProduct);
@@ -77,10 +85,12 @@ export async function POST(req: Request) {
     productsData.push(newProduct);
     console.log("[API /api/products] productsData length after push:", productsData.length);
     
-    // Trả về sản phẩm vừa tạo
+    // Trả về sản phẩm vừa tạo với đầy đủ thông tin
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error: any) {
+    // Log lỗi chi tiết hơn để dễ dàng debug
     console.error("[API /api/products] Error in POST handler:", error);
+    console.error("[API /api/products] Error stack:", error.stack);
     return NextResponse.json(
       { error: 'Lỗi server khi tạo sản phẩm', details: error.message },
       { status: 500 }
