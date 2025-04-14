@@ -73,17 +73,50 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Cập nhật toàn bộ danh sách sản phẩm
-  const updateProducts = (newProducts: Product[]) => {
+  const updateProducts = async (newProducts: Product[]) => {
     console.log("[ProductContext] Updating all products:", newProducts);
-    setProducts(newProducts);
+    
+    try {
+      // Cập nhật state
+      setProducts(newProducts);
+      
+      // Lưu vào localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('xlab_products', JSON.stringify(newProducts));
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("[ProductContext] Error updating all products:", error);
+      throw new Error("Không thể cập nhật danh sách sản phẩm");
+    }
   };
 
   // Thêm sản phẩm mới
-  const addProduct = (product: Product) => {
+  const addProduct = async (product: Product) => {
     console.log("[ProductContext] Adding product:", product);
+    
     try {
+      // Gọi API thêm sản phẩm
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(product)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Không thể thêm sản phẩm");
+      }
+      
+      // Lấy sản phẩm đã được thêm từ response
+      const addedProduct = await response.json();
+      
+      // Cập nhật state
       setProducts(prevProducts => {
-        const newProducts = [...prevProducts, product];
+        const newProducts = [...prevProducts, addedProduct];
         
         // Lưu vào localStorage
         if (typeof window !== 'undefined') {
@@ -92,20 +125,40 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         
         return newProducts;
       });
+      
+      return addedProduct;
     } catch (error) {
       console.error("[ProductContext] Error adding product:", error);
-      throw new Error("Không thể thêm sản phẩm. Vui lòng thử lại.");
+      throw error;
     }
   };
 
   // Cập nhật sản phẩm
-  const updateProduct = (product: Product) => {
+  const updateProduct = async (product: Product) => {
     console.log("[ProductContext] Updating product:", product);
     
     try {
       // Normalize ID to string for comparison
       const productId = String(product.id);
       
+      // Gọi API cập nhật sản phẩm
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(product)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Không thể cập nhật sản phẩm với ID ${productId}`);
+      }
+      
+      // Lấy sản phẩm đã được cập nhật từ response
+      const updatedProduct = await response.json();
+      
+      // Cập nhật state
       setProducts(prevProducts => {
         // Tìm sản phẩm trong danh sách
         const existingProductIndex = prevProducts.findIndex(p => String(p.id) === productId);
@@ -118,11 +171,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         
         // Cập nhật sản phẩm
         const updated = [...prevProducts];
-        updated[existingProductIndex] = {
-          ...prevProducts[existingProductIndex],
-          ...product,
-          updatedAt: new Date().toISOString()
-        };
+        updated[existingProductIndex] = updatedProduct;
         
         console.log("[ProductContext] Products after update:", updated);
         
@@ -134,7 +183,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         return updated;
       });
       
-      return true;
+      return updatedProduct;
     } catch (error) {
       console.error("[ProductContext] Error updating product:", error);
       throw error;
@@ -142,22 +191,33 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Xóa sản phẩm
-  const deleteProduct = (id: string | number) => {
+  const deleteProduct = async (id: string | number) => {
     console.log("[ProductContext] Deleting product with ID:", id);
     
     try {
       // Normalize ID to string for comparison
       const productId = String(id);
       
+      // Kiểm tra xem sản phẩm có tồn tại
+      const existingProduct = products.find(p => String(p.id) === productId);
+      
+      if (!existingProduct) {
+        console.error(`[ProductContext] Product with ID ${productId} not found for deletion`);
+        throw new Error(`Không tìm thấy sản phẩm với ID ${productId} để xóa`);
+      }
+      
+      // Gọi API xóa sản phẩm
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Không thể xóa sản phẩm với ID ${productId}`);
+      }
+      
+      // Cập nhật state
       setProducts(prevProducts => {
-        // Kiểm tra xem sản phẩm có tồn tại không
-        const existingProduct = prevProducts.find(p => String(p.id) === productId);
-        
-        if (!existingProduct) {
-          console.error(`[ProductContext] Product with ID ${productId} not found for deletion`);
-          throw new Error(`Không tìm thấy sản phẩm với ID ${productId} để xóa`);
-        }
-        
         // Xóa sản phẩm
         const filtered = prevProducts.filter(p => String(p.id) !== productId);
         console.log("[ProductContext] Products after deletion:", filtered);

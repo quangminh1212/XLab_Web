@@ -14,17 +14,28 @@ export default function AdminProductsPage() {
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formError, setFormError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
   
+  // Hiển thị thông báo thành công
+  const showSuccess = (message: string) => {
+    setSuccessMessage(message);
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 3000);
+  };
+  
   // Xử lý khi gửi form
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     setFormError('');
+    setSuccessMessage('');
     
     try {
       // Tạo form data từ form
@@ -77,37 +88,61 @@ export default function AdminProductsPage() {
       
       console.log("Submitting product:", productData);
       
-      // Thêm hoặc cập nhật sản phẩm với delay nhỏ để đảm bảo UI được cập nhật
-      setTimeout(() => {
-        try {
-          if (isEditing && currentProduct) {
-            // Cập nhật sản phẩm qua context
-            updateProduct(productData);
-            alert('Đã cập nhật sản phẩm thành công!');
-          } else {
-            // Thêm sản phẩm mới qua context
-            addProduct(productData);
-            alert('Đã thêm sản phẩm thành công!');
+      try {
+        if (isEditing && currentProduct) {
+          // Gọi API cập nhật sản phẩm
+          const response = await fetch(`/api/products/${productData.id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Lỗi khi cập nhật sản phẩm');
           }
           
-          // Reset form
-          resetForm();
-        } catch (submitError: any) {
-          console.error("Error during product submission:", submitError);
-          setFormError(submitError.message || 'Đã xảy ra lỗi, vui lòng thử lại');
-        } finally {
-          setIsLoading(false);
+          // Cập nhật sản phẩm trong context
+          updateProduct(productData);
+          showSuccess('Sản phẩm đã được cập nhật thành công!');
+        } else {
+          // Gọi API thêm sản phẩm mới
+          const response = await fetch('/api/products', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Lỗi khi thêm sản phẩm');
+          }
+          
+          // Thêm sản phẩm mới vào context
+          addProduct(productData);
+          showSuccess('Sản phẩm mới đã được thêm thành công!');
         }
-      }, 100);
+        
+        // Reset form
+        resetForm();
+      } catch (apiError: any) {
+        console.error("API error:", apiError);
+        setFormError(apiError.message || 'Đã xảy ra lỗi khi gửi yêu cầu, vui lòng thử lại');
+      }
     } catch (error: any) {
       console.error("Error preparing product data:", error);
       setFormError(error.message || 'Đã xảy ra lỗi, vui lòng thử lại');
+    } finally {
       setIsLoading(false);
     }
   };
 
   // Xử lý xóa sản phẩm
-  const handleDelete = (id: string | number, event?: React.MouseEvent) => {
+  const handleDelete = async (id: string | number, event?: React.MouseEvent) => {
     // Ngăn chặn event bubbling nếu có event
     if (event) {
       event.preventDefault();
@@ -118,21 +153,33 @@ export default function AdminProductsPage() {
     
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
       setIsLoading(true);
-      setTimeout(() => {
-        try {
-          // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
-          const productId = String(id);
-          // Xóa sản phẩm qua context
-          deleteProduct(productId);
-          console.log("Product deleted successfully:", id);
-          alert('Đã xóa sản phẩm thành công!');
-        } catch (error: any) {
-          console.error("Error deleting product:", error);
-          alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
-        } finally {
-          setIsLoading(false);
+      setFormError('');
+      setSuccessMessage('');
+      
+      try {
+        // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
+        const productId = String(id);
+        
+        // Gọi API xóa sản phẩm
+        const response = await fetch(`/api/products/${productId}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Lỗi khi xóa sản phẩm');
         }
-      }, 100); // Thêm một chút delay để đảm bảo UI được cập nhật đúng
+        
+        // Xóa sản phẩm qua context
+        deleteProduct(productId);
+        console.log("Product deleted successfully:", id);
+        showSuccess('Sản phẩm đã được xóa thành công!');
+      } catch (error: any) {
+        console.error("Error deleting product:", error);
+        setFormError(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -217,6 +264,45 @@ export default function AdminProductsPage() {
               </div>
             </div>
             
+            {/* Thông báo lỗi và thành công toàn cục */}
+            {formError && !showForm && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6 flex items-center justify-between">
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <span>{formError}</span>
+                </div>
+                <button 
+                  onClick={() => setFormError('')}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
+            {successMessage && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-6 flex items-center justify-between">
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span>{successMessage}</span>
+                </div>
+                <button 
+                  onClick={() => setSuccessMessage('')}
+                  className="text-green-500 hover:text-green-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            )}
+            
             {/* Form thêm/sửa sản phẩm */}
             {showForm && (
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
@@ -224,9 +310,23 @@ export default function AdminProductsPage() {
                   {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
                 </h3>
                 
-                {formError && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-                    {formError}
+                {formError && showForm && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4 flex items-center justify-between">
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                      <span>{formError}</span>
+                    </div>
+                    <button 
+                      onClick={() => setFormError('')}
+                      className="text-red-500 hover:text-red-700"
+                      type="button"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </button>
                   </div>
                 )}
                 
@@ -461,87 +561,89 @@ export default function AdminProductsPage() {
             )}
             
             {/* Danh sách sản phẩm */}
-            {isLoading ? (
-              <div className="flex justify-center py-10">
-                <svg className="animate-spin h-10 w-10 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              </div>
-            ) : (
+            {!showForm && (
               <div className="overflow-x-auto">
                 {products.length === 0 ? (
-                  <div className="text-center py-10">
-                    <p className="text-gray-500">Chưa có sản phẩm nào. Hãy thêm sản phẩm mới!</p>
+                  <div className="bg-gray-50 p-8 text-center rounded-lg border border-gray-200">
+                    <p className="text-gray-500 mb-4">Chưa có sản phẩm nào trong hệ thống</p>
+                    <button 
+                      className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setCurrentProduct(null);
+                        setShowForm(true);
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Thêm sản phẩm đầu tiên
+                    </button>
                   </div>
                 ) : (
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="min-w-full bg-white divide-y divide-gray-200 rounded-lg overflow-hidden">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Sản phẩm
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Danh mục
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Giá
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Trạng thái
                         </th>
-                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Thao tác
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="divide-y divide-gray-200">
                       {products.map(product => {
                         const category = categories.find(c => c.id === product.categoryId);
                         return (
-                          <tr key={product.id}>
+                          <tr key={product.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 relative">
+                                <div className="h-10 w-10 flex-shrink-0 mr-3">
                                   <Image
+                                    className="h-10 w-10 rounded-full object-cover"
                                     src={product.imageUrl || '/images/placeholder-product.jpg'}
                                     alt={product.name}
                                     width={40}
                                     height={40}
-                                    className="rounded-md object-cover"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement;
-                                      target.src = '/images/placeholder-product.jpg';
-                                    }}
                                   />
                                 </div>
                                 <div className="ml-4">
                                   <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                  <div className="text-sm text-gray-500">{product.slug}</div>
+                                  <div className="text-sm text-gray-500">Phiên bản: {product.version}</div>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{category?.name || 'Chưa phân loại'}</div>
+                              <div className="text-sm text-gray-900">{category?.name || 'Không có danh mục'}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
-                              {product.salePrice && product.salePrice < product.price && (
-                                <div className="text-sm text-green-600">{formatCurrency(product.salePrice)} (Giảm giá)</div>
+                              {product.salePrice < product.price ? (
+                                <div>
+                                  <div className="text-sm text-gray-900">{formatCurrency(product.salePrice)}</div>
+                                  <div className="text-sm text-gray-500 line-through">{formatCurrency(product.price)}</div>
+                                </div>
+                              ) : (
+                                <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
                               )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               {product.isNew ? (
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                   Mới
                                 </span>
-                              ) : product.isFeatured ? (
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                  Nổi bật
-                                </span>
                               ) : (
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                  Đang bán
+                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                  Có sẵn
                                 </span>
                               )}
                             </td>
@@ -549,17 +651,29 @@ export default function AdminProductsPage() {
                               <div className="flex justify-end space-x-2">
                                 <button 
                                   type="button"
-                                  className="text-primary-600 hover:text-primary-900"
+                                  className="text-primary-600 hover:text-primary-900 px-2 py-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                   onClick={(e) => handleEdit(product, e)}
+                                  disabled={isLoading}
                                 >
                                   Sửa
                                 </button>
                                 <button 
                                   type="button"
-                                  className="text-red-600 hover:text-red-900"
+                                  className="text-red-600 hover:text-red-900 px-2 py-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                   onClick={(e) => handleDelete(product.id, e)}
+                                  disabled={isLoading}
                                 >
-                                  Xóa
+                                  {isLoading ? (
+                                    <span className="flex items-center">
+                                      <svg className="animate-spin h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                      </svg>
+                                      Đang xóa...
+                                    </span>
+                                  ) : (
+                                    'Xóa'
+                                  )}
                                 </button>
                               </div>
                             </td>
