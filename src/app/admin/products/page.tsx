@@ -29,6 +29,17 @@ export default function AdminProductsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
+  // Giám sát sự thay đổi của showForm và đảm bảo form hiển thị/ẩn đúng
+  useEffect(() => {
+    const formContainer = document.getElementById('form-container');
+    if (formContainer) {
+      formContainer.style.display = showForm ? 'block' : 'none';
+      console.log("[AdminProductsPage] Đã cập nhật trạng thái hiển thị form:", showForm ? 'hiển thị' : 'ẩn', formContainer);
+    } else {
+      console.error("[AdminProductsPage] useEffect: Không tìm thấy form-container!");
+    }
+  }, [showForm]);
+  
   // Xử lý tìm kiếm và lọc
   useEffect(() => {
     let result = [...products];
@@ -408,28 +419,23 @@ export default function AdminProductsPage() {
                       console.log("===== Bắt đầu xử lý nút thêm sản phẩm mới =====");
                       console.log("Trạng thái form trước khi thay đổi:", { showForm, isEditing, currentProduct });
                       
-                      // Luôn hiển thị form khi nhấn nút "Thêm sản phẩm mới"
+                      // Đặt trạng thái
                       setIsEditing(false);
                       setCurrentProduct(null);
                       setFormError('');
-                      
-                      // Quan trọng: Đảm bảo form được hiển thị
-                      console.log("Đang cập nhật showForm = true");
                       setShowForm(true);
                       
-                      // Kiểm tra xem form đã được hiển thị chưa
-                      setTimeout(() => {
-                        console.log("Trạng thái sau khi đặt showForm:", { 
-                          showForm: document.getElementById('form-container')?.style.display, 
-                          formElement: document.getElementById('product-form-element') ? 'Tồn tại' : 'Không tồn tại'
-                        });
-                        
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                        
-                        console.log("Đã scroll lên đầu trang, form hiển thị tại:", 
-                          document.getElementById('product-form-element')?.getBoundingClientRect());
-                      }, 100);
+                      // Hiển thị form trực tiếp qua DOM để đảm bảo form luôn hiển thị
+                      const formContainer = document.getElementById('form-container');
+                      if (formContainer) {
+                        formContainer.style.display = 'block';
+                        console.log("[AdminProductsPage] Đã hiển thị form trực tiếp qua DOM");
+                      } else {
+                        console.error("[AdminProductsPage] Không tìm thấy form-container!");
+                      }
                       
+                      // Scroll lên đầu trang
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                       console.log("===== Kết thúc xử lý nút thêm sản phẩm mới =====");
                     } catch (error) {
                       console.error("Lỗi khi hiển thị form:", error);
@@ -894,23 +900,19 @@ export default function AdminProductsPage() {
                               setIsEditing(false);
                               setCurrentProduct(null);
                               setFormError('');
-                              
-                              console.log("Đang cập nhật showForm = true");
                               setShowForm(true);
                               
-                              // Kiểm tra xem form đã được hiển thị chưa
-                              setTimeout(() => {
-                                console.log("Trạng thái sau khi đặt showForm:", { 
-                                  showForm: document.getElementById('form-container')?.style.display, 
-                                  formElement: document.getElementById('product-form-element') ? 'Tồn tại' : 'Không tồn tại'
-                                });
-                                
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                                
-                                console.log("Đã scroll lên đầu trang, form hiển thị tại:", 
-                                  document.getElementById('product-form-element')?.getBoundingClientRect());
-                              }, 100);
+                              // Hiển thị form trực tiếp qua DOM để đảm bảo form luôn hiển thị
+                              const formContainer = document.getElementById('form-container');
+                              if (formContainer) {
+                                formContainer.style.display = 'block';
+                                console.log("[AdminProductsPage] Đã hiển thị form trực tiếp qua DOM");
+                              } else {
+                                console.error("[AdminProductsPage] Không tìm thấy form-container!");
+                              }
                               
+                              // Scroll lên đầu trang
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
                               console.log("===== Kết thúc xử lý nút thêm sản phẩm đầu tiên =====");
                             } catch (error) {
                               console.error("Lỗi khi hiển thị form từ nút thêm sản phẩm đầu tiên:", error);
