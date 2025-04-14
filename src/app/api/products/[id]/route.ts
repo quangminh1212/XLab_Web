@@ -41,6 +41,20 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  console.log(`[API /api/products/${params.id}] GET request received`);
+  
+  // Xử lý CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  }
+  
   // Đảm bảo productsData đã được khởi tạo
   if (!productsData) {
     initializeProductsData();
@@ -51,17 +65,37 @@ export async function GET(
     const product = productsData.find(p => p.id.toString() === params.id);
     
     if (!product) {
+      console.log(`[API /api/products/${params.id}] Product not found`);
       return NextResponse.json(
         { error: 'Không tìm thấy sản phẩm' },
-        { status: 404 }
+        { 
+          status: 404,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+          }
+        }
       );
     }
     
-    return NextResponse.json(product);
+    console.log(`[API /api/products/${params.id}] Product found and returned`);
+    return NextResponse.json(product, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error) {
+    console.error(`[API /api/products/${params.id}] Error in GET handler:`, error);
     return NextResponse.json(
       { error: 'Lỗi khi lấy thông tin sản phẩm' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      }
     );
   }
 }
@@ -71,6 +105,20 @@ export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  console.log(`[API /api/products/${params.id}] PATCH request received with method: ${req.method}`);
+  
+  // Xử lý CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  }
+  
   // Đảm bảo productsData đã được khởi tạo
   if (!productsData) {
     initializeProductsData();
@@ -84,7 +132,16 @@ export async function PATCH(
     
     if (productIndex === -1) {
       console.error(`[API /api/products/${params.id}] Product not found for PATCH`);
-      return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Không tìm thấy sản phẩm' }, 
+        { 
+          status: 404,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
     }
     
     // Cập nhật sản phẩm
@@ -103,12 +160,24 @@ export async function PATCH(
       (global as any)[PRODUCTS_STORAGE_KEY] = productsData;
     }
     
-    return NextResponse.json(updatedProduct);
+    console.log(`[API /api/products/${params.id}] Update successful`);
+    return NextResponse.json(updatedProduct, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error: any) {
     console.error(`[API /api/products/${params.id}] Error in PATCH handler:`, error);
     return NextResponse.json(
       { error: 'Lỗi server khi cập nhật sản phẩm', details: error.message },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      }
     );
   }
 }
@@ -118,6 +187,20 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  console.log(`[API /api/products/${params.id}] DELETE request received with method: ${req.method}`);
+  
+  // Xử lý CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  }
+  
   // Đảm bảo productsData đã được khởi tạo
   if (!productsData) {
     initializeProductsData();
@@ -129,7 +212,16 @@ export async function DELETE(
     
     if (productIndex === -1) {
       console.error(`[API /api/products/${params.id}] Product not found for DELETE`);
-      return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Không tìm thấy sản phẩm' }, 
+        { 
+          status: 404,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
     }
     
     console.log(`[API /api/products/${params.id}] Deleting product at index ${productIndex}:`, productsData[productIndex]);
@@ -144,12 +236,27 @@ export async function DELETE(
     console.log(`[API /api/products/${params.id}] productsData length after splice:`, productsData.length);
     
     // Trả về thành công (không cần nội dung)
-    return NextResponse.json({ success: true }, { status: 200 }); // Sử dụng status 200 hoặc 204
+    return NextResponse.json(
+      { success: true },
+      { 
+        status: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
   } catch (error: any) {
     console.error(`[API /api/products/${params.id}] Error in DELETE handler:`, error);
     return NextResponse.json(
       { error: 'Lỗi server khi xóa sản phẩm', details: error.message },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      }
     );
   }
 } 
