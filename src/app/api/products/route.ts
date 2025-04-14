@@ -4,14 +4,14 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function POST(request: NextRequest) {
   try {
-    // Kiểm tra xác thực
-    const session = await getServerSession(authOptions);
-    if (!session || session.user?.email !== 'xlab.rnd@gmail.com') {
-      return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
+    // Bỏ phần kiểm tra xác thực để cho phép đăng mà không cần đăng nhập
+    // const session = await getServerSession(authOptions);
+    // if (!session || session.user?.email !== 'xlab.rnd@gmail.com') {
+    //   return NextResponse.json(
+    //     { success: false, message: 'Unauthorized' },
+    //     { status: 401 }
+    //   );
+    // }
 
     // Xử lý dữ liệu từ request
     const productData = await request.json();
