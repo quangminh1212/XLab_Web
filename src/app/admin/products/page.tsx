@@ -74,7 +74,13 @@ export default function AdminProductsPage() {
   };
 
   // Xử lý xóa sản phẩm
-  const handleDelete = (id: string | number) => {
+  const handleDelete = (id: string | number, event?: React.MouseEvent) => {
+    // Ngăn chặn event bubbling nếu có event
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
     console.log("Attempting to delete product with ID:", id);
     
     if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
@@ -96,7 +102,13 @@ export default function AdminProductsPage() {
   };
 
   // Xử lý sửa sản phẩm
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: Product, event?: React.MouseEvent) => {
+    // Ngăn chặn event bubbling nếu có event
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
     console.log("Editing product:", product);
     setCurrentProduct(product);
     setIsEditing(true);
@@ -489,14 +501,14 @@ export default function AdminProductsPage() {
                                 <button 
                                   type="button"
                                   className="text-primary-600 hover:text-primary-900"
-                                  onClick={() => handleEdit(product)}
+                                  onClick={(e) => handleEdit(product, e)}
                                 >
                                   Sửa
                                 </button>
                                 <button 
                                   type="button"
                                   className="text-red-600 hover:text-red-900"
-                                  onClick={() => handleDelete(product.id)}
+                                  onClick={(e) => handleDelete(product.id, e)}
                                 >
                                   Xóa
                                 </button>
