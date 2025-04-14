@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
+export const metadata = {
+  title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
+  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
+}
+
 export default function AdminPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -30,12 +35,12 @@ export default function AdminPage() {
   }, [session, status, router]);
 
   // Xử lý khi gửi form
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     setIsLoading(true);
     
     // Tạo form data từ form
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(event.target);
     
     // Tại đây sẽ gửi API request để thêm sản phẩm
     // Mô phỏng thêm sản phẩm thành công
@@ -43,7 +48,7 @@ export default function AdminPage() {
       alert('Đã thêm sản phẩm thành công!');
       setIsLoading(false);
       setShowForm(false);
-      event.currentTarget.reset();
+      event.target.reset();
     }, 1000);
   }
   
@@ -98,12 +103,12 @@ export default function AdminPage() {
                     </svg>
                     Tổng quan
                   </a>
-                  <Link href="/admin/products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
+                  <a href="#products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                     Quản lý sản phẩm
-                  </Link>
+                  </a>
                   <a href="#categories" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
@@ -167,60 +172,322 @@ export default function AdminPage() {
               <div id="products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
-                  <div className="flex space-x-2">
-                    <Link 
-                      href="/admin/products"
-                      className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                      Đi đến trang quản lý sản phẩm
-                    </Link>
-                  </div>
+                  <button 
+                    className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
+                    onClick={() => setShowForm(!showForm)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    {showForm ? 'Đóng form' : 'Thêm sản phẩm mới'}
+                  </button>
                 </div>
                 
-                <p className="text-gray-600 mb-4">
-                  Trang quản lý sản phẩm cho phép bạn xem, thêm, sửa và xóa các sản phẩm trong hệ thống. 
-                  Bạn có thể quản lý thông tin chi tiết, giá cả, danh mục và hình ảnh của sản phẩm.
-                </p>
+                {/* Form thêm sản phẩm mới */}
+                {showForm && (
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+                    <h3 className="text-lg font-semibold mb-4">Thêm phần mềm mới</h3>
+                    
+                    <form onSubmit={handleSubmit}>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
+                            Tên phần mềm <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="product-name"
+                            name="name"
+                            placeholder="Ví dụ: XLab Office Suite"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-slug" className="block mb-2 font-medium text-gray-700">
+                            Slug <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="product-slug"
+                            name="slug"
+                            placeholder="Ví dụ: xlab-office-suite"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
+                            Danh mục <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            id="product-category"
+                            name="categoryId"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          >
+                            <option value="">-- Chọn danh mục --</option>
+                            <option value="office">Văn phòng</option>
+                            <option value="design">Thiết kế</option>
+                            <option value="development">Phát triển</option>
+                            <option value="security">Bảo mật</option>
+                            <option value="utility">Tiện ích</option>
+                          </select>
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-price" className="block mb-2 font-medium text-gray-700">
+                            Giá (VNĐ) <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="product-price"
+                            name="price"
+                            placeholder="Ví dụ: 1200000"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
+                            Giá khuyến mãi (VNĐ)
+                          </label>
+                          <input
+                            type="number"
+                            id="product-sale-price"
+                            name="salePrice"
+                            placeholder="Để trống nếu không có khuyến mãi"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-version" className="block mb-2 font-medium text-gray-700">
+                            Phiên bản <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="product-version"
+                            name="version"
+                            placeholder="Ví dụ: 1.0.0"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label htmlFor="product-description" className="block mb-2 font-medium text-gray-700">
+                            Mô tả ngắn <span className="text-red-500">*</span>
+                          </label>
+                          <textarea
+                            id="product-description"
+                            name="description"
+                            rows={3}
+                            placeholder="Mô tả ngắn gọn về phần mềm của bạn"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          ></textarea>
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
+                            Mô tả chi tiết <span className="text-red-500">*</span>
+                          </label>
+                          <textarea
+                            id="product-long-description"
+                            name="longDescription"
+                            rows={6}
+                            placeholder="Mô tả chi tiết về tính năng, lợi ích của phần mềm"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          ></textarea>
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-image-url" className="block mb-2 font-medium text-gray-700">
+                            URL hình ảnh <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="url"
+                            id="product-image-url"
+                            name="imageUrl"
+                            placeholder="https://example.com/image.jpg"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-size" className="block mb-2 font-medium text-gray-700">
+                            Dung lượng <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="product-size"
+                            name="size"
+                            placeholder="Ví dụ: 50MB"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
+                            Loại giấy phép <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            id="product-license"
+                            name="licenseType"
+                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            required
+                          >
+                            <option value="">-- Chọn loại giấy phép --</option>
+                            <option value="personal">Cá nhân</option>
+                            <option value="business">Doanh nghiệp</option>
+                            <option value="enterprise">Doanh nghiệp lớn</option>
+                          </select>
+                        </div>
+                        
+                        <div className="md:col-span-2 flex items-center">
+                          <input type="checkbox" id="product-featured" name="isFeatured" className="mr-2" />
+                          <label htmlFor="product-featured" className="text-gray-700">
+                            Đánh dấu là sản phẩm nổi bật
+                          </label>
+                        </div>
+                        
+                        <div className="md:col-span-2 flex items-center">
+                          <input type="checkbox" id="product-new" name="isNew" className="mr-2" />
+                          <label htmlFor="product-new" className="text-gray-700">
+                            Đánh dấu là sản phẩm mới
+                          </label>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 flex justify-end space-x-4">
+                        <button 
+                          type="button" 
+                          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                          onClick={() => setShowForm(false)}
+                        >
+                          Hủy
+                        </button>
+                        <button 
+                          type="submit" 
+                          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
+                          disabled={isLoading}
+                        >
+                          {isLoading && (
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          )}
+                          Đăng sản phẩm
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-                  <div className="border rounded-lg p-4 bg-green-50 flex items-center">
-                    <div className="rounded-full bg-green-100 p-3 mr-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Thêm sản phẩm</h3>
-                      <p className="text-sm text-gray-600">Thêm sản phẩm mới vào hệ thống</p>
-                    </div>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4 bg-blue-50 flex items-center">
-                    <div className="rounded-full bg-blue-100 p-3 mr-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Sửa sản phẩm</h3>
-                      <p className="text-sm text-gray-600">Cập nhật thông tin sản phẩm</p>
-                    </div>
-                  </div>
-                  
-                  <div className="border rounded-lg p-4 bg-red-50 flex items-center">
-                    <div className="rounded-full bg-red-100 p-3 mr-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Xóa sản phẩm</h3>
-                      <p className="text-sm text-gray-600">Loại bỏ sản phẩm khỏi hệ thống</p>
-                    </div>
-                  </div>
+                {/* Danh sách sản phẩm */}
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Sản phẩm
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Danh mục
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Giá
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Trạng thái
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Thao tác
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 relative">
+                              <Image
+                                src="/images/placeholder-product.jpg"
+                                alt="XLab Office Suite"
+                                fill
+                                className="rounded-md"
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">XLab Office Suite</div>
+                              <div className="text-sm text-gray-500">xlab-office-suite</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">Văn phòng</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">1.200.000 ₫</div>
+                          <div className="text-sm text-gray-500">990.000 ₫ (Sale)</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Đang bán
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            <button className="text-primary-600 hover:text-primary-900">Sửa</button>
+                            <button className="text-red-600 hover:text-red-900">Xóa</button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 relative">
+                              <Image
+                                src="/images/placeholder-product.jpg"
+                                alt="XLab Design Master"
+                                fill
+                                className="rounded-md"
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">XLab Design Master</div>
+                              <div className="text-sm text-gray-500">xlab-design-master</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">Thiết kế</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">1.990.000 ₫</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Đang bán
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            <button className="text-primary-600 hover:text-primary-900">Sửa</button>
+                            <button className="text-red-600 hover:text-red-900">Xóa</button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
               
