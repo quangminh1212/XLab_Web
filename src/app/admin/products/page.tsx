@@ -407,7 +407,7 @@ export default function AdminProductsPage() {
       const name = (formData.get('name') as string || '').trim();
       const slug = (formData.get('slug') as string || '').trim() || 
                    name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '');
-      const categoryId = formData.get('categoryId') as string;
+      const categoryId = formData.get('category') as string;
       
       // Kiểm tra dữ liệu đầu vào chi tiết hơn
       const errors = [];
