@@ -1,18 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { JWT } from "next-auth/jwt";
 
-// Extend the Session interface
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id?: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    }
-  }
-}
+// Sử dụng định nghĩa từ src/types/next-auth.d.ts
 
 const handler = NextAuth({
   providers: [
@@ -49,12 +38,13 @@ const handler = NextAuth({
     },
     async signIn({ account, profile }) {
       if (account?.provider === "google" && profile?.email) {
+        // Có thể thêm logic kiểm tra người dùng ở đây nếu cần
         return true;
       }
       return false;
     },
   },
-  debug: false,
+  debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
