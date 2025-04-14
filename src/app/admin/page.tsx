@@ -1,16 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { products } from '@/data/mockData';
+import { products as mockProducts } from '@/data/mockData';
 
 export const metadata = {
   title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
-}
+  description: 'Trang quản trị XLab',
+};
 
 // Định nghĩa kiểu cho products
 interface Product {
@@ -38,8 +37,7 @@ interface Product {
 
 export default function AdminPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(mockProducts as Product[]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -49,22 +47,6 @@ export default function AdminPage() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
-  
-  // Kiểm tra quyền admin
-  useEffect(() => {
-    if (status === 'authenticated') {
-      if (session?.user?.email !== 'xlab.rnd@gmail.com') {
-        router.push('/');
-      }
-    } else if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [session, status, router]);
-
-  useEffect(() => {
-    // Load danh sách sản phẩm từ dữ liệu mẫu
-    setProducts(products);
-  }, []);
 
   // Xử lý khi gửi form
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -161,14 +143,6 @@ export default function AdminPage() {
     }
   };
   
-  if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-  
   return (
     <div>
       {/* Page Header */}
@@ -191,17 +165,14 @@ export default function AdminPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src={session?.user?.image || '/images/avatar-placeholder.svg'}
-                      alt={session?.user?.name || 'Admin'}
+                      src={'/images/avatar-placeholder.svg'}
+                      alt="Admin"
                       fill
                       className="rounded-full"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/avatar-placeholder.svg'
-                      }}
                     />
                   </div>
-                  <h2 className="text-xl font-bold">{session?.user?.name || 'Admin'}</h2>
-                  <p className="text-gray-600">{session?.user?.email}</p>
+                  <h2 className="text-xl font-bold">Admin</h2>
+                  <p className="text-gray-600">admin@example.com</p>
                   <p className="text-sm text-gray-500 mt-1">Quản trị viên</p>
                 </div>
                 
