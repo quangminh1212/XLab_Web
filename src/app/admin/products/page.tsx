@@ -6,250 +6,12 @@ import Image from 'next/image';
 import { Product, Category } from '@/types';
 import { useProducts } from '@/context/ProductContext';
 
-// Define prop types for ProductForm
-interface ProductFormProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  isEditing: boolean;
-  currentProduct: Product | null;
-  categories: Category[];
-  isLoading: boolean;
-}
-
-// Form Component tách biệt 
-const ProductForm = ({ 
-  isOpen,
-  onClose,
-  onSubmit,
-  isEditing,
-  currentProduct,
-  categories,
-  isLoading
-}: ProductFormProps) => {
-  console.log('ProductForm render - isOpen:', isOpen);
-  
-  return isOpen ? (
-    <div 
-      id="product-form-modal"
-      className="fixed inset-0 z-[99999] bg-black bg-opacity-75 flex items-center justify-center p-4"
-      style={{ overflow: 'auto' }}
-    >
-      <div 
-        id="product-form-content"
-        className="bg-white w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden border-4 border-primary-500"
-        style={{ maxHeight: '90vh', overflowY: 'auto' }}
-      >
-        <div className="sticky top-0 z-10 bg-white p-4 border-b flex justify-between items-center">
-          <h2 className="text-2xl font-bold">
-            {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
-          </h2>
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-full bg-gray-200 hover:bg-gray-300"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        
-        <div className="p-6">
-          <form onSubmit={onSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <div>
-                <label htmlFor="name" className="block mb-1 font-medium">Tên sản phẩm <span className="text-red-500">*</span></label>
-                <input 
-                  id="name"
-                  name="name" 
-                  type="text" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.name || ''}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="slug" className="block mb-1 font-medium">Slug <span className="text-red-500">*</span></label>
-                <input 
-                  id="slug"
-                  name="slug" 
-                  type="text" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.slug || ''}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="category" className="block mb-1 font-medium">Danh mục <span className="text-red-500">*</span></label>
-                <select
-                  id="category"
-                  name="category"
-                  className="w-full p-2 border border-gray-300 rounded"
-                  defaultValue={currentProduct?.categoryId || ''}
-                  required
-                >
-                  <option value="">Chọn danh mục</option>
-                  {categories.map((category: Category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <div>
-                <label htmlFor="price" className="block mb-1 font-medium">Giá (VND) <span className="text-red-500">*</span></label>
-                <input 
-                  id="price"
-                  name="price" 
-                  type="number" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.price || ''}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="salePrice" className="block mb-1 font-medium">Giá khuyến mãi (VND)</label>
-                <input 
-                  id="salePrice"
-                  name="salePrice" 
-                  type="number" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.salePrice || ''}
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="version" className="block mb-1 font-medium">Phiên bản <span className="text-red-500">*</span></label>
-                <input 
-                  id="version"
-                  name="version" 
-                  type="text" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.version || ''}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="imageUrl" className="block mb-1 font-medium">URL Hình ảnh <span className="text-red-500">*</span></label>
-                <input 
-                  id="imageUrl"
-                  name="imageUrl" 
-                  type="text" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.imageUrl || ''}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="size" className="block mb-1 font-medium">Dung lượng <span className="text-red-500">*</span></label>
-                <input 
-                  id="size"
-                  name="size" 
-                  type="text" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.size || ''}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="licenseType" className="block mb-1 font-medium">Loại giấy phép <span className="text-red-500">*</span></label>
-                <select 
-                  id="licenseType"
-                  name="licenseType" 
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.licenseType || ''}
-                  required
-                >
-                  <option value="">-- Chọn loại giấy phép --</option>
-                  <option value="Thương mại">Thương mại</option>
-                  <option value="Cá nhân">Cá nhân</option>
-                  <option value="Doanh nghiệp">Doanh nghiệp</option>
-                </select>
-              </div>
-              
-              <div className="md:col-span-2">
-                <label htmlFor="description" className="block mb-1 font-medium">Mô tả ngắn <span className="text-red-500">*</span></label>
-                <textarea 
-                  id="description"
-                  name="description" 
-                  rows={3}
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.description || ''}
-                  required
-                ></textarea>
-              </div>
-              
-              <div className="md:col-span-2">
-                <label htmlFor="longDescription" className="block mb-1 font-medium">Mô tả chi tiết <span className="text-red-500">*</span></label>
-                <textarea 
-                  id="longDescription"
-                  name="longDescription" 
-                  rows={5}
-                  className="w-full p-2 border rounded"
-                  defaultValue={currentProduct?.longDescription || ''}
-                  required
-                ></textarea>
-              </div>
-              
-              <div className="md:col-span-2">
-                <div className="flex items-center space-x-4">
-                  <label className="inline-flex items-center">
-                    <input 
-                      type="checkbox" 
-                      name="isFeatured" 
-                      className="mr-2" 
-                      defaultChecked={currentProduct?.isFeatured || false} 
-                    />
-                    Sản phẩm nổi bật
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input 
-                      type="checkbox" 
-                      name="isNew" 
-                      className="mr-2" 
-                      defaultChecked={currentProduct?.isNew || false} 
-                    />
-                    Sản phẩm mới
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex justify-end space-x-3">
-              <button 
-                type="button" 
-                onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-              >
-                Hủy
-              </button>
-              <button 
-                type="submit" 
-                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Đang xử lý...' : isEditing ? 'Cập nhật' : 'Thêm sản phẩm'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  ) : null;
-};
-
+// Đây là modal form thêm sản phẩm trực tiếp mà không sử dụng component ProductForm
 export default function AdminProductsPage() {
   const { products, categories, addProduct, updateProduct, deleteProduct, setProducts } = useProducts();
   
   const [isLoading, setIsLoading] = useState(false);
-  const [showForm, setShowForm] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formError, setFormError] = useState('');
@@ -268,34 +30,9 @@ export default function AdminProductsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
-  // Thêm state mới để hiển thị form
-  const [forceShowForm, setForceShowForm] = useState(false);
-  
-  // Tạo một style global cho animation
+  // Log khi state showForm thay đổi
   useEffect(() => {
-    // Log trạng thái ban đầu
-    console.log("[AdminProductsPage] Component đã mount, showForm=", showForm);
-  }, []);
-  
-  // Giám sát sự thay đổi của showForm
-  useEffect(() => {
-    console.log("[AdminProductsPage] UseEffect: showForm thay đổi thành:", showForm);
-    console.log("[AdminProductsPage] Components trong DOM:", {
-      productForm: document.querySelector('.fixed.inset-0.z-\\[99999\\]') ? 'Tồn tại' : 'Không tồn tại',
-      overlay: document.querySelector('.bg-black.bg-opacity-75') ? 'Tồn tại' : 'Không tồn tại'
-    });
-    
-    // Khi form được hiển thị
-    if (showForm) {
-      // Đảm bảo màn hình cuộn lên đầu
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      // Thêm class cho body để ngăn cuộn
-      document.body.style.overflow = 'hidden';
-    } else {
-      // Khi form bị đóng, cho phép cuộn lại
-      document.body.style.overflow = 'auto';
-    }
+    console.log('showForm state changed to:', showForm);
   }, [showForm]);
   
   // Xử lý tìm kiếm và lọc
@@ -339,30 +76,24 @@ export default function AdminProductsPage() {
     setFilteredProducts(result);
   }, [products, searchTerm, filterCategory, sortBy, sortOrder]);
   
-  // Log products state whenever it changes
+  // Khởi tạo dữ liệu ban đầu
   useEffect(() => {
-    console.log("[AdminProductsPage] Products state updated:", products.length);
+    console.log('Admin Products Page Loaded');
+    // Tự động hiển thị form khi không có sản phẩm nào
+    if (products && products.length === 0) {
+      console.log('No products found, auto showing form');
+      setShowForm(true);
+    }
   }, [products]);
   
-  // Chỉ để debug trạng thái hiển thị form
-  useEffect(() => {
-    console.log("[AdminProductsPage] Trạng thái showForm thay đổi thành:", showForm);
-    
-    if (showForm) {
-      console.log("[AdminProductsPage] Form nên hiển thị, kiểm tra DOM:", 
-        document.getElementById('product-form') ? 'Form element tồn tại' : 'Form element KHÔNG tồn tại');
-    }
-  }, [showForm]);
-  
-  // Log form state để debug
-  useEffect(() => {
-    console.log("[AdminProductsPage] Form state:", { showForm, isEditing, currentProduct });
-    
-    // Log thông báo khi form hiển thị
-    if (showForm) {
-      console.log("[AdminProductsPage] Form đang được hiển thị");
-    }
-  }, [showForm, isEditing, currentProduct]);
+  // Hiển thị thông báo thành công
+  const showSuccess = (message: string) => {
+    setSuccessMessage(message);
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(() => {
+      setSuccessMessage('');
+    }, 3000);
+  };
   
   // Hiển thị thông báo thành công và cập nhật UI thay vì reload trang
   const showSuccessAndReset = (message: string, shouldResetForm = true) => {
@@ -372,27 +103,37 @@ export default function AdminProductsPage() {
     }
   };
   
-  // Tự động tải lại trang sau khi thực hiện thao tác thành công
-  const reloadAfterSuccess = (message: string) => {
-    showSuccess(message);
-    // Đặt timeout dài hơn (3 giây) để đảm bảo API và localStorage đã được cập nhật
-    setTimeout(() => {
-      window.location.reload();
-    }, 3000);
-  };
-  
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
   
-  // Hiển thị thông báo thành công
-  const showSuccess = (message: string) => {
-    setSuccessMessage(message);
-    // Tự động ẩn thông báo sau 3 giây
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 3000);
+  // Phương thức reset form và đóng form
+  const resetForm = () => {
+    console.log('Resetting form and closing modal');
+    setShowForm(false);
+    setIsEditing(false);
+    setCurrentProduct(null);
+    setFormError('');
+    setSuccessMessage('');
+  };
+  
+  // Xử lý xem chi tiết sản phẩm
+  const handleViewDetail = (product: Product, event?: React.MouseEvent) => {
+    // Ngăn chặn event bubbling nếu có event
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    setSelectedProduct(product);
+    setShowDetailModal(true);
+  };
+  
+  // Đóng modal chi tiết
+  const closeDetailModal = () => {
+    setShowDetailModal(false);
+    setTimeout(() => setSelectedProduct(null), 300); // Đợi animation đóng xong rồi mới reset state
   };
   
   // Xử lý khi gửi form
@@ -601,71 +342,216 @@ export default function AdminProductsPage() {
       setShowForm(true); // Vẫn hiển thị form để người dùng thấy lỗi
     }
   };
-
-  // Phương thức reset form và đóng form
-  const resetForm = () => {
-    console.log('Resetting form and closing modal');
-    setShowForm(false);
-    setIsEditing(false);
-    setCurrentProduct(null);
-    setFormError('');
-    setSuccessMessage('');
-  };
-  
-  // Xử lý xem chi tiết sản phẩm
-  const handleViewDetail = (product: Product, event?: React.MouseEvent) => {
-    // Ngăn chặn event bubbling nếu có event
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-    
-    setSelectedProduct(product);
-    setShowDetailModal(true);
-  };
-  
-  // Đóng modal chi tiết
-  const closeDetailModal = () => {
-    setShowDetailModal(false);
-    setTimeout(() => setSelectedProduct(null), 300); // Đợi animation đóng xong rồi mới reset state
-  };
-  
-  // Thêm useEffect để theo dõi showForm
-  useEffect(() => {
-    console.log('showForm state changed:', showForm);
-    
-    // Check DOM elements
-    setTimeout(() => {
-      console.log('DOM after state change:', {
-        modal: document.getElementById('product-form-modal'),
-        content: document.getElementById('product-form-content'),
-        z_index: window.getComputedStyle(document.getElementById('product-form-modal') || document.body).zIndex
-      });
-    }, 100);
-  }, [showForm]);
-
-  // Khởi tạo dữ liệu ban đầu
-  useEffect(() => {
-    console.log('Admin Products Page Loaded');
-    // Tự động hiển thị form khi không có sản phẩm nào
-    if (products && products.length === 0) {
-      console.log('No products found, auto showing form');
-      setShowForm(true);
-    }
-  }, [products]);
   
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Simple Product Form */}
-      <ProductForm 
-        isOpen={showForm}
-        onClose={resetForm}
-        onSubmit={handleSubmit}
-        isEditing={isEditing}
-        currentProduct={currentProduct}
-        categories={categories}
-        isLoading={isLoading}
-      />
+      {/* Modal Form thêm/sửa sản phẩm */}
+      {showForm && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black bg-opacity-75 p-4">
+          <div className="bg-white w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden border-4 border-primary-500" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+            <div className="sticky top-0 z-10 bg-white p-4 border-b flex justify-between items-center">
+              <h2 className="text-2xl font-bold">
+                {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
+              </h2>
+              <button 
+                onClick={resetForm}
+                className="p-2 rounded-full bg-gray-200 hover:bg-gray-300"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <label htmlFor="name" className="block mb-1 font-medium">Tên sản phẩm <span className="text-red-500">*</span></label>
+                    <input 
+                      id="name"
+                      name="name" 
+                      type="text" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.name || ''}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="slug" className="block mb-1 font-medium">Slug <span className="text-red-500">*</span></label>
+                    <input 
+                      id="slug"
+                      name="slug" 
+                      type="text" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.slug || ''}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="category" className="block mb-1 font-medium">Danh mục <span className="text-red-500">*</span></label>
+                    <select
+                      id="category"
+                      name="category"
+                      className="w-full p-2 border border-gray-300 rounded"
+                      defaultValue={currentProduct?.categoryId || ''}
+                      required
+                    >
+                      <option value="">Chọn danh mục</option>
+                      {categories.map((category: Category) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="price" className="block mb-1 font-medium">Giá (VND) <span className="text-red-500">*</span></label>
+                    <input 
+                      id="price"
+                      name="price" 
+                      type="number" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.price || ''}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="salePrice" className="block mb-1 font-medium">Giá khuyến mãi (VND)</label>
+                    <input 
+                      id="salePrice"
+                      name="salePrice" 
+                      type="number" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.salePrice || ''}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="version" className="block mb-1 font-medium">Phiên bản <span className="text-red-500">*</span></label>
+                    <input 
+                      id="version"
+                      name="version" 
+                      type="text" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.version || ''}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="imageUrl" className="block mb-1 font-medium">URL Hình ảnh <span className="text-red-500">*</span></label>
+                    <input 
+                      id="imageUrl"
+                      name="imageUrl" 
+                      type="text" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.imageUrl || ''}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="size" className="block mb-1 font-medium">Dung lượng <span className="text-red-500">*</span></label>
+                    <input 
+                      id="size"
+                      name="size" 
+                      type="text" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.size || ''}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="licenseType" className="block mb-1 font-medium">Loại giấy phép <span className="text-red-500">*</span></label>
+                    <select 
+                      id="licenseType"
+                      name="licenseType" 
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.licenseType || ''}
+                      required
+                    >
+                      <option value="">-- Chọn loại giấy phép --</option>
+                      <option value="Thương mại">Thương mại</option>
+                      <option value="Cá nhân">Cá nhân</option>
+                      <option value="Doanh nghiệp">Doanh nghiệp</option>
+                    </select>
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <label htmlFor="description" className="block mb-1 font-medium">Mô tả ngắn <span className="text-red-500">*</span></label>
+                    <textarea 
+                      id="description"
+                      name="description" 
+                      rows={3}
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.description || ''}
+                      required
+                    ></textarea>
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <label htmlFor="longDescription" className="block mb-1 font-medium">Mô tả chi tiết <span className="text-red-500">*</span></label>
+                    <textarea 
+                      id="longDescription"
+                      name="longDescription" 
+                      rows={5}
+                      className="w-full p-2 border rounded"
+                      defaultValue={currentProduct?.longDescription || ''}
+                      required
+                    ></textarea>
+                  </div>
+                  
+                  <div className="md:col-span-2">
+                    <div className="flex items-center space-x-4">
+                      <label className="inline-flex items-center">
+                        <input 
+                          type="checkbox" 
+                          name="isFeatured" 
+                          className="mr-2" 
+                          defaultChecked={currentProduct?.isFeatured || false} 
+                        />
+                        Sản phẩm nổi bật
+                      </label>
+                      <label className="inline-flex items-center">
+                        <input 
+                          type="checkbox" 
+                          name="isNew" 
+                          className="mr-2" 
+                          defaultChecked={currentProduct?.isNew || false} 
+                        />
+                        Sản phẩm mới
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex justify-end space-x-3">
+                  <button 
+                    type="button" 
+                    onClick={resetForm}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Hủy
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Đang xử lý...' : isEditing ? 'Cập nhật' : 'Thêm sản phẩm'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Page Header */}
       <section className="bg-primary-800 text-white py-10">
@@ -700,16 +586,11 @@ export default function AdminProductsPage() {
                     setIsEditing(false);
                     setCurrentProduct(null);
                     setFormError('');
+                    setSuccessMessage('');
                     
                     // Show form
-                    console.log("Button clicked: Setting showForm to true");
+                    console.log("Setting showForm to true");
                     setShowForm(true);
-                    console.log("showForm value after setting:", true);
-                    
-                    // Force a re-render
-                    setTimeout(() => {
-                      console.log("Checking showForm value after timeout:", showForm);
-                    }, 100);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
