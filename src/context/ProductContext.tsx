@@ -92,4 +92,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       {children}
     </ProductContext.Provider>
   );
-} 
+}
+
+// Hỗ trợ cả default export để tương thích với code cũ
+export default ProductContext; 
