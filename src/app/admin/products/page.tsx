@@ -410,15 +410,29 @@ export default function AdminProductsPage() {
       {showForm && (
         <div 
           id="product-form-container" 
-          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center z-[9999]"
-          style={{ position: 'fixed', inset: 0, display: 'flex', zIndex: 99999 }}
+          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center z-[99999]"
+          style={{ 
+            position: 'fixed', 
+            inset: 0, 
+            display: 'flex !important', 
+            zIndex: 99999,
+            visibility: 'visible',
+            opacity: 1,
+            overflow: 'auto',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          }}
         >
           <div className="bg-white rounded-lg shadow-2xl overflow-auto max-h-[90vh] w-full max-w-5xl border-4 border-primary-500 m-4">
-            <div className="relative p-6">
+            <div className="sticky top-0 bg-white p-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-2xl font-bold text-center flex-grow">
+                {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
+              </h3>
               <button 
                 type="button" 
-                className="absolute top-4 right-4 bg-gray-200 text-gray-700 rounded-full p-2 hover:bg-gray-300"
+                className="bg-gray-200 text-gray-700 rounded-full p-2 hover:bg-gray-300"
                 onClick={() => {
+                  console.log("Closing form...");
+                  document.body.style.overflow = 'auto';
                   setShowForm(false);
                   setIsEditing(false);
                   setCurrentProduct(null);
@@ -429,11 +443,8 @@ export default function AdminProductsPage() {
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </button>
-              
-              <h3 className="text-2xl font-bold mb-6 pr-10 text-center">
-                {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
-              </h3>
-              
+            </div>
+            <div className="p-6">
               {formError && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
                   <div dangerouslySetInnerHTML={{ __html: formError }} />
@@ -731,36 +742,33 @@ export default function AdminProductsPage() {
                 </Link>
                 <button 
                   className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    
-                    // Đặt trạng thái mặc định
+                  onClick={() => {
+                    // Đặt trạng thái form về mặc định
                     setIsEditing(false);
                     setCurrentProduct(null);
                     setFormError('');
                     setSuccessMessage('');
                     
-                    alert('Đang hiển thị form thêm sản phẩm...');
-                    
-                    // Tạo form container trực tiếp nếu không tồn tại
-                    let formContainer = document.getElementById('product-form-container');
-                    
-                    if (!formContainer) {
-                      formContainer = document.createElement('div');
-                      formContainer.id = 'product-form-container';
-                      formContainer.className = 'fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center';
-                      formContainer.style.position = 'fixed';
-                      formContainer.style.inset = '0';
-                      formContainer.style.display = 'flex';
-                      formContainer.style.zIndex = '99999';
-                      
-                      document.body.appendChild(formContainer);
-                    } else {
-                      formContainer.style.display = 'flex';
-                    }
-                    
-                    // Chuyển state để kích hoạt render
+                    // Force show form
+                    document.body.style.overflow = 'hidden';
                     setShowForm(true);
+                    
+                    // Log
+                    console.log('Set showForm = true');
+                    
+                    // Force render bằng timeout
+                    setTimeout(() => {
+                      console.log('Checking if form exists after timeout:', 
+                        document.getElementById('product-form-container') ? 'yes' : 'no');
+                      
+                      // Force show bằng display style
+                      const formContainer = document.getElementById('product-form-container');
+                      if (formContainer) {
+                        formContainer.style.display = 'flex';
+                        formContainer.style.visibility = 'visible';
+                        formContainer.style.opacity = '1';
+                      }
+                    }, 100);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
