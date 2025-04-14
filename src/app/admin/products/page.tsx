@@ -31,12 +31,12 @@ export default function AdminProductsPage() {
       const formData = new FormData(event.currentTarget);
       
       // Xử lý giá trị từ form để đảm bảo kiểu dữ liệu chính xác
-      const price = Number(formData.get('price')) || 0;
-      const salePrice = Number(formData.get('salePrice')) || price;
       const name = (formData.get('name') as string || '').trim();
       const slug = (formData.get('slug') as string || '').trim() || 
                    name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '');
       const categoryId = formData.get('categoryId') as string;
+      const price = Number(formData.get('price')) || 0;
+      const salePrice = Number(formData.get('salePrice')) || price;
       
       // Kiểm tra dữ liệu đầu vào
       if (!name) {
@@ -77,31 +77,25 @@ export default function AdminProductsPage() {
       
       console.log("Submitting product:", productData);
       
-      // Thêm hoặc cập nhật sản phẩm với delay nhỏ để đảm bảo UI được cập nhật
-      setTimeout(() => {
-        try {
-          if (isEditing && currentProduct) {
-            // Cập nhật sản phẩm qua context
-            updateProduct(productData);
-            alert('Đã cập nhật sản phẩm thành công!');
-          } else {
-            // Thêm sản phẩm mới qua context
-            addProduct(productData);
-            alert('Đã thêm sản phẩm thành công!');
-          }
-          
-          // Reset form
-          resetForm();
-        } catch (submitError: any) {
-          console.error("Error during product submission:", submitError);
-          setFormError(submitError.message || 'Đã xảy ra lỗi, vui lòng thử lại');
-        } finally {
-          setIsLoading(false);
-        }
-      }, 100);
+      // Thêm hoặc cập nhật sản phẩm
+      if (isEditing && currentProduct) {
+        // Cập nhật sản phẩm qua context
+        updateProduct(productData);
+        console.log("Product updated successfully:", productData);
+        window.alert('Đã cập nhật sản phẩm thành công!');
+      } else {
+        // Thêm sản phẩm mới qua context
+        addProduct(productData);
+        console.log("Product added successfully:", productData);
+        window.alert('Đã thêm sản phẩm thành công!');
+      }
+      
+      // Reset form
+      resetForm();
     } catch (error: any) {
-      console.error("Error preparing product data:", error);
+      console.error("Error submitting product:", error);
       setFormError(error.message || 'Đã xảy ra lỗi, vui lòng thử lại');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -118,21 +112,19 @@ export default function AdminProductsPage() {
     
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
       setIsLoading(true);
-      setTimeout(() => {
-        try {
-          // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
-          const productId = String(id);
-          // Xóa sản phẩm qua context
-          deleteProduct(productId);
-          console.log("Product deleted successfully:", id);
-          alert('Đã xóa sản phẩm thành công!');
-        } catch (error: any) {
-          console.error("Error deleting product:", error);
-          alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
-        } finally {
-          setIsLoading(false);
-        }
-      }, 100); // Thêm một chút delay để đảm bảo UI được cập nhật đúng
+      try {
+        // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
+        const productId = String(id);
+        // Xóa sản phẩm qua context
+        deleteProduct(productId);
+        console.log("Product deleted successfully:", id);
+        window.alert('Đã xóa sản phẩm thành công!');
+      } catch (error: any) {
+        console.error("Error deleting product:", error);
+        window.alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -155,13 +147,11 @@ export default function AdminProductsPage() {
       setCurrentProduct(productCopy);
       setShowForm(true);
       
-      // Đảm bảo UI được cập nhật trước khi scroll
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 100);
+      // Cuộn lên đầu trang
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error: any) {
       console.error("Error in edit handling:", error);
-      alert(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm');
+      window.alert(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm');
     }
   };
 
