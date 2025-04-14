@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { products as mockProducts } from '@/data/mockData';
+import { Product } from '@/types';
 
 export const metadata = {
   title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
@@ -15,10 +15,10 @@ export const metadata = {
 export default function AdminPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -39,28 +39,44 @@ export default function AdminPage() {
     }
   }, [session, status, router]);
 
+  // Tải danh sách sản phẩm
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.email === 'xlab.rnd@gmail.com') {
+      fetch('/api/products')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setProducts(data.data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching products:', error);
+        });
+    }
+  }, [status, session]);
+
   // Xử lý khi chọn file
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
       const reader = new FileReader();
       reader.onload = () => {
-        setFilePreview(reader.result);
+        setFilePreview(reader.result as string);
       };
       reader.readAsDataURL(selectedFile);
     }
   };
 
   // Xử lý khi gửi form
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     setSuccessMessage('');
     setErrorMessage('');
     
     // Tạo form data từ form
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.currentTarget);
     
     // Thêm file vào formData nếu có
     if (file) {
@@ -68,50 +84,55 @@ export default function AdminPage() {
     }
     
     // Tạo đối tượng sản phẩm từ formData
-    const product = {
-      id: `prod-${Date.now()}`,
-      name: formData.get('name'),
-      slug: formData.get('slug'),
-      description: formData.get('description'),
-      longDescription: formData.get('longDescription'),
+    const productData = {
+      name: formData.get('name') as string,
+      slug: formData.get('slug') as string,
+      description: formData.get('description') as string,
+      longDescription: formData.get('longDescription') as string,
       price: Number(formData.get('price')),
       salePrice: formData.get('salePrice') ? Number(formData.get('salePrice')) : 0,
-      categoryId: formData.get('categoryId'),
-      imageUrl: formData.get('imageUrl') || '/images/placeholder-product.jpg',
+      categoryId: formData.get('categoryId') as string,
+      imageUrl: formData.get('imageUrl') as string || '/images/placeholder-product.jpg',
       isFeatured: formData.get('isFeatured') === 'on',
       isNew: formData.get('isNew') === 'on',
       downloadCount: 0,
       viewCount: 0,
       rating: 0,
-      version: formData.get('version'),
-      size: formData.get('size'),
-      licenseType: formData.get('licenseType'),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      version: formData.get('version') as string,
+      size: formData.get('size') as string,
+      licenseType: formData.get('licenseType') as string,
       storeId: '1' // Mặc định là cửa hàng XLab
     };
     
-    // Trong môi trường thực tế, đây là nơi gửi API request để thêm sản phẩm
-    // Ví dụ: 
-    // fetch('/api/products', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(product),
-    // })
-    
-    // Mô phỏng thêm sản phẩm thành công
-    setTimeout(() => {
-      // Thêm sản phẩm vào danh sách hiển thị
-      setProducts(prevProducts => [...prevProducts, product]);
-      setSuccessMessage('Đã đăng sản phẩm thành công!');
+    // Gửi API request để thêm sản phẩm
+    fetch('/api/products', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productData),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Thêm sản phẩm mới vào danh sách hiển thị
+        setProducts(prevProducts => [...prevProducts, data.data]);
+        setSuccessMessage('Đã đăng sản phẩm thành công!');
+        setFile(null);
+        setFilePreview('');
+        // Reset form sau khi đăng sản phẩm
+        event.currentTarget.reset();
+      } else {
+        setErrorMessage(data.message || 'Có lỗi xảy ra khi đăng sản phẩm.');
+      }
+    })
+    .catch(error => {
+      console.error('Error creating product:', error);
+      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ.');
+    })
+    .finally(() => {
       setIsLoading(false);
-      setFile(null);
-      setFilePreview('');
-      // Reset form sau khi đăng sản phẩm
-      event.target.reset();
-    }, 1500);
+    });
   }
   
   if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
