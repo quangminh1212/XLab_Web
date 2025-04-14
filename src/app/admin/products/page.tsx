@@ -355,18 +355,19 @@ export default function AdminProductsPage() {
     }
   };
 
-  // Reset form
+  // Phương thức reset form và đóng form
   const resetForm = () => {
-    console.log("[AdminProductsPage] Reset form được gọi");
-    console.log("[AdminProductsPage] Trạng thái trước khi reset:", { showForm, isEditing, currentProduct });
-    
-    // Thay đổi trạng thái
+    console.log('Resetting form and closing modal');
+    // Đóng form
     setShowForm(false);
+    
+    // Reset các state liên quan
     setIsEditing(false);
     setCurrentProduct(null);
     setFormError('');
+    setSuccessMessage('');
     
-    console.log("[AdminProductsPage] Đã reset xong form, showForm=false");
+    console.log('Form state after reset - showForm:', false);
   };
   
   // Xử lý xem chi tiết sản phẩm
@@ -386,6 +387,21 @@ export default function AdminProductsPage() {
     setShowDetailModal(false);
     setTimeout(() => setSelectedProduct(null), 300); // Đợi animation đóng xong rồi mới reset state
   };
+  
+  // Thêm useEffect để theo dõi showForm
+  useEffect(() => {
+    console.log('showForm state changed:', showForm);
+  }, [showForm]);
+
+  // Khởi tạo dữ liệu ban đầu
+  useEffect(() => {
+    console.log('Admin Products Page Loaded');
+    // Tự động hiển thị form khi không có sản phẩm nào
+    if (products && products.length === 0) {
+      console.log('No products found, auto showing form');
+      setShowForm(true);
+    }
+  }, [products]);
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -425,10 +441,12 @@ export default function AdminProductsPage() {
                     setFormError('');
                     setSuccessMessage('');
                     
-                    // Hiển thị form
-                    console.log("Hiển thị form thêm sản phẩm mới");
-                    setShowForm(true);
-                    console.log("Giá trị showForm sau khi set:", true);
+                    // Hiển thị form sau một timeout ngắn
+                    console.log("Chuẩn bị hiển thị form thêm sản phẩm đầu tiên");
+                    setTimeout(() => {
+                      setShowForm(true);
+                      console.log("Đã kích hoạt hiển thị form, showForm:", true);
+                    }, 10);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -483,7 +501,7 @@ export default function AdminProductsPage() {
               <div 
                 id="product-form-container" 
                 className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex items-center justify-center z-[9999]"
-                style={{ position: 'fixed', inset: 0 }}
+                style={{ position: 'fixed', inset: 0, display: 'flex' }}
               >
                 <div className="bg-white rounded-lg shadow-2xl overflow-auto max-h-[90vh] w-full max-w-5xl border-4 border-primary-500 m-4">
                   <div className="relative p-6">
