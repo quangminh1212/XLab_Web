@@ -88,15 +88,11 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   const updateProduct = (product: Product) => {
     console.log("[ProductContext] Updating product:", product);
     
-    // Kiểm tra xem sản phẩm có tồn tại không
-    const exists = products.some(p => p.id === product.id);
-    if (!exists) {
-      console.error(`[ProductContext] Cannot update: product with ID ${product.id} doesn't exist`);
-      return;
-    }
+    // Normalize ID to string for comparison
+    const productId = String(product.id);
     
     setProducts(prevProducts => {
-      const updated = prevProducts.map(p => p.id === product.id ? product : p);
+      const updated = prevProducts.map(p => String(p.id) === productId ? { ...p, ...product } : p);
       console.log("[ProductContext] Products after update:", updated);
       return updated;
     });
@@ -106,15 +102,11 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   const deleteProduct = (id: string | number) => {
     console.log("[ProductContext] Deleting product with ID:", id);
     
-    // Kiểm tra xem sản phẩm có tồn tại không
-    const exists = products.some(p => p.id === id);
-    if (!exists) {
-      console.error(`[ProductContext] Cannot delete: product with ID ${id} doesn't exist`);
-      return;
-    }
+    // Normalize ID to string for comparison
+    const productId = String(id);
     
     setProducts(prevProducts => {
-      const filtered = prevProducts.filter(p => p.id !== id);
+      const filtered = prevProducts.filter(p => String(p.id) !== productId);
       console.log("[ProductContext] Products after deletion:", filtered);
       return filtered;
     });
