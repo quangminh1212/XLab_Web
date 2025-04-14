@@ -33,23 +33,41 @@ export default function AdminProductsPage() {
       // Xử lý giá trị từ form để đảm bảo kiểu dữ liệu chính xác
       const price = Number(formData.get('price')) || 0;
       const salePrice = Number(formData.get('salePrice')) || price;
+      const name = (formData.get('name') as string || '').trim();
+      const slug = (formData.get('slug') as string || '').trim() || 
+                   name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '');
+      const categoryId = formData.get('categoryId') as string;
       
+      // Kiểm tra dữ liệu đầu vào
+      if (!name) {
+        throw new Error('Tên sản phẩm không được để trống');
+      }
+      
+      if (!categoryId) {
+        throw new Error('Vui lòng chọn danh mục cho sản phẩm');
+      }
+      
+      if (price <= 0) {
+        throw new Error('Giá sản phẩm phải lớn hơn 0');
+      }
+      
+      // Tạo đối tượng sản phẩm
       const productData = {
         id: isEditing && currentProduct ? String(currentProduct.id) : `prod-${Date.now()}`,
-        name: (formData.get('name') as string).trim(),
-        slug: (formData.get('slug') as string).trim() || (formData.get('name') as string).trim().toLowerCase().replace(/\s+/g, '-'),
-        description: (formData.get('description') as string).trim(),
-        longDescription: (formData.get('longDescription') as string).trim(),
-        price: price,
-        salePrice: salePrice,
-        categoryId: formData.get('categoryId') as string,
-        imageUrl: (formData.get('imageUrl') as string).trim() || '/images/placeholder-product.jpg',
-        version: (formData.get('version') as string).trim() || '1.0.0',
-        size: (formData.get('size') as string).trim() || '0MB',
+        name,
+        slug,
+        description: (formData.get('description') as string || '').trim(),
+        longDescription: (formData.get('longDescription') as string || '').trim(),
+        price,
+        salePrice,
+        categoryId,
+        imageUrl: (formData.get('imageUrl') as string || '').trim() || '/images/placeholder-product.jpg',
+        version: (formData.get('version') as string || '').trim() || '1.0.0',
+        size: (formData.get('size') as string || '').trim() || '0MB',
         licenseType: (formData.get('licenseType') as string) || 'Thương mại',
         isFeatured: formData.get('isFeatured') === 'on',
         isNew: formData.get('isNew') === 'on',
-        storeId: currentProduct?.storeId || '1', // Mặc định sử dụng storeId là 1
+        storeId: currentProduct?.storeId || '1',
         downloadCount: currentProduct?.downloadCount || 0,
         viewCount: currentProduct?.viewCount || 0,
         rating: currentProduct?.rating || 0,
@@ -59,35 +77,31 @@ export default function AdminProductsPage() {
       
       console.log("Submitting product:", productData);
       
-      // Kiểm tra dữ liệu đầu vào
-      if (!productData.name) {
-        throw new Error('Tên sản phẩm không được để trống');
-      }
-      
-      if (!productData.categoryId) {
-        throw new Error('Vui lòng chọn danh mục cho sản phẩm');
-      }
-      
-      if (productData.price <= 0) {
-        throw new Error('Giá sản phẩm phải lớn hơn 0');
-      }
-      
-      if (isEditing && currentProduct) {
-        // Cập nhật sản phẩm qua context
-        updateProduct(productData);
-        alert('Đã cập nhật sản phẩm thành công!');
-      } else {
-        // Thêm sản phẩm mới qua context
-        addProduct(productData);
-        alert('Đã thêm sản phẩm thành công!');
-      }
-      
-      // Reset form
-      resetForm();
+      // Thêm hoặc cập nhật sản phẩm với delay nhỏ để đảm bảo UI được cập nhật
+      setTimeout(() => {
+        try {
+          if (isEditing && currentProduct) {
+            // Cập nhật sản phẩm qua context
+            updateProduct(productData);
+            alert('Đã cập nhật sản phẩm thành công!');
+          } else {
+            // Thêm sản phẩm mới qua context
+            addProduct(productData);
+            alert('Đã thêm sản phẩm thành công!');
+          }
+          
+          // Reset form
+          resetForm();
+        } catch (submitError: any) {
+          console.error("Error during product submission:", submitError);
+          setFormError(submitError.message || 'Đã xảy ra lỗi, vui lòng thử lại');
+        } finally {
+          setIsLoading(false);
+        }
+      }, 100);
     } catch (error: any) {
-      console.error("Error submitting product:", error);
+      console.error("Error preparing product data:", error);
       setFormError(error.message || 'Đã xảy ra lỗi, vui lòng thử lại');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -102,23 +116,23 @@ export default function AdminProductsPage() {
     
     console.log("Attempting to delete product with ID:", id);
     
-    if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-      return;
-    }
-    
-    setIsLoading(true);
-    try {
-      // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
-      const productId = String(id);
-      // Xóa sản phẩm qua context
-      deleteProduct(productId);
-      console.log("Product deleted successfully:", id);
-      alert('Đã xóa sản phẩm thành công!');
-    } catch (error: any) {
-      console.error("Error deleting product:", error);
-      alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
-    } finally {
-      setIsLoading(false);
+    if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+      setIsLoading(true);
+      setTimeout(() => {
+        try {
+          // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
+          const productId = String(id);
+          // Xóa sản phẩm qua context
+          deleteProduct(productId);
+          console.log("Product deleted successfully:", id);
+          alert('Đã xóa sản phẩm thành công!');
+        } catch (error: any) {
+          console.error("Error deleting product:", error);
+          alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
+        } finally {
+          setIsLoading(false);
+        }
+      }, 100); // Thêm một chút delay để đảm bảo UI được cập nhật đúng
     }
   };
 
@@ -135,10 +149,16 @@ export default function AdminProductsPage() {
     try {
       // Tạo bản sao sâu của product để tránh thay đổi trực tiếp vào state
       const productCopy = JSON.parse(JSON.stringify(product));
-      setCurrentProduct(productCopy);
+      console.log("Product copy to edit:", productCopy);
+      
       setIsEditing(true);
+      setCurrentProduct(productCopy);
       setShowForm(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Đảm bảo UI được cập nhật trước khi scroll
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
     } catch (error: any) {
       console.error("Error in edit handling:", error);
       alert(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm');

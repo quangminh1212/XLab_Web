@@ -81,7 +81,21 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   // Thêm sản phẩm mới
   const addProduct = (product: Product) => {
     console.log("[ProductContext] Adding product:", product);
-    setProducts(prevProducts => [...prevProducts, product]);
+    try {
+      setProducts(prevProducts => {
+        const newProducts = [...prevProducts, product];
+        
+        // Lưu vào localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('xlab_products', JSON.stringify(newProducts));
+        }
+        
+        return newProducts;
+      });
+    } catch (error) {
+      console.error("[ProductContext] Error adding product:", error);
+      throw new Error("Không thể thêm sản phẩm. Vui lòng thử lại.");
+    }
   };
 
   // Cập nhật sản phẩm
@@ -93,7 +107,23 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       const productId = String(product.id);
       
       setProducts(prevProducts => {
-        const updated = prevProducts.map(p => String(p.id) === productId ? { ...p, ...product } : p);
+        // Tìm sản phẩm trong danh sách
+        const existingProductIndex = prevProducts.findIndex(p => String(p.id) === productId);
+        
+        // Nếu không tìm thấy sản phẩm
+        if (existingProductIndex === -1) {
+          console.error(`[ProductContext] Product with ID ${productId} not found`);
+          throw new Error(`Không tìm thấy sản phẩm với ID ${productId}`);
+        }
+        
+        // Cập nhật sản phẩm
+        const updated = [...prevProducts];
+        updated[existingProductIndex] = {
+          ...prevProducts[existingProductIndex],
+          ...product,
+          updatedAt: new Date().toISOString()
+        };
+        
         console.log("[ProductContext] Products after update:", updated);
         
         // Lưu vào localStorage
@@ -103,6 +133,8 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         
         return updated;
       });
+      
+      return true;
     } catch (error) {
       console.error("[ProductContext] Error updating product:", error);
       throw error;
@@ -118,6 +150,15 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       const productId = String(id);
       
       setProducts(prevProducts => {
+        // Kiểm tra xem sản phẩm có tồn tại không
+        const existingProduct = prevProducts.find(p => String(p.id) === productId);
+        
+        if (!existingProduct) {
+          console.error(`[ProductContext] Product with ID ${productId} not found for deletion`);
+          throw new Error(`Không tìm thấy sản phẩm với ID ${productId} để xóa`);
+        }
+        
+        // Xóa sản phẩm
         const filtered = prevProducts.filter(p => String(p.id) !== productId);
         console.log("[ProductContext] Products after deletion:", filtered);
         
@@ -128,6 +169,8 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         
         return filtered;
       });
+      
+      return true;
     } catch (error) {
       console.error("[ProductContext] Error deleting product:", error);
       throw error;
