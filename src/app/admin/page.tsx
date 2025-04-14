@@ -192,7 +192,7 @@ export default function AdminPage() {
                       </div>
                     )}
                     
-                    <form onSubmit={handleSubmit} action="/api/products" method="POST">
+                    <form onSubmit={handleSubmit}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">

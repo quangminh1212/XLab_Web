@@ -5,17 +5,40 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 export async function POST(request: NextRequest) {
   try {
     console.log('Received POST request to /api/products');
-    // Bỏ phần kiểm tra xác thực để cho phép đăng mà không cần đăng nhập
-    // const session = await getServerSession(authOptions);
-    // if (!session || session.user?.email !== 'xlab.rnd@gmail.com') {
-    //   return NextResponse.json(
-    //     { success: false, message: 'Unauthorized' },
-    //     { status: 401 }
-    //   );
-    // }
-
-    // Xử lý dữ liệu từ request
-    const productData = await request.json();
+    
+    // Kiểm tra Content-Type
+    const contentType = request.headers.get('Content-Type') || '';
+    console.log('Content-Type:', contentType);
+    
+    let productData: any = {};
+    
+    // Xử lý dữ liệu dựa trên Content-Type
+    if (contentType.includes('application/json')) {
+      // Nếu là JSON
+      productData = await request.json();
+    } else if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
+      // Nếu là form data
+      const formData = await request.formData();
+      // Chuyển đổi FormData thành đối tượng
+      formData.forEach((value, key) => {
+        productData[key] = value;
+      });
+      
+      // Xử lý các trường boolean và số
+      productData.price = Number(productData.price || 0);
+      productData.salePrice = Number(productData.salePrice || 0);
+      productData.isFeatured = productData.isFeatured === 'on';
+      productData.isNew = productData.isNew === 'on';
+      productData.downloadCount = 0;
+      productData.viewCount = 0;
+      productData.rating = 0;
+    } else {
+      return NextResponse.json(
+        { success: false, message: 'Không hỗ trợ Content-Type này' },
+        { status: 415 }
+      );
+    }
+    
     console.log('Received product data:', productData);
     
     // Kiểm tra các trường bắt buộc
