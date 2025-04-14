@@ -336,10 +336,20 @@ export default function AdminProductsPage() {
   const resetForm = () => {
     console.log("[AdminProductsPage] Reset form được gọi");
     console.log("[AdminProductsPage] Trạng thái trước khi reset:", { showForm, isEditing, currentProduct });
+    
+    // Thay đổi trạng thái
     setShowForm(false);
     setIsEditing(false);
     setCurrentProduct(null);
     setFormError('');
+    
+    // Cập nhật UI trực tiếp để đảm bảo ẩn form
+    const formContainer = document.getElementById('form-container');
+    if (formContainer) {
+      formContainer.style.display = 'none';
+      console.log("[AdminProductsPage] Đã ẩn form trực tiếp qua DOM");
+    }
+    
     console.log("[AdminProductsPage] Đã reset xong form, showForm=false");
   };
   
@@ -393,22 +403,37 @@ export default function AdminProductsPage() {
                   className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
                   onClick={(e) => {
                     e.preventDefault();
-                    console.log("Nút thêm sản phẩm mới được nhấn");
-                    console.log("Trạng thái form trước khi thay đổi:", { showForm });
                     
-                    // Luôn hiển thị form khi nhấn nút "Thêm sản phẩm mới"
-                    setIsEditing(false);
-                    setCurrentProduct(null);
-                    setFormError('');
-                    setShowForm(true);
-                    
-                    console.log("Đã set trạng thái showForm = true");
-                    
-                    // Đảm bảo UI được cập nhật trước khi scroll
-                    setTimeout(() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      console.log("Đã scroll lên đầu trang");
-                    }, 100);
+                    try {
+                      console.log("===== Bắt đầu xử lý nút thêm sản phẩm mới =====");
+                      console.log("Trạng thái form trước khi thay đổi:", { showForm, isEditing, currentProduct });
+                      
+                      // Luôn hiển thị form khi nhấn nút "Thêm sản phẩm mới"
+                      setIsEditing(false);
+                      setCurrentProduct(null);
+                      setFormError('');
+                      
+                      // Quan trọng: Đảm bảo form được hiển thị
+                      console.log("Đang cập nhật showForm = true");
+                      setShowForm(true);
+                      
+                      // Kiểm tra xem form đã được hiển thị chưa
+                      setTimeout(() => {
+                        console.log("Trạng thái sau khi đặt showForm:", { 
+                          showForm: document.getElementById('form-container')?.style.display, 
+                          formElement: document.getElementById('product-form-element') ? 'Tồn tại' : 'Không tồn tại'
+                        });
+                        
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        
+                        console.log("Đã scroll lên đầu trang, form hiển thị tại:", 
+                          document.getElementById('product-form-element')?.getBoundingClientRect());
+                      }, 100);
+                      
+                      console.log("===== Kết thúc xử lý nút thêm sản phẩm mới =====");
+                    } catch (error) {
+                      console.error("Lỗi khi hiển thị form:", error);
+                    }
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -459,7 +484,7 @@ export default function AdminProductsPage() {
             )}
             
             {/* Form thêm/sửa sản phẩm */}
-            {showForm && (
+            <div id="form-container" style={{ display: showForm ? 'block' : 'none' }}>
               <div id="product-form-element" className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
                 <h3 className="text-xl font-semibold mb-4">
                   {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
@@ -754,7 +779,7 @@ export default function AdminProductsPage() {
                   </div>
                 </form>
               </div>
-            )}
+            </div>
             
             {/* Danh sách sản phẩm */}
             {!showForm && (
@@ -862,16 +887,34 @@ export default function AdminProductsPage() {
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
                           onClick={(e) => {
                             e.preventDefault();
-                            console.log("Nút thêm sản phẩm đầu tiên được nhấn");
-                            setIsEditing(false);
-                            setCurrentProduct(null);
-                            setFormError('');
-                            setShowForm(true);
-                            
-                            // Đảm bảo UI được cập nhật trước khi scroll
-                            setTimeout(() => {
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }, 100);
+                            try {
+                              console.log("===== Bắt đầu xử lý nút thêm sản phẩm đầu tiên =====");
+                              console.log("Trạng thái form trước khi thay đổi:", { showForm, isEditing, currentProduct });
+                              
+                              setIsEditing(false);
+                              setCurrentProduct(null);
+                              setFormError('');
+                              
+                              console.log("Đang cập nhật showForm = true");
+                              setShowForm(true);
+                              
+                              // Kiểm tra xem form đã được hiển thị chưa
+                              setTimeout(() => {
+                                console.log("Trạng thái sau khi đặt showForm:", { 
+                                  showForm: document.getElementById('form-container')?.style.display, 
+                                  formElement: document.getElementById('product-form-element') ? 'Tồn tại' : 'Không tồn tại'
+                                });
+                                
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                
+                                console.log("Đã scroll lên đầu trang, form hiển thị tại:", 
+                                  document.getElementById('product-form-element')?.getBoundingClientRect());
+                              }, 100);
+                              
+                              console.log("===== Kết thúc xử lý nút thêm sản phẩm đầu tiên =====");
+                            } catch (error) {
+                              console.error("Lỗi khi hiển thị form từ nút thêm sản phẩm đầu tiên:", error);
+                            }
                           }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
