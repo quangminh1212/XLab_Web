@@ -1,50 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { toast, Toaster } from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl') || '/';
-  const errorMessage = searchParams?.get('error');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [clientInfo, setClientInfo] = useState('');
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-
-  useEffect(() => {
-    // Kiểm tra và hiển thị thông tin client ID cho debug
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    if (clientId) {
-      setClientInfo(`Client ID có sẵn (${clientId.substring(0, 8)}...)`);
-    } else {
-      setClientInfo('');
-    }
-
-    // Xử lý thông báo lỗi từ URL nếu có
-    if (errorMessage) {
-      if (errorMessage === 'OAuthAccountNotLinked') {
-        setError('Email này đã được sử dụng với phương thức đăng nhập khác.');
-      } else if (errorMessage === 'AccessDenied') {
-        setError('Quyền truy cập bị từ chối.');
-      } else if (errorMessage === 'Verification') {
-        setError('Liên kết xác thực đã hết hạn hoặc đã được sử dụng.');
-      } else if (errorMessage === 'Configuration') {
-        setError('Lỗi cấu hình máy chủ. Vui lòng thử lại sau.');
-      } else {
-        setError(`Có lỗi xảy ra khi đăng nhập: ${errorMessage}`);
-      }
-    }
-  }, [errorMessage]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,48 +48,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
-    try {
-      // Chuẩn bị các tham số OAuth2
-      const params = new URLSearchParams({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-        redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || `${window.location.origin}/google-callback`,
-        response_type: 'token',
-        scope: 'openid email profile',
-        access_type: 'online',
-        prompt: 'consent'
-      });
-
-      // Tạo URL đăng nhập OAuth2
-      const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-      console.log("Google OAuth URL:", googleLoginUrl);
-
-      // Chuyển hướng sang trang đăng nhập Google
-      window.location.href = googleLoginUrl;
-    } catch (error) {
-      console.error('Lỗi khi đăng nhập với Google:', error);
-      setError('Có lỗi xảy ra khi đăng nhập với Google.');
-      setIsGoogleLoading(false);
-    }
-  };
-
-  const handleGoogleLoginViaNextAuth = async () => {
-    try {
-      setGoogleLoading(true);
-      console.log('Đăng nhập với NextAuth...');
-      
-      // Sử dụng NextAuth để đăng nhập với Google
-      signIn('google', { 
-        callbackUrl: '/auth'
-      });
-      
-      toast.loading('Đang chuyển hướng đến Google...');
-    } catch (error: any) {
-      console.error('Lỗi NextAuth:', error);
-      toast.error(`Lỗi: ${error?.message || 'Không thể kết nối'}`);
-      setGoogleLoading(false);
-    }
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    signIn('google', { callbackUrl });
   };
 
   return (
@@ -137,9 +68,6 @@ export default function LoginPage() {
           <p className="mt-2 text-center text-sm text-gray-600 max-w">
             Đăng nhập để tiếp tục sử dụng các dịch vụ của XLab
           </p>
-          {clientInfo && (
-            <p className="mt-1 text-xs text-gray-500">{clientInfo}</p>
-          )}
         </div>
       </div>
 
@@ -154,50 +82,26 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Google Login Button */}
-          <div className="flex flex-col space-y-3 mb-6">
-            <button
-              type="button"
-              className={`flex w-full justify-center items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm ${
-                isGoogleLoading ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-500'
-              } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600`}
-              disabled={isGoogleLoading || googleLoading}
-              onClick={handleGoogleLogin}
-            >
-              {isGoogleLoading ? (
-                <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
-              ) : (
-                <svg className="w-5 h-5" viewBox="0 0 48 48">
-                  <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                  <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-                  <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-                  <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                </svg>
-              )}
-              Đăng nhập với Google (OAuth2)
-            </button>
-            
-            <button
-              type="button"
-              className={`flex w-full justify-center items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm ${
-                googleLoading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-500'
-              } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600`}
-              disabled={isGoogleLoading || googleLoading}
-              onClick={handleGoogleLoginViaNextAuth}
-            >
-              {googleLoading ? (
-                <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
-              ) : (
-                <svg className="w-5 h-5" viewBox="0 0 48 48">
-                  <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                  <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
-                  <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
-                  <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
-                </svg>
-              )}
-              Đăng nhập với Google (NextAuth)
-            </button>
-          </div>
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
+          >
+            {loading ? (
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+              </svg>
+            )}
+            <span>Tiếp tục với Google</span>
+          </button>
 
           <div className="relative mt-4 mb-6">
             <div className="absolute inset-0 flex items-center">
@@ -318,7 +222,6 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-      <Toaster position="top-center" />
     </div>
   );
 } 
