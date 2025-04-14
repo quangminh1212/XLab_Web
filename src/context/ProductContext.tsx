@@ -39,10 +39,16 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [categories] = useState<Category[]>(mockCategories);
 
+  // Debug function để kiểm tra state
+  const logState = (action: string, data?: any) => {
+    console.log(`[ProductContext] ${action}:`, data || products);
+  };
+
   // Lưu trữ danh sách sản phẩm vào localStorage khi có thay đổi
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
+        console.log("Saving products to localStorage:", products);
         localStorage.setItem('xlab_products', JSON.stringify(products));
       } catch (error) {
         console.error('Lỗi khi lưu vào localStorage:', error);
@@ -57,6 +63,7 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         const savedProducts = localStorage.getItem('xlab_products');
         if (savedProducts) {
           const parsedProducts = JSON.parse(savedProducts);
+          console.log("Loaded products from localStorage:", parsedProducts);
           setProducts(parsedProducts);
         }
       } catch (error) {
@@ -67,26 +74,50 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
 
   // Cập nhật toàn bộ danh sách sản phẩm
   const updateProducts = (newProducts: Product[]) => {
+    console.log("[ProductContext] Updating all products:", newProducts);
     setProducts(newProducts);
   };
 
   // Thêm sản phẩm mới
   const addProduct = (product: Product) => {
+    console.log("[ProductContext] Adding product:", product);
     setProducts(prevProducts => [...prevProducts, product]);
   };
 
   // Cập nhật sản phẩm
   const updateProduct = (product: Product) => {
-    setProducts(prevProducts => 
-      prevProducts.map(p => p.id === product.id ? product : p)
-    );
+    console.log("[ProductContext] Updating product:", product);
+    
+    // Kiểm tra xem sản phẩm có tồn tại không
+    const exists = products.some(p => p.id === product.id);
+    if (!exists) {
+      console.error(`[ProductContext] Cannot update: product with ID ${product.id} doesn't exist`);
+      return;
+    }
+    
+    setProducts(prevProducts => {
+      const updated = prevProducts.map(p => p.id === product.id ? product : p);
+      console.log("[ProductContext] Products after update:", updated);
+      return updated;
+    });
   };
 
   // Xóa sản phẩm
   const deleteProduct = (id: string | number) => {
-    setProducts(prevProducts => 
-      prevProducts.filter(p => p.id !== id)
-    );
+    console.log("[ProductContext] Deleting product with ID:", id);
+    
+    // Kiểm tra xem sản phẩm có tồn tại không
+    const exists = products.some(p => p.id === id);
+    if (!exists) {
+      console.error(`[ProductContext] Cannot delete: product with ID ${id} doesn't exist`);
+      return;
+    }
+    
+    setProducts(prevProducts => {
+      const filtered = prevProducts.filter(p => p.id !== id);
+      console.log("[ProductContext] Products after deletion:", filtered);
+      return filtered;
+    });
   };
 
   // Tạo giá trị context

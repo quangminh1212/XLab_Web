@@ -52,6 +52,7 @@ export default function AdminProductsPage() {
     } as Product;
     
     try {
+      console.log("Submitting product:", productData);
       if (isEditing && currentProduct) {
         // Cập nhật sản phẩm qua context
         updateProduct(productData);
@@ -65,6 +66,7 @@ export default function AdminProductsPage() {
       // Reset form
       resetForm();
     } catch (error: any) {
+      console.error("Error submitting product:", error);
       setFormError(error.message || 'Đã xảy ra lỗi, vui lòng thử lại');
     } finally {
       setIsLoading(false);
@@ -72,7 +74,9 @@ export default function AdminProductsPage() {
   };
 
   // Xử lý xóa sản phẩm
-  const handleDelete = async (id: string | number) => {
+  const handleDelete = (id: string | number) => {
+    console.log("Attempting to delete product with ID:", id);
+    
     if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
       return;
     }
@@ -81,8 +85,10 @@ export default function AdminProductsPage() {
     try {
       // Xóa sản phẩm qua context
       deleteProduct(id);
+      console.log("Product deleted successfully:", id);
       alert('Đã xóa sản phẩm thành công!');
     } catch (error: any) {
+      console.error("Error deleting product:", error);
       alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
     } finally {
       setIsLoading(false);
@@ -91,6 +97,7 @@ export default function AdminProductsPage() {
 
   // Xử lý sửa sản phẩm
   const handleEdit = (product: Product) => {
+    console.log("Editing product:", product);
     setCurrentProduct(product);
     setIsEditing(true);
     setShowForm(true);
