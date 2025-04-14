@@ -925,6 +925,36 @@ export default function AdminProductsPage() {
         </div>
       </section>
       
+      {/* Thêm công cụ debug nếu không có sản phẩm nào */}
+      {products.length === 0 && (
+        <section className="py-10">
+          <div className="container mx-auto px-4">
+            <div className="bg-gray-50 rounded-lg shadow p-6">
+              <h2 className="text-xl font-bold mb-4 text-gray-800">Công cụ khắc phục</h2>
+              <p className="text-gray-600 mb-6">
+                Bạn đang gặp vấn đề khi thêm sản phẩm? Hãy thử công cụ khắc phục bên dưới để thêm trực tiếp một sản phẩm mẫu.
+              </p>
+              
+              {/* @ts-ignore */}
+              <div id="debug-tool">
+                <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
+                  <a 
+                    href="/admin/products/add-product-debug" 
+                    target="_blank"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                    </svg>
+                    Mở công cụ khắc phục
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+      
       {/* Modal xem chi tiết sản phẩm */}
       {showDetailModal && selectedProduct && (
         <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center">
