@@ -24,6 +24,7 @@ export default function AdminPage() {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
+          console.log('Loaded products:', data.data);
           setProducts(data.data);
         }
       })
@@ -51,8 +52,8 @@ export default function AdminPage() {
   };
 
   // Xử lý khi gửi form
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Đảm bảo ngăn chặn hành vi mặc định của form
     setIsLoading(true);
     setSuccessMessage('');
     setErrorMessage('');
@@ -90,47 +91,47 @@ export default function AdminPage() {
       console.log('Sending product data:', productData);
       
       // Gửi API request để thêm sản phẩm
-      fetch('/api/products', {
+      const response = await fetch('/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(productData),
         cache: 'no-store'
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Success:', data);
-        if (data.success) {
-          // Thêm sản phẩm mới vào danh sách hiển thị
-          setProducts(prevProducts => [...prevProducts, data.data]);
-          setSuccessMessage('Đã đăng sản phẩm thành công!');
-          setFile(null);
-          setFilePreview('');
-          // Reset form sau khi đăng sản phẩm
-          event.currentTarget.reset();
-        } else {
-          setErrorMessage(data.message || 'Có lỗi xảy ra khi đăng sản phẩm.');
-        }
-      })
-      .catch(error => {
-        console.error('Error creating product:', error);
-        setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ: ' + error.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Success:', data);
+      
+      if (data.success) {
+        // Thêm sản phẩm mới vào danh sách hiển thị
+        const newProduct = data.data;
+        console.log('Adding new product to list:', newProduct);
+        setProducts(prevProducts => {
+          const updatedProducts = [...prevProducts, newProduct];
+          console.log('Updated products list:', updatedProducts);
+          return updatedProducts;
+        });
+        
+        setSuccessMessage('Đã đăng sản phẩm thành công!');
+        setFile(null);
+        setFilePreview('');
+        // Reset form sau khi đăng sản phẩm
+        event.currentTarget.reset();
+      } else {
+        setErrorMessage(data.message || 'Có lỗi xảy ra khi đăng sản phẩm.');
+      }
     } catch (error) {
-      console.error('Error in form submission:', error);
-      setErrorMessage('Đã xảy ra lỗi khi xử lý form.');
+      console.error('Error creating product:', error);
+      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ: ' + (error instanceof Error ? error.message : String(error)));
+    } finally {
       setIsLoading(false);
     }
-  }
+  };
   
   return (
     <div>
@@ -191,7 +192,7 @@ export default function AdminPage() {
                       </div>
                     )}
                     
-                    <form onSubmit={handleSubmit} method="POST">
+                    <form onSubmit={handleSubmit} action="/api/products" method="POST">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
@@ -326,7 +327,6 @@ export default function AdminPage() {
                                 type="file"
                                 className="hidden"
                                 onChange={handleFileChange}
-                                required
                               />
                             </label>
                           </div>
@@ -442,27 +442,27 @@ export default function AdminPage() {
                 
                 {/* Danh sách sản phẩm */}
                 <div className="overflow-x-auto">
-                  <h3 className="text-xl font-semibold mb-4">Sản phẩm đã đăng</h3>
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Sản phẩm
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Danh mục
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Giá
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Trạng thái
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {products.length > 0 ? (
-                        products.map((product) => (
+                  <h3 className="text-xl font-semibold mb-4">Sản phẩm đã đăng ({products.length})</h3>
+                  {products.length > 0 ? (
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Sản phẩm
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Danh mục
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Giá
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Trạng thái
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {products.map((product) => (
                           <tr key={product.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
@@ -498,16 +498,14 @@ export default function AdminPage() {
                               </span>
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
-                            Chưa có sản phẩm nào được đăng
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="text-center p-10 bg-gray-50 rounded-lg">
+                      <p className="text-gray-500">Chưa có sản phẩm nào được đăng</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
