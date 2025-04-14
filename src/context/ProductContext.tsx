@@ -14,8 +14,18 @@ interface ProductContextType {
   deleteProduct: (id: string | number) => void;
 }
 
-// Tạo context với giá trị mặc định là null hoặc thực hiện kiểm tra trong hook
-export const ProductContext = createContext<ProductContextType | undefined>(undefined);
+// Tạo giá trị mặc định cho context
+const defaultContextValue: ProductContextType = {
+  products: [],
+  categories: [],
+  updateProducts: () => {},
+  addProduct: () => {},
+  updateProduct: () => {},
+  deleteProduct: () => {},
+};
+
+// Tạo context với giá trị mặc định
+export const ProductContext = createContext<ProductContextType>(defaultContextValue);
 
 // Hook để sử dụng context
 export const useProducts = () => {
@@ -78,21 +88,22 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  // Tạo giá trị context
+  const contextValue: ProductContextType = {
+    products,
+    categories,
+    updateProducts,
+    addProduct,
+    updateProduct,
+    deleteProduct
+  };
+
   return (
-    <ProductContext.Provider 
-      value={{ 
-        products, 
-        categories, 
-        updateProducts, 
-        addProduct, 
-        updateProduct, 
-        deleteProduct 
-      }}
-    >
+    <ProductContext.Provider value={contextValue}>
       {children}
     </ProductContext.Provider>
   );
 }
 
-// Hỗ trợ cả default export để tương thích với code cũ
+// Export default để tương thích với code cũ
 export default ProductContext; 
