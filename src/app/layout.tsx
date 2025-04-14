@@ -3,7 +3,6 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
 import { ProductProvider } from '@/context/ProductContext'
@@ -102,18 +101,16 @@ export default function RootLayout({
           </div>
         </noscript>
 
-        <SessionProvider>
-          <ProductProvider>
-            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-              Bỏ qua phần điều hướng
-            </a>
-            <Header />
-            <main id="main-content" className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </ProductProvider>
-        </SessionProvider>
+        <ProductProvider>
+          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
+            Bỏ qua phần điều hướng
+          </a>
+          <Header />
+          <main id="main-content" className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </ProductProvider>
         <Analytics />
       </body>
     </html>
