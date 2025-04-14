@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { products as mockProducts } from '@/data/mockData';
 
 export const metadata = {
   title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
@@ -17,6 +18,10 @@ export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -34,22 +39,79 @@ export default function AdminPage() {
     }
   }, [session, status, router]);
 
+  // Xử lý khi chọn file
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFilePreview(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
   // Xử lý khi gửi form
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsLoading(true);
+    setSuccessMessage('');
+    setErrorMessage('');
     
     // Tạo form data từ form
     const formData = new FormData(event.target);
     
-    // Tại đây sẽ gửi API request để thêm sản phẩm
+    // Thêm file vào formData nếu có
+    if (file) {
+      formData.append('productFile', file);
+    }
+    
+    // Tạo đối tượng sản phẩm từ formData
+    const product = {
+      id: `prod-${Date.now()}`,
+      name: formData.get('name'),
+      slug: formData.get('slug'),
+      description: formData.get('description'),
+      longDescription: formData.get('longDescription'),
+      price: Number(formData.get('price')),
+      salePrice: formData.get('salePrice') ? Number(formData.get('salePrice')) : 0,
+      categoryId: formData.get('categoryId'),
+      imageUrl: formData.get('imageUrl') || '/images/placeholder-product.jpg',
+      isFeatured: formData.get('isFeatured') === 'on',
+      isNew: formData.get('isNew') === 'on',
+      downloadCount: 0,
+      viewCount: 0,
+      rating: 0,
+      version: formData.get('version'),
+      size: formData.get('size'),
+      licenseType: formData.get('licenseType'),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      storeId: '1' // Mặc định là cửa hàng XLab
+    };
+    
+    // Trong môi trường thực tế, đây là nơi gửi API request để thêm sản phẩm
+    // Ví dụ: 
+    // fetch('/api/products', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(product),
+    // })
+    
     // Mô phỏng thêm sản phẩm thành công
     setTimeout(() => {
-      alert('Đã thêm sản phẩm thành công!');
+      // Thêm sản phẩm vào danh sách hiển thị
+      setProducts(prevProducts => [...prevProducts, product]);
+      setSuccessMessage('Đã đăng sản phẩm thành công!');
       setIsLoading(false);
-      setShowForm(false);
+      setFile(null);
+      setFilePreview('');
+      // Reset form sau khi đăng sản phẩm
       event.target.reset();
-    }, 1000);
+    }, 1500);
   }
   
   if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
@@ -186,7 +248,37 @@ export default function AdminPage() {
                 {/* Form thêm sản phẩm mới */}
                 {showForm && (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                    <h3 className="text-lg font-semibold mb-4">Thêm phần mềm mới</h3>
+                    <h3 className="text-xl font-semibold mb-4">Đăng bán phần mềm mới</h3>
+                    
+                    {successMessage && (
+                      <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                        <div className="flex">
+                          <div className="flex-shrink-0">
+                            <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="ml-3">
+                            <p className="text-sm text-green-700">{successMessage}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {errorMessage && (
+                      <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                        <div className="flex">
+                          <div className="flex-shrink-0">
+                            <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                          <div className="ml-3">
+                            <p className="text-sm text-red-700">{errorMessage}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     
                     <form onSubmit={handleSubmit}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -229,11 +321,11 @@ export default function AdminPage() {
                             required
                           >
                             <option value="">-- Chọn danh mục --</option>
-                            <option value="office">Văn phòng</option>
-                            <option value="design">Thiết kế</option>
-                            <option value="development">Phát triển</option>
-                            <option value="security">Bảo mật</option>
-                            <option value="utility">Tiện ích</option>
+                            <option value="cat-1">Phần mềm doanh nghiệp</option>
+                            <option value="cat-2">Ứng dụng văn phòng</option>
+                            <option value="cat-3">Phần mềm đồ họa</option>
+                            <option value="cat-4">Bảo mật & Antivirus</option>
+                            <option value="cat-5">Ứng dụng giáo dục</option>
                           </select>
                         </div>
                         
@@ -276,6 +368,57 @@ export default function AdminPage() {
                             className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                             required
                           />
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label htmlFor="product-file" className="block mb-2 font-medium text-gray-700">
+                            File phần mềm <span className="text-red-500">*</span>
+                          </label>
+                          <div className="flex items-center justify-center w-full">
+                            <label
+                              htmlFor="product-file"
+                              className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                            >
+                              {filePreview ? (
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                  <p className="mb-2 text-sm text-gray-500">
+                                    <span className="font-semibold">{file?.name}</span>
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {(file?.size / (1024 * 1024)).toFixed(2)} MB
+                                  </p>
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                  <svg
+                                    className="w-8 h-8 mb-4 text-gray-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                    ></path>
+                                  </svg>
+                                  <p className="mb-2 text-sm text-gray-500">
+                                    <span className="font-semibold">Nhấp để tải lên</span> hoặc kéo thả file
+                                  </p>
+                                  <p className="text-xs text-gray-500">ZIP, RAR, EXE (MAX. 500MB)</p>
+                                </div>
+                              )}
+                              <input
+                                id="product-file"
+                                type="file"
+                                className="hidden"
+                                onChange={handleFileChange}
+                                required
+                              />
+                            </label>
+                          </div>
                         </div>
                         
                         <div className="md:col-span-2">
@@ -345,9 +488,10 @@ export default function AdminPage() {
                             required
                           >
                             <option value="">-- Chọn loại giấy phép --</option>
-                            <option value="personal">Cá nhân</option>
-                            <option value="business">Doanh nghiệp</option>
-                            <option value="enterprise">Doanh nghiệp lớn</option>
+                            <option value="Cá nhân">Cá nhân</option>
+                            <option value="Doanh nghiệp">Doanh nghiệp</option>
+                            <option value="Doanh nghiệp lớn">Doanh nghiệp lớn</option>
+                            <option value="Thương mại">Thương mại</option>
                           </select>
                         </div>
                         
@@ -415,77 +559,90 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10 relative">
-                              <Image
-                                src="/images/placeholder-product.jpg"
-                                alt="XLab Office Suite"
-                                fill
-                                className="rounded-md"
-                              />
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">XLab Office Suite</div>
-                              <div className="text-sm text-gray-500">xlab-office-suite</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">Văn phòng</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">1.200.000 ₫</div>
-                          <div className="text-sm text-gray-500">990.000 ₫ (Sale)</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Đang bán
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button className="text-primary-600 hover:text-primary-900">Sửa</button>
-                            <button className="text-red-600 hover:text-red-900">Xóa</button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10 relative">
-                              <Image
-                                src="/images/placeholder-product.jpg"
-                                alt="XLab Design Master"
-                                fill
-                                className="rounded-md"
-                              />
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">XLab Design Master</div>
-                              <div className="text-sm text-gray-500">xlab-design-master</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">Thiết kế</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">1.990.000 ₫</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Đang bán
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button className="text-primary-600 hover:text-primary-900">Sửa</button>
-                            <button className="text-red-600 hover:text-red-900">Xóa</button>
-                          </div>
-                        </td>
-                      </tr>
+                      {products.length > 0 ? (
+                        products.map((product) => (
+                          <tr key={product.id}>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="flex-shrink-0 h-10 w-10 relative">
+                                  <Image
+                                    src={product.imageUrl || "/images/placeholder-product.jpg"}
+                                    alt={product.name}
+                                    fill
+                                    className="rounded-md"
+                                    onError={(e) => {
+                                      e.currentTarget.src = '/images/placeholder-product.jpg'
+                                    }}
+                                  />
+                                </div>
+                                <div className="ml-4">
+                                  <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                  <div className="text-sm text-gray-500">{product.slug}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{product.categoryId}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
+                              {product.salePrice > 0 && (
+                                <div className="text-sm text-gray-500">{formatCurrency(product.salePrice)} (Sale)</div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đang bán
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-2">
+                                <button className="text-primary-600 hover:text-primary-900">Sửa</button>
+                                <button className="text-red-600 hover:text-red-900">Xóa</button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <>
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="flex-shrink-0 h-10 w-10 relative">
+                                  <Image
+                                    src="/images/placeholder-product.jpg"
+                                    alt="XLab Office Suite"
+                                    fill
+                                    className="rounded-md"
+                                  />
+                                </div>
+                                <div className="ml-4">
+                                  <div className="text-sm font-medium text-gray-900">XLab Office Suite</div>
+                                  <div className="text-sm text-gray-500">xlab-office-suite</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">Văn phòng</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">1.200.000 ₫</div>
+                              <div className="text-sm text-gray-500">990.000 ₫ (Sale)</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đang bán
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-2">
+                                <button className="text-primary-600 hover:text-primary-900">Sửa</button>
+                                <button className="text-red-600 hover:text-red-900">Xóa</button>
+                              </div>
+                            </td>
+                          </tr>
+                        </>
+                      )}
                     </tbody>
                   </table>
                 </div>
