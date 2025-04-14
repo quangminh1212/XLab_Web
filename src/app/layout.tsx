@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import Footer from '@/components/Footer'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
-import Providers from '@/components/Providers'
+import ClientProviders from '@/components/ClientProviders'
 
 // Load Inter font
 const inter = Inter({
@@ -100,9 +100,9 @@ export default function RootLayout({
           </div>
         </noscript>
 
-        <Providers>
+        <ClientProviders>
           {children}
-        </Providers>
+        </ClientProviders>
         <Analytics />
       </body>
     </html>
