@@ -14,7 +14,7 @@ interface ProductContextType {
   deleteProduct: (id: string | number) => void;
 }
 
-// Tạo giá trị mặc định cho context
+// Tạo giá trị mặc định cho context để tránh lỗi undefined
 const defaultContextValue: ProductContextType = {
   products: [],
   categories: [],
@@ -25,16 +25,13 @@ const defaultContextValue: ProductContextType = {
 };
 
 // Tạo context với giá trị mặc định
-export const ProductContext = createContext<ProductContextType>(defaultContextValue);
+const ProductContext = createContext<ProductContextType>(defaultContextValue);
 
 // Hook để sử dụng context
-export const useProducts = () => {
+export function useProducts() {
   const context = useContext(ProductContext);
-  if (!context) {
-    throw new Error('useProducts must be used within a ProductProvider');
-  }
   return context;
-};
+}
 
 // Provider component
 export function ProductProvider({ children }: { children: React.ReactNode }) {
@@ -45,21 +42,25 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   // Lưu trữ danh sách sản phẩm vào localStorage khi có thay đổi
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('xlab_products', JSON.stringify(products));
+      try {
+        localStorage.setItem('xlab_products', JSON.stringify(products));
+      } catch (error) {
+        console.error('Lỗi khi lưu vào localStorage:', error);
+      }
     }
   }, [products]);
 
   // Khôi phục danh sách sản phẩm từ localStorage khi component được mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedProducts = localStorage.getItem('xlab_products');
-      if (savedProducts) {
-        try {
+      try {
+        const savedProducts = localStorage.getItem('xlab_products');
+        if (savedProducts) {
           const parsedProducts = JSON.parse(savedProducts);
           setProducts(parsedProducts);
-        } catch (error) {
-          console.error('Lỗi khi phân tích dữ liệu sản phẩm từ localStorage:', error);
         }
+      } catch (error) {
+        console.error('Lỗi khi phân tích dữ liệu sản phẩm từ localStorage:', error);
       }
     }
   }, []);
@@ -105,5 +106,6 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Export default để tương thích với code cũ
+// Export cả context và provider để tránh lỗi với các cách import khác nhau
+export { ProductContext };
 export default ProductContext; 
