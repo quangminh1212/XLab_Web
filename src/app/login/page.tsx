@@ -11,11 +11,11 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl') || '/';
   const errorMessage = searchParams?.get('error');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
     if (errorMessage) {
@@ -23,6 +23,10 @@ export default function LoginPage() {
         setError('Email này đã được sử dụng với phương thức đăng nhập khác.');
       } else if (errorMessage === 'AccessDenied') {
         setError('Quyền truy cập bị từ chối.');
+      } else if (errorMessage === 'Verification') {
+        setError('Liên kết xác thực đã hết hạn hoặc đã được sử dụng.');
+      } else if (errorMessage === 'Configuration') {
+        setError('Lỗi cấu hình máy chủ. Vui lòng thử lại sau.');
       } else {
         setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
       }
