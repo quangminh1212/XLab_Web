@@ -16,9 +16,24 @@ export const metadata = {
 interface Product {
   id: string;
   name: string;
-  categoryId: string;
+  slug: string;
+  description: string;
+  longDescription: string;
   price: number;
-  // Các thuộc tính khác nếu cần
+  salePrice?: number;
+  categoryId: string;
+  imageUrl: string;
+  isFeatured: boolean;
+  isNew: boolean;
+  downloadCount: number;
+  viewCount: number;
+  rating: number;
+  version: string;
+  size: string;
+  licenseType: string;
+  createdAt: string;
+  updatedAt: string;
+  storeId: string;
 }
 
 export default function AdminPage() {
@@ -56,21 +71,33 @@ export default function AdminPage() {
     event.preventDefault();
     setIsLoading(true);
     
-    // Tạo form data từ form
     const formData = new FormData(event.currentTarget);
     
-    // Tạo sản phẩm mới từ dữ liệu form
     const newProduct: Product = {
-      id: `prod-${Date.now()}`, // Tạo ID tạm thời
+      id: `prod-${Date.now()}`,
       name: formData.get('name') as string,
-      categoryId: formData.get('categoryId') as string,
+      slug: formData.get('slug') as string,
+      description: formData.get('description') as string,
+      longDescription: formData.get('longDescription') as string,
       price: parseFloat(formData.get('price') as string) || 0,
+      salePrice: parseFloat(formData.get('salePrice') as string) || undefined,
+      categoryId: formData.get('categoryId') as string,
+      imageUrl: formData.get('imageUrl') as string,
+      isFeatured: formData.get('isFeatured') === 'on',
+      isNew: formData.get('isNew') === 'on',
+      downloadCount: 0,
+      viewCount: 0,
+      rating: 0,
+      version: formData.get('version') as string,
+      size: formData.get('size') as string,
+      licenseType: formData.get('licenseType') as string,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      storeId: '1'
     };
     
-    // Thêm sản phẩm mới vào danh sách
     setProducts((prevProducts) => [...prevProducts, newProduct]);
     
-    // Mô phỏng thêm sản phẩm thành công
     setTimeout(() => {
       alert('Đã thêm sản phẩm thành công!');
       setIsLoading(false);
@@ -79,7 +106,7 @@ export default function AdminPage() {
         event.currentTarget.reset();
       }
     }, 1000);
-  }
+  };
   
   // Xử lý khi nhấn nút Sửa
   const handleEdit = (product: Product) => {
@@ -94,13 +121,23 @@ export default function AdminPage() {
     
     const formData = new FormData(event.currentTarget);
     const updatedProduct: Product = {
-      id: editingProduct?.id || '',
+      ...editingProduct!,
       name: formData.get('name') as string,
-      categoryId: formData.get('categoryId') as string,
+      slug: formData.get('slug') as string,
+      description: formData.get('description') as string,
+      longDescription: formData.get('longDescription') as string,
       price: parseFloat(formData.get('price') as string) || 0,
+      salePrice: parseFloat(formData.get('salePrice') as string) || undefined,
+      categoryId: formData.get('categoryId') as string,
+      imageUrl: formData.get('imageUrl') as string,
+      isFeatured: formData.get('isFeatured') === 'on',
+      isNew: formData.get('isNew') === 'on',
+      version: formData.get('version') as string,
+      size: formData.get('size') as string,
+      licenseType: formData.get('licenseType') as string,
+      updatedAt: new Date().toISOString()
     };
     
-    // Cập nhật sản phẩm trong danh sách
     setProducts((prevProducts) => 
       prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
     );
@@ -566,9 +603,41 @@ export default function AdminPage() {
                         <tbody>
                           {products.map((product) => (
                             <tr key={product.id} className="hover:bg-gray-50">
-                              <td className="py-2 px-4 border-b">{product.name}</td>
+                              <td className="py-2 px-4 border-b">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 h-10 w-10 relative mr-3">
+                                    <Image 
+                                      src={product.imageUrl} 
+                                      alt={product.name}
+                                      fill
+                                      className="rounded-md"
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="font-medium">{product.name}</div>
+                                    <div className="text-sm text-gray-500">{product.slug}</div>
+                                  </div>
+                                </div>
+                              </td>
                               <td className="py-2 px-4 border-b">{product.categoryId}</td>
-                              <td className="py-2 px-4 border-b">{formatCurrency(product.price)}</td>
+                              <td className="py-2 px-4 border-b">
+                                <div className="font-medium">{formatCurrency(product.price)}</div>
+                                {product.salePrice && (
+                                  <div className="text-sm text-gray-500 line-through">
+                                    {formatCurrency(product.salePrice)}
+                                  </div>
+                                )}
+                              </td>
+                              <td className="py-2 px-4 border-b">
+                                <div className="flex space-x-2">
+                                  <span className={`px-2 py-1 text-xs rounded-full ${product.isFeatured ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                    {product.isFeatured ? 'Nổi bật' : 'Thường'}
+                                  </span>
+                                  <span className={`px-2 py-1 text-xs rounded-full ${product.isNew ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
+                                    {product.isNew ? 'Mới' : 'Cũ'}
+                                  </span>
+                                </div>
+                              </td>
                               <td className="py-2 px-4 border-b">
                                 <button className="text-blue-600 hover:text-blue-800 mr-2" onClick={() => handleEdit(product)}>Sửa</button>
                                 <button className="text-red-600 hover:text-red-800" onClick={() => handleDelete(product.id)}>Xóa</button>
