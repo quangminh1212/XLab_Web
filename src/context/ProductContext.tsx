@@ -1,0 +1,97 @@
+'use client';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Product, Category } from '@/types';
+import { products as mockProducts, categories as mockCategories } from '@/data/mockData';
+
+// Định nghĩa interface cho context
+interface ProductContextType {
+  products: Product[];
+  categories: Category[];
+  updateProducts: (newProducts: Product[]) => void;
+  addProduct: (product: Product) => void;
+  updateProduct: (product: Product) => void;
+  deleteProduct: (id: string | number) => void;
+}
+
+// Tạo context
+const ProductContext = createContext<ProductContextType | undefined>(undefined);
+
+// Hook để sử dụng context
+export const useProducts = () => {
+  const context = useContext(ProductContext);
+  if (!context) {
+    throw new Error('useProducts must be used within a ProductProvider');
+  }
+  return context;
+};
+
+// Provider component
+export function ProductProvider({ children }: { children: React.ReactNode }) {
+  // Khởi tạo state từ dữ liệu mẫu
+  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [categories] = useState<Category[]>(mockCategories);
+
+  // Lưu trữ danh sách sản phẩm vào localStorage khi có thay đổi
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('xlab_products', JSON.stringify(products));
+    }
+  }, [products]);
+
+  // Khôi phục danh sách sản phẩm từ localStorage khi component được mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedProducts = localStorage.getItem('xlab_products');
+      if (savedProducts) {
+        try {
+          const parsedProducts = JSON.parse(savedProducts);
+          setProducts(parsedProducts);
+        } catch (error) {
+          console.error('Lỗi khi phân tích dữ liệu sản phẩm từ localStorage:', error);
+        }
+      }
+    }
+  }, []);
+
+  // Cập nhật toàn bộ danh sách sản phẩm
+  const updateProducts = (newProducts: Product[]) => {
+    setProducts(newProducts);
+  };
+
+  // Thêm sản phẩm mới
+  const addProduct = (product: Product) => {
+    setProducts(prevProducts => [...prevProducts, product]);
+  };
+
+  // Cập nhật sản phẩm
+  const updateProduct = (product: Product) => {
+    setProducts(prevProducts => 
+      prevProducts.map(p => p.id === product.id ? product : p)
+    );
+  };
+
+  // Xóa sản phẩm
+  const deleteProduct = (id: string | number) => {
+    setProducts(prevProducts => 
+      prevProducts.filter(p => p.id !== id)
+    );
+  };
+
+  return (
+    <ProductContext.Provider 
+      value={{ 
+        products, 
+        categories, 
+        updateProducts, 
+        addProduct, 
+        updateProduct, 
+        deleteProduct 
+      }}
+    >
+      {children}
+    </ProductContext.Provider>
+  );
+}
+
+export default ProductContext; 

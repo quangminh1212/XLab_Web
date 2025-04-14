@@ -4,17 +4,16 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, Category } from '@/types';
-// Import dữ liệu từ mockData
-import { products, categories } from '@/data/mockData';
+import { useProducts } from '@/context/ProductContext';
 
 export default function AdminProductsPage() {
+  const { products, categories, addProduct, updateProduct, deleteProduct } = useProducts();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formError, setFormError] = useState('');
-  const [localProducts, setLocalProducts] = useState<Product[]>(products);
-  const [localCategories, setLocalCategories] = useState<Category[]>(categories);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -54,16 +53,12 @@ export default function AdminProductsPage() {
     
     try {
       if (isEditing && currentProduct) {
-        // Cập nhật sản phẩm trong mảng localProducts
-        setLocalProducts(localProducts.map(p => 
-          p.id === currentProduct.id ? productData : p
-        ));
-        
+        // Cập nhật sản phẩm qua context
+        updateProduct(productData);
         alert('Đã cập nhật sản phẩm thành công!');
       } else {
-        // Thêm sản phẩm mới vào mảng localProducts
-        setLocalProducts([...localProducts, productData]);
-        
+        // Thêm sản phẩm mới qua context
+        addProduct(productData);
         alert('Đã thêm sản phẩm thành công!');
       }
       
@@ -84,8 +79,8 @@ export default function AdminProductsPage() {
     
     setIsLoading(true);
     try {
-      // Cập nhật danh sách sản phẩm
-      setLocalProducts(localProducts.filter(p => p.id !== id));
+      // Xóa sản phẩm qua context
+      deleteProduct(id);
       alert('Đã xóa sản phẩm thành công!');
     } catch (error: any) {
       alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
@@ -129,7 +124,7 @@ export default function AdminProductsPage() {
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
-                <p className="text-gray-500 mt-1">Tổng số: {localProducts.length} sản phẩm</p>
+                <p className="text-gray-500 mt-1">Tổng số: {products.length} sản phẩm</p>
               </div>
               <div className="flex space-x-4">
                 <Link href="/admin" className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition-colors flex items-center">
@@ -211,7 +206,7 @@ export default function AdminProductsPage() {
                         required
                       >
                         <option value="">-- Chọn danh mục --</option>
-                        {localCategories.map(category => (
+                        {categories.map(category => (
                           <option key={category.id} value={category.id}>
                             {category.name}
                           </option>
@@ -407,7 +402,7 @@ export default function AdminProductsPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                {localProducts.length === 0 ? (
+                {products.length === 0 ? (
                   <div className="text-center py-10">
                     <p className="text-gray-500">Chưa có sản phẩm nào. Hãy thêm sản phẩm mới!</p>
                   </div>
@@ -433,8 +428,8 @@ export default function AdminProductsPage() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {localProducts.map(product => {
-                        const category = localCategories.find(c => c.id === product.categoryId);
+                      {products.map(product => {
+                        const category = categories.find(c => c.id === product.categoryId);
                         return (
                           <tr key={product.id}>
                             <td className="px-6 py-4 whitespace-nowrap">
