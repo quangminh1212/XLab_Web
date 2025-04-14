@@ -1,15 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-
-export const metadata = {
-  title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
-}
 
 export default function AdminPage() {
   const router = useRouter();
@@ -35,12 +30,12 @@ export default function AdminPage() {
   }, [session, status, router]);
 
   // Xử lý khi gửi form
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     
     // Tạo form data từ form
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.target as HTMLFormElement);
     
     // Tại đây sẽ gửi API request để thêm sản phẩm
     // Mô phỏng thêm sản phẩm thành công
@@ -48,7 +43,7 @@ export default function AdminPage() {
       alert('Đã thêm sản phẩm thành công!');
       setIsLoading(false);
       setShowForm(false);
-      event.target.reset();
+      (event.target as HTMLFormElement).reset();
     }, 1000);
   }
   
