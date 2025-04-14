@@ -230,3 +230,14 @@ dist/
 build/
 public/uploads/*
 !public/uploads/.gitkeep
+
+# Next.js runtime specific files
+next-font-manifest.json
+.next/static/development/
+.next/server/flight-server-css-manifest.json
+.next/server/flight-client-css-manifest.json
+.next/server/middleware-build-manifest.js
+.next/server/middleware-manifest.json
+.next/server/middleware-react-loadable-manifest.json
+.next/cache/
+next-font-manifest.js

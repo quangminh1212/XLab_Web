@@ -88,28 +88,50 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   const updateProduct = (product: Product) => {
     console.log("[ProductContext] Updating product:", product);
     
-    // Normalize ID to string for comparison
-    const productId = String(product.id);
-    
-    setProducts(prevProducts => {
-      const updated = prevProducts.map(p => String(p.id) === productId ? { ...p, ...product } : p);
-      console.log("[ProductContext] Products after update:", updated);
-      return updated;
-    });
+    try {
+      // Normalize ID to string for comparison
+      const productId = String(product.id);
+      
+      setProducts(prevProducts => {
+        const updated = prevProducts.map(p => String(p.id) === productId ? { ...p, ...product } : p);
+        console.log("[ProductContext] Products after update:", updated);
+        
+        // Lưu vào localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('xlab_products', JSON.stringify(updated));
+        }
+        
+        return updated;
+      });
+    } catch (error) {
+      console.error("[ProductContext] Error updating product:", error);
+      throw error;
+    }
   };
 
   // Xóa sản phẩm
   const deleteProduct = (id: string | number) => {
     console.log("[ProductContext] Deleting product with ID:", id);
     
-    // Normalize ID to string for comparison
-    const productId = String(id);
-    
-    setProducts(prevProducts => {
-      const filtered = prevProducts.filter(p => String(p.id) !== productId);
-      console.log("[ProductContext] Products after deletion:", filtered);
-      return filtered;
-    });
+    try {
+      // Normalize ID to string for comparison
+      const productId = String(id);
+      
+      setProducts(prevProducts => {
+        const filtered = prevProducts.filter(p => String(p.id) !== productId);
+        console.log("[ProductContext] Products after deletion:", filtered);
+        
+        // Lưu vào localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('xlab_products', JSON.stringify(filtered));
+        }
+        
+        return filtered;
+      });
+    } catch (error) {
+      console.error("[ProductContext] Error deleting product:", error);
+      throw error;
+    }
   };
 
   // Tạo giá trị context
