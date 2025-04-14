@@ -9,9 +9,9 @@ const protectedPaths = [
   '/api/protected',
 ];
 
-// Danh sách các đường dẫn chỉ dành cho admin
-const adminPaths = [
-  '/admin',
+// Danh sách các đường dẫn chỉ dành cho admin (tạm thời bỏ admin path để không cần đăng nhập)
+const adminPaths: string[] = [
+  // '/admin', // Đã bỏ để không cần đăng nhập
 ];
 
 // Danh sách các đường dẫn công khai (không cần đăng nhập)
@@ -24,6 +24,7 @@ const publicPaths = [
   '/support',
   '/contact',
   '/api/auth',
+  '/admin', // Thêm admin vào danh sách đường dẫn công khai
 ];
 
 // Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
@@ -61,6 +62,7 @@ const publicRoutes = [
   '/products/.+',
   '/services',
   '/services/.+',
+  '/admin', // Thêm admin vào danh sách public routes
 ];
 
 export default async function middleware(request: NextRequest) {
@@ -82,7 +84,8 @@ export default async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  // Kiểm tra quyền admin cho các đường dẫn admin
+  // Kiểm tra quyền admin cho các đường dẫn admin - bỏ qua kiểm tra admin
+  /*
   if (isAdminPath(pathname)) {
     if (!token) {
       // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
@@ -94,6 +97,7 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/', request.url));
     }
   }
+  */
 
   // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
   if (isProtectedPath(pathname) && !token) {
