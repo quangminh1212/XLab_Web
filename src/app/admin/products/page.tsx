@@ -967,23 +967,91 @@ export default function AdminProductsPage() {
             <div className="bg-gray-50 rounded-lg shadow p-6">
               <h2 className="text-xl font-bold mb-4 text-gray-800">Công cụ khắc phục</h2>
               <p className="text-gray-600 mb-6">
-                Bạn đang gặp vấn đề khi thêm sản phẩm? Hãy thử công cụ khắc phục bên dưới để thêm trực tiếp một sản phẩm mẫu.
+                Bạn đang gặp vấn đề khi thêm sản phẩm? Hãy thử thêm sản phẩm mẫu trực tiếp bằng nút bên dưới.
               </p>
               
-              {/* @ts-ignore */}
-              <div id="debug-tool">
-                <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-200">
-                  <a 
-                    href="/admin/products/add-product-debug" 
-                    target="_blank"
-                    className="inline-flex items-center justify-center px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition-colors"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-                    </svg>
-                    Mở công cụ khắc phục
-                  </a>
+              <div className="flex flex-col gap-4">
+                <button 
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    setIsLoading(true);
+                    
+                    // Sản phẩm mẫu
+                    const sampleProduct = {
+                      name: 'Sản phẩm mẫu ' + new Date().toLocaleTimeString(),
+                      slug: 'san-pham-mau-' + Date.now(),
+                      description: 'Mô tả ngắn cho sản phẩm mẫu',
+                      longDescription: '<p>Đây là mô tả chi tiết cho sản phẩm mẫu được tạo tự động.</p>',
+                      price: 299000,
+                      salePrice: 199000,
+                      categoryId: categories[0]?.id || 'cat-1',
+                      imageUrl: '/images/placeholder-product.jpg',
+                      version: '1.0.0',
+                      size: '10MB',
+                      licenseType: 'Thương mại',
+                      isFeatured: false,
+                      isNew: true,
+                      storeId: '1'
+                    };
+                    
+                    try {
+                      // Gọi API trực tiếp
+                      const response = await fetch('/api/products', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(sampleProduct)
+                      });
+                      
+                      if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || `Lỗi: ${response.status}`);
+                      }
+                      
+                      const newProduct = await response.json();
+                      setProducts((prev: Product[]) => [...prev, newProduct]);
+                      showSuccess('Đã thêm sản phẩm mẫu thành công!');
+                      
+                    } catch (error: any) {
+                      console.error('Lỗi khi thêm sản phẩm mẫu:', error);
+                      setFormError(error.message || 'Không thể thêm sản phẩm mẫu');
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
+                  className="inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors w-full md:w-auto"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Đang thêm sản phẩm...
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                      </svg>
+                      Thêm sản phẩm mẫu trực tiếp
+                    </>
+                  )}
+                </button>
+                
+                <div className="text-sm text-gray-500 mt-2">
+                  Nút này sẽ tạo một sản phẩm mẫu với dữ liệu giả định mà không cần điền form.
                 </div>
+              </div>
+              
+              <div className="mt-6 border-t border-gray-200 pt-4">
+                <h3 className="font-medium text-gray-700 mb-2">Thông tin quan trọng:</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-gray-600">
+                  <li>Nếu bạn thấy thông báo thành công nhưng không thấy sản phẩm, hãy làm mới trang</li>
+                  <li>Bấm F12 để mở Console và kiểm tra thông báo lỗi chi tiết</li>
+                </ul>
               </div>
             </div>
           </div>
