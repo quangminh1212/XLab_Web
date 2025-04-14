@@ -29,6 +29,34 @@ export default function AdminProductsPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
+  // Style riêng cho form container để đảm bảo hiển thị
+  const formContainerClass = showForm 
+    ? "block relative z-10 animate-pulse-border mb-6" 
+    : "hidden";
+  
+  // Tạo một style global cho animation
+  useEffect(() => {
+    // Thêm CSS animation vào head
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes pulseBorder {
+        0% { border: 2px solid #10B981; }
+        50% { border: 2px solid #3B82F6; }
+        100% { border: 2px solid #10B981; }
+      }
+      .animate-pulse-border {
+        animation: pulseBorder 2s infinite;
+        border-radius: 0.5rem;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Cleanup function
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+  
   // Giám sát sự thay đổi của showForm và đảm bảo form hiển thị/ẩn đúng
   useEffect(() => {
     const formContainer = document.getElementById('form-container');
@@ -414,32 +442,16 @@ export default function AdminProductsPage() {
                   className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
                   onClick={(e) => {
                     e.preventDefault();
+                    console.log("===== THÊM SẢN PHẨM MỚI =====");
                     
-                    try {
-                      console.log("===== Bắt đầu xử lý nút thêm sản phẩm mới =====");
-                      console.log("Trạng thái form trước khi thay đổi:", { showForm, isEditing, currentProduct });
-                      
-                      // Đặt trạng thái
-                      setIsEditing(false);
-                      setCurrentProduct(null);
-                      setFormError('');
-                      setShowForm(true);
-                      
-                      // Hiển thị form trực tiếp qua DOM để đảm bảo form luôn hiển thị
-                      const formContainer = document.getElementById('form-container');
-                      if (formContainer) {
-                        formContainer.style.display = 'block';
-                        console.log("[AdminProductsPage] Đã hiển thị form trực tiếp qua DOM");
-                      } else {
-                        console.error("[AdminProductsPage] Không tìm thấy form-container!");
-                      }
-                      
-                      // Scroll lên đầu trang
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      console.log("===== Kết thúc xử lý nút thêm sản phẩm mới =====");
-                    } catch (error) {
-                      console.error("Lỗi khi hiển thị form:", error);
-                    }
+                    // Cập nhật trạng thái và hiển thị form
+                    setIsEditing(false);
+                    setCurrentProduct(null);
+                    setFormError('');
+                    setShowForm(true);
+                    
+                    // Tự động cuộn lên đầu trang
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -490,7 +502,7 @@ export default function AdminProductsPage() {
             )}
             
             {/* Form thêm/sửa sản phẩm */}
-            <div id="form-container" style={{ display: showForm ? 'block' : 'none' }}>
+            <div id="form-container" className={formContainerClass}>
               <div id="product-form-element" className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
                 <h3 className="text-xl font-semibold mb-4">
                   {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
@@ -893,30 +905,16 @@ export default function AdminProductsPage() {
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
                           onClick={(e) => {
                             e.preventDefault();
-                            try {
-                              console.log("===== Bắt đầu xử lý nút thêm sản phẩm đầu tiên =====");
-                              console.log("Trạng thái form trước khi thay đổi:", { showForm, isEditing, currentProduct });
-                              
-                              setIsEditing(false);
-                              setCurrentProduct(null);
-                              setFormError('');
-                              setShowForm(true);
-                              
-                              // Hiển thị form trực tiếp qua DOM để đảm bảo form luôn hiển thị
-                              const formContainer = document.getElementById('form-container');
-                              if (formContainer) {
-                                formContainer.style.display = 'block';
-                                console.log("[AdminProductsPage] Đã hiển thị form trực tiếp qua DOM");
-                              } else {
-                                console.error("[AdminProductsPage] Không tìm thấy form-container!");
-                              }
-                              
-                              // Scroll lên đầu trang
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                              console.log("===== Kết thúc xử lý nút thêm sản phẩm đầu tiên =====");
-                            } catch (error) {
-                              console.error("Lỗi khi hiển thị form từ nút thêm sản phẩm đầu tiên:", error);
-                            }
+                            console.log("===== THÊM SẢN PHẨM ĐẦU TIÊN =====");
+                            
+                            // Cập nhật trạng thái và hiển thị form
+                            setIsEditing(false);
+                            setCurrentProduct(null);
+                            setFormError('');
+                            setShowForm(true);
+                            
+                            // Tự động cuộn lên đầu trang
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
