@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/data/mockData';
+import { products as mockProducts } from '@/data/mockData'; // Import mock data
 import { Product } from '@/types';
 
 // Sử dụng array để có thể thay đổi dữ liệu
-let productsData = [...products];
+// Reset productsData mỗi khi module được load (chỉ hữu ích trong dev)
+let productsData = [...mockProducts];
+console.log(`[API /api/products/[id]] Initializing productsData with length: ${productsData.length}`);
 
 // GET - Lấy chi tiết sản phẩm theo ID
 export async function GET(
