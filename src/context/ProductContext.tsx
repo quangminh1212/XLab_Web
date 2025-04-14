@@ -25,7 +25,7 @@ const defaultContextValue: ProductContextType = {
 };
 
 // Tạo context với giá trị mặc định
-const ProductContext = createContext<ProductContextType>(defaultContextValue);
+export const ProductContext = createContext<ProductContextType>(defaultContextValue);
 
 // Hook để sử dụng context
 export function useProducts() {
@@ -106,6 +106,5 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Export cả context và provider để tránh lỗi với các cách import khác nhau
-export { ProductContext };
+// Export cả context để tương thích với code khác (nếu có)
 export default ProductContext; 
