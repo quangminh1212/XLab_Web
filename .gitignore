@@ -222,3 +222,11 @@ yarn-error.log*
 # next.js cache
 .next/cache/
 .next/server/next-font-manifest.json
+
+# Các file sinh ra khi dự án chạy
+.cache/
+.next/
+dist/
+build/
+public/uploads/*
+!public/uploads/.gitkeep
