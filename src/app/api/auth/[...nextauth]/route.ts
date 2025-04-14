@@ -1,10 +1,20 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import type { NextAuthOptions } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
-// Sử dụng định nghĩa từ src/types/next-auth.d.ts
+// Extend the Session interface
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    }
+  }
+}
 
-const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -12,6 +22,8 @@ const authOptions: NextAuthOptions = {
       authorization: {
         params: {
           prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
         }
       }
     }),
@@ -19,16 +31,15 @@ const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
     error: "/auth/error",
-    newUser: "/register",
   },
   callbacks: {
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
-    async jwt({ token, user, account }: { token: any; user: any; account: any }) {
+    async jwt({ token, user, account }) {
       // Initial sign in
       if (user && account) {
         token.id = user.id;
@@ -37,32 +48,18 @@ const authOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ account, profile }) {
-      console.log('SignIn callback called with account provider:', account?.provider);
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
       return false;
     },
-    async redirect({ url, baseUrl }) {
-      console.log('Redirect callback called with:', { url, baseUrl });
-      
-      // Nếu URL liên quan đến auth API, chuyển hướng đến callback được cấu hình trong Google Console
-      if (url.includes('/api/auth') && url.includes('/callback')) {
-        return 'http://localhost:3000/auth';
-      }
-      
-      // Trả về URL chỉ định hoặc URL gốc nếu không có
-      return url || baseUrl;
-    },
   },
-  debug: true,
+  debug: false,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST }; 
