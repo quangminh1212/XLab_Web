@@ -8,18 +8,35 @@ import { useProducts } from '@/context/ProductContext';
 import { FiPlus, FiEdit, FiTrash2, FiInfo, FiFilter } from 'react-icons/fi';
 import { createPortal } from 'react-dom';
 
+// Định nghĩa interface cho ProductFormProps
 interface ProductFormProps {
   isEditing: boolean;
   currentProduct: Product | null;
   categories: Category[];
   isLoading: boolean;
-  formError: Record<string, string>;
+  formError: {
+    name?: string;
+    slug?: string;
+    categoryId?: string;
+    price?: string;
+    salePrice?: string;
+    version?: string;
+    imageUrl?: string;
+    size?: string;
+    license?: string;
+    description?: string;
+    content?: string;
+    category?: string;
+    shortDescription?: string;
+    [key: string]: string | undefined; // Cho phép truy cập dynamic các field error
+  };
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   onCancel: () => void;
-  setFormError: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  setFormError: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({
+// Component ProductForm
+const ProductForm = ({
   isEditing,
   currentProduct,
   categories,
@@ -28,18 +45,28 @@ const ProductForm: React.FC<ProductFormProps> = ({
   onSubmit,
   onCancel,
   setFormError
-}) => {
-  const portalElement = typeof window !== 'undefined' ? document.getElementById('modal-root') : null;
+}: ProductFormProps) => {
+  const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null);
   
-  if (!portalElement) {
-    return null;
-  }
-
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setModalRoot(document.getElementById('modal-root'));
+    }
+  }, []);
+  
+  if (!modalRoot) return null;
+  
+  const handleFieldUpdate = (fieldName: string, value: any) => {
+    const updatedProduct = { ...currentProduct } as any;
+    updatedProduct[fieldName] = value;
+    // Cập nhật product
+  };
+  
   return createPortal(
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">
+          <h2 className="text-xl font-semibold">
             {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
           </h2>
           <button
@@ -52,287 +79,272 @@ const ProductForm: React.FC<ProductFormProps> = ({
             </svg>
           </button>
         </div>
+        
         <form onSubmit={onSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Tên sản phẩm *
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              defaultValue={currentProduct?.name || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.name) {
-                  setFormError(prev => ({ ...prev, name: '' }));
-                }
-              }}
-            />
-            {formError.name && (
-              <p className="text-red-500 text-xs mt-1">{formError.name}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="slug" className="block text-sm font-medium text-gray-700">
-              Slug *
-            </label>
-            <input
-              type="text"
-              id="slug"
-              name="slug"
-              defaultValue={currentProduct?.slug || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.slug) {
-                  setFormError(prev => ({ ...prev, slug: '' }));
-                }
-              }}
-            />
-            {formError.slug && (
-              <p className="text-red-500 text-xs mt-1">{formError.slug}</p>
-            )}
-          </div>
-          <div>
-            <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
-              Danh mục *
-            </label>
-            <select
-              id="categoryId"
-              name="categoryId"
-              defaultValue={currentProduct?.categoryId || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.categoryId) {
-                  setFormError(prev => ({ ...prev, categoryId: '' }));
-                }
-              }}
-            >
-              <option value="">Chọn danh mục</option>
-              {categories.map((category: Category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            {formError.categoryId && (
-              <p className="text-red-500 text-xs mt-1">{formError.categoryId}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-              Giá (VND) *
-            </label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              defaultValue={currentProduct?.price || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.price) {
-                  setFormError(prev => ({ ...prev, price: '' }));
-                }
-              }}
-            />
-            {formError.price && (
-              <p className="text-red-500 text-xs mt-1">{formError.price}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="salePrice" className="block text-sm font-medium text-gray-700">
-              Giá khuyến mãi (VND)
-            </label>
-            <input
-              type="number"
-              id="salePrice"
-              name="salePrice"
-              defaultValue={currentProduct?.salePrice || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.salePrice) {
-                  setFormError(prev => ({ ...prev, salePrice: '' }));
-                }
-              }}
-            />
-            {formError.salePrice && (
-              <p className="text-red-500 text-xs mt-1">{formError.salePrice}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="version" className="block text-sm font-medium text-gray-700">
-              Phiên bản *
-            </label>
-            <input
-              type="text"
-              id="version"
-              name="version"
-              defaultValue={currentProduct?.version || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.version) {
-                  setFormError(prev => ({ ...prev, version: '' }));
-                }
-              }}
-            />
-            {formError.version && (
-              <p className="text-red-500 text-xs mt-1">{formError.version}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">
-              URL Hình ảnh *
-            </label>
-            <input
-              type="text"
-              id="imageUrl"
-              name="imageUrl"
-              defaultValue={currentProduct?.imageUrl || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.imageUrl) {
-                  setFormError(prev => ({ ...prev, imageUrl: '' }));
-                }
-              }}
-            />
-            {formError.imageUrl && (
-              <p className="text-red-500 text-xs mt-1">{formError.imageUrl}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="size" className="block text-sm font-medium text-gray-700">
-              Dung lượng *
-            </label>
-            <input
-              type="text"
-              id="size"
-              name="size"
-              defaultValue={currentProduct?.size || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.size) {
-                  setFormError(prev => ({ ...prev, size: '' }));
-                }
-              }}
-            />
-            {formError.size && (
-              <p className="text-red-500 text-xs mt-1">{formError.size}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="licenseType" className="block text-sm font-medium text-gray-700">
-              Loại giấy phép *
-            </label>
-            <select
-              id="licenseType"
-              name="licenseType"
-              defaultValue={currentProduct?.licenseType || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.licenseType) {
-                  setFormError(prev => ({ ...prev, licenseType: '' }));
-                }
-              }}
-            >
-              <option value="">Chọn loại giấy phép</option>
-              <option value="Thương mại">Thương mại</option>
-              <option value="Cá nhân">Cá nhân</option>
-              <option value="Doanh nghiệp">Doanh nghiệp</option>
-            </select>
-            {formError.licenseType && (
-              <p className="text-red-500 text-xs mt-1">{formError.licenseType}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-              Mô tả ngắn *
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              defaultValue={currentProduct?.description || ''}
-              rows={3}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.description) {
-                  setFormError(prev => ({ ...prev, description: '' }));
-                }
-              }}
-            />
-            {formError.description && (
-              <p className="text-red-500 text-xs mt-1">{formError.description}</p>
-            )}
-          </div>
-          
-          <div>
-            <label htmlFor="longDescription" className="block text-sm font-medium text-gray-700">
-              Mô tả chi tiết *
-            </label>
-            <textarea
-              id="longDescription"
-              name="longDescription"
-              defaultValue={currentProduct?.longDescription || ''}
-              rows={5}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
-              onChange={() => {
-                if (formError.longDescription) {
-                  setFormError(prev => ({ ...prev, longDescription: '' }));
-                }
-              }}
-            />
-            {formError.longDescription && (
-              <p className="text-red-500 text-xs mt-1">{formError.longDescription}</p>
-            )}
-          </div>
-          
-          <div className="flex space-x-4">
-            <label className="flex items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Tên sản phẩm */}
+            <div className="col-span-2">
+              <label htmlFor="name" className="block mb-1 font-medium">
+                Tên sản phẩm <span className="text-red-500">*</span>
+              </label>
               <input
-                type="checkbox"
-                name="isFeatured"
-                defaultChecked={currentProduct?.isFeatured || false}
-                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mr-2"
+                type="text"
+                id="name"
+                name="name"
+                className={`w-full p-2 border rounded ${formError.name ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.name || ''}
+                required
               />
-              <span className="text-sm font-medium text-gray-700">Sản phẩm nổi bật</span>
-            </label>
-            <label className="flex items-center">
+              {formError.name && (
+                <p className="text-red-500 text-sm mt-1">{formError.name}</p>
+              )}
+            </div>
+            
+            {/* Slug */}
+            <div className="col-span-2">
+              <label htmlFor="slug" className="block mb-1 font-medium">
+                Slug <span className="text-red-500">*</span>
+              </label>
               <input
-                type="checkbox"
-                name="isNew"
-                defaultChecked={currentProduct?.isNew || false}
-                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 mr-2"
+                type="text"
+                id="slug"
+                name="slug"
+                className={`w-full p-2 border rounded ${formError.slug ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.slug || ''}
+                required
               />
-              <span className="text-sm font-medium text-gray-700">Sản phẩm mới</span>
-            </label>
+              {formError.slug && (
+                <p className="text-red-500 text-sm mt-1">{formError.slug}</p>
+              )}
+            </div>
+            
+            {/* Danh mục */}
+            <div>
+              <label htmlFor="category" className="block mb-1 font-medium">
+                Danh mục <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="category"
+                name="category"
+                className={`w-full p-2 border rounded ${formError.category ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.categoryId || ''}
+                required
+              >
+                <option value="">Chọn danh mục</option>
+                {categories.map((category: Category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              {formError.category && (
+                <p className="text-red-500 text-sm mt-1">{formError.category}</p>
+              )}
+            </div>
+            
+            {/* Giá */}
+            <div>
+              <label htmlFor="price" className="block mb-1 font-medium">
+                Giá (VNĐ) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                className={`w-full p-2 border rounded ${formError.price ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.price || ''}
+                min="0"
+                required
+              />
+              {formError.price && (
+                <p className="text-red-500 text-sm mt-1">{formError.price}</p>
+              )}
+            </div>
+            
+            {/* Giá khuyến mãi */}
+            <div>
+              <label htmlFor="salePrice" className="block mb-1 font-medium">
+                Giá khuyến mãi (VNĐ)
+              </label>
+              <input
+                type="number"
+                id="salePrice"
+                name="salePrice"
+                className={`w-full p-2 border rounded ${formError.salePrice ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.salePrice || ''}
+                min="0"
+              />
+              {formError.salePrice && (
+                <p className="text-red-500 text-sm mt-1">{formError.salePrice}</p>
+              )}
+            </div>
+            
+            {/* Phiên bản */}
+            <div>
+              <label htmlFor="version" className="block mb-1 font-medium">
+                Phiên bản
+              </label>
+              <input
+                type="text"
+                id="version"
+                name="version"
+                className={`w-full p-2 border rounded ${formError.version ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.version || ''}
+              />
+              {formError.version && (
+                <p className="text-red-500 text-sm mt-1">{formError.version}</p>
+              )}
+            </div>
+            
+            {/* URL hình ảnh */}
+            <div className="col-span-2">
+              <label htmlFor="imageUrl" className="block mb-1 font-medium">
+                URL hình ảnh <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="imageUrl"
+                name="imageUrl"
+                className={`w-full p-2 border rounded ${formError.imageUrl ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.imageUrl || ''}
+                required
+              />
+              {formError.imageUrl && (
+                <p className="text-red-500 text-sm mt-1">{formError.imageUrl}</p>
+              )}
+            </div>
+            
+            {/* Kích cỡ */}
+            <div>
+              <label htmlFor="size" className="block mb-1 font-medium">
+                Kích cỡ
+              </label>
+              <input
+                type="text"
+                id="size"
+                name="size"
+                className={`w-full p-2 border rounded ${formError.size ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.size || ''}
+              />
+              {formError.size && (
+                <p className="text-red-500 text-sm mt-1">{formError.size}</p>
+              )}
+            </div>
+            
+            {/* Loại giấy phép */}
+            <div>
+              <label htmlFor="licenseType" className="block mb-1 font-medium">
+                Loại giấy phép
+              </label>
+              <input
+                type="text"
+                id="licenseType"
+                name="licenseType"
+                className={`w-full p-2 border rounded ${formError.license ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.licenseType || ''}
+              />
+              {formError.license && (
+                <p className="text-red-500 text-sm mt-1">{formError.license}</p>
+              )}
+            </div>
+            
+            {/* Mô tả ngắn */}
+            <div className="col-span-2">
+              <label htmlFor="shortDescription" className="block mb-1 font-medium">
+                Mô tả ngắn <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                id="shortDescription"
+                name="shortDescription"
+                rows={3}
+                className={`w-full p-2 border rounded ${formError.shortDescription ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.description || ''}
+                required
+              ></textarea>
+              {formError.shortDescription && (
+                <p className="text-red-500 text-sm mt-1">{formError.shortDescription}</p>
+              )}
+            </div>
+            
+            {/* Mô tả chi tiết */}
+            <div className="col-span-2">
+              <label htmlFor="longDescription" className="block mb-1 font-medium">
+                Mô tả chi tiết
+              </label>
+              <textarea
+                id="longDescription"
+                name="longDescription"
+                rows={5}
+                className={`w-full p-2 border rounded ${formError.description ? 'border-red-500' : 'border-gray-300'}`}
+                defaultValue={currentProduct?.description || ''}
+              ></textarea>
+              {formError.description && (
+                <p className="text-red-500 text-xs mt-1">{formError.description}</p>
+              )}
+            </div>
+            
+            {/* Sản phẩm nổi bật */}
+            <div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="isFeatured"
+                  name="isFeatured"
+                  className="w-4 h-4 mr-2"
+                  defaultChecked={currentProduct?.isFeatured || false}
+                />
+                <label htmlFor="isFeatured" className="font-medium">
+                  Sản phẩm nổi bật
+                </label>
+              </div>
+            </div>
+            
+            {/* Sản phẩm mới */}
+            <div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="isNew"
+                  name="isNew"
+                  className="w-4 h-4 mr-2"
+                  defaultChecked={currentProduct?.isNew || false}
+                />
+                <label htmlFor="isNew" className="font-medium">
+                  Sản phẩm mới
+                </label>
+              </div>
+            </div>
           </div>
-
-          <div className="flex justify-end space-x-3 mt-6">
+          
+          <div className="flex justify-end space-x-2 pt-4 border-t">
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="px-4 py-2 text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
+              disabled={isLoading}
             >
-              Hủy
+              Hủy bỏ
             </button>
             <button
               type="submit"
+              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:bg-blue-300"
               disabled={isLoading}
-              className="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
             >
-              {isLoading ? 'Đang xử lý...' : isEditing ? 'Cập nhật' : 'Thêm'}
+              {isLoading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Đang xử lý...
+                </span>
+              ) : isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm'}
             </button>
           </div>
         </form>
       </div>
     </div>,
-    portalElement
+    modalRoot
   );
 };
 
@@ -497,7 +509,7 @@ export default function AdminProductsPage() {
       const name = (formData.get('name') as string || '').trim();
       const slug = (formData.get('slug') as string || '').trim() || 
                    name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '');
-      const categoryId = formData.get('categoryId') as string;
+      const categoryId = formData.get('category') as string;
       
       // Kiểm tra dữ liệu đầu vào chi tiết hơn
       const errors = [];
@@ -526,7 +538,7 @@ export default function AdminProductsPage() {
             ...currentProduct,
             name,
             slug,
-            description: (formData.get('description') as string || '').trim(),
+            description: (formData.get('shortDescription') as string || '').trim(),
             longDescription: (formData.get('longDescription') as string || '').trim(),
             price,
             salePrice,
@@ -548,7 +560,7 @@ export default function AdminProductsPage() {
           const createData = { 
             name,
             slug,
-            description: (formData.get('description') as string || '').trim(),
+            description: (formData.get('shortDescription') as string || '').trim(),
             longDescription: (formData.get('longDescription') as string || '').trim(),
             price,
             salePrice,
@@ -1205,9 +1217,9 @@ export default function AdminProductsPage() {
                   </div>
                   
                   <div className="mt-4">
-                    <h3 className="text-lg font-medium text-gray-900">Mô tả chi tiết</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Mô tả chi tiết</h3>
                     <div 
-                      className="prose prose-sm max-w-none mt-1 text-gray-600"
+                      className="prose prose-sm mt-2 text-gray-600"
                       dangerouslySetInnerHTML={{ __html: selectedProduct.longDescription }}
                     />
                   </div>
