@@ -1,147 +1,64 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { products as mockProducts } from '@/data/mockData';
 
 export const metadata = {
   title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-  description: 'Trang quản trị XLab',
-};
-
-// Định nghĩa kiểu cho products
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  longDescription: string;
-  price: number;
-  salePrice?: number;
-  categoryId: string;
-  imageUrl: string;
-  isFeatured: boolean;
-  isNew: boolean;
-  downloadCount: number;
-  viewCount: number;
-  rating: number;
-  version: string;
-  size: string;
-  licenseType: string;
-  createdAt: string;
-  updatedAt: string;
-  storeId: string;
+  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
 }
 
 export default function AdminPage() {
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>(mockProducts as Product[]);
+  const { data: session, status } = useSession();
+  const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
+  
+  // Kiểm tra quyền admin
+  useEffect(() => {
+    if (status === 'authenticated') {
+      if (session?.user?.email !== 'xlab.rnd@gmail.com') {
+        router.push('/');
+      }
+    } else if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [session, status, router]);
 
   // Xử lý khi gửi form
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     setIsLoading(true);
     
-    const formData = new FormData(event.currentTarget);
+    // Tạo form data từ form
+    const formData = new FormData(event.target);
     
-    const newProduct: Product = {
-      id: `prod-${Date.now()}`,
-      name: formData.get('name') as string,
-      slug: formData.get('slug') as string,
-      description: formData.get('description') as string,
-      longDescription: formData.get('longDescription') as string,
-      price: parseFloat(formData.get('price') as string) || 0,
-      salePrice: parseFloat(formData.get('salePrice') as string) || undefined,
-      categoryId: formData.get('categoryId') as string,
-      imageUrl: formData.get('imageUrl') as string,
-      isFeatured: formData.get('isFeatured') === 'on',
-      isNew: formData.get('isNew') === 'on',
-      downloadCount: 0,
-      viewCount: 0,
-      rating: 0,
-      version: formData.get('version') as string,
-      size: formData.get('size') as string,
-      licenseType: formData.get('licenseType') as string,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      storeId: '1'
-    };
-    
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
-    
+    // Tại đây sẽ gửi API request để thêm sản phẩm
+    // Mô phỏng thêm sản phẩm thành công
     setTimeout(() => {
       alert('Đã thêm sản phẩm thành công!');
       setIsLoading(false);
       setShowForm(false);
-      if (event.currentTarget) {
-        event.currentTarget.reset();
-      }
+      event.target.reset();
     }, 1000);
-  };
+  }
   
-  // Xử lý khi nhấn nút Sửa
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product);
-    setShowEditForm(true);
-  };
-
-  // Xử lý khi gửi form chỉnh sửa
-  const handleEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
-    
-    const formData = new FormData(event.currentTarget);
-    const updatedProduct: Product = {
-      ...editingProduct!,
-      name: formData.get('name') as string,
-      slug: formData.get('slug') as string,
-      description: formData.get('description') as string,
-      longDescription: formData.get('longDescription') as string,
-      price: parseFloat(formData.get('price') as string) || 0,
-      salePrice: parseFloat(formData.get('salePrice') as string) || undefined,
-      categoryId: formData.get('categoryId') as string,
-      imageUrl: formData.get('imageUrl') as string,
-      isFeatured: formData.get('isFeatured') === 'on',
-      isNew: formData.get('isNew') === 'on',
-      version: formData.get('version') as string,
-      size: formData.get('size') as string,
-      licenseType: formData.get('licenseType') as string,
-      updatedAt: new Date().toISOString()
-    };
-    
-    setProducts((prevProducts) => 
-      prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+  if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+      </div>
     );
-    
-    setTimeout(() => {
-      alert('Đã cập nhật sản phẩm thành công!');
-      setIsLoading(false);
-      setShowEditForm(false);
-      setEditingProduct(null);
-      if (event.currentTarget) {
-        event.currentTarget.reset();
-      }
-    }, 1000);
-  };
-  
-  // Xử lý khi nhấn nút Xóa
-  const handleDelete = (productId: string) => {
-    if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-      setProducts((prevProducts) => prevProducts.filter((p) => p.id !== productId));
-      alert('Đã xóa sản phẩm thành công!');
-    }
-  };
+  }
   
   return (
     <div>
@@ -165,14 +82,17 @@ export default function AdminPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src={'/images/avatar-placeholder.svg'}
-                      alt="Admin"
+                      src={session?.user?.image || '/images/avatar-placeholder.svg'}
+                      alt={session?.user?.name || 'Admin'}
                       fill
                       className="rounded-full"
+                      onError={(e) => {
+                        e.currentTarget.src = '/images/avatar-placeholder.svg'
+                      }}
                     />
                   </div>
-                  <h2 className="text-xl font-bold">Admin</h2>
-                  <p className="text-gray-600">admin@example.com</p>
+                  <h2 className="text-xl font-bold">{session?.user?.name || 'Admin'}</h2>
+                  <p className="text-gray-600">{session?.user?.email}</p>
                   <p className="text-sm text-gray-500 mt-1">Quản trị viên</p>
                 </div>
                 
@@ -472,155 +392,102 @@ export default function AdminPage() {
                   </div>
                 )}
                 
-                {/* Form chỉnh sửa sản phẩm */}
-                {showEditForm && editingProduct && (
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                    <h3 className="text-lg font-semibold mb-4">Chỉnh sửa sản phẩm</h3>
-                    
-                    <form onSubmit={handleEditSubmit}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label htmlFor="edit-product-name" className="block mb-2 font-medium text-gray-700">
-                            Tên phần mềm <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="edit-product-name"
-                            name="name"
-                            defaultValue={editingProduct.name}
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="edit-product-category" className="block mb-2 font-medium text-gray-700">
-                            Danh mục <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            id="edit-product-category"
-                            name="categoryId"
-                            defaultValue={editingProduct.categoryId}
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          >
-                            <option value="">-- Chọn danh mục --</option>
-                            <option value="office">Văn phòng</option>
-                            <option value="design">Thiết kế</option>
-                            <option value="development">Phát triển</option>
-                            <option value="security">Bảo mật</option>
-                            <option value="utility">Tiện ích</option>
-                          </select>
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="edit-product-price" className="block mb-2 font-medium text-gray-700">
-                            Giá (VNĐ) <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="number"
-                            id="edit-product-price"
-                            name="price"
-                            defaultValue={editingProduct.price}
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="mt-6 flex justify-end space-x-4">
-                        <button 
-                          type="button" 
-                          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                          onClick={() => {
-                            setShowEditForm(false);
-                            setEditingProduct(null);
-                          }}
-                        >
-                          Hủy
-                        </button>
-                        <button 
-                          type="submit" 
-                          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
-                          disabled={isLoading}
-                        >
-                          {isLoading && (
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          )}
-                          Cập nhật sản phẩm
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                )}
-                
                 {/* Danh sách sản phẩm */}
-                <div className="mt-6">
-                  <h3 className="text-lg font-semibold mb-4">Danh sách sản phẩm</h3>
-                  {products.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full bg-white border border-gray-200">
-                        <thead>
-                          <tr className="bg-gray-100">
-                            <th className="py-2 px-4 border-b text-left">Tên sản phẩm</th>
-                            <th className="py-2 px-4 border-b text-left">Danh mục</th>
-                            <th className="py-2 px-4 border-b text-left">Giá</th>
-                            <th className="py-2 px-4 border-b text-left">Hành động</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {products.map((product) => (
-                            <tr key={product.id} className="hover:bg-gray-50">
-                              <td className="py-2 px-4 border-b">
-                                <div className="flex items-center">
-                                  <div className="flex-shrink-0 h-10 w-10 relative mr-3">
-                                    <Image 
-                                      src={product.imageUrl} 
-                                      alt={product.name}
-                                      fill
-                                      className="rounded-md"
-                                    />
-                                  </div>
-                                  <div>
-                                    <div className="font-medium">{product.name}</div>
-                                    <div className="text-sm text-gray-500">{product.slug}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-2 px-4 border-b">{product.categoryId}</td>
-                              <td className="py-2 px-4 border-b">
-                                <div className="font-medium">{formatCurrency(product.price)}</div>
-                                {product.salePrice && (
-                                  <div className="text-sm text-gray-500 line-through">
-                                    {formatCurrency(product.salePrice)}
-                                  </div>
-                                )}
-                              </td>
-                              <td className="py-2 px-4 border-b">
-                                <div className="flex space-x-2">
-                                  <span className={`px-2 py-1 text-xs rounded-full ${product.isFeatured ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                                    {product.isFeatured ? 'Nổi bật' : 'Thường'}
-                                  </span>
-                                  <span className={`px-2 py-1 text-xs rounded-full ${product.isNew ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
-                                    {product.isNew ? 'Mới' : 'Cũ'}
-                                  </span>
-                                </div>
-                              </td>
-                              <td className="py-2 px-4 border-b">
-                                <button className="text-blue-600 hover:text-blue-800 mr-2" onClick={() => handleEdit(product)}>Sửa</button>
-                                <button className="text-red-600 hover:text-red-800" onClick={() => handleDelete(product.id)}>Xóa</button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <p className="text-gray-500">Chưa có sản phẩm nào.</p>
-                  )}
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Sản phẩm
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Danh mục
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Giá
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Trạng thái
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Thao tác
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 relative">
+                              <Image
+                                src="/images/placeholder-product.jpg"
+                                alt="XLab Office Suite"
+                                fill
+                                className="rounded-md"
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">XLab Office Suite</div>
+                              <div className="text-sm text-gray-500">xlab-office-suite</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">Văn phòng</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">1.200.000 ₫</div>
+                          <div className="text-sm text-gray-500">990.000 ₫ (Sale)</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Đang bán
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            <button className="text-primary-600 hover:text-primary-900">Sửa</button>
+                            <button className="text-red-600 hover:text-red-900">Xóa</button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 relative">
+                              <Image
+                                src="/images/placeholder-product.jpg"
+                                alt="XLab Design Master"
+                                fill
+                                className="rounded-md"
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">XLab Design Master</div>
+                              <div className="text-sm text-gray-500">xlab-design-master</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">Thiết kế</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">1.990.000 ₫</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Đang bán
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
+                            <button className="text-primary-600 hover:text-primary-900">Sửa</button>
+                            <button className="text-red-600 hover:text-red-900">Xóa</button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
               
