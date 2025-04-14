@@ -75,6 +75,16 @@ export default function AdminProductsPage() {
     console.log("[AdminProductsPage] Products state updated:", products.length);
   }, [products]);
   
+  // Chỉ để debug trạng thái hiển thị form
+  useEffect(() => {
+    console.log("[AdminProductsPage] Trạng thái showForm thay đổi thành:", showForm);
+    
+    if (showForm) {
+      console.log("[AdminProductsPage] Form nên hiển thị, kiểm tra DOM:", 
+        document.getElementById('product-form') ? 'Form element tồn tại' : 'Form element KHÔNG tồn tại');
+    }
+  }, [showForm]);
+  
   // Log form state để debug
   useEffect(() => {
     console.log("[AdminProductsPage] Form state:", { showForm, isEditing, currentProduct });
@@ -325,10 +335,12 @@ export default function AdminProductsPage() {
   // Reset form
   const resetForm = () => {
     console.log("[AdminProductsPage] Reset form được gọi");
+    console.log("[AdminProductsPage] Trạng thái trước khi reset:", { showForm, isEditing, currentProduct });
     setShowForm(false);
     setIsEditing(false);
     setCurrentProduct(null);
     setFormError('');
+    console.log("[AdminProductsPage] Đã reset xong form, showForm=false");
   };
   
   // Xử lý xem chi tiết sản phẩm
@@ -382,28 +394,27 @@ export default function AdminProductsPage() {
                   onClick={(e) => {
                     e.preventDefault();
                     console.log("Nút thêm sản phẩm mới được nhấn");
+                    console.log("Trạng thái form trước khi thay đổi:", { showForm });
                     
-                    if (showForm) {
-                      // Nếu đang hiển thị form, thì đóng form
-                      setShowForm(false);
-                    } else {
-                      // Nếu chưa hiển thị form, mở form để thêm mới
-                      setIsEditing(false);
-                      setCurrentProduct(null);
-                      setFormError('');
-                      setShowForm(true);
-                      
-                      // Đảm bảo UI được cập nhật trước khi scroll
-                      setTimeout(() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }, 100);
-                    }
+                    // Luôn hiển thị form khi nhấn nút "Thêm sản phẩm mới"
+                    setIsEditing(false);
+                    setCurrentProduct(null);
+                    setFormError('');
+                    setShowForm(true);
+                    
+                    console.log("Đã set trạng thái showForm = true");
+                    
+                    // Đảm bảo UI được cập nhật trước khi scroll
+                    setTimeout(() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      console.log("Đã scroll lên đầu trang");
+                    }, 100);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  {showForm ? 'Đóng form' : 'Thêm sản phẩm mới'}
+                  Thêm sản phẩm mới
                 </button>
               </div>
             </div>
@@ -449,7 +460,7 @@ export default function AdminProductsPage() {
             
             {/* Form thêm/sửa sản phẩm */}
             {showForm && (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+              <div id="product-form-element" className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
                 <h3 className="text-xl font-semibold mb-4">
                   {isEditing ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}
                 </h3>
