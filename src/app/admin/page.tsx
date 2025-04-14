@@ -17,6 +17,7 @@ export default function AdminPage() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -35,22 +36,25 @@ export default function AdminPage() {
   }, [session, status, router]);
 
   // Xử lý khi gửi form
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
     
     // Tạo form data từ form
-    const formData = new FormData(event.target);
+    const formData = new FormData(event.target as HTMLFormElement);
     
     // Tại đây sẽ gửi API request để thêm sản phẩm
     // Mô phỏng thêm sản phẩm thành công
     setTimeout(() => {
       alert('Đã thêm sản phẩm thành công!');
       setIsLoading(false);
+      
+      // Reset form
+      (event.target as HTMLFormElement).reset();
+      
       setShowForm(false);
-      event.target.reset();
-    }, 1000);
-  }
+    }, 1500);
+  };
   
   if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
     return (
@@ -103,7 +107,7 @@ export default function AdminPage() {
                     </svg>
                     Tổng quan
                   </a>
-                  <a href="#products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
+                  <a href="/admin/products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
@@ -174,12 +178,12 @@ export default function AdminPage() {
                   <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
                   <button 
                     className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                    onClick={() => setShowForm(!showForm)}
+                    onClick={() => router.push('/admin/products')}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
-                    {showForm ? 'Đóng form' : 'Thêm sản phẩm mới'}
+                    Quản lý chi tiết
                   </button>
                 </div>
                 

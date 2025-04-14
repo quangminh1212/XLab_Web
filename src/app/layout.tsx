@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
+import { ProductProvider } from '@/context/ProductContext'
 
 // Load Inter font
 const inter = Inter({
@@ -102,14 +103,16 @@ export default function RootLayout({
         </noscript>
 
         <SessionProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
-          <Header />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
+          <ProductProvider>
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
+              Bỏ qua phần điều hướng
+            </a>
+            <Header />
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </ProductProvider>
         </SessionProvider>
         <Analytics />
       </body>
