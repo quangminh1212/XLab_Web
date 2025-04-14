@@ -90,7 +90,7 @@ export default function AdminProductsPage() {
     setIsLoading(true);
     try {
       // Xóa sản phẩm qua context
-      deleteProduct(id);
+      deleteProduct(String(id));
       console.log("Product deleted successfully:", id);
       alert('Đã xóa sản phẩm thành công!');
     } catch (error: any) {
@@ -110,7 +110,7 @@ export default function AdminProductsPage() {
     }
     
     console.log("Editing product:", product);
-    setCurrentProduct(product);
+    setCurrentProduct({...product});
     setIsEditing(true);
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
