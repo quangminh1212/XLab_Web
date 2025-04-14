@@ -42,10 +42,7 @@ export async function PATCH(
     
     if (productIndex === -1) {
       console.error(`[API /api/products/${params.id}] Product not found for PATCH`);
-      return NextResponse.json(
-        { error: 'Không tìm thấy sản phẩm' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
     }
     
     // Cập nhật sản phẩm
@@ -80,10 +77,7 @@ export async function DELETE(
     
     if (productIndex === -1) {
       console.error(`[API /api/products/${params.id}] Product not found for DELETE`);
-      return NextResponse.json(
-        { error: 'Không tìm thấy sản phẩm' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
     }
     
     console.log(`[API /api/products/${params.id}] Deleting product at index ${productIndex}:`, productsData[productIndex]);
