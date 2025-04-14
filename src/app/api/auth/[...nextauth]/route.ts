@@ -14,14 +14,6 @@ declare module "next-auth" {
   }
 }
 
-// Log để debug
-console.log("NextAuth Config:", {
-  clientId: process.env.GOOGLE_CLIENT_ID ? "Defined" : "Undefined",
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET ? "Defined" : "Undefined",
-  secret: process.env.NEXTAUTH_SECRET ? "Defined" : "Undefined",
-  nextAuthUrl: process.env.NEXTAUTH_URL,
-});
-
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -62,7 +54,7 @@ const handler = NextAuth({
       return false;
     },
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: false,
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
