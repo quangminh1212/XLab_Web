@@ -6,12 +6,14 @@ import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
+import { ProductProvider } from '@/context/ProductContext'
 
 // Load Inter font
 const inter = Inter({
-  subsets: ['latin'],
+  subsets: ['latin', 'vietnamese'],
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-primary',
 })
 
 export const metadata: Metadata = {
@@ -101,16 +103,18 @@ export default function RootLayout({
           </div>
         </noscript>
 
-        <SessionProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
-          <Header />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </SessionProvider>
+        <ProductProvider>
+          <SessionProvider>
+            <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
+              Bỏ qua phần điều hướng
+            </a>
+            <Header />
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </SessionProvider>
+        </ProductProvider>
         <Analytics />
       </body>
     </html>
