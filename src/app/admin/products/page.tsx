@@ -27,14 +27,16 @@ const ProductForm = ({
   categories,
   isLoading
 }: ProductFormProps) => {
-  if (!isOpen) return null;
+  console.log('ProductForm render - isOpen:', isOpen);
   
-  return (
+  return isOpen ? (
     <div 
+      id="product-form-modal"
       className="fixed inset-0 z-[99999] bg-black bg-opacity-75 flex items-center justify-center p-4"
       style={{ overflow: 'auto' }}
     >
       <div 
+        id="product-form-content"
         className="bg-white w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden border-4 border-primary-500"
         style={{ maxHeight: '90vh', overflowY: 'auto' }}
       >
@@ -240,14 +242,14 @@ const ProductForm = ({
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default function AdminProductsPage() {
   const { products, categories, addProduct, updateProduct, deleteProduct, setProducts } = useProducts();
   
   const [isLoading, setIsLoading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formError, setFormError] = useState('');
@@ -278,6 +280,10 @@ export default function AdminProductsPage() {
   // Giám sát sự thay đổi của showForm
   useEffect(() => {
     console.log("[AdminProductsPage] UseEffect: showForm thay đổi thành:", showForm);
+    console.log("[AdminProductsPage] Components trong DOM:", {
+      productForm: document.querySelector('.fixed.inset-0.z-\\[99999\\]') ? 'Tồn tại' : 'Không tồn tại',
+      overlay: document.querySelector('.bg-black.bg-opacity-75') ? 'Tồn tại' : 'Không tồn tại'
+    });
     
     // Khi form được hiển thị
     if (showForm) {
@@ -627,6 +633,15 @@ export default function AdminProductsPage() {
   // Thêm useEffect để theo dõi showForm
   useEffect(() => {
     console.log('showForm state changed:', showForm);
+    
+    // Check DOM elements
+    setTimeout(() => {
+      console.log('DOM after state change:', {
+        modal: document.getElementById('product-form-modal'),
+        content: document.getElementById('product-form-content'),
+        z_index: window.getComputedStyle(document.getElementById('product-form-modal') || document.body).zIndex
+      });
+    }, 100);
   }, [showForm]);
 
   // Khởi tạo dữ liệu ban đầu
@@ -685,11 +700,16 @@ export default function AdminProductsPage() {
                     setIsEditing(false);
                     setCurrentProduct(null);
                     setFormError('');
-                    setSuccessMessage('');
                     
                     // Show form
-                    console.log("Setting showForm to true");
+                    console.log("Button clicked: Setting showForm to true");
                     setShowForm(true);
+                    console.log("showForm value after setting:", true);
+                    
+                    // Force a re-render
+                    setTimeout(() => {
+                      console.log("Checking showForm value after timeout:", showForm);
+                    }, 100);
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -850,8 +870,17 @@ export default function AdminProductsPage() {
                             setFormError('');
                             
                             // Show form
-                            console.log("Setting showForm to true");
+                            console.log("Add First Product Button clicked: Setting showForm to true");
                             setShowForm(true);
+                            console.log("showForm value after setting:", true);
+                            
+                            // Force a re-render and check DOM
+                            setTimeout(() => {
+                              console.log("Checking DOM after click:", {
+                                formVisible: showForm,
+                                formElement: document.getElementById('product-form-modal')
+                              });
+                            }, 100);
                           }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
