@@ -1,10 +1,11 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signOut as signOutNextAuth } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link'
 import Image from 'next/image'
-import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { toast, Toaster } from 'react-hot-toast';
 
 export const metadata = {
   title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
@@ -67,19 +68,66 @@ const purchaseHistory = [
 ]
 
 export default function AccountPage() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
+  const [localUser, setLocalUser] = useState<any>(null);
+  const [authMethod, setAuthMethod] = useState<string>('Chưa xác định');
+  const [authDebug, setAuthDebug] = useState<string>('');
 
   useEffect(() => {
-    // Khi session thay đổi, cập nhật trạng thái loading
+    // Kiểm tra nếu có session từ NextAuth hoặc user từ localStorage
     if (status !== 'loading') {
+      try {
+        // Thử đọc thông tin từ localStorage (Google OAuth thủ công)
+        const userProfile = localStorage.getItem('user_profile');
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        
+        if (session) {
+          // Nếu có session từ NextAuth
+          setAuthMethod('NextAuth.js (Google)');
+          setAuthDebug(`Session ID: ${session.user?.id || 'N/A'}`);
+        } else if (userProfile && isLoggedIn === 'true') {
+          // Nếu có thông tin từ OAuth thủ công
+          setLocalUser(JSON.parse(userProfile));
+          setAuthMethod('OAuth 2.0 thủ công');
+          setAuthDebug(`User profile từ localStorage, token: ${!!localStorage.getItem('google_access_token')}`);
+        } else {
+          setAuthDebug('Không tìm thấy thông tin đăng nhập hợp lệ');
+        }
+      } catch (e) {
+        console.error('Lỗi khi đọc thông tin từ localStorage:', e);
+        setAuthDebug(`Lỗi: ${e}`);
+      }
+      
       setLoading(false);
     }
-  }, [status]);
+  }, [status, session]);
 
   // Xử lý đăng xuất
   const handleSignOut = () => {
-    signOut({ callbackUrl: '/login' });
+    try {
+      if (session) {
+        // Đăng xuất từ NextAuth
+        toast.success('Đang đăng xuất khỏi tài khoản Google...');
+        signOutNextAuth({ callbackUrl: '/login' });
+      } else if (localUser) {
+        // Đăng xuất thủ công, xóa dữ liệu từ localStorage
+        localStorage.removeItem('user_profile');
+        localStorage.removeItem('google_access_token');
+        localStorage.removeItem('isLoggedIn');
+        toast.success('Đã đăng xuất thành công');
+        setAuthDebug('Đã xóa thông tin người dùng khỏi localStorage');
+        
+        // Chuyển hướng sau khi đăng xuất
+        setTimeout(() => {
+          router.push('/login');
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Lỗi khi đăng xuất:', error);
+      toast.error('Có lỗi xảy ra khi đăng xuất');
+    }
   };
 
   // Hiển thị loading state
@@ -94,8 +142,8 @@ export default function AccountPage() {
     );
   }
 
-  // Nếu không có session, chuyển hướng về trang đăng nhập
-  if (!session) {
+  // Nếu không có session hoặc localUser, chuyển hướng về trang đăng nhập
+  if (!session && !localUser) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
         <div className="text-center max-w-md p-8 bg-white rounded-lg shadow-md">
@@ -113,6 +161,9 @@ export default function AccountPage() {
     );
   }
 
+  // Lấy thông tin user từ session hoặc localStorage
+  const user = session?.user || localUser;
+
   // Hiển thị thông tin người dùng khi đã đăng nhập
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -126,33 +177,40 @@ export default function AccountPage() {
           <div className="p-6 sm:p-8">
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
               <div className="flex-shrink-0">
-                {session.user?.image ? (
+                {user?.image || user?.picture ? (
                   <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg">
                     <Image
-                      src={session.user.image}
-                      alt={session.user.name || 'Avatar'}
-                      fill
+                      src={user.image || user.picture}
+                      alt={user.name || 'Avatar'}
+                      width={112}
+                      height={112}
                       className="object-cover"
                     />
                   </div>
                 ) : (
                   <div className="w-28 h-28 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-3xl font-bold border-4 border-white shadow-lg">
-                    {session.user?.name?.charAt(0) || 'U'}
+                    {user?.name?.charAt(0) || 'U'}
                   </div>
                 )}
+                <div className="mt-2 text-center">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                    {authMethod}
+                  </span>
+                </div>
               </div>
 
               <div className="flex-1 text-center md:text-left">
-                <h2 className="text-2xl font-bold text-gray-800">{session.user?.name || 'Người dùng'}</h2>
-                <p className="text-gray-500 mb-4">{session.user?.email || 'Email không có sẵn'}</p>
+                <h2 className="text-2xl font-bold text-gray-800">{user?.name || 'Người dùng'}</h2>
+                <p className="text-gray-500 mb-4">{user?.email || 'Email không có sẵn'}</p>
                 
                 <div className="mt-6 space-y-4">
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-gray-700 mb-2">Thông tin chi tiết từ Google:</h3>
+                    <h3 className="font-medium text-gray-700 mb-2">Thông tin chi tiết:</h3>
                     <div className="text-sm text-gray-600 space-y-2">
-                      <p><span className="font-medium">ID:</span> {session.user?.id || 'Không có sẵn'}</p>
+                      <p><span className="font-medium">ID:</span> {user?.id || user?.sub || 'Không có sẵn'}</p>
                       <p><span className="font-medium">Provider:</span> Google</p>
-                      <p><span className="font-medium">Email đã xác minh:</span> {session.user?.email ? 'Có' : 'Không'}</p>
+                      <p><span className="font-medium">Phương thức xác thực:</span> {authMethod}</p>
+                      <p><span className="font-medium">Email đã xác minh:</span> {user?.email ? 'Có' : 'Không'}</p>
                     </div>
                   </div>
 
@@ -173,15 +231,26 @@ export default function AccountPage() {
                 </div>
               </div>
             </div>
+            
+            {/* Debug Information */}
+            {authDebug && (
+              <div className="mt-8 p-3 bg-gray-100 rounded text-left">
+                <details>
+                  <summary className="text-sm font-medium cursor-pointer">Thông tin debug</summary>
+                  <pre className="mt-2 text-xs text-gray-700 whitespace-pre-wrap">{authDebug}</pre>
+                </details>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500">
-            Thông tin này được lấy từ tài khoản Google của bạn thông qua OAuth 2.0
+            Thông tin này được lấy từ tài khoản Google của bạn thông qua {authMethod}
           </p>
         </div>
       </div>
+      <Toaster position="top-center" />
     </div>
   );
 } 
