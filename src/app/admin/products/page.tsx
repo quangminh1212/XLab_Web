@@ -389,6 +389,23 @@ export default function AdminProductsPage() {
     }
   }, [showForm, isDebug]);
   
+  // Thêm useEffect để log khi clickCount thay đổi
+  useEffect(() => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] clickCount changed:`, clickCount);
+    
+    // Kiểm tra DOM có được cập nhật không
+    const debugElement = document.querySelector('.text-red-600');
+    if (debugElement) {
+      console.log(`DOM element contains: ${debugElement.textContent}`);
+    } else {
+      console.log('Debug element not found in DOM');
+    }
+    
+    // Ghi vào document.title để dễ theo dõi
+    document.title = `clickCount: ${clickCount}`;
+  }, [clickCount]);
+  
   // Xử lý tìm kiếm và lọc
   useEffect(() => {
     let result = [...products];
@@ -697,13 +714,20 @@ export default function AdminProductsPage() {
     }
   };
   
-  // Hàm xử lý khi nhấn nút thêm sản phẩm
-  const handleAddProductClick = () => {
-    console.log("Add product button clicked");
+  // Hàm chung để xử lý việc thêm sản phẩm từ các nút khác nhau
+  const handleAddProduct = (source: string) => {
+    console.log(`Add product button clicked from: ${source}`);
     setClickCount(prevCount => prevCount + 1);
-    resetForm();
+    setIsEditing(false);
+    setCurrentProduct(null);
+    setFormError({});
     setShowForm(true);
     console.log("showForm set to:", true);
+  };
+
+  // Hàm xử lý khi nhấn nút thêm sản phẩm
+  const handleAddProductClick = () => {
+    handleAddProduct('main button');
   };
   
   // Thêm useEffect để tạo modal-root element nếu nó chưa tồn tại
@@ -723,7 +747,7 @@ export default function AdminProductsPage() {
       {/* DEBUG INFO */}
       <div className="fixed top-0 right-0 bg-black bg-opacity-75 text-white p-2 z-[999999] font-mono">
         showForm: {showForm ? 'true' : 'false'}<br/>
-        clickCount: {clickCount}
+        clickCount: <span className="font-bold text-red-600">{clickCount}</span>
       </div>
       
       {/* Debug section */}
@@ -731,6 +755,7 @@ export default function AdminProductsPage() {
         <div className="bg-yellow-100 p-4 mb-4 rounded-lg border border-yellow-400">
           <h3 className="font-bold">Debug Info:</h3>
           <p>showForm: {showForm ? 'true' : 'false'}</p>
+          <p>clickCount: <span className="font-bold text-red-600">{clickCount}</span></p>
           <div className="flex gap-2 mt-2">
             <button 
               className="bg-purple-500 text-white px-3 py-1 rounded-md text-sm"
@@ -749,6 +774,12 @@ export default function AdminProductsPage() {
               onClick={() => setIsDebug(false)}
             >
               Hide Debug
+            </button>
+            <button 
+              className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm"
+              onClick={() => setClickCount(0)}
+            >
+              Reset Clicks
             </button>
           </div>
         </div>
@@ -795,7 +826,19 @@ export default function AdminProductsPage() {
                   Quay lại
                 </Link>
                 <button
-                  onClick={handleAddProductClick}
+                  onClick={() => {
+                    console.log("BUTTON CLICKED DIRECTLY");
+                    setClickCount(prevCount => {
+                      const newCount = prevCount + 1;
+                      console.log("Setting clickCount to:", newCount);
+                      return newCount;
+                    });
+                    resetForm();
+                    setIsEditing(false);
+                    setCurrentProduct(null);
+                    setFormError({});
+                    setShowForm(true);
+                  }}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-all duration-200 flex items-center"
                 >
                   <FiPlus className="mr-2" /> Thêm sản phẩm mới
@@ -947,15 +990,16 @@ export default function AdminProductsPage() {
                         <button 
                           className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors inline-flex items-center"
                           onClick={() => {
-                            // Reset state
+                            console.log("EMPTY STATE BUTTON CLICKED DIRECTLY");
+                            setClickCount(prevCount => {
+                              const newCount = prevCount + 1;
+                              console.log("Setting clickCount to:", newCount);
+                              return newCount;
+                            });
                             setIsEditing(false);
                             setCurrentProduct(null);
                             setFormError({});
-                            
-                            // Show form
-                            console.log("Add First Product Button clicked: Setting showForm to true");
                             setShowForm(true);
-                            console.log("showForm value after setting:", true);
                             
                             // Force a re-render and check DOM
                             setTimeout(() => {
