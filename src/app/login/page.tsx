@@ -19,6 +19,33 @@ export default function LoginPage() {
   const [error, setError] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [clientInfo, setClientInfo] = useState<string>('');
+  const [isDirectGoogleLoading, setIsDirectGoogleLoading] = useState<boolean>(false);
+
+  // Lấy link token theo cách thủ công của video
+  const getLinkToken = () => {
+    // ID Client từ Google Cloud Console (thay thế hoặc đặt trong biến môi trường)
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '538047962504-pma5q9bhn5jsj8dtqpek4aqvbe0f3j8j.apps.googleusercontent.com';
+    
+    // URI chuyển hướng đã đăng ký trong Google Cloud Console
+    const redirectUri = `${window.location.origin}/google-callback`;
+    
+    // Phạm vi quyền truy cập (scope) - email, profile, openid là cơ bản
+    const scope = encodeURIComponent('email profile openid');
+    
+    // Response type: 'token' để nhận access token qua URL fragment
+    const responseType = 'token';
+    
+    // Access type: 'offline' để nhận refresh token
+    const accessType = 'offline';
+    
+    // Prompt: 'consent' bắt buộc người dùng chọn lại tài khoản mỗi lần
+    const prompt = 'consent';
+    
+    // Tạo URL OAuth hoàn chỉnh
+    const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&scope=${scope}&access_type=${accessType}&prompt=${prompt}`;
+    
+    return oauthUrl;
+  };
 
   useEffect(() => {
     // Kiểm tra và hiển thị thông tin client ID cho debug
@@ -78,27 +105,20 @@ export default function LoginPage() {
     }
   };
 
-  // Đăng nhập Google trực tiếp bằng window.location
+  // Đăng nhập bằng Google OAuth trực tiếp không qua NextAuth
   const handleGoogleDirectLogin = () => {
+    setIsDirectGoogleLoading(true);
     try {
-      setGoogleLoading(true);
-      console.log('Bắt đầu đăng nhập trực tiếp qua Google...');
+      // Tạo URL OAuth và chuyển hướng
+      const oauthUrl = getLinkToken();
+      console.log('Google OAuth URL:', oauthUrl);
       
-      // Sử dụng URL cố định, không phải động
-      window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' +
-        'client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com' +
-        '&redirect_uri=http://localhost:3000/google-callback' +
-        '&response_type=token' +
-        '&scope=email%20profile' +
-        '&prompt=select_account' +
-        '&access_type=online';
-      
-      toast.loading('Đang chuyển hướng đến Google...');
-    } catch (error: any) {
-      console.error('Lỗi khi chuyển hướng đến Google:', error);
-      toast.error(`Lỗi: ${error?.message || 'Không thể kết nối'}`);
-      setError(`Lỗi chuyển hướng: ${error?.message}`);
-      setGoogleLoading(false);
+      // Chuyển hướng đến trang đăng nhập Google
+      window.location.href = oauthUrl;
+    } catch (error) {
+      console.error('Lỗi đăng nhập Google trực tiếp:', error);
+      toast.error('Không thể kết nối đến Google');
+      setIsDirectGoogleLoading(false);
     }
   };
 
@@ -175,10 +195,10 @@ export default function LoginPage() {
           
           <button
             onClick={handleGoogleDirectLogin}
-            disabled={loading || googleLoading}
+            disabled={loading || isDirectGoogleLoading}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6"
           >
-            {googleLoading ? (
+            {isDirectGoogleLoading ? (
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

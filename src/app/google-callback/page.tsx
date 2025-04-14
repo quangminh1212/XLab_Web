@@ -1,226 +1,169 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { toast, Toaster } from 'react-hot-toast';
+import queryString from 'query-string';
 
 export default function GoogleCallback() {
   const router = useRouter();
-  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [debugInfo, setDebugInfo] = useState<string>('');
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [debugInfo, setDebugInfo] = useState<any>({});
 
-  useEffect(() => {
-    // Hàm xử lý callback từ Google OAuth
-    async function processOAuthCallback() {
-      try {
-        setDebugInfo('=== Google Callback Page ===');
-        setDebugInfo(prev => prev + `\nThời gian: ${new Date().toISOString()}`);
-        setDebugInfo(prev => prev + `\nURL đầy đủ: ${window.location.href.substring(0, 50)}...`);
+  // Function to get token from URL or localStorage
+  const getToken = (): string | null => {
+    try {
+      // Check if we're in the browser
+      if (typeof window !== 'undefined') {
+        // Parse the URL hash or search params (handles both # and ? formats)
+        const parsedHash = queryString.parse(window.location.hash);
+        const parsedSearch = queryString.parse(window.location.search);
         
-        // Kiểm tra xem có hash fragment không (#access_token=...)
-        if (!window.location.hash) {
-          setDebugInfo(prev => prev + '\nKhông có hash fragment trong URL');
-          setDebugInfo(prev => prev + '\nCó thể là code flow hoặc không có token');
-          
-          // Nếu có search params (code flow), chuyển đến NextAuth callback
-          if (window.location.search) {
-            setDebugInfo(prev => prev + '\nCó search query, giả sử là code flow');
-            setDebugInfo(prev => prev + '\nChuyển hướng đến NextAuth callback...');
-            
-            const origin = window.location.origin;
-            router.push(`${origin}/api/auth/callback/google${window.location.search}`);
-            return;
-          }
-          
-          throw new Error('Không tìm thấy token hoặc code trong URL');
+        // Get token from hash (prioritize this as it's more common with implicit flow)
+        const accessToken = parsedHash.access_token || parsedSearch.access_token;
+        
+        if (accessToken) {
+          // Store token in localStorage for future use
+          localStorage.setItem('googleAccessToken', String(accessToken));
+          setDebugInfo((prev: any) => ({ ...prev, tokenSource: 'URL', token: String(accessToken) }));
+          return String(accessToken);
         }
         
-        // Xử lý hash fragment để lấy access token
-        setDebugInfo(prev => prev + '\nĐang xử lý hash fragment (#)');
-        const hashFragment = window.location.hash.substring(1); // remove '#'
-        const params = new URLSearchParams(hashFragment);
-        
-        // Lấy token và các thông tin khác
-        const accessToken = params.get('access_token');
-        const tokenType = params.get('token_type');
-        const expiresIn = params.get('expires_in');
-        
-        setDebugInfo(prev => prev + `\nAccess token: ${accessToken ? '✓ (nhận được)' : '✗ (thiếu)'}`);
-        setDebugInfo(prev => prev + `\nToken type: ${tokenType || 'không có'}`);
-        setDebugInfo(prev => prev + `\nExpires in: ${expiresIn || 'không có'} giây`);
-        
-        if (!accessToken) {
-          throw new Error('Không tìm thấy access token trong URL');
+        // If not in URL, try localStorage
+        const storedToken = localStorage.getItem('googleAccessToken');
+        if (storedToken) {
+          setDebugInfo((prev: any) => ({ ...prev, tokenSource: 'localStorage', token: storedToken }));
+          return storedToken;
         }
-        
-        // Gọi Google API để lấy thông tin người dùng
-        setDebugInfo(prev => prev + '\n\n=== Đang gọi Google API ===');
-        
-        const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        setDebugInfo(prev => prev + `\nAPI response status: ${response.status}`);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Google API trả về lỗi: ${response.status} - ${errorText}`);
-        }
-        
-        // Xử lý dữ liệu người dùng nhận được
-        const data = await response.json();
-        setDebugInfo(prev => prev + `\nNhận được dữ liệu người dùng: ${JSON.stringify(data).substring(0, 100)}...`);
-        setUserData(data);
-        
-        // Lưu thông tin người dùng vào localStorage
-        const userInfo = {
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          picture: data.picture,
-          email_verified: data.verified_email
-        };
-        
-        localStorage.setItem('user_profile', JSON.stringify(userInfo));
-        localStorage.setItem('google_access_token', accessToken);
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('login_time', new Date().toISOString());
-        
-        setDebugInfo(prev => prev + '\nĐã lưu thông tin người dùng vào localStorage');
-        toast.success('Đăng nhập thành công!');
-        
-        // Chuyển hướng sau 1.5 giây
-        setTimeout(() => {
-          router.push('/account');
-        }, 1500);
-        
-      } catch (err: any) {
-        console.error('Lỗi xử lý OAuth callback:', err);
-        setError(err.message || 'Lỗi không xác định');
-        setDebugInfo(prev => prev + `\n\n=== LỖI ===\n${err.message || 'Lỗi không xác định'}`);
-        toast.error('Đăng nhập thất bại');
-      } finally {
-        setLoading(false);
       }
+      
+      setError('Không tìm thấy token đăng nhập');
+      return null;
+    } catch (err) {
+      setError(`Lỗi khi lấy token: ${err instanceof Error ? err.message : String(err)}`);
+      return null;
     }
-    
-    processOAuthCallback();
-  }, [router]);
-
-  // Thử đăng nhập lại nếu có lỗi
-  const handleRetry = () => {
-    router.push('/login');
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="max-w-md w-full bg-white p-8 rounded-xl shadow-md text-center">
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white text-2xl font-bold">
-            X
-          </div>
+  // Function to get user information from Google API
+  const getUserInfo = async (token: string) => {
+    try {
+      const response = await fetch(
+        'https://www.googleapis.com/oauth2/v3/userinfo',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setUserInfo(data);
+      setDebugInfo((prev: any) => ({ ...prev, userData: data }));
+      
+      // Store user data in localStorage
+      localStorage.setItem('googleUserInfo', JSON.stringify(data));
+      
+      return data;
+    } catch (err) {
+      setError(`Lỗi khi lấy thông tin người dùng: ${err instanceof Error ? err.message : String(err)}`);
+      return null;
+    }
+  };
+
+  // Render user information
+  const renderUserInfo = () => {
+    if (!userInfo) return null;
+    
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4">Thông tin người dùng</h2>
+        {userInfo.picture && (
+          <img 
+            src={userInfo.picture} 
+            alt="Avatar" 
+            className="w-20 h-20 rounded-full mb-4"
+          />
+        )}
+        <p><strong>Tên:</strong> {userInfo.name}</p>
+        <p><strong>Email:</strong> {userInfo.email}</p>
+        <p><strong>Email đã xác thực:</strong> {userInfo.email_verified ? "Có" : "Không"}</p>
+        
+        <div className="mt-6">
+          <Link href="/account" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Đi đến trang tài khoản
+          </Link>
         </div>
-        
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          {loading ? "Đang xử lý đăng nhập..." : 
-           error ? "Đăng nhập thất bại" : 
-           "Đăng nhập thành công"}
-        </h2>
-        
-        {loading && (
-          <div className="my-8">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-teal-500 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Đang xử lý thông tin từ Google...</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="my-8">
-            <div className="bg-red-100 border-l-4 border-red-500 p-4 mb-6 text-left">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">Lỗi đăng nhập</h3>
-                  <p className="text-sm text-red-700 mt-1">{error}</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={handleRetry}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-              >
-                Thử lại
-              </button>
-              <button
-                onClick={() => router.push('/')}
-                className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-              >
-                Về trang chủ
-              </button>
-            </div>
-          </div>
-        )}
-
-        {userData && (
-          <div className="my-8">
-            <div className="flex justify-center mb-4">
-              {userData.picture && (
-                <Image
-                  src={userData.picture}
-                  alt={userData.name}
-                  width={80}
-                  height={80}
-                  className="rounded-full"
-                />
-              )}
-            </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
-              Xin chào, {userData.name}!
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Bạn đã đăng nhập thành công và sẽ được chuyển hướng tự động...
-            </p>
-            <div className="bg-green-50 border-l-4 border-green-400 p-4 text-left">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-green-700">
-                    Đang chuyển hướng đến trang tài khoản của bạn...
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* Debug information */}
-        {debugInfo && (
-          <div className="mt-8 p-3 bg-gray-100 rounded text-left">
-            <details open={!!error}>
-              <summary className="text-sm font-medium cursor-pointer">Thông tin debug</summary>
-              <pre className="mt-2 text-xs text-gray-700 whitespace-pre-wrap overflow-auto max-h-60 p-2 bg-gray-50 rounded">{debugInfo}</pre>
-            </details>
-          </div>
-        )}
       </div>
-      <Toaster position="top-center" />
+    );
+  };
+
+  // Process OAuth callback
+  useEffect(() => {
+    const processCallback = async () => {
+      try {
+        setLoading(true);
+        
+        // Get token from URL or localStorage
+        const token = getToken();
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+        
+        // Get user information
+        const userData = await getUserInfo(token);
+        if (userData) {
+          // Automatically redirect to account page after 2 seconds
+          setTimeout(() => {
+            router.push('/account');
+          }, 2000);
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        setError(`Lỗi xử lý callback: ${err instanceof Error ? err.message : String(err)}`);
+        setLoading(false);
+      }
+    };
+
+    processCallback();
+  }, [router]);
+
+  return (
+    <div className="container mx-auto p-8">
+      <h1 className="text-3xl font-bold mb-6">Đăng nhập Google</h1>
+      
+      {loading && (
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4">Đang xử lý đăng nhập...</p>
+        </div>
+      )}
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <p><strong>Lỗi:</strong> {error}</p>
+        </div>
+      )}
+      
+      {!loading && !error && userInfo && renderUserInfo()}
+      
+      {/* Debug information (for development only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+          <h3 className="text-lg font-semibold mb-2">Debug Info:</h3>
+          <pre className="whitespace-pre-wrap bg-gray-200 p-2 rounded">
+            {JSON.stringify(debugInfo, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   );
 } 
