@@ -64,7 +64,8 @@ export default function AdminProductsPage() {
       
       // Tạo đối tượng sản phẩm
       const productData = {
-        id: isEditing && currentProduct ? String(currentProduct.id) : `prod-${Date.now()}`,
+        // ID sẽ được tạo bởi API khi thêm mới, hoặc giữ nguyên khi cập nhật
+        id: isEditing && currentProduct ? String(currentProduct.id) : undefined, 
         name,
         slug,
         description: (formData.get('description') as string || '').trim(),
@@ -78,60 +79,40 @@ export default function AdminProductsPage() {
         licenseType: (formData.get('licenseType') as string) || 'Thương mại',
         isFeatured: formData.get('isFeatured') === 'on',
         isNew: formData.get('isNew') === 'on',
-        storeId: currentProduct?.storeId || '1',
+        // storeId nên được lấy từ user session hoặc form nếu cần
+        storeId: currentProduct?.storeId || '1', 
         downloadCount: currentProduct?.downloadCount || 0,
         viewCount: currentProduct?.viewCount || 0,
         rating: currentProduct?.rating || 0,
         createdAt: currentProduct?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
-      } as Product;
+      } as Omit<Product, 'id'> & { id?: string }; // Cho phép id là optional khi tạo mới
       
-      console.log("Submitting product:", productData);
+      console.log("Submitting product data:", productData);
       
       try {
         if (isEditing && currentProduct) {
-          // Gọi API cập nhật sản phẩm
-          const response = await fetch(`/api/products/${productData.id}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(productData)
-          });
-          
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Lỗi khi cập nhật sản phẩm');
-          }
-          
-          // Cập nhật sản phẩm trong context
-          updateProduct(productData);
+          // Đảm bảo id tồn tại khi chỉnh sửa
+          const updateData = { ...productData, id: String(currentProduct.id) } as Product;
+          await updateProduct(updateData); // Gọi hàm từ context
           showSuccess('Sản phẩm đã được cập nhật thành công!');
         } else {
-          // Gọi API thêm sản phẩm mới
-          const response = await fetch('/api/products', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(productData)
-          });
+          // Tạo product mới không bao gồm id client-side
+          const createData = { ...productData };
+          delete createData.id; // Xóa id tạm nếu có
           
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Lỗi khi thêm sản phẩm');
-          }
-          
-          // Thêm sản phẩm mới vào context
-          addProduct(productData);
+          // API sẽ tạo ID, nên truyền dữ liệu không có ID
+          // Chú ý: Cần đảm bảo kiểu Product có thể nhận dữ liệu thiếu id khi tạo
+          // Hoặc điều chỉnh API/Context để xử lý việc này
+          await addProduct(createData as any); // Gọi hàm từ context (cần xem lại kiểu dữ liệu)
           showSuccess('Sản phẩm mới đã được thêm thành công!');
         }
         
         // Reset form
         resetForm();
-      } catch (apiError: any) {
-        console.error("API error:", apiError);
-        setFormError(apiError.message || 'Đã xảy ra lỗi khi gửi yêu cầu, vui lòng thử lại');
+      } catch (contextError: any) {
+        console.error("Context operation error:", contextError);
+        setFormError(contextError.message || 'Đã xảy ra lỗi khi xử lý sản phẩm, vui lòng thử lại');
       }
     } catch (error: any) {
       console.error("Error preparing product data:", error);
@@ -160,23 +141,13 @@ export default function AdminProductsPage() {
         // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
         const productId = String(id);
         
-        // Gọi API xóa sản phẩm
-        const response = await fetch(`/api/products/${productId}`, {
-          method: 'DELETE'
-        });
+        await deleteProduct(productId); // Gọi hàm từ context
         
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Lỗi khi xóa sản phẩm');
-        }
-        
-        // Xóa sản phẩm qua context
-        deleteProduct(productId);
         console.log("Product deleted successfully:", id);
         showSuccess('Sản phẩm đã được xóa thành công!');
-      } catch (error: any) {
-        console.error("Error deleting product:", error);
-        setFormError(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
+      } catch (contextError: any) {
+        console.error("Error deleting product via context:", contextError);
+        setFormError(contextError.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
       } finally {
         setIsLoading(false);
       }
