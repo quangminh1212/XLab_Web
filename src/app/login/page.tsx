@@ -18,8 +18,19 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [clientInfo, setClientInfo] = useState<string>('');
 
   useEffect(() => {
+    // Kiểm tra và hiển thị thông tin client ID cho debug
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (clientId) {
+      setClientInfo(`Client ID có sẵn (${clientId.substring(0, 8)}...)`);
+    } else {
+      setClientInfo('Thiếu Client ID');
+      console.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID không được cấu hình');
+    }
+
+    // Xử lý thông báo lỗi từ URL nếu có
     if (errorMessage) {
       if (errorMessage === 'OAuthAccountNotLinked') {
         setError('Email này đã được sử dụng với phương thức đăng nhập khác.');
@@ -67,83 +78,44 @@ export default function LoginPage() {
     }
   };
 
-  // Hàm xử lý đăng nhập bằng NextAuth
-  const handleGoogleSignIn = async () => {
+  // Đăng nhập Google trực tiếp bằng window.location
+  const handleGoogleDirectLogin = () => {
     try {
       setGoogleLoading(true);
-      console.log('Bắt đầu đăng nhập bằng Google qua NextAuth...');
+      console.log('Bắt đầu đăng nhập trực tiếp qua Google...');
       
-      // Sử dụng đường dẫn callback đã cấu hình trong Google Console
-      // => Đã cấu hình http://localhost:3000/auth trong Google Console
-      const redirectUrl = '/auth';
+      // Sử dụng URL cố định, không phải động
+      window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' +
+        'client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com' +
+        '&redirect_uri=http://localhost:3000/google-callback' +
+        '&response_type=token' +
+        '&scope=email%20profile' +
+        '&prompt=select_account' +
+        '&access_type=online';
       
-      console.log('NextAuth sử dụng callback URL:', redirectUrl);
-      toast.loading('Đang chuyển hướng đến đăng nhập Google...');
-      
-      // Gọi signIn với callbackUrl
-      await signIn('google', { 
-        callbackUrl: redirectUrl,
-        redirect: true
-      });
-      
+      toast.loading('Đang chuyển hướng đến Google...');
     } catch (error: any) {
-      console.error('Lỗi khi đăng nhập với Google NextAuth:', error);
-      toast.error(`Lỗi NextAuth: ${error?.message || 'Không thể kết nối Google'}`);
-      setError(`Lỗi NextAuth: ${error?.message || 'Không thể kết nối Google'}`);
+      console.error('Lỗi khi chuyển hướng đến Google:', error);
+      toast.error(`Lỗi: ${error?.message || 'Không thể kết nối'}`);
+      setError(`Lỗi chuyển hướng: ${error?.message}`);
       setGoogleLoading(false);
     }
   };
-  
-  // Hàm xử lý đăng nhập OAuth thủ công (không qua NextAuth)
-  const handleManualGoogleSignIn = () => {
+
+  // Đăng nhập NextAuth với hàm signIn
+  const handleNextAuthLogin = () => {
     try {
       setGoogleLoading(true);
-      console.log('Bắt đầu đăng nhập bằng Google OAuth thủ công...');
+      console.log('Đăng nhập với NextAuth...');
       
-      // Lấy client ID từ biến môi trường 
-      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-      
-      if (!clientId) {
-        console.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID không tìm thấy');
-        toast.error('Lỗi cấu hình: Thiếu Google Client ID');
-        setError('Cấu hình Google Client ID bị thiếu. Kiểm tra NEXT_PUBLIC_GOOGLE_CLIENT_ID');
-        setGoogleLoading(false);
-        return;
-      }
-      
-      console.log('Client ID có sẵn, độ dài:', clientId.length);
-      
-      // Sử dụng /google-callback như đã cấu hình trong Google Console
-      const origin = window.location.origin;
-      const redirectUri = `${origin}/google-callback`;
-      
-      console.log('Sử dụng redirect URI OAuth thủ công:', redirectUri);
-      
-      // Các tham số OAuth - cần dùng response_type=token cho implicit flow
-      const oauthParams = new URLSearchParams({
-        client_id: clientId,
-        redirect_uri: redirectUri,
-        response_type: 'token',
-        scope: 'email profile',
-        prompt: 'select_account',
-        access_type: 'online'
+      signIn('google', { 
+        callbackUrl: '/account'
       });
       
-      // URL đăng nhập OAuth của Google  
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${oauthParams.toString()}`;
-      
-      console.log('Chuyển hướng OAuth đến URL:', authUrl);
-      toast.loading('Đang chuyển hướng đến đăng nhập Google...');
-      
-      // Chuyển hướng đến trang đăng nhập Google
-      setTimeout(() => {
-        window.location.href = authUrl;
-      }, 1000);
-      
+      toast.loading('Đang chuyển hướng đến Google...');
     } catch (error: any) {
-      console.error('Lỗi khi khởi tạo đăng nhập Google thủ công:', error);
-      toast.error(`Lỗi OAuth: ${error?.message || 'Không thể kết nối Google'}`);
-      setError(`Lỗi OAuth: ${error?.message || 'Không thể kết nối Google'}`);
+      console.error('Lỗi NextAuth:', error);
+      toast.error(`Lỗi: ${error?.message || 'Không thể kết nối'}`);
       setGoogleLoading(false);
     }
   };
@@ -163,6 +135,9 @@ export default function LoginPage() {
           <p className="mt-2 text-center text-sm text-gray-600 max-w">
             Đăng nhập để tiếp tục sử dụng các dịch vụ của XLab
           </p>
+          {clientInfo && (
+            <p className="mt-1 text-xs text-gray-500">{clientInfo}</p>
+          )}
         </div>
       </div>
 
@@ -178,7 +153,7 @@ export default function LoginPage() {
           )}
 
           <button
-            onClick={handleGoogleSignIn}
+            onClick={handleNextAuthLogin}
             disabled={loading || googleLoading}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-3"
           >
@@ -195,11 +170,11 @@ export default function LoginPage() {
                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
               </svg>
             )}
-            <span>Tiếp tục với Google (NextAuth)</span>
+            <span>Đăng nhập với NextAuth</span>
           </button>
           
           <button
-            onClick={handleManualGoogleSignIn}
+            onClick={handleGoogleDirectLogin}
             disabled={loading || googleLoading}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6"
           >
@@ -216,7 +191,7 @@ export default function LoginPage() {
                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
               </svg>
             )}
-            <span>Tiếp tục với Google (OAuth thủ công)</span>
+            <span>Đăng nhập với Google (Trực tiếp)</span>
           </button>
 
           <div className="relative mt-4 mb-6">
