@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { getProductBySlug, incrementDownloadCount } from '@/lib/utils';
+import { getProductBySlug, incrementDownloadCount, incrementViewCount } from '@/lib/utils';
 import { ProductImage } from '@/components/ProductImage';
+import { Product } from '@/types';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,16 +21,28 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           return;
         }
 
-        // Kiểm tra trong database hoặc API thực tế nên được triển khai tại đây
-        // Hiện tại chỉ hiển thị thông báo không tìm thấy sản phẩm
-        setError('Không tìm thấy sản phẩm');
+        const foundProduct = getProductBySlug(params.id);
+        
+        if (!foundProduct) {
+          setError('Không tìm thấy sản phẩm');
+          setLoading(false);
+          return;
+        }
+        
+        // Tăng lượt xem sản phẩm
+        incrementViewCount(params.id);
+        
+        // Lấy sản phẩm sau khi đã tăng lượt xem
+        const updatedProduct = getProductBySlug(params.id);
+        // Xử lý kiểu dữ liệu để đảm bảo tính nhất quán
+        setProduct(updatedProduct || null);
         
         // Cập nhật title cho trang
-        document.title = `Sản phẩm | XLab - Phần mềm và Dịch vụ`;
+        document.title = `${updatedProduct?.name || 'Sản phẩm'} | XLab - Phần mềm và Dịch vụ`;
+        setLoading(false);
       } catch (err) {
         console.error('Error loading product:', err);
         setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
-      } finally {
         setLoading(false);
       }
     }
