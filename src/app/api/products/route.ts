@@ -74,16 +74,43 @@ export async function GET(req: Request) {
 
 // POST - Thêm sản phẩm mới
 export async function POST(req: Request) {
+  console.log("[API /api/products] POST request started with method:", req.method);
+  
+  // Để xử lý CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
+  }
+  
   // Đảm bảo productsData đã được khởi tạo
   if (!productsData) {
+    console.log("[API /api/products] Initializing products data");
     initializeProductsData();
   }
   
   console.log("[API /api/products] Received POST request");
   try {
     // Đọc dữ liệu từ request
-    const body = await req.json();
-    console.log("[API /api/products] Request body:", body);
+    const bodyText = await req.text();
+    console.log("[API /api/products] Raw request body:", bodyText);
+    
+    let body;
+    try {
+      body = JSON.parse(bodyText);
+      console.log("[API /api/products] Parsed request body:", body);
+    } catch (parseError) {
+      console.error("[API /api/products] Error parsing request body:", parseError);
+      return NextResponse.json(
+        { error: 'Dữ liệu không hợp lệ, không phải JSON' },
+        { status: 400 }
+      );
+    }
     
     // Kiểm tra dữ liệu đầu vào chi tiết hơn
     const requiredFields = ['name', 'price', 'categoryId'];
@@ -96,7 +123,13 @@ export async function POST(req: Request) {
       console.error(`[API /api/products] Missing required fields: ${missingFields.join(', ')}`, body);
       return NextResponse.json(
         { error: `Thiếu thông tin bắt buộc: ${missingFields.join(', ')}` },
-        { status: 400 }
+        { 
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+          } 
+        }
       );
     }
     
@@ -141,14 +174,26 @@ export async function POST(req: Request) {
     console.log("[API /api/products] productsData length after push:", productsData.length);
     
     // Trả về sản phẩm vừa tạo với đầy đủ thông tin
-    return NextResponse.json(newProduct, { status: 201 });
+    return NextResponse.json(newProduct, { 
+      status: 201,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error: any) {
     // Log lỗi chi tiết hơn để dễ dàng debug
     console.error("[API /api/products] Error in POST handler:", error);
     console.error("[API /api/products] Error stack:", error.stack);
     return NextResponse.json(
       { error: 'Lỗi server khi tạo sản phẩm', details: error.message },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        }
+      }
     );
   }
 } 

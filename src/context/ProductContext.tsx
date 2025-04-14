@@ -12,6 +12,7 @@ interface ProductContextType {
   addProduct: (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Product>;
   updateProduct: (product: Product) => Promise<Product>;
   deleteProduct: (id: string | number) => Promise<boolean>;
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
 // Tạo giá trị mặc định cho context để tránh lỗi undefined
@@ -22,6 +23,7 @@ const defaultContextValue: ProductContextType = {
   addProduct: async () => { console.warn("addProduct called on default context"); throw new Error('Context not ready'); },
   updateProduct: async () => { console.warn("updateProduct called on default context"); throw new Error('Context not ready'); },
   deleteProduct: async () => { console.warn("deleteProduct called on default context"); return false; },
+  setProducts: () => { console.warn("setProducts called on default context"); },
 };
 
 // Tạo context với giá trị mặc định
@@ -282,7 +284,8 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     updateProducts,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    setProducts
   };
 
   return (

@@ -7,7 +7,7 @@ import { Product, Category } from '@/types';
 import { useProducts } from '@/context/ProductContext';
 
 export default function AdminProductsPage() {
-  const { products, categories, addProduct, updateProduct, deleteProduct } = useProducts();
+  const { products, categories, addProduct, updateProduct, deleteProduct, setProducts } = useProducts();
   
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -199,7 +199,34 @@ export default function AdminProductsPage() {
             showSuccessAndReset('Đã thêm sản phẩm mới thành công!');
           } catch (addError: any) {
             console.error("[AdminProductsPage] Error from addProduct:", addError);
-            throw new Error(addError.message || 'Lỗi khi thêm sản phẩm');
+            console.log("[AdminProductsPage] Trying direct API call as fallback...");
+            
+            // Thử gọi API trực tiếp nếu context thất bại
+            try {
+              const directResponse = await fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(createData)
+              });
+              
+              console.log("[AdminProductsPage] Direct API call response status:", directResponse.status);
+              
+              const responseData = await directResponse.json();
+              console.log("[AdminProductsPage] Direct API call response:", responseData);
+              
+              if (!directResponse.ok) {
+                throw new Error(responseData.error || `Lỗi API: ${directResponse.status}`);
+              }
+              
+              // Nếu thành công, cập nhật UI
+              setProducts((prev: Product[]) => [...prev, responseData as Product]);
+              showSuccessAndReset('Đã thêm sản phẩm mới thành công (trực tiếp từ API)!');
+            } catch (directError: any) {
+              console.error("[AdminProductsPage] Direct API call also failed:", directError);
+              throw new Error(directError.message || addError.message || 'Lỗi khi thêm sản phẩm');
+            }
           }
         }
       } catch (contextError: any) {
