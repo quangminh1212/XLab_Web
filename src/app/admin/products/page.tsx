@@ -31,12 +31,12 @@ export default function AdminProductsPage() {
       const formData = new FormData(event.currentTarget);
       
       // Xử lý giá trị từ form để đảm bảo kiểu dữ liệu chính xác
+      const price = Number(formData.get('price')) || 0;
+      const salePrice = Number(formData.get('salePrice')) || price;
       const name = (formData.get('name') as string || '').trim();
       const slug = (formData.get('slug') as string || '').trim() || 
                    name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w\-]+/g, '');
       const categoryId = formData.get('categoryId') as string;
-      const price = Number(formData.get('price')) || 0;
-      const salePrice = Number(formData.get('salePrice')) || price;
       
       // Kiểm tra dữ liệu đầu vào
       if (!name) {
@@ -77,36 +77,31 @@ export default function AdminProductsPage() {
       
       console.log("Submitting product:", productData);
       
-      // Thêm hoặc cập nhật sản phẩm
-      if (isEditing && currentProduct) {
+      // Thêm hoặc cập nhật sản phẩm với delay nhỏ để đảm bảo UI được cập nhật
+      setTimeout(() => {
         try {
-          // Cập nhật sản phẩm qua context
-          updateProduct(productData);
-          console.log("Product updated successfully:", productData);
-          window.alert('Đã cập nhật sản phẩm thành công!');
-          // Reset form sau khi cập nhật thành công
+          if (isEditing && currentProduct) {
+            // Cập nhật sản phẩm qua context
+            updateProduct(productData);
+            alert('Đã cập nhật sản phẩm thành công!');
+          } else {
+            // Thêm sản phẩm mới qua context
+            addProduct(productData);
+            alert('Đã thêm sản phẩm thành công!');
+          }
+          
+          // Reset form
           resetForm();
-        } catch (error) {
-          console.error("Failed to update product:", error);
-          setFormError('Không thể cập nhật sản phẩm. Vui lòng thử lại sau.');
+        } catch (submitError: any) {
+          console.error("Error during product submission:", submitError);
+          setFormError(submitError.message || 'Đã xảy ra lỗi, vui lòng thử lại');
+        } finally {
+          setIsLoading(false);
         }
-      } else {
-        try {
-          // Thêm sản phẩm mới qua context
-          addProduct(productData);
-          console.log("Product added successfully:", productData);
-          window.alert('Đã thêm sản phẩm thành công!');
-          // Reset form sau khi thêm thành công
-          resetForm();
-        } catch (error) {
-          console.error("Failed to add product:", error);
-          setFormError('Không thể thêm sản phẩm mới. Vui lòng thử lại sau.');
-        }
-      }
+      }, 100);
     } catch (error: any) {
-      console.error("Error submitting product:", error);
+      console.error("Error preparing product data:", error);
       setFormError(error.message || 'Đã xảy ra lỗi, vui lòng thử lại');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -121,25 +116,23 @@ export default function AdminProductsPage() {
     
     console.log("Attempting to delete product with ID:", id);
     
-    const confirmDelete = window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');
-    if (confirmDelete) {
+    if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
       setIsLoading(true);
-      try {
-        // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
-        const productId = String(id);
-        // Xóa sản phẩm qua context
-        deleteProduct(productId);
-        console.log("Product deleted successfully:", id);
-        window.alert('Đã xóa sản phẩm thành công!');
-        
-        // Reload trang sau khi xóa để cập nhật danh sách
-        window.location.reload();
-      } catch (error: any) {
-        console.error("Error deleting product:", error);
-        window.alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
-      } finally {
-        setIsLoading(false);
-      }
+      setTimeout(() => {
+        try {
+          // Chuyển đổi id thành string để đảm bảo việc so sánh chính xác
+          const productId = String(id);
+          // Xóa sản phẩm qua context
+          deleteProduct(productId);
+          console.log("Product deleted successfully:", id);
+          alert('Đã xóa sản phẩm thành công!');
+        } catch (error: any) {
+          console.error("Error deleting product:", error);
+          alert(error.message || 'Đã xảy ra lỗi khi xóa sản phẩm');
+        } finally {
+          setIsLoading(false);
+        }
+      }, 100); // Thêm một chút delay để đảm bảo UI được cập nhật đúng
     }
   };
 
@@ -158,26 +151,17 @@ export default function AdminProductsPage() {
       const productCopy = JSON.parse(JSON.stringify(product));
       console.log("Product copy to edit:", productCopy);
       
-      // Cập nhật state
       setIsEditing(true);
       setCurrentProduct(productCopy);
       setShowForm(true);
       
-      // Cuộn lên đầu trang
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Đảm bảo UI được cập nhật trước khi scroll
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
     } catch (error: any) {
       console.error("Error in edit handling:", error);
-      window.alert(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm');
-    }
-  };
-
-  // Thêm hàm để tải lại danh sách sản phẩm
-  const refreshProductsList = () => {
-    try {
-      // Tải lại trang để làm mới dữ liệu
-      window.location.reload();
-    } catch (error) {
-      console.error("Error refreshing products list:", error);
+      alert(error.message || 'Đã xảy ra lỗi khi chuẩn bị chỉnh sửa sản phẩm');
     }
   };
 

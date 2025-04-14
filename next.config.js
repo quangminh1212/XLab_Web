@@ -66,18 +66,35 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config, { dev }) => {
-    // Giữ cấu hình webpack đơn giản để tránh xung đột
+  webpack: (config, { dev, isServer }) => {
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
     if (dev) {
-      config.mode = 'development';
+      config.mode = 'none';
     }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
+    }
+    
     return config;
   },
   compiler: {
     styledComponents: true,
   },
-  // Tắt poweredByHeader
-  poweredByHeader: false,
 };
 
 module.exports = nextConfig;
