@@ -5,19 +5,46 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Product } from '@/types'; // Import Product type
 
 export default function AdminPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]); // Định kiểu cho state products
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingProducts, setIsFetchingProducts] = useState(true); // State mới cho việc fetch products
   const [showForm, setShowForm] = useState(false);
   
   // Chuyển đổi số thành định dạng tiền tệ
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
+  const formatCurrency = (amount: number | null | undefined) => {
+    if (amount === null || amount === undefined) return '';
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   }
   
+  // Fetch products khi component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsFetchingProducts(true);
+      try {
+        const response = await fetch('/api/products');
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data: Product[] = await response.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        // Handle error display if needed
+      } finally {
+        setIsFetchingProducts(false);
+      }
+    };
+
+    if (status === 'authenticated') { // Chỉ fetch nếu đã xác thực
+        fetchProducts();
+    }
+  }, [status]); // Thêm status vào dependency array
+
   // Kiểm tra quyền admin
   useEffect(() => {
     if (status === 'authenticated') {
@@ -29,25 +56,64 @@ export default function AdminPage() {
     }
   }, [session, status, router]);
 
-  // Xử lý khi gửi form
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  // Xử lý khi gửi form thêm sản phẩm
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     
-    // Tạo form data từ form
-    const formData = new FormData(event.target as HTMLFormElement);
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
     
-    // Tại đây sẽ gửi API request để thêm sản phẩm
-    // Mô phỏng thêm sản phẩm thành công
-    setTimeout(() => {
+    const newProductData = {
+      name: formData.get('name') as string,
+      slug: formData.get('slug') as string,
+      categoryId: formData.get('categoryId') as string,
+      price: Number(formData.get('price')),
+      salePrice: formData.get('salePrice') ? Number(formData.get('salePrice')) : null,
+      version: formData.get('version') as string,
+      description: formData.get('description') as string,
+      longDescription: formData.get('longDescription') as string,
+      imageUrl: formData.get('imageUrl') as string,
+      size: formData.get('size') as string,
+      licenseType: formData.get('licenseType') as string,
+      isFeatured: formData.get('isFeatured') === 'on',
+      isNew: formData.get('isNew') === 'on',
+      // Các trường khác như downloadCount, viewCount, rating sẽ có giá trị mặc định ở API
+    };
+
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProductData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create product');
+      }
+
+      const createdProduct: Product = await response.json();
+      
+      // Cập nhật danh sách sản phẩm trên UI
+      setProducts(prevProducts => [...prevProducts, createdProduct]);
+      
       alert('Đã thêm sản phẩm thành công!');
-      setIsLoading(false);
       setShowForm(false);
-      (event.target as HTMLFormElement).reset();
-    }, 1000);
+      form.reset();
+
+    } catch (error) {
+        console.error("Error creating product:", error);
+        alert(`Lỗi khi thêm sản phẩm: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`);
+    } finally {
+        setIsLoading(false);
+    }
   }
   
-  if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
+  // Hiển thị loading nếu đang xác thực hoặc fetch sản phẩm
+  if (status === 'loading' || isFetchingProducts || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
