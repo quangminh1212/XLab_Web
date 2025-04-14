@@ -98,13 +98,29 @@ export default function AdminProductsPage() {
           showSuccess('Sản phẩm đã được cập nhật thành công!');
         } else {
           // Tạo product mới không bao gồm id client-side
-          const createData = { ...productData };
-          delete createData.id; // Xóa id tạm nếu có
+          const createData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'> = { 
+            name: productData.name,
+            slug: productData.slug,
+            description: productData.description,
+            longDescription: productData.longDescription,
+            price: productData.price,
+            salePrice: productData.salePrice,
+            categoryId: productData.categoryId,
+            imageUrl: productData.imageUrl,
+            version: productData.version,
+            size: productData.size,
+            licenseType: productData.licenseType,
+            isFeatured: productData.isFeatured,
+            isNew: productData.isNew,
+            storeId: productData.storeId, // Đảm bảo storeId có giá trị hợp lệ
+            downloadCount: 0, // Giá trị mặc định
+            viewCount: 0,     // Giá trị mặc định
+            rating: 0,        // Giá trị mặc định
+          };
           
-          // API sẽ tạo ID, nên truyền dữ liệu không có ID
-          // Chú ý: Cần đảm bảo kiểu Product có thể nhận dữ liệu thiếu id khi tạo
-          // Hoặc điều chỉnh API/Context để xử lý việc này
-          await addProduct(createData as any); // Gọi hàm từ context (cần xem lại kiểu dữ liệu)
+          console.log("Data sent to addProduct context function:", createData);
+          
+          await addProduct(createData); // Gọi hàm từ context với đúng kiểu dữ liệu
           showSuccess('Sản phẩm mới đã được thêm thành công!');
         }
         
