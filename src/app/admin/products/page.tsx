@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product, Category } from '@/types';
@@ -15,6 +15,11 @@ export default function AdminProductsPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [formError, setFormError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  
+  // Log products state whenever it changes
+  useEffect(() => {
+    console.log("[AdminProductsPage] Products state updated:", products);
+  }, [products]);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
