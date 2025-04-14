@@ -143,12 +143,13 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Cập nhật sản phẩm
-  const updateProduct = async (product: Product) => {
-    console.log("[ProductContext] Updating product:", product);
+  const updateProduct = async (product: Product): Promise<Product> => {
+    console.log("[ProductContext] Updating product data:", product);
     
     try {
       // Normalize ID to string for comparison
       const productId = String(product.id);
+      console.log("[ProductContext] Calling PATCH API for ID:", productId);
       
       // Gọi API cập nhật sản phẩm
       const response = await fetch(`/api/products/${productId}`, {
@@ -156,84 +157,94 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(product)
+        body: JSON.stringify(product) // Gửi toàn bộ object product
       });
       
       if (!response.ok) {
         const errorData = await response.json();
+        console.error(`[ProductContext] API Error updating product ${productId}:`, errorData);
         throw new Error(errorData.error || `Không thể cập nhật sản phẩm với ID ${productId}`);
       }
       
       // Lấy sản phẩm đã được cập nhật từ response
       const updatedProduct = await response.json();
+      console.log("[ProductContext] Product updated via API:", updatedProduct);
       
       // Cập nhật state
       setProducts(prevProducts => {
-        // Tìm sản phẩm trong danh sách
         const existingProductIndex = prevProducts.findIndex(p => String(p.id) === productId);
         
-        // Nếu không tìm thấy sản phẩm
         if (existingProductIndex === -1) {
-          console.error(`[ProductContext] Product with ID ${productId} not found`);
-          throw new Error(`Không tìm thấy sản phẩm với ID ${productId}`);
+          console.error(`[ProductContext] Product with ID ${productId} not found in state after successful API update`);
+          // Có thể thêm lại sản phẩm vào state nếu cần, hoặc log lỗi
+          return prevProducts; // Hoặc quyết định cách xử lý khác
         }
         
-        // Cập nhật sản phẩm
-        const updated = [...prevProducts];
-        updated[existingProductIndex] = updatedProduct;
-        
-        console.log("[ProductContext] Products after update:", updated);
+        const updatedState = [...prevProducts];
+        updatedState[existingProductIndex] = updatedProduct;
+        console.log("[ProductContext] Products state after update:", updatedState);
         
         // Lưu vào localStorage
         if (typeof window !== 'undefined') {
-          localStorage.setItem('xlab_products', JSON.stringify(updated));
+          try {
+            localStorage.setItem('xlab_products', JSON.stringify(updatedState));
+          } catch (storageError) {
+            console.error("[ProductContext] Error saving to localStorage after update:", storageError);
+          }
         }
         
-        return updated;
+        return updatedState;
       });
       
       return updatedProduct;
     } catch (error) {
-      console.error("[ProductContext] Error updating product:", error);
-      throw error;
+      console.error("[ProductContext] Error in updateProduct function:", error);
+      throw error instanceof Error ? error : new Error("Lỗi không xác định khi cập nhật sản phẩm"); 
     }
   };
 
   // Xóa sản phẩm
-  const deleteProduct = async (id: string | number) => {
+  const deleteProduct = async (id: string | number): Promise<boolean> => {
     console.log("[ProductContext] Deleting product with ID:", id);
     
     try {
       // Normalize ID to string for comparison
       const productId = String(id);
       
-      // Kiểm tra xem sản phẩm có tồn tại
+      // Kiểm tra xem sản phẩm có tồn tại trong state không (chỉ để log)
       const existingProduct = products.find(p => String(p.id) === productId);
-      
       if (!existingProduct) {
-        console.error(`[ProductContext] Product with ID ${productId} not found for deletion`);
-        throw new Error(`Không tìm thấy sản phẩm với ID ${productId} để xóa`);
+        console.warn(`[ProductContext] Product with ID ${productId} not found in state before calling API`);
+        // Vẫn tiếp tục gọi API vì sản phẩm có thể tồn tại ở server nhưng chưa có trong state
       }
       
+      console.log("[ProductContext] Calling DELETE API for ID:", productId);
       // Gọi API xóa sản phẩm
       const response = await fetch(`/api/products/${productId}`, {
         method: 'DELETE'
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({})); // Bắt lỗi nếu response không có body json
+        console.error(`[ProductContext] API Error deleting product ${productId}:`, errorData, response.status, response.statusText);
         throw new Error(errorData.error || `Không thể xóa sản phẩm với ID ${productId}`);
       }
       
+      console.log("[ProductContext] Product deleted via API successfully for ID:", productId);
+      
       // Cập nhật state
       setProducts(prevProducts => {
-        // Xóa sản phẩm
+        // Xóa sản phẩm khỏi state
         const filtered = prevProducts.filter(p => String(p.id) !== productId);
-        console.log("[ProductContext] Products after deletion:", filtered);
+        console.log("[ProductContext] Products state after deletion:", filtered);
         
         // Lưu vào localStorage
         if (typeof window !== 'undefined') {
-          localStorage.setItem('xlab_products', JSON.stringify(filtered));
+          try {
+            localStorage.setItem('xlab_products', JSON.stringify(filtered));
+          } catch (storageError) {
+            console.error("[ProductContext] Error saving to localStorage after delete:", storageError);
+          }
         }
         
         return filtered;
@@ -241,8 +252,8 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
       
       return true;
     } catch (error) {
-      console.error("[ProductContext] Error deleting product:", error);
-      throw error;
+      console.error("[ProductContext] Error in deleteProduct function:", error);
+      throw error instanceof Error ? error : new Error("Lỗi không xác định khi xóa sản phẩm");
     }
   };
 
