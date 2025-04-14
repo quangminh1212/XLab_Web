@@ -84,13 +84,16 @@ export default function LoginPage() {
       // Chuẩn bị các tham số OAuth2
       const params = new URLSearchParams({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-        redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || 'http://localhost:3000/google-callback',
+        redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || `${window.location.origin}/google-callback`,
         response_type: 'token',
         scope: 'openid email profile',
+        access_type: 'online',
+        prompt: 'consent'
       });
 
       // Tạo URL đăng nhập OAuth2
       const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+      console.log("Google OAuth URL:", googleLoginUrl);
 
       // Chuyển hướng sang trang đăng nhập Google
       window.location.href = googleLoginUrl;
@@ -102,13 +105,20 @@ export default function LoginPage() {
   };
 
   const handleGoogleLoginViaNextAuth = async () => {
-    setIsGoogleLoading(true);
     try {
-      await signIn('google', { callbackUrl: '/auth' });
-    } catch (error) {
-      console.error('Lỗi khi đăng nhập với Google qua NextAuth:', error);
-      setError('Có lỗi xảy ra khi đăng nhập với Google.');
-      setIsGoogleLoading(false);
+      setGoogleLoading(true);
+      console.log('Đăng nhập với NextAuth...');
+      
+      // Sử dụng NextAuth để đăng nhập với Google
+      signIn('google', { 
+        callbackUrl: '/auth'
+      });
+      
+      toast.loading('Đang chuyển hướng đến Google...');
+    } catch (error: any) {
+      console.error('Lỗi NextAuth:', error);
+      toast.error(`Lỗi: ${error?.message || 'Không thể kết nối'}`);
+      setGoogleLoading(false);
     }
   };
 
@@ -145,43 +155,45 @@ export default function LoginPage() {
           )}
 
           {/* Google Login Button */}
-          <div className="mt-5">
+          <div className="flex flex-col space-y-3 mb-6">
             <button
               type="button"
-              className={`flex w-full justify-center items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm ${
+              className={`flex w-full justify-center items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm ${
                 isGoogleLoading ? 'bg-gray-400' : 'bg-red-600 hover:bg-red-500'
               } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600`}
-              disabled={isGoogleLoading}
+              disabled={isGoogleLoading || googleLoading}
               onClick={handleGoogleLogin}
             >
               {isGoogleLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
               ) : (
-                <img
-                  src="/google-icon.svg"
-                  alt="Google"
-                  className="h-5 w-5"
-                />
+                <svg className="w-5 h-5" viewBox="0 0 48 48">
+                  <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                  <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                  <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                  <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                </svg>
               )}
               Đăng nhập với Google (OAuth2)
             </button>
             
             <button
               type="button"
-              className={`flex w-full justify-center mt-3 items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm ${
-                isGoogleLoading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-500'
+              className={`flex w-full justify-center items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm ${
+                googleLoading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-500'
               } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600`}
-              disabled={isGoogleLoading}
+              disabled={isGoogleLoading || googleLoading}
               onClick={handleGoogleLoginViaNextAuth}
             >
-              {isGoogleLoading ? (
+              {googleLoading ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-white"></div>
               ) : (
-                <img
-                  src="/google-icon.svg"
-                  alt="Google"
-                  className="h-5 w-5"
-                />
+                <svg className="w-5 h-5" viewBox="0 0 48 48">
+                  <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                  <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path>
+                  <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path>
+                  <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+                </svg>
               )}
               Đăng nhập với Google (NextAuth)
             </button>
