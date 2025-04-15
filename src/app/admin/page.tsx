@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
+import React from 'react';
 
 // Đã xóa export metadata vì không thể sử dụng trong client component
 
@@ -19,6 +20,25 @@ export default function AdminPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   const [fileUploadStatus, setFileUploadStatus] = useState('');
+  const formRef = React.useRef<HTMLFormElement>(null);
+  
+  // Hàm để submit form - có thể gọi từ nhiều nơi
+  const submitForm = () => {
+    try {
+      console.log('Attempting to submit form programmatically');
+      if (formRef.current) {
+        console.log('Form ref found, submitting via requestSubmit()');
+        formRef.current.requestSubmit();
+        return true;
+      } else {
+        console.error('Form ref not available');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error submitting form programmatically:', error);
+      return false;
+    }
+  };
   
   // Tải danh sách sản phẩm
   const loadProducts = useCallback(async () => {
@@ -86,10 +106,21 @@ export default function AdminPage() {
 
   // Xử lý khi gửi form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Ngăn chặn submit HTML mặc định
-    e.stopPropagation(); // Ngăn chặn sự kiện lan truyền
+    console.log('Form submission started (handleSubmit function)');
+    // Quan trọng: Ngăn chặn hành vi mặc định của HTML form
+    e.preventDefault();
+    console.log('Default form submission prevented (e.preventDefault called)');
+    e.stopPropagation();
+    console.log('Event propagation stopped (e.stopPropagation called)');
+    
+    // Kiểm tra nếu đang loading thì không submit
+    if (isLoading) {
+      console.log('Form submission aborted: isLoading is true');
+      return;
+    }
     
     try {
+      console.log('Setting loading state to true and clearing messages');
       setIsLoading(true);
       setErrorMessage('');
       setSuccessMessage('');
@@ -97,27 +128,52 @@ export default function AdminPage() {
       
       // Tạo FormData từ form element
       const form = e.currentTarget;
+      console.log('Form element accessed:', form.id);
       const formData = new FormData();
       
       // Lấy tất cả input fields từ form
       const formElements = Array.from(form.elements) as HTMLFormElement[];
+      console.log(`Processing ${formElements.length} form elements`);
+      
+      // Debug thông tin form fields
+      let requiredFieldsMissing = false;
+      let requiredFieldsList: string[] = [];
       
       // Thêm các field vào FormData
       formElements.forEach((element) => {
         if (element.name && element.name !== 'file' && element.name !== 'submit') {
+          // Kiểm tra các trường bắt buộc
+          if (element.hasAttribute('required') && !element.value && element.type !== 'checkbox') {
+            requiredFieldsMissing = true;
+            requiredFieldsList.push(element.name);
+            console.warn(`Required field missing: ${element.name}`);
+          }
+          
           // Kiểm tra xem có phải là checkbox không
           if (element.type === 'checkbox') {
-            formData.append(element.name, element.checked ? 'true' : 'false');
+            console.log(`Checkbox ${element.name}: ${element.checked ? 'on' : 'off'}`);
+            formData.append(element.name, element.checked ? 'on' : 'off');
           } else if (element.value) {
+            console.log(`Field ${element.name}: ${element.value}`);
             formData.append(element.name, element.value);
           }
         }
       });
       
+      // Kiểm tra nếu thiếu các trường bắt buộc
+      if (requiredFieldsMissing) {
+        console.error('Required fields missing:', requiredFieldsList);
+        setErrorMessage(`Vui lòng điền đầy đủ các trường bắt buộc: ${requiredFieldsList.join(', ')}`);
+        setIsLoading(false);
+        return;
+      }
+      
       // Thêm file vào formData nếu có
       if (file) {
         console.log('Appending file to form data:', file.name, file.size, file.type);
         formData.append('file', file);
+      } else {
+        console.log('No file selected for upload');
       }
       
       // Debug: Kiểm tra form data
@@ -136,19 +192,31 @@ export default function AdminPage() {
         // Không thiết lập header Content-Type khi sử dụng FormData để browser tự xử lý
       });
       
-      console.log('Response status:', response.status);
+      console.log('Response received. Status:', response.status, response.statusText);
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
+        const errorData = await response.json().catch((err) => {
+          console.error('Error parsing error response:', err);
+          return null;
+        });
+        console.error('Error response:', errorData);
         throw new Error(
           errorData?.message || `HTTP error! Status: ${response.status}`
         );
       }
       
-      const result = await response.json();
-      console.log('API response:', result);
+      // Phân tích kết quả trả về
+      let result;
+      try {
+        result = await response.json();
+        console.log('API response parsed successfully:', result);
+      } catch (jsonError) {
+        console.error('Failed to parse API response JSON:', jsonError);
+        throw new Error('Failed to parse API response');
+      }
       
       if (result.success) {
+        console.log('Product created successfully:', result.data);
         // Hiển thị thông báo thành công
         setSuccessMessage(result.message || 'Sản phẩm đã được tạo thành công!');
         
@@ -158,6 +226,7 @@ export default function AdminPage() {
         }
         
         // Reset form sau khi submit thành công
+        console.log('Resetting form');
         form.reset();
         setFile(null);
         setFilePreview('');
@@ -167,6 +236,7 @@ export default function AdminPage() {
         await loadProducts();
       } else {
         // Hiển thị lỗi nếu request không thành công
+        console.error('API returned success: false');
         setErrorMessage(result.message || 'Có lỗi xảy ra khi tạo sản phẩm');
         setFileUploadStatus('Tải lên thất bại');
       }
@@ -175,6 +245,7 @@ export default function AdminPage() {
       setErrorMessage(error instanceof Error ? error.message : 'Đã xảy ra lỗi không xác định');
       setFileUploadStatus('Tải lên thất bại');
     } finally {
+      console.log('Form submission complete, setting isLoading to false');
       setIsLoading(false);
     }
   };
@@ -243,6 +314,7 @@ export default function AdminPage() {
                       encType="multipart/form-data"
                       onSubmit={handleSubmit}
                       noValidate
+                      ref={formRef}
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -479,10 +551,29 @@ export default function AdminPage() {
                       </div>
                       
                       <div className="mt-6 flex justify-end space-x-4">
+                        {/* Button chính */}
                         <button 
                           type="submit" 
                           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
                           disabled={isLoading}
+                          onClick={(e) => {
+                            // Ngăn chặn sự kiện mặc định để đảm bảo chúng ta kiểm soát hoàn toàn
+                            e.preventDefault();
+                            try {
+                              // Thử submit form theo cách riêng của chúng ta
+                              if (!submitForm()) {
+                                // Nếu không thể dùng form ref, sử dụng phương thức dự phòng
+                                if (e.currentTarget.form) {
+                                  console.log('Button click: submitting form via button form property');
+                                  e.currentTarget.form.requestSubmit();
+                                } else {
+                                  console.error('No form reference available');
+                                }
+                              }
+                            } catch (error) {
+                              console.error('Error during form submission from button click:', error);
+                            }
+                          }}
                         >
                           {isLoading && (
                             <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -491,6 +582,15 @@ export default function AdminPage() {
                             </svg>
                           )}
                           Đăng sản phẩm
+                        </button>
+                        
+                        {/* Button submit ẩn (fallback) */}
+                        <button 
+                          type="submit" 
+                          style={{ display: 'none' }}
+                          aria-hidden="true"
+                        >
+                          Submit Fallback
                         </button>
                       </div>
                     </form>
