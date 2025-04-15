@@ -5,6 +5,7 @@ import { categories } from '@/data/mockData';
 
 export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   
   // Xử lý khi gửi form
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -17,15 +18,15 @@ export default function AdminPage() {
     // Tạo object sản phẩm từ form data
     const productData = {
       id: `prod-${Date.now()}`, // Tạo ID tạm thời
-      name: formData.get('name') || '',
-      slug: formData.get('slug') || '',
-      description: formData.get('description') || '',
-      longDescription: formData.get('description') || '',
+      name: formData.get('name')?.toString() || '',
+      slug: formData.get('slug')?.toString() || '',
+      description: formData.get('description')?.toString() || '',
+      longDescription: formData.get('description')?.toString() || '',
       price: Number(formData.get('price')) || 0,
       salePrice: 0,
-      categoryId: formData.get('categoryId') || '',
+      categoryId: formData.get('categoryId')?.toString() || '',
       imageUrl: '/images/products/placeholder-product.jpg',
-      isFeatured: false,
+      isFeatured: true, // Đặt mặc định là true để hiển thị ở mục "Phần mềm nổi bật"
       isNew: true,
       downloadCount: 0,
       viewCount: 0,
@@ -38,6 +39,8 @@ export default function AdminPage() {
       storeId: '1'
     };
     
+    console.log('Đang gửi sản phẩm:', productData);
+    
     // Gửi API request để thêm sản phẩm
     fetch('/api/products', {
       method: 'POST',
@@ -47,22 +50,42 @@ export default function AdminPage() {
       body: JSON.stringify(productData),
     })
       .then(response => {
+        console.log('Phản hồi từ API:', response.status);
         if (!response.ok) {
-          throw new Error('Lỗi khi thêm sản phẩm');
+          throw new Error('Lỗi khi thêm sản phẩm: ' + response.status);
         }
         return response.json();
       })
       .then(data => {
         // Thêm sản phẩm thành công
+        console.log('Sản phẩm đã được thêm:', data);
         alert('Đã thêm sản phẩm thành công!');
         setIsLoading(false);
+        setSubmitted(true);
         event.currentTarget.reset();
+        
+        // Chuyển hướng về trang chủ sau 2 giây
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
       })
       .catch(error => {
         console.error('Lỗi:', error);
-        alert('Đã xảy ra lỗi khi thêm sản phẩm!');
+        alert('Đã xảy ra lỗi khi thêm sản phẩm! ' + error.message);
         setIsLoading(false);
       });
+  };
+  
+  if (submitted) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="bg-green-100 p-6 rounded-lg">
+          <h2 className="text-2xl font-bold text-green-800 mb-4">Đã thêm sản phẩm thành công!</h2>
+          <p className="text-green-700 mb-4">Đang chuyển hướng về trang chủ để xem sản phẩm...</p>
+          <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto"></div>
+        </div>
+      </div>
+    );
   }
   
   return (
@@ -72,7 +95,7 @@ export default function AdminPage() {
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
         
-        <form onSubmit={handleSubmit}>
+        <form method="POST" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label className="block mb-2 font-medium">

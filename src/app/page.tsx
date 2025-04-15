@@ -1,12 +1,36 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import CategoryList from '@/components/CategoryList';
 import ProductCard from '@/components/ProductCard';
-import { categories, products } from '@/data/mockData';
+import { categories } from '@/data/mockData';
+import { Product } from '@/types';
 
 function HomePage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Lấy danh sách sản phẩm từ API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (!response.ok) {
+          throw new Error('Không thể lấy dữ liệu sản phẩm');
+        }
+        const data = await response.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách sản phẩm:', error);
+        setLoading(false);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+
   // Lọc sản phẩm nổi bật
   const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
 
@@ -68,17 +92,28 @@ function HomePage() {
               </Link>
             </div>
 
-            <div className="flex items-center justify-center">
+            {loading ? (
+              <div className="text-center py-16">
+                <div className="animate-spin w-12 h-12 border-4 border-gray-300 border-t-teal-600 rounded-full mx-auto mb-4"></div>
+                <p className="text-gray-600">Đang tải dữ liệu...</p>
+              </div>
+            ) : featuredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {featuredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
               <div className="text-center py-16">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
-                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm nổi bật</h3>
                 <p className="text-gray-500 max-w-lg mx-auto">
-                  Hệ thống đang cập nhật
+                  Hãy thêm sản phẩm tại trang quản trị
                 </p>
               </div>
-            </div>
+            )}
           </div>
         </section>
 
@@ -95,17 +130,28 @@ function HomePage() {
               </Link>
             </div>
 
-            <div className="flex items-center justify-center">
+            {loading ? (
+              <div className="text-center py-16">
+                <div className="animate-spin w-12 h-12 border-4 border-gray-300 border-t-teal-600 rounded-full mx-auto mb-4"></div>
+                <p className="text-gray-600">Đang tải dữ liệu...</p>
+              </div>
+            ) : newProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {newProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
               <div className="text-center py-16">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
-                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm mới</h3>
                 <p className="text-gray-500 max-w-lg mx-auto">
-                  Hệ thống đang cập nhật
+                  Hãy thêm sản phẩm tại trang quản trị
                 </p>
               </div>
-            </div>
+            )}
           </div>
         </section>
       </div>
