@@ -6,6 +6,7 @@ import { Product } from '@/types';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 // Simple spinner component
 interface SpinnerProps {
@@ -134,7 +135,7 @@ export default function AdminPage() {
       const data = await response.json();
       console.log('Sản phẩm đã được thêm thành công:', data);
       
-      // Cập nhật danh sách sản phẩm luôn
+      // Cập nhật danh sách sản phẩm với sản phẩm mới
       setProducts(prevProducts => [data, ...prevProducts]);
       setLastAddedProduct(data);
       setSuccess(true);
@@ -149,6 +150,9 @@ export default function AdminPage() {
       }, 5000);
       
       addLog(`Sản phẩm đã được thêm thành công! ID: ${data.id}`);
+      
+      // Tải lại danh sách sản phẩm để đảm bảo hiển thị đúng
+      await fetchProducts();
     } catch (error) {
       console.error('Lỗi khi thêm sản phẩm:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Lỗi không xác định');
@@ -174,22 +178,24 @@ export default function AdminPage() {
   };
 
   // Kết xuất button với spinner
-  const renderSubmitButton = () => (
-    <button 
-      type="submit" 
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-      disabled={loading}
-    >
-      {loading ? (
-        <>
-          <Spinner size="sm" />
-          <span className="ml-2">Đang xử lý...</span>
-        </>
-      ) : (
-        'Thêm sản phẩm'
-      )}
-    </button>
-  );
+  const renderSubmitButton = () => {
+    return (
+      <Button
+        type="submit"
+        className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded shadow"
+        disabled={loading}
+      >
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <Spinner size="sm" />
+            <span className="ml-2">Đang lưu...</span>
+          </div>
+        ) : (
+          'Lưu Sản Phẩm'
+        )}
+      </Button>
+    );
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
