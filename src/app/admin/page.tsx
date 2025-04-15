@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -17,21 +17,45 @@ export default function AdminPage() {
   const [filePreview, setFilePreview] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  const [fileUploadStatus, setFileUploadStatus] = useState('');
   
   // Tải danh sách sản phẩm
-  useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          console.log('Loaded products:', data.data);
-          setProducts(data.data);
+  const loadProducts = useCallback(async () => {
+    try {
+      setIsLoadingProducts(true);
+      const response = await fetch('/api/products', {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
         }
-      })
-      .catch(error => {
-        console.error('Error fetching products:', error);
       });
+      
+      if (!response.ok) {
+        throw new Error(`Lỗi ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Loaded products:', data);
+      
+      if (data.success && Array.isArray(data.data)) {
+        setProducts(data.data);
+      } else {
+        setErrorMessage('Không thể lấy dữ liệu sản phẩm');
+      }
+    } catch (error) {
+      console.error('Error loading products:', error);
+      setErrorMessage('Đã xảy ra lỗi khi tải danh sách sản phẩm');
+    } finally {
+      setIsLoadingProducts(false);
+    }
   }, []);
+  
+  // Load products on mount
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
   
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -43,6 +67,7 @@ export default function AdminPage() {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
+      setFileUploadStatus(`File đã chọn: ${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)`);
       const reader = new FileReader();
       reader.onload = () => {
         setFilePreview(reader.result as string);
@@ -52,82 +77,59 @@ export default function AdminPage() {
   };
 
   // Xử lý khi gửi form
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Đảm bảo ngăn chặn hành vi mặc định của form
-    setIsLoading(true);
-    setSuccessMessage('');
-    setErrorMessage('');
-    
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      // Tạo form data từ form
-      const formData = new FormData(event.currentTarget);
+      setIsLoading(true);
+      setErrorMessage('');
+      setSuccessMessage('');
+      setFileUploadStatus('Đang tải lên...');
+      
+      const formData = new FormData(e.currentTarget);
       
       // Thêm file vào formData nếu có
       if (file) {
-        formData.append('productFile', file);
+        formData.append('file', file);
       }
       
-      // Tạo đối tượng sản phẩm từ formData
-      const productData = {
-        name: formData.get('name') as string,
-        slug: formData.get('slug') as string,
-        description: formData.get('description') as string,
-        longDescription: formData.get('longDescription') as string,
-        price: Number(formData.get('price')),
-        salePrice: formData.get('salePrice') ? Number(formData.get('salePrice')) : 0,
-        categoryId: formData.get('categoryId') as string,
-        imageUrl: formData.get('imageUrl') as string || '/images/placeholder-product.jpg',
-        isFeatured: formData.get('isFeatured') === 'on',
-        isNew: formData.get('isNew') === 'on',
-        downloadCount: 0,
-        viewCount: 0,
-        rating: 0,
-        version: formData.get('version') as string,
-        size: formData.get('size') as string,
-        licenseType: formData.get('licenseType') as string,
-        storeId: '1' // Mặc định là cửa hàng XLab
-      };
-      
-      console.log('Sending product data:', productData);
-      
-      // Gửi API request để thêm sản phẩm
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(productData),
-        cache: 'no-store'
+      // Log the form data for debugging
+      console.log('Form data being submitted:');
+      formData.forEach((value, key) => {
+        console.log(`${key}: ${value}`);
       });
       
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        body: formData,
+      });
       
-      const data = await response.json();
-      console.log('Success:', data);
+      const result = await response.json();
       
-      if (data.success) {
-        // Thêm sản phẩm mới vào danh sách hiển thị
-        const newProduct = data.data;
-        console.log('Adding new product to list:', newProduct);
-        setProducts(prevProducts => {
-          const updatedProducts = [...prevProducts, newProduct];
-          console.log('Updated products list:', updatedProducts);
-          return updatedProducts;
-        });
+      if (response.ok) {
+        // Hiển thị thông báo thành công
+        setSuccessMessage('Sản phẩm đã được tạo thành công!');
         
-        setSuccessMessage('Đã đăng sản phẩm thành công!');
+        // Hiển thị URL file nếu có
+        if (result.data.fileUrl) {
+          setFileUploadStatus(`File đã tải lên thành công: ${result.data.fileName}`);
+        }
+        
+        // Reset form sau khi submit thành công
+        e.currentTarget.reset();
         setFile(null);
         setFilePreview('');
-        // Reset form sau khi đăng sản phẩm
-        event.currentTarget.reset();
+        
+        // Tải lại danh sách sản phẩm
+        await loadProducts();
       } else {
-        setErrorMessage(data.message || 'Có lỗi xảy ra khi đăng sản phẩm.');
+        // Hiển thị lỗi nếu request không thành công
+        setErrorMessage(result.message || 'Có lỗi xảy ra khi tạo sản phẩm');
+        setFileUploadStatus('Tải lên thất bại');
       }
     } catch (error) {
-      console.error('Error creating product:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ: ' + (error instanceof Error ? error.message : String(error)));
+      console.error('Error submitting form:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Đã xảy ra lỗi không xác định');
+      setFileUploadStatus('Tải lên thất bại');
     } finally {
       setIsLoading(false);
     }
@@ -325,11 +327,17 @@ export default function AdminPage() {
                               <input
                                 id="product-file"
                                 type="file"
+                                name="file"
                                 className="hidden"
                                 onChange={handleFileChange}
                               />
                             </label>
                           </div>
+                          {fileUploadStatus && (
+                            <div className="mt-2 text-sm text-gray-600">
+                              {fileUploadStatus}
+                            </div>
+                          )}
                         </div>
                         
                         <div className="md:col-span-2">
