@@ -14,10 +14,18 @@ export function cn(...inputs: ClassValue[]) {
  * Format a number as Vietnamese currency (VND)
  */
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(amount);
+  try {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount).replace('₫', ' đ');
+  } catch (error) {
+    console.error('Error formatting currency:', error);
+    // Fallback formatting in case Intl.NumberFormat fails
+    return amount.toLocaleString('vi-VN') + ' đ';
+  }
 }
 
 /**
