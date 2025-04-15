@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { categories } from '@/data/mockData';
 import { Product } from '@/types';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
 
 export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,32 +13,33 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [logMessages, setLogMessages] = useState<{ message: string; timestamp: string }[]>([]);
   
   // Lấy danh sách sản phẩm từ API khi component được tải
   const fetchProducts = async () => {
+    setIsLoading(true);
+    setSuccessMessage('');
+    setErrorMessage('');
+    setLoadingProducts(true);
+    setLastAddedProduct(null);
+    
     try {
-      setLoadingProducts(true);
-      // Thêm tham số timestamp để tránh cache
-      const timestamp = new Date().getTime();
-      console.log(`Đang tải danh sách sản phẩm với timestamp: ${timestamp}`);
-      
-      const response = await fetch(`/api/products?t=${timestamp}`);
-      
-      console.log('Phản hồi từ API GET:', response.status);
+      const response = await fetch('/api/products');
       
       if (!response.ok) {
-        throw new Error('Không thể lấy dữ liệu sản phẩm');
+        throw new Error(`Lỗi API: ${response.status}`);
       }
       
       const data = await response.json();
-      console.log(`Đã tải ${data.length} sản phẩm từ API`);
-      
       setProducts(data);
       setLoadingProducts(false);
+      setSuccessMessage(`Đã tải ${data.length} sản phẩm thành công`);
     } catch (error) {
-      console.error('Lỗi khi lấy danh sách sản phẩm:', error);
-      setErrorMessage('Lỗi khi tải danh sách sản phẩm. Vui lòng thử lại sau.');
+      console.error('Lỗi khi tải sản phẩm:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Lỗi không xác định');
       setLoadingProducts(false);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -58,29 +61,19 @@ export default function AdminPage() {
     setErrorMessage('');
     
     try {
-      // Lấy form data từ form
-      const formEl = event.currentTarget;
-      const nameInput = formEl.querySelector('input[name="name"]') as HTMLInputElement;
-      const slugInput = formEl.querySelector('input[name="slug"]') as HTMLInputElement;
-      const categoryInput = formEl.querySelector('select[name="categoryId"]') as HTMLSelectElement;
-      const priceInput = formEl.querySelector('input[name="price"]') as HTMLInputElement;
-      const descriptionInput = formEl.querySelector('textarea[name="description"]') as HTMLTextAreaElement;
+      const formData = new FormData(event.currentTarget);
       
-      if (!nameInput || !slugInput || !categoryInput || !priceInput || !descriptionInput) {
-        throw new Error('Thiếu thông tin các trường dữ liệu');
-      }
-      
-      const productData = {
-        id: `prod-${Date.now()}`, // Tạo ID tạm thời
-        name: nameInput.value,
-        slug: slugInput.value,
-        description: descriptionInput.value,
-        longDescription: descriptionInput.value,
-        price: Number(priceInput.value) || 0,
+      const productData: Product = {
+        id: `prod-${Date.now()}`,
+        name: formData.get('name')?.toString() || '',
+        slug: formData.get('slug')?.toString() || '',
+        description: formData.get('description')?.toString() || '',
+        longDescription: formData.get('description')?.toString() || '',
+        price: Number(formData.get('price')) || 0,
         salePrice: 0,
-        categoryId: categoryInput.value,
-        imageUrl: '/images/products/placeholder-product.jpg',
-        isFeatured: true, // Đặt mặc định là true để hiển thị ở mục "Phần mềm nổi bật"
+        categoryId: formData.get('category')?.toString() || '',
+        imageUrl: formData.get('imageUrl')?.toString() || '/images/products/placeholder-product.jpg',
+        isFeatured: true,
         isNew: true,
         downloadCount: 0,
         viewCount: 0,
@@ -93,53 +86,43 @@ export default function AdminPage() {
         storeId: '1'
       };
       
-      // In ra log toàn bộ dữ liệu sản phẩm để kiểm tra
-      console.log('Dữ liệu sản phẩm chuẩn bị gửi:', JSON.stringify(productData, null, 2));
-      
-      // Kiểm tra dữ liệu bắt buộc
+      // Validation
       if (!productData.name || !productData.slug || !productData.categoryId || !productData.price) {
-        throw new Error('Vui lòng điền đầy đủ tất cả các trường bắt buộc');
+        throw new Error('Vui lòng điền đầy đủ thông tin sản phẩm');
       }
       
-      // Gửi API request để thêm sản phẩm
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(productData),
-        cache: 'no-store'
       });
       
-      console.log('Phản hồi từ API POST:', response.status);
-      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Lỗi từ API:', errorText);
-        throw new Error(`Lỗi khi thêm sản phẩm: ${response.status} - ${errorText}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message || `API trả về lỗi ${response.status}`
+        );
       }
       
-      // Đọc dữ liệu phản hồi
-      const data = await response.json();
-      
-      // Thêm sản phẩm thành công
-      console.log('Sản phẩm đã được thêm thành công:', data);
-      
-      // Lưu sản phẩm vừa thêm
-      setLastAddedProduct(data);
-      
-      // Hiển thị thông báo thành công
-      setSuccessMessage(`Sản phẩm "${data.name}" đã được thêm thành công!`);
-      
-      // Lấy lại danh sách sản phẩm mới nhất từ server
-      fetchProducts();
+      const result = await response.json();
+      setLastAddedProduct(result);
+      setSuccessMessage(`Sản phẩm "${result.name}" đã được thêm thành công!`);
       
       // Reset form
-      formEl.reset();
+      event.currentTarget.reset();
       
-    } catch (error: any) {
-      console.error('Lỗi khi đăng sản phẩm:', error);
-      setErrorMessage('Đã xảy ra lỗi khi thêm sản phẩm: ' + (error.message || 'Lỗi không xác định'));
+      // Refresh product list
+      fetchProducts();
+      
+      // Thông báo thành công và chuyển hướng
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 5000);
+    } catch (error) {
+      console.error('Lỗi khi thêm sản phẩm:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Lỗi không xác định');
     } finally {
       setIsLoading(false);
     }
@@ -149,7 +132,12 @@ export default function AdminPage() {
     const category = categories.find(c => c.id === categoryId);
     return category ? category.name : categoryId;
   };
-  
+
+  const addLog = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+    setLogMessages(prev => [...prev, { message, timestamp }]);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Quản lý sản phẩm</h1>
@@ -239,7 +227,7 @@ export default function AdminPage() {
                 Danh mục <span className="text-red-500">*</span>
               </label>
               <select
-                name="categoryId"
+                name="category"
                 className="w-full border rounded-md px-4 py-2"
                 required
               >
@@ -315,9 +303,7 @@ export default function AdminPage() {
               </span>
             ) : (
               <span className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
+                <ArrowPathIcon className="h-3 w-3 mr-1" />
                 Làm mới danh sách
               </span>
             )}
@@ -345,7 +331,7 @@ export default function AdminPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {products.map((product) => (
                   <tr key={product.id} className={lastAddedProduct && product.id === lastAddedProduct.id ? "bg-green-50" : ""}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{String(product.id).substring(0, 8)}...</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{product.name}</div>
                       <div className="text-sm text-gray-500">{product.slug}</div>
@@ -407,6 +393,24 @@ export default function AdminPage() {
             Về trang chủ để xem sản phẩm
           </a>
         </p>
+      </div>
+
+      {/* Nhật ký hoạt động */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold mb-4">Nhật ký hoạt động</h2>
+        <div className="bg-gray-100 p-4 rounded-md h-64 overflow-y-auto">
+          {logMessages.length > 0 ? (
+            <div className="space-y-2">
+              {logMessages.map((log, index) => (
+                <div key={index} className="text-sm">
+                  <span className="text-gray-500">[{log.timestamp}]</span> {log.message}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-16">Chưa có hoạt động nào được ghi nhận</p>
+          )}
+        </div>
       </div>
     </div>
   );
