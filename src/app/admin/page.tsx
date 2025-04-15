@@ -87,6 +87,8 @@ export default function AdminPage() {
   // Xử lý khi gửi form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Ngăn chặn submit HTML mặc định
+    e.stopPropagation(); // Ngăn chặn sự kiện lan truyền
+    
     try {
       setIsLoading(true);
       setErrorMessage('');
@@ -115,10 +117,14 @@ export default function AdminPage() {
       });
       console.log('Form data object:', formDataEntries);
       
-      console.log('Sending request to API endpoint: /api/products');
-      const response = await fetch('/api/products', {
+      // Quan trọng: Đường dẫn API endpoint chính xác
+      const apiEndpoint = '/api/products';
+      console.log('Sending request to API endpoint:', apiEndpoint);
+      
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         body: formData,
+        // Không thiết lập header Content-Type khi sử dụng FormData
       });
       
       console.log('Response status:', response.status);
@@ -130,7 +136,7 @@ export default function AdminPage() {
         setSuccessMessage(result.message || 'Sản phẩm đã được tạo thành công!');
         
         // Hiển thị URL file nếu có
-        if (result.data.fileUrl) {
+        if (result.data && result.data.fileUrl) {
           setFileUploadStatus(`File đã tải lên thành công: ${result.data.fileName}`);
         }
         
@@ -219,7 +225,19 @@ export default function AdminPage() {
                       </div>
                     )}
                     
-                    <form onSubmit={handleSubmit}>
+                    <form 
+                      id="productForm"
+                      method="POST" 
+                      action="/api/products" 
+                      encType="multipart/form-data"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!isLoading) {
+                          handleSubmit(e);
+                        }
+                      }}
+                      noValidate
+                    >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
@@ -459,6 +477,12 @@ export default function AdminPage() {
                           type="submit" 
                           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
                           disabled={isLoading}
+                          onClick={(e) => {
+                            if (isLoading) {
+                              e.preventDefault();
+                              return;
+                            }
+                          }}
                         >
                           {isLoading && (
                             <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
