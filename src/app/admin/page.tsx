@@ -6,7 +6,8 @@ import { Product } from '@/types';
 
 export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [lastAddedProduct, setLastAddedProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   
@@ -14,7 +15,8 @@ export default function AdminPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('/api/products');
+        // Thêm tham số timestamp để tránh cache
+        const response = await fetch(`/api/products?t=${new Date().getTime()}`);
         if (!response.ok) {
           throw new Error('Không thể lấy dữ liệu sản phẩm');
         }
@@ -36,9 +38,10 @@ export default function AdminPage() {
   }
   
   // Xử lý khi gửi form
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
+    setSuccessMessage('');
     
     // Tạo form data từ form
     const formData = new FormData(event.currentTarget);
@@ -67,39 +70,45 @@ export default function AdminPage() {
       storeId: '1'
     };
     
-    console.log('Đang gửi sản phẩm:', productData);
-    
-    // Gửi API request để thêm sản phẩm
-    fetch('/api/products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(productData),
-    })
-      .then(response => {
-        console.log('Phản hồi từ API:', response.status);
-        if (!response.ok) {
-          throw new Error('Lỗi khi thêm sản phẩm: ' + response.status);
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Thêm sản phẩm thành công
-        console.log('Sản phẩm đã được thêm:', data);
-        alert('Đã thêm sản phẩm thành công!');
-        setIsLoading(false);
-        
-        // Thêm sản phẩm mới vào danh sách
-        setProducts(prevProducts => [data, ...prevProducts]);
-        
-        event.currentTarget.reset();
-      })
-      .catch(error => {
-        console.error('Lỗi:', error);
-        alert('Đã xảy ra lỗi khi thêm sản phẩm! ' + error.message);
-        setIsLoading(false);
+    try {
+      console.log('Đang gửi sản phẩm:', productData);
+      
+      // Gửi API request để thêm sản phẩm
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
       });
+      
+      if (!response.ok) {
+        throw new Error('Lỗi khi thêm sản phẩm: ' + response.status);
+      }
+      
+      const data = await response.json();
+      
+      // Thêm sản phẩm thành công
+      console.log('Sản phẩm đã được thêm thành công:', data);
+      
+      // Lưu sản phẩm vừa thêm
+      setLastAddedProduct(data);
+      
+      // Hiển thị thông báo thành công
+      setSuccessMessage(`Sản phẩm "${data.name}" đã được thêm thành công!`);
+      
+      // Thêm sản phẩm mới vào danh sách
+      setProducts(prevProducts => [data, ...prevProducts]);
+      
+      // Reset form
+      event.currentTarget.reset();
+      
+    } catch (error: any) {
+      console.error('Lỗi:', error);
+      alert('Đã xảy ra lỗi khi thêm sản phẩm! ' + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   const getCategoryName = (categoryId: string) => {
@@ -111,10 +120,37 @@ export default function AdminPage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Quản lý sản phẩm</h1>
       
+      {/* Hiển thị thông báo thành công */}
+      {successMessage && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 flex items-center" role="alert">
+          <div className="flex-shrink-0 mr-2">
+            <svg className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div>
+            <p className="font-medium">{successMessage}</p>
+            {lastAddedProduct && (
+              <p className="text-sm">
+                ID: {lastAddedProduct.id} | Giá: {formatCurrency(lastAddedProduct.price)}
+              </p>
+            )}
+          </div>
+          <button 
+            className="absolute top-0 right-0 p-2" 
+            onClick={() => setSuccessMessage('')}
+          >
+            <svg className="h-4 w-4 text-green-700" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      )}
+      
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
         
-        <form method="POST" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label className="block mb-2 font-medium">
@@ -187,21 +223,62 @@ export default function AdminPage() {
             </div>
           </div>
           
-          <div className="mt-6">
+          <div className="mt-6 flex items-center space-x-4">
             <button 
               type="submit" 
-              className="px-4 py-2 bg-green-600 text-white rounded-md"
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md flex items-center"
               disabled={isLoading}
             >
+              {isLoading && (
+                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+              )}
               {isLoading ? 'Đang xử lý...' : 'Đăng sản phẩm'}
             </button>
+            
+            <div className="text-sm text-gray-500">
+              Sản phẩm sẽ được hiển thị ngay trong danh sách bên dưới
+            </div>
           </div>
         </form>
       </div>
       
       {/* Danh sách sản phẩm đã đăng */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">Sản phẩm đã đăng ({products.length})</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Sản phẩm đã đăng ({products.length})</h2>
+          
+          <button 
+            onClick={() => {
+              setLoadingProducts(true);
+              fetch(`/api/products?t=${new Date().getTime()}`)
+                .then(res => res.json())
+                .then(data => {
+                  setProducts(data);
+                  setLoadingProducts(false);
+                })
+                .catch(err => {
+                  console.error('Lỗi khi làm mới:', err);
+                  setLoadingProducts(false);
+                });
+            }}
+            className="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-sm flex items-center"
+            disabled={loadingProducts}
+          >
+            {loadingProducts ? (
+              <span className="flex items-center">
+                <div className="animate-spin h-3 w-3 border-2 border-blue-600 border-t-transparent rounded-full mr-1"></div>
+                Đang làm mới...
+              </span>
+            ) : (
+              <span className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Làm mới
+              </span>
+            )}
+          </button>
+        </div>
         
         {loadingProducts ? (
           <div className="text-center py-8">
@@ -223,7 +300,7 @@ export default function AdminPage() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {products.map((product) => (
-                  <tr key={product.id}>
+                  <tr key={product.id} className={lastAddedProduct && product.id === lastAddedProduct.id ? "bg-green-50" : ""}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{product.name}</div>
@@ -242,9 +319,15 @@ export default function AdminPage() {
                       {new Date(product.createdAt).toLocaleDateString('vi-VN')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Đang bán
-                      </span>
+                      {lastAddedProduct && product.id === lastAddedProduct.id ? (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Mới thêm
+                        </span>
+                      ) : (
+                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                          Đang bán
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -259,9 +342,15 @@ export default function AdminPage() {
       </div>
       
       <div className="text-center text-gray-500 py-4">
-        <p>Lưu ý: Sau khi thêm sản phẩm, cần đợi một lúc để trang chủ cập nhật dữ liệu mới.</p>
-        <p className="mt-2">
-          <a href="/" className="text-blue-500 hover:underline">Về trang chủ để xem sản phẩm</a>
+        <p className="mb-2">Lưu ý: Sản phẩm sẽ được lưu vào hệ thống ngay sau khi đăng thành công.</p>
+        <p className="mb-2">Nếu bạn muốn xem sản phẩm trên trang chủ, hãy click vào link bên dưới và nhấn "Làm mới dữ liệu".</p>
+        <p>
+          <a href="/" className="text-blue-500 hover:underline flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Về trang chủ để xem sản phẩm
+          </a>
         </p>
       </div>
     </div>
