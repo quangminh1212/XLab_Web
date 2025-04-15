@@ -218,26 +218,3 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.pem
-
-# Thêm các file được gen ra khi dự án đang chạy
-*.log
-uploads/
-tmp/
-dist/
-build/
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.vercel
-.turbo
-*.tsbuildinfo
-
-# Cloudinary related
-.cloudinary/
-.cloudinary-config.json
-
-# Các file tạm sinh ra khi upload
-/uploads/
-/temp/
-/tmp/

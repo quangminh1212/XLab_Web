@@ -19,11 +19,6 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   storeId: number | string;
-  fileUrl?: string;
-  fileName?: string;
-  fileSize?: number;
-  fileType?: string;
-  filePublicId?: string;
 }
 
 export interface Category {
