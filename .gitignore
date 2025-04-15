@@ -244,3 +244,6 @@ src/styles/tailwind-output.css
 # Hot-reload temp files
 .vercel
 .turbopack
+
+# data files
+src/data/userProducts.json
