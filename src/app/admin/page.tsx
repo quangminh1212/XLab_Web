@@ -43,6 +43,14 @@ const Spinner = ({ size = 'md' }: SpinnerProps) => {
   );
 };
 
+// Component hiển thị trạng thái đang tải
+const LoadingSpinner = () => (
+  <div className="text-center py-8">
+    <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+    <p>Đang tải dữ liệu...</p>
+  </div>
+);
+
 export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -196,9 +204,21 @@ export default function AdminPage() {
     );
   };
 
+  // Hàm xử lý chỉnh sửa sản phẩm
+  const handleEditProduct = (productId: string | number) => {
+    addLog(`Đang chỉnh sửa sản phẩm ID: ${String(productId)}`);
+    // Thêm chức năng chỉnh sửa sản phẩm sau
+  };
+
+  // Hàm xử lý xóa sản phẩm
+  const handleDeleteProduct = (productId: string | number) => {
+    addLog(`Đang xóa sản phẩm ID: ${String(productId)}`);
+    // Thêm chức năng xóa sản phẩm sau
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Quản lý sản phẩm</h1>
+      <h1 className="text-2xl font-bold mb-8">Quản lý sản phẩm</h1>
       
       {/* Hiển thị thông báo lỗi */}
       {errorMessage && (
@@ -249,7 +269,7 @@ export default function AdminPage() {
         </div>
       )}
       
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 className="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -337,142 +357,114 @@ export default function AdminPage() {
         </form>
       </div>
       
-      {/* Danh sách sản phẩm đã đăng */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      {/* Danh sách sản phẩm */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Sản phẩm đã đăng ({products.length})</h2>
-          
-          <button 
-            onClick={handleRefresh}
-            className="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-sm flex items-center hover:bg-blue-100"
-            disabled={loadingProducts}
-          >
-            {loadingProducts ? (
-              <span className="flex items-center">
-                <div className="animate-spin h-3 w-3 border-2 border-blue-600 border-t-transparent rounded-full mr-1"></div>
-                Đang làm mới...
-              </span>
-            ) : (
-              <span className="flex items-center">
-                <svg
-                  className="h-3 w-3 mr-1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                Làm mới danh sách
-              </span>
-            )}
-          </button>
+          <h2 className="text-xl font-semibold">Danh sách sản phẩm</h2>
+          <div className="flex items-center">
+            <span className="text-gray-500 mr-2">Tổng số:</span>
+            <span className="font-medium">{products.length} sản phẩm</span>
+          </div>
         </div>
         
-        {loadingProducts ? (
-          <div className="text-center py-8">
-            <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p>Đang tải danh sách sản phẩm...</p>
-          </div>
-        ) : products.length > 0 ? (
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên sản phẩm</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thể loại</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {products.map((product) => (
-                  <tr key={product.id} className={lastAddedProduct && product.id === lastAddedProduct.id ? "bg-green-50" : ""}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{String(product.id).substring(0, 8)}...</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                      <div className="text-sm text-gray-500">{product.slug}</div>
+                  <tr key={product.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 flex-shrink-0">
+                          {product.imageUrl ? (
+                            <img
+                              className="h-10 w-10 rounded-lg object-cover"
+                              src={product.imageUrl}
+                              alt={product.name}
+                            />
+                          ) : (
+                            <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
+                              <svg className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                          <div className="text-sm text-gray-500">{product.slug}</div>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {getCategoryName(product.categoryId)}
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        {getCategoryName(product.categoryId)}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
-                      {product.salePrice > 0 && (
-                        <div className="text-sm text-gray-500">{formatCurrency(product.salePrice)}</div>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {product.salePrice ? (
+                        <div>
+                          <span className="font-medium text-green-600">{formatCurrency(product.salePrice)}</span>
+                          <span className="ml-2 line-through text-gray-400">{formatCurrency(product.price)}</span>
+                        </div>
+                      ) : (
+                        <span>{formatCurrency(product.price)}</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(product.createdAt).toLocaleDateString('vi-VN')}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {lastAddedProduct && product.id === lastAddedProduct.id ? (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Mới thêm
-                        </span>
-                      ) : (
-                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                          Đang bán
-                        </span>
-                      )}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="flex space-x-2">
+                        <button 
+                          onClick={() => handleEditProduct(product.id)}
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          Sửa
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteProduct(product.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Xóa
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        ) : (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-            </svg>
-            <h3 className="text-lg font-medium text-gray-500 mb-1">Chưa có sản phẩm nào</h3>
-            <p className="text-gray-500">Sử dụng form bên trên để thêm sản phẩm mới</p>
-          </div>
         )}
       </div>
       
-      {products.length > 0 && (
-        <div className="text-center bg-blue-50 rounded-lg p-4 text-blue-700 mb-8">
-          <p className="font-medium mb-2">Đã tìm thấy {products.length} sản phẩm trong hệ thống</p>
-          <p className="text-sm">Các sản phẩm đã được lưu vĩnh viễn và sẽ không bị mất khi làm mới trang</p>
-        </div>
-      )}
-      
-      <div className="text-center text-gray-500 py-4">
-        <p className="mb-2">Lưu ý: Sản phẩm sẽ được lưu vào hệ thống ngay sau khi đăng thành công.</p>
-        <p className="mb-2">Nếu bạn muốn xem sản phẩm trên trang chủ, hãy click vào link bên dưới và nhấn "Làm mới dữ liệu".</p>
-        <p>
-          <a href="/" className="text-blue-500 hover:underline flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            Về trang chủ để xem sản phẩm
-          </a>
-        </p>
-      </div>
-
-      {/* Nhật ký hoạt động */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      {/* Nhật ký */}
+      <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Nhật ký hoạt động</h2>
-        <div className="bg-gray-100 p-4 rounded-md h-64 overflow-y-auto">
-          {logMessages.length > 0 ? (
-            <div className="space-y-2">
-              {logMessages.map((log, index) => (
-                <div key={index} className="text-sm">
-                  <span className="text-gray-500">[{log.timestamp}]</span> {log.message}
-                </div>
-              ))}
+        <div className="space-y-3">
+          {logMessages.map((log, index) => (
+            <div key={index} className="p-3 bg-gray-50 rounded-lg">
+              <p className="text-sm">
+                <span className="font-medium">{log.timestamp}: </span>
+                {log.message}
+              </p>
             </div>
-          ) : (
-            <p className="text-gray-500 text-center py-16">Chưa có hoạt động nào được ghi nhận</p>
+          ))}
+          {logMessages.length === 0 && (
+            <p className="text-gray-500 italic">Chưa có hoạt động nào được ghi lại.</p>
           )}
         </div>
       </div>
