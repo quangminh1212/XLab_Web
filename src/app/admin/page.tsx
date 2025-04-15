@@ -95,27 +95,36 @@ export default function AdminPage() {
       setSuccessMessage('');
       setFileUploadStatus('Đang tải lên...');
       
-      const formData = new FormData(e.currentTarget);
+      // Tạo FormData từ form element
+      const form = e.currentTarget;
+      const formData = new FormData();
+      
+      // Lấy tất cả input fields từ form
+      const formElements = Array.from(form.elements) as HTMLFormElement[];
+      
+      // Thêm các field vào FormData
+      formElements.forEach((element) => {
+        if (element.name && element.name !== 'file') {
+          // Kiểm tra xem có phải là checkbox không
+          if (element.type === 'checkbox') {
+            formData.append(element.name, element.checked ? 'on' : 'off');
+          } else if (element.value) {
+            formData.append(element.name, element.value);
+          }
+        }
+      });
       
       // Thêm file vào formData nếu có
       if (file) {
         console.log('Appending file to form data:', file.name, file.size, file.type);
-        formData.delete('file'); // Xóa file cũ nếu có
         formData.append('file', file);
       }
       
       // Debug: Kiểm tra form data
       console.log('Form data being submitted:');
-      const formDataEntries: Record<string, any> = {};
       formData.forEach((value, key) => {
         console.log(`${key}: ${typeof value === 'object' ? 'File Object' : value}`);
-        if (key !== 'file') {
-          formDataEntries[key] = value;
-        } else {
-          formDataEntries[key] = 'FILE_OBJECT';
-        }
       });
-      console.log('Form data object:', formDataEntries);
       
       // Quan trọng: Đường dẫn API endpoint chính xác
       const apiEndpoint = '/api/products';
@@ -128,10 +137,15 @@ export default function AdminPage() {
       });
       
       console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
       const result = await response.json();
       console.log('API response:', result);
       
-      if (response.ok) {
+      if (result.success) {
         // Hiển thị thông báo thành công
         setSuccessMessage(result.message || 'Sản phẩm đã được tạo thành công!');
         
@@ -141,7 +155,7 @@ export default function AdminPage() {
         }
         
         // Reset form sau khi submit thành công
-        e.currentTarget.reset();
+        form.reset();
         setFile(null);
         setFilePreview('');
         
@@ -151,10 +165,6 @@ export default function AdminPage() {
       } else {
         // Hiển thị lỗi nếu request không thành công
         setErrorMessage(result.message || 'Có lỗi xảy ra khi tạo sản phẩm');
-        if (result.error) {
-          console.error('Error details:', result.error);
-          setErrorMessage(`${result.message}: ${result.error}`);
-        }
         setFileUploadStatus('Tải lên thất bại');
       }
     } catch (error) {
@@ -227,15 +237,8 @@ export default function AdminPage() {
                     
                     <form 
                       id="productForm"
-                      method="POST" 
-                      action="/api/products" 
                       encType="multipart/form-data"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        if (!isLoading) {
-                          handleSubmit(e);
-                        }
-                      }}
+                      onSubmit={handleSubmit}
                       noValidate
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

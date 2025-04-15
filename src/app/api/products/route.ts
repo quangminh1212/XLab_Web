@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     console.log('--------------- START POST /api/products ---------------');
     console.log('Received POST request to /api/products');
+    console.log('Request headers:', Object.fromEntries(request.headers.entries()));
     console.log('Current products count:', mockProducts.length);
     
     // Kiểm tra Content-Type
@@ -31,13 +32,19 @@ export async function POST(request: NextRequest) {
     } else if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
       // Nếu là form data
       console.log('Processing as form data');
-      const formData = await request.formData().catch(err => {
+      let formData;
+      
+      try {
+        formData = await request.formData();
+        console.log('Form data parsed successfully');
+      } catch (err) {
         console.error('Error parsing form data:', err);
-        throw new Error('Invalid form data');
-      });
+        throw new Error('Invalid form data: ' + (err instanceof Error ? err.message : String(err)));
+      }
       
       // Debug: Log tất cả các keys trong formData
-      console.log('Form data keys:', Array.from(formData.keys()));
+      const formDataKeys = Array.from(formData.keys());
+      console.log('Form data keys:', formDataKeys);
       
       // Tách file và các trường dữ liệu khác
       const file = formData.get('file') as File | null;
@@ -112,10 +119,13 @@ export async function POST(request: NextRequest) {
     console.log('Processed product data:', productData);
     
     // Kiểm tra các trường bắt buộc
-    if (!productData.name || !productData.slug || !productData.description) {
-      console.error('Missing required fields');
+    const requiredFields = ['name', 'slug', 'description'];
+    const missingFields = requiredFields.filter(field => !productData[field]);
+    
+    if (missingFields.length > 0) {
+      console.error('Missing required fields:', missingFields);
       return NextResponse.json(
-        { success: false, message: 'Thiếu thông tin bắt buộc' },
+        { success: false, message: `Thiếu các trường bắt buộc: ${missingFields.join(', ')}` },
         { status: 400 }
       );
     }
