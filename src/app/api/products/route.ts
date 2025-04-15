@@ -100,6 +100,12 @@ export async function POST(request: NextRequest) {
       productData.viewCount = 0;
       productData.rating = 0;
       
+      console.log('Processed fields:');
+      console.log('- price:', productData.price);
+      console.log('- salePrice:', productData.salePrice);
+      console.log('- isFeatured:', productData.isFeatured);
+      console.log('- isNew:', productData.isNew);
+      
       // Thêm thông tin file vào productData nếu có
       if (fileData) {
         productData.fileUrl = fileData.fileUrl;

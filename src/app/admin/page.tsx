@@ -149,6 +149,7 @@ export default function AdminPage() {
                       id="productForm"
                       encType="multipart/form-data"
                       ref={formRef}
+                      onSubmit={(e) => e.preventDefault()}
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -385,103 +386,124 @@ export default function AdminPage() {
                       </div>
                       
                       <div className="mt-6 flex justify-end space-x-4">
-                        {/* Button chính */}
+                        {/* Button đăng sản phẩm */}
                         <button 
-                          type="button" 
+                          type="button"
                           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
                           disabled={isLoading}
-                          onClick={async () => {
-                            console.log('Submit button clicked');
-                            try {
-                              // Lấy form
-                              const form = formRef.current;
-                              if (!form) {
-                                console.error('Form reference not found');
-                                return;
-                              }
-                              
-                              // Kiểm tra tính hợp lệ của form
-                              const isValid = Array.from(form.elements).every((element: any) => {
-                                if (element.hasAttribute('required') && !element.value && element.type !== 'checkbox' && element.type !== 'file') {
-                                  alert(`Vui lòng điền trường ${element.name}`);
-                                  element.focus();
-                                  return false;
-                                }
-                                return true;
-                              });
-                              
-                              if (!isValid) {
-                                return;
-                              }
-                              
-                              setIsLoading(true);
-                              setErrorMessage('');
-                              setSuccessMessage('');
-                              setFileUploadStatus('Đang tải lên...');
-                              
-                              // Tạo FormData
-                              const formData = new FormData(form);
-                              
-                              // Xử lý các checkbox
-                              const featuredCheckbox = form.querySelector('#product-featured') as HTMLInputElement;
-                              const newCheckbox = form.querySelector('#product-new') as HTMLInputElement;
-                              
-                              if (featuredCheckbox) {
-                                formData.set('isFeatured', featuredCheckbox.checked ? 'on' : 'off');
-                                console.log('isFeatured:', featuredCheckbox.checked ? 'on' : 'off');
-                              }
-                              
-                              if (newCheckbox) {
-                                formData.set('isNew', newCheckbox.checked ? 'on' : 'off');
-                                console.log('isNew:', newCheckbox.checked ? 'on' : 'off');
-                              }
-                              
-                              // Thêm file nếu có
-                              if (file) {
-                                formData.append('file', file);
-                                console.log('File added:', file.name);
-                              }
-                              
-                              // In ra tất cả các giá trị trong FormData để debug
-                              console.log('Form data being submitted:');
-                              formData.forEach((value, key) => {
-                                console.log(`${key}: ${value instanceof File ? 'File: ' + value.name : value}`);
-                              });
-                              
-                              // Gửi request
-                              const response = await fetch('/api/products', {
-                                method: 'POST',
-                                body: formData
-                              });
-                              
+                          onClick={() => {
+                            if (isLoading) return;
+                            
+                            console.log('Button clicked');
+                            
+                            // Bắt đầu loading
+                            setIsLoading(true);
+                            setErrorMessage('');
+                            setSuccessMessage('');
+                            setFileUploadStatus('Đang tải lên...');
+                            
+                            // Lấy form và tạo FormData
+                            const form = formRef.current;
+                            if (!form) {
+                              console.error('Form not found');
+                              setIsLoading(false);
+                              return;
+                            }
+                            
+                            const formData = new FormData();
+                            
+                            // Lấy giá trị từ tất cả fields
+                            const nameInput = form.querySelector('#product-name') as HTMLInputElement;
+                            const slugInput = form.querySelector('#product-slug') as HTMLInputElement;
+                            const categoryInput = form.querySelector('#product-category') as HTMLSelectElement;
+                            const priceInput = form.querySelector('#product-price') as HTMLInputElement;
+                            const salePriceInput = form.querySelector('#product-sale-price') as HTMLInputElement;
+                            const versionInput = form.querySelector('#product-version') as HTMLInputElement;
+                            const descriptionInput = form.querySelector('#product-description') as HTMLTextAreaElement;
+                            const longDescriptionInput = form.querySelector('#product-long-description') as HTMLTextAreaElement;
+                            const imageUrlInput = form.querySelector('#product-image-url') as HTMLInputElement;
+                            const sizeInput = form.querySelector('#product-size') as HTMLInputElement;
+                            const licenseInput = form.querySelector('#product-license') as HTMLSelectElement;
+                            const featuredInput = form.querySelector('#product-featured') as HTMLInputElement;
+                            const newInput = form.querySelector('#product-new') as HTMLInputElement;
+                            
+                            // Kiểm tra các trường bắt buộc
+                            if (!nameInput.value || !slugInput.value || !categoryInput.value || 
+                                !priceInput.value || !versionInput.value || !descriptionInput.value || 
+                                !longDescriptionInput.value || !imageUrlInput.value || 
+                                !sizeInput.value || !licenseInput.value) {
+                              setErrorMessage('Vui lòng điền đầy đủ các trường bắt buộc');
+                              setIsLoading(false);
+                              return;
+                            }
+                            
+                            // Thêm dữ liệu vào FormData
+                            formData.append('name', nameInput.value);
+                            formData.append('slug', slugInput.value);
+                            formData.append('categoryId', categoryInput.value);
+                            formData.append('price', priceInput.value);
+                            if (salePriceInput.value) {
+                              formData.append('salePrice', salePriceInput.value);
+                            }
+                            formData.append('version', versionInput.value);
+                            formData.append('description', descriptionInput.value);
+                            formData.append('longDescription', longDescriptionInput.value);
+                            formData.append('imageUrl', imageUrlInput.value);
+                            formData.append('size', sizeInput.value);
+                            formData.append('licenseType', licenseInput.value);
+                            formData.append('isFeatured', featuredInput.checked ? 'on' : 'off');
+                            formData.append('isNew', newInput.checked ? 'on' : 'off');
+                            
+                            // Thêm file nếu có
+                            if (file) {
+                              formData.append('file', file);
+                              console.log('Added file:', file.name);
+                            }
+                            
+                            // In log để debug
+                            console.log('Submitting form data:');
+                            formData.forEach((value, key) => {
+                              console.log(`- ${key}: ${value instanceof File ? `File: ${value.name}` : value}`);
+                            });
+                            
+                            // Gửi request đến API
+                            fetch('/api/products', {
+                              method: 'POST',
+                              body: formData,
+                            })
+                            .then(response => {
+                              console.log('Response status:', response.status);
                               if (!response.ok) {
-                                throw new Error(`Lỗi: ${response.status}`);
+                                throw new Error(`HTTP error! Status: ${response.status}`);
                               }
-                              
-                              const result = await response.json();
-                              
-                              if (result.success) {
+                              return response.json();
+                            })
+                            .then(data => {
+                              console.log('API response:', data);
+                              if (data.success) {
                                 setSuccessMessage('Sản phẩm đã được tạo thành công!');
-                                if (result.data && result.data.fileUrl) {
-                                  setFileUploadStatus(`File đã tải lên thành công: ${result.data.fileName}`);
-                                } else {
-                                  setFileUploadStatus('Tạo sản phẩm thành công nhưng không có file đính kèm');
-                                }
+                                setFileUploadStatus(data.data?.fileUrl 
+                                  ? `File đã tải lên thành công: ${data.data.fileName}` 
+                                  : 'Sản phẩm đã được tạo mà không có file');
+                                
+                                // Reset form
                                 form.reset();
                                 setFile(null);
                                 setFilePreview('');
+                                
+                                // Tải lại danh sách sản phẩm
                                 loadProducts();
                               } else {
-                                setErrorMessage(result.message || 'Có lỗi xảy ra');
-                                setFileUploadStatus('Tải lên thất bại');
+                                setErrorMessage(data.message || 'Có lỗi xảy ra khi tạo sản phẩm');
                               }
-                            } catch (error) {
+                            })
+                            .catch(error => {
                               console.error('Error:', error);
-                              setErrorMessage(error instanceof Error ? error.message : 'Đã xảy ra lỗi');
-                              setFileUploadStatus('Tải lên thất bại: ' + (error instanceof Error ? error.message : 'Lỗi không xác định'));
-                            } finally {
+                              setErrorMessage(error.message || 'Đã xảy ra lỗi không xác định');
+                            })
+                            .finally(() => {
                               setIsLoading(false);
-                            }
+                            });
                           }}
                         >
                           {isLoading && (
@@ -491,6 +513,61 @@ export default function AdminPage() {
                             </svg>
                           )}
                           Đăng sản phẩm
+                        </button>
+                        
+                        {/* Button đơn giản */}
+                        <button 
+                          type="button"
+                          className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                          disabled={isLoading}
+                          onClick={() => {
+                            if (isLoading) return;
+                            
+                            // Lấy form và gửi request đơn giản nhất
+                            const form = formRef.current;
+                            if (!form) return;
+                            
+                            const formData = new FormData(form);
+                            
+                            // Thêm checkbox
+                            const featured = document.getElementById('product-featured') as HTMLInputElement;
+                            const newProduct = document.getElementById('product-new') as HTMLInputElement;
+                            
+                            formData.set('isFeatured', featured.checked ? 'on' : 'off');
+                            formData.set('isNew', newProduct.checked ? 'on' : 'off');
+                            
+                            // Thêm file
+                            if (file) {
+                              formData.set('file', file);
+                            }
+                            
+                            // Gửi yêu cầu
+                            setIsLoading(true);
+                            fetch('/api/products', {
+                              method: 'POST',
+                              body: formData
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                              if (data.success) {
+                                alert('Thành công!');
+                                form.reset();
+                                setFile(null);
+                                setFilePreview('');
+                                loadProducts();
+                              } else {
+                                alert('Lỗi: ' + data.message);
+                              }
+                            })
+                            .catch(err => {
+                              alert('Lỗi: ' + err.message);
+                            })
+                            .finally(() => {
+                              setIsLoading(false);
+                            });
+                          }}
+                        >
+                          Đăng đơn giản
                         </button>
                       </div>
                     </form>
