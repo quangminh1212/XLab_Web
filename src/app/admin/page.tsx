@@ -1,27 +1,66 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { categories } from '@/data/mockData';
 import { Product } from '@/types';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { formatCurrency } from '@/lib/utils';
+
+// Simple spinner component
+interface SpinnerProps {
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const Spinner = ({ size = 'md' }: SpinnerProps) => {
+  const sizeClass = {
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
+    lg: 'w-8 h-8'
+  }[size];
+  
+  return (
+    <svg 
+      className={`animate-spin ${sizeClass} text-white`} 
+      xmlns="http://www.w3.org/2000/svg" 
+      fill="none" 
+      viewBox="0 0 24 24"
+    >
+      <circle 
+        className="opacity-25" 
+        cx="12" 
+        cy="12" 
+        r="10" 
+        stroke="currentColor" 
+        strokeWidth="4"
+      />
+      <path 
+        className="opacity-75" 
+        fill="currentColor" 
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      />
+    </svg>
+  );
+};
 
 export default function AdminPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [lastAddedProduct, setLastAddedProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [logMessages, setLogMessages] = useState<{ message: string; timestamp: string }[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   
   // Lấy danh sách sản phẩm từ API khi component được tải
   const fetchProducts = async () => {
-    setIsLoading(true);
-    setSuccessMessage('');
+    setLoading(true);
     setErrorMessage('');
     setLoadingProducts(true);
     setLastAddedProduct(null);
+    
+    addLog('Đang tải danh sách sản phẩm từ API...');
     
     try {
       const response = await fetch('/api/products');
@@ -31,65 +70,53 @@ export default function AdminPage() {
       }
       
       const data = await response.json();
-      setProducts(data);
+      // Sắp xếp sản phẩm theo thời gian tạo mới nhất
+      const sortedProducts = data.sort((a: any, b: any) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      setProducts(sortedProducts);
       setLoadingProducts(false);
-      setSuccessMessage(`Đã tải ${data.length} sản phẩm thành công`);
+      addLog(`Đã tải ${data.length} sản phẩm thành công`);
     } catch (error) {
       console.error('Lỗi khi tải sản phẩm:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Lỗi không xác định');
       setLoadingProducts(false);
+      addLog(`Lỗi khi tải sản phẩm: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
   
   // Tải danh sách sản phẩm khi component được tải
   useEffect(() => {
     fetchProducts();
-  }, []);
-  
-  // Chuyển đổi số thành định dạng tiền tệ
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
-  }
+  }, [refreshTrigger]);
   
   // Xử lý khi gửi form
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
-    setSuccessMessage('');
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
     setErrorMessage('');
     
+    addLog('Đang xử lý form thêm sản phẩm mới...');
+    
     try {
-      const formData = new FormData(event.currentTarget);
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      const formValues = Object.fromEntries(formData.entries());
       
-      const productData: Product = {
-        id: `prod-${Date.now()}`,
-        name: formData.get('name')?.toString() || '',
-        slug: formData.get('slug')?.toString() || '',
-        description: formData.get('description')?.toString() || '',
-        longDescription: formData.get('description')?.toString() || '',
-        price: Number(formData.get('price')) || 0,
-        salePrice: 0,
-        categoryId: formData.get('category')?.toString() || '',
-        imageUrl: formData.get('imageUrl')?.toString() || '/images/products/placeholder-product.jpg',
-        isFeatured: true,
-        isNew: true,
-        downloadCount: 0,
-        viewCount: 0,
-        rating: 0,
-        version: '1.0',
-        size: '10MB',
-        licenseType: 'Standard',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        storeId: '1'
+      // Chuyển đổi giá trị form thành đối tượng sản phẩm
+      const productData = {
+        name: String(formValues.name || ''),
+        slug: String(formValues.slug || ''),
+        description: String(formValues.description || ''),
+        price: parseFloat(String(formValues.price || '0')),
+        categoryId: parseInt(String(formValues.categoryId || '1')),
+        isFeatured: true, // Mặc định là true để hiển thị trên trang chủ
       };
       
-      // Validation
-      if (!productData.name || !productData.slug || !productData.categoryId || !productData.price) {
-        throw new Error('Vui lòng điền đầy đủ thông tin sản phẩm');
-      }
+      console.log('Đang gửi dữ liệu sản phẩm:', productData);
       
       const response = await fetch('/api/products', {
         method: 'POST',
@@ -100,31 +127,34 @@ export default function AdminPage() {
       });
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        throw new Error(
-          errorData?.message || `API trả về lỗi ${response.status}`
-        );
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Không thể thêm sản phẩm');
       }
       
-      const result = await response.json();
-      setLastAddedProduct(result);
-      setSuccessMessage(`Sản phẩm "${result.name}" đã được thêm thành công!`);
+      const data = await response.json();
+      console.log('Sản phẩm đã được thêm thành công:', data);
+      
+      // Cập nhật danh sách sản phẩm luôn
+      setProducts(prevProducts => [data, ...prevProducts]);
+      setLastAddedProduct(data);
+      setSuccess(true);
       
       // Reset form
-      event.currentTarget.reset();
+      form.reset();
       
-      // Refresh product list
-      fetchProducts();
-      
-      // Thông báo thành công và chuyển hướng
+      // Tự động đóng thông báo sau 5 giây
       setTimeout(() => {
-        setSuccessMessage('');
+        setSuccess(false);
+        setErrorMessage('');
       }, 5000);
+      
+      addLog(`Sản phẩm đã được thêm thành công! ID: ${data.id}`);
     } catch (error) {
       console.error('Lỗi khi thêm sản phẩm:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Lỗi không xác định');
+      addLog(`Lỗi khi thêm sản phẩm: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
   
@@ -137,6 +167,29 @@ export default function AdminPage() {
     const timestamp = new Date().toLocaleTimeString();
     setLogMessages(prev => [...prev, { message, timestamp }]);
   };
+
+  // Hàm refresh danh sách sản phẩm
+  const handleRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
+
+  // Kết xuất button với spinner
+  const renderSubmitButton = () => (
+    <button 
+      type="submit" 
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      disabled={loading}
+    >
+      {loading ? (
+        <>
+          <Spinner size="sm" />
+          <span className="ml-2">Đang xử lý...</span>
+        </>
+      ) : (
+        'Thêm sản phẩm'
+      )}
+    </button>
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -165,7 +218,7 @@ export default function AdminPage() {
       )}
       
       {/* Hiển thị thông báo thành công */}
-      {successMessage && (
+      {success && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6 flex items-center" role="alert">
           <div className="flex-shrink-0 mr-2">
             <svg className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
@@ -173,7 +226,7 @@ export default function AdminPage() {
             </svg>
           </div>
           <div>
-            <p className="font-medium">{successMessage}</p>
+            <p className="font-medium">Sản phẩm đã được thêm thành công!</p>
             {lastAddedProduct && (
               <p className="text-sm">
                 ID: {lastAddedProduct.id} | Giá: {formatCurrency(lastAddedProduct.price)}
@@ -182,7 +235,7 @@ export default function AdminPage() {
           </div>
           <button 
             className="absolute top-0 right-0 p-2" 
-            onClick={() => setSuccessMessage('')}
+            onClick={() => setSuccess(false)}
           >
             <svg className="h-4 w-4 text-green-700" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -194,94 +247,86 @@ export default function AdminPage() {
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
         
-        <form onSubmit={handleSubmit} method="POST">
-          <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-medium">
-                Tên phần mềm <span className="text-red-500">*</span>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Tên sản phẩm *
               </label>
               <input
                 type="text"
+                id="name"
                 name="name"
-                placeholder="Ví dụ: XLab Office Suite"
-                className="w-full border rounded-md px-4 py-2"
                 required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Nhập tên sản phẩm"
               />
             </div>
             
             <div>
-              <label className="block mb-2 font-medium">
-                Slug <span className="text-red-500">*</span>
+              <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+                Slug (URL) *
               </label>
               <input
                 type="text"
+                id="slug"
                 name="slug"
-                placeholder="Ví dụ: xlab-office-suite"
-                className="w-full border rounded-md px-4 py-2"
                 required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="ten-san-pham"
               />
             </div>
             
             <div>
-              <label className="block mb-2 font-medium">
-                Danh mục <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="category"
-                className="w-full border rounded-md px-4 py-2"
-                required
-              >
-                <option value="">-- Chọn danh mục --</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block mb-2 font-medium">
-                Giá (VNĐ) <span className="text-red-500">*</span>
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                Giá (VNĐ) *
               </label>
               <input
                 type="number"
+                id="price"
                 name="price"
-                placeholder="Ví dụ: 1200000"
-                className="w-full border rounded-md px-4 py-2"
                 required
+                min="0"
+                step="1000"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Nhập giá sản phẩm"
               />
             </div>
             
             <div>
-              <label className="block mb-2 font-medium">
-                Mô tả <span className="text-red-500">*</span>
+              <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-1">
+                Danh mục *
               </label>
-              <textarea
-                name="description"
-                rows={3}
-                placeholder="Mô tả sản phẩm của bạn"
-                className="w-full border rounded-md px-4 py-2"
+              <select
+                id="categoryId"
+                name="categoryId"
                 required
-              ></textarea>
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="1">Học tập</option>
+                <option value="2">Văn phòng</option>
+                <option value="3">Phần mềm</option>
+                <option value="4">Thiết kế</option>
+              </select>
             </div>
           </div>
           
-          <div className="mt-6 flex items-center space-x-4">
-            <button 
-              type="submit" 
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md flex items-center"
-              disabled={isLoading}
-            >
-              {isLoading && (
-                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-              )}
-              {isLoading ? 'Đang xử lý...' : 'Đăng sản phẩm'}
-            </button>
-            
-            <div className="text-sm text-gray-500">
-              Sản phẩm sẽ được hiển thị ngay trong danh sách bên dưới
-            </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              Mô tả *
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              required
+              rows={4}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Nhập mô tả sản phẩm"
+            ></textarea>
+          </div>
+          
+          <div className="flex justify-end">
+            {renderSubmitButton()}
           </div>
         </form>
       </div>
@@ -292,7 +337,7 @@ export default function AdminPage() {
           <h2 className="text-xl font-semibold">Sản phẩm đã đăng ({products.length})</h2>
           
           <button 
-            onClick={fetchProducts}
+            onClick={handleRefresh}
             className="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-sm flex items-center hover:bg-blue-100"
             disabled={loadingProducts}
           >
