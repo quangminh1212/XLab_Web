@@ -232,3 +232,12 @@ build/
 .vercel
 .turbo
 *.tsbuildinfo
+
+# Cloudinary related
+.cloudinary/
+.cloudinary-config.json
+
+# Các file tạm sinh ra khi upload
+/uploads/
+/temp/
+/tmp/
