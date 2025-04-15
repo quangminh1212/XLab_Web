@@ -19,18 +19,16 @@ export default function ProductsPage() {
     // Mô phỏng việc lấy sản phẩm từ API
     const fetchProducts = async () => {
       try {
-        // Giả lập gọi API
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        setLoading(true);
+        // Gọi API thực tế để lấy sản phẩm
+        const response = await fetch('/api/products?t=' + new Date().getTime());
         
-        // Mô phỏng lỗi khi không tải được dữ liệu (ngẫu nhiên để test)
-        const shouldFail = false; // Đặt thành true để test trạng thái lỗi
-        
-        if (shouldFail) {
+        if (!response.ok) {
           throw new Error('Không thể kết nối đến máy chủ');
         }
         
-        // Hiện tại để trống danh sách sản phẩm
-        setProducts([]);
+        const data = await response.json();
+        setProducts(data);
         setLoading(false);
       } catch (err: any) {
         console.error('Lỗi khi tải sản phẩm:', err);
