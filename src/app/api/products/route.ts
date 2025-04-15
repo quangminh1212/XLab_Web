@@ -1,138 +1,159 @@
-import { NextResponse } from 'next/server';
-import { products as mockProducts } from '@/data/mockData';
+import { NextRequest, NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
 import { Product } from '@/types';
-import * as fs from 'fs';
-import * as path from 'path';
+import { products as mockProducts } from '@/data/mockData';
 
-// Đường dẫn đến file JSON để lưu sản phẩm
-const DATA_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'userProducts.json');
+// Đường dẫn đến file lưu dữ liệu sản phẩm
+const DATA_FILE_PATH = path.join(process.cwd(), 'src/data/userProducts.json');
 
-// Khởi tạo file JSON nếu chưa tồn tại
+// Hàm khởi tạo file dữ liệu nếu chưa tồn tại
 function initializeDataFile() {
   try {
-    console.log('Kiểm tra file dữ liệu tại:', DATA_FILE_PATH);
-    
+    // Tạo thư mục nếu chưa tồn tại
+    const dirPath = path.dirname(DATA_FILE_PATH);
+    if (!fs.existsSync(dirPath)) {
+      console.log(`[API] Creating directory: ${dirPath}`);
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+
+    // Kiểm tra xem file có tồn tại không
     if (!fs.existsSync(DATA_FILE_PATH)) {
-      console.log('File dữ liệu không tồn tại, đang tạo file mới...');
-      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(mockProducts, null, 2), 'utf8');
-      console.log('Đã tạo file dữ liệu sản phẩm mới thành công');
+      console.log(`[API] Data file does not exist, creating: ${DATA_FILE_PATH}`);
+      // Tạo file với dữ liệu mẫu ban đầu
+      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(mockProducts, null, 2));
+      console.log(`[API] Data file created successfully with ${mockProducts.length} mock products`);
     } else {
-      console.log('File dữ liệu đã tồn tại');
-      
-      // Kiểm tra xem file có thể đọc/ghi không
-      try {
-        fs.accessSync(DATA_FILE_PATH, fs.constants.R_OK | fs.constants.W_OK);
-        console.log('File dữ liệu có quyền đọc/ghi');
-      } catch (err) {
-        console.error('File dữ liệu không có quyền đọc/ghi:', err);
-      }
+      console.log(`[API] Data file already exists: ${DATA_FILE_PATH}`);
     }
   } catch (error) {
-    console.error('Lỗi khi khởi tạo file dữ liệu:', error);
+    console.error('[API] Error initializing data file:', error);
+    throw error;
   }
 }
 
-// Đọc dữ liệu sản phẩm từ file
-function readProductsFromFile() {
+// Hàm đọc sản phẩm từ file
+function readProductsFromFile(): Product[] {
   try {
-    if (!fs.existsSync(DATA_FILE_PATH)) {
-      console.log('File dữ liệu không tồn tại, đang khởi tạo...');
-      initializeDataFile();
-      return [...mockProducts];
-    }
+    // Đảm bảo file tồn tại
+    initializeDataFile();
     
-    console.log('Đang đọc dữ liệu từ file:', DATA_FILE_PATH);
-    const data = fs.readFileSync(DATA_FILE_PATH, 'utf8');
-    
-    try {
-      const products = JSON.parse(data);
-      console.log(`Đã đọc ${products.length} sản phẩm từ file`);
-      return products;
-    } catch (parseError) {
-      console.error('Lỗi khi phân tích dữ liệu JSON:', parseError);
-      console.log('Đang trả về dữ liệu mẫu...');
-      return [...mockProducts];
-    }
+    console.log(`[API] Reading products from file: ${DATA_FILE_PATH}`);
+    const data = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
+    const products = JSON.parse(data) as Product[];
+    console.log(`[API] Successfully read ${products.length} products from file`);
+    return products;
   } catch (error) {
-    console.error('Lỗi khi đọc file dữ liệu:', error);
-    return [...mockProducts];
+    console.error('[API] Error reading products from file:', error);
+    // Trả về mảng rỗng nếu có lỗi
+    return [];
   }
 }
 
-// Ghi dữ liệu sản phẩm vào file
+// Hàm ghi sản phẩm vào file
 function writeProductsToFile(products: Product[]) {
   try {
-    console.log(`Đang ghi ${products.length} sản phẩm vào file...`);
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(products, null, 2), 'utf8');
-    console.log('Đã lưu dữ liệu sản phẩm vào file thành công');
+    // Đảm bảo thư mục tồn tại
+    const dirPath = path.dirname(DATA_FILE_PATH);
+    if (!fs.existsSync(dirPath)) {
+      console.log(`[API] Creating directory: ${dirPath}`);
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    
+    console.log(`[API] Writing ${products.length} products to file: ${DATA_FILE_PATH}`);
+    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(products, null, 2));
+    console.log(`[API] Products written to file successfully`);
   } catch (error) {
-    console.error('Lỗi khi ghi dữ liệu vào file:', error);
+    console.error('[API] Error writing products to file:', error);
+    throw error;
   }
 }
 
-// Đảm bảo file dữ liệu tồn tại khi khởi động
-console.log('Khởi tạo API Products route...');
-initializeDataFile();
-
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const timestamp = url.searchParams.get('t') || '';
-  console.log(`Nhận request GET đến /api/products (timestamp: ${timestamp})`);
-  
+// GET API - Lấy danh sách sản phẩm
+export async function GET(request: NextRequest) {
+  console.log('[API] GET /api/products - Fetching all products');
   try {
-    // Đọc dữ liệu sản phẩm từ file
+    // Đọc sản phẩm từ file
     const products = readProductsFromFile();
-    console.log(`Trả về ${products.length} sản phẩm`);
+    
+    console.log(`[API] Returning ${products.length} products`);
     return NextResponse.json(products);
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách sản phẩm:', error);
+    console.error('[API] Error in GET /api/products:', error);
     return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi lấy danh sách sản phẩm' },
+      { error: 'Failed to fetch products' },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: Request) {
-  console.log('Nhận request POST đến /api/products');
-  
+// POST API - Thêm sản phẩm mới
+export async function POST(request: NextRequest) {
+  console.log('[API] POST /api/products - Adding new product');
   try {
-    const productData: Product = await request.json();
-    console.log('Dữ liệu sản phẩm nhận được:', productData);
+    // Đọc dữ liệu sản phẩm từ request
+    const productData = await request.json();
     
-    // Thêm ID và timestamp nếu chưa có
-    if (!productData.id) {
-      productData.id = `prod-${Date.now()}`;
-      console.log(`Đã tạo ID sản phẩm mới: ${productData.id}`);
+    // Kiểm tra dữ liệu bắt buộc
+    if (!productData.name || !productData.price) {
+      console.error('[API] Missing required fields in product data');
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
     
-    if (!productData.createdAt) {
-      productData.createdAt = new Date().toISOString();
-    }
+    console.log('[API] Received product data:', productData);
     
-    productData.updatedAt = new Date().toISOString();
+    // Đọc danh sách sản phẩm hiện tại
+    const products = readProductsFromFile();
     
-    // Đọc dữ liệu hiện tại từ file
-    let products = readProductsFromFile();
+    // Tạo ID mới bằng cách lấy ID lớn nhất + 1 hoặc 1 nếu không có sản phẩm
+    const newId = products.length > 0 
+      ? Math.max(...products.map(p => typeof p.id === 'number' ? p.id : 0)) + 1 
+      : 1;
     
-    if (!Array.isArray(products)) {
-      console.warn('Dữ liệu đọc từ file không phải là mảng, đang khởi tạo lại mảng rỗng');
-      products = [];
-    }
+    // Thiết lập thời gian tạo và cập nhật
+    const now = new Date().toISOString();
     
-    // Thêm sản phẩm mới vào mảng
-    products.push(productData);
-    console.log(`Đã thêm sản phẩm mới, tổng số: ${products.length}`);
+    // Tạo sản phẩm mới với dữ liệu từ request và các giá trị mặc định
+    const newProduct: Product = {
+      id: newId,
+      name: productData.name,
+      slug: productData.slug || productData.name.toLowerCase().replace(/\s+/g, '-'),
+      description: productData.description || '',
+      longDescription: productData.longDescription || productData.description || '',
+      price: parseFloat(productData.price),
+      salePrice: parseFloat(productData.salePrice || '0'),
+      categoryId: productData.categoryId || 1,
+      imageUrl: productData.imageUrl || '/images/products/default.png',
+      isFeatured: productData.isFeatured === 'true' || productData.isFeatured === true || false,
+      isNew: true,
+      downloadCount: 0,
+      viewCount: 0,
+      rating: 0,
+      version: productData.version || '1.0',
+      size: productData.size || 'N/A',
+      licenseType: productData.licenseType || 'Standard',
+      createdAt: now,
+      updatedAt: now,
+      storeId: productData.storeId || 1,
+    };
     
-    // Lưu mảng đã cập nhật vào file
+    console.log('[API] Created new product with ID:', newId);
+    
+    // Thêm sản phẩm mới vào danh sách
+    products.push(newProduct);
+    
+    // Lưu danh sách đã cập nhật vào file
     writeProductsToFile(products);
     
-    console.log(`Đã thêm sản phẩm thành công: ${productData.name} (ID: ${productData.id})`);
-    return NextResponse.json(productData, { status: 201 });
+    console.log('[API] Product added successfully');
+    return NextResponse.json(newProduct);
   } catch (error) {
-    console.error('Lỗi khi thêm sản phẩm mới:', error);
+    console.error('[API] Error in POST /api/products:', error);
     return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi tạo sản phẩm mới' },
+      { error: 'Failed to add product' },
       { status: 500 }
     );
   }
