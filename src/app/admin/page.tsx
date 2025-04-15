@@ -13,14 +13,12 @@ export default function AdminPage() {
   const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showForm, setShowForm] = useState(true); // Hiển thị form mặc định
-  const [file, setFile] = useState<File | null>(null);
-  const [filePreview, setFilePreview] = useState('');
+  const [name, setName] = useState('Sản phẩm mẫu');
+  const [slug, setSlug] = useState('san-pham-mau');
+  const [description, setDescription] = useState('Đây là sản phẩm mẫu');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
-  const [fileUploadStatus, setFileUploadStatus] = useState('');
-  const formRef = React.useRef<HTMLFormElement>(null);
   
   // Tải danh sách sản phẩm
   const loadProducts = useCallback(async () => {
@@ -72,17 +70,57 @@ export default function AdminPage() {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
   
-  // Xử lý khi chọn file
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setFileUploadStatus(`File đã chọn: ${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)`);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFilePreview(reader.result as string);
+  // Xử lý khi submit form
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      setErrorMessage('');
+      setSuccessMessage('');
+      
+      const productData = {
+        name,
+        slug,
+        description,
+        longDescription: description,
+        imageUrl: 'https://via.placeholder.com/150',
+        price: 100000,
+        categoryId: 'cat-1',
+        version: '1.0.0',
+        size: '10MB',
+        licenseType: 'Cá nhân',
+        isFeatured: true,
+        isNew: true
       };
-      reader.readAsDataURL(selectedFile);
+      
+      // Hiển thị dữ liệu sẽ gửi
+      console.log('Sending data:', productData);
+      
+      // Gửi POST request
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productData)
+      });
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
+      const data = await response.json();
+      console.log('Response data:', data);
+      
+      if (data.success) {
+        setSuccessMessage('Đăng sản phẩm thành công!');
+        loadProducts();
+      } else {
+        setErrorMessage(data.message || 'Có lỗi xảy ra');
+      }
+    } catch (error: any) {
+      console.error('Error:', error);
+      setErrorMessage('Lỗi: ' + error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -111,117 +149,59 @@ export default function AdminPage() {
                 </div>
                 
                 {/* Form thêm sản phẩm mới */}
-                {showForm && (
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                    <h3 className="text-xl font-semibold mb-4">Form đơn giản nhất có thể</h3>
-                    
-                    {successMessage && (
-                      <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
-                        <p className="text-green-700">{successMessage}</p>
-                      </div>
-                    )}
-                    
-                    {errorMessage && (
-                      <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-                        <p className="text-red-700">{errorMessage}</p>
-                      </div>
-                    )}
-                    
-                    <div className="mb-4">
-                      <label className="block mb-2">Tên sản phẩm</label>
-                      <input 
-                        type="text" 
-                        id="product-name-simple" 
-                        className="w-full p-2 border" 
-                        defaultValue="Sản phẩm mẫu"
-                      />
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
+                  <h3 className="text-xl font-semibold mb-4">Form đơn giản nhất có thể</h3>
+                  
+                  {successMessage && (
+                    <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+                      <p className="text-green-700">{successMessage}</p>
                     </div>
-                    
-                    <div className="mb-4">
-                      <label className="block mb-2">Slug</label>
-                      <input 
-                        type="text" 
-                        id="product-slug-simple" 
-                        className="w-full p-2 border" 
-                        defaultValue="san-pham-mau"
-                      />
+                  )}
+                  
+                  {errorMessage && (
+                    <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                      <p className="text-red-700">{errorMessage}</p>
                     </div>
-                    
-                    <div className="mb-4">
-                      <label className="block mb-2">Mô tả</label>
-                      <textarea 
-                        id="product-desc-simple" 
-                        className="w-full p-2 border" 
-                        defaultValue="Đây là sản phẩm mẫu"
-                      ></textarea>
-                    </div>
-                    
-                    <button
-                      className="w-full p-2 bg-blue-500 text-white"
-                      disabled={isLoading}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsLoading(true);
-                        setErrorMessage('');
-                        setSuccessMessage('');
-                        
-                        const name = (document.getElementById('product-name-simple') as HTMLInputElement).value;
-                        const slug = (document.getElementById('product-slug-simple') as HTMLInputElement).value;
-                        const description = (document.getElementById('product-desc-simple') as HTMLTextAreaElement).value;
-                        
-                        const productData = {
-                          name,
-                          slug,
-                          description,
-                          longDescription: description,
-                          imageUrl: 'https://via.placeholder.com/150',
-                          price: 100000,
-                          categoryId: 'cat-1',
-                          version: '1.0.0',
-                          size: '10MB',
-                          licenseType: 'Cá nhân',
-                          isFeatured: true,
-                          isNew: true
-                        };
-                        
-                        // Hiển thị dữ liệu sẽ gửi
-                        console.log('Sending data:', productData);
-                        
-                        // Gửi POST request
-                        fetch('/api/products', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json'
-                          },
-                          body: JSON.stringify(productData)
-                        })
-                        .then(response => {
-                          console.log('Response status:', response.status);
-                          console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-                          return response.json();
-                        })
-                        .then(data => {
-                          console.log('Response data:', data);
-                          if (data.success) {
-                            setSuccessMessage('Đăng sản phẩm thành công!');
-                            loadProducts();
-                          } else {
-                            setErrorMessage(data.message || 'Có lỗi xảy ra');
-                          }
-                        })
-                        .catch(error => {
-                          console.error('Error:', error);
-                          setErrorMessage('Lỗi: ' + error.message);
-                        })
-                        .finally(() => {
-                          setIsLoading(false);
-                        });
-                      }}
-                    >
-                      {isLoading ? 'Đang xử lý...' : 'Đăng sản phẩm đơn giản'}
-                    </button>
+                  )}
+                  
+                  <div className="mb-4">
+                    <label className="block mb-2">Tên sản phẩm</label>
+                    <input 
+                      type="text" 
+                      className="w-full p-2 border" 
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
                   </div>
-                )}
+                  
+                  <div className="mb-4">
+                    <label className="block mb-2">Slug</label>
+                    <input 
+                      type="text" 
+                      className="w-full p-2 border" 
+                      value={slug}
+                      onChange={(e) => setSlug(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="block mb-2">Mô tả</label>
+                    <textarea 
+                      className="w-full p-2 border" 
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    ></textarea>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    className="w-full p-2 bg-blue-500 text-white"
+                    disabled={isLoading}
+                    onClick={handleSubmit}
+                  >
+                    {isLoading ? 'Đang xử lý...' : 'Đăng sản phẩm đơn giản'}
+                  </button>
+                </div>
                 
                 {/* Danh sách sản phẩm */}
                 <div className="overflow-x-auto">
