@@ -10,24 +10,29 @@ import { Product } from '@/types';
 function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   
   // Lấy danh sách sản phẩm từ API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        if (!response.ok) {
-          throw new Error('Không thể lấy dữ liệu sản phẩm');
-        }
-        const data = await response.json();
-        setProducts(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Lỗi khi lấy danh sách sản phẩm:', error);
-        setLoading(false);
+  const fetchProducts = async () => {
+    try {
+      setRefreshing(true);
+      const response = await fetch('/api/products?t=' + new Date().getTime()); // Thêm timestamp để tránh cache
+      if (!response.ok) {
+        throw new Error('Không thể lấy dữ liệu sản phẩm');
       }
-    };
-    
+      const data = await response.json();
+      setProducts(data);
+      setLoading(false);
+      setRefreshing(false);
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách sản phẩm:', error);
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+  
+  // Lấy dữ liệu khi component được tải
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -51,18 +56,36 @@ function HomePage() {
               Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay
             </p>
 
-            <div className="relative w-full max-w-2xl">
+            <div className="w-full max-w-2xl flex mb-6">
               <input
                 type="text"
                 placeholder="Tìm kiếm phần mềm, ứng dụng..."
-                className="w-full px-4 py-3 pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-gray-800"
+                className="w-full px-4 py-3 pr-12 rounded-l-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-gray-800"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-teal-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                  <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
-                </svg>
+              <button className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-r-lg">
+                Tìm kiếm
               </button>
             </div>
+            
+            <button 
+              onClick={fetchProducts}
+              disabled={refreshing}
+              className="flex items-center bg-white text-teal-600 border border-teal-300 px-4 py-2 rounded-md shadow-sm hover:bg-teal-50"
+            >
+              {refreshing ? (
+                <>
+                  <div className="animate-spin h-4 w-4 border-2 border-teal-600 border-t-transparent rounded-full mr-2"></div>
+                  Đang làm mới...
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Làm mới dữ liệu
+                </>
+              )}
+            </button>
           </div>
         </div>
       </section>
@@ -84,12 +107,15 @@ function HomePage() {
           <div className="container max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Phần mềm nổi bật</h2>
-              <Link
-                href="/products"
-                className="text-teal-600 hover:text-teal-800 transition-colors"
-              >
-                Xem tất cả
-              </Link>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">{products.length} sản phẩm</span>
+                <Link
+                  href="/products"
+                  className="text-teal-600 hover:text-teal-800 transition-colors"
+                >
+                  Xem tất cả
+                </Link>
+              </div>
             </div>
 
             {loading ? (
@@ -152,6 +178,18 @@ function HomePage() {
                 </p>
               </div>
             )}
+          </div>
+        </section>
+        
+        <section className="py-8 text-center">
+          <div className="container max-w-3xl mx-auto">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-bold mb-4">Chưa thấy sản phẩm của bạn?</h2>
+              <p className="text-gray-600 mb-4">Nếu bạn vừa đăng sản phẩm nhưng chưa thấy hiển thị, hãy thử làm mới dữ liệu bằng nút phía trên.</p>
+              <p className="text-sm text-gray-500">
+                Bạn cũng có thể <Link href="/admin" className="text-teal-600 hover:underline">quay lại trang quản lý</Link> để kiểm tra danh sách sản phẩm đã đăng.
+              </p>
+            </div>
           </div>
         </section>
       </div>

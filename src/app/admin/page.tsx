@@ -1,11 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { categories } from '@/data/mockData';
+import { Product } from '@/types';
 
 export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  
+  // Lấy danh sách sản phẩm từ API khi component được tải
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (!response.ok) {
+          throw new Error('Không thể lấy dữ liệu sản phẩm');
+        }
+        const data = await response.json();
+        setProducts(data);
+        setLoadingProducts(false);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách sản phẩm:', error);
+        setLoadingProducts(false);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+  
+  // Chuyển đổi số thành định dạng tiền tệ
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
+  }
   
   // Xử lý khi gửi form
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -61,13 +89,11 @@ export default function AdminPage() {
         console.log('Sản phẩm đã được thêm:', data);
         alert('Đã thêm sản phẩm thành công!');
         setIsLoading(false);
-        setSubmitted(true);
-        event.currentTarget.reset();
         
-        // Chuyển hướng về trang chủ sau 2 giây
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 2000);
+        // Thêm sản phẩm mới vào danh sách
+        setProducts(prevProducts => [data, ...prevProducts]);
+        
+        event.currentTarget.reset();
       })
       .catch(error => {
         console.error('Lỗi:', error);
@@ -76,17 +102,10 @@ export default function AdminPage() {
       });
   };
   
-  if (submitted) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <div className="bg-green-100 p-6 rounded-lg">
-          <h2 className="text-2xl font-bold text-green-800 mb-4">Đã thêm sản phẩm thành công!</h2>
-          <p className="text-green-700 mb-4">Đang chuyển hướng về trang chủ để xem sản phẩm...</p>
-          <div className="animate-spin w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full mx-auto"></div>
-        </div>
-      </div>
-    );
-  }
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    return category ? category.name : categoryId;
+  };
   
   return (
     <div className="container mx-auto px-4 py-8">
@@ -180,8 +199,70 @@ export default function AdminPage() {
         </form>
       </div>
       
-      <div className="text-center text-gray-500">
-        Sau khi thêm sản phẩm, bạn có thể xem danh sách sản phẩm tại trang chủ.
+      {/* Danh sách sản phẩm đã đăng */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 className="text-xl font-semibold mb-4">Sản phẩm đã đăng ({products.length})</h2>
+        
+        {loadingProducts ? (
+          <div className="text-center py-8">
+            <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p>Đang tải danh sách sản phẩm...</p>
+          </div>
+        ) : products.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên sản phẩm</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Danh mục</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {products.map((product) => (
+                  <tr key={product.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.id}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                      <div className="text-sm text-gray-500">{product.slug}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {getCategoryName(product.categoryId.toString())}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
+                      {product.salePrice > 0 && (
+                        <div className="text-sm text-gray-500">{formatCurrency(product.salePrice)}</div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(product.createdAt).toLocaleDateString('vi-VN')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        Đang bán
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            <p>Chưa có sản phẩm nào được đăng. Hãy thêm sản phẩm đầu tiên!</p>
+          </div>
+        )}
+      </div>
+      
+      <div className="text-center text-gray-500 py-4">
+        <p>Lưu ý: Sau khi thêm sản phẩm, cần đợi một lúc để trang chủ cập nhật dữ liệu mới.</p>
+        <p className="mt-2">
+          <a href="/" className="text-blue-500 hover:underline">Về trang chủ để xem sản phẩm</a>
+        </p>
       </div>
     </div>
   );
