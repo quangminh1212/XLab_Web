@@ -25,10 +25,29 @@ export async function POST(request: NextRequest) {
     if (contentType.includes('application/json')) {
       // Nếu là JSON
       console.log('Processing as JSON data');
-      productData = await request.json().catch(err => {
+      try {
+        productData = await request.json();
+        console.log('JSON data parsed successfully:', productData);
+        
+        // Xử lý các trường boolean và số
+        productData.price = Number(productData.price || 0);
+        productData.salePrice = productData.salePrice ? Number(productData.salePrice) : 0;
+        productData.isFeatured = productData.isFeatured === 'on' || productData.isFeatured === true;
+        productData.isNew = productData.isNew === 'on' || productData.isNew === true;
+        productData.downloadCount = 0;
+        productData.viewCount = 0;
+        productData.rating = 0;
+        
+        console.log('Processed JSON fields:');
+        console.log('- name:', productData.name);
+        console.log('- slug:', productData.slug);
+        console.log('- price:', productData.price);
+        console.log('- isFeatured:', productData.isFeatured);
+        console.log('- isNew:', productData.isNew);
+      } catch (err) {
         console.error('Error parsing JSON:', err);
-        throw new Error('Invalid JSON data');
-      });
+        throw new Error('Invalid JSON data: ' + (err instanceof Error ? err.message : String(err)));
+      }
     } else if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
       // Nếu là form data
       console.log('Processing as form data');

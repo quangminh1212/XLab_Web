@@ -113,464 +113,111 @@ export default function AdminPage() {
                 {/* Form thêm sản phẩm mới */}
                 {showForm && (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                    <h3 className="text-xl font-semibold mb-4">Đăng bán phần mềm mới</h3>
+                    <h3 className="text-xl font-semibold mb-4">Form đơn giản nhất có thể</h3>
                     
                     {successMessage && (
                       <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
-                        <div className="flex">
-                          <div className="flex-shrink-0">
-                            <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                          <div className="ml-3">
-                            <p className="text-sm text-green-700">{successMessage}</p>
-                          </div>
-                        </div>
+                        <p className="text-green-700">{successMessage}</p>
                       </div>
                     )}
                     
                     {errorMessage && (
                       <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-                        <div className="flex">
-                          <div className="flex-shrink-0">
-                            <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                          <div className="ml-3">
-                            <p className="text-sm text-red-700">{errorMessage}</p>
-                          </div>
-                        </div>
+                        <p className="text-red-700">{errorMessage}</p>
                       </div>
                     )}
                     
-                    <form 
-                      id="productForm"
-                      encType="multipart/form-data"
-                      ref={formRef}
-                      onSubmit={(e) => e.preventDefault()}
+                    <div className="mb-4">
+                      <label className="block mb-2">Tên sản phẩm</label>
+                      <input 
+                        type="text" 
+                        id="product-name-simple" 
+                        className="w-full p-2 border" 
+                        defaultValue="Sản phẩm mẫu"
+                      />
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label className="block mb-2">Slug</label>
+                      <input 
+                        type="text" 
+                        id="product-slug-simple" 
+                        className="w-full p-2 border" 
+                        defaultValue="san-pham-mau"
+                      />
+                    </div>
+                    
+                    <div className="mb-4">
+                      <label className="block mb-2">Mô tả</label>
+                      <textarea 
+                        id="product-desc-simple" 
+                        className="w-full p-2 border" 
+                        defaultValue="Đây là sản phẩm mẫu"
+                      ></textarea>
+                    </div>
+                    
+                    <button
+                      className="w-full p-2 bg-blue-500 text-white"
+                      disabled={isLoading}
+                      onClick={() => {
+                        setIsLoading(true);
+                        setErrorMessage('');
+                        setSuccessMessage('');
+                        
+                        const name = (document.getElementById('product-name-simple') as HTMLInputElement).value;
+                        const slug = (document.getElementById('product-slug-simple') as HTMLInputElement).value;
+                        const description = (document.getElementById('product-desc-simple') as HTMLTextAreaElement).value;
+                        
+                        const productData = {
+                          name,
+                          slug,
+                          description,
+                          longDescription: description,
+                          imageUrl: 'https://via.placeholder.com/150',
+                          price: 100000,
+                          categoryId: 'cat-1',
+                          version: '1.0.0',
+                          size: '10MB',
+                          licenseType: 'Cá nhân',
+                          isFeatured: true,
+                          isNew: true
+                        };
+                        
+                        // Hiển thị dữ liệu sẽ gửi
+                        console.log('Sending data:', productData);
+                        
+                        // Gửi POST request
+                        fetch('/api/products', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify(productData)
+                        })
+                        .then(response => {
+                          console.log('Response status:', response.status);
+                          return response.json();
+                        })
+                        .then(data => {
+                          console.log('Response data:', data);
+                          if (data.success) {
+                            setSuccessMessage('Đăng sản phẩm thành công!');
+                            loadProducts();
+                          } else {
+                            setErrorMessage(data.message || 'Có lỗi xảy ra');
+                          }
+                        })
+                        .catch(error => {
+                          console.error('Error:', error);
+                          setErrorMessage('Lỗi: ' + error.message);
+                        })
+                        .finally(() => {
+                          setIsLoading(false);
+                        });
+                      }}
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
-                            Tên phần mềm <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="product-name"
-                            name="name"
-                            placeholder="Ví dụ: XLab Office Suite"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-slug" className="block mb-2 font-medium text-gray-700">
-                            Slug <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="product-slug"
-                            name="slug"
-                            placeholder="Ví dụ: xlab-office-suite"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
-                            Danh mục <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            id="product-category"
-                            name="categoryId"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          >
-                            <option value="">-- Chọn danh mục --</option>
-                            <option value="cat-1">Phần mềm doanh nghiệp</option>
-                            <option value="cat-2">Ứng dụng văn phòng</option>
-                            <option value="cat-3">Phần mềm đồ họa</option>
-                            <option value="cat-4">Bảo mật & Antivirus</option>
-                            <option value="cat-5">Ứng dụng giáo dục</option>
-                          </select>
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-price" className="block mb-2 font-medium text-gray-700">
-                            Giá (VNĐ) <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="number"
-                            id="product-price"
-                            name="price"
-                            placeholder="Ví dụ: 1200000"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
-                            Giá khuyến mãi (VNĐ)
-                          </label>
-                          <input
-                            type="number"
-                            id="product-sale-price"
-                            name="salePrice"
-                            placeholder="Để trống nếu không có khuyến mãi"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-version" className="block mb-2 font-medium text-gray-700">
-                            Phiên bản <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="product-version"
-                            name="version"
-                            placeholder="Ví dụ: 1.0.0"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-
-                        <div className="md:col-span-2">
-                          <label htmlFor="product-file" className="block mb-2 font-medium text-gray-700">
-                            File phần mềm <span className="text-red-500">*</span>
-                          </label>
-                          <div className="flex items-center justify-center w-full">
-                            <label
-                              htmlFor="product-file"
-                              className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-                            >
-                              {filePreview ? (
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                  <p className="mb-2 text-sm text-gray-500">
-                                    <span className="font-semibold">{file?.name}</span>
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    {file ? (file.size / (1024 * 1024)).toFixed(2) : 0} MB
-                                  </p>
-                                </div>
-                              ) : (
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                  <svg
-                                    className="w-8 h-8 mb-4 text-gray-500"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                                    ></path>
-                                  </svg>
-                                  <p className="mb-2 text-sm text-gray-500">
-                                    <span className="font-semibold">Nhấp để tải lên</span> hoặc kéo thả file
-                                  </p>
-                                  <p className="text-xs text-gray-500">ZIP, RAR, EXE (MAX. 500MB)</p>
-                                </div>
-                              )}
-                              <input
-                                id="product-file"
-                                type="file"
-                                name="file"
-                                className="hidden"
-                                onChange={handleFileChange}
-                              />
-                            </label>
-                          </div>
-                          {fileUploadStatus && (
-                            <div className="mt-2 text-sm text-gray-600">
-                              {fileUploadStatus}
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="md:col-span-2">
-                          <label htmlFor="product-description" className="block mb-2 font-medium text-gray-700">
-                            Mô tả ngắn <span className="text-red-500">*</span>
-                          </label>
-                          <textarea
-                            id="product-description"
-                            name="description"
-                            rows={3}
-                            placeholder="Mô tả ngắn gọn về phần mềm của bạn"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          ></textarea>
-                        </div>
-                        
-                        <div className="md:col-span-2">
-                          <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
-                            Mô tả chi tiết <span className="text-red-500">*</span>
-                          </label>
-                          <textarea
-                            id="product-long-description"
-                            name="longDescription"
-                            rows={6}
-                            placeholder="Mô tả chi tiết về tính năng, lợi ích của phần mềm"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          ></textarea>
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-image-url" className="block mb-2 font-medium text-gray-700">
-                            URL hình ảnh <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="url"
-                            id="product-image-url"
-                            name="imageUrl"
-                            placeholder="https://example.com/image.jpg"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-size" className="block mb-2 font-medium text-gray-700">
-                            Dung lượng <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="product-size"
-                            name="size"
-                            placeholder="Ví dụ: 50MB"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          />
-                        </div>
-                        
-                        <div>
-                          <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
-                            Loại giấy phép <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            id="product-license"
-                            name="licenseType"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                          >
-                            <option value="">-- Chọn loại giấy phép --</option>
-                            <option value="Cá nhân">Cá nhân</option>
-                            <option value="Doanh nghiệp">Doanh nghiệp</option>
-                            <option value="Doanh nghiệp lớn">Doanh nghiệp lớn</option>
-                            <option value="Thương mại">Thương mại</option>
-                          </select>
-                        </div>
-                        
-                        <div className="md:col-span-2 flex items-center">
-                          <input type="checkbox" id="product-featured" name="isFeatured" className="mr-2" />
-                          <label htmlFor="product-featured" className="text-gray-700">
-                            Đánh dấu là sản phẩm nổi bật
-                          </label>
-                        </div>
-                        
-                        <div className="md:col-span-2 flex items-center">
-                          <input type="checkbox" id="product-new" name="isNew" className="mr-2" />
-                          <label htmlFor="product-new" className="text-gray-700">
-                            Đánh dấu là sản phẩm mới
-                          </label>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-6 flex justify-end space-x-4">
-                        {/* Button đăng sản phẩm */}
-                        <button 
-                          type="button"
-                          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
-                          disabled={isLoading}
-                          onClick={() => {
-                            if (isLoading) return;
-                            
-                            console.log('Button clicked');
-                            
-                            // Bắt đầu loading
-                            setIsLoading(true);
-                            setErrorMessage('');
-                            setSuccessMessage('');
-                            setFileUploadStatus('Đang tải lên...');
-                            
-                            // Lấy form và tạo FormData
-                            const form = formRef.current;
-                            if (!form) {
-                              console.error('Form not found');
-                              setIsLoading(false);
-                              return;
-                            }
-                            
-                            const formData = new FormData();
-                            
-                            // Lấy giá trị từ tất cả fields
-                            const nameInput = form.querySelector('#product-name') as HTMLInputElement;
-                            const slugInput = form.querySelector('#product-slug') as HTMLInputElement;
-                            const categoryInput = form.querySelector('#product-category') as HTMLSelectElement;
-                            const priceInput = form.querySelector('#product-price') as HTMLInputElement;
-                            const salePriceInput = form.querySelector('#product-sale-price') as HTMLInputElement;
-                            const versionInput = form.querySelector('#product-version') as HTMLInputElement;
-                            const descriptionInput = form.querySelector('#product-description') as HTMLTextAreaElement;
-                            const longDescriptionInput = form.querySelector('#product-long-description') as HTMLTextAreaElement;
-                            const imageUrlInput = form.querySelector('#product-image-url') as HTMLInputElement;
-                            const sizeInput = form.querySelector('#product-size') as HTMLInputElement;
-                            const licenseInput = form.querySelector('#product-license') as HTMLSelectElement;
-                            const featuredInput = form.querySelector('#product-featured') as HTMLInputElement;
-                            const newInput = form.querySelector('#product-new') as HTMLInputElement;
-                            
-                            // Kiểm tra các trường bắt buộc
-                            if (!nameInput.value || !slugInput.value || !categoryInput.value || 
-                                !priceInput.value || !versionInput.value || !descriptionInput.value || 
-                                !longDescriptionInput.value || !imageUrlInput.value || 
-                                !sizeInput.value || !licenseInput.value) {
-                              setErrorMessage('Vui lòng điền đầy đủ các trường bắt buộc');
-                              setIsLoading(false);
-                              return;
-                            }
-                            
-                            // Thêm dữ liệu vào FormData
-                            formData.append('name', nameInput.value);
-                            formData.append('slug', slugInput.value);
-                            formData.append('categoryId', categoryInput.value);
-                            formData.append('price', priceInput.value);
-                            if (salePriceInput.value) {
-                              formData.append('salePrice', salePriceInput.value);
-                            }
-                            formData.append('version', versionInput.value);
-                            formData.append('description', descriptionInput.value);
-                            formData.append('longDescription', longDescriptionInput.value);
-                            formData.append('imageUrl', imageUrlInput.value);
-                            formData.append('size', sizeInput.value);
-                            formData.append('licenseType', licenseInput.value);
-                            formData.append('isFeatured', featuredInput.checked ? 'on' : 'off');
-                            formData.append('isNew', newInput.checked ? 'on' : 'off');
-                            
-                            // Thêm file nếu có
-                            if (file) {
-                              formData.append('file', file);
-                              console.log('Added file:', file.name);
-                            }
-                            
-                            // In log để debug
-                            console.log('Submitting form data:');
-                            formData.forEach((value, key) => {
-                              console.log(`- ${key}: ${value instanceof File ? `File: ${value.name}` : value}`);
-                            });
-                            
-                            // Gửi request đến API
-                            fetch('/api/products', {
-                              method: 'POST',
-                              body: formData,
-                            })
-                            .then(response => {
-                              console.log('Response status:', response.status);
-                              if (!response.ok) {
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                              }
-                              return response.json();
-                            })
-                            .then(data => {
-                              console.log('API response:', data);
-                              if (data.success) {
-                                setSuccessMessage('Sản phẩm đã được tạo thành công!');
-                                setFileUploadStatus(data.data?.fileUrl 
-                                  ? `File đã tải lên thành công: ${data.data.fileName}` 
-                                  : 'Sản phẩm đã được tạo mà không có file');
-                                
-                                // Reset form
-                                form.reset();
-                                setFile(null);
-                                setFilePreview('');
-                                
-                                // Tải lại danh sách sản phẩm
-                                loadProducts();
-                              } else {
-                                setErrorMessage(data.message || 'Có lỗi xảy ra khi tạo sản phẩm');
-                              }
-                            })
-                            .catch(error => {
-                              console.error('Error:', error);
-                              setErrorMessage(error.message || 'Đã xảy ra lỗi không xác định');
-                            })
-                            .finally(() => {
-                              setIsLoading(false);
-                            });
-                          }}
-                        >
-                          {isLoading && (
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          )}
-                          Đăng sản phẩm
-                        </button>
-                        
-                        {/* Button đơn giản */}
-                        <button 
-                          type="button"
-                          className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-                          disabled={isLoading}
-                          onClick={() => {
-                            if (isLoading) return;
-                            
-                            // Lấy form và gửi request đơn giản nhất
-                            const form = formRef.current;
-                            if (!form) return;
-                            
-                            const formData = new FormData(form);
-                            
-                            // Thêm checkbox
-                            const featured = document.getElementById('product-featured') as HTMLInputElement;
-                            const newProduct = document.getElementById('product-new') as HTMLInputElement;
-                            
-                            formData.set('isFeatured', featured.checked ? 'on' : 'off');
-                            formData.set('isNew', newProduct.checked ? 'on' : 'off');
-                            
-                            // Thêm file
-                            if (file) {
-                              formData.set('file', file);
-                            }
-                            
-                            // Gửi yêu cầu
-                            setIsLoading(true);
-                            fetch('/api/products', {
-                              method: 'POST',
-                              body: formData
-                            })
-                            .then(res => res.json())
-                            .then(data => {
-                              if (data.success) {
-                                alert('Thành công!');
-                                form.reset();
-                                setFile(null);
-                                setFilePreview('');
-                                loadProducts();
-                              } else {
-                                alert('Lỗi: ' + data.message);
-                              }
-                            })
-                            .catch(err => {
-                              alert('Lỗi: ' + err.message);
-                            })
-                            .finally(() => {
-                              setIsLoading(false);
-                            });
-                          }}
-                        >
-                          Đăng đơn giản
-                        </button>
-                      </div>
-                    </form>
+                      {isLoading ? 'Đang xử lý...' : 'Đăng sản phẩm đơn giản'}
+                    </button>
                   </div>
                 )}
                 
