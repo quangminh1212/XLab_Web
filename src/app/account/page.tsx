@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { formatCurrency } from '@/lib/utils'
 
 export const metadata = {
   title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
@@ -62,11 +63,6 @@ const purchaseHistory = [
 ]
 
 export default function AccountPage() {
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
-  }
-  
   // Format date (would normally use a proper date library)
   const formatDate = (dateString: string) => {
     return dateString // Already in DD/MM/YYYY format
