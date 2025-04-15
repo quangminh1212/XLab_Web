@@ -57,44 +57,49 @@ export default function AdminPage() {
     setSuccessMessage('');
     setErrorMessage('');
     
-    // Tạo form data từ form
-    const formData = new FormData(event.currentTarget);
-    
-    // In ra log các giá trị từ form để debug
-    console.log({
-      name: formData.get('name'),
-      slug: formData.get('slug'),
-      categoryId: formData.get('categoryId'),
-      price: formData.get('price'),
-      description: formData.get('description')
-    });
-    
-    // Tạo object sản phẩm từ form data
-    const productData = {
-      id: `prod-${Date.now()}`, // Tạo ID tạm thời
-      name: formData.get('name')?.toString() || '',
-      slug: formData.get('slug')?.toString() || '',
-      description: formData.get('description')?.toString() || '',
-      longDescription: formData.get('description')?.toString() || '',
-      price: Number(formData.get('price')) || 0,
-      salePrice: 0,
-      categoryId: formData.get('categoryId')?.toString() || '',
-      imageUrl: '/images/products/placeholder-product.jpg',
-      isFeatured: true, // Đặt mặc định là true để hiển thị ở mục "Phần mềm nổi bật"
-      isNew: true,
-      downloadCount: 0,
-      viewCount: 0,
-      rating: 0,
-      version: '1.0',
-      size: '10MB',
-      licenseType: 'Standard',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      storeId: '1'
-    };
-    
     try {
-      console.log('Đang gửi sản phẩm:', productData);
+      // Lấy form data từ form
+      const formEl = event.currentTarget;
+      const nameInput = formEl.querySelector('input[name="name"]') as HTMLInputElement;
+      const slugInput = formEl.querySelector('input[name="slug"]') as HTMLInputElement;
+      const categoryInput = formEl.querySelector('select[name="categoryId"]') as HTMLSelectElement;
+      const priceInput = formEl.querySelector('input[name="price"]') as HTMLInputElement;
+      const descriptionInput = formEl.querySelector('textarea[name="description"]') as HTMLTextAreaElement;
+      
+      if (!nameInput || !slugInput || !categoryInput || !priceInput || !descriptionInput) {
+        throw new Error('Thiếu thông tin các trường dữ liệu');
+      }
+      
+      const productData = {
+        id: `prod-${Date.now()}`, // Tạo ID tạm thời
+        name: nameInput.value,
+        slug: slugInput.value,
+        description: descriptionInput.value,
+        longDescription: descriptionInput.value,
+        price: Number(priceInput.value) || 0,
+        salePrice: 0,
+        categoryId: categoryInput.value,
+        imageUrl: '/images/products/placeholder-product.jpg',
+        isFeatured: true, // Đặt mặc định là true để hiển thị ở mục "Phần mềm nổi bật"
+        isNew: true,
+        downloadCount: 0,
+        viewCount: 0,
+        rating: 0,
+        version: '1.0',
+        size: '10MB',
+        licenseType: 'Standard',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        storeId: '1'
+      };
+      
+      // In ra log toàn bộ dữ liệu sản phẩm để kiểm tra
+      console.log('Dữ liệu sản phẩm chuẩn bị gửi:', JSON.stringify(productData, null, 2));
+      
+      // Kiểm tra dữ liệu bắt buộc
+      if (!productData.name || !productData.slug || !productData.categoryId || !productData.price) {
+        throw new Error('Vui lòng điền đầy đủ tất cả các trường bắt buộc');
+      }
       
       // Gửi API request để thêm sản phẩm
       const response = await fetch('/api/products', {
@@ -103,14 +108,18 @@ export default function AdminPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(productData),
+        cache: 'no-store'
       });
       
       console.log('Phản hồi từ API POST:', response.status);
       
       if (!response.ok) {
-        throw new Error('Lỗi khi thêm sản phẩm: ' + response.status);
+        const errorText = await response.text();
+        console.error('Lỗi từ API:', errorText);
+        throw new Error(`Lỗi khi thêm sản phẩm: ${response.status} - ${errorText}`);
       }
       
+      // Đọc dữ liệu phản hồi
       const data = await response.json();
       
       // Thêm sản phẩm thành công
@@ -122,15 +131,15 @@ export default function AdminPage() {
       // Hiển thị thông báo thành công
       setSuccessMessage(`Sản phẩm "${data.name}" đã được thêm thành công!`);
       
-      // Lấy lại danh sách sản phẩm mới nhất từ server để đảm bảo hiển thị đầy đủ
+      // Lấy lại danh sách sản phẩm mới nhất từ server
       fetchProducts();
       
       // Reset form
-      event.currentTarget.reset();
+      formEl.reset();
       
     } catch (error: any) {
-      console.error('Lỗi:', error);
-      setErrorMessage('Đã xảy ra lỗi khi thêm sản phẩm! ' + error.message);
+      console.error('Lỗi khi đăng sản phẩm:', error);
+      setErrorMessage('Đã xảy ra lỗi khi thêm sản phẩm: ' + (error.message || 'Lỗi không xác định'));
     } finally {
       setIsLoading(false);
     }
@@ -197,7 +206,7 @@ export default function AdminPage() {
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Thêm sản phẩm mới</h2>
         
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} method="POST">
           <div className="space-y-4">
             <div>
               <label className="block mb-2 font-medium">
