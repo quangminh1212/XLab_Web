@@ -17,18 +17,19 @@ function initializeDataFile() {
       fs.mkdirSync(dirPath, { recursive: true });
     }
 
-    // Kiểm tra xem file có tồn tại không
+    // Chỉ tạo file mới nếu không tồn tại
     if (!fs.existsSync(DATA_FILE_PATH)) {
       console.log(`[API] Data file does not exist, creating: ${DATA_FILE_PATH}`);
-      // Tạo file rỗng
-      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), { encoding: 'utf8' });
-      console.log(`[API] Created empty data file`);
+      // Khởi tạo với một số sản phẩm mẫu để đảm bảo có dữ liệu demo
+      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(mockProducts, null, 2), { encoding: 'utf8' });
+      console.log(`[API] Created data file with ${mockProducts.length} products`);
     } else {
       console.log(`[API] Data file already exists: ${DATA_FILE_PATH}`);
     }
   } catch (error) {
     console.error('[API] Error initializing data file:', error);
-    throw error;
+    // Không ném lỗi để tránh làm hỏng quá trình khởi động
+    return;
   }
 }
 
@@ -49,19 +50,24 @@ function readProductsFromFile(): Product[] {
     // Xử lý trường hợp file trống
     if (!data || data.trim() === '') {
       console.log(`[API] Data file is empty, returning empty array`);
-      // Khởi tạo file trống
-      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), { encoding: 'utf8' });
       return [];
     }
     
-    const products = JSON.parse(data) as Product[];
-    console.log(`[API] Successfully read ${products.length} products from file`);
-    return products;
+    try {
+      const products = JSON.parse(data) as Product[];
+      console.log(`[API] Successfully read ${products.length} products from file`);
+      return products;
+    } catch (parseError) {
+      console.error('[API] Error parsing JSON data:', parseError);
+      // Nếu file có dữ liệu nhưng không phải định dạng JSON hợp lệ
+      // Thì sao lưu file cũ để tránh mất dữ liệu
+      const backupPath = `${DATA_FILE_PATH}.backup.${Date.now()}`;
+      fs.copyFileSync(DATA_FILE_PATH, backupPath);
+      console.log(`[API] Corrupted data file backed up to: ${backupPath}`);
+      return [];
+    }
   } catch (error) {
     console.error('[API] Error reading products from file:', error);
-    // Khởi tạo lại file nếu có lỗi
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), { encoding: 'utf8' });
-    console.log(`[API] Recreated empty data file due to error`);
     return [];
   }
 }
@@ -76,9 +82,28 @@ function writeProductsToFile(products: Product[]) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
     
+    // Sao lưu file hiện tại trước khi ghi đè
+    if (fs.existsSync(DATA_FILE_PATH)) {
+      const backupPath = `${DATA_FILE_PATH}.backup`;
+      fs.copyFileSync(DATA_FILE_PATH, backupPath);
+    }
+    
     console.log(`[API] Writing ${products.length} products to file: ${DATA_FILE_PATH}`);
+    
+    // Sử dụng writeFileSync với đồng bộ để đảm bảo dữ liệu được ghi hoàn toàn
     fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(products, null, 2), { encoding: 'utf8' });
-    console.log(`[API] Products written to file successfully`);
+    
+    // Xác minh rằng file đã được ghi thành công bằng cách đọc lại
+    const verifyData = fs.readFileSync(DATA_FILE_PATH, { encoding: 'utf8' });
+    const verifyProducts = JSON.parse(verifyData) as Product[];
+    
+    if (verifyProducts.length === products.length) {
+      console.log(`[API] Products written to file successfully and verified`);
+      return true;
+    } else {
+      console.error(`[API] Verification failed: Expected ${products.length} products but got ${verifyProducts.length}`);
+      throw new Error('Verification failed after writing products');
+    }
   } catch (error) {
     console.error('[API] Error writing products to file:', error);
     throw error;
