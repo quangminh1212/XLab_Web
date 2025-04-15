@@ -24,11 +24,17 @@ export default function AdminPage() {
   const loadProducts = useCallback(async () => {
     try {
       setIsLoadingProducts(true);
-      const response = await fetch('/api/products', {
+      console.log('Loading products from API...');
+      
+      // Sử dụng timestamp để tránh cache
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/products?_=${timestamp}`, {
         method: 'GET',
         cache: 'no-store',
         headers: {
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
       
@@ -40,9 +46,11 @@ export default function AdminPage() {
       console.log('Loaded products:', data);
       
       if (data.success && Array.isArray(data.data)) {
+        console.log(`Received ${data.data.length} products from API`);
         setProducts(data.data);
       } else {
-        setErrorMessage('Không thể lấy dữ liệu sản phẩm');
+        console.error('Invalid API response format:', data);
+        setErrorMessage('Không thể lấy dữ liệu sản phẩm - Định dạng phản hồi không hợp lệ');
       }
     } catch (error) {
       console.error('Error loading products:', error);
@@ -78,7 +86,7 @@ export default function AdminPage() {
 
   // Xử lý khi gửi form
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault(); // Ngăn chặn submit HTML mặc định
     try {
       setIsLoading(true);
       setErrorMessage('');
@@ -89,21 +97,31 @@ export default function AdminPage() {
       
       // Thêm file vào formData nếu có
       if (file) {
+        console.log('Appending file to form data:', file.name, file.size, file.type);
+        formData.delete('file'); // Xóa file cũ nếu có
         formData.append('file', file);
       }
       
-      // Log the form data for debugging
+      // Debug: Kiểm tra form data
       console.log('Form data being submitted:');
+      const formDataEntries: Record<string, any> = {};
       formData.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
+        console.log(`${key}: ${typeof value === 'object' ? 'File Object' : value}`);
+        if (key !== 'file') {
+          formDataEntries[key] = value;
+        } else {
+          formDataEntries[key] = 'FILE_OBJECT';
+        }
       });
+      console.log('Form data object:', formDataEntries);
       
-      console.log('Sending request to API...');
+      console.log('Sending request to API endpoint: /api/products');
       const response = await fetch('/api/products', {
         method: 'POST',
         body: formData,
       });
       
+      console.log('Response status:', response.status);
       const result = await response.json();
       console.log('API response:', result);
       
@@ -122,6 +140,7 @@ export default function AdminPage() {
         setFilePreview('');
         
         // Tải lại danh sách sản phẩm
+        console.log('Reloading products list...');
         await loadProducts();
       } else {
         // Hiển thị lỗi nếu request không thành công
