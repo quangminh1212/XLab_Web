@@ -159,7 +159,8 @@ export default function AdminPage() {
                     <button
                       className="w-full p-2 bg-blue-500 text-white"
                       disabled={isLoading}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
                         setIsLoading(true);
                         setErrorMessage('');
                         setSuccessMessage('');
@@ -196,6 +197,7 @@ export default function AdminPage() {
                         })
                         .then(response => {
                           console.log('Response status:', response.status);
+                          console.log('Response headers:', Object.fromEntries(response.headers.entries()));
                           return response.json();
                         })
                         .then(data => {
