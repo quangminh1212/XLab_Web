@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { uploadToCloudinary } from '@/utils/cloudinary';
-import { products as mockProducts } from '@/data/mockData';
+import { products as mockProductsImport } from '@/data/mockData';
+
+// Tạo một bản sao của mockProducts để làm việc với dữ liệu trong bộ nhớ
+let mockProducts = [...mockProductsImport];
 
 export async function POST(request: NextRequest) {
   try {
     console.log('--------------- START POST /api/products ---------------');
     console.log('Received POST request to /api/products');
+    console.log('Current products count:', mockProducts.length);
     
     // Kiểm tra Content-Type
     const contentType = request.headers.get('Content-Type') || '';
@@ -42,30 +46,31 @@ export async function POST(request: NextRequest) {
         console.log('File received:', file.name, file.type, file.size);
         
         if (file.size === 0) {
-          console.warn('Received file with 0 bytes size');
-        }
-        
-        try {
-          // Bỏ qua việc upload file lên Cloudinary khi đang trong môi trường dev
-          // Thay vào đó, chúng ta sẽ mô phỏng kết quả upload
-          console.log('Mocking Cloudinary upload instead of actual upload');
-          
-          // Tạo dữ liệu file giả
-          fileData = {
-            fileName: file.name,
-            fileUrl: `https://res.cloudinary.com/demo/raw/upload/v1/${Date.now()}_${file.name.replace(/\s+/g, '_')}`,
-            fileSize: file.size,
-            fileType: file.type,
-            publicId: `xlab/files/${Date.now()}_${file.name.replace(/\s+/g, '_')}`
-          };
-          
-          console.log('Mock file data:', fileData);
-        } catch (error) {
-          console.error('Error handling file:', error);
-          return NextResponse.json(
-            { success: false, message: `Lỗi khi xử lý file: ${error instanceof Error ? error.message : 'Unknown error'}` },
-            { status: 500 }
-          );
+          console.warn('Received file with 0 bytes size, skipping upload');
+        } else {
+          try {
+            // Sử dụng hàm uploadToCloudinary đã được cập nhật để mô phỏng upload
+            console.log('Uploading file to Cloudinary (mock mode)...');
+            const uploadResult = await uploadToCloudinary(file);
+            console.log('Upload result:', uploadResult);
+            
+            // Lưu thông tin file từ kết quả upload
+            fileData = {
+              fileName: uploadResult.original_filename,
+              fileUrl: uploadResult.secure_url,
+              fileSize: uploadResult.bytes,
+              fileType: file.type,
+              publicId: uploadResult.public_id
+            };
+            
+            console.log('File data processed:', fileData);
+          } catch (error) {
+            console.error('Error uploading file:', error);
+            return NextResponse.json(
+              { success: false, message: `Lỗi khi xử lý file: ${error instanceof Error ? error.message : 'Unknown error'}` },
+              { status: 500 }
+            );
+          }
         }
       } else {
         console.log('No file found in the request');
@@ -123,8 +128,7 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date().toISOString(),
     };
     
-    // Trong môi trường thực tế, bạn sẽ lưu vào database
-    // Ở đây chúng ta sẽ thêm vào mảng mockProducts để hiển thị trong giao diện
+    // Thêm vào mảng mockProducts để hiển thị trong giao diện
     mockProducts.unshift(newProduct);
     
     console.log('Created product:', newProduct);
@@ -152,8 +156,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     console.log('Received GET request to /api/products');
-    // Trả về sản phẩm từ dữ liệu mẫu trong bộ nhớ
-    console.log(`Returning ${mockProducts.length} products`);
+    console.log(`Returning ${mockProducts.length} products from memory (not from import)`);
     
     return NextResponse.json({
       success: true,

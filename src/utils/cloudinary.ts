@@ -2,9 +2,9 @@ import { v2 as cloudinary } from 'cloudinary';
 
 // Cấu hình Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'demo',
+  api_key: process.env.CLOUDINARY_API_KEY || '123456789012345',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'abcdefghijklmnopqrstuvwxyz12',
 });
 
 // Định nghĩa kiểu dữ liệu cho kết quả upload
@@ -16,6 +16,9 @@ interface CloudinaryUploadResult {
   height: number;
   resource_type: string;
   url: string;
+  bytes: number;
+  original_filename: string;
+  created_at: string;
   [key: string]: any;
 }
 
@@ -32,7 +35,24 @@ export async function uploadToCloudinary(file: any): Promise<CloudinaryUploadRes
       fileSize: file.size 
     });
 
-    // Nếu là File từ FormData
+    // Chế độ mô phỏng - không thực sự upload lên Cloudinary
+    const mockUploadResult: CloudinaryUploadResult = {
+      public_id: `xlab/files/${Date.now()}_${file.name.replace(/\s+/g, '_')}`,
+      secure_url: `https://res.cloudinary.com/demo/raw/upload/v1/${Date.now()}_${file.name.replace(/\s+/g, '_')}`,
+      format: file.type.split('/')[1] || 'raw',
+      width: 0,
+      height: 0,
+      resource_type: 'raw',
+      url: `https://res.cloudinary.com/demo/raw/upload/v1/${Date.now()}_${file.name.replace(/\s+/g, '_')}`,
+      bytes: file.size,
+      original_filename: file.name,
+      created_at: new Date().toISOString()
+    };
+    
+    console.log('Mock upload result:', mockUploadResult);
+    return mockUploadResult;
+
+    // Nếu là File từ FormData - Code này sẽ không được chạy trong chế độ mô phỏng
     if (file instanceof File || (file && file.arrayBuffer)) {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
@@ -63,7 +83,7 @@ export async function uploadToCloudinary(file: any): Promise<CloudinaryUploadRes
       });
     }
     
-    // Nếu là buffer hoặc kiểu dữ liệu khác
+    // Nếu là buffer hoặc kiểu dữ liệu khác - Code này sẽ không được chạy trong chế độ mô phỏng
     console.log('Uploading as direct buffer/stream');
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
@@ -98,6 +118,11 @@ export async function uploadToCloudinary(file: any): Promise<CloudinaryUploadRes
  */
 export async function deleteFromCloudinary(publicId: string): Promise<{success: boolean}> {
   try {
+    // Trong chế độ mô phỏng, không thực sự xóa
+    console.log('Mock deleting file from Cloudinary:', publicId);
+    return { success: true };
+    
+    // Code thực tế - sẽ không được chạy trong chế độ mô phỏng
     await cloudinary.uploader.destroy(publicId);
     return { success: true };
   } catch (error) {
