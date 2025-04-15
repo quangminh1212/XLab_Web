@@ -10,25 +10,38 @@ export default function AdminPage() {
   const [lastAddedProduct, setLastAddedProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
   
   // Lấy danh sách sản phẩm từ API khi component được tải
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        // Thêm tham số timestamp để tránh cache
-        const response = await fetch(`/api/products?t=${new Date().getTime()}`);
-        if (!response.ok) {
-          throw new Error('Không thể lấy dữ liệu sản phẩm');
-        }
-        const data = await response.json();
-        setProducts(data);
-        setLoadingProducts(false);
-      } catch (error) {
-        console.error('Lỗi khi lấy danh sách sản phẩm:', error);
-        setLoadingProducts(false);
+  const fetchProducts = async () => {
+    try {
+      setLoadingProducts(true);
+      // Thêm tham số timestamp để tránh cache
+      const timestamp = new Date().getTime();
+      console.log(`Đang tải danh sách sản phẩm với timestamp: ${timestamp}`);
+      
+      const response = await fetch(`/api/products?t=${timestamp}`);
+      
+      console.log('Phản hồi từ API GET:', response.status);
+      
+      if (!response.ok) {
+        throw new Error('Không thể lấy dữ liệu sản phẩm');
       }
-    };
-    
+      
+      const data = await response.json();
+      console.log(`Đã tải ${data.length} sản phẩm từ API`);
+      
+      setProducts(data);
+      setLoadingProducts(false);
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách sản phẩm:', error);
+      setErrorMessage('Lỗi khi tải danh sách sản phẩm. Vui lòng thử lại sau.');
+      setLoadingProducts(false);
+    }
+  };
+  
+  // Tải danh sách sản phẩm khi component được tải
+  useEffect(() => {
     fetchProducts();
   }, []);
   
@@ -42,9 +55,19 @@ export default function AdminPage() {
     event.preventDefault();
     setIsLoading(true);
     setSuccessMessage('');
+    setErrorMessage('');
     
     // Tạo form data từ form
     const formData = new FormData(event.currentTarget);
+    
+    // In ra log các giá trị từ form để debug
+    console.log({
+      name: formData.get('name'),
+      slug: formData.get('slug'),
+      categoryId: formData.get('categoryId'),
+      price: formData.get('price'),
+      description: formData.get('description')
+    });
     
     // Tạo object sản phẩm từ form data
     const productData = {
@@ -82,6 +105,8 @@ export default function AdminPage() {
         body: JSON.stringify(productData),
       });
       
+      console.log('Phản hồi từ API POST:', response.status);
+      
       if (!response.ok) {
         throw new Error('Lỗi khi thêm sản phẩm: ' + response.status);
       }
@@ -97,15 +122,15 @@ export default function AdminPage() {
       // Hiển thị thông báo thành công
       setSuccessMessage(`Sản phẩm "${data.name}" đã được thêm thành công!`);
       
-      // Thêm sản phẩm mới vào danh sách
-      setProducts(prevProducts => [data, ...prevProducts]);
+      // Lấy lại danh sách sản phẩm mới nhất từ server để đảm bảo hiển thị đầy đủ
+      fetchProducts();
       
       // Reset form
       event.currentTarget.reset();
       
     } catch (error: any) {
       console.error('Lỗi:', error);
-      alert('Đã xảy ra lỗi khi thêm sản phẩm! ' + error.message);
+      setErrorMessage('Đã xảy ra lỗi khi thêm sản phẩm! ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -119,6 +144,28 @@ export default function AdminPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Quản lý sản phẩm</h1>
+      
+      {/* Hiển thị thông báo lỗi */}
+      {errorMessage && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 flex items-center" role="alert">
+          <div className="flex-shrink-0 mr-2">
+            <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div>
+            <p className="font-medium">{errorMessage}</p>
+          </div>
+          <button 
+            className="absolute top-0 right-0 p-2" 
+            onClick={() => setErrorMessage('')}
+          >
+            <svg className="h-4 w-4 text-red-700" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      )}
       
       {/* Hiển thị thông báo thành công */}
       {successMessage && (
@@ -248,20 +295,8 @@ export default function AdminPage() {
           <h2 className="text-xl font-semibold">Sản phẩm đã đăng ({products.length})</h2>
           
           <button 
-            onClick={() => {
-              setLoadingProducts(true);
-              fetch(`/api/products?t=${new Date().getTime()}`)
-                .then(res => res.json())
-                .then(data => {
-                  setProducts(data);
-                  setLoadingProducts(false);
-                })
-                .catch(err => {
-                  console.error('Lỗi khi làm mới:', err);
-                  setLoadingProducts(false);
-                });
-            }}
-            className="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-sm flex items-center"
+            onClick={fetchProducts}
+            className="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-sm flex items-center hover:bg-blue-100"
             disabled={loadingProducts}
           >
             {loadingProducts ? (
@@ -274,7 +309,7 @@ export default function AdminPage() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                Làm mới
+                Làm mới danh sách
               </span>
             )}
           </button>
@@ -335,11 +370,22 @@ export default function AdminPage() {
             </table>
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-500">
-            <p>Chưa có sản phẩm nào được đăng. Hãy thêm sản phẩm đầu tiên!</p>
+          <div className="text-center py-8 bg-gray-50 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <h3 className="text-lg font-medium text-gray-500 mb-1">Chưa có sản phẩm nào</h3>
+            <p className="text-gray-500">Sử dụng form bên trên để thêm sản phẩm mới</p>
           </div>
         )}
       </div>
+      
+      {products.length > 0 && (
+        <div className="text-center bg-blue-50 rounded-lg p-4 text-blue-700 mb-8">
+          <p className="font-medium mb-2">Đã tìm thấy {products.length} sản phẩm trong hệ thống</p>
+          <p className="text-sm">Các sản phẩm đã được lưu vĩnh viễn và sẽ không bị mất khi làm mới trang</p>
+        </div>
+      )}
       
       <div className="text-center text-gray-500 py-4">
         <p className="mb-2">Lưu ý: Sản phẩm sẽ được lưu vào hệ thống ngay sau khi đăng thành công.</p>
