@@ -20,9 +20,9 @@ function initializeDataFile() {
     // Kiểm tra xem file có tồn tại không
     if (!fs.existsSync(DATA_FILE_PATH)) {
       console.log(`[API] Data file does not exist, creating: ${DATA_FILE_PATH}`);
-      // Tạo file với dữ liệu mẫu ban đầu
-      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(mockProducts, null, 2));
-      console.log(`[API] Data file created successfully with ${mockProducts.length} mock products`);
+      // Tạo file rỗng
+      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), { encoding: 'utf8' });
+      console.log(`[API] Created empty data file`);
     } else {
       console.log(`[API] Data file already exists: ${DATA_FILE_PATH}`);
     }
@@ -44,11 +44,13 @@ function readProductsFromFile(): Product[] {
       return [];
     }
     
-    const data = fs.readFileSync(DATA_FILE_PATH, 'utf8');
+    const data = fs.readFileSync(DATA_FILE_PATH, { encoding: 'utf8' });
     
     // Xử lý trường hợp file trống
     if (!data || data.trim() === '') {
       console.log(`[API] Data file is empty, returning empty array`);
+      // Khởi tạo file trống
+      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), { encoding: 'utf8' });
       return [];
     }
     
@@ -58,7 +60,7 @@ function readProductsFromFile(): Product[] {
   } catch (error) {
     console.error('[API] Error reading products from file:', error);
     // Khởi tạo lại file nếu có lỗi
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), 'utf8');
+    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), { encoding: 'utf8' });
     console.log(`[API] Recreated empty data file due to error`);
     return [];
   }
@@ -75,7 +77,7 @@ function writeProductsToFile(products: Product[]) {
     }
     
     console.log(`[API] Writing ${products.length} products to file: ${DATA_FILE_PATH}`);
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(products, null, 2), 'utf8');
+    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(products, null, 2), { encoding: 'utf8' });
     console.log(`[API] Products written to file successfully`);
   } catch (error) {
     console.error('[API] Error writing products to file:', error);
