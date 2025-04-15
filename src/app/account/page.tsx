@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { formatCurrency } from '@/lib/utils'
 import { useState, useEffect } from 'react'
+import { Product } from '@/types'
 
 export const metadata = {
   title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
@@ -63,6 +64,23 @@ const purchaseHistory = [
   }
 ]
 
+// Định nghĩa kiểu dữ liệu
+interface FormData {
+  name: string;
+  slug: string;
+  description: string;
+  longDescription: string;
+  price: string;
+  salePrice: string;
+  categoryId: string;
+  version: string;
+  licenseType: string;
+  isFeatured: boolean;
+  isNew: boolean;
+  size?: string;
+  imageUrl?: string;
+}
+
 // Thêm component client để xử lý trạng thái và yêu cầu API
 'use client'
 export default function AccountPage() {
@@ -72,8 +90,8 @@ export default function AccountPage() {
   }
   
   // Thêm state để lưu trữ danh sách sản phẩm và form data
-  const [products, setProducts] = useState([]);
-  const [formData, setFormData] = useState({
+  const [products, setProducts] = useState<Product[]>([]);
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     slug: '',
     description: '',
@@ -86,26 +104,28 @@ export default function AccountPage() {
     isFeatured: false,
     isNew: true
   });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
   
   // Hàm xử lý thay đổi input
-  const handleInputChange = (e) => {
-    const { id, value, type, checked } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { id, value, type } = e.target;
     // Xử lý tên field từ id input
     const fieldName = id.replace('product-', '');
     
     setFormData({
       ...formData,
-      [fieldName]: type === 'checkbox' ? checked : value,
+      [fieldName]: type === 'checkbox' 
+        ? (e.target as HTMLInputElement).checked 
+        : value,
       // Tự động tạo slug từ tên nếu field là name
       ...(fieldName === 'name' && { slug: value.toLowerCase().replace(/\s+/g, '-') })
     });
   };
   
   // Hàm xử lý submit form
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Kiểm tra dữ liệu bắt buộc
@@ -124,7 +144,11 @@ export default function AccountPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          price: parseFloat(formData.price),
+          salePrice: formData.salePrice ? parseFloat(formData.salePrice) : undefined
+        }),
       });
       
       if (!response.ok) {
@@ -134,7 +158,7 @@ export default function AccountPage() {
       const data = await response.json();
       
       // Cập nhật danh sách sản phẩm
-      setProducts([...products, data]);
+      setProducts([...products, data as Product]);
       
       // Reset form và hiển thị thông báo thành công
       setFormData({
@@ -158,7 +182,7 @@ export default function AccountPage() {
       }, 3000);
     } catch (err) {
       console.error('Lỗi:', err);
-      setError(err.message || 'Đã xảy ra lỗi khi thêm sản phẩm');
+      setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi khi thêm sản phẩm');
     } finally {
       setLoading(false);
     }
@@ -173,7 +197,7 @@ export default function AccountPage() {
           throw new Error('Không thể tải danh sách sản phẩm');
         }
         const data = await response.json();
-        setProducts(data);
+        setProducts(data as Product[]);
       } catch (err) {
         console.error('Lỗi khi tải sản phẩm:', err);
       }
@@ -659,11 +683,11 @@ export default function AccountPage() {
                     </div>
                     
                     <div>
-                      <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
+                      <label htmlFor="product-categoryId" className="block mb-2 font-medium text-gray-700">
                         Danh mục <span className="text-red-500">*</span>
                       </label>
                       <select
-                        id="product-category"
+                        id="product-categoryId"
                         className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                         required
                         value={formData.categoryId}
@@ -694,12 +718,12 @@ export default function AccountPage() {
                     </div>
                     
                     <div>
-                      <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
+                      <label htmlFor="product-salePrice" className="block mb-2 font-medium text-gray-700">
                         Giá khuyến mãi (VNĐ)
                       </label>
                       <input
                         type="number"
-                        id="product-sale-price"
+                        id="product-salePrice"
                         placeholder="Để trống nếu không có khuyến mãi"
                         className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                         value={formData.salePrice}
@@ -723,11 +747,11 @@ export default function AccountPage() {
                     </div>
                     
                     <div className="md:col-span-2">
-                      <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
+                      <label htmlFor="product-longDescription" className="block mb-2 font-medium text-gray-700">
                         Mô tả chi tiết <span className="text-red-500">*</span>
                       </label>
                       <textarea
-                        id="product-long-description"
+                        id="product-longDescription"
                         rows={6}
                         placeholder="Mô tả chi tiết về tính năng, lợi ích của phần mềm"
                         className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
@@ -753,11 +777,11 @@ export default function AccountPage() {
                     </div>
                     
                     <div>
-                      <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
+                      <label htmlFor="product-licenseType" className="block mb-2 font-medium text-gray-700">
                         Loại giấy phép <span className="text-red-500">*</span>
                       </label>
                       <select
-                        id="product-license"
+                        id="product-licenseType"
                         className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                         required
                         value={formData.licenseType}
@@ -789,12 +813,12 @@ export default function AccountPage() {
                     <div className="md:col-span-2 flex items-center">
                       <input 
                         type="checkbox" 
-                        id="product-featured" 
+                        id="product-isFeatured" 
                         className="mr-2"
                         checked={formData.isFeatured}
                         onChange={handleInputChange}
                       />
-                      <label htmlFor="product-featured" className="text-gray-700">
+                      <label htmlFor="product-isFeatured" className="text-gray-700">
                         Đánh dấu là sản phẩm nổi bật
                       </label>
                     </div>
@@ -802,12 +826,12 @@ export default function AccountPage() {
                     <div className="md:col-span-2 flex items-center">
                       <input 
                         type="checkbox" 
-                        id="product-new" 
+                        id="product-isNew" 
                         className="mr-2"
                         checked={formData.isNew}
                         onChange={handleInputChange}
                       />
-                      <label htmlFor="product-new" className="text-gray-700">
+                      <label htmlFor="product-isNew" className="text-gray-700">
                         Đánh dấu là sản phẩm mới
                       </label>
                     </div>
@@ -873,7 +897,7 @@ export default function AccountPage() {
                               <div className="flex items-center justify-between">
                                 <div>
                                   <span className="font-bold text-lg text-primary-600">{formatCurrency(product.price)}</span>
-                                  {product.salePrice > 0 && (
+                                  {product.salePrice && product.salePrice > 0 && (
                                     <span className="ml-2 text-sm line-through text-gray-500">{formatCurrency(product.salePrice)}</span>
                                   )}
                                 </div>
