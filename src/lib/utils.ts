@@ -14,17 +14,35 @@ export function cn(...inputs: ClassValue[]) {
  * Format a number as Vietnamese currency (VND)
  */
 export function formatCurrency(amount: number): string {
+  if (isNaN(amount) || amount === null || amount === undefined) {
+    return '0 đ';
+  }
+  
   try {
-    return new Intl.NumberFormat('vi-VN', {
+    // Format using Intl.NumberFormat with Vietnamese locale
+    const formatted = new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(amount).replace('₫', ' đ');
+    }).format(amount);
+    
+    // Replace the default currency symbol (₫) with a space and đ
+    // Ensure consistent spacing between number and currency symbol
+    return formatted.replace('₫', ' đ').replace(/\s+/g, ' ');
   } catch (error) {
     console.error('Error formatting currency:', error);
-    // Fallback formatting in case Intl.NumberFormat fails
-    return amount.toLocaleString('vi-VN') + ' đ';
+    
+    // Fallback formatting method if Intl.NumberFormat fails
+    try {
+      // Format number with thousand separators
+      const formattedNumber = amount.toLocaleString('vi-VN');
+      return `${formattedNumber} đ`;
+    } catch (fallbackError) {
+      console.error('Fallback formatting failed:', fallbackError);
+      // Ultimate fallback - just convert to string and add the symbol
+      return `${amount} đ`;
+    }
   }
 }
 
