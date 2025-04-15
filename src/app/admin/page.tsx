@@ -113,7 +113,7 @@ export default function AdminPage() {
         slug: String(formValues.slug || ''),
         description: String(formValues.description || ''),
         price: parseFloat(String(formValues.price || '0')),
-        categoryId: parseInt(String(formValues.categoryId || '1')),
+        categoryId: String(formValues.categoryId || 'cat-1'),
         isFeatured: true, // Mặc định là true để hiển thị trên trang chủ
       };
       
@@ -162,9 +162,9 @@ export default function AdminPage() {
     }
   };
   
-  const getCategoryName = (categoryId: string) => {
-    const category = categories.find(c => c.id === categoryId);
-    return category ? category.name : categoryId;
+  const getCategoryName = (categoryId: string | number) => {
+    const category = categories.find(c => c.id === String(categoryId));
+    return category ? category.name : String(categoryId);
   };
 
   const addLog = (message: string) => {
@@ -309,10 +309,11 @@ export default function AdminPage() {
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="1">Học tập</option>
-                <option value="2">Văn phòng</option>
-                <option value="3">Phần mềm</option>
-                <option value="4">Thiết kế</option>
+                <option value="cat-1">Phần mềm doanh nghiệp</option>
+                <option value="cat-2">Ứng dụng văn phòng</option>
+                <option value="cat-3">Phần mềm đồ họa</option>
+                <option value="cat-4">Bảo mật & Antivirus</option>
+                <option value="cat-5">Ứng dụng giáo dục</option>
               </select>
             </div>
           </div>
@@ -388,7 +389,7 @@ export default function AdminPage() {
                       <div className="text-sm text-gray-500">{product.slug}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {getCategoryName(product.categoryId.toString())}
+                      {getCategoryName(product.categoryId)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
