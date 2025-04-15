@@ -26,39 +26,65 @@ interface CloudinaryUploadResult {
  */
 export async function uploadToCloudinary(file: any): Promise<CloudinaryUploadResult> {
   try {
-    // Nếu là stream (FormData)
-    if (file.arrayBuffer) {
+    console.log('Starting upload to Cloudinary', { 
+      fileName: file.name, 
+      fileType: file.type, 
+      fileSize: file.size 
+    });
+
+    // Nếu là File từ FormData
+    if (file instanceof File || (file && file.arrayBuffer)) {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       
+      console.log('Converting file to buffer for upload, size:', buffer.length);
+      
       return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
+        const uploadStream = cloudinary.uploader.upload_stream(
           {
             folder: 'xlab',
             resource_type: 'auto',
+            filename_override: file.name
           },
           (error: Error | undefined, result: CloudinaryUploadResult | undefined) => {
-            if (error) return reject(error);
-            if (!result) return reject(new Error("No result returned from Cloudinary"));
+            if (error) {
+              console.error('Cloudinary upload error:', error);
+              return reject(error);
+            }
+            if (!result) {
+              return reject(new Error("No result returned from Cloudinary"));
+            }
+            console.log('Upload successful, result:', result);
             resolve(result);
           }
-        ).end(buffer);
+        );
+        
+        uploadStream.end(buffer);
       });
     }
     
-    // Nếu là buffer
+    // Nếu là buffer hoặc kiểu dữ liệu khác
+    console.log('Uploading as direct buffer/stream');
     return new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
+      const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: 'xlab',
           resource_type: 'auto',
         },
         (error: Error | undefined, result: CloudinaryUploadResult | undefined) => {
-          if (error) return reject(error);
-          if (!result) return reject(new Error("No result returned from Cloudinary"));
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            return reject(error);
+          }
+          if (!result) {
+            return reject(new Error("No result returned from Cloudinary"));
+          }
+          console.log('Upload successful, result:', result);
           resolve(result);
         }
-      ).end(file);
+      );
+      
+      uploadStream.end(file);
     });
   } catch (error) {
     console.error('Error uploading to Cloudinary:', error);

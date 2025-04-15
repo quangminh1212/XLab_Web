@@ -98,16 +98,18 @@ export default function AdminPage() {
         console.log(`${key}: ${value}`);
       });
       
+      console.log('Sending request to API...');
       const response = await fetch('/api/products', {
         method: 'POST',
         body: formData,
       });
       
       const result = await response.json();
+      console.log('API response:', result);
       
       if (response.ok) {
         // Hiển thị thông báo thành công
-        setSuccessMessage('Sản phẩm đã được tạo thành công!');
+        setSuccessMessage(result.message || 'Sản phẩm đã được tạo thành công!');
         
         // Hiển thị URL file nếu có
         if (result.data.fileUrl) {
@@ -124,6 +126,10 @@ export default function AdminPage() {
       } else {
         // Hiển thị lỗi nếu request không thành công
         setErrorMessage(result.message || 'Có lỗi xảy ra khi tạo sản phẩm');
+        if (result.error) {
+          console.error('Error details:', result.error);
+          setErrorMessage(`${result.message}: ${result.error}`);
+        }
         setFileUploadStatus('Tải lên thất bại');
       }
     } catch (error) {

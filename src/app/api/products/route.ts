@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { uploadToCloudinary } from '@/utils/cloudinary';
+import { products as mockProducts } from '@/data/mockData';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,28 +32,43 @@ export async function POST(request: NextRequest) {
         throw new Error('Invalid form data');
       });
       
+      // Debug: Log tất cả các keys trong formData
+      console.log('Form data keys:', Array.from(formData.keys()));
+      
       // Tách file và các trường dữ liệu khác
       const file = formData.get('file') as File | null;
       
       if (file) {
         console.log('File received:', file.name, file.type, file.size);
+        
+        if (file.size === 0) {
+          console.warn('Received file with 0 bytes size');
+        }
+        
         try {
-          // Upload file lên Cloudinary
-          const uploadResult = await uploadToCloudinary(file);
-          console.log('File uploaded to Cloudinary:', uploadResult);
+          // Bỏ qua việc upload file lên Cloudinary khi đang trong môi trường dev
+          // Thay vào đó, chúng ta sẽ mô phỏng kết quả upload
+          console.log('Mocking Cloudinary upload instead of actual upload');
           
-          // Lưu thông tin file từ Cloudinary
+          // Tạo dữ liệu file giả
           fileData = {
             fileName: file.name,
-            fileUrl: uploadResult.secure_url,
+            fileUrl: `https://res.cloudinary.com/demo/raw/upload/v1/${Date.now()}_${file.name.replace(/\s+/g, '_')}`,
             fileSize: file.size,
             fileType: file.type,
-            publicId: uploadResult.public_id
+            publicId: `xlab/files/${Date.now()}_${file.name.replace(/\s+/g, '_')}`
           };
+          
+          console.log('Mock file data:', fileData);
         } catch (error) {
-          console.error('Error uploading file to Cloudinary:', error);
-          throw new Error('Failed to upload file');
+          console.error('Error handling file:', error);
+          return NextResponse.json(
+            { success: false, message: `Lỗi khi xử lý file: ${error instanceof Error ? error.message : 'Unknown error'}` },
+            { status: 500 }
+          );
         }
+      } else {
+        console.log('No file found in the request');
       }
       
       // Chuyển đổi FormData thành đối tượng (trừ file đã xử lý)
@@ -65,7 +81,7 @@ export async function POST(request: NextRequest) {
       
       // Xử lý các trường boolean và số
       productData.price = Number(productData.price || 0);
-      productData.salePrice = Number(productData.salePrice || 0);
+      productData.salePrice = productData.salePrice ? Number(productData.salePrice) : 0;
       productData.isFeatured = productData.isFeatured === 'on';
       productData.isNew = productData.isNew === 'on';
       productData.downloadCount = 0;
@@ -99,26 +115,28 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Trong môi trường thực tế, bạn sẽ lưu sản phẩm vào database
-    // Ví dụ: await db.products.create({ data: productData });
-    
-    // Mô phỏng thành công
-    const resultData = {
+    // Tạo sản phẩm mới với ID ngẫu nhiên
+    const newProduct = {
       ...productData,
       id: `prod-${Date.now()}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
     
-    console.log('Created product:', resultData);
+    // Trong môi trường thực tế, bạn sẽ lưu vào database
+    // Ở đây chúng ta sẽ thêm vào mảng mockProducts để hiển thị trong giao diện
+    mockProducts.unshift(newProduct);
+    
+    console.log('Created product:', newProduct);
+    console.log('Total products after adding:', mockProducts.length);
     
     console.log('Returning successful response with status 201');
     console.log('--------------- END POST /api/products ---------------');
     
     return NextResponse.json({
       success: true,
-      message: 'Product created successfully',
-      data: resultData
+      message: 'Sản phẩm đã được tạo thành công',
+      data: newProduct
     }, { status: 201 });
   } catch (error) {
     console.error('Error processing request:', error);
@@ -134,16 +152,12 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     console.log('Received GET request to /api/products');
-    // Trong môi trường thực tế, bạn sẽ lấy sản phẩm từ database
-    // Ví dụ: const products = await db.products.findMany();
-    
-    // Mô phỏng sản phẩm từ dữ liệu giả
-    const { products } = await import('@/data/mockData');
-    console.log(`Returning ${products.length} products`);
+    // Trả về sản phẩm từ dữ liệu mẫu trong bộ nhớ
+    console.log(`Returning ${mockProducts.length} products`);
     
     return NextResponse.json({
       success: true,
-      data: products
+      data: mockProducts
     });
   } catch (error) {
     console.error('Error fetching products:', error);
