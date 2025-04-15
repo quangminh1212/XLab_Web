@@ -39,13 +39,27 @@ function readProductsFromFile(): Product[] {
     initializeDataFile();
     
     console.log(`[API] Reading products from file: ${DATA_FILE_PATH}`);
-    const data = fs.readFileSync(DATA_FILE_PATH, 'utf-8');
+    if (!fs.existsSync(DATA_FILE_PATH)) {
+      console.log(`[API] Data file does not exist, returning empty array`);
+      return [];
+    }
+    
+    const data = fs.readFileSync(DATA_FILE_PATH, 'utf8');
+    
+    // Xử lý trường hợp file trống
+    if (!data || data.trim() === '') {
+      console.log(`[API] Data file is empty, returning empty array`);
+      return [];
+    }
+    
     const products = JSON.parse(data) as Product[];
     console.log(`[API] Successfully read ${products.length} products from file`);
     return products;
   } catch (error) {
     console.error('[API] Error reading products from file:', error);
-    // Trả về mảng rỗng nếu có lỗi
+    // Khởi tạo lại file nếu có lỗi
+    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify([], null, 2), 'utf8');
+    console.log(`[API] Recreated empty data file due to error`);
     return [];
   }
 }
@@ -61,7 +75,7 @@ function writeProductsToFile(products: Product[]) {
     }
     
     console.log(`[API] Writing ${products.length} products to file: ${DATA_FILE_PATH}`);
-    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(products, null, 2));
+    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(products, null, 2), 'utf8');
     console.log(`[API] Products written to file successfully`);
   } catch (error) {
     console.error('[API] Error writing products to file:', error);
