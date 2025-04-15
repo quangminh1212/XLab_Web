@@ -104,10 +104,10 @@ export default function AdminPage() {
       
       // Thêm các field vào FormData
       formElements.forEach((element) => {
-        if (element.name && element.name !== 'file') {
+        if (element.name && element.name !== 'file' && element.name !== 'submit') {
           // Kiểm tra xem có phải là checkbox không
           if (element.type === 'checkbox') {
-            formData.append(element.name, element.checked ? 'on' : 'off');
+            formData.append(element.name, element.checked ? 'true' : 'false');
           } else if (element.value) {
             formData.append(element.name, element.value);
           }
@@ -133,13 +133,16 @@ export default function AdminPage() {
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         body: formData,
-        // Không thiết lập header Content-Type khi sử dụng FormData
+        // Không thiết lập header Content-Type khi sử dụng FormData để browser tự xử lý
       });
       
       console.log('Response status:', response.status);
       
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message || `HTTP error! Status: ${response.status}`
+        );
       }
       
       const result = await response.json();
@@ -480,12 +483,6 @@ export default function AdminPage() {
                           type="submit" 
                           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
                           disabled={isLoading}
-                          onClick={(e) => {
-                            if (isLoading) {
-                              e.preventDefault();
-                              return;
-                            }
-                          }}
                         >
                           {isLoading && (
                             <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
