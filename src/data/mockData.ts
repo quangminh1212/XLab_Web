@@ -84,46 +84,6 @@ export const stores: Store[] = [
 // Mock Products
 export const products: Product[] = [
   {
-    id: 'prod-vt-1',
-    name: 'VoiceTyping',
-    slug: 'voice-typing',
-    description: 'Ứng dụng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột.',
-    longDescription: `
-      <p>VoiceTyping là một ứng dụng máy tính cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, sử dụng công nghệ nhận dạng giọng nói của Google Speech Recognition.</p>
-      <h3>Kiến trúc dự án</h3>
-      <p>Dự án được chia thành hai phần chính:</p>
-      <ul>
-        <li>Frontend: Giao diện người dùng (GUI)</li>
-        <li>Backend: Mô-đun nhận dạng giọng nói, Mô-đun xử lý văn bản, Mô-đun điều khiển con trỏ và nhập liệu</li>
-      </ul>
-      <h3>Công nghệ sử dụng</h3>
-      <ul>
-        <li>Ngôn ngữ lập trình: Python</li>
-        <li>GUI Framework: PyQt5</li>
-        <li>Nhận dạng giọng nói: SpeechRecognition với Google Speech API</li>
-        <li>Điều khiển con trỏ và nhập liệu: PyAutoGUI, pyperclip, keyboard</li>
-        <li>Xử lý văn bản: NLTK (Natural Language Toolkit)</li>
-        <li>Xử lý âm thanh: PyAudio, pydub (yêu cầu FFmpeg)</li>
-      </ul>
-      <p>Chi tiết về cài đặt và sử dụng có trong tài liệu đi kèm.</p>
-    `,
-    price: 0,
-    salePrice: 0,
-    categoryId: 'cat-2',
-    imageUrl: '/images/products/voicetyping.png',
-    isFeatured: true,
-    isNew: true,
-    downloadCount: 0,
-    viewCount: 0,
-    rating: 0,
-    version: '1.0',
-    size: 'Unknown',
-    licenseType: 'MIT',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    storeId: '1'
-  },
-  {
     id: 'prod-1',
     name: 'XLab Office Suite',
     slug: 'xlab-office-suite',
