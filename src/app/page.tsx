@@ -1,39 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import CategoryList from '@/components/CategoryList';
 import ProductCard from '@/components/ProductCard';
-import { categories } from '@/data/mockData'; // Keep categories for now, or fetch them too
-import { Product } from '@/types'; // Import Product type
+import { categories, products } from '@/data/mockData';
 
 function HomePage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch('/api/products');
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        const data = await response.json();
-        setProducts(data);
-      } catch (err: any) {
-        console.error("Error fetching products:", err);
-        setError(err.message || 'Không thể tải danh sách sản phẩm.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
   // Lọc sản phẩm nổi bật
   const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
 
@@ -41,38 +14,6 @@ function HomePage() {
   const newProducts = [...products]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 4);
-
-  const renderProductGrid = (productList: Product[]) => {
-    if (isLoading) {
-      return <p className="text-center text-gray-500">Đang tải sản phẩm...</p>;
-    }
-
-    if (error) {
-      return <p className="text-center text-red-500">{error}</p>;
-    }
-
-    if (productList.length === 0) {
-      return (
-        <div className="text-center py-16">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
-          <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm nào</h3>
-          <p className="text-gray-500 max-w-lg mx-auto">
-            Hiện tại chưa có sản phẩm nào trong danh mục này.
-          </p>
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {productList.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -115,39 +56,57 @@ function HomePage() {
         </section>
 
         {/* Featured products */}
-        <section className="py-12 bg-white rounded-lg shadow-sm mb-8">
-          <div className="container max-w-7xl mx-auto px-4">
+        <section className="py-12 bg-white">
+          <div className="container max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">Phần mềm nổi bật</h2>
-              <Link href="/products?filter=featured" className="text-sm text-teal-600 hover:text-teal-700 font-medium">
+              <h2 className="text-2xl font-bold">Phần mềm nổi bật</h2>
+              <Link
+                href="/products"
+                className="text-teal-600 hover:text-teal-800 transition-colors"
+              >
                 Xem tất cả
               </Link>
             </div>
-            {renderProductGrid(featuredProducts)}
+
+            <div className="flex items-center justify-center">
+              <div className="text-center py-16">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
+                <p className="text-gray-500 max-w-lg mx-auto">
+                  Hệ thống đang cập nhật
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* New products */}
-        <section className="py-12 bg-white rounded-lg shadow-sm mb-8">
-          <div className="container max-w-7xl mx-auto px-4">
+        <section className="py-12 bg-gray-50">
+          <div className="container max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900">Phần mềm mới</h2>
-              <Link href="/products?filter=new" className="text-sm text-teal-600 hover:text-teal-700 font-medium">
+              <h2 className="text-2xl font-bold">Phần mềm mới</h2>
+              <Link
+                href="/products"
+                className="text-teal-600 hover:text-teal-800 transition-colors"
+              >
                 Xem tất cả
               </Link>
             </div>
-            {renderProductGrid(newProducts)}
-          </div>
-        </section>
 
-        {/* Add Product Link/Button */}
-        <section className="py-8 text-center">
-          <Link href="/add-product" className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
-            Thêm Sản Phẩm Mới
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 ml-2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-          </Link>
+            <div className="flex items-center justify-center">
+              <div className="text-center py-16">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
+                <p className="text-gray-500 max-w-lg mx-auto">
+                  Hệ thống đang cập nhật
+                </p>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
     </div>
