@@ -500,5 +500,59 @@ export const products: Product[] = [
     createdAt: '2023-07-25T15:30:00.000Z',
     updatedAt: '2023-10-08T11:20:00.000Z',
     storeId: '2'
+  },
+  {
+    id: 'prod-vt',
+    name: 'VoiceTyping',
+    slug: 'voicetyping',
+    description: 'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition.',
+    longDescription: `
+      <h2>VoiceTyping - Nhập liệu bằng giọng nói</h2>
+      <p>VoiceTyping là một ứng dụng máy tính cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, sử dụng công nghệ nhận dạng giọng nói của Google Speech Recognition.</p>
+
+      <h3>Kiến trúc:</h3>
+      <ul>
+        <li><strong>Frontend:</strong> Giao diện người dùng (GUI) xây dựng bằng PyQt5.</li>
+        <li><strong>Backend:</strong>
+          <ul>
+            <li>Mô-đun nhận dạng giọng nói (SpeechRecognition với Google Speech API).</li>
+            <li>Mô-đun xử lý văn bản (NLTK).</li>
+            <li>Mô-đun điều khiển con trỏ và nhập liệu (PyAutoGUI, pyperclip, keyboard).</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3>Công nghệ sử dụng:</h3>
+      <ul>
+        <li>Python</li>
+        <li>PyQt5</li>
+        <li>SpeechRecognition</li>
+        <li>PyAutoGUI, pyperclip, keyboard</li>
+        <li>NLTK</li>
+        <li>PyAudio, pydub (yêu cầu FFmpeg)</li>
+      </ul>
+
+      <h3>Cài đặt và Sử dụng:</h3>
+      <p>Xem chi tiết trong file README đi kèm hoặc tải về bản cài đặt.</p>
+      <p><strong>Yêu cầu:</strong> Cần cài đặt FFmpeg.</p>
+
+      <h3>Giấy phép:</h3>
+      <p>Phân phối dưới giấy phép MIT.</p>
+    `,
+    price: 0, // Miễn phí
+    salePrice: 0,
+    categoryId: 'cat-2', // Ứng dụng văn phòng
+    imageUrl: '/images/products/voicetyping-placeholder.png', // Bạn cần thêm ảnh này
+    isFeatured: false,
+    isNew: true,
+    downloadCount: 0,
+    viewCount: 0,
+    rating: 0,
+    version: '1.0.0',
+    size: '~50MB',
+    licenseType: 'MIT',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    storeId: '1' // XLab Software
   }
 ] 
