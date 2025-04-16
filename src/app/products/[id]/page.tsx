@@ -10,12 +10,13 @@ import { Product } from '@/types'; // Import kiểu Product
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   // params.id thực chất là slug
-  const slug = params.id;
+  // const slug = params.id; // Chuyển vào useEffect
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const slug = params.id; // Lấy slug ở đây
     async function loadProduct() {
       try {
         if (!slug) {
@@ -43,7 +44,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     }
 
     loadProduct();
-  }, [slug]); // Dependency là slug
+  }, [params.id]); // Dependency là params.id
 
   if (loading) {
     return (
