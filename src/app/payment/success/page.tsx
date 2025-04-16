@@ -3,7 +3,6 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { formatCurrency } from "@/lib/utils";
 
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
@@ -49,7 +48,7 @@ export default function PaymentSuccessPage() {
             </div>
             <div>
               <p className="text-gray-600 text-sm">Tổng tiền:</p>
-              <p className="font-semibold text-blue-600">{formatCurrency(amount)}</p>
+              <p className="font-semibold text-blue-600">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</p>
             </div>
           </div>
         </div>

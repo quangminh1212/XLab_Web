@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { siteConfig } from '@/config/siteConfig';
-import { formatCurrency } from "@/lib/utils";
 
 interface PaymentFormProps {
   amount: number;
@@ -82,7 +81,7 @@ export default function PaymentForm({ amount, productName }: PaymentFormProps) {
               <h3 className="text-lg font-medium text-primary-800 mb-2">Chi tiết sản phẩm</h3>
               <p className="text-primary-900 font-semibold mb-1">{productName}</p>
               <p className="text-primary-700 text-xl font-bold">
-                {formatCurrency(amount)}
+                {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}
               </p>
             </div>
 
