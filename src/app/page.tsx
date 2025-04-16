@@ -27,7 +27,7 @@ const voiceTypingProduct: Product = {
   price: 0, // Miễn phí hoặc giá bạn muốn
   salePrice: null, // Sửa undefined thành null để phù hợp với type number | null
   categoryId: utilityCategory.id, // Liên kết với category Tiện ích
-  imageUrl: '/placeholder-image.jpg', // Thay bằng ảnh thực tế nếu có
+  imageUrl: '/images/placeholder-product.jpg', // Sử dụng ảnh placeholder trong public/images
   isFeatured: true,
   isNew: true, // Đánh dấu là sản phẩm mới
   downloadCount: 0,
