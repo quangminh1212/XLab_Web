@@ -61,24 +61,32 @@ function HomePage() {
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Phần mềm nổi bật</h2>
               <Link
-                href="/products"
+                href="/products?filter=featured"
                 className="text-teal-600 hover:text-teal-800 transition-colors"
               >
                 Xem tất cả
               </Link>
             </div>
 
-            <div className="flex items-center justify-center">
-              <div className="text-center py-16">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
-                <p className="text-gray-500 max-w-lg mx-auto">
-                  Hệ thống đang cập nhật
-                </p>
+            {featuredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {featuredProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center">
+                <div className="text-center py-16">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                  <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm nổi bật</h3>
+                  <p className="text-gray-500 max-w-lg mx-auto">
+                    Chúng tôi sẽ sớm cập nhật các sản phẩm tốt nhất.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
@@ -88,24 +96,32 @@ function HomePage() {
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Phần mềm mới</h2>
               <Link
-                href="/products"
+                href="/products?filter=new"
                 className="text-teal-600 hover:text-teal-800 transition-colors"
               >
                 Xem tất cả
               </Link>
             </div>
 
-            <div className="flex items-center justify-center">
-              <div className="text-center py-16">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
-                <p className="text-gray-500 max-w-lg mx-auto">
-                  Hệ thống đang cập nhật
-                </p>
+            {newProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {newProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center justify-center">
+                <div className="text-center py-16">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                  <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm mới</h3>
+                  <p className="text-gray-500 max-w-lg mx-auto">
+                    Hãy quay lại sau để xem các phần mềm mới nhất.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </div>
