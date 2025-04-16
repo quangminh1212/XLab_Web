@@ -3,29 +3,37 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { getProductBySlug, incrementDownloadCount } from '@/lib/utils';
+// import { getProductBySlug, incrementDownloadCount } from '@/lib/utils'; // Tạm thời không dùng hàm từ utils
 import { ProductImage } from '@/components/ProductImage';
+import { products } from '@/data/mockData'; // Import trực tiếp từ mockData
+import { Product } from '@/types'; // Import kiểu Product
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const [product, setProduct] = useState<any>(null);
+  // params.id thực chất là slug
+  const slug = params.id;
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadProduct() {
       try {
-        if (!params || !params.id) {
-          setError('Mã sản phẩm không hợp lệ');
+        if (!slug) {
+          setError('Slug sản phẩm không hợp lệ');
           setLoading(false);
           return;
         }
 
-        // Kiểm tra trong database hoặc API thực tế nên được triển khai tại đây
-        // Hiện tại chỉ hiển thị thông báo không tìm thấy sản phẩm
-        setError('Không tìm thấy sản phẩm');
-        
-        // Cập nhật title cho trang
-        document.title = `Sản phẩm | XLab - Phần mềm và Dịch vụ`;
+        // Tìm sản phẩm trong mockData dựa trên slug
+        const foundProduct = products.find(p => p.slug === slug);
+
+        if (foundProduct) {
+          setProduct(foundProduct);
+          // Cập nhật title cho trang
+          document.title = `${foundProduct.name} | XLab - Phần mềm và Dịch vụ`;
+        } else {
+          setError('Không tìm thấy sản phẩm với slug này');
+        }
       } catch (err) {
         console.error('Error loading product:', err);
         setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
@@ -35,7 +43,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     }
 
     loadProduct();
-  }, [params]);
+  }, [slug]); // Dependency là slug
 
   if (loading) {
     return (
@@ -88,8 +96,14 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   // Giữ lại code để tham khảo cho sau này khi có sản phẩm thực tế
   const productImage = product.imageUrl || '/placeholder-product.jpg';
   
+  // Hàm này chỉ mô phỏng, cần logic thực tế
+  const incrementDownloadCount = (productSlug: string) => {
+    console.log(`Incrementing download count for ${productSlug}`);
+    // Cần logic cập nhật state hoặc gọi API thực tế
+  };
+
   const handleDownload = () => {
-    if (!product.slug) return;
+    if (!product || !product.slug) return;
     
     try {
       // Tăng số lượt tải
@@ -152,7 +166,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <div className="md:flex-1 px-4">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
                 <p className="text-gray-600 text-sm mb-4">
-                  Phiên bản {product.version || '1.0'} | Cập nhật: {new Date(product.updatedAt || new Date()).toLocaleDateString('vi-VN')}
+                  Phiên bản {product.version || '1.0'} | Cập nhật: {new Date(product.updatedAt || Date.now()).toLocaleDateString('vi-VN')}
                 </p>
                 
                 <div className="flex items-center mb-4">
@@ -172,8 +186,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </div>
                 
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-2">Mô tả</h2>
-                  <div className="text-gray-600 prose">{product.description || 'Chưa có mô tả cho sản phẩm này.'}</div>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-2">Mô tả chi tiết</h2>
+                  <div 
+                    className="text-gray-600 prose max-w-none" 
+                    dangerouslySetInnerHTML={{ __html: product.longDescription || product.description || 'Chưa có mô tả chi tiết.' }}
+                  />
                 </div>
                 
                 <div className="flex items-center space-x-4 mb-6">
