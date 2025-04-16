@@ -4,52 +4,16 @@ import React from 'react';
 import Link from 'next/link';
 import CategoryList from '@/components/CategoryList';
 import ProductCard from '@/components/ProductCard';
-// Import Product và Category types
-import { Product, Category } from '@/types';
-
-// Định nghĩa category Tiện ích theo đúng type
-const utilityCategory: Category = {
-  id: 'cat-utils', // ID duy nhất cho category
-  name: 'Tiện ích',
-  slug: 'tien-ich',
-  description: 'Các ứng dụng tiện ích cho máy tính.',
-  imageUrl: '/images/categories/utilities.png', // Đường dẫn ảnh mẫu
-  productCount: 1 // Số lượng sản phẩm (tạm thời)
-};
-
-// Định nghĩa dữ liệu tạm thời cho VoiceTyping theo đúng type Product
-const voiceTypingProduct: Product = {
-  id: 'voicetyping-01',
-  name: 'VoiceTyping',
-  slug: 'voicetyping', // slug cho URL
-  description: 'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột.',
-  longDescription: '<p>VoiceTyping là một ứng dụng máy tính cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, sử dụng công nghệ nhận dạng giọng nói của Google Speech Recognition.</p><p>Chi tiết xem tại trang sản phẩm.</p>', // Mô tả dài hơn
-  price: 0, // Miễn phí hoặc giá bạn muốn
-  salePrice: null, // Sửa undefined thành null để phù hợp với type number | null
-  categoryId: utilityCategory.id, // Liên kết với category Tiện ích
-  imageUrl: '/images/placeholder-product.jpg', // Sử dụng ảnh placeholder trong public/images
-  isFeatured: true,
-  isNew: true, // Đánh dấu là sản phẩm mới
-  downloadCount: 0,
-  viewCount: 0,
-  rating: 0, // Chưa có đánh giá
-  version: '1.0.0',
-  size: '50MB', // Kích thước ước tính
-  licenseType: 'Miễn phí', // Hoặc 'Thương mại' nếu bán
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  storeId: '1' // ID cửa hàng mặc định (nếu có)
-};
+import { categories, products } from '@/data/mockData';
 
 function HomePage() {
-  // Sử dụng VoiceTyping làm sản phẩm nổi bật
-  const featuredProducts: Product[] = [voiceTypingProduct];
+  // Lọc sản phẩm nổi bật
+  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
 
-  // Phần sản phẩm mới có thể tạm thời để trống hoặc hiển thị VoiceTyping nếu muốn
-  const newProducts: Product[] = [voiceTypingProduct]; // Thêm type Product[] và hiển thị luôn VoiceTyping ở mục mới
-
-  // Danh sách category bao gồm cả Tiện ích
-  const categoriesToShow: Category[] = [utilityCategory]; // Thêm type Category[]
+  // Lọc sản phẩm mới nhất
+  const newProducts = [...products]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 4);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -88,39 +52,39 @@ function HomePage() {
             </Link>
           </div>
 
-          <CategoryList categories={categoriesToShow} />
+          <CategoryList categories={categories} />
         </section>
 
         {/* Featured products */}
         <section className="py-12 bg-white">
-          <div className="container max-w-7xl mx-auto px-4">
+          <div className="container max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Phần mềm nổi bật</h2>
               <Link
-                href="/products/voicetyping"
+                href="/products"
                 className="text-teal-600 hover:text-teal-800 transition-colors"
               >
-                Xem chi tiết
+                Xem tất cả
               </Link>
             </div>
 
-            {featuredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {featuredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
+            <div className="flex items-center justify-center">
               <div className="text-center py-16">
-                <p className="text-gray-500">Chưa có sản phẩm nổi bật.</p>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
+                <p className="text-gray-500 max-w-lg mx-auto">
+                  Hệ thống đang cập nhật
+                </p>
               </div>
-            )}
+            </div>
           </div>
         </section>
 
         {/* New products */}
         <section className="py-12 bg-gray-50">
-          <div className="container max-w-7xl mx-auto px-4">
+          <div className="container max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold">Phần mềm mới</h2>
               <Link
@@ -131,23 +95,17 @@ function HomePage() {
               </Link>
             </div>
 
-            {newProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {newProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
+            <div className="flex items-center justify-center">
               <div className="text-center py-16">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
-                <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có phần mềm mới</h3>
+                <h3 className="text-xl font-medium text-gray-700 mb-2">Sản phẩm sẽ được thêm sau</h3>
                 <p className="text-gray-500 max-w-lg mx-auto">
-                  Chúng tôi sẽ sớm cập nhật thêm sản phẩm.
+                  Hệ thống đang cập nhật
                 </p>
               </div>
-            )}
+            </div>
           </div>
         </section>
       </div>

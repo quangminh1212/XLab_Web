@@ -5,7 +5,7 @@ export interface Product {
   description: string;
   longDescription: string;
   price: number;
-  salePrice: number | null;
+  salePrice: number;
   categoryId: number | string;
   imageUrl: string;
   isFeatured: boolean;
