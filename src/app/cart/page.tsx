@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { formatCurrency } from '@/lib/utils';
 
 export const metadata = {
   title: 'Giỏ hàng | XLab - Phần mềm và Dịch vụ',
@@ -33,6 +32,11 @@ export default function CartPage() {
   const tax = subtotal * 0.1 // 10% tax
   const total = subtotal + tax
 
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
+  }
+  
   return (
     <div>
       {/* Page Header */}
