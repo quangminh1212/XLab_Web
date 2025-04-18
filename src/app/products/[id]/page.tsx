@@ -1,6 +1,8 @@
 import { products } from '@/data/mockData';
-import ProductUI from './product-ui';
+import { Product } from '@/types';
+import ClientProductDetail from './client-product';
 
+// Server Component
 export default function ProductPage({ params }: { params: { id: string } }) {
   // Tìm sản phẩm theo slug
   const product = products.find(p => p.slug === params.id);
@@ -16,6 +18,26 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     );
   }
   
-  // Render ProductUI cho phần client-side interaction
-  return <ProductUI product={product} />;
+  // Hiển thị trang sản phẩm
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+      <p className="text-sm text-gray-500 mb-4">
+        Phiên bản {product.version || '1.0'}
+      </p>
+      
+      <div className="mb-4">
+        <p className="text-gray-700">{product.description}</p>
+      </div>
+      
+      <div 
+        className="prose max-w-none mb-6" 
+        dangerouslySetInnerHTML={{ __html: product.longDescription }}
+      />
+      
+      <div className="mt-4">
+        <ClientProductDetail product={product} />
+      </div>
+    </div>
+  );
 } 
