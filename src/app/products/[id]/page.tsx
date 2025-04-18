@@ -3,12 +3,9 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 // Server Component
-export default function ProductPage({ params }: { params: { id: string } }) {
-  // Lấy id từ params
-  const id = params.id;
-
-  // Tìm sản phẩm theo slug
-  const product = products.find(p => p.slug === id);
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  // Lấy id từ params và tìm sản phẩm theo slug
+  const product = products.find(p => p.slug === params.id);
   
   // Nếu không tìm thấy, sử dụng notFound()
   if (!product) {
