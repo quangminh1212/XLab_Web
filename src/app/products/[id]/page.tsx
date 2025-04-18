@@ -2,10 +2,17 @@ import { products } from '@/data/mockData';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+// Tùy chọn cache và revalidate
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Server Component
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  // Lấy id từ params và tìm sản phẩm theo slug
-  const product = products.find(p => p.slug === params.id);
+export default function ProductPage({ params }: { params: { id: string } }) {
+  // Lấy id từ params
+  const id = params.id;
+
+  // Tìm sản phẩm theo slug
+  const product = products.find(p => p.slug === id);
   
   // Nếu không tìm thấy, sử dụng notFound()
   if (!product) {
