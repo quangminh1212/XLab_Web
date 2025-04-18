@@ -124,7 +124,7 @@ export const products: Product[] = [
     price: 0, // Miễn phí
     salePrice: 0,
     categoryId: 'cat-2', // Ứng dụng văn phòng
-    imageUrl: '/images/products/voicetyping-placeholder.png', // Bạn cần thêm ảnh này
+    imageUrl: '/images/placeholder-product.jpg', // Sử dụng ảnh placeholder đã có
     isFeatured: false, // Đặt thành true nếu muốn nó nổi bật
     isNew: true,
     downloadCount: 0,

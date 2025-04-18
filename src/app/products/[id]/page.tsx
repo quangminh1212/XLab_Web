@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ProductImage } from '@/components/ProductImage';
 import { products } from '@/data/mockData'; // Import trực tiếp từ mockData
 import { Product } from '@/types'; // Import kiểu Product
+import { DownloadButton } from './client'; // Import DownloadButton từ client.tsx
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   // params.id thực chất là slug
@@ -95,7 +96,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   
   // Đoạn code bên dưới sẽ không được thực thi vì luôn đi vào trường hợp error ở trên
   // Giữ lại code để tham khảo cho sau này khi có sản phẩm thực tế
-  const productImage = product.imageUrl || '/placeholder-product.jpg';
+  const productImage = product.imageUrl || '/images/placeholder-product.jpg';
   
   // Hàm này chỉ mô phỏng, cần logic thực tế
   const incrementDownloadCount = (productSlug: string) => {
@@ -209,15 +210,15 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 
                 <div className="flex space-x-4">
                   {product.slug && (
-                    <button
-                      onClick={handleDownload}
+                    <DownloadButton
+                      slug={product.slug}
                       className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium flex items-center"
                     >
                       <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
                       Tải xuống
-                    </button>
+                    </DownloadButton>
                   )}
                   
                   <Button variant="outline" className="px-6 py-3">
