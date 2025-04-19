@@ -18,15 +18,24 @@ export const ProductImage: React.FC<ProductImageProps> = ({
   height,
   className = '',
 }) => {
+  // Đảm bảo luôn có giá trị mặc định nếu src là null hoặc undefined
+  const defaultSrc = '/images/placeholder-product.jpg'
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const [imageSrc, setImageSrc] = useState(src || '/images/placeholder-product.jpg')
+  const [imageSrc, setImageSrc] = useState(src || defaultSrc)
 
   // Reset states when source changes
   useEffect(() => {
-    setImageSrc(src || '/images/placeholder-product.jpg')
+    setImageSrc(src || defaultSrc)
     setLoading(true)
     setError(false)
+    
+    // Đảm bảo tự động tắt loading sau 800ms
+    const timeout = setTimeout(() => {
+      setLoading(false)
+    }, 800)
+    
+    return () => clearTimeout(timeout)
   }, [src])
 
   const handleLoad = () => {
@@ -37,18 +46,8 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     console.error(`Lỗi khi tải ảnh: ${src}`)
     setError(true)
     setLoading(false)
-    setImageSrc('/images/placeholder-product.jpg')
+    setImageSrc(defaultSrc)
   }
-
-  // Add useEffect to make sure loading disappears after a certain amount of time
-  useEffect(() => {
-    if (loading) {
-      const timer = setTimeout(() => {
-        setLoading(false)
-      }, 1500) // Maximum 1.5 seconds
-      return () => clearTimeout(timer)
-    }
-  }, [loading])
 
   // Check if the image URL is external or not
   const isExternalUrl = imageSrc && (imageSrc.startsWith('http://') || imageSrc.startsWith('https://'))
@@ -65,7 +64,7 @@ export const ProductImage: React.FC<ProductImageProps> = ({
         // Use img tag for external URLs
         <img 
           src={imageSrc}
-          alt={alt}
+          alt={alt || 'Product image'}
           className="h-full w-full object-contain"
           onLoad={handleLoad}
           onError={handleError}
@@ -73,17 +72,19 @@ export const ProductImage: React.FC<ProductImageProps> = ({
         />
       ) : (
         // Use Next.js Image for internal URLs
-        <Image
-          src={imageSrc}
-          alt={alt}
-          width={width || 300}
-          height={height || 300}
-          className="object-contain h-full w-full"
-          onLoad={handleLoad}
-          onError={handleError}
-          priority={true}
-          unoptimized={true}
-        />
+        <div className="h-full w-full">
+          <Image
+            src={imageSrc}
+            alt={alt || 'Product image'}
+            width={width || 300}
+            height={height || 300}
+            className="object-contain h-full w-full"
+            onLoad={handleLoad}
+            onError={handleError}
+            priority={true}
+            unoptimized={true}
+          />
+        </div>
       )}
 
       {error && (
