@@ -2,6 +2,28 @@ import { products } from '@/data/mockData';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+// Component tải
+function Loading() {
+  return (
+    <div className="container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
+      <p className="text-gray-600">Đang tải sản phẩm...</p>
+    </div>
+  );
+}
+
+// Debug component - hiển thị thông tin
+function Debug({ data }: { data: any }) {
+  return (
+    <div className="container mx-auto p-4 my-8 bg-gray-100 rounded-lg">
+      <h2 className="text-lg font-bold mb-2">Debug Info:</h2>
+      <div className="overflow-x-auto">
+        <pre className="text-xs">{JSON.stringify(data, null, 2)}</pre>
+      </div>
+    </div>
+  );
+}
+
 // Tùy chọn cache và revalidate
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -10,13 +32,36 @@ export const revalidate = 0;
 export default function ProductPage({ params }: { params: { id: string } }) {
   // Lấy id từ params
   const id = params.id;
-
-  // Tìm sản phẩm theo slug
-  const product = products.find(p => p.slug === id);
   
-  // Nếu không tìm thấy, sử dụng notFound()
+  // Debug - tất cả sản phẩm
+  console.log('All products:', products);
+  
+  // Tìm sản phẩm theo id, slug hoặc bất kỳ trường nào
+  // Thử nhiều cách để đảm bảo tìm được sản phẩm
+  const product = products.find(p => 
+    p.slug === id || 
+    p.id === id || 
+    p.id === parseInt(id) || 
+    String(p.id) === id
+  );
+  
+  console.log('Found product:', product);
+  console.log('Looking for ID:', id);
+  
+  // Nếu không tìm thấy, hiện trang debug thông tin
   if (!product) {
-    notFound();
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">Không tìm thấy sản phẩm</h1>
+        <p className="mb-4">ID tìm kiếm: {id}</p>
+        <Debug data={{ 
+          allProductIds: products.map(p => ({ id: p.id, slug: p.slug })),
+          searchedId: id,
+          totalProducts: products.length
+        }} />
+        <a href="/products" className="text-teal-600 hover:underline">Quay lại danh sách sản phẩm</a>
+      </div>
+    );
   }
   
   // Hiển thị trang sản phẩm
@@ -101,6 +146,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
+      
+      <Debug data={{ product, searchedId: id }} />
       
       <div className="mt-6">
         <a href="/products" className="text-teal-600 hover:underline flex items-center">
