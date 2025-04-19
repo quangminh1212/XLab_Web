@@ -118,16 +118,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
         {isVoiceTyping ? (
-          // Hiển thị ảnh logo cho VoiceTyping
-          <div className="w-full h-full flex items-center justify-center bg-[#e6f7f5] p-6">
-            <ProductImage
-              src={voiceTypingLogo}
-              alt="VoiceTyping Logo"
-              width={200}
-              height={200}
-              className="object-contain"
-              priority={true}
-            />
+          // Hiển thị biểu tượng SVG microphone trực tiếp
+          <div className="w-full h-full flex items-center justify-center bg-[#e6f7f5]">
+            <svg width="120" height="120" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <rect width="200" height="200" fill="#e6f7f5" rx="20" />
+              <g transform="translate(40, 20)">
+                {/* Microphone body */}
+                <rect x="40" y="20" width="40" height="80" rx="20" fill="#00a896" />
+                
+                {/* Microphone stand */}
+                <path d="M 60 100 L 60 140 L 20 140 L 120 140 L 60 140 Z" fill="#00a896" />
+                
+                {/* Sound waves */}
+                <path d="M 0 60 Q 10 60, 20 70 T 40 60" stroke="#00a896" strokeWidth="6" fill="none" />
+                <path d="M 100 60 Q 110 60, 120 70 T 140 60" stroke="#00a896" strokeWidth="6" fill="none" />
+              </g>
+            </svg>
+            <div className="absolute bottom-2 text-sm font-semibold text-primary-600">VoiceTyping</div>
           </div>
         ) : (
           // Ảnh sản phẩm hiển thị chính cho các sản phẩm khác
