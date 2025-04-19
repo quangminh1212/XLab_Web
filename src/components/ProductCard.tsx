@@ -118,68 +118,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
         {isVoiceTyping ? (
-          // Hiển thị biểu tượng SVG microphone cao cấp
-          <div className="w-full h-full flex items-center justify-center bg-[#e6f7f5]">
-            <svg width="150" height="150" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="micGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#00c1a2" />
-                  <stop offset="100%" stopColor="#008075" />
-                </linearGradient>
-                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#00897b" floodOpacity="0.3"/>
-                </filter>
-              </defs>
-              
-              {/* Nền */}
-              <circle cx="100" cy="100" r="95" fill="#e6f7f5" />
-              <circle cx="100" cy="100" r="85" fill="#f0fffc" opacity="0.7" />
-              
-              {/* Microphone */}
-              <g transform="translate(60, 30)" filter="url(#shadow)">
-                {/* Thân microphone */}
-                <rect x="25" y="10" width="30" height="75" rx="15" fill="url(#micGradient)" />
-                
-                {/* Phần đế microphone */}
-                <path d="M20 85 L60 85 L60 95 L80 95 L80 105 L0 105 L0 95 L20 95 Z" fill="url(#micGradient)" />
-                
-                {/* Sóng âm 1 */}
-                <path d="M-10 40 Q0 35, 10 40 Q20 45, 30 40" stroke="#00a896" strokeWidth="3" strokeLinecap="round" fill="none">
-                  <animate attributeName="d" 
-                    values="M-10 40 Q0 35, 10 40 Q20 45, 30 40;
-                            M-10 45 Q0 40, 10 45 Q20 50, 30 45;
-                            M-10 40 Q0 35, 10 40 Q20 45, 30 40" 
-                    dur="2s" repeatCount="indefinite" />
-                </path>
-                
-                {/* Sóng âm 2 */}
-                <path d="M50 40 Q60 35, 70 40 Q80 45, 90 40" stroke="#00a896" strokeWidth="3" strokeLinecap="round" fill="none">
-                  <animate attributeName="d" 
-                    values="M50 40 Q60 35, 70 40 Q80 45, 90 40;
-                            M50 45 Q60 40, 70 45 Q80 50, 90 45;
-                            M50 40 Q60 35, 70 40 Q80 45, 90 40" 
-                    dur="2s" repeatCount="indefinite" />
-                </path>
-                
-                {/* Sóng âm 3 - lớn hơn */}
-                <path d="M-20 25 Q-5 15, 10 25 Q25 35, 40 25" stroke="#00a896" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7">
-                  <animate attributeName="d" 
-                    values="M-20 25 Q-5 15, 10 25 Q25 35, 40 25;
-                            M-20 30 Q-5 20, 10 30 Q25 40, 40 30;
-                            M-20 25 Q-5 15, 10 25 Q25 35, 40 25" 
-                    dur="3s" repeatCount="indefinite" />
-                </path>
-                
-                {/* Sóng âm 4 - lớn hơn */}
-                <path d="M40 25 Q55 15, 70 25 Q85 35, 100 25" stroke="#00a896" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7">
-                  <animate attributeName="d" 
-                    values="M40 25 Q55 15, 70 25 Q85 35, 100 25;
-                            M40 30 Q55 20, 70 30 Q85 40, 100 30;
-                            M40 25 Q55 15, 70 25 Q85 35, 100 25" 
-                    dur="3s" repeatCount="indefinite" />
-                </path>
-              </g>
-            </svg>
+          // Hiển thị ảnh microphone cho VoiceTyping thay vì SVG
+          <div className="w-full h-full flex items-center justify-center bg-[#e6f7f5] p-6">
+            <img 
+              src="/voicetyping-image.png" 
+              alt="VoiceTyping" 
+              className="max-h-[80%] max-w-[80%] object-contain"
+              loading="eager"
+            />
           </div>
         ) : (
           // Ảnh sản phẩm hiển thị chính cho các sản phẩm khác
