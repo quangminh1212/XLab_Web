@@ -124,7 +124,7 @@ export const products: Product[] = [
     price: 0, // Miễn phí
     salePrice: 0,
     categoryId: 'cat-2', // Ứng dụng văn phòng
-    imageUrl: '/voicetyping.png',
+    imageUrl: '/images/products/voicetyping.png',
     isFeatured: true, // Đặt thành true để hiển thị trong mục sản phẩm nổi bật
     isNew: true,
     downloadCount: 150,

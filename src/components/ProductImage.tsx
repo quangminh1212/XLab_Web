@@ -22,16 +22,40 @@ export const ProductImage: React.FC<ProductImageProps> = ({
 }) => {
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [imagePath, setImagePath] = useState(src)
 
   // Danh sách ảnh dự phòng theo thứ tự ưu tiên
   const fallbackImages = [
+    '/images/products/voicetyping.png',
+    '/voicetyping.png',
     '/images/placeholder-product.jpg',
     '/placeholder-product.jpg',
     '/images/categories/productivity.png',
   ]
 
-  // Tìm ảnh dự phòng đầu tiên không trùng với src
-  const fallbackSrc = fallbackImages.find(img => img !== src) || fallbackImages[0]
+  // Xử lý lỗi hình ảnh và thay thế bằng fallback
+  const handleImageError = () => {
+    console.error(`Không thể tải ảnh: ${imagePath}`)
+    setIsError(true)
+    setIsLoading(false)
+    
+    // Tìm ảnh fallback tiếp theo không trùng với ảnh hiện tại
+    const nextFallback = fallbackImages.find(img => img !== imagePath)
+    
+    if (nextFallback) {
+      console.log(`Thử tải ảnh fallback: ${nextFallback}`)
+      setImagePath(nextFallback)
+      // Reset lỗi để thử lại với ảnh fallback
+      setIsError(false)
+    }
+  }
+
+  // Reset các state khi src thay đổi
+  useEffect(() => {
+    setImagePath(src)
+    setIsLoading(true)
+    setIsError(false)
+  }, [src])
 
   return (
     <div className={`relative w-full h-full ${className}`}>
@@ -46,17 +70,15 @@ export const ProductImage: React.FC<ProductImageProps> = ({
       )}
       
       <Image
-        src={isError ? fallbackSrc : src}
+        src={imagePath}
         alt={alt}
         width={width}
         height={height}
         className={`object-cover w-full h-full ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
         priority={priority}
         onLoadingComplete={() => setIsLoading(false)}
-        onError={() => {
-          setIsError(true)
-          setIsLoading(false)
-        }}
+        onError={handleImageError}
+        unoptimized={true}
       />
     </div>
   )

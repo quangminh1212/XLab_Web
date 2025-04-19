@@ -111,20 +111,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all hover:border-primary-200 flex flex-col h-full"
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
-        {/* Hiển thị biểu tượng ở chính giữa */}
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          {getProductIcon(product.slug)}
-        </div>
-        
-        {/* Ảnh sản phẩm hiển thị mờ ở phía sau */}
-        <div className="w-full h-full opacity-30">
+        {/* Ảnh sản phẩm hiển thị chính */}
+        <div className="w-full h-full">
           <ProductImage
             src={product.imageUrl || '/images/placeholder-product.jpg'}
             alt={product.name}
             width={400}
             height={300}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
+            priority={true}
           />
+        </div>
+        
+        {/* Hiển thị biểu tượng chỉ khi hover hoặc không có ảnh */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-70">
+          {getProductIcon(product.slug)}
         </div>
         
         {discount > 0 && (
