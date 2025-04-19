@@ -8,7 +8,7 @@ import ProductCard from '@/components/ProductCard'
 import { Button } from '@/components/ui/button'
 
 export default function ProductsPage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<any[]>(mockProducts || []);
   const [error, setError] = useState<string | null>(null);
   
@@ -18,19 +18,14 @@ export default function ProductsPage() {
     
     console.log('mockProducts length:', mockProducts?.length || 0);
     
-    // Force stop loading after a maximum time regardless
-    const forceStopLoading = setTimeout(() => {
-      if (loading) {
-        setLoading(false);
-        console.log('Force stopped loading');
-      }
-    }, 1000);
-    
-    // Directly use data from mockData with no delay
+    // Không cần loading state nếu sử dụng mock data trực tiếp
     setProducts(mockProducts || []);
-    setLoading(false);
     
-    return () => clearTimeout(forceStopLoading);
+    if (!mockProducts || mockProducts.length === 0) {
+      console.log('Không có sản phẩm');
+    } else {
+      console.log('Đã tải ' + mockProducts.length + ' sản phẩm');
+    }
   }, []);
   
   // Product categories - will be used when there are actual products
