@@ -96,8 +96,11 @@ next-env.d.ts
 .Trashes
 ehthumbs.db
 
-# Python Specific
+# Python / VoiceTyping Specific
 /venv/
+/VoiceTyping/venv/
+/VoiceTyping/build/
+/VoiceTyping/dist/
 *.spec
 __pycache__/
 *.pyc
