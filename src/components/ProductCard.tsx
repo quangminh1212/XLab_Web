@@ -105,28 +105,49 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     ? Math.round(((product.price - (product.salePrice || product.price)) / product.price) * 100) 
     : 0;
 
+  // Xác định nếu là sản phẩm VoiceTyping
+  const isVoiceTyping = product.slug.includes('voice') || product.slug.includes('typing');
+
   return (
     <Link 
       href={`/products/${product.slug}`}
       className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all hover:border-primary-200 flex flex-col h-full"
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
-        {/* Ảnh sản phẩm hiển thị chính */}
-        <div className="w-full h-full">
-          <ProductImage
-            src={product.imageUrl || '/images/placeholder-product.jpg'}
-            alt={product.name}
-            width={400}
-            height={300}
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            priority={true}
-          />
-        </div>
+        {/* Hiển thị SVG nội tuyến cho VoiceTyping */}
+        {isVoiceTyping ? (
+          <div className="w-full h-full p-4">
+            <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="200" height="200" rx="20" fill="#f0f9f8" />
+              <circle cx="100" cy="100" r="70" fill="#e6f7f5" />
+              <path d="M100 125C111.66 125 120 116.66 120 105V55C120 43.34 111.66 35 100 35C88.34 35 80 43.34 80 55V105C80 116.66 88.34 125 100 125Z" 
+                fill="#00a896" stroke="#008075" strokeWidth="3" />
+              <path d="M145 90C145 110.76 129.02 128.06 107.4 134.78V165H92.6V134.78C70.98 128.06 55 110.76 55 90H70C70 107.21 83.79 120 100 120H110C126.21 120 140 107.21 140 90H145Z" 
+                fill="#00a896" stroke="#008075" strokeWidth="3" />
+              <path d="M135 75C135 75 142 85 142 100C142 115 135 125 135 125" stroke="#00a896" strokeWidth="5" strokeLinecap="round" />
+              <path d="M65 75C65 75 58 85 58 100C58 115 65 125 65 125" stroke="#00a896" strokeWidth="5" strokeLinecap="round" />
+            </svg>
+          </div>
+        ) : (
+          /* Ảnh sản phẩm hiển thị chính cho các sản phẩm khác */
+          <div className="w-full h-full">
+            <ProductImage
+              src={product.imageUrl || '/images/placeholder-product.jpg'}
+              alt={product.name}
+              width={400}
+              height={300}
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              priority={true}
+            />
+          </div>
+        )}
         
         {/* Hiển thị biểu tượng chỉ khi hover hoặc không có ảnh */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-70">
-          {getProductIcon(product.slug)}
-        </div>
+        {!isVoiceTyping && (
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-70">
+            {getProductIcon(product.slug)}
+          </div>
+        )}
         
         {discount > 0 && (
           <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-20">
