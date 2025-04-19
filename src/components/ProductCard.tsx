@@ -14,12 +14,25 @@ interface ProductCardProps {
 const getProductIcon = (productSlug: string) => {
   if (productSlug.includes('voice') || productSlug.includes('typing')) {
     return (
-      <svg className="w-16 h-16 text-primary-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" fill="#00a896" strokeWidth="1.5" stroke="#00a896" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M19 12C19 14.3869 18.0518 16.6761 16.364 18.364C14.6761 20.0518 12.3869 21 10 21" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M5 12C5 9.61305 5.94821 7.32387 7.63604 5.63604C9.32387 3.94821 11.6131 3 14 3" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M8 21V19C8 18.4696 8.21071 17.9609 8.58579 17.5858C8.96086 17.2107 9.46957 17 10 17H14C14.5304 17 15.0391 17.2107 15.4142 17.5858C15.7893 17.9609 16 18.4696 16 19V21" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
+      <div className="flex flex-col items-center justify-center">
+        <svg className="w-20 h-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Vòng tròn nền */}
+          <circle cx="12" cy="12" r="10" fill="#e6f7f5" />
+          
+          {/* Microphone */}
+          <path d="M12 15C13.66 15 15 13.66 15 12V6C15 4.34 13.66 3 12 3C10.34 3 9 4.34 9 6V12C9 13.66 10.34 15 12 15Z" 
+            fill="#00a896" stroke="#008075" strokeWidth="0.5" />
+          
+          {/* Đường sóng âm */}
+          <path d="M19 12C19 14.76 17.02 17.06 14.4 17.78V21H9.6V17.78C6.98 17.06 5 14.76 5 12H7C7 14.21 8.79 16 11 16H13C15.21 16 17 14.21 17 12H19Z" 
+            fill="#00a896" stroke="#008075" strokeWidth="0.5" />
+            
+          {/* Sóng âm phụ */}
+          <path d="M17 9C17 9 17.9 10 17.9 12C17.9 14 17 15 17 15" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M7 9C7 9 6.1 10 6.1 12C6.1 14 7 15 7 15" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+        <span className="text-[10px] font-semibold text-primary-600 mt-1">VoiceTyping</span>
+      </div>
     );
   } else if (productSlug.includes('office')) {
     return (
