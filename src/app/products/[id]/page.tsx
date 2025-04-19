@@ -1,29 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { products } from '@/data/mockData';
-
-// Đặt là trang tĩnh để tránh lỗi params
-export const dynamic = 'error';
-export const dynamicParams = true;
+import { notFound } from 'next/navigation';
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   // Lấy id từ params và tìm sản phẩm
   const productId = params.id;
   const product = products.find(p => p.slug === productId || p.id === productId);
   
-  // Nếu không tìm thấy sản phẩm, hiển thị thông báo lỗi
+  // Nếu không tìm thấy sản phẩm, chuyển đến trang not-found
   if (!product) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Không tìm thấy sản phẩm</h1>
-          <p className="mb-6">Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
-          <Link href="/products" className="text-teal-600 hover:underline flex items-center">
-            Quay lại danh sách sản phẩm
-          </Link>
-        </div>
-      </div>
-    );
+    notFound();
   }
   
   return (
