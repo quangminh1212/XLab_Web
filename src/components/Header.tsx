@@ -71,7 +71,7 @@ export default function Header() {
             {/* Lời chào và tên người dùng trên desktop */}
             {!isLoading && session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
-                <span className="bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full shadow-sm text-center">
+                <span className="bg-primary-50 text-primary-700 px-3 py-1.5 rounded-full shadow-sm text-center">
                   {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
                 </span>
               </div>
@@ -80,19 +80,19 @@ export default function Header() {
 
           {/* Menu desktop */}
           <nav className="hidden md:flex items-center justify-center space-x-2">
-            <Link href="/" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
+            <Link href="/" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/products' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
+            <Link href="/products" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname.startsWith('/products') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/services' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
+            <Link href="/services" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/about' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
+            <Link href="/about" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/about' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50/70'}`}>
+            <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Liên hệ
             </Link>
           </nav>
@@ -101,7 +101,7 @@ export default function Header() {
           <div className="flex items-center justify-center space-x-3">
             {/* Tìm kiếm */}
             <button
-              className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors flex items-center justify-center"
+              className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors flex items-center justify-center"
               aria-label="Tìm kiếm"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -113,20 +113,20 @@ export default function Header() {
               <div className="flex items-center justify-center space-x-3">
                 {/* Thông báo */}
                 <button
-                  className="p-2 text-gray-600 hover:text-teal-600 rounded-full hover:bg-teal-50/80 transition-colors relative flex items-center justify-center"
+                  className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors relative flex items-center justify-center"
                   aria-label="Thông báo"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-teal-500 ring-2 ring-white"></span>
+                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-primary-500 ring-2 ring-white"></span>
                 </button>
 
                 {/* User dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => toggleMobileMenu()}
-                    className="flex items-center justify-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-teal-300 transition-all"
+                    className="flex items-center justify-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all"
                   >
                     {session.user?.image ? (
                       <Image
@@ -137,7 +137,7 @@ export default function Header() {
                         className="rounded-full shadow-sm"
                       />
                     ) : (
-                      <div className="w-9 h-9 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
+                      <div className="w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
                         {session.user?.name?.charAt(0) || 'U'}
                       </div>
                     )}
@@ -154,10 +154,10 @@ export default function Header() {
                       <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
                         Đăng nhập bằng {session.user?.email}
                       </div>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
+                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
                         Tài khoản của tôi
                       </Link>
-                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-teal-50 text-center">
+                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
                         Cài đặt
                       </Link>
                       <div className="border-t border-gray-100"></div>
@@ -175,13 +175,13 @@ export default function Header() {
               <div className="hidden sm:flex items-center justify-center space-x-3">
                 <Link
                   href="/login"
-                  className="px-5 py-2 border border-teal-500 text-teal-600 rounded-full hover:bg-teal-50 hover:shadow-sm transition-all font-medium text-center"
+                  className="px-5 py-2 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 hover:shadow-sm transition-all font-medium text-center"
                 >
                   Đăng nhập
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2 bg-teal-500 text-white rounded-full hover:bg-teal-600 hover:shadow-md transition-all font-medium text-center"
+                  className="px-5 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 hover:shadow-md transition-all font-medium text-center"
                 >
                   Đăng ký
                 </Link>
@@ -190,7 +190,7 @@ export default function Header() {
 
             {/* Hamburger menu for mobile */}
             <button
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-teal-600 hover:bg-teal-50 transition-colors flex items-center justify-center"
+              className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-colors flex items-center justify-center"
               onClick={toggleMobileMenu}
               aria-label="Menu"
             >
@@ -215,19 +215,19 @@ export default function Header() {
                 {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
               </div>
             )}
-            <Link href="/" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
+            <Link href="/" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/products' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
+            <Link href="/products" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname.startsWith('/products') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/services' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
+            <Link href="/services" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/about' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
+            <Link href="/about" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/about' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/contact' ? 'text-teal-600 bg-teal-50 shadow-sm' : 'text-gray-700 hover:text-teal-600 hover:bg-teal-50'}`}>
+            <Link href="/contact" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/contact' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Liên hệ
             </Link>
 
@@ -235,13 +235,13 @@ export default function Header() {
               <div className="flex space-x-3 mt-3 px-3">
                 <Link
                   href="/login"
-                  className="flex-1 px-4 py-2.5 border border-teal-500 text-teal-600 rounded-full text-center hover:bg-teal-50 transition-colors font-medium"
+                  className="flex-1 px-4 py-2.5 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors font-medium"
                 >
                   Đăng nhập
                 </Link>
                 <Link
                   href="/register"
-                  className="flex-1 px-4 py-2.5 bg-teal-500 text-white rounded-full text-center hover:bg-teal-600 transition-colors font-medium"
+                  className="flex-1 px-4 py-2.5 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors font-medium"
                 >
                   Đăng ký
                 </Link>

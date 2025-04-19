@@ -20,11 +20,11 @@ export const ProductImage: React.FC<ProductImageProps> = ({
 }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
-  const [imageSrc, setImageSrc] = useState(src)
+  const [imageSrc, setImageSrc] = useState(src || '/images/placeholder-product.jpg')
 
   // Reset states when source changes
   useEffect(() => {
-    setImageSrc(src)
+    setImageSrc(src || '/images/placeholder-product.jpg')
     setLoading(true)
     setError(false)
   }, [src])
@@ -37,23 +37,21 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     console.error(`Lỗi khi tải ảnh: ${src}`)
     setError(true)
     setLoading(false)
+    setImageSrc('/images/placeholder-product.jpg')
   }
 
-  // Thêm useEffect để đảm bảo loading biến mất sau một khoảng thời gian nhất định
+  // Add useEffect to make sure loading disappears after a certain amount of time
   useEffect(() => {
     if (loading) {
       const timer = setTimeout(() => {
         setLoading(false)
-      }, 2000) // Tối đa 2 giây
+      }, 1500) // Maximum 1.5 seconds
       return () => clearTimeout(timer)
     }
   }, [loading])
 
-  // Kiểm tra xem URL hình ảnh là từ bên ngoài hay không
-  const isExternalUrl = src && (src.startsWith('http://') || src.startsWith('https://'))
-
-  // Fallback image khi có lỗi
-  const fallbackImage = '/images/placeholder-product.jpg'
+  // Check if the image URL is external or not
+  const isExternalUrl = imageSrc && (imageSrc.startsWith('http://') || imageSrc.startsWith('https://'))
 
   return (
     <div className={`relative aspect-square w-full ${className}`}>
@@ -64,9 +62,9 @@ export const ProductImage: React.FC<ProductImageProps> = ({
       )}
       
       {isExternalUrl ? (
-        // Sử dụng thẻ img cho URL bên ngoài
+        // Use img tag for external URLs
         <img 
-          src={error ? fallbackImage : imageSrc}
+          src={imageSrc}
           alt={alt}
           className="h-full w-full object-contain"
           onLoad={handleLoad}
@@ -74,9 +72,9 @@ export const ProductImage: React.FC<ProductImageProps> = ({
           loading="eager"
         />
       ) : (
-        // Sử dụng Next.js Image cho URL nội bộ
+        // Use Next.js Image for internal URLs
         <Image
-          src={error ? fallbackImage : imageSrc}
+          src={imageSrc}
           alt={alt}
           width={width || 300}
           height={height || 300}

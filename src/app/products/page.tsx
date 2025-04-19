@@ -1,6 +1,6 @@
 'use client'
 
-import { products as productList, categories } from '@/data/mockData'
+import { products as mockProducts, categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ProductImage } from '@/components/ProductImage'
@@ -12,22 +12,27 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   
-  // Update title khi component được render
+  // Update title when component is rendered
   useEffect(() => {
     document.title = 'Sản phẩm | XLab - Phần mềm và Dịch vụ'
     
-    // Mô phỏng việc lấy sản phẩm từ API
+    // Simulate fetching products from API
     const fetchProducts = async () => {
       try {
-        // Giả lập gọi API
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Add a small delay to simulate API call
+        await new Promise(resolve => setTimeout(resolve, 500));
         
-        // Sử dụng trực tiếp dữ liệu từ mockData
-        setProducts(productList);
+        // Check if mockProducts is defined and has items
+        if (!mockProducts || mockProducts.length === 0) {
+          console.warn('Không có dữ liệu sản phẩm từ mockData');
+        }
+        
+        // Directly use data from mockData
+        setProducts(mockProducts || []);
         setLoading(false);
       } catch (err: any) {
         console.error('Lỗi khi tải sản phẩm:', err);
-        setError(err.message || 'Không thể tải sản phẩm từ máy chủ');
+        setError('Không thể tải sản phẩm từ máy chủ. Vui lòng thử lại sau.');
         setLoading(false);
       }
     };
@@ -35,7 +40,7 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
   
-  // Các danh mục sản phẩm - sẽ được sử dụng khi có sản phẩm thực tế
+  // Product categories - will be used when there are actual products
   const featuredProducts = products.filter(product => product.isFeatured);
   const newProducts = products.slice().sort((a, b) => 
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -101,7 +106,7 @@ export default function ProductsPage() {
           </p>
         </div>
 
-        {products.length === 0 ? (
+        {(!products || products.length === 0) ? (
           <div className="py-12 text-center">
             <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
