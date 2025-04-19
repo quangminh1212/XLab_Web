@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { products } from '@/data/mockData';
@@ -11,63 +11,16 @@ export const dynamic = 'error';
 export const dynamicParams = true;
 
 export default function ProductPage({ params }: { params: { id: string } }) {
+  // Tìm sản phẩm trực tiếp từ mockData
   const productId = params.id;
-  const [loading, setLoading] = useState(true);
-  const [product, setProduct] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Tìm sản phẩm từ dữ liệu có sẵn
-  useEffect(() => {
-    console.log('Product ID:', productId);
-    console.log('Available products:', products.length);
-    
-    try {
-      // Tìm sản phẩm theo slug hoặc id
-      const foundProduct = products.find(p => p.slug === productId || p.id === productId);
-      
-      if (!foundProduct) {
-        console.error('Không tìm thấy sản phẩm với ID/slug:', productId);
-        setError('Không tìm thấy sản phẩm');
-      } else {
-        console.log('Found product:', foundProduct.name);
-        setProduct(foundProduct);
-        // Update document title
-        document.title = `${foundProduct.name} | XLab - Phần mềm và Dịch vụ`;
-      }
-    } catch (err) {
-      console.error('Lỗi khi tìm sản phẩm:', err);
-      setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
-    } finally {
-      // Luôn tắt trạng thái loading sau thời gian ngắn
-      setTimeout(() => {
-        setLoading(false);
-      }, 300);
-    }
-  }, [productId]);
-
-  // Force stop loading after 800ms
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (loading) {
-        setLoading(false);
-      }
-    }, 800);
-    
-    return () => clearTimeout(timer);
-  }, [loading]);
-
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-12 flex justify-center">
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải thông tin sản phẩm...</p>
-        </div>
-      </div>
-    );
-  }
+  const product = products.find(p => p.slug === productId || p.id === productId);
   
-  if (error || !product) {
+  // Log thông tin để debug
+  console.log('Product ID:', productId);
+  console.log('Product found:', product?.name || 'Not found');
+
+  // Nếu không tìm thấy sản phẩm, hiển thị thông báo lỗi
+  if (!product) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow">
@@ -84,6 +37,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     );
   }
   
+  // Hiển thị thông tin sản phẩm
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow overflow-hidden">
