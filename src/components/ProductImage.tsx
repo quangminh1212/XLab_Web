@@ -31,10 +31,10 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     setLoading(true)
     setError(false)
     
-    // Đảm bảo tự động tắt loading sau 800ms
+    // Đảm bảo tự động tắt loading sau 500ms
     const timeout = setTimeout(() => {
       setLoading(false)
-    }, 800)
+    }, 500)
     
     return () => clearTimeout(timeout)
   }, [src])
@@ -42,13 +42,20 @@ export const ProductImage: React.FC<ProductImageProps> = ({
   const handleLoad = () => {
     console.log('ProductImage: Image loaded successfully:', imageSrc)
     setLoading(false)
+    setError(false)
   }
 
   const handleError = () => {
     console.error(`Lỗi khi tải ảnh: ${imageSrc}`)
     setError(true)
     setLoading(false)
-    // Không thay đổi imageSrc để giữ nguyên đường dẫn gốc cho việc debug
+    
+    // Chỉ sử dụng ảnh mặc định khi đường dẫn không phải là ảnh mặc định
+    if (imageSrc !== defaultSrc) {
+      console.log('ProductImage: Switching to default image')
+      setImageSrc(defaultSrc)
+      setError(false) // Reset lỗi khi chuyển sang ảnh mặc định
+    }
   }
 
   // Check if the image URL is external or not
@@ -95,7 +102,7 @@ export const ProductImage: React.FC<ProductImageProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           <p className="text-sm text-gray-500 mt-2">Không thể tải hình ảnh</p>
-          <p className="text-xs text-gray-400 mt-1">{imageSrc}</p>
+          <p className="text-xs text-gray-400 mt-1">{src}</p>
         </div>
       )}
     </div>
