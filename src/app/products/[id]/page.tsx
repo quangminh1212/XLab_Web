@@ -1,17 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import { products } from '@/data/mockData';
 
-// Static generation
-export const dynamic = 'force-static';
+// Đặt là trang tĩnh để tránh lỗi params
+export const dynamic = 'error';
+export const dynamicParams = true;
 
-// Server Component
 export default function ProductPage({ params }: { params: { id: string } }) {
-  // Tìm sản phẩm cố định từ danh sách hoặc hiển thị sản phẩm mẫu
+  // Lấy id từ params và tìm sản phẩm
   const productId = params.id;
   const product = products.find(p => p.slug === productId || p.id === productId);
   
+  // Nếu không tìm thấy sản phẩm, hiển thị thông báo lỗi
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -26,22 +26,6 @@ export default function ProductPage({ params }: { params: { id: string } }) {
     );
   }
   
-  // Sản phẩm mẫu nếu cần thiết
-  const sampleProduct = {
-    name: 'VoiceTyping Pro',
-    version: '1.0.0',
-    updatedAt: new Date().toLocaleDateString(),
-    description: 'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột',
-    imageUrl: '/images/placeholder-product.jpg',
-    price: 0,
-    viewCount: 100,
-    downloadCount: 50,
-    slug: 'voicetyping'
-  };
-  
-  // Sử dụng sản phẩm tìm được hoặc sản phẩm mẫu
-  const displayProduct = product || sampleProduct;
-  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -51,8 +35,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-6">
               <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-64">
                 <Image
-                  src={displayProduct.imageUrl || '/images/placeholder-product.jpg'}
-                  alt={displayProduct.name}
+                  src={product.imageUrl || '/images/placeholder-product.jpg'}
+                  alt={product.name}
                   width={300}
                   height={300}
                   className="max-h-full max-w-full object-contain"
@@ -61,44 +45,49 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               </div>
 
               <div className="mt-4 text-sm text-gray-500">
-                <div>Lượt xem: {displayProduct.viewCount || 0}</div>
-                <div>Lượt tải: {displayProduct.downloadCount || 0}</div>
+                <div>Lượt xem: {product.viewCount || 0}</div>
+                <div>Lượt tải: {product.downloadCount || 0}</div>
               </div>
             </div>
             
             {/* Phần thông tin */}
             <div className="w-full md:w-2/3">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">{displayProduct.name}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">{product.name}</h1>
               <p className="text-sm text-gray-500 mb-4">
-                Phiên bản {displayProduct.version || '1.0.0'} | Cập nhật: {displayProduct.updatedAt}
+                Phiên bản {product.version || '1.0.0'} | Cập nhật: {new Date(product.updatedAt).toLocaleDateString()}
               </p>
               
               <div className="mb-4">
                 <h2 className="text-lg font-semibold mb-2">Mô tả</h2>
-                <p className="text-gray-700">{displayProduct.description}</p>
+                <p className="text-gray-700">{product.description}</p>
               </div>
               
               <div className="mb-6">
                 <h2 className="text-lg font-semibold mb-2">Chi tiết</h2>
                 <div className="prose max-w-none">
-                  {displayProduct.longDescription ? (
-                    <div dangerouslySetInnerHTML={{ __html: displayProduct.longDescription }} />
+                  {product.longDescription ? (
+                    <div dangerouslySetInnerHTML={{ __html: product.longDescription }} />
                   ) : (
-                    <p>VoiceTyping là một ứng dụng máy tính cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, sử dụng công nghệ nhận dạng giọng nói hiện đại.</p>
+                    <p>Chưa có thông tin chi tiết về sản phẩm này.</p>
                   )}
                 </div>
               </div>
               
               <div className="mb-4">
                 <span className="text-2xl font-bold text-teal-600">
-                  {displayProduct.price === 0 ? 'Miễn phí' : 
-                    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(displayProduct.price)}
+                  {product.price === 0 ? 'Miễn phí' : 
+                    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.salePrice || product.price)}
                 </span>
+                {product.salePrice && product.price > product.salePrice && (
+                  <span className="ml-2 text-gray-500 line-through">
+                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
+                  </span>
+                )}
               </div>
               
               <div className="flex space-x-4">
                 <a 
-                  href={`/api/download?slug=${displayProduct.slug}`}
+                  href={`/api/download?slug=${product.slug}`}
                   className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,7 +97,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </a>
                 
                 <a 
-                  href={`/cart/add?id=${displayProduct.id || 'prod-vt'}`}
+                  href={`/cart/add?id=${product.id}`}
                   className="border border-teal-600 text-teal-600 hover:bg-teal-50 px-6 py-3 rounded-lg font-medium inline-flex items-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
