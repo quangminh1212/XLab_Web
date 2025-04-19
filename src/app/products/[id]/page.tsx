@@ -1,12 +1,47 @@
-import { products } from '@/data/mockData';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { products } from '@/data/mockData';
 
-// Cấu hình hiển thị tức thì
-export const dynamic = "force-static";
+// Static generation
+export const dynamic = 'force-static';
 
+// Server Component
 export default function ProductPage({ params }: { params: { id: string } }) {
-  // Hiển thị sản phẩm cơ bản
+  // Tìm sản phẩm cố định từ danh sách hoặc hiển thị sản phẩm mẫu
+  const productId = params.id;
+  const product = products.find(p => p.slug === productId || p.id === productId);
+  
+  if (!product) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Không tìm thấy sản phẩm</h1>
+          <p className="mb-6">Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+          <Link href="/products" className="text-teal-600 hover:underline flex items-center">
+            Quay lại danh sách sản phẩm
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  
+  // Sản phẩm mẫu nếu cần thiết
+  const sampleProduct = {
+    name: 'VoiceTyping Pro',
+    version: '1.0.0',
+    updatedAt: new Date().toLocaleDateString(),
+    description: 'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột',
+    imageUrl: '/images/placeholder-product.jpg',
+    price: 0,
+    viewCount: 100,
+    downloadCount: 50,
+    slug: 'voicetyping'
+  };
+  
+  // Sử dụng sản phẩm tìm được hoặc sản phẩm mẫu
+  const displayProduct = product || sampleProduct;
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -16,8 +51,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-6">
               <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-64">
                 <Image
-                  src={'/images/placeholder-product.jpg'}
-                  alt={"Tên sản phẩm"}
+                  src={displayProduct.imageUrl || '/images/placeholder-product.jpg'}
+                  alt={displayProduct.name}
                   width={300}
                   height={300}
                   className="max-h-full max-w-full object-contain"
@@ -26,43 +61,44 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               </div>
 
               <div className="mt-4 text-sm text-gray-500">
-                <div>Lượt xem: 100</div>
-                <div>Lượt tải: 50</div>
+                <div>Lượt xem: {displayProduct.viewCount || 0}</div>
+                <div>Lượt tải: {displayProduct.downloadCount || 0}</div>
               </div>
             </div>
             
             {/* Phần thông tin */}
             <div className="w-full md:w-2/3">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">VoiceTyping Pro</h1>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">{displayProduct.name}</h1>
               <p className="text-sm text-gray-500 mb-4">
-                Phiên bản 1.0.0 | Cập nhật: {new Date().toLocaleDateString()}
+                Phiên bản {displayProduct.version || '1.0.0'} | Cập nhật: {displayProduct.updatedAt}
               </p>
               
               <div className="mb-4">
                 <h2 className="text-lg font-semibold mb-2">Mô tả</h2>
-                <p className="text-gray-700">Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition</p>
+                <p className="text-gray-700">{displayProduct.description}</p>
               </div>
               
               <div className="mb-6">
                 <h2 className="text-lg font-semibold mb-2">Chi tiết</h2>
                 <div className="prose max-w-none">
-                  <p>VoiceTyping là một ứng dụng máy tính cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, sử dụng công nghệ nhận dạng giọng nói của Google Speech Recognition.</p>
-                  <ul>
-                    <li>Frontend: Giao diện người dùng (GUI) xây dựng bằng PyQt5</li>
-                    <li>Backend: Mô-đun nhận dạng giọng nói, xử lý văn bản, điều khiển con trỏ</li>
-                  </ul>
+                  {displayProduct.longDescription ? (
+                    <div dangerouslySetInnerHTML={{ __html: displayProduct.longDescription }} />
+                  ) : (
+                    <p>VoiceTyping là một ứng dụng máy tính cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, sử dụng công nghệ nhận dạng giọng nói hiện đại.</p>
+                  )}
                 </div>
               </div>
               
               <div className="mb-4">
                 <span className="text-2xl font-bold text-teal-600">
-                  Miễn phí
+                  {displayProduct.price === 0 ? 'Miễn phí' : 
+                    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(displayProduct.price)}
                 </span>
               </div>
               
               <div className="flex space-x-4">
                 <a 
-                  href="/api/download?slug=voicetyping"
+                  href={`/api/download?slug=${displayProduct.slug}`}
                   className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,7 +108,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </a>
                 
                 <a 
-                  href="/cart/add?id=prod-vt"
+                  href={`/cart/add?id=${displayProduct.id || 'prod-vt'}`}
                   className="border border-teal-600 text-teal-600 hover:bg-teal-50 px-6 py-3 rounded-lg font-medium inline-flex items-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,12 +123,12 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       </div>
       
       <div className="mt-6">
-        <a href="/products" className="text-teal-600 hover:underline flex items-center">
+        <Link href="/products" className="text-teal-600 hover:underline flex items-center">
           <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Quay lại danh sách sản phẩm
-        </a>
+        </Link>
       </div>
     </div>
   );
