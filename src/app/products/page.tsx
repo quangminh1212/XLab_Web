@@ -1,6 +1,6 @@
 'use client'
 
-import { products, categories } from '@/data/mockData'
+import { products as productList, categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { ProductImage } from '@/components/ProductImage'
@@ -22,15 +22,8 @@ export default function ProductsPage() {
         // Giả lập gọi API
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Mô phỏng lỗi khi không tải được dữ liệu (ngẫu nhiên để test)
-        const shouldFail = false; // Đặt thành true để test trạng thái lỗi
-        
-        if (shouldFail) {
-          throw new Error('Không thể kết nối đến máy chủ');
-        }
-        
-        // Hiện tại để trống danh sách sản phẩm
-        setProducts([]);
+        // Sử dụng trực tiếp dữ liệu từ mockData
+        setProducts(productList);
         setLoading(false);
       } catch (err: any) {
         console.error('Lỗi khi tải sản phẩm:', err);
@@ -119,13 +112,13 @@ export default function ProductsPage() {
                 Hiện tại chúng tôi chưa có sản phẩm nào. Các sản phẩm sẽ được thêm vào sau.
               </p>
               <Link 
-                href="/admin" 
+                href="/"
                 className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Thêm sản phẩm mới
+                Về trang chủ
               </Link>
             </div>
           </div>
