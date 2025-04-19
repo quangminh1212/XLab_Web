@@ -14,11 +14,11 @@ interface ProductCardProps {
 const getProductIcon = (productSlug: string) => {
   if (productSlug.includes('voice') || productSlug.includes('typing')) {
     return (
-      <svg className="w-12 h-12 text-primary-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M19 12C19 14.3869 18.0518 16.6761 16.364 18.364C14.6761 20.0518 12.3869 21 10 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M5 12C5 9.61305 5.94821 7.32387 7.63604 5.63604C9.32387 3.94821 11.6131 3 14 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M8 21V19C8 18.4696 8.21071 17.9609 8.58579 17.5858C8.96086 17.2107 9.46957 17 10 17H14C14.5304 17 15.0391 17.2107 15.4142 17.5858C15.7893 17.9609 16 18.4696 16 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <svg className="w-16 h-16 text-primary-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" fill="#00a896" strokeWidth="1.5" stroke="#00a896" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M19 12C19 14.3869 18.0518 16.6761 16.364 18.364C14.6761 20.0518 12.3869 21 10 21" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M5 12C5 9.61305 5.94821 7.32387 7.63604 5.63604C9.32387 3.94821 11.6131 3 14 3" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M8 21V19C8 18.4696 8.21071 17.9609 8.58579 17.5858C8.96086 17.2107 9.46957 17 10 17H14C14.5304 17 15.0391 17.2107 15.4142 17.5858C15.7893 17.9609 16 18.4696 16 19V21" stroke="#00a896" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     );
   } else if (productSlug.includes('office')) {
