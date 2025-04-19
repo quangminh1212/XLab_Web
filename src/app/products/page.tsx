@@ -9,35 +9,28 @@ import { Button } from '@/components/ui/button'
 
 export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>(mockProducts || []);
   const [error, setError] = useState<string | null>(null);
   
   // Update title when component is rendered
   useEffect(() => {
     document.title = 'Sản phẩm | XLab - Phần mềm và Dịch vụ'
     
-    // Simulate fetching products from API
-    const fetchProducts = async () => {
-      try {
-        // Add a small delay to simulate API call
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Check if mockProducts is defined and has items
-        if (!mockProducts || mockProducts.length === 0) {
-          console.warn('Không có dữ liệu sản phẩm từ mockData');
-        }
-        
-        // Directly use data from mockData
-        setProducts(mockProducts || []);
-        setLoading(false);
-      } catch (err: any) {
-        console.error('Lỗi khi tải sản phẩm:', err);
-        setError('Không thể tải sản phẩm từ máy chủ. Vui lòng thử lại sau.');
-        setLoading(false);
-      }
-    };
+    console.log('mockProducts length:', mockProducts?.length || 0);
     
-    fetchProducts();
+    // Force stop loading after a maximum time regardless
+    const forceStopLoading = setTimeout(() => {
+      if (loading) {
+        setLoading(false);
+        console.log('Force stopped loading');
+      }
+    }, 1000);
+    
+    // Directly use data from mockData with no delay
+    setProducts(mockProducts || []);
+    setLoading(false);
+    
+    return () => clearTimeout(forceStopLoading);
   }, []);
   
   // Product categories - will be used when there are actual products
@@ -49,6 +42,11 @@ export default function ProductsPage() {
     (b.downloadCount || 0) - (a.downloadCount || 0)
   ).slice(0, 6);
 
+  console.log('Loading state:', loading);
+  console.log('Products count:', products.length);
+  console.log('Featured products:', featuredProducts.length);
+
+  // Only show loading for a maximum of 1 second
   if (loading) {
     return (
       <div className="py-12 flex justify-center">

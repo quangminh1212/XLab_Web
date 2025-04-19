@@ -11,39 +11,50 @@ export const dynamic = 'error';
 export const dynamicParams = true;
 
 export default function ProductPage({ params }: { params: { id: string } }) {
+  const productId = params.id;
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Tìm sản phẩm từ dữ liệu có sẵn
   useEffect(() => {
-    const productId = params.id;
+    console.log('Product ID:', productId);
+    console.log('Available products:', products.length);
     
-    // Simulate API call with delay
-    const fetchProduct = async () => {
-      try {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        // Find product by slug or id
-        const foundProduct = products.find(p => p.slug === productId || p.id === productId);
-        
-        if (!foundProduct) {
-          setError('Không tìm thấy sản phẩm');
-        } else {
-          setProduct(foundProduct);
-          // Update document title
-          document.title = `${foundProduct.name} | XLab - Phần mềm và Dịch vụ`;
-        }
-        
+    try {
+      // Tìm sản phẩm theo slug hoặc id
+      const foundProduct = products.find(p => p.slug === productId || p.id === productId);
+      
+      if (!foundProduct) {
+        console.error('Không tìm thấy sản phẩm với ID/slug:', productId);
+        setError('Không tìm thấy sản phẩm');
+      } else {
+        console.log('Found product:', foundProduct.name);
+        setProduct(foundProduct);
+        // Update document title
+        document.title = `${foundProduct.name} | XLab - Phần mềm và Dịch vụ`;
+      }
+    } catch (err) {
+      console.error('Lỗi khi tìm sản phẩm:', err);
+      setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
+    } finally {
+      // Luôn tắt trạng thái loading sau thời gian ngắn
+      setTimeout(() => {
         setLoading(false);
-      } catch (err) {
-        console.error('Lỗi khi tải sản phẩm:', err);
-        setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
+      }, 300);
+    }
+  }, [productId]);
+
+  // Force stop loading after 800ms
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (loading) {
         setLoading(false);
       }
-    };
+    }, 800);
     
-    fetchProduct();
-  }, [params.id]);
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   if (loading) {
     return (
@@ -88,6 +99,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                   height={300}
                   className="max-h-full max-w-full object-contain"
                   unoptimized={true}
+                  priority={true}
                 />
               </div>
 
@@ -143,7 +155,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </a>
                 
                 <a 
-                  href={`/cart/add?id=${product.id}`}
+                  href={`/api/cart/add?id=${product.id}`}
                   className="border border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium inline-flex items-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
