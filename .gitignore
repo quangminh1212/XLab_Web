@@ -107,3 +107,18 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
+
+# Files generated during runtime
+.cache
+.temp
+dist/
+public/temp/
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

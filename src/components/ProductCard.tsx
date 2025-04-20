@@ -115,13 +115,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
         {isVoiceTyping ? (
-          // Hiển thị hình ảnh trực tiếp cho VoiceTyping thay vì dùng ProductImage
-          <div className="w-full h-full flex items-center justify-center bg-[#e6f7f5]">
-            <img 
-              src="/mic-icon.png"
-              alt="VoiceTyping" 
-              className="h-32 w-auto object-contain"
-            />
+          // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50">
+            <div className="relative">
+              <img 
+                src="/mic-color-icon.png"
+                alt="VoiceTyping" 
+                className="h-36 w-auto object-contain drop-shadow-lg transform transition-all duration-300 group-hover:scale-105"
+              />
+              {/* Hiệu ứng sóng âm xung quanh microphone */}
+              <div className="absolute inset-0 -z-10 animate-pulse opacity-75 blur-sm">
+                <div className="absolute inset-0 rounded-full bg-cyan-200 opacity-40 animate-ping" style={{ animationDuration: '3s' }}></div>
+              </div>
+            </div>
           </div>
         ) : (
           // Sử dụng ProductImage cho các sản phẩm khác
