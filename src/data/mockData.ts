@@ -122,7 +122,7 @@ export const products: Product[] = [
     price: 0, // Miễn phí
     salePrice: 0,
     categoryId: 'cat-2', // Ứng dụng văn phòng
-    imageUrl: '/speech-to-text-icon.png',
+    imageUrl: '/speech-text.png',
     isFeatured: true, // Đặt thành true để hiển thị trong mục sản phẩm nổi bật
     isNew: true,
     downloadCount: 150,
