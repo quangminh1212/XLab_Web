@@ -22,14 +22,28 @@ export default function ProductDetail({ product }: { product: Product }) {
           <div className="flex flex-col md:flex-row">
             {/* Phần hình ảnh */}
             <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-6">
-              <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-64">
+              <div className={`p-4 rounded-lg flex items-center justify-center h-72 ${isVoiceTyping ? 'bg-gradient-to-br from-blue-50 to-teal-50' : 'bg-gray-100'}`}>
                 {isVoiceTyping ? (
-                  // Sử dụng img trực tiếp cho VoiceTyping
-                  <img
-                    src="/mic-icon.png"
-                    alt={product.name}
-                    className="max-h-full max-w-full object-contain"
-                  />
+                  // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
+                  <div className="relative flex items-center justify-center w-full h-full">
+                    <img
+                      src="/mic-color-icon.png"
+                      alt={product.name}
+                      className="max-h-48 w-auto object-contain drop-shadow-lg relative z-10 transition-all duration-500 hover:scale-105"
+                    />
+                    {/* Hiệu ứng sóng âm */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-44 h-44 rounded-full bg-cyan-100 opacity-30 absolute animate-ping" style={{ animationDuration: '3s' }}></div>
+                      <div className="w-36 h-36 rounded-full bg-cyan-200 opacity-20 absolute animate-ping" style={{ animationDuration: '2.5s' }}></div>
+                      <div className="w-28 h-28 rounded-full bg-teal-200 opacity-30 absolute animate-ping" style={{ animationDuration: '2s' }}></div>
+                    </div>
+                    {/* Tên sản phẩm nổi bật ở dưới */}
+                    <div className="absolute bottom-0 left-0 right-0 text-center">
+                      <span className="inline-block px-3 py-1 bg-primary-600 text-white text-xs font-medium rounded-full shadow-sm">
+                        Voice Typing Technology
+                      </span>
+                    </div>
+                  </div>
                 ) : (
                   // Sử dụng Image của Next.js cho các sản phẩm khác
                   <Image
@@ -45,8 +59,19 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
 
               <div className="mt-4 text-sm text-gray-500">
-                <div>Lượt xem: {product.viewCount || 0}</div>
-                <div>Lượt tải: {product.downloadCount || 0}</div>
+                <div className="flex items-center">
+                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  Lượt xem: {product.viewCount || 0}
+                </div>
+                <div className="flex items-center mt-1">
+                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Lượt tải: {product.downloadCount || 0}
+                </div>
               </div>
             </div>
             
