@@ -2,9 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import CategoryList from '@/components/CategoryList';
 import ProductCard from '@/components/ProductCard';
-import { categories, products } from '@/data/mockData';
+import { products } from '@/data/mockData';
 
 function HomePage() {
   // Lọc sản phẩm nổi bật
@@ -44,17 +43,6 @@ function HomePage() {
       </section>
 
       <div className="container px-3 mx-auto max-w-7xl">
-        <section className="py-6">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xl font-bold text-gray-900">Danh mục</h2>
-            <Link href="/categories" className="text-sm text-teal-600 hover:text-teal-700 font-medium">
-              Xem tất cả
-            </Link>
-          </div>
-
-          <CategoryList categories={categories} />
-        </section>
-
         {/* Featured products */}
         <section className="py-12 bg-white">
           <div className="container max-w-7xl mx-auto">
