@@ -108,45 +108,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   // Xác định nếu là sản phẩm VoiceTyping
   const isVoiceTyping = product.slug.includes('voice') || product.slug.includes('typing');
   
-  // Chọn ảnh logo cho VoiceTyping
-  const voiceTypingLogo = '/microphone-logo.png';
-
   return (
     <Link 
       href={`/products/${product.slug}`}
       className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all hover:border-primary-200 flex flex-col h-full"
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
-        {isVoiceTyping ? (
-          // Hiển thị ảnh microphone cho VoiceTyping thay vì SVG
-          <div className="w-full h-full flex items-center justify-center bg-[#e6f7f5] p-6">
-            <img 
-              src="/voicetyping-image.png" 
-              alt="VoiceTyping" 
-              className="max-h-[80%] max-w-[80%] object-contain"
-              loading="eager"
-            />
-          </div>
-        ) : (
-          // Ảnh sản phẩm hiển thị chính cho các sản phẩm khác
-          <div className="w-full h-full">
-            <ProductImage
-              src={product.imageUrl || '/images/placeholder-product.jpg'}
-              alt={product.name}
-              width={400}
-              height={300}
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-              priority={true}
-            />
-          </div>
-        )}
+        {/* Sử dụng ảnh từ dữ liệu sản phẩm */}
+        <div className="w-full h-full">
+          <ProductImage
+            src={product.imageUrl || '/images/placeholder-product.jpg'}
+            alt={product.name}
+            width={400}
+            height={300}
+            className="object-contain group-hover:scale-105 transition-transform duration-300"
+            priority={true}
+          />
+        </div>
         
-        {/* Hiển thị biểu tượng chỉ khi hover (cho các sản phẩm không phải VoiceTyping) */}
-        {!isVoiceTyping && (
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-70">
-            {getProductIcon(product.slug)}
-          </div>
-        )}
+        {/* Hiển thị biểu tượng chỉ khi hover */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-70">
+          {getProductIcon(product.slug)}
+        </div>
         
         {discount > 0 && (
           <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-20">
