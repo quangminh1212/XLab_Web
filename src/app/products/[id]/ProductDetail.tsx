@@ -25,22 +25,21 @@ export default function ProductDetail({ product }: { product: Product }) {
               <div className={`p-4 rounded-lg flex items-center justify-center h-72 ${isVoiceTyping ? 'bg-gradient-to-br from-blue-50 to-teal-50' : 'bg-gray-100'}`}>
                 {isVoiceTyping ? (
                   // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
-                  <div className="relative flex items-center justify-center w-full h-full">
-                    <img
-                      src="/mic-color-icon.png"
+                  <div className="relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg">
+                    <Image
+                      src="/images/products/voice-typing.jpg"
                       alt={product.name}
-                      className="max-h-48 w-auto object-contain drop-shadow-lg relative z-10 transition-all duration-500 hover:scale-105"
+                      width={500}
+                      height={400}
+                      className="object-cover w-full h-full transition-all duration-500 hover:scale-105"
+                      priority={true}
                     />
-                    {/* Hiệu ứng sóng âm */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-44 h-44 rounded-full bg-cyan-100 opacity-30 absolute animate-ping" style={{ animationDuration: '3s' }}></div>
-                      <div className="w-36 h-36 rounded-full bg-cyan-200 opacity-20 absolute animate-ping" style={{ animationDuration: '2.5s' }}></div>
-                      <div className="w-28 h-28 rounded-full bg-teal-200 opacity-30 absolute animate-ping" style={{ animationDuration: '2s' }}></div>
-                    </div>
-                    {/* Tên sản phẩm nổi bật ở dưới */}
-                    <div className="absolute bottom-0 left-0 right-0 text-center">
-                      <span className="inline-block px-3 py-1 bg-primary-600 text-white text-xs font-medium rounded-full shadow-sm">
-                        Voice Typing Technology
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 via-transparent to-transparent"></div>
+                    {/* Badge ở góc */}
+                    <div className="absolute bottom-3 left-3">
+                      <span className="inline-block px-3 py-1 bg-primary-600 text-white text-sm font-medium rounded-md shadow-sm">
+                        Voice Typing Pro
                       </span>
                     </div>
                   </div>
