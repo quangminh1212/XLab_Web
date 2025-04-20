@@ -11,6 +11,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<any[]>(mockProducts || []);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('software'); // 'software' hoặc 'accounts'
   
   // Update title when component is rendered
   useEffect(() => {
@@ -28,12 +29,24 @@ export default function ProductsPage() {
     }
   }, []);
   
-  // Product categories - will be used when there are actual products
-  const featuredProducts = products.filter(product => product.isFeatured);
-  const newProducts = products.slice().sort((a, b) => 
+  // Lọc sản phẩm theo loại
+  const softwareProducts = products.filter(product => 
+    !product.isAccount && (product.type === 'software' || !product.type)
+  );
+  
+  const accountProducts = products.filter(product => 
+    product.isAccount || product.type === 'account'
+  );
+  
+  // Lọc sản phẩm theo danh mục và loại đã chọn
+  const currentProducts = activeTab === 'software' ? softwareProducts : accountProducts;
+  
+  // Lọc các loại sản phẩm đặc biệt cho danh mục hiện tại
+  const featuredProducts = currentProducts.filter(product => product.isFeatured);
+  const newProducts = currentProducts.slice().sort((a, b) => 
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   ).slice(0, 6);
-  const popularProducts = products.slice().sort((a, b) => 
+  const popularProducts = currentProducts.slice().sort((a, b) => 
     (b.downloadCount || 0) - (a.downloadCount || 0)
   ).slice(0, 6);
 
@@ -93,21 +106,73 @@ export default function ProductsPage() {
     <div className="py-8 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Sản phẩm phần mềm</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Sản phẩm của XLab</h1>
           <p className="text-gray-600">
-            Khám phá các giải pháp phần mềm chất lượng cao được phát triển bởi XLab và cộng đồng.
+            Khám phá các giải pháp phần mềm và tài khoản chất lượng cao do XLab cung cấp.
+          </p>
+        </div>
+        
+        {/* Tabs để chuyển đổi giữa phần mềm và tài khoản */}
+        <div className="flex border-b border-gray-200 mb-8">
+          <button
+            onClick={() => setActiveTab('software')}
+            className={`py-3 px-6 font-medium text-sm focus:outline-none ${
+              activeTab === 'software'
+                ? 'text-primary-600 border-b-2 border-primary-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <div className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Phần mềm
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab('accounts')}
+            className={`py-3 px-6 font-medium text-sm focus:outline-none ${
+              activeTab === 'accounts'
+                ? 'text-primary-600 border-b-2 border-primary-600'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <div className="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Tài khoản phụ trợ
+            </div>
+          </button>
+        </div>
+
+        {/* Hiển thị tiêu đề theo tab đang active */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">
+            {activeTab === 'software' ? 'Phần mềm' : 'Tài khoản phụ trợ'}
+          </h2>
+          <p className="text-gray-600 mt-2">
+            {activeTab === 'software' 
+              ? 'Các ứng dụng và phần mềm do XLab phát triển và phân phối.' 
+              : 'Tài khoản ChatGPT, CapCut và các dịch vụ khác với giá tốt nhất.'}
           </p>
         </div>
 
-        {(!products || products.length === 0) ? (
+        {(!currentProducts || currentProducts.length === 0) ? (
           <div className="py-12 text-center">
             <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
               </svg>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Chưa có sản phẩm</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                {activeTab === 'software' 
+                  ? 'Chưa có phần mềm nào' 
+                  : 'Chưa có tài khoản phụ trợ nào'}
+              </h2>
               <p className="text-gray-600 mb-6">
-                Hiện tại chúng tôi chưa có sản phẩm nào. Các sản phẩm sẽ được thêm vào sau.
+                {activeTab === 'software'
+                  ? 'Hiện tại chúng tôi chưa có phần mềm nào. Các sản phẩm sẽ được thêm vào sau.'
+                  : 'Hiện tại chúng tôi chưa có tài khoản phụ trợ nào. Vui lòng quay lại sau.'}
               </p>
               <Link 
                 href="/"
@@ -124,7 +189,9 @@ export default function ProductsPage() {
           <div className="space-y-12">
             {featuredProducts.length > 0 && (
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Sản phẩm nổi bật</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  {activeTab === 'software' ? 'Phần mềm nổi bật' : 'Tài khoản đề xuất'}
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {featuredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
@@ -135,7 +202,9 @@ export default function ProductsPage() {
             
             {newProducts.length > 0 && (
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Sản phẩm mới</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  {activeTab === 'software' ? 'Phần mềm mới' : 'Tài khoản mới'}
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {newProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
@@ -146,7 +215,9 @@ export default function ProductsPage() {
             
             {popularProducts.length > 0 && (
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Phổ biến nhất</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                  {activeTab === 'software' ? 'Phần mềm phổ biến nhất' : 'Tài khoản bán chạy'}
+                </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {popularProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
