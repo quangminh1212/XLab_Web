@@ -12,6 +12,9 @@ export default function ProductDetail({ product }: { product: Product }) {
     document.title = `${product.name} | XLab - Phần mềm và Dịch vụ`;
   }, [product.name]);
 
+  // Kiểm tra xem có phải là sản phẩm VoiceTyping hay không
+  const isVoiceTyping = product.slug.includes('voice') || product.slug.includes('typing');
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -20,15 +23,25 @@ export default function ProductDetail({ product }: { product: Product }) {
             {/* Phần hình ảnh */}
             <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-6">
               <div className="bg-gray-100 p-4 rounded-lg flex items-center justify-center h-64">
-                <Image
-                  src={product.imageUrl || '/images/placeholder-product.jpg'}
-                  alt={product.name}
-                  width={300}
-                  height={300}
-                  className="max-h-full max-w-full object-contain"
-                  unoptimized={true}
-                  priority={true}
-                />
+                {isVoiceTyping ? (
+                  // Sử dụng img trực tiếp cho VoiceTyping
+                  <img
+                    src="/mic-icon.png"
+                    alt={product.name}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                ) : (
+                  // Sử dụng Image của Next.js cho các sản phẩm khác
+                  <Image
+                    src={product.imageUrl || '/images/placeholder-product.jpg'}
+                    alt={product.name}
+                    width={300}
+                    height={300}
+                    className="max-h-full max-w-full object-contain"
+                    unoptimized={true}
+                    priority={true}
+                  />
+                )}
               </div>
 
               <div className="mt-4 text-sm text-gray-500">
