@@ -26,14 +26,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                 {isVoiceTyping ? (
                   // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
                   <div className="relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg">
-                    <Image
-                      src="/voice-to-text-icon.png"
+                    <img
+                      src="/speech-text.png"
                       alt={product.name}
-                      width={500}
-                      height={400}
-                      className="object-contain w-full h-full transition-all duration-500 hover:scale-105"
-                      priority={true}
-                      unoptimized={true}
+                      className="w-full h-full object-contain transition-all duration-500 hover:scale-105"
                     />
                     {/* Overlay gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 via-transparent to-transparent"></div>
