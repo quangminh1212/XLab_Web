@@ -137,11 +137,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         )}
         
-        {/* Hiển thị biểu tượng chỉ khi hover */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-70">
-          {getProductIcon(product.slug)}
-        </div>
-        
         {discount > 0 && (
           <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-20">
             -{discount}%
