@@ -117,15 +117,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {isVoiceTyping ? (
           // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50">
-            <div className="relative">
-              <img 
-                src="/mic-color-icon.png"
+            <div className="relative w-full h-full">
+              <ProductImage
+                src="/images/products/voice-typing.jpg"
                 alt="VoiceTyping" 
-                className="h-36 w-auto object-contain drop-shadow-lg transform transition-all duration-300 group-hover:scale-105"
+                width={400}
+                height={300}
+                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                priority={true}
               />
-              {/* Hiệu ứng sóng âm xung quanh microphone */}
-              <div className="absolute inset-0 -z-10 animate-pulse opacity-75 blur-sm">
-                <div className="absolute inset-0 rounded-full bg-cyan-200 opacity-40 animate-ping" style={{ animationDuration: '3s' }}></div>
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary-900/20"></div>
+              {/* Badge cho VoiceTyping */}
+              <div className="absolute bottom-2 left-2 z-10">
+                <span className="inline-block px-2 py-1 bg-primary-600 text-white text-xs font-medium rounded-md">
+                  Voice Typing
+                </span>
               </div>
             </div>
           </div>
