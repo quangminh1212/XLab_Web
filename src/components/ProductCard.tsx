@@ -119,11 +119,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50">
             <div className="relative w-full h-full">
               <ProductImage
-                src="/images/products/voice-typing.jpg"
+                src="/voice-typing-icon.png"
                 alt="VoiceTyping" 
                 width={400}
                 height={300}
-                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-300"
                 priority={true}
               />
               {/* Overlay gradient */}
