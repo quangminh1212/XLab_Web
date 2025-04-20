@@ -114,17 +114,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all hover:border-primary-200 flex flex-col h-full"
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
-        {/* Sử dụng ảnh từ dữ liệu sản phẩm */}
-        <div className="w-full h-full">
-          <ProductImage
-            src={product.imageUrl || '/images/placeholder-product.jpg'}
-            alt={product.name}
-            width={400}
-            height={300}
-            className="object-contain group-hover:scale-105 transition-transform duration-300"
-            priority={true}
-          />
-        </div>
+        {isVoiceTyping ? (
+          // Hiển thị hình ảnh trực tiếp cho VoiceTyping thay vì dùng ProductImage
+          <div className="w-full h-full flex items-center justify-center bg-[#e6f7f5]">
+            <img 
+              src="/mic-icon.png"
+              alt="VoiceTyping" 
+              className="h-32 w-auto object-contain"
+            />
+          </div>
+        ) : (
+          // Sử dụng ProductImage cho các sản phẩm khác
+          <div className="w-full h-full">
+            <ProductImage
+              src={product.imageUrl || '/images/placeholder-product.jpg'}
+              alt={product.name}
+              width={400}
+              height={300}
+              className="object-contain group-hover:scale-105 transition-transform duration-300"
+              priority={true}
+            />
+          </div>
+        )}
         
         {/* Hiển thị biểu tượng chỉ khi hover */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-70">
