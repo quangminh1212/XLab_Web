@@ -90,33 +90,31 @@ export const products: Product[] = [
     description: 'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition.',
     longDescription: `
       <h2>VoiceTyping - Nhập liệu bằng giọng nói</h2>
-      <p>VoiceTyping là một ứng dụng máy tính cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, sử dụng công nghệ nhận dạng giọng nói của Google Speech Recognition.</p>
+      <p>VoiceTyping là một ứng dụng Microsoft Office cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, tích hợp với bộ công cụ Microsoft Office.</p>
 
       <h3>Kiến trúc:</h3>
       <ul>
-        <li><strong>Frontend:</strong> Giao diện người dùng (GUI) xây dựng bằng PyQt5.</li>
+        <li><strong>Frontend:</strong> Giao diện người dùng (GUI) xây dựng tích hợp với Microsoft Office.</li>
         <li><strong>Backend:</strong>
           <ul>
-            <li>Mô-đun nhận dạng giọng nói (SpeechRecognition với Google Speech API).</li>
-            <li>Mô-đun xử lý văn bản (NLTK).</li>
-            <li>Mô-đun điều khiển con trỏ và nhập liệu (PyAutoGUI, pyperclip, keyboard).</li>
+            <li>Mô-đun nhận dạng giọng nói (Microsoft Speech Recognition API).</li>
+            <li>Mô-đun xử lý văn bản tích hợp với Word, Excel và PowerPoint.</li>
+            <li>Mô-đun điều khiển con trỏ thông minh.</li>
           </ul>
         </li>
       </ul>
 
       <h3>Công nghệ sử dụng:</h3>
       <ul>
-        <li>Python</li>
-        <li>PyQt5</li>
-        <li>SpeechRecognition</li>
-        <li>PyAutoGUI, pyperclip, keyboard</li>
-        <li>NLTK</li>
-        <li>PyAudio, pydub (yêu cầu FFmpeg)</li>
+        <li>Microsoft Office Add-in</li>
+        <li>Microsoft Speech API</li>
+        <li>Office 365 Integration</li>
+        <li>Cloud-based processing</li>
       </ul>
 
       <h3>Cài đặt và Sử dụng:</h3>
       <p>Xem chi tiết trong file README đi kèm hoặc tải về bản cài đặt.</p>
-      <p><strong>Yêu cầu:</strong> Cần cài đặt FFmpeg.</p>
+      <p><strong>Yêu cầu:</strong> Microsoft Office 2019 hoặc mới hơn.</p>
 
       <h3>Giấy phép:</h3>
       <p>Phân phối dưới giấy phép MIT.</p>
@@ -124,7 +122,7 @@ export const products: Product[] = [
     price: 0, // Miễn phí
     salePrice: 0,
     categoryId: 'cat-2', // Ứng dụng văn phòng
-    imageUrl: '/voicetyping.png',
+    imageUrl: '/office-logo.png',
     isFeatured: true, // Đặt thành true để hiển thị trong mục sản phẩm nổi bật
     isNew: true,
     downloadCount: 150,
