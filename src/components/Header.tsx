@@ -83,7 +83,7 @@ export default function Header() {
             <Link href="/" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname.startsWith('/products') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
+            <Link href="/accounts" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname.startsWith('/products') || pathname.startsWith('/accounts') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Sản phẩm
             </Link>
             <Link href="/services" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
@@ -218,7 +218,7 @@ export default function Header() {
             <Link href="/" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/products" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname.startsWith('/products') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/accounts" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname.startsWith('/products') || pathname.startsWith('/accounts') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Sản phẩm
             </Link>
             <Link href="/services" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
