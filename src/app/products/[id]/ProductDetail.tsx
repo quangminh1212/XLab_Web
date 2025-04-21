@@ -94,6 +94,23 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </div>
               </div>
               
+              {/* Hiển thị danh sách tính năng nếu có */}
+              {product.features && product.features.length > 0 && (
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-2">Tính năng</h2>
+                  <ul className="space-y-2">
+                    {product.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <svg className="w-5 h-5 mr-2 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
               <div className="mb-4">
                 <span className="text-2xl font-bold text-primary-600">
                   {product.price === 0 ? 'Miễn phí' : formatCurrency(product.salePrice || product.price)}
