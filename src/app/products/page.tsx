@@ -113,7 +113,7 @@ export default function ProductsPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  Phần mềm
+                  Máy tính
                 </div>
               </div>
             </Link>
@@ -133,10 +133,10 @@ export default function ProductsPage() {
         {/* Hiển thị tiêu đề */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            Phần mềm
+            Máy tính
           </h2>
           <p className="text-gray-600 mt-2">
-            Các ứng dụng và phần mềm do XLab phát triển và phân phối.
+            Các ứng dụng và phần mềm máy tính do XLab phát triển và phân phối.
           </p>
         </div>
 
@@ -168,7 +168,7 @@ export default function ProductsPage() {
             {featuredProducts.length > 0 && (
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Phần mềm nổi bật
+                  Máy tính nổi bật
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {featuredProducts.map((product) => (
@@ -181,7 +181,7 @@ export default function ProductsPage() {
             {newProducts.length > 0 && (
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Phần mềm mới
+                  Máy tính mới
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {newProducts.map((product) => (
@@ -194,7 +194,7 @@ export default function ProductsPage() {
             {popularProducts.length > 0 && (
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  Phần mềm phổ biến nhất
+                  Máy tính phổ biến nhất
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {popularProducts.map((product) => (
