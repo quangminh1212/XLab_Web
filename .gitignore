@@ -122,3 +122,33 @@ public/temp/
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js development server files
+.next/cache/
+.next/server/
+.next/static/
+.next/trace
+.next/types/
+
+# Hot module replacement files
+*.hot-update.*
+
+# Local development files
+/.history/
+.turbo
+.cache/
+
+# Debug files
+*.dump
+npm-debug.log
+yarn-debug.log
+
+# SEO files that are generated at runtime
+/public/sitemap-*.xml
+/public/robots.txt
+
+# PWA generated files
+public/sw.js
+public/sw.js.map
+public/worker-*.js
+public/worker-*.js.map
