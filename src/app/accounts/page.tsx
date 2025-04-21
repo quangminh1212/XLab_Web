@@ -1,208 +1,149 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { products as mockProducts } from '@/data/mockData'
 import ProductCard from '@/components/ProductCard'
 
 export default function AccountsPage() {
-  const [loading, setLoading] = useState(false);
-  const [accounts, setAccounts] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Update title when component is rendered
-  useEffect(() => {
-    document.title = 'Tài khoản | XLab - Phần mềm và Dịch vụ'
-    
-    // Lọc ra các tài khoản từ dữ liệu mẫu
-    const accountProducts = mockProducts.filter(product => 
-      product.isAccount || product.type === 'account'
-    );
-    
-    // Tạo tài khoản mẫu
-    const sampleAccounts = [
-      {
-        id: 'account-1',
-        slug: 'chatgpt-premium',
-        name: 'ChatGPT Premium',
-        description: 'Tài khoản ChatGPT Plus cao cấp với đầy đủ các tính năng mới nhất.',
-        imageUrl: '/images/products/code-editor.png',
-        price: 990000,
-        salePrice: 790000,
-        rating: 4.9,
-        downloadCount: 250,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        version: '1.0'
-      },
-      {
-        id: 'capcut-pro-7days',
-        slug: 'capcut-pro-7days',
-        name: 'CapCut Pro - 7 Ngày',
-        description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 7 ngày lý tưởng để thử nghiệm hoặc hoàn thành dự án ngắn hạn.',
-        imageUrl: '/images/products/photo-editor.png',
-        price: 99000,
-        salePrice: 69000,
-        rating: 4.7,
-        downloadCount: 120,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        version: '1.0',
-        features: [
-          'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
-          'Xuất video không giới hạn',
-          'Không có logo watermark',
-          'Thư viện hiệu ứng và âm thanh đầy đủ',
-          'Có thể sử dụng cho cả thiết bị di động và máy tính',
-          'Hỗ trợ kỹ thuật 24/7'
-        ]
-      },
-      {
-        id: 'capcut-pro-1month',
-        slug: 'capcut-pro-1month',
-        name: 'CapCut Pro - 1 Tháng',
-        description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 1 tháng phù hợp cho các nhà sáng tạo nội dung thường xuyên.',
-        imageUrl: '/images/products/photo-editor.png',
-        price: 290000,
-        salePrice: 199000,
-        rating: 4.8,
-        downloadCount: 280,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: false,
-        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0',
-        features: [
-          'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
-          'Xuất video không giới hạn',
-          'Không có logo watermark',
-          'Thư viện hiệu ứng và âm thanh đầy đủ',
-          'Có thể sử dụng cho cả thiết bị di động và máy tính',
-          'Hỗ trợ kỹ thuật 24/7',
-          'Cập nhật tính năng mới ngay khi phát hành'
-        ]
-      },
-      {
-        id: 'capcut-pro-2years',
-        slug: 'capcut-pro-2years',
-        name: 'CapCut Pro - 2 Năm',
-        description: 'Tài khoản CapCut Pro dài hạn với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 2 năm tiết kiệm tối đa, phù hợp cho các studio và nhà sáng tạo nội dung chuyên nghiệp.',
-        imageUrl: '/images/products/photo-editor.png',
-        price: 1990000,
-        salePrice: 1290000,
-        rating: 4.9,
-        downloadCount: 350,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: false,
-        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0',
-        features: [
-          'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
-          'Xuất video không giới hạn với độ phân giải 4K',
-          'Không có logo watermark',
-          'Thư viện hiệu ứng và âm thanh đầy đủ và cập nhật thường xuyên',
-          'Có thể sử dụng cho cả thiết bị di động và máy tính',
-          'Hỗ trợ kỹ thuật ưu tiên 24/7',
-          'Cập nhật tính năng mới ngay khi phát hành',
-          'Đảm bảo hoàn tiền 30 ngày',
-          'Hỗ trợ đồng bộ đám mây không giới hạn',
-          'Tiết kiệm hơn 70% so với mua hàng tháng'
-        ]
-      },
-      {
-        id: 'account-2',
-        slug: 'capcut-pro',
-        name: 'CapCut Pro',
-        description: 'Tài khoản Pro cho phần mềm chỉnh sửa video CapCut với các tính năng chuyên nghiệp.',
-        imageUrl: '/images/products/photo-editor.png',
-        price: 590000,
-        salePrice: 450000,
-        rating: 4.7,
-        downloadCount: 180,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: false,
-        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0'
-      },
-      {
-        id: 'account-3',
-        slug: 'adobe-creative-cloud',
-        name: 'Adobe Creative Cloud',
-        description: 'Truy cập toàn bộ bộ ứng dụng Adobe với tài khoản Creative Cloud tiết kiệm.',
-        imageUrl: '/images/products/design-master.png',
-        price: 1290000,
-        salePrice: null,
-        rating: 4.8,
-        downloadCount: 310,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: false,
-        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0'
-      },
-      {
-        id: 'account-4',
-        slug: 'canva-pro',
-        name: 'Canva Pro',
-        description: 'Thiết kế chuyên nghiệp với Canva Pro - công cụ thiết kế đồ họa hàng đầu.',
-        imageUrl: '/images/products/design-master.png',
-        price: 590000,
-        salePrice: 490000,
-        rating: 4.9,
-        downloadCount: 420,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: true,
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0'
-      },
-      {
-        id: 'account-5',
-        slug: 'microsoft-365',
-        name: 'Microsoft 365',
-        description: 'Truy cập đầy đủ bộ ứng dụng Microsoft Office với tài khoản 365 chính hãng.',
-        imageUrl: '/images/products/business-suite.png',
-        price: 890000,
-        salePrice: 790000,
-        rating: 4.7,
-        downloadCount: 350,
-        isAccount: true,
-        type: 'account',
-        isFeatured: false,
-        isNew: false,
-        createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0'
-      }
-    ];
-    
-    // Nếu không có tài khoản trong dữ liệu mẫu, sử dụng tài khoản mẫu
-    if (accountProducts.length === 0) {
-      setAccounts(sampleAccounts);
-    } else {
-      setAccounts(accountProducts);
+  // Tạo danh sách tài khoản mẫu trực tiếp
+  const accounts = [
+    {
+      id: 'capcut-pro-7days',
+      slug: 'capcut-pro-7days',
+      name: 'CapCut Pro - 7 Ngày',
+      description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 7 ngày lý tưởng để thử nghiệm hoặc hoàn thành dự án ngắn hạn.',
+      imageUrl: '/images/products/photo-editor.png',
+      price: 99000,
+      salePrice: 69000,
+      rating: 4.7,
+      downloadCount: 120,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      version: '1.0',
+      features: [
+        'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
+        'Xuất video không giới hạn',
+        'Không có logo watermark',
+        'Thư viện hiệu ứng và âm thanh đầy đủ',
+        'Có thể sử dụng cho cả thiết bị di động và máy tính',
+        'Hỗ trợ kỹ thuật 24/7'
+      ]
+    },
+    {
+      id: 'capcut-pro-1month',
+      slug: 'capcut-pro-1month',
+      name: 'CapCut Pro - 1 Tháng',
+      description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 1 tháng phù hợp cho các nhà sáng tạo nội dung thường xuyên.',
+      imageUrl: '/images/products/photo-editor.png',
+      price: 290000,
+      salePrice: 199000,
+      rating: 4.8,
+      downloadCount: 280,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: false,
+      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0',
+      features: [
+        'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
+        'Xuất video không giới hạn',
+        'Không có logo watermark',
+        'Thư viện hiệu ứng và âm thanh đầy đủ',
+        'Có thể sử dụng cho cả thiết bị di động và máy tính',
+        'Hỗ trợ kỹ thuật 24/7',
+        'Cập nhật tính năng mới ngay khi phát hành'
+      ]
+    },
+    {
+      id: 'capcut-pro-2years',
+      slug: 'capcut-pro-2years',
+      name: 'CapCut Pro - 2 Năm',
+      description: 'Tài khoản CapCut Pro dài hạn với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 2 năm tiết kiệm tối đa, phù hợp cho các studio và nhà sáng tạo nội dung chuyên nghiệp.',
+      imageUrl: '/images/products/photo-editor.png',
+      price: 1990000,
+      salePrice: 1290000,
+      rating: 4.9,
+      downloadCount: 350,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: false,
+      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0',
+      features: [
+        'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
+        'Xuất video không giới hạn với độ phân giải 4K',
+        'Không có logo watermark',
+        'Thư viện hiệu ứng và âm thanh đầy đủ và cập nhật thường xuyên',
+        'Có thể sử dụng cho cả thiết bị di động và máy tính',
+        'Hỗ trợ kỹ thuật ưu tiên 24/7',
+        'Cập nhật tính năng mới ngay khi phát hành',
+        'Đảm bảo hoàn tiền 30 ngày',
+        'Hỗ trợ đồng bộ đám mây không giới hạn',
+        'Tiết kiệm hơn 70% so với mua hàng tháng'
+      ]
+    },
+    {
+      id: 'account-1',
+      slug: 'chatgpt-premium',
+      name: 'ChatGPT Premium',
+      description: 'Tài khoản ChatGPT Plus cao cấp với đầy đủ các tính năng mới nhất.',
+      imageUrl: '/images/products/code-editor.png',
+      price: 990000,
+      salePrice: 790000,
+      rating: 4.9,
+      downloadCount: 250,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      version: '1.0'
+    },
+    {
+      id: 'account-3',
+      slug: 'adobe-creative-cloud',
+      name: 'Adobe Creative Cloud',
+      description: 'Truy cập toàn bộ bộ ứng dụng Adobe với tài khoản Creative Cloud tiết kiệm.',
+      imageUrl: '/images/products/design-master.png',
+      price: 1290000,
+      salePrice: null,
+      rating: 4.8,
+      downloadCount: 310,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: false,
+      createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0'
+    },
+    {
+      id: 'account-4',
+      slug: 'canva-pro',
+      name: 'Canva Pro',
+      description: 'Thiết kế chuyên nghiệp với Canva Pro - công cụ thiết kế đồ họa hàng đầu.',
+      imageUrl: '/images/products/design-master.png',
+      price: 590000,
+      salePrice: 490000,
+      rating: 4.9,
+      downloadCount: 420,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: true,
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0'
     }
-  }, []);
+  ];
   
   // Lọc các loại tài khoản đặc biệt
   const featuredAccounts = accounts.filter(account => account.isFeatured);
@@ -212,53 +153,6 @@ export default function AccountsPage() {
   const popularAccounts = accounts.slice().sort((a, b) => 
     (b.downloadCount || 0) - (a.downloadCount || 0)
   ).slice(0, 6);
-
-  if (loading) {
-    return (
-      <div className="py-12 flex justify-center">
-        <div className="flex flex-col items-center">
-          <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải dữ liệu tài khoản...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="py-12 flex justify-center">
-        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải danh sách tài khoản</h2>
-          <p className="text-gray-600 mb-6">
-            {error}
-          </p>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Thử lại
-            </button>
-            <Link 
-              href="/"
-              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center justify-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7m-7-7v14" />
-              </svg>
-              Về trang chủ
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="py-8 bg-gray-50">
@@ -296,63 +190,40 @@ export default function AccountsPage() {
           </div>
         </div>
         
-        {accounts.length === 0 ? (
-          <div className="py-12 text-center">
-            <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Chưa có tài khoản nào</h2>
-              <p className="text-gray-600 mb-6">
-                Hiện tại chúng tôi chưa có tài khoản nào. Vui lòng quay lại sau.
-              </p>
-              <Link 
-                href="/"
-                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Về trang chủ
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-12">
-            {featuredAccounts.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản nổi bật</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {featuredAccounts.map((account) => (
-                    <ProductCard key={account.id} product={account} />
-                  ))}
-                </div>
-              </section>
-            )}
-            
-            {newAccounts.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản mới</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {newAccounts.map((account) => (
-                    <ProductCard key={account.id} product={account} />
-                  ))}
-                </div>
-              </section>
-            )}
-            
-            {popularAccounts.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản bán chạy</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {popularAccounts.map((account) => (
-                    <ProductCard key={account.id} product={account} />
-                  ))}
-                </div>
-              </section>
-            )}
-          </div>
-        )}
+        <div className="space-y-12">
+          {featuredAccounts.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản nổi bật</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredAccounts.map((account) => (
+                  <ProductCard key={account.id} product={account} />
+                ))}
+              </div>
+            </section>
+          )}
+          
+          {newAccounts.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản mới</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {newAccounts.map((account) => (
+                  <ProductCard key={account.id} product={account} />
+                ))}
+              </div>
+            </section>
+          )}
+          
+          {popularAccounts.length > 0 && (
+            <section>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản bán chạy</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {popularAccounts.map((account) => (
+                  <ProductCard key={account.id} product={account} />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
       </div>
     </div>
   )
