@@ -149,11 +149,14 @@ export default function ProductDetail({ product }: { product: Product }) {
       </div>
       
       <div className="mt-6">
-        <Link href="/products" className="text-primary-600 hover:underline flex items-center">
+        <Link 
+          href={product.isAccount || product.type === 'account' ? "/accounts" : "/products"} 
+          className="text-primary-600 hover:underline flex items-center"
+        >
           <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Quay lại danh sách sản phẩm
+          Quay lại danh sách {product.isAccount || product.type === 'account' ? "tài khoản" : "sản phẩm"}
         </Link>
       </div>
     </div>

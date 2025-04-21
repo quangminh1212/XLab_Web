@@ -108,9 +108,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   // Xác định nếu là sản phẩm VoiceTyping
   const isVoiceTyping = product.slug.includes('voice') || product.slug.includes('typing');
   
+  // Xác định đường dẫn sản phẩm dựa vào loại
+  const productLink = product.isAccount || product.type === 'account' 
+    ? `/accounts/${product.slug}` 
+    : `/products/${product.slug}`;
+  
   return (
     <Link 
-      href={`/products/${product.slug}`}
+      href={productLink}
       className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all hover:border-primary-200 flex flex-col h-full"
     >
       <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
