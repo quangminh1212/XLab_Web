@@ -27,6 +27,13 @@ export default function ProductsPage() {
     } else {
       console.log('Đã tải ' + mockProducts.length + ' sản phẩm');
     }
+    
+    // Kiểm tra query parameter để chuyển tab
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    if (tabParam === 'accounts') {
+      setActiveTab('accounts');
+    }
   }, []);
   
   // Lọc sản phẩm theo loại
@@ -141,7 +148,7 @@ export default function ProductsPage() {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              Tài khoản phụ trợ
+              Tài khoản
             </div>
           </button>
         </div>
