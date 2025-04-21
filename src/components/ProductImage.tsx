@@ -29,10 +29,10 @@ const DefaultVoiceTypingIcon = () => (
 // Biểu tượng cho CapCut
 const CapCutIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="20" fill="#111111" />
-    <circle cx="100" cy="100" r="75" fill="#22C5FF" />
-    <path d="M100 145C75 145 55 125 55 100C55 75 75 55 100 55C125 55 145 75 145 100V120L105 80C95 70 85 70 75 80L100 145Z" fill="#2DFF6A" />
-    <path d="M100 145L75 80C85 70 95 70 105 80L145 120V100C145 75 125 55 100 55" fill="#FF3863" />
+    <rect width="200" height="200" fill="#000000" />
+    <circle cx="100" cy="100" r="80" fill="#00CCFF" />
+    <path d="M120 180C40 140 40 40 120 80L160 120V90C160 50 140 25 100 25C60 25 40 50 40 90C40 130 60 155 100 155" fill="#00FF66" />
+    <path d="M120 80L160 120V90C160 50 140 25 100 25" fill="#FF3366" />
   </svg>
 )
 
@@ -40,17 +40,17 @@ const CapCutIcon = () => (
 const ChatGPTIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="100" cy="100" r="100" fill="#10A37F" />
-    <path d="M75 100L90 115L125 80" stroke="white" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M70 100L95 125L130 75" stroke="white" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
 // Biểu tượng cho Adobe CC
 const AdobeIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="10" fill="#FA0F00" />
-    <path d="M79 54H48V146L79 54Z" fill="white" />
-    <path d="M121 54H152V146L121 54Z" fill="white" />
-    <rect x="89" y="104" width="22" height="42" fill="white" />
+    <rect width="200" height="200" fill="#FA0F00" />
+    <path d="M70 50H45V150L85 50H70Z" fill="white" />
+    <path d="M130 50H155V150L115 50H130Z" fill="white" />
+    <rect x="85" y="100" width="30" height="50" fill="white" />
   </svg>
 )
 
