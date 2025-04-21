@@ -168,13 +168,6 @@ export default function AccountsPage() {
       storeId: '1'
     }
   ];
-  
-  // Lọc riêng từng loại tài khoản
-  const capcutAccounts = accounts.filter(account => account.slug === 'capcut-pro');
-  const chatgptAccounts = accounts.filter(account => account.slug === 'chatgpt-premium');
-  const otherAccounts = accounts.filter(account => 
-    account.slug !== 'capcut-pro' && account.slug !== 'chatgpt-premium'
-  );
 
   return (
     <div className="py-8 bg-gray-50">
@@ -212,43 +205,14 @@ export default function AccountsPage() {
           </div>
         </div>
         
-        <div className="space-y-12">
-          {/* Mục riêng cho CapCut */}
-          {capcutAccounts.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">CapCut</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {capcutAccounts.map((account) => (
-                  <ProductCard key={account.id} product={account} />
-                ))}
-              </div>
-            </section>
-          )}
-          
-          {/* Mục riêng cho ChatGPT */}
-          {chatgptAccounts.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">ChatGPT</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {chatgptAccounts.map((account) => (
-                  <ProductCard key={account.id} product={account} />
-                ))}
-              </div>
-            </section>
-          )}
-          
-          {/* Các tài khoản khác */}
-          {otherAccounts.length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản khác</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {otherAccounts.map((account) => (
-                  <ProductCard key={account.id} product={account} />
-                ))}
-              </div>
-            </section>
-          )}
-        </div>
+        {/* Hiển thị tất cả tài khoản trong một danh sách */}
+        <section>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {accounts.map((account) => (
+              <ProductCard key={account.id} product={account} />
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   )
