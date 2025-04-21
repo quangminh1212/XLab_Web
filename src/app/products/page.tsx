@@ -44,6 +44,72 @@ export default function ProductsPage() {
   const accountProducts = products.filter(product => 
     product.isAccount || product.type === 'account'
   );
+
+  // Tạo mẫu tài khoản nếu chưa có
+  if (accountProducts.length === 0) {
+    // Thêm một số sản phẩm tài khoản mẫu để hiển thị
+    const sampleAccounts = [
+      {
+        id: 'account-1',
+        slug: 'chatgpt-premium',
+        name: 'ChatGPT Premium',
+        description: 'Tài khoản ChatGPT Plus cao cấp với đầy đủ các tính năng mới nhất.',
+        imageUrl: '/speech-text.png',
+        price: 990000,
+        salePrice: 790000,
+        rating: 4.9,
+        downloadCount: 250,
+        isAccount: true,
+        type: 'account',
+        isFeatured: true,
+        isNew: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        version: '1.0'
+      },
+      {
+        id: 'account-2',
+        slug: 'capcut-pro',
+        name: 'CapCut Pro',
+        description: 'Tài khoản Pro cho phần mềm chỉnh sửa video CapCut với các tính năng chuyên nghiệp.',
+        imageUrl: '/speech-text.png',
+        price: 590000,
+        salePrice: 450000,
+        rating: 4.7,
+        downloadCount: 180,
+        isAccount: true,
+        type: 'account',
+        isFeatured: true,
+        isNew: false,
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        version: '1.0'
+      },
+      {
+        id: 'account-3',
+        slug: 'adobe-creative-cloud',
+        name: 'Adobe Creative Cloud',
+        description: 'Truy cập toàn bộ bộ ứng dụng Adobe với tài khoản Creative Cloud tiết kiệm.',
+        imageUrl: '/speech-text.png',
+        price: 1290000,
+        salePrice: null,
+        rating: 4.8,
+        downloadCount: 310,
+        isAccount: true,
+        type: 'account',
+        isFeatured: true,
+        isNew: false,
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        version: '1.0'
+      }
+    ];
+    
+    // Chỉ thêm tài khoản mẫu khi đang ở tab accounts
+    if (activeTab === 'accounts') {
+      accountProducts.push(...sampleAccounts);
+    }
+  }
   
   // Lọc sản phẩm theo danh mục và loại đã chọn
   const currentProducts = activeTab === 'software' ? softwareProducts : accountProducts;
@@ -156,7 +222,7 @@ export default function ProductsPage() {
         {/* Hiển thị tiêu đề theo tab đang active */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            {activeTab === 'software' ? 'Phần mềm' : 'Tài khoản phụ trợ'}
+            {activeTab === 'software' ? 'Phần mềm' : 'Tài khoản'}
           </h2>
           <p className="text-gray-600 mt-2">
             {activeTab === 'software' 
@@ -174,12 +240,12 @@ export default function ProductsPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 {activeTab === 'software' 
                   ? 'Chưa có phần mềm nào' 
-                  : 'Chưa có tài khoản phụ trợ nào'}
+                  : 'Chưa có tài khoản nào'}
               </h2>
               <p className="text-gray-600 mb-6">
                 {activeTab === 'software'
                   ? 'Hiện tại chúng tôi chưa có phần mềm nào. Các sản phẩm sẽ được thêm vào sau.'
-                  : 'Hiện tại chúng tôi chưa có tài khoản phụ trợ nào. Vui lòng quay lại sau.'}
+                  : 'Hiện tại chúng tôi chưa có tài khoản nào. Vui lòng quay lại sau.'}
               </p>
               <Link 
                 href="/"
@@ -197,7 +263,7 @@ export default function ProductsPage() {
             {featuredProducts.length > 0 && (
               <section>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                  {activeTab === 'software' ? 'Phần mềm nổi bật' : 'Tài khoản đề xuất'}
+                  {activeTab === 'software' ? 'Phần mềm nổi bật' : 'Tài khoản nổi bật'}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {featuredProducts.map((product) => (
