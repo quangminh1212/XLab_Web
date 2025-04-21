@@ -41,9 +41,7 @@ const ChatGPTIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" rx="20" fill="#F7F7F7" />
     <circle cx="100" cy="100" r="60" fill="#10A37F" />
-    <path d="M86.32 119.44H114.03V113.26H94.69V87.15H86.32V119.44Z" fill="white" />
-    <path d="M124.22 119.44H132.57V87.15H124.22V119.44Z" fill="white" />
-    <path d="M67.43 119.44H75.78V106.14L66.41 87.15H57.86L67.43 106.14V119.44Z" fill="white" />
+    <path d="M75 100L90 115L125 80" stroke="white" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
