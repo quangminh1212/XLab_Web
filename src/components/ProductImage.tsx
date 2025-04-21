@@ -30,27 +30,27 @@ const DefaultVoiceTypingIcon = () => (
 const CapCutIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" rx="20" fill="#111111" />
-    <circle cx="100" cy="100" r="55" fill="#22C5FF" />
-    <path d="M140 90C140 116.51 118.51 138 92 138C81.11 138 71.09 134.46 63.23 128.31L104.92 86.62C111.79 79.75 122.83 79.75 129.7 86.62L140 96.92V90Z" fill="#FF3863" />
-    <path d="M63.23 128.31C55.09 121.92 50 112.42 50 102C50 75.49 71.49 54 98 54C108.89 54 118.91 57.54 126.77 63.69L85.08 105.38C78.21 112.25 78.21 123.29 85.08 130.16L95.38 140.46C94.26 140.49 93.13 140.49 92 140.49C81.11 140.49 71.09 136.95 63.23 130.8V128.31Z" fill="#2DFF6A" />
+    <circle cx="100" cy="100" r="75" fill="#22C5FF" />
+    <path d="M100 145C75 145 55 125 55 100C55 75 75 55 100 55C125 55 145 75 145 100V120L105 80C95 70 85 70 75 80L100 145Z" fill="#2DFF6A" />
+    <path d="M100 145L75 80C85 70 95 70 105 80L145 120V100C145 75 125 55 100 55" fill="#FF3863" />
   </svg>
 )
 
 // Biểu tượng cho ChatGPT
 const ChatGPTIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="100" fill="#10A37F" />
-    <path d="M75 100L90 115L125 80" stroke="white" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="100" cy="100" r="100" fill="#10A37F" />
+    <path d="M75 100L90 115L125 80" stroke="white" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
 // Biểu tượng cho Adobe CC
 const AdobeIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="20" fill="#FA0F00" />
-    <path d="M77 60H45V142L77 60Z" fill="white" />
-    <path d="M123 60H155V142L123 60Z" fill="white" />
-    <path d="M100 102L123 142H107L100 127H85L100 102Z" fill="white" />
+    <rect width="200" height="200" rx="10" fill="#FA0F00" />
+    <path d="M79 54H48V146L79 54Z" fill="white" />
+    <path d="M121 54H152V146L121 54Z" fill="white" />
+    <rect x="89" y="104" width="22" height="42" fill="white" />
   </svg>
 )
 
