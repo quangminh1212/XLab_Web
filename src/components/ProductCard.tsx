@@ -110,8 +110,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   
   // Xác định đường dẫn sản phẩm dựa vào loại
   const productLink = product.isAccount || product.type === 'account' 
-    ? `/accounts/${product.slug}` 
-    : `/products/${product.slug}`;
+    ? `/accounts/${product.id}` 
+    : `/products/${product.id}`;
   
   return (
     <Link 
