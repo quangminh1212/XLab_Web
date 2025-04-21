@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import { Product } from '@/types';
+import { ProductImage } from '@/components/ProductImage';
 
 export default function ProductDetail({ product }: { product: Product }) {
   // Update document title khi component được render
@@ -41,14 +42,13 @@ export default function ProductDetail({ product }: { product: Product }) {
                     </div>
                   </div>
                 ) : (
-                  // Sử dụng Image của Next.js cho các sản phẩm khác
-                  <Image
+                  // Sử dụng ProductImage cho các sản phẩm khác
+                  <ProductImage
                     src={product.imageUrl || '/images/placeholder-product.jpg'}
                     alt={product.name}
                     width={300}
                     height={300}
-                    className="max-h-full max-w-full object-contain"
-                    unoptimized={true}
+                    className="max-h-full max-w-full"
                     priority={true}
                   />
                 )}
@@ -68,6 +68,48 @@ export default function ProductDetail({ product }: { product: Product }) {
                   </svg>
                   Lượt tải: {product.downloadCount || 0}
                 </div>
+                <div className="flex items-center mt-1">
+                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Cập nhật: {new Date(product.updatedAt).toLocaleDateString('vi-VN')}
+                </div>
+                <div className="flex items-center mt-1">
+                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Phiên bản: {product.version || '1.0.0'}
+                </div>
+                <div className="flex items-center mt-1">
+                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                  </svg>
+                  Kích thước: {product.size || 'Chưa xác định'}
+                </div>
+                <div className="flex items-center mt-1">
+                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Giấy phép: {product.licenseType || 'Standard'}
+                </div>
+                <div className="flex items-center mt-1">
+                  <svg className="w-4 h-4 mr-1 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                  <span className="mr-1">{product.rating || 4.0}</span>
+                  <div className="text-xs text-gray-500">({Math.round(product.downloadCount / 5)} đánh giá)</div>
+                </div>
+              </div>
+              
+              {/* Yêu cầu hệ thống hoặc thông tin bổ sung */}
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Yêu cầu hệ thống</h3>
+                <ul className="text-xs text-gray-600 space-y-1">
+                  <li>• Windows 10 hoặc mới hơn</li>
+                  <li>• 2 GB RAM tối thiểu</li>
+                  <li>• 100 MB dung lượng ổ cứng</li>
+                  <li>• Kết nối internet</li>
+                </ul>
               </div>
             </div>
             
@@ -83,6 +125,23 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <p className="text-gray-700">{product.description}</p>
               </div>
               
+              {/* Hiển thị danh sách tính năng nếu có */}
+              {product.features && product.features.length > 0 && (
+                <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <h2 className="text-lg font-semibold mb-2">Tính năng nổi bật</h2>
+                  <ul className="space-y-2">
+                    {product.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <svg className="w-5 h-5 mr-2 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
               <div className="mb-6">
                 <h2 className="text-lg font-semibold mb-2">Chi tiết</h2>
                 <div className="prose max-w-none">
@@ -94,23 +153,6 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </div>
               </div>
               
-              {/* Hiển thị danh sách tính năng nếu có */}
-              {product.features && product.features.length > 0 && (
-                <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2">Tính năng</h2>
-                  <ul className="space-y-2">
-                    {product.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <svg className="w-5 h-5 mr-2 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              
               <div className="mb-4">
                 <span className="text-2xl font-bold text-primary-600">
                   {product.price === 0 ? 'Miễn phí' : formatCurrency(product.salePrice || product.price)}
@@ -120,12 +162,17 @@ export default function ProductDetail({ product }: { product: Product }) {
                     {formatCurrency(product.price)}
                   </span>
                 )}
+                {product.salePrice && product.price > product.salePrice && (
+                  <span className="ml-2 px-2 py-1 bg-red-100 text-red-700 text-sm font-medium rounded">
+                    Giảm {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
+                  </span>
+                )}
               </div>
               
-              <div className="flex space-x-4">
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
                 <a 
                   href={`/api/download?slug=${product.slug}`}
-                  className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center"
+                  className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -135,13 +182,41 @@ export default function ProductDetail({ product }: { product: Product }) {
                 
                 <a 
                   href={`/api/cart/add?id=${product.id}`}
-                  className="border border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium inline-flex items-center"
+                  className="border border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium inline-flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                   Thêm vào giỏ hàng
                 </a>
+              </div>
+              
+              {/* Thêm phần chia sẻ */}
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <h3 className="text-sm font-medium text-gray-600 mb-2">Chia sẻ sản phẩm này</h3>
+                <div className="flex space-x-3">
+                  <button className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1.02-1.1h3.2V.5h-4.3c-4.3 0-5.3 3.4-5.3 5.57v1.4H6v4.08h3.12V24h5.38V11.55h3.62l.47-4.08z" />
+                    </svg>
+                  </button>
+                  <button className="p-2 bg-blue-400 text-white rounded-full hover:bg-blue-500">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723 10.1 10.1 0 01-3.127 1.184 4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.16a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+                    </svg>
+                  </button>
+                  <button className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M21.593 7.203a2.506 2.506 0 00-1.762-1.766c-1.566-.43-7.83-.437-7.83-.437s-6.265-.007-7.832.404a2.56 2.56 0 00-1.766 1.778c-.413 1.566-.417 4.814-.417 4.814s-.004 3.264.406 4.814c.23.857.905 1.534 1.763 1.765 1.582.43 7.83.437 7.83.437s6.265.007 7.831-.403a2.5 2.5 0 001.767-1.763c.414-1.565.417-4.812.417-4.812s.02-3.265-.407-4.831z" />
+                      <path fill="#fff" d="M9.996 15.005l5.227-3.005-5.227-3.005v6.01z" />
+                    </svg>
+                  </button>
+                  <button className="p-2 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10S2 17.514 2 12 6.486 2 12 2zm0-2C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.848 12.459l.741-.741c.161-.161.161-.425 0-.586l-.741-.741c-.161-.161-.425-.161-.586 0l-.741.741-.741-.741c-.161-.161-.425-.161-.586 0l-.741.741c-.161.161-.161.425 0 .586l.741.741-.741.741c-.161.161-.161.425 0 .586l.741.741c.161.161.425.161.586 0l.741-.741.741.741c.161.161.425.161.586 0l.741-.741c.161-.161.161-.425 0-.586l-.741-.741zM7 14.12c-.882 0-1.6.728-1.6 1.6 0 .881.718 1.6 1.6 1.6.881 0 1.6-.719 1.6-1.6 0-.871-.719-1.6-1.6-1.6zm0-8c.881 0 1.6.718 1.6 1.6 0 .881-.719 1.6-1.6 1.6-.882 0-1.6-.719-1.6-1.6 0-.882.718-1.6 1.6-1.6z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
