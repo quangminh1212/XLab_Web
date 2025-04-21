@@ -2,20 +2,36 @@
 
 import Link from 'next/link'
 import ProductCard from '@/components/ProductCard'
+import { Product } from '@/types'
+
+// Mở rộng kiểu Product để thêm thuộc tính plans
+interface AccountProduct extends Product {
+  plans?: {
+    id: string;
+    name: string;
+    price: number;
+    salePrice: number;
+    description: string;
+    features: string[];
+  }[];
+}
 
 export default function AccountsPage() {
   // Tạo danh sách tài khoản mẫu trực tiếp
-  const accounts = [
+  const accounts: AccountProduct[] = [
     {
       id: 'capcut-pro',
       slug: 'capcut-pro',
       name: 'CapCut Pro',
       description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Nhiều gói thời gian để lựa chọn.',
+      longDescription: 'Tài khoản CapCut Pro chính hãng với đầy đủ tính năng chỉnh sửa video chuyên nghiệp.',
       imageUrl: '/images/products/photo-editor.png',
       price: 290000,
       salePrice: 199000,
+      categoryId: 'accounts',
       rating: 4.8,
       downloadCount: 280,
+      viewCount: 500,
       isAccount: true,
       type: 'account',
       isFeatured: true,
@@ -23,6 +39,9 @@ export default function AccountsPage() {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1',
       plans: [
         {
           id: 'capcut-pro-7days',
@@ -81,65 +100,81 @@ export default function AccountsPage() {
       slug: 'chatgpt-premium',
       name: 'ChatGPT Premium',
       description: 'Tài khoản ChatGPT Plus cao cấp với đầy đủ các tính năng mới nhất.',
+      longDescription: 'Tài khoản ChatGPT Premium chính hãng với đầy đủ các tính năng mới nhất từ OpenAI.',
       imageUrl: '/images/products/code-editor.png',
       price: 990000,
       salePrice: 790000,
+      categoryId: 'accounts',
       rating: 4.9,
       downloadCount: 250,
+      viewCount: 600,
       isAccount: true,
       type: 'account',
       isFeatured: true,
       isNew: true,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      version: '1.0'
+      version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1'
     },
     {
       id: 'account-3',
       slug: 'adobe-creative-cloud',
       name: 'Adobe Creative Cloud',
       description: 'Truy cập toàn bộ bộ ứng dụng Adobe với tài khoản Creative Cloud tiết kiệm.',
+      longDescription: 'Tài khoản Adobe Creative Cloud chính hãng với quyền truy cập toàn bộ bộ ứng dụng Adobe.',
       imageUrl: '/images/products/design-master.png',
       price: 1290000,
-      salePrice: null,
+      salePrice: 1290000,
+      categoryId: 'accounts',
       rating: 4.8,
       downloadCount: 310,
+      viewCount: 450,
       isAccount: true,
       type: 'account',
       isFeatured: true,
       isNew: false,
       createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
       updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      version: '1.0'
+      version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1'
     },
     {
       id: 'account-4',
       slug: 'canva-pro',
       name: 'Canva Pro',
       description: 'Thiết kế chuyên nghiệp với Canva Pro - công cụ thiết kế đồ họa hàng đầu.',
+      longDescription: 'Tài khoản Canva Pro chính hãng cho phép bạn thiết kế chuyên nghiệp với công cụ thiết kế đồ họa hàng đầu.',
       imageUrl: '/images/products/design-master.png',
       price: 590000,
       salePrice: 490000,
+      categoryId: 'accounts',
       rating: 4.9,
       downloadCount: 420,
+      viewCount: 700,
       isAccount: true,
       type: 'account',
       isFeatured: true,
       isNew: true,
       createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      version: '1.0'
+      version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1'
     }
   ];
   
-  // Lọc các loại tài khoản đặc biệt
-  const featuredAccounts = accounts.filter(account => account.isFeatured);
-  const newAccounts = accounts.slice().sort((a, b) => 
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  ).slice(0, 6);
-  const popularAccounts = accounts.slice().sort((a, b) => 
-    (b.downloadCount || 0) - (a.downloadCount || 0)
-  ).slice(0, 6);
+  // Lọc riêng từng loại tài khoản
+  const capcutAccounts = accounts.filter(account => account.slug === 'capcut-pro');
+  const chatgptAccounts = accounts.filter(account => account.slug === 'chatgpt-premium');
+  const otherAccounts = accounts.filter(account => 
+    account.slug !== 'capcut-pro' && account.slug !== 'chatgpt-premium'
+  );
 
   return (
     <div className="py-8 bg-gray-50">
@@ -178,33 +213,36 @@ export default function AccountsPage() {
         </div>
         
         <div className="space-y-12">
-          {featuredAccounts.length > 0 && (
+          {/* Mục riêng cho CapCut Pro */}
+          {capcutAccounts.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản nổi bật</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">CapCut Pro</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredAccounts.map((account) => (
+                {capcutAccounts.map((account) => (
                   <ProductCard key={account.id} product={account} />
                 ))}
               </div>
             </section>
           )}
           
-          {newAccounts.length > 0 && (
+          {/* Mục riêng cho ChatGPT Premium */}
+          {chatgptAccounts.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản mới</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">ChatGPT Premium</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {newAccounts.map((account) => (
+                {chatgptAccounts.map((account) => (
                   <ProductCard key={account.id} product={account} />
                 ))}
               </div>
             </section>
           )}
           
-          {popularAccounts.length > 0 && (
+          {/* Các tài khoản khác */}
+          {otherAccounts.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản bán chạy</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tài khoản khác</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {popularAccounts.map((account) => (
+                {otherAccounts.map((account) => (
                   <ProductCard key={account.id} product={account} />
                 ))}
               </div>
