@@ -29,41 +29,38 @@ const DefaultVoiceTypingIcon = () => (
 // Biểu tượng cho CapCut
 const CapCutIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="20" fill="#1E1E1E" />
-    <rect x="40" y="40" width="120" height="120" rx="60" fill="#22C5FF" />
-    <path d="M140 90C140 118.66 116.66 142 88 142C76.03 142 65.03 137.97 56.46 131.05L102.86 84.65C110.65 76.86 123.14 76.86 130.93 84.65L140 93.72V90Z" fill="#FF3863" />
-    <path d="M56.46 131.05C47.55 123.83 42 112.49 42 100C42 71.34 65.34 48 94 48C106.11 48 117.14 52.09 125.73 59.12L79.07 105.78C71.28 113.57 71.28 126.06 79.07 133.85L88.14 142.92C87.43 142.97 86.72 143 86 143C74.03 143 63.03 138.97 54.46 132.05L56.46 131.05Z" fill="#2DFF6A" />
+    <rect width="200" height="200" rx="20" fill="#111111" />
+    <circle cx="100" cy="100" r="55" fill="#22C5FF" />
+    <path d="M140 90C140 116.51 118.51 138 92 138C81.11 138 71.09 134.46 63.23 128.31L104.92 86.62C111.79 79.75 122.83 79.75 129.7 86.62L140 96.92V90Z" fill="#FF3863" />
+    <path d="M63.23 128.31C55.09 121.92 50 112.42 50 102C50 75.49 71.49 54 98 54C108.89 54 118.91 57.54 126.77 63.69L85.08 105.38C78.21 112.25 78.21 123.29 85.08 130.16L95.38 140.46C94.26 140.49 93.13 140.49 92 140.49C81.11 140.49 71.09 136.95 63.23 130.8V128.31Z" fill="#2DFF6A" />
   </svg>
 )
 
 // Biểu tượng cho ChatGPT
 const ChatGPTIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="20" fill="#F7F7F7" />
-    <circle cx="100" cy="100" r="60" fill="#10A37F" />
-    <path d="M75 100L90 115L125 80" stroke="white" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
+    <rect width="200" height="200" rx="100" fill="#10A37F" />
+    <path d="M75 100L90 115L125 80" stroke="white" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
 // Biểu tượng cho Adobe CC
 const AdobeIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="20" fill="#F5F5F5" />
-    <rect x="40" y="40" width="120" height="120" rx="10" fill="#FF0000" />
-    <path d="M68 114.5V60H98L68 114.5Z" fill="white" />
-    <path d="M132 114.5V60H102L132 114.5Z" fill="white" />
-    <rect x="87" y="95" width="26" height="20" fill="white" />
+    <rect width="200" height="200" rx="20" fill="#FA0F00" />
+    <path d="M77 60H45V142L77 60Z" fill="white" />
+    <path d="M123 60H155V142L123 60Z" fill="white" />
+    <path d="M100 102L123 142H107L100 127H85L100 102Z" fill="white" />
   </svg>
 )
 
 // Biểu tượng cho Canva
 const CanvaIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="200" height="200" rx="20" fill="#F9F9F9" />
-    <rect x="40" y="40" width="120" height="120" rx="10" fill="#00C4CC" />
-    <path d="M75.94 71.41C70.77 71.41 66.55 75.62 66.55 80.79C66.55 85.96 70.77 90.17 75.94 90.17C81.11 90.17 85.32 85.96 85.32 80.79C85.32 75.62 81.11 71.41 75.94 71.41Z" fill="white" />
-    <path d="M124.06 71.41C118.89 71.41 114.68 75.62 114.68 80.79C114.68 85.96 118.89 90.17 124.06 90.17C129.23 90.17 133.45 85.96 133.45 80.79C133.45 75.62 129.23 71.41 124.06 71.41Z" fill="white" />
-    <path d="M100 109.83C94.83 109.83 90.62 114.04 90.62 119.21C90.62 124.38 94.83 128.59 100 128.59C105.17 128.59 109.38 124.38 109.38 119.21C109.38 114.04 105.17 109.83 100 109.83Z" fill="white" />
+    <rect width="200" height="200" rx="20" fill="#00C4CC" />
+    <circle cx="75" cy="81" r="16" fill="white" />
+    <circle cx="125" cy="81" r="16" fill="white" />
+    <circle cx="100" cy="119" r="16" fill="white" />
   </svg>
 )
 
