@@ -22,9 +22,9 @@ export default function AccountsPage() {
     {
       id: 'capcut-pro',
       slug: 'capcut-pro',
-      name: 'CapCut Pro',
-      description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Nhiều gói thời gian để lựa chọn.',
-      longDescription: 'Tài khoản CapCut Pro chính hãng với đầy đủ tính năng chỉnh sửa video chuyên nghiệp.',
+      name: 'CapCut',
+      description: 'Tài khoản CapCut với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Nhiều gói thời gian để lựa chọn.',
+      longDescription: 'Tài khoản CapCut chính hãng với đầy đủ tính năng chỉnh sửa video chuyên nghiệp.',
       imageUrl: '/images/products/photo-editor.png',
       price: 290000,
       salePrice: 199000,
@@ -98,9 +98,9 @@ export default function AccountsPage() {
     {
       id: 'account-1',
       slug: 'chatgpt-premium',
-      name: 'ChatGPT Premium',
-      description: 'Tài khoản ChatGPT Plus cao cấp với đầy đủ các tính năng mới nhất.',
-      longDescription: 'Tài khoản ChatGPT Premium chính hãng với đầy đủ các tính năng mới nhất từ OpenAI.',
+      name: 'ChatGPT',
+      description: 'Tài khoản ChatGPT cao cấp với đầy đủ các tính năng mới nhất.',
+      longDescription: 'Tài khoản ChatGPT chính hãng với đầy đủ các tính năng mới nhất từ OpenAI.',
       imageUrl: '/images/products/code-editor.png',
       price: 990000,
       salePrice: 790000,
@@ -213,10 +213,10 @@ export default function AccountsPage() {
         </div>
         
         <div className="space-y-12">
-          {/* Mục riêng cho CapCut Pro */}
+          {/* Mục riêng cho CapCut */}
           {capcutAccounts.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">CapCut Pro</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">CapCut</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {capcutAccounts.map((account) => (
                   <ProductCard key={account.id} product={account} />
@@ -225,10 +225,10 @@ export default function AccountsPage() {
             </section>
           )}
           
-          {/* Mục riêng cho ChatGPT Premium */}
+          {/* Mục riêng cho ChatGPT */}
           {chatgptAccounts.length > 0 && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">ChatGPT Premium</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">ChatGPT</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {chatgptAccounts.map((account) => (
                   <ProductCard key={account.id} product={account} />
