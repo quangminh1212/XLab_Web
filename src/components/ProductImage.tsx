@@ -26,8 +26,8 @@ const DefaultVoiceTypingIcon = () => (
   </svg>
 )
 
-// Biểu tượng cho CapCut
-const CapCutIcon = () => (
+// Biểu tượng cho CapCut/VideoEditor
+const VideoEditorIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" fill="#000000" />
     <circle cx="100" cy="100" r="80" fill="#00CCFF" />
@@ -36,21 +36,41 @@ const CapCutIcon = () => (
   </svg>
 )
 
-// Biểu tượng cho ChatGPT
-const ChatGPTIcon = () => (
+// Biểu tượng cho ChatGPT/SmartAI
+const AIAssistantIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="100" cy="100" r="100" fill="#10A37F" />
     <path d="M70 100L95 125L130 75" stroke="white" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
-// Biểu tượng cho Adobe CC
-const AdobeIcon = () => (
+// Biểu tượng cho Adobe CC/DesignStudio
+const DesignIcon = () => (
   <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="200" height="200" fill="#FA0F00" />
     <path d="M70 50H45V150L85 50H70Z" fill="white" />
     <path d="M130 50H155V150L115 50H130Z" fill="white" />
     <rect x="85" y="100" width="30" height="50" fill="white" />
+  </svg>
+)
+
+// Biểu tượng cho SecureGuard Pro
+const SecurityIcon = () => (
+  <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" rx="20" fill="#2C3E50" />
+    <path d="M100 40L40 60V110C40 135.7 65.9 160.4 100 170C134.1 160.4 160 135.7 160 110V60L100 40Z" fill="#3498DB" stroke="#FFFFFF" strokeWidth="5"/>
+    <path d="M90 110L80 100L70 110L90 130L130 90L120 80L90 110Z" fill="#FFFFFF"/>
+  </svg>
+)
+
+// Biểu tượng cho LearnCode Academy
+const EducationIcon = () => (
+  <svg className="w-full h-full" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="200" rx="20" fill="#F39C12" />
+    <path d="M30 80L100 50L170 80L100 110L30 80Z" fill="#FFFFFF" stroke="#E67E22" strokeWidth="3"/>
+    <path d="M60 100V130C60 130 80 150 100 150C120 150 140 130 140 130V100" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round"/>
+    <path d="M170 80V120" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round"/>
+    <circle cx="170" cy="130" r="10" fill="#E67E22" stroke="#FFFFFF" strokeWidth="3"/>
   </svg>
 )
 
@@ -85,19 +105,25 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     setIsLoading(false)
   }
 
-  // Xác định loại sản phẩm dựa trên đường dẫn ảnh
-  const isVoiceTyping = src.includes('voice') || src.includes('typing')
-  const isCapCut = src.includes('capcut')
-  const isChatGPT = src.includes('chatgpt')
-  const isAdobe = src.includes('adobe')
-  const isCanva = src.includes('canva')
+  // Xác định loại sản phẩm dựa trên đường dẫn ảnh hoặc alt text
+  const sourceLower = (src + ' ' + alt).toLowerCase()
+  
+  const isVoiceTyping = sourceLower.includes('voice') || sourceLower.includes('typing')
+  const isVideoEditor = sourceLower.includes('capcut') || sourceLower.includes('videoeditor') || sourceLower.includes('video editor')
+  const isAIAssistant = sourceLower.includes('chatgpt') || sourceLower.includes('smartai') || sourceLower.includes('ai assistant')
+  const isDesignStudio = sourceLower.includes('adobe') || sourceLower.includes('design') || sourceLower.includes('designstudio')
+  const isSecurity = sourceLower.includes('secure') || sourceLower.includes('security') || sourceLower.includes('antivirus')
+  const isEducation = sourceLower.includes('learn') || sourceLower.includes('education') || sourceLower.includes('academy')
+  const isCanva = sourceLower.includes('canva')
 
   // Hiển thị icon phù hợp thay vì tải ảnh nếu là một trong các loại đặc biệt
   const renderAppIcon = () => {
     if (isVoiceTyping) return <DefaultVoiceTypingIcon />
-    if (isCapCut) return <CapCutIcon />
-    if (isChatGPT) return <ChatGPTIcon />
-    if (isAdobe) return <AdobeIcon />
+    if (isVideoEditor) return <VideoEditorIcon />
+    if (isAIAssistant) return <AIAssistantIcon />
+    if (isDesignStudio) return <DesignIcon />
+    if (isSecurity) return <SecurityIcon />
+    if (isEducation) return <EducationIcon />
     if (isCanva) return <CanvaIcon />
     
     // Nếu không phải loại đặc biệt, tải ảnh bình thường
@@ -119,14 +145,14 @@ export const ProductImage: React.FC<ProductImageProps> = ({
   return (
     <div className={`relative w-full h-full ${className}`}>
       {/* Hiển thị trạng thái loading */}
-      {isLoading && !(isVoiceTyping || isCapCut || isChatGPT || isAdobe || isCanva) && (
+      {isLoading && !(isVoiceTyping || isVideoEditor || isAIAssistant || isDesignStudio || isSecurity || isEducation || isCanva) && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
           <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
         </div>
       )}
       
       {/* Hiển thị ảnh hoặc fallback khi có lỗi */}
-      {isError && !(isVoiceTyping || isCapCut || isChatGPT || isAdobe || isCanva) ? (
+      {isError && !(isVoiceTyping || isVideoEditor || isAIAssistant || isDesignStudio || isSecurity || isEducation || isCanva) ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
