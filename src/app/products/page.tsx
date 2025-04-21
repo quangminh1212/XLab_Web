@@ -43,72 +43,69 @@ export default function ProductsPage() {
   
   const accountProducts = products.filter(product => 
     product.isAccount || product.type === 'account'
-  );
+  ).slice();  // Tạo một bản sao để tránh ảnh hưởng dữ liệu gốc
 
-  // Tạo mẫu tài khoản nếu chưa có
-  if (accountProducts.length === 0) {
-    // Thêm một số sản phẩm tài khoản mẫu để hiển thị
-    const sampleAccounts = [
-      {
-        id: 'account-1',
-        slug: 'chatgpt-premium',
-        name: 'ChatGPT Premium',
-        description: 'Tài khoản ChatGPT Plus cao cấp với đầy đủ các tính năng mới nhất.',
-        imageUrl: '/speech-text.png',
-        price: 990000,
-        salePrice: 790000,
-        rating: 4.9,
-        downloadCount: 250,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        version: '1.0'
-      },
-      {
-        id: 'account-2',
-        slug: 'capcut-pro',
-        name: 'CapCut Pro',
-        description: 'Tài khoản Pro cho phần mềm chỉnh sửa video CapCut với các tính năng chuyên nghiệp.',
-        imageUrl: '/speech-text.png',
-        price: 590000,
-        salePrice: 450000,
-        rating: 4.7,
-        downloadCount: 180,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: false,
-        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0'
-      },
-      {
-        id: 'account-3',
-        slug: 'adobe-creative-cloud',
-        name: 'Adobe Creative Cloud',
-        description: 'Truy cập toàn bộ bộ ứng dụng Adobe với tài khoản Creative Cloud tiết kiệm.',
-        imageUrl: '/speech-text.png',
-        price: 1290000,
-        salePrice: null,
-        rating: 4.8,
-        downloadCount: 310,
-        isAccount: true,
-        type: 'account',
-        isFeatured: true,
-        isNew: false,
-        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        version: '1.0'
-      }
-    ];
-    
-    // Chỉ thêm tài khoản mẫu khi đang ở tab accounts
-    if (activeTab === 'accounts') {
-      accountProducts.push(...sampleAccounts);
+  // Tạo tài khoản mẫu
+  const sampleAccounts = [
+    {
+      id: 'account-1',
+      slug: 'chatgpt-premium',
+      name: 'ChatGPT Premium',
+      description: 'Tài khoản ChatGPT Plus cao cấp với đầy đủ các tính năng mới nhất.',
+      imageUrl: '/images/products/code-editor.png',
+      price: 990000,
+      salePrice: 790000,
+      rating: 4.9,
+      downloadCount: 250,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      version: '1.0'
+    },
+    {
+      id: 'account-2',
+      slug: 'capcut-pro',
+      name: 'CapCut Pro',
+      description: 'Tài khoản Pro cho phần mềm chỉnh sửa video CapCut với các tính năng chuyên nghiệp.',
+      imageUrl: '/images/products/photo-editor.png',
+      price: 590000,
+      salePrice: 450000,
+      rating: 4.7,
+      downloadCount: 180,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: false,
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0'
+    },
+    {
+      id: 'account-3',
+      slug: 'adobe-creative-cloud',
+      name: 'Adobe Creative Cloud',
+      description: 'Truy cập toàn bộ bộ ứng dụng Adobe với tài khoản Creative Cloud tiết kiệm.',
+      imageUrl: '/images/products/design-master.png',
+      price: 1290000,
+      salePrice: null,
+      rating: 4.8,
+      downloadCount: 310,
+      isAccount: true,
+      type: 'account',
+      isFeatured: true,
+      isNew: false,
+      createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0'
     }
+  ];
+  
+  // Thêm tài khoản mẫu vào dữ liệu tài khoản nếu chưa có
+  if (accountProducts.length === 0) {
+    accountProducts.push(...sampleAccounts);
   }
   
   // Lọc sản phẩm theo danh mục và loại đã chọn
