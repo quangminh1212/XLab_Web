@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { data: session, status } = useSession();
+  const [checkingSession, setCheckingSession] = useState(true);
 
   // Các thông tin cố định cho Google OAuth
   const clientId = "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
@@ -25,17 +26,33 @@ export default function LoginPage() {
   // Tạo sẵn đường dẫn trực tiếp đến Google OAuth
   const googleDirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid%20email%20profile&prompt=select_account&access_type=offline`;
 
+  // Thêm timeout để tránh trường hợp loading vô hạn
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (status === 'loading') {
+        console.log('Session check timeout, proceeding with login page');
+        setCheckingSession(false);
+      }
+    }, 3000); // Timeout sau 3 giây
+
+    return () => clearTimeout(timeoutId);
+  }, [status]);
+
   // Kiểm tra xem người dùng đã đăng nhập chưa
   useEffect(() => {
     if (status === 'authenticated' && session) {
       console.log('Người dùng đã đăng nhập, chuyển hướng đến:', callbackUrl);
       router.push(callbackUrl);
+    } else if (status === 'unauthenticated') {
+      console.log('Người dùng chưa đăng nhập');
+      setCheckingSession(false);
     }
   }, [session, status, router, callbackUrl]);
 
   useEffect(() => {
     // Xử lý lỗi từ URL nếu có
     if (errorType) {
+      setCheckingSession(false);
       switch (errorType) {
         case 'google':
           setError('Có lỗi khi đăng nhập với Google. Vui lòng kiểm tra cấu hình hoặc thử lại sau.');
@@ -91,8 +108,8 @@ export default function LoginPage() {
     }
   };
 
-  // Nếu đang kiểm tra phiên đăng nhập, hiển thị màn hình loading
-  if (status === 'loading') {
+  // Hiển thị loading screen khi đang kiểm tra phiên đăng nhập và chưa hết thời gian timeout
+  if (status === 'loading' && checkingSession) {
     return (
       <div className="min-h-screen flex flex-col justify-center items-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
@@ -101,8 +118,9 @@ export default function LoginPage() {
     );
   }
 
-  // Nếu người dùng đã đăng nhập, không hiển thị gì cả (sẽ được chuyển hướng bởi useEffect)
-  if (status === 'authenticated') {
+  // Nếu người dùng đã đăng nhập và không bị timeout, không hiển thị gì cả
+  if (status === 'authenticated' && !checkingSession) {
+    router.push(callbackUrl);
     return null;
   }
 
