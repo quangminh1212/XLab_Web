@@ -388,7 +388,7 @@ export default function AdminPage() {
                 {showForm && (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
                     <h3 className="text-lg font-semibold mb-4">
-                      {editingProduct ? 'Cập nhật sản phẩm' : 'Thêm phần mềm mới'}
+                      {editingProduct ? 'Cập nhật sản phẩm' : 'Thêm Sản phẩm mới'}
                     </h3>
 
                     <form onSubmit={editingProduct ? handleUpdate : handleSubmit}>

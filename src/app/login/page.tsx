@@ -59,7 +59,7 @@ export default function LoginPage() {
         <div className="text-center">
           <Link href="/" className="inline-flex items-center justify-center">
             <Image
-              src="/topup.png"
+              src="/images/logo.jpg"
               alt="XLab Logo"
               width={80}
               height={80}
