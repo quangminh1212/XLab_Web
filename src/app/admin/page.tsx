@@ -7,11 +7,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
 
-export const metadata = {
-  title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
-}
-
 export default function AdminPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -24,19 +19,19 @@ export default function AdminPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
-  
+
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
-  
+
   // Tải danh sách sản phẩm
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
       const response = await fetch('/api/products');
       const data = await response.json();
-      
+
       if (data.success) {
         setProducts(data.data);
       } else {
@@ -49,14 +44,14 @@ export default function AdminPage() {
       setIsLoading(false);
     }
   };
-  
+
   // Tải sản phẩm khi trang được tải
   useEffect(() => {
     if (status === 'authenticated') {
       fetchProducts();
     }
   }, [status]);
-  
+
   // Kiểm tra quyền admin
   useEffect(() => {
     if (status === 'authenticated') {
@@ -74,19 +69,19 @@ export default function AdminPage() {
     setIsSubmitting(true);
     setError('');
     setSuccess('');
-    
+
     try {
       // Lấy dữ liệu form
       const form = event.currentTarget;
       const formData = new FormData(form);
-      
+
       // Chuyển đổi FormData thành object
       const formValues: Record<string, any> = Object.fromEntries(formData.entries());
-      
+
       // Xử lý checkbox cho isFeatured và isNew
       formValues.isFeatured = formData.has('isFeatured');
       formValues.isNew = formData.has('isNew');
-      
+
       // Gọi API để tạo sản phẩm mới
       const response = await fetch('/api/products/new', {
         method: 'POST',
@@ -95,9 +90,9 @@ export default function AdminPage() {
         },
         body: JSON.stringify(formValues),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         setSuccess('Sản phẩm đã được thêm thành công!');
         form.reset();
@@ -114,34 +109,34 @@ export default function AdminPage() {
       setIsSubmitting(false);
     }
   };
-  
+
   // Xử lý sửa sản phẩm
   const handleEditClick = (product: Product) => {
     setEditingProduct(product);
     setShowForm(true);
   };
-  
+
   // Xử lý cập nhật sản phẩm
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!editingProduct) return;
-    
+
     setIsSubmitting(true);
     setError('');
     setSuccess('');
-    
+
     try {
       // Lấy dữ liệu form
       const form = event.currentTarget;
       const formData = new FormData(form);
-      
+
       // Chuyển đổi FormData thành object
       const formValues: Record<string, any> = Object.fromEntries(formData.entries());
-      
+
       // Xử lý checkbox cho isFeatured và isNew
       formValues.isFeatured = formData.has('isFeatured');
       formValues.isNew = formData.has('isNew');
-      
+
       // Gọi API để cập nhật sản phẩm
       const response = await fetch(`/api/products/${editingProduct.id}`, {
         method: 'PUT',
@@ -150,9 +145,9 @@ export default function AdminPage() {
         },
         body: JSON.stringify(formValues),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         setSuccess('Sản phẩm đã được cập nhật thành công!');
         setShowForm(false);
@@ -169,28 +164,28 @@ export default function AdminPage() {
       setIsSubmitting(false);
     }
   };
-  
+
   // Xử lý xóa sản phẩm
   const handleDeleteClick = (productId: string) => {
     setDeleteProductId(productId);
     setIsDeleting(true);
   };
-  
+
   const handleDelete = async () => {
     if (!deleteProductId) return;
-    
+
     setIsSubmitting(true);
     setError('');
     setSuccess('');
-    
+
     try {
       // Gọi API để xóa sản phẩm
       const response = await fetch(`/api/products/${deleteProductId}`, {
         method: 'DELETE',
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         setSuccess('Sản phẩm đã được xóa thành công!');
         // Tải lại danh sách sản phẩm
@@ -207,17 +202,17 @@ export default function AdminPage() {
       setDeleteProductId(null);
     }
   };
-  
+
   const closeDeleteModal = () => {
     setIsDeleting(false);
     setDeleteProductId(null);
   };
-  
+
   const handleCancelEdit = () => {
     setEditingProduct(null);
     setShowForm(false);
   };
-  
+
   if (status === 'loading' || (status === 'authenticated' && session?.user?.email !== 'xlab.rnd@gmail.com')) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -225,7 +220,7 @@ export default function AdminPage() {
       </div>
     );
   }
-  
+
   return (
     <div>
       {/* Page Header */}
@@ -298,7 +293,7 @@ export default function AdminPage() {
                   <p className="text-gray-600">{session?.user?.email}</p>
                   <p className="text-sm text-gray-500 mt-1">Quản trị viên</p>
                 </div>
-                
+
                 <nav className="space-y-1">
                   <a href="#dashboard" className="flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -345,7 +340,7 @@ export default function AdminPage() {
                   </Link>
                 </nav>
               </div>
-              
+
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="font-bold text-lg mb-4">Thống kê nhanh</h3>
                 <div className="space-y-4">
@@ -368,14 +363,14 @@ export default function AdminPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Main Content */}
             <div className="lg:w-3/4">
               {/* Products Management */}
               <div id="products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
-                  <button 
+                  <button
                     className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
                     onClick={() => {
                       setEditingProduct(null);
@@ -388,14 +383,14 @@ export default function AdminPage() {
                     {showForm ? 'Đóng form' : 'Thêm sản phẩm mới'}
                   </button>
                 </div>
-                
+
                 {/* Form thêm/sửa sản phẩm */}
                 {showForm && (
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
                     <h3 className="text-lg font-semibold mb-4">
                       {editingProduct ? 'Cập nhật sản phẩm' : 'Thêm phần mềm mới'}
                     </h3>
-                    
+
                     <form onSubmit={editingProduct ? handleUpdate : handleSubmit}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -412,7 +407,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.name || ''}
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-slug" className="block mb-2 font-medium text-gray-700">
                             Slug <span className="text-red-500">*</span>
@@ -431,7 +426,7 @@ export default function AdminPage() {
                             <p className="text-xs text-gray-500 mt-1">Slug không thể thay đổi sau khi tạo</p>
                           )}
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
                             Danh mục <span className="text-red-500">*</span>
@@ -451,7 +446,7 @@ export default function AdminPage() {
                             <option value="cat-5">Ứng dụng giáo dục</option>
                           </select>
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-price" className="block mb-2 font-medium text-gray-700">
                             Giá (VNĐ) <span className="text-red-500">*</span>
@@ -466,7 +461,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.price || ''}
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
                             Giá khuyến mãi (VNĐ)
@@ -480,7 +475,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.salePrice || ''}
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-version" className="block mb-2 font-medium text-gray-700">
                             Phiên bản <span className="text-red-500">*</span>
@@ -495,7 +490,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.version || ''}
                           />
                         </div>
-                        
+
                         <div className="md:col-span-2">
                           <label htmlFor="product-description" className="block mb-2 font-medium text-gray-700">
                             Mô tả ngắn <span className="text-red-500">*</span>
@@ -510,7 +505,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.description || ''}
                           ></textarea>
                         </div>
-                        
+
                         <div className="md:col-span-2">
                           <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
                             Mô tả chi tiết <span className="text-red-500">*</span>
@@ -525,7 +520,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.longDescription || ''}
                           ></textarea>
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-image-url" className="block mb-2 font-medium text-gray-700">
                             URL hình ảnh <span className="text-red-500">*</span>
@@ -540,7 +535,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.imageUrl || ''}
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-size" className="block mb-2 font-medium text-gray-700">
                             Dung lượng <span className="text-red-500">*</span>
@@ -555,7 +550,7 @@ export default function AdminPage() {
                             defaultValue={editingProduct?.size || ''}
                           />
                         </div>
-                        
+
                         <div>
                           <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
                             Loại giấy phép <span className="text-red-500">*</span>
@@ -590,26 +585,26 @@ export default function AdminPage() {
                             <option value="3">Creative Tools</option>
                           </select>
                         </div>
-                        
+
                         <div className="md:col-span-2 flex items-center">
-                          <input 
-                            type="checkbox" 
-                            id="product-featured" 
-                            name="isFeatured" 
-                            className="mr-2" 
+                          <input
+                            type="checkbox"
+                            id="product-featured"
+                            name="isFeatured"
+                            className="mr-2"
                             defaultChecked={editingProduct?.isFeatured || false}
                           />
                           <label htmlFor="product-featured" className="text-gray-700">
                             Đánh dấu là sản phẩm nổi bật
                           </label>
                         </div>
-                        
+
                         <div className="md:col-span-2 flex items-center">
-                          <input 
-                            type="checkbox" 
-                            id="product-new" 
-                            name="isNew" 
-                            className="mr-2" 
+                          <input
+                            type="checkbox"
+                            id="product-new"
+                            name="isNew"
+                            className="mr-2"
                             defaultChecked={editingProduct?.isNew || false}
                           />
                           <label htmlFor="product-new" className="text-gray-700">
@@ -617,17 +612,17 @@ export default function AdminPage() {
                           </label>
                         </div>
                       </div>
-                      
+
                       <div className="mt-6 flex justify-end space-x-4">
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
                           onClick={() => editingProduct ? handleCancelEdit() : setShowForm(false)}
                         >
                           Hủy
                         </button>
-                        <button 
-                          type="submit" 
+                        <button
+                          type="submit"
                           className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
                           disabled={isSubmitting}
                         >
@@ -643,7 +638,7 @@ export default function AdminPage() {
                     </form>
                   </div>
                 )}
-                
+
                 {/* Danh sách sản phẩm */}
                 <div className="overflow-x-auto">
                   {isLoading ? (
@@ -720,13 +715,13 @@ export default function AdminPage() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-2">
-                                <button 
+                                <button
                                   className="text-primary-600 hover:text-primary-900"
                                   onClick={() => handleEditClick(product)}
                                 >
                                   Sửa
                                 </button>
-                                <button 
+                                <button
                                   className="text-red-600 hover:text-red-900"
                                   onClick={() => handleDeleteClick(product.id.toString())}
                                 >
@@ -745,19 +740,19 @@ export default function AdminPage() {
                   )}
                 </div>
               </div>
-              
+
               {/* Categories Management */}
               <div id="categories" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Quản lý danh mục</h2>
                 <p className="text-gray-500 mb-4">Quản lý danh mục sản phẩm trên hệ thống</p>
-                
+
                 <button className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center mb-6">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                   Thêm danh mục mới
                 </button>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="border rounded-lg overflow-hidden">
                     <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
@@ -772,7 +767,7 @@ export default function AdminPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="border rounded-lg overflow-hidden">
                     <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
                       <h3 className="font-bold">Thiết kế</h3>
@@ -822,16 +817,16 @@ export default function AdminPage() {
                 </div>
               </div>
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={handleDelete}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Đang xóa...' : 'Xóa'}
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={closeDeleteModal}
                 >
