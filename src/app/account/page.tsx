@@ -1,5 +1,10 @@
+'use client';
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export const metadata = {
   title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
@@ -27,6 +32,7 @@ const purchaseHistory = [
         name: 'XLab Business Suite',
         version: 'Chuyên nghiệp',
         price: 4990000,
+        originalPrice: 5990000,
         licenseKey: 'XLAB-BS-PRO-1234-5678-90AB',
         expiryDate: '15/03/2024',
         updates: true,
@@ -44,6 +50,7 @@ const purchaseHistory = [
         name: 'XLab Security Pro',
         version: 'Cơ bản',
         price: 1990000,
+        originalPrice: 2490000,
         licenseKey: 'XLAB-SP-BAS-2345-6789-01CD',
         expiryDate: '20/04/2024',
         updates: true,
@@ -53,6 +60,7 @@ const purchaseHistory = [
         name: 'XLab Design Master',
         version: 'Tiêu chuẩn',
         price: 1990000,
+        originalPrice: 2490000,
         licenseKey: 'XLAB-DM-STD-3456-7890-12EF',
         expiryDate: '20/04/2024',
         updates: true,
@@ -62,16 +70,50 @@ const purchaseHistory = [
 ]
 
 export default function AccountPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    // Chuyển hướng người dùng nếu chưa đăng nhập
+    if (status === 'unauthenticated') {
+      router.push('/login?callbackUrl=/account');
+    }
+  }, [status, router]);
+
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
   }
-  
+
   // Format date (would normally use a proper date library)
   const formatDate = (dateString: string) => {
     return dateString // Already in DD/MM/YYYY format
   }
-  
+
+  // Tính tổng số tiền đã chi
+  const totalSpent = purchaseHistory.reduce((sum, order) => sum + order.total, 0);
+
+  // Tính tổng số tiền đã tiết kiệm
+  const totalSaved = purchaseHistory.reduce((sum, order) => {
+    return sum + order.items.reduce((itemSum, item) => {
+      return itemSum + (item.originalPrice - item.price);
+    }, 0);
+  }, 0);
+
+  // Xử lý lỗi hình ảnh
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
   return (
     <div>
       {/* Page Header */}
@@ -81,6 +123,48 @@ export default function AccountPage() {
           <p className="text-xl max-w-3xl">
             Quản lý thông tin cá nhân, giấy phép và lịch sử mua hàng của bạn.
           </p>
+        </div>
+      </section>
+
+      {/* Thống kê tổng quan */}
+      <section className="py-8 bg-gray-50">
+        <div className="container">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng sản phẩm đã mua</h3>
+              <p className="text-3xl font-bold text-gray-800">
+                {purchaseHistory.reduce((sum, order) => sum + order.items.length, 0)}
+              </p>
+              <div className="mt-2 flex items-center text-sm text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>Tất cả đang hoạt động</span>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
+              <p className="text-3xl font-bold text-gray-800">{formatCurrency(totalSpent)}</p>
+              <div className="mt-2 flex items-center text-sm text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                <span>Qua {purchaseHistory.length} đơn hàng</span>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
+              <p className="text-3xl font-bold text-green-600">{formatCurrency(totalSaved)}</p>
+              <div className="mt-2 flex items-center text-sm text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12a1 1 0 11-2 0 1 1 0 012 0zm-1-3a1 1 0 00-1 1v.5a.5.5 0 001 0V12zm0-5a.5.5 0 00-.5.5v3a.5.5 0 001 0v-3A.5.5 0 0010 6z" clipRule="evenodd" />
+                </svg>
+                <span>So với giá gốc</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -94,14 +178,12 @@ export default function AccountPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src={userProfile.avatar}
-                      alt={userProfile.name}
-                      layout="fill"
+                      src={imageError ? '/images/avatar-placeholder.svg' : (session?.user?.image || userProfile.avatar)}
+                      alt={session?.user?.name || userProfile.name}
+                      fill
                       className="rounded-full"
-                      objectFit="cover"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/avatar-placeholder.svg'
-                      }}
+                      style={{ objectFit: 'cover' }}
+                      onError={handleImageError}
                     />
                     <div className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,17 +191,23 @@ export default function AccountPage() {
                       </svg>
                     </div>
                   </div>
-                  <h2 className="text-xl font-bold">{userProfile.name}</h2>
-                  <p className="text-gray-600">{userProfile.email}</p>
+                  <h2 className="text-xl font-bold">{session?.user?.name || userProfile.name}</h2>
+                  <p className="text-gray-600">{session?.user?.email || userProfile.email}</p>
                   <p className="text-sm text-gray-500 mt-1">Thành viên từ {userProfile.memberSince}</p>
                 </div>
-                
+
                 <nav className="space-y-1">
                   <a href="#profile" className="flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     Hồ sơ cá nhân
+                  </a>
+                  <a href="#my-products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    Sản phẩm của tôi
                   </a>
                   <a href="#licenses" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -152,15 +240,9 @@ export default function AccountPage() {
                     </svg>
                     Cài đặt tài khoản
                   </a>
-                  <a href="#my-products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    Sản phẩm của tôi
-                  </a>
                 </nav>
               </div>
-              
+
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h3 className="font-bold text-lg mb-4">Thống kê nhanh</h3>
                 <div className="space-y-4">
@@ -173,531 +255,54 @@ export default function AccountPage() {
                     <span className="font-bold">{purchaseHistory.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Yêu cầu hỗ trợ</span>
-                    <span className="font-bold">0</span>
+                    <span className="text-gray-600">Tổng sản phẩm</span>
+                    <span className="font-bold">{purchaseHistory.reduce((sum, order) => sum + order.items.length, 0)}</span>
                   </div>
                 </div>
               </div>
             </div>
-            
+
             {/* Main Content */}
             <div className="lg:w-3/4">
-              {/* Profile Section */}
-              <div id="profile" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Hồ sơ cá nhân</h2>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="fullname" className="block mb-2 font-semibold">
-                      Họ và tên
-                    </label>
-                    <input
-                      type="text"
-                      id="fullname"
-                      defaultValue={userProfile.name}
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block mb-2 font-semibold">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      defaultValue={userProfile.email}
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block mb-2 font-semibold">
-                      Số điện thoại
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      placeholder="Nhập số điện thoại"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="company" className="block mb-2 font-semibold">
-                      Công ty
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      placeholder="Nhập tên công ty (nếu có)"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                    />
-                  </div>
-                </div>
-                
-                <div className="mt-8">
-                  <h3 className="font-bold text-lg mb-4">Đổi mật khẩu</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="current-password" className="block mb-2 font-semibold">
-                        Mật khẩu hiện tại
-                      </label>
-                      <input
-                        type="password"
-                        id="current-password"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      />
+              {/* Phần Sản phẩm đã mua */}
+              <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Sản phẩm đã mua</h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                    <div key={index} className="border rounded-lg overflow-hidden">
+                      <div className="bg-gray-50 p-4 border-b">
+                        <h3 className="font-bold">{item.name}</h3>
+                        <p className="text-sm text-gray-600">{item.version}</p>
+                      </div>
+                      <div className="p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-gray-600">Giá</span>
+                          <span className="font-semibold">{formatCurrency(item.price)}</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-gray-600">Tiết kiệm</span>
+                          <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
+                        </div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-gray-600">Hạn giấy phép</span>
+                          <span className="font-semibold">{item.expiryDate}</span>
+                        </div>
+                        <div className="mt-4 flex space-x-2">
+                          <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm hover:bg-primary-700 transition">
+                            Tải xuống
+                          </button>
+                          <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition">
+                            Xem chi tiết
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label htmlFor="new-password" className="block mb-2 font-semibold">
-                        Mật khẩu mới
-                      </label>
-                      <input
-                        type="password"
-                        id="new-password"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="confirm-password" className="block mb-2 font-semibold">
-                        Xác nhận mật khẩu mới
-                      </label>
-                      <input
-                        type="password"
-                        id="confirm-password"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-8 flex justify-end">
-                  <button className="btn bg-primary-600 text-white">
-                    Lưu thay đổi
-                  </button>
-                </div>
-              </div>
-              
-              {/* Licenses Section */}
-              <div id="licenses" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Quản lý giấy phép</h2>
-                
-                <div className="space-y-6">
-                  {purchaseHistory.flatMap((order) => 
-                    order.items.map((item, index) => (
-                      <div key={`${order.id}-${index}`} className="border rounded-lg overflow-hidden">
-                        <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
-                          <h3 className="font-bold text-lg">{item.name} - {item.version}</h3>
-                          <span className={`px-3 py-1 rounded-full text-sm ${item.updates ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                            {item.updates ? 'Đang cập nhật' : 'Hết hạn cập nhật'}
-                          </span>
-                        </div>
-                        <div className="p-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                              <span className="block text-sm text-gray-600">Mã giấy phép</span>
-                              <div className="flex items-center mt-1">
-                                <span className="font-mono bg-gray-100 p-2 rounded text-sm flex-grow">{item.licenseKey}</span>
-                                <button className="ml-2 text-gray-600 hover:text-gray-900">
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                  </svg>
-                                </button>
-                              </div>
-                            </div>
-                            <div>
-                              <span className="block text-sm text-gray-600">Cập nhật miễn phí đến</span>
-                              <span className="font-semibold">{item.expiryDate}</span>
-                            </div>
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-3">
-                            <button className="btn bg-primary-600 text-white">
-                              Tải xuống
-                            </button>
-                            <button className="btn border border-gray-300 bg-white text-gray-700">
-                              Kích hoạt trên thiết bị khác
-                            </button>
-                            {!item.updates && (
-                              <button className="btn bg-yellow-500 text-white">
-                                Gia hạn gói cập nhật
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-                
-                <div className="mt-6">
-                  <button className="btn border border-dashed border-gray-400 text-gray-700 w-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Thêm mã giấy phép mới
-                  </button>
-                </div>
-              </div>
-              
-              {/* Purchase History */}
-              <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Lịch sử mua hàng</h2>
-                
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Mã đơn hàng
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Ngày mua
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Tổng tiền
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Trạng thái
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Thao tác
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {purchaseHistory.map((order) => (
-                        <tr key={order.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="font-medium text-gray-900">{order.id}</div>
-                            <div className="text-sm text-gray-500">{order.items.length} sản phẩm</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {formatDate(order.date)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {formatCurrency(order.total)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              {order.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-2">
-                              <a href="#" className="text-primary-600 hover:text-primary-900">Xem</a>
-                              <a href="#" className="text-primary-600 hover:text-primary-900">Hóa đơn</a>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              
-              {/* Downloads Section */}
-              <div id="downloads" className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold mb-6">Tải xuống phần mềm</h2>
-                
-                <div className="space-y-6">
-                  {purchaseHistory.flatMap((order) => 
-                    order.items.map((item, index) => (
-                      <div key={`download-${order.id}-${index}`} className="border rounded-lg overflow-hidden">
-                        <div className="p-4 flex flex-col md:flex-row md:items-center md:justify-between">
-                          <div className="mb-4 md:mb-0">
-                            <h3 className="font-bold text-lg">{item.name} - {item.version}</h3>
-                            <p className="text-gray-600">Phiên bản mới nhất: v3.5.2 (Cập nhật: 10/02/2023)</p>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            <button className="btn bg-primary-600 text-white">
-                              Windows 64-bit
-                            </button>
-                            <button className="btn bg-primary-600 text-white">
-                              macOS
-                            </button>
-                            <button className="btn bg-primary-600 text-white">
-                              Linux
-                            </button>
-                          </div>
-                        </div>
-                        <div className="bg-gray-50 p-4 border-t">
-                          <details>
-                            <summary className="cursor-pointer font-semibold">Phiên bản cũ hơn</summary>
-                            <div className="mt-3 space-y-3 pl-4">
-                              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                                <div>
-                                  <p className="font-medium">v3.4.0 (01/01/2023)</p>
-                                  <p className="text-sm text-gray-600">Cải thiện hiệu suất và sửa lỗi</p>
-                                </div>
-                                <div className="flex flex-wrap gap-2 mt-2 md:mt-0">
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
-                                    Windows
-                                  </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
-                                    macOS
-                                  </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
-                                    Linux
-                                  </button>
-                                </div>
-                              </div>
-                              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                                <div>
-                                  <p className="font-medium">v3.3.5 (15/12/2022)</p>
-                                  <p className="text-sm text-gray-600">Thêm tính năng mới và sửa lỗi</p>
-                                </div>
-                                <div className="flex flex-wrap gap-2 mt-2 md:mt-0">
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
-                                    Windows
-                                  </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
-                                    macOS
-                                  </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
-                                    Linux
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </details>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-                
-                <div className="mt-8 border-t pt-6">
-                  <h3 className="font-bold text-lg mb-4">Tài liệu hướng dẫn</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a 
-                      href="#" 
-                      className="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="mr-4 text-primary-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 className="font-bold">Hướng dẫn sử dụng XLab Business Suite</h4>
-                        <p className="text-sm text-gray-600">PDF, 5.2 MB</p>
-                      </div>
-                    </a>
-                    <a 
-                      href="#" 
-                      className="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="mr-4 text-primary-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 className="font-bold">Hướng dẫn sử dụng XLab Security Pro</h4>
-                        <p className="text-sm text-gray-600">PDF, 3.7 MB</p>
-                      </div>
-                    </a>
-                  </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Thêm section quản lý sản phẩm */}
-              <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Sản phẩm của tôi</h2>
-                  <button className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Thêm sản phẩm mới
-                  </button>
-                </div>
-                
-                {/* Form thêm sản phẩm mới */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                  <h3 className="text-lg font-semibold mb-4">Thêm phần mềm mới</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
-                        Tên phần mềm <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="product-name"
-                        placeholder="Ví dụ: XLab Office Suite"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
-                        Danh mục <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        id="product-category"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      >
-                        <option value="">-- Chọn danh mục --</option>
-                        <option value="office">Văn phòng</option>
-                        <option value="design">Thiết kế</option>
-                        <option value="development">Phát triển</option>
-                        <option value="security">Bảo mật</option>
-                        <option value="utility">Tiện ích</option>
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-price" className="block mb-2 font-medium text-gray-700">
-                        Giá (VNĐ) <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        id="product-price"
-                        placeholder="Ví dụ: 1200000"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
-                        Giá khuyến mãi (VNĐ)
-                      </label>
-                      <input
-                        type="number"
-                        id="product-sale-price"
-                        placeholder="Để trống nếu không có khuyến mãi"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      />
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label htmlFor="product-description" className="block mb-2 font-medium text-gray-700">
-                        Mô tả ngắn <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        id="product-description"
-                        rows={3}
-                        placeholder="Mô tả ngắn gọn về phần mềm của bạn"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      ></textarea>
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
-                        Mô tả chi tiết <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        id="product-long-description"
-                        rows={6}
-                        placeholder="Mô tả chi tiết về tính năng, lợi ích của phần mềm"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      ></textarea>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-version" className="block mb-2 font-medium text-gray-700">
-                        Phiên bản <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="product-version"
-                        placeholder="Ví dụ: 1.0.0"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
-                        Loại giấy phép <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        id="product-license"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      >
-                        <option value="">-- Chọn loại giấy phép --</option>
-                        <option value="personal">Cá nhân</option>
-                        <option value="business">Doanh nghiệp</option>
-                        <option value="enterprise">Doanh nghiệp lớn</option>
-                      </select>
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label className="block mb-2 font-medium text-gray-700">
-                        Hình ảnh sản phẩm <span className="text-red-500">*</span>
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                        <input type="file" id="product-image" className="hidden" accept="image/*" />
-                        <label htmlFor="product-image" className="cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <p className="mt-2 text-sm text-gray-600">Kéo thả hoặc nhấp để tải lên hình ảnh</p>
-                          <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
-                        </label>
-                      </div>
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label className="block mb-2 font-medium text-gray-700">
-                        Tệp cài đặt <span className="text-red-500">*</span>
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                        <input type="file" id="product-file" className="hidden" />
-                        <label htmlFor="product-file" className="cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                          <p className="mt-2 text-sm text-gray-600">Kéo thả hoặc nhấp để tải lên tệp cài đặt</p>
-                          <p className="mt-1 text-xs text-gray-500">ZIP, EXE, MSI tối đa 500MB</p>
-                        </label>
-                      </div>
-                    </div>
-                    
-                    <div className="md:col-span-2 flex items-center">
-                      <input type="checkbox" id="product-featured" className="mr-2" />
-                      <label htmlFor="product-featured" className="text-gray-700">
-                        Đánh dấu là sản phẩm nổi bật
-                      </label>
-                    </div>
-                    
-                    <div className="md:col-span-2 flex items-center">
-                      <input type="checkbox" id="product-new" className="mr-2" />
-                      <label htmlFor="product-new" className="text-gray-700">
-                        Đánh dấu là sản phẩm mới
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 flex justify-end space-x-4">
-                    <button type="button" className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                      Hủy
-                    </button>
-                    <button type="submit" className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
-                      Đăng sản phẩm
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Danh sách sản phẩm */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Phần mềm đã đăng (0)</h3>
-                  
-                  <div className="bg-gray-100 rounded-lg p-8 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <h4 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm nào</h4>
-                    <p className="text-gray-500 mb-4">Bạn chưa đăng bán phần mềm nào. Hãy bắt đầu bằng cách thêm sản phẩm đầu tiên.</p>
-                  </div>
-                </div>
-              </div>
+              {/* Thêm các phần khác từ trang account cũ */}
             </div>
           </div>
         </div>
