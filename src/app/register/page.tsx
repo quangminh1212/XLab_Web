@@ -98,11 +98,11 @@ export default function RegisterPage() {
         <div className="text-center">
           <Link href="/" className="inline-flex items-center justify-center">
             <Image
-              src="/topup.png"
+              src="/images/logo.jpg"
               alt="XLab Logo"
-              width={48}
-              height={48}
-              className="rounded-full"
+              width={80}
+              height={80}
+              priority
             />
           </Link>
           <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
