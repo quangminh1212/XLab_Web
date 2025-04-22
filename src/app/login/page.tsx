@@ -73,18 +73,19 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (googleLoading || loading) {
-      e.preventDefault();
-      return;
-    }
-    
+  const handleGoogleSignIn = async () => {
     try {
       setGoogleLoading(true);
       setError('');
       
-      // Chuyển hướng trực tiếp đến trang đăng nhập Google
-      window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
+      // Gọi trực tiếp API NextAuth với option redirecting luôn
+      await signIn('google', { callbackUrl });
+      
+      // Nếu code chạy đến đây thì có nghĩa là signIn không chuyển hướng như mong đợi
+      // Thử cách chuyển hướng thủ công
+      setTimeout(() => {
+        window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcallback%2Fgoogle&response_type=code&scope=openid%20email%20profile';
+      }, 500);
     } catch (err) {
       console.error('Lỗi đăng nhập Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
@@ -130,14 +131,16 @@ export default function LoginPage() {
               <code className="block p-2 mt-1 bg-gray-100 text-gray-800 rounded text-xs overflow-x-auto">
                 http://localhost:3000/api/auth/signin/google
               </code>
+              <code className="block p-2 mt-1 bg-gray-100 text-gray-800 rounded text-xs overflow-x-auto">
+                http://localhost:3000/api/auth/callback/google
+              </code>
             </div>
           )}
 
-          <a
-            href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+          <button
             onClick={handleGoogleSignIn}
+            disabled={googleLoading || loading}
             className={`w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative ${(googleLoading || loading) ? 'opacity-70 cursor-not-allowed' : ''}`}
-            aria-disabled={googleLoading || loading}
           >
             {googleLoading ? (
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -153,7 +156,7 @@ export default function LoginPage() {
               </svg>
             )}
             <span>Tiếp tục với Google</span>
-          </a>
+          </button>
 
           <div className="relative mt-4 mb-6">
             <div className="absolute inset-0 flex items-center">
