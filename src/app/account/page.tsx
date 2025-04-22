@@ -552,73 +552,12 @@ export default function AccountPage() {
                         <textarea className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
                           placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"></textarea>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Mức độ ưu tiên</label>
-                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500">
-                          <option>Thấp</option>
-                          <option>Trung bình</option>
-                          <option>Cao</option>
-                          <option>Khẩn cấp</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Đính kèm tệp (nếu có)</label>
-                        <input type="file" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
-                      </div>
                     </div>
 
                     <div className="mt-4 text-right">
                       <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
                         Gửi yêu cầu hỗ trợ
                       </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold text-lg mb-3">Lịch sử yêu cầu hỗ trợ</h3>
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã yêu cầu</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sản phẩm</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#SUP-12345</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sự cố kích hoạt giấy phép</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XLab Business Suite</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">20/04/2023</td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                Đang xử lý
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <button className="text-primary-600 hover:text-primary-900">Xem chi tiết</button>
-                            </td>
-                          </tr>
-                          <tr className="bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#SUP-12346</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Hướng dẫn cấu hình</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XLab Security Pro</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25/04/2023</td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Đã giải quyết
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <button className="text-primary-600 hover:text-primary-900">Xem chi tiết</button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
                     </div>
                   </div>
                 </div>
@@ -659,61 +598,10 @@ export default function AccountPage() {
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-md">
-                    <h3 className="font-semibold text-lg mb-3">Bảo mật</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="text-gray-700 block">Xác thực hai yếu tố</span>
-                          <span className="text-xs text-gray-500">Bảo vệ tài khoản bằng xác thực hai yếu tố</span>
-                        </div>
-                        <button className="px-3 py-1 bg-primary-600 text-white rounded-md text-sm hover:bg-primary-700 transition">Thiết lập</button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="text-gray-700 block">Phiên đăng nhập</span>
-                          <span className="text-xs text-gray-500">Quản lý phiên đăng nhập trên các thiết bị</span>
-                        </div>
-                        <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded-md text-sm hover:bg-gray-300 transition">Xem chi tiết</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-md">
-                    <h3 className="font-semibold text-lg mb-3">Tùy chọn thanh toán</h3>
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Phương thức thanh toán mặc định</label>
-                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500">
-                          <option>Thẻ tín dụng/Ghi nợ</option>
-                          <option>Chuyển khoản ngân hàng</option>
-                          <option>Ví điện tử</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Thông tin xuất hóa đơn</label>
-                        <textarea className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[80px]"
-                          placeholder="Nhập thông tin xuất hóa đơn (tên công ty, địa chỉ, mã số thuế)"></textarea>
-                      </div>
-                    </div>
-                    <div className="mt-4 text-right">
-                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
-                        Lưu thay đổi
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="bg-red-50 p-4 rounded-md border border-red-200">
-                    <h3 className="font-semibold text-lg mb-3 text-red-800">Quản lý tài khoản</h3>
-                    <p className="text-sm text-red-600 mb-4">Các thao tác sau đây có thể ảnh hưởng đến tài khoản của bạn. Vui lòng cân nhắc kỹ trước khi thực hiện:</p>
-                    <div className="flex space-x-4">
-                      <button className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition text-sm">
-                        Tạm khóa tài khoản
-                      </button>
-                      <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm">
-                        Xóa tài khoản
-                      </button>
-                    </div>
+                  <div className="mt-4 text-right">
+                    <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                      Lưu thay đổi
+                    </button>
                   </div>
                 </div>
               </div>
