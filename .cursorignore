@@ -1,0 +1,11 @@
+# Files to ignore by Cursor
+# Explicitly NOT ignoring .env.local
+
+# Ignore node_modules
+node_modules/
+
+# Các file khác cần ignore
+.next/
+out/
+build/
+dist/ 
