@@ -48,11 +48,11 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     try {
       setLoading(true);
       setError('');
-      await signIn('google', { callbackUrl });
+      signIn('google', { redirect: true, callbackUrl });
     } catch (err) {
       console.error('Lỗi đăng nhập với Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google.');
@@ -90,6 +90,7 @@ export default function LoginPage() {
           )}
 
           <button
+            type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
