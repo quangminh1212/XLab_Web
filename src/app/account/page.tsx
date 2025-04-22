@@ -6,11 +6,6 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-export const metadata = {
-  title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
-  description: 'Quản lý tài khoản, giấy phép và lịch sử mua hàng của bạn tại XLab',
-}
-
 // This would normally come from a database or API
 const userProfile = {
   name: 'Nguyễn Văn A',
