@@ -52,7 +52,9 @@ export default function LoginPage() {
     try {
       setLoading(true);
       setError('');
-      signIn('google', { redirect: true, callbackUrl });
+      
+      // Sử dụng cách trực tiếp để chuyển hướng
+      window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
     } catch (err) {
       console.error('Lỗi đăng nhập với Google:', err);
       setError('Có lỗi xảy ra khi đăng nhập với Google.');
