@@ -6,17 +6,41 @@ import { useState, useEffect } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
+// Khai báo các kiểu dữ liệu
+interface OrderItem {
+  id: string;
+  name: string;
+  version: string;
+  price: number;
+  originalPrice: number;
+  licenseKey: string;
+  expiryDate: string;
+  updates: boolean;
+}
+
+interface Order {
+  id: string;
+  date: string;
+  total: number;
+  status: string;
+  items: OrderItem[];
+}
+
 // This would normally come from a database or API
 const userProfile = {
   name: 'Nguyễn Văn A',
   email: 'nguyenvana@example.com',
   avatar: '/images/avatar-placeholder.svg',
   memberSince: '01/01/2023',
-  licenseCount: 3,
+  licenseCount: 0, // Đặt thành 0 vì chưa có sản phẩm
   phone: '',
 }
 
-const purchaseHistory = [
+// Khởi tạo lịch sử mua hàng rỗng
+const emptyPurchaseHistory: Order[] = [];
+
+// Dữ liệu mẫu cũ (sẽ không sử dụng)
+const samplePurchaseHistory: Order[] = [
   {
     id: 'ORD-12345',
     date: '15/03/2023',
@@ -72,6 +96,8 @@ export default function AccountPage() {
   const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [purchaseHistory, setPurchaseHistory] = useState(emptyPurchaseHistory);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Chuyển hướng người dùng nếu chưa đăng nhập
@@ -121,10 +147,20 @@ export default function AccountPage() {
           setProfile(updatedProfile);
           console.log('Đã tải thông tin từ session');
         }
+
+        // Mô phỏng việc tải dữ liệu từ API
+        setTimeout(() => {
+          // Trong thực tế, đây sẽ là một API call để lấy lịch sử mua hàng
+          // Hiện tại chúng ta gán mảng rỗng để hiển thị trạng thái "chưa có sản phẩm"
+          setPurchaseHistory(emptyPurchaseHistory);
+          setIsLoading(false);
+        }, 1000);
+
       } catch (error) {
         console.error('Lỗi khi đọc từ localStorage:', error);
         // Fallback to session data
         setProfile(updatedProfile);
+        setIsLoading(false);
       }
     }
   }, [status, router, session]);
@@ -219,13 +255,19 @@ export default function AccountPage() {
     setImageError(true);
   };
 
-  if (status === 'loading') {
+  if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
       </div>
     );
   }
+
+  // Kiểm tra nếu có sản phẩm đã mua hay không
+  const hasProducts = purchaseHistory.length > 0;
+
+  // Tổng số sản phẩm
+  const totalProducts = purchaseHistory.reduce((sum, order) => sum + order.items.length, 0);
 
   return (
     <div>
@@ -246,13 +288,24 @@ export default function AccountPage() {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng sản phẩm đã mua</h3>
               <p className="text-3xl font-bold text-gray-800">
-                {purchaseHistory.reduce((sum, order) => sum + order.items.length, 0)}
+                {totalProducts}
               </p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span>Tất cả đang hoạt động</span>
+                {hasProducts ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Tất cả đang hoạt động</span>
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                    </svg>
+                    <span>Chưa có sản phẩm nào</span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -361,7 +414,7 @@ export default function AccountPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Giấy phép đang hoạt động</span>
-                    <span className="font-bold">{profile.licenseCount}</span>
+                    <span className="font-bold">{totalProducts}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Đơn hàng đã mua</span>
@@ -369,7 +422,7 @@ export default function AccountPage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Tổng sản phẩm</span>
-                    <span className="font-bold">{purchaseHistory.reduce((sum, order) => sum + order.items.length, 0)}</span>
+                    <span className="font-bold">{totalProducts}</span>
                   </div>
                 </div>
               </div>
@@ -475,201 +528,253 @@ export default function AccountPage() {
               <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Sản phẩm đã mua</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {purchaseHistory.flatMap(order => order.items).map((item, index) => (
-                    <div key={index} className="border rounded-lg overflow-hidden">
-                      <div className="bg-gray-50 p-4 border-b">
-                        <h3 className="font-bold">{item.name}</h3>
-                        <p className="text-sm text-gray-600">{item.version}</p>
+                {hasProducts ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                      <div key={index} className="border rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 p-4 border-b">
+                          <h3 className="font-bold">{item.name}</h3>
+                          <p className="text-sm text-gray-600">{item.version}</p>
+                        </div>
+                        <div className="p-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-gray-600">Giá</span>
+                            <span className="font-semibold">{formatCurrency(item.price)}</span>
+                          </div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-gray-600">Tiết kiệm</span>
+                            <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
+                          </div>
+                          {/* Tìm order chứa item hiện tại */}
+                          {purchaseHistory.map(order => {
+                            if (order.items.some(orderItem => orderItem.id === item.id)) {
+                              return (
+                                <div key={`purchase-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
+                                  <span className="text-gray-600">Ngày mua</span>
+                                  <span className="font-semibold">{order.date}</span>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-gray-600">Hạn giấy phép</span>
+                            <span className="font-semibold">{item.expiryDate}</span>
+                          </div>
+                          <div className="mt-4 flex space-x-2">
+                            <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm hover:bg-primary-700 transition">
+                              Tải xuống
+                            </button>
+                            <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition">
+                              Xem chi tiết
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="p-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-600">Giá</span>
-                          <span className="font-semibold">{formatCurrency(item.price)}</span>
-                        </div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-600">Tiết kiệm</span>
-                          <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
-                        </div>
-                        {/* Tìm order chứa item hiện tại */}
-                        {purchaseHistory.map(order => {
-                          if (order.items.some(orderItem => orderItem.id === item.id)) {
-                            return (
-                              <div key={`purchase-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
-                                <span className="text-gray-600">Ngày mua</span>
-                                <span className="font-semibold">{order.date}</span>
-                              </div>
-                            );
-                          }
-                          return null;
-                        })}
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-600">Hạn giấy phép</span>
-                          <span className="font-semibold">{item.expiryDate}</span>
-                        </div>
-                        <div className="mt-4 flex space-x-2">
-                          <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm hover:bg-primary-700 transition">
-                            Tải xuống
-                          </button>
-                          <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition">
-                            Xem chi tiết
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có sản phẩm nào</h3>
+                    <p className="text-gray-600 mb-6 max-w-md mx-auto">Bạn chưa mua sản phẩm nào. Khám phá các sản phẩm của chúng tôi để bắt đầu.</p>
+                    <Link href="/products" className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      Khám phá sản phẩm
+                    </Link>
+                  </div>
+                )}
               </div>
 
               {/* Phần Quản lý giấy phép */}
               <div id="licenses" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Quản lý giấy phép</h2>
 
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sản phẩm</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã giấy phép</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày kích hoạt</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hạn sử dụng</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {purchaseHistory.flatMap(order => order.items).map((item, index) => (
-                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div>
-                                <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                                <div className="text-sm text-gray-500">{item.version}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900 font-mono">{item.licenseKey}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {purchaseHistory.map(order => {
-                              if (order.items.some(orderItem => orderItem.id === item.id)) {
-                                return (
-                                  <div key={`license-date-${order.id}-${item.id}`} className="text-sm text-gray-900">
-                                    {order.date}
-                                  </div>
-                                );
-                              }
-                              return null;
-                            })}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{item.expiryDate}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              Đang hoạt động
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            <div className="flex space-x-2">
-                              <button className="text-primary-600 hover:text-primary-900">Sao chép</button>
-                              <button className="text-blue-600 hover:text-blue-900">Gia hạn</button>
-                            </div>
-                          </td>
+                {hasProducts ? (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sản phẩm</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã giấy phép</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày kích hoạt</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hạn sử dụng</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                                  <div className="text-sm text-gray-500">{item.version}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900 font-mono">{item.licenseKey}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              {purchaseHistory.map(order => {
+                                if (order.items.some(orderItem => orderItem.id === item.id)) {
+                                  return (
+                                    <div key={`license-date-${order.id}-${item.id}`} className="text-sm text-gray-900">
+                                      {order.date}
+                                    </div>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900">{item.expiryDate}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đang hoạt động
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <div className="flex space-x-2">
+                                <button className="text-primary-600 hover:text-primary-900">Sao chép</button>
+                                <button className="text-blue-600 hover:text-blue-900">Gia hạn</button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Không có giấy phép nào</h3>
+                    <p className="text-gray-600 mb-4 max-w-md mx-auto">Bạn chưa có giấy phép sản phẩm nào. Hãy mua sản phẩm để nhận giấy phép.</p>
+                  </div>
+                )}
               </div>
 
               {/* Phần Lịch sử mua hàng */}
               <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Lịch sử mua hàng</h2>
 
-                <div className="space-y-6">
-                  {purchaseHistory.map((order, orderIndex) => (
-                    <div key={orderIndex} className="border rounded-lg overflow-hidden">
-                      <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
-                        <div>
-                          <h3 className="font-bold">Đơn hàng #{order.id}</h3>
-                          <p className="text-sm text-gray-600">Ngày đặt: {order.date}</p>
+                {hasProducts ? (
+                  <div className="space-y-6">
+                    {purchaseHistory.map((order, orderIndex) => (
+                      <div key={orderIndex} className="border rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
+                          <div>
+                            <h3 className="font-bold">Đơn hàng #{order.id}</h3>
+                            <p className="text-sm text-gray-600">Ngày đặt: {order.date}</p>
+                          </div>
+                          <div>
+                            <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
+                              {order.status}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
-                            {order.status}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-4">
-                        <div className="divide-y divide-gray-200">
-                          {order.items.map((item, itemIndex) => (
-                            <div key={itemIndex} className="py-3 flex flex-col md:flex-row md:justify-between md:items-center">
-                              <div className="mb-2 md:mb-0">
-                                <div className="font-medium">{item.name}</div>
-                                <div className="text-sm text-gray-600">{item.version}</div>
-                              </div>
-                              <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
-                                <div className="text-sm">
-                                  <span className="text-gray-600">Giá: </span>
-                                  <span className="font-semibold">{formatCurrency(item.price)}</span>
+                        <div className="p-4">
+                          <div className="divide-y divide-gray-200">
+                            {order.items.map((item, itemIndex) => (
+                              <div key={itemIndex} className="py-3 flex flex-col md:flex-row md:justify-between md:items-center">
+                                <div className="mb-2 md:mb-0">
+                                  <div className="font-medium">{item.name}</div>
+                                  <div className="text-sm text-gray-600">{item.version}</div>
                                 </div>
-                                <div className="text-sm">
-                                  <span className="text-gray-600">Hạn dùng: </span>
-                                  <span className="font-semibold">{item.expiryDate}</span>
+                                <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
+                                  <div className="text-sm">
+                                    <span className="text-gray-600">Giá: </span>
+                                    <span className="font-semibold">{formatCurrency(item.price)}</span>
+                                  </div>
+                                  <div className="text-sm">
+                                    <span className="text-gray-600">Hạn dùng: </span>
+                                    <span className="font-semibold">{item.expiryDate}</span>
+                                  </div>
                                 </div>
                               </div>
+                            ))}
+                          </div>
+                          <div className="mt-4 border-t pt-4 flex justify-between items-center">
+                            <div className="text-lg font-semibold">
+                              Tổng: {formatCurrency(order.total)}
                             </div>
-                          ))}
-                        </div>
-                        <div className="mt-4 border-t pt-4 flex justify-between items-center">
-                          <div className="text-lg font-semibold">
-                            Tổng: {formatCurrency(order.total)}
-                          </div>
-                          <div className="flex space-x-3">
-                            <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm">
-                              Chi tiết hóa đơn
-                            </button>
-                            <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
-                              Tải hóa đơn PDF
-                            </button>
+                            <div className="flex space-x-3">
+                              <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm">
+                                Chi tiết hóa đơn
+                              </button>
+                              <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
+                                Tải hóa đơn PDF
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có đơn hàng nào</h3>
+                    <p className="text-gray-600 mb-6 max-w-md mx-auto">Bạn chưa thực hiện giao dịch nào. Hãy khám phá sản phẩm của chúng tôi.</p>
+                    <Link href="/products" className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      Mua sắm ngay
+                    </Link>
+                  </div>
+                )}
               </div>
 
               {/* Phần Tải xuống */}
               <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Tải xuống</h2>
 
-                <div className="space-y-4">
-                  {purchaseHistory.flatMap(order => order.items).map((item, index) => (
-                    <div key={index} className="border rounded-lg p-4 hover:shadow-md transition flex flex-col md:flex-row md:justify-between md:items-center">
-                      <div className="mb-3 md:mb-0">
-                        <h3 className="font-bold">{item.name} - {item.version}</h3>
-                        <p className="text-sm text-gray-600">Phiên bản: 2.1.0 (Cập nhật: 01/07/2023)</p>
+                {hasProducts ? (
+                  <div className="space-y-4">
+                    {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                      <div key={index} className="border rounded-lg p-4 hover:shadow-md transition flex flex-col md:flex-row md:justify-between md:items-center">
+                        <div className="mb-3 md:mb-0">
+                          <h3 className="font-bold">{item.name} - {item.version}</h3>
+                          <p className="text-sm text-gray-600">Phiên bản: 2.1.0 (Cập nhật: 01/07/2023)</p>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            Xem lịch sử
+                          </button>
+                          <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Tải xuống
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                          Xem lịch sử
-                        </button>
-                        <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                          </svg>
-                          Tải xuống
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Không có tệp nào để tải xuống</h3>
+                    <p className="text-gray-600 mb-4 max-w-md mx-auto">Bạn cần mua sản phẩm trước khi có thể tải xuống phần mềm.</p>
+                  </div>
+                )}
               </div>
 
               {/* Phần Hỗ trợ kỹ thuật */}
