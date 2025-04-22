@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+import { useSession, signIn, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 // This would normally come from a database or API
@@ -67,7 +67,7 @@ const purchaseHistory = [
 
 export default function AccountPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
   const [imageError, setImageError] = useState(false);
   const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
@@ -81,12 +81,51 @@ export default function AccountPage() {
 
     // Khởi tạo profile từ session nếu có
     if (session?.user) {
-      setProfile(prev => ({
-        ...prev,
-        name: session.user.name || prev.name,
-        email: session.user.email || prev.email,
-        avatar: session.user.image || prev.avatar
-      }));
+      // Khởi tạo thông tin cơ bản từ session
+      const updatedProfile = {
+        ...userProfile,
+        name: session.user.name || userProfile.name,
+        email: session.user.email || userProfile.email,
+        avatar: session.user.image || userProfile.avatar,
+        // Sử dụng thông tin bổ sung từ session nếu có
+        phone: session.user.phone || userProfile.phone,
+        memberSince: session.user.memberSince || userProfile.memberSince,
+      };
+
+      // Kiểm tra xem có thông tin đã lưu trong localStorage không
+      try {
+        const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
+        if (savedProfile) {
+          const parsedProfile = JSON.parse(savedProfile);
+
+          // Nếu session có customName = true, ưu tiên sử dụng name từ session
+          if (session.user.customName) {
+            setProfile({
+              ...updatedProfile,
+              // Lấy một số thông tin từ localStorage nếu cần
+              phone: parsedProfile.phone || updatedProfile.phone,
+            });
+            console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
+          } else {
+            // Ngược lại, kết hợp thông tin từ localStorage và session
+            setProfile({
+              ...updatedProfile,
+              ...parsedProfile,
+              email: session.user.email || updatedProfile.email,
+              avatar: session.user.image || updatedProfile.avatar
+            });
+            console.log('Đã tải thông tin từ localStorage:', parsedProfile);
+          }
+        } else {
+          // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
+          setProfile(updatedProfile);
+          console.log('Đã tải thông tin từ session');
+        }
+      } catch (error) {
+        console.error('Lỗi khi đọc từ localStorage:', error);
+        // Fallback to session data
+        setProfile(updatedProfile);
+      }
     }
   }, [status, router, session]);
 
@@ -105,25 +144,40 @@ export default function AccountPage() {
     e.preventDefault();
     setSaving(true);
 
-    // Giả lập API call
-    setTimeout(() => {
-      // Cập nhật thông tin
-      // Trong thực tế, đây sẽ là một API call để lưu thông tin
+    try {
+      // Lưu thông tin vào localStorage
+      if (session?.user?.email) {
+        localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify({
+          name: profile.name,
+          phone: profile.phone,
+          memberSince: profile.memberSince,
+          // Không lưu email và avatar vì sẽ lấy từ session
+        }));
 
-      // Cập nhật thông tin trong session (giả lập)
-      if (session && session.user) {
-        // Trong thực tế, cần cập nhật session thông qua API
-        const updatedSession = {
-          ...session,
-          user: {
-            ...session.user,
-            name: profile.name
-          }
-        };
+        // Cập nhật thông tin trong session (trong môi trường thực tế sẽ gọi API)
+        /* Trong thực tế, bạn cần gọi API để cập nhật thông tin người dùng:
+        const response = await fetch('/api/user/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: session.user.email,
+            name: profile.name,
+            phone: profile.phone 
+          })
+        });
+        const data = await response.json();
+        */
 
-        // Hiển thị thông tin debug để kiểm tra
-        console.log('Thông tin ban đầu:', session.user);
-        console.log('Thông tin đã cập nhật:', updatedSession.user);
+        // Cập nhật session để khi refresh trang sẽ giữ nguyên thông tin
+        await updateSession({
+          name: profile.name,
+          phone: profile.phone
+        });
+
+        console.log('Đã lưu thông tin vào localStorage và cập nhật session:', {
+          name: profile.name,
+          phone: profile.phone
+        });
       }
 
       setSaving(false);
@@ -133,7 +187,11 @@ export default function AccountPage() {
       setTimeout(() => {
         setSaveSuccess(false);
       }, 3000);
-    }, 1000);
+    } catch (error) {
+      console.error('Lỗi khi lưu thông tin:', error);
+      setSaving(false);
+      // Xử lý thông báo lỗi ở đây nếu cần
+    }
   };
 
   // Format currency
