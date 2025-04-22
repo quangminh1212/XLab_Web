@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import useLocalStorage from '@/lib/hooks/useLocalStorage'
+import useMounted from '@/lib/hooks/useMounted'
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -93,12 +95,14 @@ export default function AccountPage() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
   const [imageError, setImageError] = useState(false);
-  const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [purchaseHistory, setPurchaseHistory] = useState(emptyPurchaseHistory);
   const [isLoading, setIsLoading] = useState(true);
+  const isMounted = useMounted();
+  const [profile, setProfile] = useState(userProfile);
 
+  // Khởi tạo profile và lấy thông tin từ session
   useEffect(() => {
     // Chuyển hướng người dùng nếu chưa đăng nhập
     if (status === 'unauthenticated') {
@@ -106,7 +110,7 @@ export default function AccountPage() {
     }
 
     // Khởi tạo profile từ session nếu có
-    if (session?.user) {
+    if (session?.user && isMounted) {
       // Khởi tạo thông tin cơ bản từ session
       const updatedProfile = {
         ...userProfile,
@@ -118,52 +122,54 @@ export default function AccountPage() {
         memberSince: session.user.memberSince || userProfile.memberSince,
       };
 
-      // Kiểm tra xem có thông tin đã lưu trong localStorage không
       try {
-        const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
-        if (savedProfile) {
-          const parsedProfile = JSON.parse(savedProfile);
+        // Lấy thông tin từ localStorage nếu có
+        if (session.user.email) {
+          const storageKey = `user_profile_${session.user.email}`;
+          const savedProfile = localStorage.getItem(storageKey);
+          
+          if (savedProfile) {
+            const parsedProfile = JSON.parse(savedProfile);
 
-          // Nếu session có customName = true, ưu tiên sử dụng name từ session
-          if (session.user.customName) {
-            setProfile({
-              ...updatedProfile,
-              // Lấy một số thông tin từ localStorage nếu cần
-              phone: parsedProfile.phone || updatedProfile.phone,
-            });
-            console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
+            // Nếu session có customName = true, ưu tiên sử dụng name từ session
+            if (session.user.customName) {
+              setProfile({
+                ...updatedProfile,
+                // Lấy một số thông tin từ localStorage nếu cần
+                phone: parsedProfile.phone || updatedProfile.phone,
+              });
+              console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
+            } else {
+              // Ngược lại, kết hợp thông tin từ localStorage và session
+              setProfile({
+                ...updatedProfile,
+                ...parsedProfile,
+                email: session.user.email || updatedProfile.email,
+                avatar: session.user.image || updatedProfile.avatar
+              });
+              console.log('Đã tải thông tin từ localStorage:', parsedProfile);
+            }
           } else {
-            // Ngược lại, kết hợp thông tin từ localStorage và session
-            setProfile({
-              ...updatedProfile,
-              ...parsedProfile,
-              email: session.user.email || updatedProfile.email,
-              avatar: session.user.image || updatedProfile.avatar
-            });
-            console.log('Đã tải thông tin từ localStorage:', parsedProfile);
+            // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
+            setProfile(updatedProfile);
+            console.log('Đã tải thông tin từ session');
           }
         } else {
-          // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
+          // Fallback nếu không có email
           setProfile(updatedProfile);
-          console.log('Đã tải thông tin từ session');
         }
-
-        // Mô phỏng việc tải dữ liệu từ API
-        setTimeout(() => {
-          // Trong thực tế, đây sẽ là một API call để lấy lịch sử mua hàng
-          // Hiện tại chúng ta gán mảng rỗng để hiển thị trạng thái "chưa có sản phẩm"
-          setPurchaseHistory(emptyPurchaseHistory);
-          setIsLoading(false);
-        }, 1000);
-
       } catch (error) {
         console.error('Lỗi khi đọc từ localStorage:', error);
-        // Fallback to session data
         setProfile(updatedProfile);
-        setIsLoading(false);
       }
+
+      // Mô phỏng việc tải dữ liệu từ API
+      setTimeout(() => {
+        setPurchaseHistory(emptyPurchaseHistory);
+        setIsLoading(false);
+      }, 1000);
     }
-  }, [status, router, session]);
+  }, [status, router, session, isMounted]);
 
   // Hàm xử lý khi thay đổi thông tin
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,28 +187,16 @@ export default function AccountPage() {
     setSaving(true);
 
     try {
-      // Lưu thông tin vào localStorage
-      if (session?.user?.email) {
-        localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify({
+      // Lưu thông tin vào localStorage - chỉ thực hiện khi đã mount
+      if (isMounted && session?.user?.email) {
+        const storageKey = `user_profile_${session.user.email}`;
+        const profileData = {
           name: profile.name,
           phone: profile.phone,
           memberSince: profile.memberSince,
-          // Không lưu email và avatar vì sẽ lấy từ session
-        }));
-
-        // Cập nhật thông tin trong session (trong môi trường thực tế sẽ gọi API)
-        /* Trong thực tế, bạn cần gọi API để cập nhật thông tin người dùng:
-        const response = await fetch('/api/user/update', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            email: session.user.email,
-            name: profile.name,
-            phone: profile.phone 
-          })
-        });
-        const data = await response.json();
-        */
+        };
+        
+        localStorage.setItem(storageKey, JSON.stringify(profileData));
 
         // Cập nhật session để khi refresh trang sẽ giữ nguyên thông tin
         await updateSession({
@@ -210,10 +204,7 @@ export default function AccountPage() {
           phone: profile.phone
         });
 
-        console.log('Đã lưu thông tin vào localStorage và cập nhật session:', {
-          name: profile.name,
-          phone: profile.phone
-        });
+        console.log('Đã lưu thông tin vào localStorage và cập nhật session:', profileData);
       }
 
       setSaving(false);
@@ -226,7 +217,6 @@ export default function AccountPage() {
     } catch (error) {
       console.error('Lỗi khi lưu thông tin:', error);
       setSaving(false);
-      // Xử lý thông báo lỗi ở đây nếu cần
     }
   };
 
@@ -307,27 +297,27 @@ export default function AccountPage() {
                   </>
                 )}
               </div>
-            </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
-              <p className="text-3xl font-bold text-gray-800">{formatCurrency(totalSpent)}</p>
-              <div className="mt-2 flex items-center text-sm text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-                <span>Qua {purchaseHistory.length} đơn hàng</span>
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
+                <p className="text-3xl font-bold text-gray-800">{formatCurrency(totalSpent)}</p>
+                <div className="mt-2 flex items-center text-sm text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Qua {purchaseHistory.length} đơn hàng</span>
+                </div>
               </div>
-            </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
-              <p className="text-3xl font-bold text-green-600">{formatCurrency(totalSaved)}</p>
-              <div className="mt-2 flex items-center text-sm text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12a1 1 0 11-2 0 1 1 0 012 0zm-1-3a1 1 0 00-1 1v.5a.5.5 0 001 0V12zm0-5a.5.5 0 00-.5.5v3a.5.5 0 001 0v-3A.5.5 0 0010 6z" clipRule="evenodd" />
-                </svg>
-                <span>So với giá gốc</span>
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
+                <p className="text-3xl font-bold text-green-600">{formatCurrency(totalSaved)}</p>
+                <div className="mt-2 flex items-center text-sm text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12a1 1 0 11-2 0 1 1 0 012 0zm-1-3a1 1 0 00-1 1v.5a.5.5 0 001 0V12zm0-5a.5.5 0 00-.5.5v3a.5.5 0 001 0v-3A.5.5 0 0010 6z" clipRule="evenodd" />
+                  </svg>
+                  <span>So với giá gốc</span>
+                </div>
               </div>
             </div>
           </div>
