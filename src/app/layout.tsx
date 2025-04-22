@@ -12,6 +12,7 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -55,20 +56,14 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   icons: {
     icon: [
-      { url: '/images/logo.jpg' },
-      { url: '/images/logo.jpg', sizes: '16x16', type: 'image/jpeg' },
-      { url: '/images/logo.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/images/favicon.ico' },
+      { url: '/images/favicon.ico', sizes: '16x16', type: 'image/x-icon' },
+      { url: '/images/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
     ],
     apple: [
-      { url: '/images/logo.jpg', sizes: '180x180', type: 'image/jpeg' },
+      { url: '/images/favicon.ico', sizes: '180x180', type: 'image/x-icon' },
     ],
-    other: [
-      { rel: 'mask-icon', url: '/images/logo.jpg', color: '#0070f3' },
-    ],
-  },
-  other: {
-    'msapplication-TileColor': '#0070f3',
-    'theme-color': '#ffffff',
+    other: [],
   },
 }
 
@@ -87,10 +82,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
         <noscript>
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 text-white p-4">

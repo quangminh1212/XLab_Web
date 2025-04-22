@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,6 +15,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [googleAuthUrl, setGoogleAuthUrl] = useState('');
+
+  // Set Google Auth URL on client-side only
+  useEffect(() => {
+    setGoogleAuthUrl(`/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+  }, [callbackUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,20 +50,6 @@ export default function LoginPage() {
     } catch (err) {
       console.error('Lỗi đăng nhập:', err);
       setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = () => {
-    try {
-      setLoading(true);
-      setError('');
-      
-      // Sử dụng cách trực tiếp để chuyển hướng
-      window.location.href = `/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-    } catch (err) {
-      console.error('Lỗi đăng nhập với Google:', err);
-      setError('Có lỗi xảy ra khi đăng nhập với Google.');
       setLoading(false);
     }
   };
@@ -92,7 +84,7 @@ export default function LoginPage() {
           )}
 
           <Link 
-            href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={googleAuthUrl}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
