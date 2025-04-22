@@ -279,6 +279,18 @@ export default function AccountPage() {
                           <span className="text-gray-600">Tiết kiệm</span>
                           <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
                         </div>
+                        {/* Tìm order chứa item hiện tại */}
+                        {purchaseHistory.map(order => {
+                          if (order.items.some(orderItem => orderItem.id === item.id)) {
+                            return (
+                              <div key={`purchase-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
+                                <span className="text-gray-600">Ngày mua</span>
+                                <span className="font-semibold">{order.date}</span>
+                              </div>
+                            );
+                          }
+                          return null;
+                        })}
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-gray-600">Hạn giấy phép</span>
                           <span className="font-semibold">{item.expiryDate}</span>
