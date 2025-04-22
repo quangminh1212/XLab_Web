@@ -97,9 +97,13 @@ export default function RegisterPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <Link href="/" className="inline-flex items-center justify-center">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-2xl">
-              X
-            </div>
+            <Image
+              src="/topup.png"
+              alt="XLab Logo"
+              width={48}
+              height={48}
+              className="rounded-full"
+            />
           </Link>
           <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
             Tạo tài khoản mới
