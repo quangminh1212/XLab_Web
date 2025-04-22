@@ -180,3 +180,9 @@ run.bat -c
 
 3. Lỗi EPERM khi xóa hoặc cài đặt:
    - Chạy lại với quyền admin hoặc đóng tất cả ứng dụng đang sử dụng tệp 
+
+4. Lỗi khi đăng nhập với Google:
+   - Chắc chắn rằng bạn đã thiết lập đúng các biến môi trường trong file `.env.local`
+   - Kiểm tra lại GOOGLE_CLIENT_ID và GOOGLE_CLIENT_SECRET
+   - Đảm bảo rằng các URL redirect đã được thêm chính xác vào cấu hình OAuth trong Google Cloud Console
+   - Đảm bảo API Google People và Google+ API được bật cho project của bạn 
