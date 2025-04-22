@@ -259,6 +259,69 @@ export default function AccountPage() {
 
             {/* Main Content */}
             <div className="lg:w-3/4">
+              {/* Phần Hồ sơ cá nhân */}
+              <div id="profile" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Hồ sơ cá nhân</h2>
+
+                <div className="space-y-6">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-gray-800 mb-3">Thông tin cá nhân</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Họ tên</label>
+                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          value={session?.user?.name || userProfile.name} disabled />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          value={session?.user?.email || userProfile.email} disabled />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Ngày tham gia</label>
+                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          value={userProfile.memberSince} disabled />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          placeholder="Chưa cập nhật" />
+                      </div>
+                    </div>
+
+                    <div className="mt-4 text-right">
+                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                        Cập nhật thông tin
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-gray-800 mb-3">Đổi mật khẩu</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu hiện tại</label>
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu mới</label>
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu mới</label>
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                      </div>
+                    </div>
+
+                    <div className="mt-4 text-right">
+                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                        Đổi mật khẩu
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Phần Sản phẩm đã mua */}
               <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Sản phẩm đã mua</h2>
@@ -309,7 +372,351 @@ export default function AccountPage() {
                 </div>
               </div>
 
-              {/* Thêm các phần khác từ trang account cũ */}
+              {/* Phần Quản lý giấy phép */}
+              <div id="licenses" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Quản lý giấy phép</h2>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sản phẩm</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã giấy phép</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày kích hoạt</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hạn sử dụng</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div>
+                                <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                                <div className="text-sm text-gray-500">{item.version}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900 font-mono">{item.licenseKey}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {purchaseHistory.map(order => {
+                              if (order.items.some(orderItem => orderItem.id === item.id)) {
+                                return (
+                                  <div key={`license-date-${order.id}-${item.id}`} className="text-sm text-gray-900">
+                                    {order.date}
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{item.expiryDate}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              Đang hoạt động
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div className="flex space-x-2">
+                              <button className="text-primary-600 hover:text-primary-900">Sao chép</button>
+                              <button className="text-blue-600 hover:text-blue-900">Gia hạn</button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Phần Lịch sử mua hàng */}
+              <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Lịch sử mua hàng</h2>
+
+                <div className="space-y-6">
+                  {purchaseHistory.map((order, orderIndex) => (
+                    <div key={orderIndex} className="border rounded-lg overflow-hidden">
+                      <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
+                        <div>
+                          <h3 className="font-bold">Đơn hàng #{order.id}</h3>
+                          <p className="text-sm text-gray-600">Ngày đặt: {order.date}</p>
+                        </div>
+                        <div>
+                          <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
+                            {order.status}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="divide-y divide-gray-200">
+                          {order.items.map((item, itemIndex) => (
+                            <div key={itemIndex} className="py-3 flex flex-col md:flex-row md:justify-between md:items-center">
+                              <div className="mb-2 md:mb-0">
+                                <div className="font-medium">{item.name}</div>
+                                <div className="text-sm text-gray-600">{item.version}</div>
+                              </div>
+                              <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
+                                <div className="text-sm">
+                                  <span className="text-gray-600">Giá: </span>
+                                  <span className="font-semibold">{formatCurrency(item.price)}</span>
+                                </div>
+                                <div className="text-sm">
+                                  <span className="text-gray-600">Hạn dùng: </span>
+                                  <span className="font-semibold">{item.expiryDate}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-4 border-t pt-4 flex justify-between items-center">
+                          <div className="text-lg font-semibold">
+                            Tổng: {formatCurrency(order.total)}
+                          </div>
+                          <div className="flex space-x-3">
+                            <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm">
+                              Chi tiết hóa đơn
+                            </button>
+                            <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
+                              Tải hóa đơn PDF
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Phần Tải xuống */}
+              <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Tải xuống</h2>
+
+                <div className="space-y-4">
+                  {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                    <div key={index} className="border rounded-lg p-4 hover:shadow-md transition flex flex-col md:flex-row md:justify-between md:items-center">
+                      <div className="mb-3 md:mb-0">
+                        <h3 className="font-bold">{item.name} - {item.version}</h3>
+                        <p className="text-sm text-gray-600">Phiên bản: 2.1.0 (Cập nhật: 01/07/2023)</p>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          Xem lịch sử
+                        </button>
+                        <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                          </svg>
+                          Tải xuống
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Phần Hỗ trợ kỹ thuật */}
+              <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Hỗ trợ kỹ thuật</h2>
+
+                <div className="space-y-6">
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="font-semibold text-lg mb-2">Yêu cầu hỗ trợ mới</h3>
+                    <p className="text-gray-600 mb-4">Gửi yêu cầu hỗ trợ kỹ thuật cho sản phẩm bạn đã mua</p>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Sản phẩm</label>
+                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500">
+                          <option value="">Chọn sản phẩm cần hỗ trợ</option>
+                          {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                            <option key={index} value={item.id}>{item.name} - {item.version}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề</label>
+                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          placeholder="Nhập tiêu đề vấn đề" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả vấn đề</label>
+                        <textarea className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
+                          placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"></textarea>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Mức độ ưu tiên</label>
+                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500">
+                          <option>Thấp</option>
+                          <option>Trung bình</option>
+                          <option>Cao</option>
+                          <option>Khẩn cấp</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Đính kèm tệp (nếu có)</label>
+                        <input type="file" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                      </div>
+                    </div>
+
+                    <div className="mt-4 text-right">
+                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                        Gửi yêu cầu hỗ trợ
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3">Lịch sử yêu cầu hỗ trợ</h3>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã yêu cầu</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sản phẩm</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          <tr>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#SUP-12345</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sự cố kích hoạt giấy phép</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XLab Business Suite</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">20/04/2023</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Đang xử lý
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <button className="text-primary-600 hover:text-primary-900">Xem chi tiết</button>
+                            </td>
+                          </tr>
+                          <tr className="bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#SUP-12346</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Hướng dẫn cấu hình</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">XLab Security Pro</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25/04/2023</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Đã giải quyết
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <button className="text-primary-600 hover:text-primary-900">Xem chi tiết</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Phần Cài đặt tài khoản */}
+              <div id="settings" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Cài đặt tài khoản</h2>
+
+                <div className="space-y-6">
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="font-semibold text-lg mb-3">Thông báo</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo qua email</span>
+                        <label className="inline-flex items-center">
+                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo cập nhật sản phẩm</span>
+                        <label className="inline-flex items-center">
+                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo khuyến mãi và ưu đãi</span>
+                        <label className="inline-flex items-center">
+                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo hết hạn giấy phép</span>
+                        <label className="inline-flex items-center">
+                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="font-semibold text-lg mb-3">Bảo mật</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-gray-700 block">Xác thực hai yếu tố</span>
+                          <span className="text-xs text-gray-500">Bảo vệ tài khoản bằng xác thực hai yếu tố</span>
+                        </div>
+                        <button className="px-3 py-1 bg-primary-600 text-white rounded-md text-sm hover:bg-primary-700 transition">Thiết lập</button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-gray-700 block">Phiên đăng nhập</span>
+                          <span className="text-xs text-gray-500">Quản lý phiên đăng nhập trên các thiết bị</span>
+                        </div>
+                        <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded-md text-sm hover:bg-gray-300 transition">Xem chi tiết</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="font-semibold text-lg mb-3">Tùy chọn thanh toán</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Phương thức thanh toán mặc định</label>
+                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500">
+                          <option>Thẻ tín dụng/Ghi nợ</option>
+                          <option>Chuyển khoản ngân hàng</option>
+                          <option>Ví điện tử</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Thông tin xuất hóa đơn</label>
+                        <textarea className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[80px]"
+                          placeholder="Nhập thông tin xuất hóa đơn (tên công ty, địa chỉ, mã số thuế)"></textarea>
+                      </div>
+                    </div>
+                    <div className="mt-4 text-right">
+                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                        Lưu thay đổi
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="bg-red-50 p-4 rounded-md border border-red-200">
+                    <h3 className="font-semibold text-lg mb-3 text-red-800">Quản lý tài khoản</h3>
+                    <p className="text-sm text-red-600 mb-4">Các thao tác sau đây có thể ảnh hưởng đến tài khoản của bạn. Vui lòng cân nhắc kỹ trước khi thực hiện:</p>
+                    <div className="flex space-x-4">
+                      <button className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition text-sm">
+                        Tạm khóa tài khoản
+                      </button>
+                      <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm">
+                        Xóa tài khoản
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
