@@ -1,7 +1,10 @@
 import NextAuth from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import prisma from "@/lib/prisma";
+import { compare } from "bcrypt";
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -15,185 +18,128 @@ declare module "next-auth" {
   }
 }
 
-const handler = NextAuth({
+// Xác định URL xác thực Google với tham số chính xác
+const GOOGLE_AUTHORIZATION_URL =
+  "https://accounts.google.com/o/oauth2/v2/auth?" +
+  new URLSearchParams({
+    prompt: "consent",
+    access_type: "offline",
+    response_type: "code"
+  });
+
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  pages: {
+    signIn: '/login',
+    signOut: '/',
+    error: '/auth/error',
+    verifyRequest: '/auth/verify-request',
+    newUser: '/register'
+  },
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "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",
-      authorization: {
-        params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code"
-        }
-      }
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      authorization: GOOGLE_AUTHORIZATION_URL,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "jsmith@example.com" },
-        password: { label: "Password", type: "password" },
-        remember: { label: "Remember Me", type: "checkbox" }
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
+        if (!credentials?.email || !credentials.password) {
+          throw new Error('Missing credentials');
         }
-        
-        try {
-          // This is just a mock implementation
-          // In a real app, you would validate against your database
-          if (credentials.email === "test@example.com" && credentials.password === "password") {
-            return {
-              id: "1",
-              name: "Test User",
-              email: credentials.email,
-              image: null
-            };
-          }
-          
-          // Thêm một tài khoản test thứ hai để dễ dàng kiểm thử
-          if (credentials.email === "admin@xlab.com" && credentials.password === "123456") {
-            return {
-              id: "2",
-              name: "Admin XLab",
-              email: credentials.email,
-              image: null
-            };
-          }
-          
-          return null;
-        } catch (error) {
-          console.error("Authentication error:", error);
-          return null;
+
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+
+        if (!user || !user.password) {
+          throw new Error('No user found with this email');
         }
-      }
-    })
+
+        const isPasswordValid = await compare(credentials.password, user.password);
+
+        if (!isPasswordValid) {
+          throw new Error('Invalid password');
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+        };
+      },
+    }),
   ],
-  pages: {
-    signIn: "/login",
-    error: "/auth/error",
-  },
-  cookies: {
-    // Cấu hình cookie để đảm bảo cookies state được lưu trữ đúng cách
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-    callbackUrl: {
-      name: `next-auth.callback-url`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-    csrfToken: {
-      name: `next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
-    },
-    pkceCodeVerifier: {
-      name: `next-auth.pkce.code_verifier`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production", 
-        maxAge: 60 * 15, // 15 minutes in seconds
-      },
-    },
-    state: {
-      name: `next-auth.state`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 15, // 15 minutes in seconds
-      },
-    },
-  },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      try {
+        // Log thông tin để debug
+        console.log('User signing in:', user);
+        console.log('Account:', account);
+        console.log('Profile:', profile);
+        
+        return true;
+      } catch (error) {
+        console.error('Error during sign in callback:', error);
+        return false;
+      }
+    },
+    async redirect({ url, baseUrl }) {
+      // Đảm bảo URL hợp lệ
+      try {
+        // Nếu URL là đường dẫn tương đối hoặc thuộc về baseUrl, trả về URL
+        if (url.startsWith('/') || url.startsWith(baseUrl)) {
+          return url;
+        }
+        // Nếu không, trả về baseUrl
+        return baseUrl;
+      } catch (error) {
+        console.error('Error in redirect callback:', error);
+        return baseUrl;
+      }
+    },
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id;
+      }
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
-    async jwt({ token, user, account, trigger, session }) {
-      // Initial sign in
-      if (user && account) {
-        token.id = user.id;
-        token.provider = account.provider;
-      }
-      
-      // Xử lý cập nhật token khi có thay đổi
-      if (trigger === 'update' && session) {
-        // Giữ nguyên ID và provider nhưng cập nhật các thông tin khác nếu cần
-        Object.assign(token, session);
-      }
-      
-      return token;
+  },
+  events: {
+    async signIn(message) {
+      console.log('User signed in:', message);
     },
-    async signIn({ account, profile, user, credentials }) {
-      try {
-        // Log thông tin xác thực để debug
-        console.log("Authentication attempt:", { 
-          provider: account?.provider,
-          email: profile?.email || credentials?.email,
-          name: profile?.name,
-          userExists: !!user,
-          remember: !!credentials?.remember
-        });
+    async signOut(message) {
+      console.log('User signed out:', message);
+    },
+    async error(message) {
+      console.error('NextAuth error:', message);
+    },
+  },
+  debug: process.env.NODE_ENV === 'development',
+};
 
-        if (account?.provider === "google" && profile?.email) {
-          // Add any additional validation logic here if needed
-          console.log("Google authentication successful for:", profile.email);
-          return true;
-        }
-        if (account?.provider === "credentials") {
-          console.log("Credentials authentication successful for:", credentials?.email);
-          return true;
-        }
-        console.log("Authentication failed for provider:", account?.provider);
-        return false;
-      } catch (error) {
-        console.error("Error during sign in:", error);
-        return false;
-      }
-    },
-  },
-  debug: process.env.NODE_ENV === 'development', // Chỉ bật debug ở môi trường development
-  logger: {
-    error(code, metadata) {
-      console.error("NextAuth ERROR:", { code, metadata });
-    },
-    warn(code) {
-      console.warn("NextAuth WARNING:", code);
-    },
-    debug(code, metadata) {
-      console.log("NextAuth DEBUG:", { code, metadata });
-    }
-  },
-  secret: process.env.NEXTAUTH_SECRET || "secret-key-at-least-32-characters-long123",
-  session: {
-    strategy: "jwt",
-    // Chức năng ghi nhớ đăng nhập
-    maxAge: 30 * 24 * 60 * 60, // 30 ngày mặc định
-  },
-  // Cài đặt thêm cho NextAuth
-  useSecureCookies: process.env.NODE_ENV === "production",
-});
-
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST }; 

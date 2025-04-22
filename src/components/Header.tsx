@@ -15,6 +15,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
   const router = useRouter()
+  const [sessionChecked, setSessionChecked] = useState(false)
 
   // Thêm useEffect để force refresh session khi component mount
   useEffect(() => {
@@ -24,10 +25,20 @@ export default function Header() {
         console.log("Session refreshed:", status);
       } catch (error) {
         console.error("Failed to refresh session:", error);
+      } finally {
+        // Bất kể kết quả thế nào, đánh dấu là đã kiểm tra session
+        setSessionChecked(true);
       }
     };
     
     refreshSession();
+    
+    // Thêm timeout để đảm bảo không hiển thị loading quá lâu
+    const timeout = setTimeout(() => {
+      setSessionChecked(true);
+    }, 3000); // Sau 3 giây sẽ tự động đánh dấu đã kiểm tra
+    
+    return () => clearTimeout(timeout);
   }, [update]);
 
   useEffect(() => {
@@ -83,18 +94,19 @@ export default function Header() {
     }
   }
 
-  const isLoading = status === 'loading'
+  const isLoading = status === 'loading' && !sessionChecked
   const isAuthenticated = status === 'authenticated' && !!session
 
   // Debugging session state
   useEffect(() => {
     console.log("Auth state:", {
       status,
+      sessionChecked,
       isAuthenticated: status === 'authenticated' && !!session,
       sessionExists: !!session,
       user: session?.user
     });
-  }, [status, session]);
+  }, [status, session, sessionChecked]);
 
   return (
     <header
