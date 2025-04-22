@@ -13,6 +13,7 @@ const userProfile = {
   avatar: '/images/avatar-placeholder.svg',
   memberSince: '01/01/2023',
   licenseCount: 3,
+  phone: '',
 }
 
 const purchaseHistory = [
@@ -68,13 +69,72 @@ export default function AccountPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [imageError, setImageError] = useState(false);
+  const [profile, setProfile] = useState(userProfile);
+  const [isSaving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     // Chuyển hướng người dùng nếu chưa đăng nhập
     if (status === 'unauthenticated') {
       router.push('/login?callbackUrl=/account');
     }
-  }, [status, router]);
+
+    // Khởi tạo profile từ session nếu có
+    if (session?.user) {
+      setProfile(prev => ({
+        ...prev,
+        name: session.user.name || prev.name,
+        email: session.user.email || prev.email,
+        avatar: session.user.image || prev.avatar
+      }));
+    }
+  }, [status, router, session]);
+
+  // Hàm xử lý khi thay đổi thông tin
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProfile(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setSaveSuccess(false);
+  };
+
+  // Hàm xử lý khi submit form cập nhật thông tin
+  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSaving(true);
+
+    // Giả lập API call
+    setTimeout(() => {
+      // Cập nhật thông tin
+      // Trong thực tế, đây sẽ là một API call để lưu thông tin
+
+      // Cập nhật thông tin trong session (giả lập)
+      if (session && session.user) {
+        // Trong thực tế, cần cập nhật session thông qua API
+        const updatedSession = {
+          ...session,
+          user: {
+            ...session.user,
+            name: profile.name
+          }
+        };
+
+        // Hiển thị thông tin debug để kiểm tra
+        console.log('Thông tin ban đầu:', session.user);
+        console.log('Thông tin đã cập nhật:', updatedSession.user);
+      }
+
+      setSaving(false);
+      setSaveSuccess(true);
+
+      // Tự động ẩn thông báo thành công sau 3 giây
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 3000);
+    }, 1000);
+  };
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -173,8 +233,8 @@ export default function AccountPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src={imageError ? '/images/avatar-placeholder.svg' : (session?.user?.image || userProfile.avatar)}
-                      alt={session?.user?.name || userProfile.name}
+                      src={imageError ? '/images/avatar-placeholder.svg' : (session?.user?.image || profile.avatar)}
+                      alt={profile.name}
                       fill
                       className="rounded-full"
                       style={{ objectFit: 'cover' }}
@@ -186,9 +246,9 @@ export default function AccountPage() {
                       </svg>
                     </div>
                   </div>
-                  <h2 className="text-xl font-bold">{session?.user?.name || userProfile.name}</h2>
-                  <p className="text-gray-600">{session?.user?.email || userProfile.email}</p>
-                  <p className="text-sm text-gray-500 mt-1">Thành viên từ {userProfile.memberSince}</p>
+                  <h2 className="text-xl font-bold">{profile.name}</h2>
+                  <p className="text-gray-600">{profile.email}</p>
+                  <p className="text-sm text-gray-500 mt-1">Thành viên từ {profile.memberSince}</p>
                 </div>
 
                 <nav className="space-y-1">
@@ -243,7 +303,7 @@ export default function AccountPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Giấy phép đang hoạt động</span>
-                    <span className="font-bold">{userProfile.licenseCount}</span>
+                    <span className="font-bold">{profile.licenseCount}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Đơn hàng đã mua</span>
@@ -266,34 +326,65 @@ export default function AccountPage() {
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="font-semibold text-gray-800 mb-3">Thông tin cá nhân</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Họ tên</label>
-                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          value={session?.user?.name || userProfile.name} disabled />
+                    <form onSubmit={handleUpdateProfile}>
+                      {saveSuccess && (
+                        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-md">
+                          Thông tin đã được cập nhật thành công!
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Họ tên</label>
+                          <input
+                            type="text"
+                            name="name"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            value={profile.name}
+                            onChange={handleProfileChange}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                          <input
+                            type="email"
+                            name="email"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
+                            value={profile.email}
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Ngày tham gia</label>
+                          <input
+                            type="text"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
+                            value={profile.memberSince}
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                          <input
+                            type="text"
+                            name="phone"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            placeholder="Chưa cập nhật"
+                            value={profile.phone}
+                            onChange={handleProfileChange}
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          value={session?.user?.email || userProfile.email} disabled />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Ngày tham gia</label>
-                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          value={userProfile.memberSince} disabled />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
-                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          placeholder="Chưa cập nhật" />
-                      </div>
-                    </div>
 
-                    <div className="mt-4 text-right">
-                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
-                        Cập nhật thông tin
-                      </button>
-                    </div>
+                      <div className="mt-4 text-right">
+                        <button
+                          type="submit"
+                          disabled={isSaving}
+                          className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        >
+                          {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
+                        </button>
+                      </div>
+                    </form>
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg">
