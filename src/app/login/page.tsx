@@ -110,7 +110,10 @@ export default function LoginPage() {
       setGoogleLoading(true);
       setError('');
       
-      await signIn('google', { callbackUrl });
+      await signIn('google', { 
+        callbackUrl,
+        redirect: true
+      });
       
       // Lưu ý: Không cần xử lý chuyển hướng ở đây vì signIn với redirect: true sẽ tự động chuyển hướng
     } catch (err) {
@@ -129,6 +132,9 @@ export default function LoginPage() {
       </div>
     );
   }
+
+  // Thêm một URL dự phòng để sử dụng trong trường hợp signIn không hoạt động
+  const googleOAuthURL = "https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcallback%2Fgoogle&response_type=code&scope=openid%20email%20profile&prompt=select_account&access_type=offline";
 
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
@@ -193,6 +199,12 @@ export default function LoginPage() {
                 </>
               )}
             </button>
+            
+            {/* Thêm liên kết dự phòng nếu nút không hoạt động */}
+            <div className="text-xs text-center mt-1 text-gray-500">
+              <span>Nếu nút không hoạt động, </span>
+              <a href={googleOAuthURL} className="text-teal-600 hover:underline">nhấp vào đây</a>
+            </div>
           </div>
 
           <div className="relative mt-4 mb-6">
