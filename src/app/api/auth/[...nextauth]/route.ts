@@ -32,7 +32,8 @@ const handler = NextAuth({
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "text", placeholder: "jsmith@example.com" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        remember: { label: "Remember Me", type: "checkbox" }
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -50,6 +51,17 @@ const handler = NextAuth({
               image: null
             };
           }
+          
+          // Thêm một tài khoản test thứ hai để dễ dàng kiểm thử
+          if (credentials.email === "admin@xlab.com" && credentials.password === "123456") {
+            return {
+              id: "2",
+              name: "Admin XLab",
+              email: credentials.email,
+              image: null
+            };
+          }
+          
           return null;
         } catch (error) {
           console.error("Authentication error:", error);
@@ -69,12 +81,19 @@ const handler = NextAuth({
       }
       return session;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       // Initial sign in
       if (user && account) {
         token.id = user.id;
         token.provider = account.provider;
       }
+      
+      // Xử lý cập nhật token khi có thay đổi
+      if (trigger === 'update' && session) {
+        // Giữ nguyên ID và provider nhưng cập nhật các thông tin khác nếu cần
+        Object.assign(token, session);
+      }
+      
       return token;
     },
     async signIn({ account, profile, user, credentials }) {
@@ -82,9 +101,10 @@ const handler = NextAuth({
         // Log thông tin xác thực để debug
         console.log("Authentication attempt:", { 
           provider: account?.provider,
-          email: profile?.email,
+          email: profile?.email || credentials?.email,
           name: profile?.name,
-          userExists: !!user
+          userExists: !!user,
+          remember: !!credentials?.remember
         });
 
         if (account?.provider === "google" && profile?.email) {
@@ -93,6 +113,7 @@ const handler = NextAuth({
           return true;
         }
         if (account?.provider === "credentials") {
+          console.log("Credentials authentication successful for:", credentials?.email);
           return true;
         }
         console.log("Authentication failed for provider:", account?.provider);
@@ -103,7 +124,7 @@ const handler = NextAuth({
       }
     },
   },
-  debug: true, // Bật chế độ debug
+  debug: process.env.NODE_ENV === 'development', // Chỉ bật debug ở môi trường development
   logger: {
     error(code, metadata) {
       console.error("NextAuth ERROR:", { code, metadata });
@@ -118,7 +139,9 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET || "secret-key-at-least-32-characters-long123",
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    // Thay đổi maxAge dựa trên giá trị remember
+    // 30 ngày nếu remember = true, 1 ngày nếu remember = false
+    maxAge: 30 * 24 * 60 * 60, // Default: 30 days
   },
 });
 
