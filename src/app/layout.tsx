@@ -55,15 +55,15 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   icons: {
     icon: [
-      { url: '/images/topup.png' },
-      { url: '/images/topup.png', sizes: '16x16', type: 'image/png' },
-      { url: '/images/topup.png', sizes: '32x32', type: 'image/png' },
+      { url: '/images/logo.jpg' },
+      { url: '/images/logo.jpg', sizes: '16x16', type: 'image/jpeg' },
+      { url: '/images/logo.jpg', sizes: '32x32', type: 'image/jpeg' },
     ],
     apple: [
-      { url: '/images/topup.png', sizes: '180x180', type: 'image/png' },
+      { url: '/images/logo.jpg', sizes: '180x180', type: 'image/jpeg' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/images/topup.png', color: '#0070f3' },
+      { rel: 'mask-icon', url: '/images/logo.jpg', color: '#0070f3' },
     ],
   },
   other: {

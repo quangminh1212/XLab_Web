@@ -65,13 +65,9 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <Link href="/" className="inline-flex items-center justify-center">
-            <Image
-              src="/images/logo.jpg"
-              alt="XLab Logo"
-              width={80}
-              height={80}
-              priority
-            />
+            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 flex items-center justify-center text-white font-bold text-2xl">
+              X
+            </div>
           </Link>
           <h2 className="mt-4 text-3xl font-extrabold text-gray-900">
             Chào mừng trở lại!

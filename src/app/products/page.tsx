@@ -14,24 +14,24 @@ export default function ProductsPage() {
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
   const [searchTerm, setSearchTerm] = useState<string>('');
-
+  
   // Update title when component is rendered
   useEffect(() => {
     document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ'
   }, []);
-
+  
   // Lọc sản phẩm theo loại: chỉ lấy phần mềm
-  const softwareProducts = products.filter(product =>
+  const softwareProducts = products.filter(product => 
     !product.isAccount && (product.type === 'software' || !product.type)
   );
-
+  
   // Lọc theo danh mục và tìm kiếm
   const filteredProducts = softwareProducts.filter(product => {
     // Lọc theo danh mục
     if (filter !== 'all' && product.categoryId !== filter) {
       return false;
     }
-
+    
     // Lọc theo tìm kiếm
     if (searchTerm.trim() !== '') {
       const search = searchTerm.toLowerCase();
@@ -40,10 +40,10 @@ export default function ProductsPage() {
         product.description.toLowerCase().includes(search)
       );
     }
-
+    
     return true;
   });
-
+  
   // Sắp xếp sản phẩm
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sort === 'newest') {
@@ -59,13 +59,13 @@ export default function ProductsPage() {
     }
     return 0;
   });
-
+  
   // Lọc các loại sản phẩm đặc biệt cho phần mềm
   const featuredProducts = softwareProducts.filter(product => product.isFeatured);
-  const newProducts = softwareProducts.slice().sort((a, b) =>
+  const newProducts = softwareProducts.slice().sort((a, b) => 
     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   ).slice(0, 6);
-  const popularProducts = softwareProducts.slice().sort((a, b) =>
+  const popularProducts = softwareProducts.slice().sort((a, b) => 
     (b.downloadCount || 0) - (a.downloadCount || 0)
   ).slice(0, 6);
 
@@ -102,7 +102,7 @@ export default function ProductsPage() {
               </svg>
               Thử lại
             </button>
-            <Link
+            <Link 
               href="/"
               className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center justify-center"
             >
@@ -126,7 +126,7 @@ export default function ProductsPage() {
             Khám phá các giải pháp phần mềm và ứng dụng chất lượng cao do XLab cung cấp.
           </p>
         </div>
-
+        
         {/* Tabs điều hướng */}
         <div className="border-b border-gray-200 mb-8">
           <div className="flex space-x-4">
@@ -152,7 +152,7 @@ export default function ProductsPage() {
             </Link>
           </div>
         </div>
-
+        
         {/* Hiển thị tiêu đề */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
@@ -175,7 +175,7 @@ export default function ProductsPage() {
               <p className="text-gray-600 mb-6">
                 Hiện tại chúng tôi chưa có phần mềm nào. Các sản phẩm sẽ được thêm vào sau.
               </p>
-              <Link
+              <Link 
                 href="/"
                 className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
               >
@@ -207,7 +207,7 @@ export default function ProductsPage() {
                     </svg>
                   </div>
                 </div>
-
+                
                 <div>
                   <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">Danh mục</label>
                   <select
@@ -224,7 +224,7 @@ export default function ProductsPage() {
                     ))}
                   </select>
                 </div>
-
+                
                 <div>
                   <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-1">Sắp xếp</label>
                   <select
@@ -242,7 +242,7 @@ export default function ProductsPage() {
                 </div>
               </div>
             </div>
-
+            
             {/* Kết quả tìm kiếm */}
             {searchTerm || filter !== 'all' ? (
               <section>
@@ -262,7 +262,7 @@ export default function ProductsPage() {
                     </button>
                   )}
                 </div>
-
+                
                 {sortedProducts.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {sortedProducts.map((product) => (
@@ -286,7 +286,7 @@ export default function ProductsPage() {
                 {featuredProducts.length > 0 && (
                   <section>
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                      Sản phẩm nổi bật
+                      Phần mềm nổi bật
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {featuredProducts.map((product) => (
@@ -295,11 +295,11 @@ export default function ProductsPage() {
                     </div>
                   </section>
                 )}
-
+                
                 {newProducts.length > 0 && (
                   <section>
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                      Sản phẩm mới
+                      Phần mềm mới
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {newProducts.map((product) => (
@@ -308,7 +308,7 @@ export default function ProductsPage() {
                     </div>
                   </section>
                 )}
-
+                
                 {popularProducts.length > 0 && (
                   <section>
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">
