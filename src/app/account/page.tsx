@@ -120,34 +120,32 @@ export default function AccountPage() {
 
       // Kiểm tra xem có thông tin đã lưu trong localStorage không
       try {
-        if (typeof window !== 'undefined' && window.localStorage && session.user.email) {
-          const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
-          if (savedProfile) {
-            const parsedProfile = JSON.parse(savedProfile);
+        const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
+        if (savedProfile) {
+          const parsedProfile = JSON.parse(savedProfile);
 
-            // Nếu session có customName = true, ưu tiên sử dụng name từ session
-            if (session.user.customName) {
-              setProfile({
-                ...updatedProfile,
-                // Lấy một số thông tin từ localStorage nếu cần
-                phone: parsedProfile.phone || updatedProfile.phone,
-              });
-              console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
-            } else {
-              // Ngược lại, kết hợp thông tin từ localStorage và session
-              setProfile({
-                ...updatedProfile,
-                ...parsedProfile,
-                email: session.user.email || updatedProfile.email,
-                avatar: session.user.image || updatedProfile.avatar
-              });
-              console.log('Đã tải thông tin từ localStorage:', parsedProfile);
-            }
+          // Nếu session có customName = true, ưu tiên sử dụng name từ session
+          if (session.user.customName) {
+            setProfile({
+              ...updatedProfile,
+              // Lấy một số thông tin từ localStorage nếu cần
+              phone: parsedProfile.phone || updatedProfile.phone,
+            });
+            console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
           } else {
-            // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
-            setProfile(updatedProfile);
-            console.log('Đã tải thông tin từ session');
+            // Ngược lại, kết hợp thông tin từ localStorage và session
+            setProfile({
+              ...updatedProfile,
+              ...parsedProfile,
+              email: session.user.email || updatedProfile.email,
+              avatar: session.user.image || updatedProfile.avatar
+            });
+            console.log('Đã tải thông tin từ localStorage:', parsedProfile);
           }
+        } else {
+          // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
+          setProfile(updatedProfile);
+          console.log('Đã tải thông tin từ session');
         }
 
         // Mô phỏng việc tải dữ liệu từ API
@@ -184,7 +182,7 @@ export default function AccountPage() {
 
     try {
       // Lưu thông tin vào localStorage
-      if (typeof window !== 'undefined' && window.localStorage && session?.user?.email) {
+      if (session?.user?.email) {
         localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify({
           name: profile.name,
           phone: profile.phone,
