@@ -66,15 +66,13 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config, { dev, isServer }) => {
-    if (!dev && !isServer) {
-      config.optimization.minimize = true;
-    }
-    return config;
-  },
   compiler: {
     styledComponents: true,
   },
+  experimental: {
+    largePageDataBytes: 128 * 100000,
+  },
+  poweredByHeader: false,
 };
 
 module.exports = nextConfig;
