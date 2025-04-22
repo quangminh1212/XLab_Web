@@ -83,7 +83,7 @@ export default function Header() {
             <Link href="/" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Trang chủ
             </Link>
-            <Link href="/accounts" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname.startsWith('/products') || pathname.startsWith('/accounts') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
+            <Link href="/accounts" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname && (pathname.startsWith('/products') || pathname.startsWith('/accounts')) ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Sản phẩm
             </Link>
             <Link href="/services" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
@@ -122,54 +122,22 @@ export default function Header() {
                   <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-primary-500 ring-2 ring-white"></span>
                 </button>
 
-                {/* User dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => toggleMobileMenu()}
-                    className="flex items-center justify-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all"
-                  >
-                    {session.user?.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.name || 'Avatar'}
-                        width={36}
-                        height={36}
-                        className="rounded-full shadow-sm"
-                      />
-                    ) : (
-                      <div className="w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
-                        {session.user?.name?.charAt(0) || 'U'}
-                      </div>
-                    )}
-                    <span className="hidden sm:inline-block text-sm font-medium text-gray-700 text-center">
-                      {session.user?.name?.split(' ')[0] || 'User'}
-                    </span>
-                    <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {mobileMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black/5 z-50">
-                      <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
-                        Đăng nhập bằng {session.user?.email}
-                      </div>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
-                        Tài khoản của tôi
-                      </Link>
-                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
-                        Cài đặt
-                      </Link>
-                      <div className="border-t border-gray-100"></div>
-                      <button
-                        onClick={() => signOut()}
-                        className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        Đăng xuất
-                      </button>
+                {/* User avatar - simplified */}
+                <Link href="/account" className="p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all">
+                  {session.user?.image ? (
+                    <Image
+                      src={session.user.image}
+                      alt="Avatar"
+                      width={36}
+                      height={36}
+                      className="rounded-full shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
+                      {session.user?.name?.charAt(0) || 'U'}
                     </div>
                   )}
-                </div>
+                </Link>
               </div>
             ) : (
               <div className="hidden sm:flex items-center justify-center space-x-3">
@@ -218,7 +186,7 @@ export default function Header() {
             <Link href="/" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/accounts" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname.startsWith('/products') || pathname.startsWith('/accounts') ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/accounts" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname && (pathname.startsWith('/products') || pathname.startsWith('/accounts')) ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Sản phẩm
             </Link>
             <Link href="/services" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
