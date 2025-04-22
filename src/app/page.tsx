@@ -47,7 +47,7 @@ function HomePage() {
         <section className="py-12 bg-white">
           <div className="container max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold">Phần mềm nổi bật</h2>
+              <h2 className="text-2xl font-bold">Sản phẩm nổi bật</h2>
               <Link
                 href="/products?filter=featured"
                 className="text-teal-600 hover:text-teal-800 transition-colors"
@@ -82,7 +82,7 @@ function HomePage() {
         <section className="py-12 bg-gray-50">
           <div className="container max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold">Phần mềm mới</h2>
+              <h2 className="text-2xl font-bold">Sản phẩm mới</h2>
               <Link
                 href="/products?filter=new"
                 className="text-teal-600 hover:text-teal-800 transition-colors"
@@ -105,7 +105,7 @@ function HomePage() {
                   </svg>
                   <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm mới</h3>
                   <p className="text-gray-500 max-w-lg mx-auto">
-                    Hãy quay lại sau để xem các phần mềm mới nhất.
+                    Hãy quay lại sau để xem các Sản phẩm mới nhất.
                   </p>
                 </div>
               </div>
