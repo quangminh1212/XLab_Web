@@ -3,16 +3,32 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session, status } = useSession()
+  const { data: session, status, update } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
+  const router = useRouter()
+
+  // Thêm useEffect để force refresh session khi component mount
+  useEffect(() => {
+    const refreshSession = async () => {
+      try {
+        await update(); // Cập nhật session
+        console.log("Session refreshed:", status);
+      } catch (error) {
+        console.error("Failed to refresh session:", error);
+      }
+    };
+    
+    refreshSession();
+  }, [update]);
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
@@ -40,9 +56,45 @@ export default function Header() {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
+    // Đóng menu user khi mở mobile menu
+    if (!mobileMenuOpen) {
+      setUserMenuOpen(false)
+    }
+  }
+
+  const toggleUserMenu = () => {
+    setUserMenuOpen(!userMenuOpen)
+    // Đóng mobile menu khi mở menu user
+    if (!userMenuOpen) {
+      setMobileMenuOpen(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    setUserMenuOpen(false) // Đóng menu trước khi đăng xuất
+    
+    try {
+      await signOut({ redirect: true, callbackUrl: '/' });
+    } catch (error) {
+      console.error("Error signing out:", error);
+      // Fallback nếu signOut thất bại
+      router.push('/');
+      router.refresh();
+    }
   }
 
   const isLoading = status === 'loading'
+  const isAuthenticated = status === 'authenticated' && !!session
+
+  // Debugging session state
+  useEffect(() => {
+    console.log("Auth state:", {
+      status,
+      isAuthenticated: status === 'authenticated' && !!session,
+      sessionExists: !!session,
+      user: session?.user
+    });
+  }, [status, session]);
 
   return (
     <header
@@ -69,7 +121,7 @@ export default function Header() {
             </Link>
 
             {/* Lời chào và tên người dùng trên desktop */}
-            {!isLoading && session?.user && (
+            {isAuthenticated && session?.user && (
               <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
                 <span className="bg-primary-50 text-primary-700 px-3 py-1.5 rounded-full shadow-sm text-center">
                   {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
@@ -109,7 +161,12 @@ export default function Header() {
               </svg>
             </button>
 
-            {!isLoading && session ? (
+            {isLoading ? (
+              // Loading indicator khi đang kiểm tra phiên đăng nhập
+              <div className="w-8 h-8 flex items-center justify-center">
+                <div className="animate-spin h-5 w-5 border-2 border-teal-500 rounded-full border-t-transparent"></div>
+              </div>
+            ) : isAuthenticated && session ? (
               <div className="flex items-center justify-center space-x-3">
                 {/* Thông báo */}
                 <button
@@ -125,7 +182,7 @@ export default function Header() {
                 {/* User dropdown */}
                 <div className="relative">
                   <button
-                    onClick={() => toggleMobileMenu()}
+                    onClick={toggleUserMenu}
                     className="flex items-center justify-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all"
                   >
                     {session.user?.image ? (
@@ -149,7 +206,7 @@ export default function Header() {
                     </svg>
                   </button>
 
-                  {mobileMenuOpen && (
+                  {userMenuOpen && (
                     <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black/5 z-50">
                       <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
                         Đăng nhập bằng {session.user?.email}
@@ -162,7 +219,7 @@ export default function Header() {
                       </Link>
                       <div className="border-t border-gray-100"></div>
                       <button
-                        onClick={() => signOut()}
+                        onClick={handleSignOut}
                         className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       >
                         Đăng xuất
@@ -210,7 +267,7 @@ export default function Header() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
-            {!isLoading && session && (
+            {isAuthenticated && session && (
               <div className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 rounded-md text-center">
                 {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
               </div>
@@ -231,7 +288,7 @@ export default function Header() {
               Liên hệ
             </Link>
 
-            {!isLoading && !session && (
+            {!isLoading && !isAuthenticated && (
               <div className="flex space-x-3 mt-3 px-3">
                 <Link
                   href="/login"
@@ -246,6 +303,15 @@ export default function Header() {
                   Đăng ký
                 </Link>
               </div>
+            )}
+            
+            {isAuthenticated && session && (
+              <button
+                onClick={handleSignOut}
+                className="w-full mt-3 px-4 py-2.5 text-red-600 rounded-full text-center hover:bg-red-50 transition-colors font-medium border border-red-200"
+              >
+                Đăng xuất
+              </button>
             )}
           </div>
         )}

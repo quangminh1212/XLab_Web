@@ -74,6 +74,56 @@ const handler = NextAuth({
     signIn: "/login",
     error: "/auth/error",
   },
+  cookies: {
+    // Cấu hình cookie để đảm bảo cookies state được lưu trữ đúng cách
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+    callbackUrl: {
+      name: `next-auth.callback-url`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+    csrfToken: {
+      name: `next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+    pkceCodeVerifier: {
+      name: `next-auth.pkce.code_verifier`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production", 
+        maxAge: 60 * 15, // 15 minutes in seconds
+      },
+    },
+    state: {
+      name: `next-auth.state`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 15, // 15 minutes in seconds
+      },
+    },
+  },
   callbacks: {
     async session({ session, token }) {
       if (token && session.user) {
@@ -139,10 +189,11 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET || "secret-key-at-least-32-characters-long123",
   session: {
     strategy: "jwt",
-    // Thay đổi maxAge dựa trên giá trị remember
-    // 30 ngày nếu remember = true, 1 ngày nếu remember = false
-    maxAge: 30 * 24 * 60 * 60, // Default: 30 days
+    // Chức năng ghi nhớ đăng nhập
+    maxAge: 30 * 24 * 60 * 60, // 30 ngày mặc định
   },
+  // Cài đặt thêm cho NextAuth
+  useSecureCookies: process.env.NODE_ENV === "production",
 });
 
 export { handler as GET, handler as POST }; 
