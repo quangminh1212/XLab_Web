@@ -172,10 +172,13 @@ export default function LoginPage() {
           )}
 
           <div className="space-y-2 mb-6">
-            <button
-              onClick={handleGoogleLogin}
-              disabled={googleLoading}
-              className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 relative transition duration-150"
+            <a
+              href={googleOAuthURL}
+              onClick={(e) => {
+                e.preventDefault();
+                handleGoogleLogin();
+              }}
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 relative transition duration-150 cursor-pointer"
             >
               {googleLoading ? (
                 <div className="flex items-center">
@@ -198,7 +201,7 @@ export default function LoginPage() {
                   <span>Tiếp tục với Google</span>
                 </>
               )}
-            </button>
+            </a>
             
             {/* Thêm liên kết dự phòng nếu nút không hoạt động */}
             <div className="text-xs text-center mt-1 text-gray-500">
