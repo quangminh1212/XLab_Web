@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "rimraf .next node_modules/.cache --no-glob && echo Preparing development environment...",
+    "predev": "rimraf .next node_modules/.cache && echo Preparing development environment...",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

@@ -52,6 +52,9 @@ Desktop.ini
 # Local env files
 .env*.local
 .env
+.env.development
+.env.production
+.env.test
 
 # Vercel
 .vercel
@@ -129,6 +132,7 @@ public/temp/
 .next/static/
 .next/trace
 .next/types/
+.next/server/next-font-manifest.json
 
 # Hot module replacement files
 *.hot-update.*

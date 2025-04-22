@@ -1,4 +1,0 @@
-export const metadata = {
-  title: 'Quản trị | XLab - Phần mềm và Dịch vụ',
-  description: 'Trang quản trị XLab - Chỉ dành cho quản trị viên',
-} 

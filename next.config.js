@@ -12,11 +12,16 @@ const nextConfig = {
         hostname: '**',
       }
     ],
+    loader: 'default',
+    path: '',
+    disableStaticImages: false,
     unoptimized: true,
-    domains: ['*'],
-  },
-  experimental: {
-    largePageDataBytes: 12800000,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    formats: ['image/webp'],
+    minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
   async headers() {
     return [
@@ -25,11 +30,15 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob: https://lh3.googleusercontent.com; font-src 'self' data: https: https://fonts.gstatic.com; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https: accounts.google.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
           },
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
           },
           {
             key: 'X-XSS-Protection',
@@ -58,8 +67,33 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
-    // Optimize webpack config
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
+    if (dev) {
+      config.mode = 'none';
+    }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
+    }
+    
     return config;
+  },
+  compiler: {
+    styledComponents: true,
   },
 };
 
