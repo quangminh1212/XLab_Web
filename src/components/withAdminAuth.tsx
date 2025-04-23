@@ -14,36 +14,35 @@ export default function withAdminAuth<P extends object>(
         useEffect(() => {
             if (status === 'loading') return;
 
+            console.log('Session status:', status);
+            console.log('Session data:', session);
+            console.log('User email:', session?.user?.email);
+            console.log('Is admin?', session?.user?.isAdmin);
+
             if (!session?.user) {
+                console.log('No session or user, redirecting to login');
                 router.push('/login?callbackUrl=/admin');
                 return;
             }
 
-            // Kiểm tra nếu email là xlab.rnd@gmail.com thì là admin
-            if (session.user.email === 'xlab.rnd@gmail.com') {
-                console.log('User is admin (by email check)');
-                setIsAdmin(true);
-                return;
-            }
+            const isAdmin = session.user.email === 'xlab.rnd@gmail.com' || session.user.isAdmin;
 
-            // Kiểm tra cả giá trị isAdmin từ session
-            if (session.user.isAdmin) {
-                console.log('User is admin (by isAdmin flag)');
-                setIsAdmin(true);
-                return;
+            if (!isAdmin) {
+                console.log('User is not admin, redirecting to home');
+                router.push('/');
             }
-
-            console.log('User is not admin, redirecting to home');
-            router.push('/');
         }, [session, status, router]);
 
-        if (status === 'loading') {
+        if (status === 'loading' || !session) {
             return (
                 <div className="min-h-screen flex items-center justify-center">
                     <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
                 </div>
             );
         }
+
+        // Kiểm tra quyền admin trực tiếp tại đây
+        const isAdmin = session.user.email === 'xlab.rnd@gmail.com' || session.user.isAdmin;
 
         if (!isAdmin) {
             return (

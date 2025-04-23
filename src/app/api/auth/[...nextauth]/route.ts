@@ -88,6 +88,13 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
+      // Đảm bảo email hiện tại trong token vẫn được kiểm tra admin
+      // Trong trường hợp token.isAdmin chưa được thiết lập
+      if (token.email === 'xlab.rnd@gmail.com' && token.isAdmin === undefined) {
+        console.log('Re-setting admin rights for', token.email);
+        token.isAdmin = true;
+      }
+
       console.log('JWT token data:', {
         id: token.id,
         email: token.email,
