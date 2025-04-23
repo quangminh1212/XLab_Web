@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
-import { Product } from '@/models/ProductModel';
+import { Product, ProductCategory } from '@/models/ProductModel';
 
 // Đường dẫn đến file lưu trữ dữ liệu
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -36,6 +36,19 @@ const saveProducts = (products: Product[]) => {
     }
 };
 
+// Get category name helper function
+function getCategoryName(categoryId: string) {
+    const categories: Record<string, string> = {
+        'office-software': 'Phần mềm văn phòng',
+        'business-solutions': 'Giải pháp doanh nghiệp',
+        'security-software': 'Phần mềm bảo mật',
+        'data-protection': 'Bảo vệ dữ liệu',
+        'design-software': 'Phần mềm thiết kế'
+    };
+
+    return categories[categoryId] || categoryId;
+}
+
 // GET - Lấy chi tiết sản phẩm theo ID
 export async function GET(
     request: NextRequest,
@@ -44,7 +57,7 @@ export async function GET(
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session || !(session.user as any).isAdmin) {
+        if (!session || !session.user.isAdmin) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }
@@ -80,7 +93,7 @@ export async function PUT(
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session || !(session.user as any).isAdmin) {
+        if (!session || !session.user.isAdmin) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }
@@ -100,16 +113,27 @@ export async function PUT(
 
         const productData = await request.json();
 
-        // Cập nhật thông tin sản phẩm
-        products[productIndex] = {
-            ...products[productIndex],
+        // Convert categories to proper format with name
+        if (productData.categories && Array.isArray(productData.categories)) {
+            productData.categories = (productData.categories as unknown as string[]).map((categoryId: string) => ({
+                id: categoryId,
+                name: getCategoryName(categoryId),
+                slug: categoryId
+            })) as ProductCategory[];
+        }
+
+        // Update the product with new data but keep the original ID
+        const updatedProduct = {
             ...productData,
+            id: productId,
             updatedAt: new Date().toISOString()
         };
 
+        products[productIndex] = updatedProduct;
+
         saveProducts(products);
 
-        return NextResponse.json(products[productIndex]);
+        return NextResponse.json(updatedProduct);
     } catch (error) {
         console.error('Error updating product:', error);
         return NextResponse.json(
@@ -127,7 +151,7 @@ export async function DELETE(
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session || !(session.user as any).isAdmin) {
+        if (!session || !session.user.isAdmin) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }

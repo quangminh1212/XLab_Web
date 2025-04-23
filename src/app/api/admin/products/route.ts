@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { Product } from '@/models/ProductModel';
+import { Product, ProductCategory } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session || !(session.user as any).isAdmin) {
+        if (!session || !session.user.isAdmin) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
 
-        if (!session || !(session.user as any).isAdmin) {
+        if (!session || !session.user.isAdmin) {
             return NextResponse.json(
                 { error: 'Unauthorized' },
                 { status: 401 }
@@ -83,11 +83,11 @@ export async function POST(request: NextRequest) {
 
         // Chuyển đổi categories từ mảng string sang mảng object
         if (Array.isArray(newProduct.categories) && typeof newProduct.categories[0] === 'string') {
-            newProduct.categories = newProduct.categories.map(categoryId => ({
+            newProduct.categories = (newProduct.categories as unknown as string[]).map(categoryId => ({
                 id: categoryId,
-                name: getCategoryName(categoryId as string),
+                name: getCategoryName(categoryId),
                 slug: categoryId
-            }));
+            })) as ProductCategory[];
         }
 
         // Đọc dữ liệu hiện tại

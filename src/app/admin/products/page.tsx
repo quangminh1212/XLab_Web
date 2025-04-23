@@ -18,6 +18,7 @@ function ProductsManagement() {
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
+    const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
     // Format currency
     const formatCurrency = (amount: number) => {
@@ -66,11 +67,12 @@ function ProductsManagement() {
         e.preventDefault();
         setIsSubmitting(true);
         setError('');
+        setSuccess('');
 
         try {
             const formData = new FormData(e.currentTarget);
 
-            // Build features array from text area
+            // Build feature array
             const featuresText = formData.get('features') as string;
             const featuresArray = featuresText
                 ? featuresText.split('\n').filter(line => line.trim() !== '')
@@ -92,7 +94,7 @@ function ProductsManagement() {
                 features: [
                     {
                         title: 'Tính năng chính',
-                        description: formData.get('description') as string,
+                        description: formData.get('mainFeature') as string,
                         icon: 'feature'
                     }
                 ],
@@ -127,9 +129,9 @@ function ProductsManagement() {
                 throw new Error('Không thể thêm sản phẩm');
             }
 
-            const newProduct = await response.json();
+            const result = await response.json();
 
-            setProducts(prevProducts => [...prevProducts, newProduct]);
+            setProducts(prev => [...prev, result]);
             setSuccess('Thêm sản phẩm thành công!');
             setShowForm(false);
             e.currentTarget.reset();
@@ -149,11 +151,12 @@ function ProductsManagement() {
 
         setIsSubmitting(true);
         setError('');
+        setSuccess('');
 
         try {
             const formData = new FormData(e.currentTarget);
 
-            // Build features array from text area
+            // Build feature array
             const featuresText = formData.get('features') as string;
             const featuresArray = featuresText
                 ? featuresText.split('\n').filter(line => line.trim() !== '')
@@ -175,7 +178,7 @@ function ProductsManagement() {
                 features: [
                     {
                         title: 'Tính năng chính',
-                        description: formData.get('description') as string,
+                        description: formData.get('mainFeature') as string,
                         icon: 'feature'
                     }
                 ],
@@ -270,6 +273,89 @@ function ProductsManagement() {
         setIsDeleting(false);
     };
 
+    // Hàm xử lý xóa sản phẩm
+    const handleDeleteProduct = async (id: string) => {
+        if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const response = await fetch(`/api/admin/products/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Không thể xóa sản phẩm');
+            }
+
+            // Cập nhật danh sách sản phẩm
+            setProducts(products.filter(p => p.id !== id));
+            setSuccess('Đã xóa sản phẩm thành công');
+            setTimeout(() => setSuccess(''), 3000);
+        } catch (error: any) {
+            setError(error.message);
+            setTimeout(() => setError(''), 3000);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Hàm xử lý chỉnh sửa sản phẩm
+    const handleEditProduct = (id: string) => {
+        const product = products.find(p => p.id === id);
+        if (product) {
+            setSelectedProductId(id);
+            setShowForm(true);
+
+            // Đặt giá trị cho form
+            const formElement = document.getElementById('productForm') as HTMLFormElement;
+            if (formElement) {
+                (formElement.elements.namedItem('name') as HTMLInputElement).value = product.name;
+                (formElement.elements.namedItem('price') as HTMLInputElement).value = product.versions?.[0]?.price.toString() || '';
+
+                // Kiểm tra xem sản phẩm có trường discount không
+                const discountField = formElement.elements.namedItem('discount') as HTMLInputElement;
+                if (discountField && product.versions?.[0]?.hasOwnProperty('discount')) {
+                    discountField.value = (product.versions[0] as any).discount.toString();
+                }
+
+                const mainFeatureField = formElement.elements.namedItem('mainFeature') as HTMLInputElement;
+                if (mainFeatureField && product.features?.[0]?.description) {
+                    mainFeatureField.value = product.features[0].description;
+                }
+
+                // Xử lý danh sách tính năng
+                const featuresTextarea = document.getElementById('features') as HTMLTextAreaElement;
+                if (featuresTextarea && product.versions?.[0]?.features) {
+                    featuresTextarea.value = product.versions[0].features.join('\n');
+                }
+
+                // Xử lý danh mục
+                if (product.categories) {
+                    const categoryIds = Array.isArray(product.categories)
+                        ? product.categories.map(cat => typeof cat === 'string' ? cat : cat.id)
+                        : [product.categories];
+
+                    const checkboxes = document.querySelectorAll<HTMLInputElement>('input[name="categories"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = categoryIds.includes(checkbox.value);
+                    });
+                }
+
+                // Hiển thị ảnh hiện tại
+                if (product.images && product.images[0] && product.images[0].url) {
+                    const previewImage = document.getElementById('imagePreview') as HTMLImageElement;
+                    if (previewImage) {
+                        previewImage.src = product.images[0].url;
+                        previewImage.style.display = 'block';
+                    }
+                }
+            }
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-100">
             <div className="bg-primary-700 text-white p-6">
@@ -322,7 +408,7 @@ function ProductsManagement() {
                     <button
                         className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
                         onClick={() => {
-                            setEditingProduct(null);
+                            setSelectedProductId(null);
                             setShowForm(!showForm);
                         }}
                     >
@@ -337,10 +423,10 @@ function ProductsManagement() {
                 {showForm && (
                     <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-md">
                         <h3 className="text-lg font-semibold mb-4">
-                            {editingProduct ? 'Cập nhật sản phẩm' : 'Thêm Sản phẩm mới'}
+                            {selectedProductId ? 'Chỉnh sửa sản phẩm' : 'Thêm Sản phẩm mới'}
                         </h3>
 
-                        <form onSubmit={editingProduct ? handleUpdate : handleSubmit}>
+                        <form id="productForm" onSubmit={selectedProductId ? handleUpdate : handleSubmit}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
@@ -351,7 +437,6 @@ function ProductsManagement() {
                                         id="name"
                                         name="name"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.name || ''}
                                         required
                                     />
                                 </div>
@@ -365,7 +450,6 @@ function ProductsManagement() {
                                         id="slug"
                                         name="slug"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.slug || ''}
                                         required
                                         placeholder="ten-san-pham"
                                     />
@@ -380,7 +464,6 @@ function ProductsManagement() {
                                         id="shortDescription"
                                         name="shortDescription"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.shortDescription || ''}
                                         required
                                     />
                                 </div>
@@ -394,7 +477,6 @@ function ProductsManagement() {
                                         id="imageUrl"
                                         name="imageUrl"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.images?.[0]?.url || ''}
                                         required
                                         placeholder="/images/products/ten-san-pham.jpg"
                                     />
@@ -409,7 +491,6 @@ function ProductsManagement() {
                                         id="price"
                                         name="price"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.versions?.[0]?.price || 0}
                                         required
                                         min="0"
                                     />
@@ -424,8 +505,21 @@ function ProductsManagement() {
                                         id="originalPrice"
                                         name="originalPrice"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.versions?.[0]?.originalPrice || 0}
                                         min="0"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="discount" className="block mb-2 font-medium text-gray-700">
+                                        Giảm giá (%)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="discount"
+                                        name="discount"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        min="0"
+                                        max="100"
                                     />
                                 </div>
 
@@ -438,7 +532,6 @@ function ProductsManagement() {
                                         name="categories"
                                         multiple
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.categories?.map(cat => cat.id) || []}
                                         required
                                     >
                                         <option value="office-software">Phần mềm văn phòng</option>
@@ -459,7 +552,6 @@ function ProductsManagement() {
                                         id="requirements"
                                         name="requirements"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.requirements?.[0]?.description || ''}
                                         placeholder="Windows 10/11, macOS 10.15+, Linux"
                                     />
                                 </div>
@@ -470,7 +562,6 @@ function ProductsManagement() {
                                         id="isPublished"
                                         name="isPublished"
                                         className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                                        defaultChecked={editingProduct?.isPublished || false}
                                     />
                                     <label htmlFor="isPublished" className="ml-2 block text-sm text-gray-900">
                                         Xuất bản sản phẩm
@@ -486,7 +577,6 @@ function ProductsManagement() {
                                         name="description"
                                         rows={5}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.description || ''}
                                         required
                                     ></textarea>
                                 </div>
@@ -500,7 +590,6 @@ function ProductsManagement() {
                                         name="features"
                                         rows={4}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                        defaultValue={editingProduct?.versions?.[0]?.features?.join('\n') || ''}
                                         placeholder="Mỗi tính năng một dòng"
                                     ></textarea>
                                     <p className="text-xs text-gray-500 mt-1">Mỗi dòng là một tính năng</p>
@@ -511,9 +600,9 @@ function ProductsManagement() {
                                 <button
                                     type="submit"
                                     className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                                    disabled={isSubmitting}
+                                    disabled={isLoading}
                                 >
-                                    {isSubmitting ? (
+                                    {isLoading ? (
                                         <>
                                             <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -523,7 +612,7 @@ function ProductsManagement() {
                                         </>
                                     ) : (
                                         <>
-                                            {editingProduct ? 'Cập nhật' : 'Thêm sản phẩm'}
+                                            {selectedProductId ? 'Cập nhật' : 'Thêm sản phẩm'}
                                         </>
                                     )}
                                 </button>
@@ -555,103 +644,103 @@ function ProductsManagement() {
                             <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có sản phẩm nào</h3>
                             <p className="mb-4">Hãy thêm sản phẩm mới để bắt đầu quản lý.</p>
                         </div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Sản phẩm
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Danh mục
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Giá
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Trạng thái
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Hành động
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {products.map((product) => (
-                                        <tr key={product.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
-                                                        {product.images && product.images[0] && (
-                                                            <Image
-                                                                width={40}
-                                                                height={40}
-                                                                src={product.images[0].url}
-                                                                alt={product.name}
-                                                                className="h-10 w-10 rounded object-cover"
-                                                            />
-                                                        )}
-                                                    </div>
-                                                    <div className="ml-4">
-                                                        <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                                        <div className="text-xs text-gray-500">{product.shortDescription}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-900">
-                                                    {product.categories?.map(cat => cat.name).join(', ')}
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {product.versions && product.versions[0] && (
-                                                    <div>
-                                                        <span className="text-gray-900 font-medium">
-                                                            {formatCurrency(product.versions[0].price)}
-                                                        </span>
-                                                        {product.versions[0].originalPrice > product.versions[0].price && (
-                                                            <span className="text-xs text-gray-500 line-through ml-2">
-                                                                {formatCurrency(product.versions[0].originalPrice)}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {product.isPublished ? (
-                                                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        Công khai
-                                                    </span>
-                                                ) : (
-                                                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                        Nháp
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4 text-sm font-medium">
-                                                <div className="flex space-x-2">
-                                                    <button
-                                                        onClick={() => handleEditClick(product)}
-                                                        className="text-blue-600 hover:text-blue-900"
-                                                    >
-                                                        Sửa
-                                                    </button>
-                                                    <span className="text-gray-300">|</span>
-                                                    <button
-                                                        onClick={() => handleDeleteClick(product.id)}
-                                                        className="text-red-600 hover:text-red-900"
-                                                    >
-                                                        Xóa
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
                     )}
+
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Sản phẩm
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Danh mục
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Giá
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Trạng thái
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Hành động
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {products.map((product) => (
+                                    <tr key={product.id} className="hover:bg-gray-50">
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
+                                                    {product.images && product.images[0] && (
+                                                        <Image
+                                                            width={40}
+                                                            height={40}
+                                                            src={product.images[0].url}
+                                                            alt={product.name}
+                                                            className="h-10 w-10 rounded object-cover"
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div className="ml-4">
+                                                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                                    <div className="text-xs text-gray-500">{product.shortDescription}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm text-gray-900">
+                                                {product.categories?.map(cat => cat.name).join(', ')}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {product.versions && product.versions[0] && (
+                                                <div>
+                                                    <span className="text-gray-900 font-medium">
+                                                        {formatCurrency(product.versions[0].price)}
+                                                    </span>
+                                                    {product.versions[0].originalPrice > product.versions[0].price && (
+                                                        <span className="text-xs text-gray-500 line-through ml-2">
+                                                            {formatCurrency(product.versions[0].originalPrice)}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {product.isPublished ? (
+                                                <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Công khai
+                                                </span>
+                                            ) : (
+                                                <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                    Nháp
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm font-medium">
+                                            <div className="flex space-x-2">
+                                                <button
+                                                    onClick={() => handleEditProduct(product.id)}
+                                                    className="text-blue-600 hover:text-blue-900"
+                                                >
+                                                    Sửa
+                                                </button>
+                                                <span className="text-gray-300">|</span>
+                                                <button
+                                                    onClick={() => handleDeleteProduct(product.id)}
+                                                    className="text-red-600 hover:text-red-900"
+                                                >
+                                                    Xóa
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
