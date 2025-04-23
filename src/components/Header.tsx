@@ -11,45 +11,17 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const pathname = usePathname()
-  const { data: session, status, update } = useSession()
+  const { data: session, status } = useSession()
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
   const router = useRouter()
-  const [sessionChecked, setSessionChecked] = useState(false)
 
-  // Thêm useEffect để force refresh session khi component mount
-  useEffect(() => {
-    const refreshSession = async () => {
-      try {
-        // Đặt timeout để tránh chờ quá lâu
-        const updatePromise = update();
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Session update timeout')), 2000)
-        );
-        
-        await Promise.race([updatePromise, timeoutPromise]);
-        console.log("Session refreshed successfully:", status, session);
-      } catch (error) {
-        console.error("Failed to refresh session:", error);
-      } finally {
-        // Đánh dấu đã kiểm tra session
-        setSessionChecked(true);
-      }
-    };
-    
-    refreshSession();
-    
-    // Fallback: đảm bảo luôn đánh dấu là đã kiểm tra sau 3 giây
-    const timeout = setTimeout(() => {
-      if (!sessionChecked) {
-        console.log("Session check timeout reached, forcing UI update");
-        setSessionChecked(true);
-      }
-    }, 3000);
-    
-    return () => clearTimeout(timeout);
-  }, [update, session, status, sessionChecked]);
+  // Đơn giản hóa logic hiển thị, loại bỏ kiểm tra sessionChecked không cần thiết
+  // Sử dụng trực tiếp status từ useSession
+  const isLoading = status === 'loading'
+  const isAuthenticated = status === 'authenticated' && !!session
 
+  // Xác định lời chào và thiết lập scroll listener
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
     const getGreeting = () => {
@@ -103,19 +75,10 @@ export default function Header() {
     }
   }
 
-  const isLoading = status === 'loading' && !sessionChecked
-  const isAuthenticated = status === 'authenticated' && !!session
-
-  // Debugging session state
-  useEffect(() => {
-    console.log("Auth state updated:", {
-      status,
-      sessionChecked,
-      isAuthenticated: status === 'authenticated' && !!session,
-      sessionExists: !!session,
-      user: session?.user
-    });
-  }, [status, session, sessionChecked]);
+  const navigateToAccount = () => {
+    setUserMenuOpen(false); // Đóng dropdown menu
+    router.push('/account');
+  }
 
   return (
     <header
@@ -183,9 +146,9 @@ export default function Header() {
             </button>
 
             {isLoading ? (
-              // Loading indicator khi đang kiểm tra phiên đăng nhập
+              // Thêm một kích thước nhỏ hơn và cải thiện spinner để hiển thị tốt hơn
               <div className="w-8 h-8 flex items-center justify-center">
-                <div className="animate-spin h-5 w-5 border-2 border-teal-500 rounded-full border-t-transparent"></div>
+                <div className="animate-spin h-4 w-4 border-2 border-primary-500 rounded-full border-t-transparent"></div>
               </div>
             ) : isAuthenticated && session ? (
               <div className="flex items-center justify-center space-x-3">
@@ -232,9 +195,11 @@ export default function Header() {
                       <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
                         Đăng nhập bằng {session.user?.email}
                       </div>
-                      <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
+                      <button 
+                        onClick={navigateToAccount}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
                         Tài khoản của tôi
-                      </Link>
+                      </button>
                       <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
                         Cài đặt
                       </Link>
@@ -308,6 +273,15 @@ export default function Header() {
             <Link href="/contact" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/contact' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Liên hệ
             </Link>
+
+            {isAuthenticated && session && (
+              <Link
+                href="/account"
+                className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/account' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}
+              >
+                Tài khoản của tôi
+              </Link>
+            )}
 
             {!isLoading && !isAuthenticated && (
               <div className="flex space-x-3 mt-3 px-3">

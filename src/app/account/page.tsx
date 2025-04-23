@@ -6,11 +6,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-export const metadata = {
-  title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
-  description: 'Quản lý tài khoản, giấy phép và lịch sử mua hàng của bạn tại XLab',
-}
-
 // This would normally come from a database or API
 const purchaseHistory = [
   {
@@ -63,6 +58,10 @@ export default function AccountPage() {
   const { data: session, status } = useSession();
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
+  const [error, setError] = useState<string | null>(null);
+
+  console.log('Session in account page:', session);
+  console.log('Status in account page:', status);
 
   // Đợi cho component được mount để tránh hydration mismatch
   useEffect(() => {
@@ -95,11 +94,56 @@ export default function AccountPage() {
     return defaultDate;
   };
 
+  // Kiểm tra session data
+  useEffect(() => {
+    if (status === 'authenticated' && !session?.user) {
+      setError('Không thể lấy thông tin người dùng. Vui lòng thử đăng nhập lại.');
+    } else {
+      setError(null);
+    }
+  }, [session, status]);
+
+  // Nếu có lỗi
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="text-center mb-6">
+            <div className="bg-red-100 p-3 rounded-full inline-flex mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Có lỗi xảy ra</h2>
+            <p className="text-gray-600">{error}</p>
+          </div>
+          <div className="flex justify-center gap-4">
+            <button 
+              onClick={() => router.refresh()} 
+              className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+            >
+              Thử lại
+            </button>
+            <button 
+              onClick={() => router.push('/login')} 
+              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+            >
+              Đăng nhập lại
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Nếu đang loading hoặc chưa mount
   if (!mounted || status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin h-10 w-10 border-4 border-primary-500 rounded-full border-t-transparent"></div>
+        <div className="text-center">
+          <div className="animate-spin h-10 w-10 border-4 border-primary-500 rounded-full border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600">Đang tải thông tin tài khoản...</p>
+        </div>
       </div>
     );
   }
