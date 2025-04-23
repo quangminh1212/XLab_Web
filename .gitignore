@@ -50,8 +50,6 @@ Thumbs.db
 Desktop.ini
 
 # Local env files
-#.env*.local
-.env
 
 # Vercel
 .vercel
