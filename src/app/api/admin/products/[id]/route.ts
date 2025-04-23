@@ -3,12 +3,13 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
+import { Product } from '@/models/ProductModel';
 
 // Đường dẫn đến file lưu trữ dữ liệu
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
 // Hàm đọc dữ liệu từ file JSON
-const getProducts = () => {
+const getProducts = (): Product[] => {
     try {
         if (!fs.existsSync(dataFilePath)) {
             fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
@@ -23,7 +24,7 @@ const getProducts = () => {
 };
 
 // Hàm lưu dữ liệu vào file JSON
-const saveProducts = (products: any[]) => {
+const saveProducts = (products: Product[]) => {
     try {
         const dirPath = path.dirname(dataFilePath);
         if (!fs.existsSync(dirPath)) {
@@ -52,7 +53,7 @@ export async function GET(
 
         const productId = params.id;
         const products = getProducts();
-        const product = products.find((p) => p.id === productId);
+        const product = products.find((p: Product) => p.id === productId);
 
         if (!product) {
             return NextResponse.json(
@@ -88,7 +89,7 @@ export async function PUT(
 
         const productId = params.id;
         const products = getProducts();
-        const productIndex = products.findIndex((p) => p.id === productId);
+        const productIndex = products.findIndex((p: Product) => p.id === productId);
 
         if (productIndex === -1) {
             return NextResponse.json(
@@ -135,7 +136,7 @@ export async function DELETE(
 
         const productId = params.id;
         const products = getProducts();
-        const newProducts = products.filter((p) => p.id !== productId);
+        const newProducts = products.filter((p: Product) => p.id !== productId);
 
         if (products.length === newProducts.length) {
             return NextResponse.json(
