@@ -3,8 +3,8 @@
         "id": "xlab-office-suite",
         "name": "XLab Office Suite",
         "slug": "xlab-office-suite",
-        "description": "Bộ công cụ văn phòng toàn diện với khả năng xử lý văn bản, bảng tính, thuyết trình và nhiều tính năng hữu ích khác. Được thiết kế cho doanh nghiệp Việt Nam với đầy đủ tính năng hỗ trợ tiếng Việt và các yêu cầu đặc thù.",
-        "shortDescription": "Bộ công cụ văn phòng đầy đủ tính năng cho doanh nghiệp Việt Nam",
+        "description": "Bộ công cụ văn phòng toàn diện với khả năng xử lý văn bản, bảng tính và thuyết trình. Được thiết kế để tương thích với các định dạng văn phòng phổ biến, giúp bạn làm việc hiệu quả hơn.",
+        "shortDescription": "Bộ công cụ văn phòng toàn diện cho doanh nghiệp và cá nhân",
         "images": [
             {
                 "url": "/images/products/office-suite-1.jpg",
@@ -14,22 +14,18 @@
             {
                 "url": "/images/products/office-suite-2.jpg",
                 "alt": "XLab Office Suite - Xử lý văn bản"
-            },
-            {
-                "url": "/images/products/office-suite-3.jpg",
-                "alt": "XLab Office Suite - Bảng tính"
             }
         ],
         "features": [
             {
-                "title": "Xử lý văn bản tiên tiến",
-                "description": "Soạn thảo văn bản chuyên nghiệp với đầy đủ công cụ định dạng và hỗ trợ tiếng Việt tối ưu",
+                "title": "Xử lý văn bản",
+                "description": "Soạn thảo, chỉnh sửa văn bản với nhiều công cụ định dạng chuyên nghiệp",
                 "icon": "document"
             },
             {
-                "title": "Bảng tính mạnh mẽ",
-                "description": "Xử lý dữ liệu số với công cụ tính toán, phân tích và trực quan hóa dữ liệu",
-                "icon": "spreadsheet"
+                "title": "Bảng tính nâng cao",
+                "description": "Tính toán, phân tích dữ liệu với các công thức và biểu đồ trực quan",
+                "icon": "table"
             },
             {
                 "title": "Thuyết trình chuyên nghiệp",
@@ -107,8 +103,8 @@
                 "slug": "business-solutions"
             }
         ],
-        "createdAt": "2023-01-15T08:30:00.000Z",
-        "updatedAt": "2023-05-20T10:15:30.000Z",
+        "createdAt": "2023-05-15T08:30:00.000Z",
+        "updatedAt": "2023-09-20T14:45:30.000Z",
         "isPublished": true
     },
     {

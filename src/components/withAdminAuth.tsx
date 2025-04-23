@@ -2,56 +2,47 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import Spinner from './Spinner';
 
 export default function withAdminAuth<P extends object>(
-    WrappedComponent: React.ComponentType<P>
-): React.FC<P> {
+    Component: React.ComponentType<P>
+) {
     return function WithAdminAuth(props: P) {
         const { data: session, status } = useSession();
         const router = useRouter();
 
-        useEffect(() => {
-            if (status === 'loading') return;
+        console.log('Session status:', status);
+        console.log('Session data:', session);
 
-            console.log('Session status:', status);
-            console.log('Session data:', session);
-            console.log('User email:', session?.user?.email);
-            console.log('Is admin?', session?.user?.isAdmin);
-
-            if (!session?.user) {
-                console.log('No session or user, redirecting to login');
-                router.push('/login?callbackUrl=/admin');
-                return;
-            }
-
-            const isAdmin = session.user.email === 'xlab.rnd@gmail.com' || session.user.isAdmin;
-
-            if (!isAdmin) {
-                console.log('User is not admin, redirecting to home');
-                router.push('/');
-            }
-        }, [session, status, router]);
-
-        if (status === 'loading' || !session) {
+        if (status === 'loading') {
+            console.log('Đang tải session...');
             return (
-                <div className="min-h-screen flex items-center justify-center">
-                    <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+                <div className="flex justify-center items-center min-h-screen">
+                    <Spinner size="lg" />
                 </div>
             );
         }
 
-        // Kiểm tra quyền admin trực tiếp tại đây
-        const isAdmin = session.user.email === 'xlab.rnd@gmail.com' || session.user.isAdmin;
+        // User không đăng nhập, chuyển về trang login
+        if (status === 'unauthenticated' || !session) {
+            console.log('Người dùng chưa đăng nhập');
+            router.push('/login?callbackUrl=/admin');
+            return null;
+        }
+
+        console.log('Email của người dùng:', session.user?.email);
+
+        // Kiểm tra quyền admin
+        const isAdmin = session.user?.isAdmin === true;
+        console.log('Admin status:', isAdmin);
 
         if (!isAdmin) {
-            return (
-                <div className="min-h-screen flex items-center justify-center">
-                    <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
-                </div>
-            );
+            console.log('Người dùng không có quyền admin');
+            router.push('/access-denied');
+            return null;
         }
 
-        return <WrappedComponent {...props} />;
+        // Người dùng có quyền admin, trả về component
+        return <Component {...props} />;
     };
 } 
