@@ -21,25 +21,34 @@ export default function Header() {
   useEffect(() => {
     const refreshSession = async () => {
       try {
-        await update(); // Cập nhật session
-        console.log("Session refreshed:", status);
+        // Đặt timeout để tránh chờ quá lâu
+        const updatePromise = update();
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Session update timeout')), 2000)
+        );
+        
+        await Promise.race([updatePromise, timeoutPromise]);
+        console.log("Session refreshed successfully:", status, session);
       } catch (error) {
         console.error("Failed to refresh session:", error);
       } finally {
-        // Bất kể kết quả thế nào, đánh dấu là đã kiểm tra session
+        // Đánh dấu đã kiểm tra session
         setSessionChecked(true);
       }
     };
     
     refreshSession();
     
-    // Thêm timeout để đảm bảo không hiển thị loading quá lâu
+    // Fallback: đảm bảo luôn đánh dấu là đã kiểm tra sau 3 giây
     const timeout = setTimeout(() => {
-      setSessionChecked(true);
-    }, 3000); // Sau 3 giây sẽ tự động đánh dấu đã kiểm tra
+      if (!sessionChecked) {
+        console.log("Session check timeout reached, forcing UI update");
+        setSessionChecked(true);
+      }
+    }, 3000);
     
     return () => clearTimeout(timeout);
-  }, [update]);
+  }, [update, session, status, sessionChecked]);
 
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
@@ -99,7 +108,7 @@ export default function Header() {
 
   // Debugging session state
   useEffect(() => {
-    console.log("Auth state:", {
+    console.log("Auth state updated:", {
       status,
       sessionChecked,
       isAuthenticated: status === 'authenticated' && !!session,

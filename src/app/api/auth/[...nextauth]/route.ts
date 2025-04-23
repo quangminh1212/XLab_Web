@@ -29,10 +29,11 @@ const GOOGLE_AUTHORIZATION_URL =
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "default-secret-key-change-this",
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   pages: {
     signIn: '/login',
@@ -43,8 +44,8 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId: process.env.GOOGLE_CLIENT_ID || 'placeholder-client-id',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder-client-secret',
       authorization: GOOGLE_AUTHORIZATION_URL,
     }),
     CredentialsProvider({
@@ -55,31 +56,39 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
-          throw new Error('Missing credentials');
+          console.log("Missing credentials");
+          return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
+        try {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email,
+            },
+          });
 
-        if (!user || !user.password) {
-          throw new Error('No user found with this email');
+          if (!user || !user.password) {
+            console.log("No user found with email:", credentials.email);
+            return null;
+          }
+
+          const isPasswordValid = await compare(credentials.password, user.password);
+
+          if (!isPasswordValid) {
+            console.log("Invalid password for user:", credentials.email);
+            return null;
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          };
+        } catch (error) {
+          console.error("Error during credentials authorization:", error);
+          return null;
         }
-
-        const isPasswordValid = await compare(credentials.password, user.password);
-
-        if (!isPasswordValid) {
-          throw new Error('Invalid password');
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-        };
       },
     }),
   ],
@@ -89,7 +98,6 @@ export const authOptions: NextAuthOptions = {
         // Log thông tin để debug
         console.log('User signing in:', user);
         console.log('Account:', account);
-        console.log('Profile:', profile);
         
         return true;
       } catch (error) {
@@ -112,19 +120,31 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async jwt({ token, user, account }) {
-      if (user) {
-        token.id = user.id;
+      // Bảo vệ callback khỏi lỗi
+      try {
+        if (user) {
+          token.id = user.id;
+        }
+        if (account) {
+          token.accessToken = account.access_token;
+        }
+        return token;
+      } catch (error) {
+        console.error('Error in JWT callback:', error);
+        return token;
       }
-      if (account) {
-        token.accessToken = account.access_token;
-      }
-      return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
+      // Bảo vệ callback khỏi lỗi
+      try {
+        if (token && session.user) {
+          session.user.id = token.id as string;
+        }
+        return session;
+      } catch (error) {
+        console.error('Error in session callback:', error);
+        return session;
       }
-      return session;
     },
   },
   events: {
@@ -134,11 +154,19 @@ export const authOptions: NextAuthOptions = {
     async signOut(message) {
       console.log('User signed out:', message);
     },
-    async error(message) {
-      console.error('NextAuth error:', message);
-    },
   },
   debug: process.env.NODE_ENV === 'development',
+  logger: {
+    error(code, metadata) {
+      console.error(`NextAuth error: ${code}`, metadata);
+    },
+    warn(code) {
+      console.warn(`NextAuth warning: ${code}`);
+    },
+    debug(code, metadata) {
+      console.log(`NextAuth debug: ${code}`, metadata);
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);
