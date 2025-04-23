@@ -13,6 +13,7 @@ declare module "next-auth" {
       phone?: string | null;
       memberSince?: string | null;
       customName?: boolean;
+      isAdmin?: boolean;
     }
   }
 }
@@ -43,6 +44,7 @@ const handler = NextAuth({
         if (token.customName) session.user.customName = token.customName as boolean;
         if (token.phone) session.user.phone = token.phone as string;
         if (token.memberSince) session.user.memberSince = token.memberSince as string;
+        if (token.isAdmin) session.user.isAdmin = token.isAdmin as boolean;
 
         if (token.customName && token.name) {
           session.user.name = token.name as string;
@@ -54,6 +56,10 @@ const handler = NextAuth({
       if (user && account) {
         token.id = user.id;
         token.provider = account.provider;
+
+        if (token.email === 'xlab.rnd@gmail.com') {
+          token.isAdmin = true;
+        }
 
         if (!token.memberSince) {
           const today = new Date();

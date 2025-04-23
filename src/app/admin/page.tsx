@@ -7,8 +7,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
 import { ProductImage } from '@/components/ProductImage';
+import withAdminAuth from '@/components/withAdminAuth';
 
-export default function AdminPage() {
+function AdminDashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,6 +21,12 @@ export default function AdminPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
+  const [stats, setStats] = useState({
+    products: 0,
+    users: 0,
+    orders: 0,
+    revenue: 0
+  });
 
   // Chuyển đổi số thành định dạng tiền tệ
   const formatCurrency = (amount: number) => {
@@ -63,6 +70,22 @@ export default function AdminPage() {
       router.push('/login');
     }
   }, [session, status, router]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/admin/products');
+        if (response.ok) {
+          const products = await response.json();
+          setStats(prev => ({ ...prev, products: products.length }));
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   // Xử lý khi gửi form thêm sản phẩm mới
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -223,661 +246,100 @@ export default function AdminPage() {
   }
 
   return (
-    <div>
-      {/* Page Header */}
-      <section className="bg-primary-800 text-white py-10">
-        <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Quản trị hệ thống</h1>
-          <p className="text-xl max-w-3xl">
-            Quản lý sản phẩm, danh mục và nội dung trên XLab
-          </p>
+    <div className="min-h-screen bg-gray-100">
+      <div className="bg-primary-700 text-white p-6">
+        <div className="container mx-auto">
+          <h1 className="text-3xl font-bold">Bảng điều khiển Admin</h1>
+          <p className="mt-2">Xin chào, {session?.user?.name}!</p>
         </div>
-      </section>
+      </div>
 
-      {/* Thông báo */}
-      {error && (
-        <div className="container my-4">
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong className="font-bold">Lỗi! </strong>
-            <span className="block sm:inline">{error}</span>
-            <button
-              className="absolute top-0 bottom-0 right-0 px-4 py-3"
-              onClick={() => setError('')}
-            >
-              <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <title>Đóng</title>
-                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {success && (
-        <div className="container my-4">
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <strong className="font-bold">Thành công! </strong>
-            <span className="block sm:inline">{success}</span>
-            <button
-              className="absolute top-0 bottom-0 right-0 px-4 py-3"
-              onClick={() => setSuccess('')}
-            >
-              <svg className="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <title>Đóng</title>
-                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Admin Dashboard */}
-      <section className="py-10">
-        <div className="container">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar */}
-            <div className="lg:w-1/4">
-              <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <div className="flex flex-col items-center mb-6">
-                  <div className="relative w-24 h-24 mb-4">
-                    <Image
-                      src={session?.user?.image || '/images/avatar-placeholder.svg'}
-                      alt={session?.user?.name || 'Admin'}
-                      fill
-                      className="rounded-full"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/avatar-placeholder.svg'
-                      }}
-                    />
-                  </div>
-                  <h2 className="text-xl font-bold">{session?.user?.name || 'Admin'}</h2>
-                  <p className="text-gray-600">{session?.user?.email}</p>
-                  <p className="text-sm text-gray-500 mt-1">Quản trị viên</p>
-                </div>
-
-                <nav className="space-y-1">
-                  <a href="#dashboard" className="flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                    </svg>
-                    Tổng quan
-                  </a>
-                  <a href="#products" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    Quản lý sản phẩm
-                  </a>
-                  <a href="#categories" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    Quản lý danh mục
-                  </a>
-                  <a href="#orders" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                    Quản lý đơn hàng
-                  </a>
-                  <a href="#users" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    Quản lý người dùng
-                  </a>
-                  <a href="#settings" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Cài đặt hệ thống
-                  </a>
-                  <Link href="/" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Về trang chủ
-                  </Link>
-                </nav>
-              </div>
-
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="font-bold text-lg mb-4">Thống kê nhanh</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Tổng sản phẩm</span>
-                    <span className="font-bold">8</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Tổng danh mục</span>
-                    <span className="font-bold">6</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Đơn hàng mới</span>
-                    <span className="font-bold">3</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Người dùng</span>
-                    <span className="font-bold">127</span>
-                  </div>
-                </div>
-              </div>
+      <div className="container mx-auto py-8 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-gray-500 text-sm font-medium uppercase">Sản phẩm</h2>
+            <p className="mt-2 text-3xl font-bold">{stats.products}</p>
+            <div className="mt-1">
+              <Link href="/admin/products" className="text-primary-600 hover:text-primary-800 text-sm">
+                Quản lý sản phẩm →
+              </Link>
             </div>
+          </div>
 
-            {/* Main Content */}
-            <div className="lg:w-3/4">
-              {/* Products Management */}
-              <div id="products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Quản lý sản phẩm</h2>
-                  <button
-                    className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                    onClick={() => {
-                      setEditingProduct(null);
-                      setShowForm(!showForm);
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    {showForm ? 'Đóng form' : 'Thêm sản phẩm mới'}
-                  </button>
-                </div>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-gray-500 text-sm font-medium uppercase">Người dùng</h2>
+            <p className="mt-2 text-3xl font-bold">{stats.users}</p>
+            <div className="mt-1">
+              <span className="text-gray-500 text-sm">Đang phát triển...</span>
+            </div>
+          </div>
 
-                {/* Form thêm/sửa sản phẩm */}
-                {showForm && (
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                    <h3 className="text-lg font-semibold mb-4">
-                      {editingProduct ? 'Cập nhật sản phẩm' : 'Thêm Sản phẩm mới'}
-                    </h3>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-gray-500 text-sm font-medium uppercase">Đơn hàng</h2>
+            <p className="mt-2 text-3xl font-bold">{stats.orders}</p>
+            <div className="mt-1">
+              <span className="text-gray-500 text-sm">Đang phát triển...</span>
+            </div>
+          </div>
 
-                    <form onSubmit={editingProduct ? handleUpdate : handleSubmit}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
-                            Tên phần mềm <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.name || ''}
-                            required
-                          />
-                        </div>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-gray-500 text-sm font-medium uppercase">Doanh thu</h2>
+            <p className="mt-2 text-3xl font-bold">
+              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(stats.revenue)}
+            </p>
+            <div className="mt-1">
+              <span className="text-gray-500 text-sm">Đang phát triển...</span>
+            </div>
+          </div>
+        </div>
 
-                        <div>
-                          <label htmlFor="slug" className="block mb-2 font-medium text-gray-700">
-                            Slug <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="slug"
-                            name="slug"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.slug || ''}
-                            required
-                            placeholder="ten-phan-mem"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="price" className="block mb-2 font-medium text-gray-700">
-                            Giá <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="number"
-                            id="price"
-                            name="price"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.price || 0}
-                            required
-                            min="0"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="salePrice" className="block mb-2 font-medium text-gray-700">
-                            Giá khuyến mãi
-                          </label>
-                          <input
-                            type="number"
-                            id="salePrice"
-                            name="salePrice"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.salePrice || 0}
-                            min="0"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="categoryId" className="block mb-2 font-medium text-gray-700">
-                            Danh mục <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            id="categoryId"
-                            name="categoryId"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.categoryId || ''}
-                            required
-                          >
-                            <option value="">Chọn danh mục</option>
-                            <option value="cat-1">Phần mềm doanh nghiệp</option>
-                            <option value="cat-2">Ứng dụng văn phòng</option>
-                            <option value="cat-3">Phần mềm đồ họa</option>
-                            <option value="cat-4">Bảo mật & Antivirus</option>
-                            <option value="cat-5">Ứng dụng giáo dục</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label htmlFor="imageUrl" className="block mb-2 font-medium text-gray-700">
-                            URL Hình ảnh <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="imageUrl"
-                            name="imageUrl"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.imageUrl || ''}
-                            required
-                            placeholder="/images/products/ten-san-pham.jpg"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="version" className="block mb-2 font-medium text-gray-700">
-                            Phiên bản <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="version"
-                            name="version"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.version || '1.0.0'}
-                            required
-                            placeholder="1.0.0"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="size" className="block mb-2 font-medium text-gray-700">
-                            Kích thước <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="size"
-                            name="size"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.size || ''}
-                            required
-                            placeholder="~50MB"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="licenseType" className="block mb-2 font-medium text-gray-700">
-                            Loại giấy phép <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="licenseType"
-                            name="licenseType"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.licenseType || 'MIT'}
-                            required
-                            placeholder="MIT"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="rating" className="block mb-2 font-medium text-gray-700">
-                            Đánh giá (0-5)
-                          </label>
-                          <input
-                            type="number"
-                            id="rating"
-                            name="rating"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.rating || 0}
-                            min="0"
-                            max="5"
-                            step="0.1"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="downloadCount" className="block mb-2 font-medium text-gray-700">
-                            Lượt tải
-                          </label>
-                          <input
-                            type="number"
-                            id="downloadCount"
-                            name="downloadCount"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.downloadCount || 0}
-                            min="0"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="viewCount" className="block mb-2 font-medium text-gray-700">
-                            Lượt xem
-                          </label>
-                          <input
-                            type="number"
-                            id="viewCount"
-                            name="viewCount"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.viewCount || 0}
-                            min="0"
-                          />
-                        </div>
-
-                        <div className="md:col-span-2">
-                          <label htmlFor="description" className="block mb-2 font-medium text-gray-700">
-                            Mô tả ngắn <span className="text-red-500">*</span>
-                          </label>
-                          <textarea
-                            id="description"
-                            name="description"
-                            rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.description || ''}
-                            required
-                          ></textarea>
-                        </div>
-
-                        <div className="md:col-span-2">
-                          <label htmlFor="longDescription" className="block mb-2 font-medium text-gray-700">
-                            Mô tả chi tiết
-                          </label>
-                          <textarea
-                            id="longDescription"
-                            name="longDescription"
-                            rows={6}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.longDescription || ''}
-                          ></textarea>
-                          <p className="text-xs text-gray-500 mt-1">Hỗ trợ HTML để định dạng văn bản</p>
-                        </div>
-
-                        <div className="md:col-span-2">
-                          <label htmlFor="features" className="block mb-2 font-medium text-gray-700">
-                            Tính năng nổi bật
-                          </label>
-                          <textarea
-                            id="features"
-                            name="features"
-                            rows={4}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                            defaultValue={editingProduct?.features ? editingProduct.features.join('\n') : ''}
-                            placeholder="Mỗi tính năng một dòng"
-                          ></textarea>
-                          <p className="text-xs text-gray-500 mt-1">Mỗi dòng là một tính năng</p>
-                        </div>
-
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center">
-                            <input
-                              type="checkbox"
-                              id="isFeatured"
-                              name="isFeatured"
-                              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                              defaultChecked={editingProduct?.isFeatured || false}
-                            />
-                            <label htmlFor="isFeatured" className="ml-2 font-medium text-gray-700">
-                              Sản phẩm nổi bật
-                            </label>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center">
-                            <input
-                              type="checkbox"
-                              id="isNew"
-                              name="isNew"
-                              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
-                              defaultChecked={editingProduct?.isNew || false}
-                            />
-                            <label htmlFor="isNew" className="ml-2 font-medium text-gray-700">
-                              Sản phẩm mới
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 flex space-x-4">
-                        <button
-                          type="submit"
-                          className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                          disabled={isSubmitting}
-                        >
-                          {isSubmitting ? (
-                            <>
-                              <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Đang xử lý...
-                            </>
-                          ) : (
-                            <>
-                              {editingProduct ? 'Cập nhật' : 'Thêm sản phẩm'}
-                            </>
-                          )}
-                        </button>
-                        <button
-                          type="button"
-                          className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-                          onClick={handleCancelEdit}
-                        >
-                          Hủy
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                )}
-
-                {/* Danh sách sản phẩm */}
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Sản phẩm
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Danh mục
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Giá
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Lượt xem/tải
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Trạng thái
-                        </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Hành động
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {isLoading ? (
-                        <tr>
-                          <td colSpan={6} className="px-6 py-4 text-center">
-                            <div className="flex justify-center">
-                              <div className="animate-spin w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full"></div>
-                            </div>
-                          </td>
-                        </tr>
-                      ) : products.length === 0 ? (
-                        <tr>
-                          <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                            Chưa có sản phẩm nào
-                          </td>
-                        </tr>
-                      ) : (
-                        products.map((product) => (
-                          <tr key={product.id} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
-                                  <Image
-                                    width={40}
-                                    height={40}
-                                    src={product.imageUrl}
-                                    alt={product.name}
-                                    className="h-10 w-10 rounded object-cover"
-                                  />
-                                </div>
-                                <div className="ml-4">
-                                  <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                  <div className="text-xs text-gray-500 mt-1">ID: {product.id}</div>
-                                  <div className="text-xs text-gray-500">Version: {product.version}</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">
-                                {
-                                  product.categoryId === 'cat-1' ? 'Phần mềm doanh nghiệp' :
-                                    product.categoryId === 'cat-2' ? 'Ứng dụng văn phòng' :
-                                      product.categoryId === 'cat-3' ? 'Phần mềm đồ họa' :
-                                        product.categoryId === 'cat-4' ? 'Bảo mật & Antivirus' :
-                                          product.categoryId === 'cat-5' ? 'Ứng dụng giáo dục' :
-                                            'Khác'
-                                }
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              {product.price === 0 ? (
-                                <span className="text-green-600 font-medium">Miễn phí</span>
-                              ) : (
-                                <div>
-                                  {product.salePrice && product.salePrice < product.price ? (
-                                    <div>
-                                      <span className="text-green-600 font-medium">{formatCurrency(product.salePrice)}</span>
-                                      <span className="text-xs text-gray-500 line-through ml-2">{formatCurrency(product.price)}</span>
-                                    </div>
-                                  ) : (
-                                    <span className="text-gray-900">{formatCurrency(product.price)}</span>
-                                  )}
-                                </div>
-                              )}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">
-                                <span className="inline-flex items-center">
-                                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                  </svg>
-                                  {product.viewCount || 0}
-                                </span>
-                                <span className="inline-flex items-center ml-3">
-                                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                  </svg>
-                                  {product.downloadCount || 0}
-                                </span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex flex-col space-y-1">
-                                {product.isFeatured && (
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Nổi bật
-                                  </span>
-                                )}
-                                {product.isNew && (
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Mới
-                                  </span>
-                                )}
-                                {!product.isFeatured && !product.isNew && (
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    Thường
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={() => handleEditClick(product)}
-                                  className="text-blue-600 hover:text-blue-900"
-                                >
-                                  Sửa
-                                </button>
-                                <span className="text-gray-300">|</span>
-                                <button
-                                  onClick={() => handleDeleteClick(product.id.toString())}
-                                  className="text-red-600 hover:text-red-900"
-                                >
-                                  Xóa
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Categories Management */}
-              <div id="categories" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Quản lý danh mục</h2>
-                <p className="text-gray-500 mb-4">Quản lý danh mục sản phẩm trên hệ thống</p>
-
-                <button className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-bold mb-4">Quản lý nội dung</h2>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/admin/products" className="text-primary-600 hover:text-primary-800 flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
-                  Thêm danh mục mới
-                </button>
+                  Quản lý sản phẩm
+                </Link>
+              </li>
+              <li>
+                <span className="text-gray-400 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  Quản lý danh mục (đang phát triển)
+                </span>
+              </li>
+            </ul>
+          </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
-                      <h3 className="font-bold">Văn phòng</h3>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">4 sản phẩm</span>
-                    </div>
-                    <div className="p-4">
-                      <p className="text-sm text-gray-600 mb-4">Phần mềm và giải pháp văn phòng</p>
-                      <div className="flex space-x-2">
-                        <button className="text-primary-600 hover:text-primary-900 text-sm">Sửa</button>
-                        <button className="text-red-600 hover:text-red-900 text-sm">Xóa</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
-                      <h3 className="font-bold">Thiết kế</h3>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">2 sản phẩm</span>
-                    </div>
-                    <div className="p-4">
-                      <p className="text-sm text-gray-600 mb-4">Phần mềm thiết kế đồ họa chuyên nghiệp</p>
-                      <div className="flex space-x-2">
-                        <button className="text-primary-600 hover:text-primary-900 text-sm">Sửa</button>
-                        <button className="text-red-600 hover:text-red-900 text-sm">Xóa</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-bold mb-4">Quản lý hệ thống</h2>
+            <ul className="space-y-2">
+              <li>
+                <span className="text-gray-400 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                  Quản lý người dùng (đang phát triển)
+                </span>
+              </li>
+              <li>
+                <span className="text-gray-400 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Cài đặt hệ thống (đang phát triển)
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Modal xác nhận xóa */}
       {isDeleting && (
@@ -931,5 +393,7 @@ export default function AdminPage() {
         </div>
       )}
     </div>
-  )
-} 
+  );
+}
+
+export default withAdminAuth(AdminDashboard); 
