@@ -1,51 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { Product } from '@/models/ProductModel';
-import fs from 'fs/promises';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import fs from 'fs';
 import path from 'path';
 
-const productsPath = path.join(process.cwd(), 'src/data/products.json');
+// Đường dẫn đến file lưu trữ dữ liệu
+const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
-// Hàm helper để đọc dữ liệu sản phẩm từ file JSON
-async function getProducts(): Promise<Product[]> {
+// Hàm đọc dữ liệu từ file JSON
+const getProducts = () => {
     try {
-        const data = await fs.readFile(productsPath, 'utf8');
-        return JSON.parse(data);
+        if (!fs.existsSync(dataFilePath)) {
+            fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
+            return [];
+        }
+        const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+        return JSON.parse(fileContent);
     } catch (error) {
-        console.error('Error reading products:', error);
+        console.error('Error reading products data:', error);
         return [];
     }
-}
+};
 
-// Hàm helper để lưu dữ liệu sản phẩm vào file JSON
-async function saveProducts(products: Product[]): Promise<boolean> {
+// Hàm lưu dữ liệu vào file JSON
+const saveProducts = (products: any[]) => {
     try {
-        await fs.writeFile(productsPath, JSON.stringify(products, null, 2), 'utf8');
-        return true;
+        const dirPath = path.dirname(dataFilePath);
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+        fs.writeFileSync(dataFilePath, JSON.stringify(products, null, 2), 'utf8');
     } catch (error) {
-        console.error('Error saving products:', error);
-        return false;
+        console.error('Error saving products data:', error);
     }
-}
+};
 
-// Hàm kiểm tra quyền admin
-async function isAdmin(request: NextRequest) {
-    const session = await getServerSession();
-    return session?.user?.email === 'xlab.rnd@gmail.com';
-}
-
-// GET: Lấy thông tin chi tiết một sản phẩm
+// GET - Lấy chi tiết sản phẩm theo ID
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    if (!await isAdmin(request)) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     try {
-        const products = await getProducts();
-        const product = products.find(p => p.id === params.id);
+        const session = await getServerSession(authOptions);
+
+        if (!session || !(session.user as any).isAdmin) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
+        }
+
+        const productId = params.id;
+        const products = getProducts();
+        const product = products.find((p) => p.id === productId);
 
         if (!product) {
             return NextResponse.json(
@@ -64,20 +71,24 @@ export async function GET(
     }
 }
 
-// PUT: Cập nhật thông tin sản phẩm
+// PUT - Cập nhật sản phẩm
 export async function PUT(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    if (!await isAdmin(request)) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     try {
-        const productData = await request.json();
-        const products = await getProducts();
+        const session = await getServerSession(authOptions);
 
-        const productIndex = products.findIndex(p => p.id === params.id);
+        if (!session || !(session.user as any).isAdmin) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
+        }
+
+        const productId = params.id;
+        const products = getProducts();
+        const productIndex = products.findIndex((p) => p.id === productId);
 
         if (productIndex === -1) {
             return NextResponse.json(
@@ -86,26 +97,18 @@ export async function PUT(
             );
         }
 
+        const productData = await request.json();
+
         // Cập nhật thông tin sản phẩm
-        const updatedProduct: Product = {
+        products[productIndex] = {
             ...products[productIndex],
             ...productData,
-            id: params.id, // Đảm bảo ID không thay đổi
-            updatedAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         };
 
-        products[productIndex] = updatedProduct;
+        saveProducts(products);
 
-        const success = await saveProducts(products);
-
-        if (success) {
-            return NextResponse.json(updatedProduct);
-        } else {
-            return NextResponse.json(
-                { error: 'Failed to update product' },
-                { status: 500 }
-            );
-        }
+        return NextResponse.json(products[productIndex]);
     } catch (error) {
         console.error('Error updating product:', error);
         return NextResponse.json(
@@ -115,39 +118,38 @@ export async function PUT(
     }
 }
 
-// DELETE: Xóa sản phẩm
+// DELETE - Xóa sản phẩm
 export async function DELETE(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
-    if (!await isAdmin(request)) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     try {
-        const products = await getProducts();
-        const productIndex = products.findIndex(p => p.id === params.id);
+        const session = await getServerSession(authOptions);
 
-        if (productIndex === -1) {
+        if (!session || !(session.user as any).isAdmin) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
+        }
+
+        const productId = params.id;
+        const products = getProducts();
+        const newProducts = products.filter((p) => p.id !== productId);
+
+        if (products.length === newProducts.length) {
             return NextResponse.json(
                 { error: 'Product not found' },
                 { status: 404 }
             );
         }
 
-        // Xóa sản phẩm khỏi danh sách
-        products.splice(productIndex, 1);
+        saveProducts(newProducts);
 
-        const success = await saveProducts(products);
-
-        if (success) {
-            return NextResponse.json({ message: 'Product deleted successfully' });
-        } else {
-            return NextResponse.json(
-                { error: 'Failed to delete product' },
-                { status: 500 }
-            );
-        }
+        return NextResponse.json(
+            { message: 'Product deleted successfully' },
+            { status: 200 }
+        );
     } catch (error) {
         console.error('Error deleting product:', error);
         return NextResponse.json(

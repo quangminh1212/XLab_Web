@@ -1,6 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+import { SessionStrategy } from "next-auth/core/types";
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -18,7 +20,7 @@ declare module "next-auth" {
   }
 }
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
@@ -37,7 +39,7 @@ const handler = NextAuth({
     error: "/auth/error",
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.id as string;
 
@@ -52,13 +54,21 @@ const handler = NextAuth({
       }
       return session;
     },
-    async jwt({ token, user, account, trigger, session }) {
+    async jwt({ token, user, account, trigger, session }: {
+      token: JWT;
+      user?: any;
+      account?: any;
+      trigger?: string;
+      session?: any;
+    }) {
       if (user && account) {
         token.id = user.id;
         token.provider = account.provider;
 
         if (token.email === 'xlab.rnd@gmail.com') {
           token.isAdmin = true;
+        } else {
+          token.isAdmin = false;
         }
 
         if (!token.memberSince) {
@@ -77,7 +87,7 @@ const handler = NextAuth({
 
       return token;
     },
-    async signIn({ account, profile }) {
+    async signIn({ user, account, profile, email, credentials }) {
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
@@ -87,7 +97,7 @@ const handler = NextAuth({
   debug: process.env.NODE_ENV === "development",
   secret: process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as SessionStrategy,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   // Sửa cấu hình cookie để đảm bảo hoạt động đúng với Google
@@ -123,6 +133,8 @@ const handler = NextAuth({
   jwt: {
     maxAge: 60 * 60 * 24 * 30, // 30 days
   }
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }; 
