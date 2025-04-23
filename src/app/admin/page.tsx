@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Product } from '@/types';
+import { Product } from '@/models/ProductModel';
 import { ProductImage } from '@/components/ProductImage';
 import withAdminAuth from '@/components/withAdminAuth';
 
@@ -13,7 +13,7 @@ function AdminDashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -77,6 +77,7 @@ function AdminDashboard() {
         const response = await fetch('/api/admin/products');
         if (response.ok) {
           const products = await response.json();
+          setProducts(products);
           setStats(prev => ({ ...prev, products: products.length }));
         }
       } catch (error) {
@@ -250,95 +251,103 @@ function AdminDashboard() {
       <div className="bg-primary-700 text-white p-6">
         <div className="container mx-auto">
           <h1 className="text-3xl font-bold">Bảng điều khiển Admin</h1>
-          <p className="mt-2">Xin chào, {session?.user?.name}!</p>
+          <p className="mt-2">Xin chào, {session?.user?.name || 'Admin'}!</p>
         </div>
       </div>
 
       <div className="container mx-auto py-8 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-gray-500 text-sm font-medium uppercase">Sản phẩm</h2>
-            <p className="mt-2 text-3xl font-bold">{stats.products}</p>
-            <div className="mt-1">
-              <Link href="/admin/products" className="text-primary-600 hover:text-primary-800 text-sm">
-                Quản lý sản phẩm →
-              </Link>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-gray-500 text-sm font-medium uppercase">Sản phẩm</h2>
+                <p className="mt-2 text-3xl font-bold">{stats.products}</p>
+                <div className="mt-1">
+                  <Link href="/admin/products" className="text-primary-600 hover:text-primary-800 text-sm">
+                    Quản lý sản phẩm →
+                  </Link>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-gray-500 text-sm font-medium uppercase">Người dùng</h2>
+                <p className="mt-2 text-3xl font-bold">{stats.users}</p>
+                <div className="mt-1">
+                  <span className="text-gray-500 text-sm">Đang phát triển...</span>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-gray-500 text-sm font-medium uppercase">Đơn hàng</h2>
+                <p className="mt-2 text-3xl font-bold">{stats.orders}</p>
+                <div className="mt-1">
+                  <span className="text-gray-500 text-sm">Đang phát triển...</span>
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-gray-500 text-sm font-medium uppercase">Doanh thu</h2>
+                <p className="mt-2 text-3xl font-bold">
+                  {formatCurrency(stats.revenue)}
+                </p>
+                <div className="mt-1">
+                  <span className="text-gray-500 text-sm">Đang phát triển...</span>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-gray-500 text-sm font-medium uppercase">Người dùng</h2>
-            <p className="mt-2 text-3xl font-bold">{stats.users}</p>
-            <div className="mt-1">
-              <span className="text-gray-500 text-sm">Đang phát triển...</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Quản lý nội dung</h2>
+                <ul className="space-y-2">
+                  <li>
+                    <Link href="/admin/products" className="text-primary-600 hover:text-primary-800 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      Quản lý sản phẩm
+                    </Link>
+                  </li>
+                  <li>
+                    <span className="text-gray-400 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      Quản lý danh mục (đang phát triển)
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-4">Quản lý hệ thống</h2>
+                <ul className="space-y-2">
+                  <li>
+                    <span className="text-gray-400 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      Quản lý người dùng (đang phát triển)
+                    </span>
+                  </li>
+                  <li>
+                    <span className="text-gray-400 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Cài đặt hệ thống (đang phát triển)
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-gray-500 text-sm font-medium uppercase">Đơn hàng</h2>
-            <p className="mt-2 text-3xl font-bold">{stats.orders}</p>
-            <div className="mt-1">
-              <span className="text-gray-500 text-sm">Đang phát triển...</span>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-gray-500 text-sm font-medium uppercase">Doanh thu</h2>
-            <p className="mt-2 text-3xl font-bold">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(stats.revenue)}
-            </p>
-            <div className="mt-1">
-              <span className="text-gray-500 text-sm">Đang phát triển...</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Quản lý nội dung</h2>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/admin/products" className="text-primary-600 hover:text-primary-800 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                  Quản lý sản phẩm
-                </Link>
-              </li>
-              <li>
-                <span className="text-gray-400 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                  Quản lý danh mục (đang phát triển)
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Quản lý hệ thống</h2>
-            <ul className="space-y-2">
-              <li>
-                <span className="text-gray-400 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                  Quản lý người dùng (đang phát triển)
-                </span>
-              </li>
-              <li>
-                <span className="text-gray-400 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Cài đặt hệ thống (đang phát triển)
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+          </>
+        )}
       </div>
 
       {/* Modal xác nhận xóa */}
