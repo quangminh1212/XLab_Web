@@ -84,10 +84,10 @@ const handler = NextAuth({
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  // Thêm cấu hình cookie để đảm bảo cookie được lưu trữ đúng
+  // Sửa cấu hình cookie để đảm bảo hoạt động đúng với Google
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
@@ -97,7 +97,7 @@ const handler = NextAuth({
       }
     },
     callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.callback-url` : `next-auth.callback-url`,
       options: {
         sameSite: "lax",
         path: "/",
@@ -105,7 +105,7 @@ const handler = NextAuth({
       }
     },
     csrfToken: {
-      name: `__Host-next-auth.csrf-token`,
+      name: process.env.NODE_ENV === "production" ? `__Host-next-auth.csrf-token` : `next-auth.csrf-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
