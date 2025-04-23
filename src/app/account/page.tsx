@@ -255,6 +255,12 @@ export default function AccountPage() {
     setImageError(true);
   };
 
+  // Hàm xử lý đăng xuất
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/');
+  };
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -867,7 +873,7 @@ export default function AccountPage() {
                       <p className="text-sm text-gray-600 mt-1">Kết thúc phiên đăng nhập hiện tại của bạn</p>
                     </div>
                     <button
-                      onClick={() => signOut({ callbackUrl: '/' })}
+                      onClick={handleSignOut}
                       className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition flex items-center"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
