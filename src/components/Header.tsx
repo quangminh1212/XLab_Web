@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession, signOut, signIn } from 'next-auth/react'
 import { siteConfig } from '@/config/siteConfig'
 
 export default function Header() {
@@ -81,10 +81,119 @@ export default function Header() {
     }
   }
 
+  const handleSignIn = async () => {
+    try {
+      console.log('Signing in...');
+      await signIn(undefined, { callbackUrl: '/account' });
+    } catch (error) {
+      console.error("Error signing in:", error);
+    }
+  }
+
   const navigateToAccount = () => {
     setUserMenuOpen(false); // Đóng dropdown menu
     router.push('/account');
   }
+
+  // Render trạng thái đăng nhập
+  const renderAuthStatus = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center space-x-1 bg-gray-100 px-3 py-1.5 rounded-full">
+          <div className="animate-spin h-4 w-4 border-2 border-primary-500 rounded-full border-t-transparent"></div>
+          <span className="text-xs text-gray-500">Đang tải...</span>
+        </div>
+      );
+    }
+    
+    if (isAuthenticated && session) {
+      return (
+        <div className="flex items-center justify-center space-x-3">
+          {/* Thông báo */}
+          <button
+            className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors relative flex items-center justify-center"
+            aria-label="Thông báo"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-primary-500 ring-2 ring-white"></span>
+          </button>
+
+          {/* User dropdown */}
+          <div className="relative">
+            <button
+              onClick={toggleUserMenu}
+              className="flex items-center justify-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all"
+            >
+              {session.user?.image ? (
+                <Image
+                  src={session.user.image}
+                  alt={session.user.name || 'Avatar'}
+                  width={36}
+                  height={36}
+                  className="rounded-full shadow-sm"
+                />
+              ) : (
+                <div className="w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
+                  {session.user?.name?.charAt(0) || 'U'}
+                </div>
+              )}
+              <span className="hidden sm:inline-block text-sm font-medium text-gray-700 text-center">
+                {session.user?.name?.split(' ')[0] || 'User'}
+              </span>
+              <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {userMenuOpen && (
+              <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black/5 z-50">
+                <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
+                  Đăng nhập bằng {session.user?.email}
+                </div>
+                <button 
+                  onClick={navigateToAccount}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
+                  Tài khoản của tôi
+                </button>
+                <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
+                  Cài đặt
+                </Link>
+                <div className="border-t border-gray-100"></div>
+                <button
+                  onClick={handleSignOut}
+                  className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="flex items-center justify-center space-x-3">
+        <button
+          onClick={handleSignIn}
+          className="group flex items-center justify-center space-x-1 px-4 py-1.5 bg-primary-500 text-white rounded-full hover:bg-primary-600 hover:shadow-md transition-all font-medium text-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 group-hover:animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          <span>Đăng nhập</span>
+        </button>
+        <Link
+          href="/register"
+          className="px-4 py-1.5 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 hover:shadow-sm transition-all font-medium text-center hidden sm:inline-block"
+        >
+          Đăng ký
+        </Link>
+      </div>
+    );
+  };
 
   return (
     <header
@@ -151,92 +260,8 @@ export default function Header() {
               </svg>
             </button>
 
-            {isLoading ? (
-              // Hiển thị rõ ràng trạng thái đang loading với text
-              <div className="flex items-center space-x-1">
-                <div className="animate-spin h-4 w-4 border-2 border-primary-500 rounded-full border-t-transparent"></div>
-                <span className="text-xs text-gray-500">Đang tải...</span>
-              </div>
-            ) : isAuthenticated && session ? (
-              <div className="flex items-center justify-center space-x-3">
-                {/* Thông báo */}
-                <button
-                  className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors relative flex items-center justify-center"
-                  aria-label="Thông báo"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                  </svg>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-primary-500 ring-2 ring-white"></span>
-                </button>
-
-                {/* User dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={toggleUserMenu}
-                    className="flex items-center justify-center space-x-2 focus:outline-none p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all"
-                  >
-                    {session.user?.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.name || 'Avatar'}
-                        width={36}
-                        height={36}
-                        className="rounded-full shadow-sm"
-                      />
-                    ) : (
-                      <div className="w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
-                        {session.user?.name?.charAt(0) || 'U'}
-                      </div>
-                    )}
-                    <span className="hidden sm:inline-block text-sm font-medium text-gray-700 text-center">
-                      {session.user?.name?.split(' ')[0] || 'User'}
-                    </span>
-                    <svg className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {userMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black/5 z-50">
-                      <div className="px-4 py-2 text-xs text-gray-500 border-b text-center">
-                        Đăng nhập bằng {session.user?.email}
-                      </div>
-                      <button 
-                        onClick={navigateToAccount}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
-                        Tài khoản của tôi
-                      </button>
-                      <Link href="/account/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 text-center">
-                        Cài đặt
-                      </Link>
-                      <div className="border-t border-gray-100"></div>
-                      <button
-                        onClick={handleSignOut}
-                        className="block w-full text-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                      >
-                        Đăng xuất
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="hidden sm:flex items-center justify-center space-x-3">
-                <Link
-                  href="/login"
-                  className="px-5 py-2 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 hover:shadow-sm transition-all font-medium text-center"
-                >
-                  Đăng nhập
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-5 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 hover:shadow-md transition-all font-medium text-center"
-                >
-                  Đăng ký
-                </Link>
-              </div>
-            )}
+            {/* Phần hiển thị trạng thái đăng nhập */}
+            {renderAuthStatus()}
 
             {/* Hamburger menu for mobile */}
             <button
@@ -255,6 +280,32 @@ export default function Header() {
               )}
             </button>
           </div>
+        </div>
+
+        {/* Status indicator bar */}
+        <div className="w-full flex justify-center">
+          {isLoading && (
+            <div className="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-b-md inline-flex items-center space-x-1 shadow-sm">
+              <div className="animate-spin h-3 w-3 border-2 border-yellow-500 rounded-full border-t-transparent"></div>
+              <span>Đang kiểm tra trạng thái đăng nhập...</span>
+            </div>
+          )}
+          {!isLoading && isAuthenticated && (
+            <div className="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-b-md inline-flex items-center space-x-1 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Đã đăng nhập: {session?.user?.email}</span>
+            </div>
+          )}
+          {!isLoading && !isAuthenticated && (
+            <div className="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-b-md inline-flex items-center space-x-1 shadow-sm cursor-pointer hover:bg-blue-200" onClick={handleSignIn}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+              </svg>
+              <span>Bạn chưa đăng nhập - Nhấp để đăng nhập</span>
+            </div>
+          )}
         </div>
 
         {/* Mobile menu */}
@@ -292,15 +343,18 @@ export default function Header() {
 
             {!isLoading && !isAuthenticated && (
               <div className="flex space-x-3 mt-3 px-3">
-                <Link
-                  href="/login"
-                  className="flex-1 px-4 py-2.5 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors font-medium"
+                <button
+                  onClick={handleSignIn}
+                  className="flex-1 flex items-center justify-center space-x-1 px-4 py-2.5 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors font-medium"
                 >
-                  Đăng nhập
-                </Link>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Đăng nhập</span>
+                </button>
                 <Link
                   href="/register"
-                  className="flex-1 px-4 py-2.5 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors font-medium"
+                  className="flex-1 px-4 py-2.5 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors font-medium"
                 >
                   Đăng ký
                 </Link>
