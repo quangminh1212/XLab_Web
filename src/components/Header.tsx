@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
@@ -15,16 +15,38 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [greeting, setGreeting] = useState('')
   const router = useRouter()
+  const [forceShowLogin, setForceShowLogin] = useState(false)
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Đơn giản hóa logic hiển thị, loại bỏ kiểm tra sessionChecked không cần thiết
   // Sử dụng trực tiếp status từ useSession
-  const isLoading = status === 'loading'
+  const isLoading = status === 'loading' && !forceShowLogin
   const isAuthenticated = status === 'authenticated' && !!session
+
+  // Thêm timeout để tránh trạng thái loading kéo dài
+  useEffect(() => {
+    if (status === 'loading') {
+      loadingTimeoutRef.current = setTimeout(() => {
+        console.log('Session loading timeout reached, forcing login UI');
+        setForceShowLogin(true);
+      }, 5000); // 5 giây timeout
+    } else {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    }
+    
+    return () => {
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, [status]);
 
   // Debug session state
   useEffect(() => {
-    console.log('Header session state:', { status, session, isAuthenticated });
-  }, [status, session, isAuthenticated]);
+    console.log('Header session state:', { status, session, isAuthenticated, forceShowLogin });
+  }, [status, session, isAuthenticated, forceShowLogin]);
 
   // Xác định lời chào và thiết lập scroll listener
   useEffect(() => {
@@ -102,6 +124,12 @@ export default function Header() {
         <div className="flex items-center space-x-1 bg-gray-100 px-3 py-1.5 rounded-full">
           <div className="animate-spin h-4 w-4 border-2 border-primary-500 rounded-full border-t-transparent"></div>
           <span className="text-xs text-gray-500">Đang tải...</span>
+          <button 
+            onClick={() => setForceShowLogin(true)}
+            className="ml-2 text-xs text-primary-600 hover:underline"
+          >
+            Bỏ qua
+          </button>
         </div>
       );
     }
@@ -288,9 +316,15 @@ export default function Header() {
             <div className="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-b-md inline-flex items-center space-x-1 shadow-sm">
               <div className="animate-spin h-3 w-3 border-2 border-yellow-500 rounded-full border-t-transparent"></div>
               <span>Đang kiểm tra trạng thái đăng nhập...</span>
+              <button 
+                onClick={() => setForceShowLogin(true)}
+                className="ml-2 text-xs text-yellow-800 hover:text-yellow-950 hover:underline"
+              >
+                Bỏ qua
+              </button>
             </div>
           )}
-          {!isLoading && isAuthenticated && (
+          {(!isLoading || forceShowLogin) && isAuthenticated && (
             <div className="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-b-md inline-flex items-center space-x-1 shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -298,7 +332,7 @@ export default function Header() {
               <span>Đã đăng nhập: {session?.user?.email}</span>
             </div>
           )}
-          {!isLoading && !isAuthenticated && (
+          {(!isLoading || forceShowLogin) && !isAuthenticated && (
             <div className="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-b-md inline-flex items-center space-x-1 shadow-sm cursor-pointer hover:bg-blue-200" onClick={handleSignIn}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
@@ -341,7 +375,7 @@ export default function Header() {
               </Link>
             )}
 
-            {!isLoading && !isAuthenticated && (
+            {(!isLoading || forceShowLogin) && !isAuthenticated && (
               <div className="flex space-x-3 mt-3 px-3">
                 <button
                   onClick={handleSignIn}

@@ -8,12 +8,18 @@ export default function SessionProvider({ children }: { children: React.ReactNod
   useEffect(() => {
     console.log('SessionProvider mounted');
     
-    // Force a session refresh on component mount
+    // Immediately refresh session on client-side to avoid stale data
     const refreshSession = async () => {
       try {
-        const event = new Event('visibilitychange');
-        document.dispatchEvent(event);
-        console.log('Session refresh triggered');
+        // Force refresh by triggering visibility change event
+        document.dispatchEvent(new Event('visibilitychange'));
+        console.log('Initial session refresh triggered');
+        
+        // Additional fallback refresh after 1 second
+        setTimeout(() => {
+          document.dispatchEvent(new Event('visibilitychange'));
+          console.log('Fallback session refresh triggered');
+        }, 1000);
       } catch (error) {
         console.error('Error triggering session refresh:', error);
       }
@@ -24,9 +30,8 @@ export default function SessionProvider({ children }: { children: React.ReactNod
   
   return (
     <NextAuthSessionProvider 
-      refetchInterval={5} // Refresh session every 5 seconds when active
+      refetchInterval={2} // Refresh session every 2 seconds while active (more aggressive)
       refetchOnWindowFocus={true}
-      refetchWhenOffline={false}
     >
       {children}
     </NextAuthSessionProvider>
