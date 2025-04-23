@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import SessionProvider from '@/components/SessionProvider'
+import SessionProviderWrapper from '@/components/SessionProviderWrapper'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
 
@@ -101,7 +101,7 @@ export default function RootLayout({
           </div>
         </noscript>
 
-        <SessionProvider>
+        <SessionProviderWrapper>
           <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
             Bỏ qua phần điều hướng
           </a>
@@ -110,7 +110,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-        </SessionProvider>
+        </SessionProviderWrapper>
         <Analytics />
       </body>
     </html>
