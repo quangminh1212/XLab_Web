@@ -19,9 +19,22 @@ export default function withAdminAuth<P extends object>(
                 return;
             }
 
-            if (!session.user.isAdmin) {
-                router.push('/');
+            // Kiểm tra nếu email là xlab.rnd@gmail.com thì là admin
+            if (session.user.email === 'xlab.rnd@gmail.com') {
+                console.log('User is admin (by email check)');
+                setIsAdmin(true);
+                return;
             }
+
+            // Kiểm tra cả giá trị isAdmin từ session
+            if (session.user.isAdmin) {
+                console.log('User is admin (by isAdmin flag)');
+                setIsAdmin(true);
+                return;
+            }
+
+            console.log('User is not admin, redirecting to home');
+            router.push('/');
         }, [session, status, router]);
 
         if (status === 'loading') {
@@ -32,8 +45,12 @@ export default function withAdminAuth<P extends object>(
             );
         }
 
-        if (!session?.user?.isAdmin) {
-            return null;
+        if (!isAdmin) {
+            return (
+                <div className="min-h-screen flex items-center justify-center">
+                    <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+                </div>
+            );
         }
 
         return <WrappedComponent {...props} />;

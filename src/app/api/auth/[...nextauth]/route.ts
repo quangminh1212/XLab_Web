@@ -46,7 +46,13 @@ export const authOptions: NextAuthOptions = {
         if (token.customName) session.user.customName = token.customName as boolean;
         if (token.phone) session.user.phone = token.phone as string;
         if (token.memberSince) session.user.memberSince = token.memberSince as string;
-        if (token.isAdmin) session.user.isAdmin = token.isAdmin as boolean;
+        if (token.isAdmin) session.user.isAdmin = Boolean(token.isAdmin);
+
+        console.log('Session data after processing:', {
+          id: session.user.id,
+          email: session.user.email,
+          isAdmin: session.user.isAdmin
+        });
 
         if (token.customName && token.name) {
           session.user.name = token.name as string;
@@ -65,7 +71,12 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.provider = account.provider;
 
+        if (user.email) {
+          token.email = user.email;
+        }
+
         if (token.email === 'xlab.rnd@gmail.com') {
+          console.log('Setting admin rights for', token.email);
           token.isAdmin = true;
         } else {
           token.isAdmin = false;
@@ -76,6 +87,12 @@ export const authOptions: NextAuthOptions = {
           token.memberSince = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         }
       }
+
+      console.log('JWT token data:', {
+        id: token.id,
+        email: token.email,
+        isAdmin: token.isAdmin
+      });
 
       if (trigger === "update" && session) {
         if (session.name) {
