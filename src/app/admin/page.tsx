@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
+import { ProductImage } from '@/components/ProductImage';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -394,53 +395,77 @@ export default function AdminPage() {
                     <form onSubmit={editingProduct ? handleUpdate : handleSubmit}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
+                          <label htmlFor="name" className="block mb-2 font-medium text-gray-700">
                             Tên phần mềm <span className="text-red-500">*</span>
                           </label>
                           <input
                             type="text"
-                            id="product-name"
+                            id="name"
                             name="name"
-                            placeholder="Ví dụ: XLab Office Suite"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             defaultValue={editingProduct?.name || ''}
+                            required
                           />
                         </div>
 
                         <div>
-                          <label htmlFor="product-slug" className="block mb-2 font-medium text-gray-700">
+                          <label htmlFor="slug" className="block mb-2 font-medium text-gray-700">
                             Slug <span className="text-red-500">*</span>
                           </label>
                           <input
                             type="text"
-                            id="product-slug"
+                            id="slug"
                             name="slug"
-                            placeholder="Ví dụ: xlab-office-suite"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             defaultValue={editingProduct?.slug || ''}
-                            readOnly={!!editingProduct}
+                            required
+                            placeholder="ten-phan-mem"
                           />
-                          {editingProduct && (
-                            <p className="text-xs text-gray-500 mt-1">Slug không thể thay đổi sau khi tạo</p>
-                          )}
                         </div>
 
                         <div>
-                          <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
+                          <label htmlFor="price" className="block mb-2 font-medium text-gray-700">
+                            Giá <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="number"
+                            id="price"
+                            name="price"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.price || 0}
+                            required
+                            min="0"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="salePrice" className="block mb-2 font-medium text-gray-700">
+                            Giá khuyến mãi
+                          </label>
+                          <input
+                            type="number"
+                            id="salePrice"
+                            name="salePrice"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.salePrice || 0}
+                            min="0"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="categoryId" className="block mb-2 font-medium text-gray-700">
                             Danh mục <span className="text-red-500">*</span>
                           </label>
                           <select
-                            id="product-category"
+                            id="categoryId"
                             name="categoryId"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             defaultValue={editingProduct?.categoryId || ''}
+                            required
                           >
-                            <option value="">-- Chọn danh mục --</option>
+                            <option value="">Chọn danh mục</option>
                             <option value="cat-1">Phần mềm doanh nghiệp</option>
-                            <option value="cat-2">Phần mềm văn phòng</option>
+                            <option value="cat-2">Ứng dụng văn phòng</option>
                             <option value="cat-3">Phần mềm đồ họa</option>
                             <option value="cat-4">Bảo mật & Antivirus</option>
                             <option value="cat-5">Ứng dụng giáo dục</option>
@@ -448,191 +473,209 @@ export default function AdminPage() {
                         </div>
 
                         <div>
-                          <label htmlFor="product-price" className="block mb-2 font-medium text-gray-700">
-                            Giá (VNĐ) <span className="text-red-500">*</span>
+                          <label htmlFor="imageUrl" className="block mb-2 font-medium text-gray-700">
+                            URL Hình ảnh <span className="text-red-500">*</span>
                           </label>
                           <input
-                            type="number"
-                            id="product-price"
-                            name="price"
-                            placeholder="Ví dụ: 1200000"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            type="text"
+                            id="imageUrl"
+                            name="imageUrl"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.imageUrl || ''}
                             required
-                            defaultValue={editingProduct?.price || ''}
+                            placeholder="/images/products/ten-san-pham.jpg"
                           />
                         </div>
 
                         <div>
-                          <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
-                            Giá khuyến mãi (VNĐ)
-                          </label>
-                          <input
-                            type="number"
-                            id="product-sale-price"
-                            name="salePrice"
-                            placeholder="Để trống nếu không có khuyến mãi"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            defaultValue={editingProduct?.salePrice || ''}
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="product-version" className="block mb-2 font-medium text-gray-700">
+                          <label htmlFor="version" className="block mb-2 font-medium text-gray-700">
                             Phiên bản <span className="text-red-500">*</span>
                           </label>
                           <input
                             type="text"
-                            id="product-version"
+                            id="version"
                             name="version"
-                            placeholder="Ví dụ: 1.0.0"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.version || '1.0.0'}
                             required
-                            defaultValue={editingProduct?.version || ''}
+                            placeholder="1.0.0"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="size" className="block mb-2 font-medium text-gray-700">
+                            Kích thước <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="size"
+                            name="size"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.size || ''}
+                            required
+                            placeholder="~50MB"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="licenseType" className="block mb-2 font-medium text-gray-700">
+                            Loại giấy phép <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="licenseType"
+                            name="licenseType"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.licenseType || 'MIT'}
+                            required
+                            placeholder="MIT"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="rating" className="block mb-2 font-medium text-gray-700">
+                            Đánh giá (0-5)
+                          </label>
+                          <input
+                            type="number"
+                            id="rating"
+                            name="rating"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.rating || 0}
+                            min="0"
+                            max="5"
+                            step="0.1"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="downloadCount" className="block mb-2 font-medium text-gray-700">
+                            Lượt tải
+                          </label>
+                          <input
+                            type="number"
+                            id="downloadCount"
+                            name="downloadCount"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.downloadCount || 0}
+                            min="0"
+                          />
+                        </div>
+
+                        <div>
+                          <label htmlFor="viewCount" className="block mb-2 font-medium text-gray-700">
+                            Lượt xem
+                          </label>
+                          <input
+                            type="number"
+                            id="viewCount"
+                            name="viewCount"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.viewCount || 0}
+                            min="0"
                           />
                         </div>
 
                         <div className="md:col-span-2">
-                          <label htmlFor="product-description" className="block mb-2 font-medium text-gray-700">
+                          <label htmlFor="description" className="block mb-2 font-medium text-gray-700">
                             Mô tả ngắn <span className="text-red-500">*</span>
                           </label>
                           <textarea
-                            id="product-description"
+                            id="description"
                             name="description"
                             rows={3}
-                            placeholder="Mô tả ngắn gọn về phần mềm của bạn"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             defaultValue={editingProduct?.description || ''}
+                            required
                           ></textarea>
                         </div>
 
                         <div className="md:col-span-2">
-                          <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
-                            Mô tả chi tiết <span className="text-red-500">*</span>
+                          <label htmlFor="longDescription" className="block mb-2 font-medium text-gray-700">
+                            Mô tả chi tiết
                           </label>
                           <textarea
-                            id="product-long-description"
+                            id="longDescription"
                             name="longDescription"
                             rows={6}
-                            placeholder="Mô tả chi tiết về tính năng, lợi ích của phần mềm"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             defaultValue={editingProduct?.longDescription || ''}
                           ></textarea>
+                          <p className="text-xs text-gray-500 mt-1">Hỗ trợ HTML để định dạng văn bản</p>
                         </div>
 
-                        <div>
-                          <label htmlFor="product-image-url" className="block mb-2 font-medium text-gray-700">
-                            URL hình ảnh <span className="text-red-500">*</span>
+                        <div className="md:col-span-2">
+                          <label htmlFor="features" className="block mb-2 font-medium text-gray-700">
+                            Tính năng nổi bật
                           </label>
-                          <input
-                            type="text"
-                            id="product-image-url"
-                            name="imageUrl"
-                            placeholder="/images/products/example.jpg"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                            defaultValue={editingProduct?.imageUrl || ''}
-                          />
+                          <textarea
+                            id="features"
+                            name="features"
+                            rows={4}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            defaultValue={editingProduct?.features ? editingProduct.features.join('\n') : ''}
+                            placeholder="Mỗi tính năng một dòng"
+                          ></textarea>
+                          <p className="text-xs text-gray-500 mt-1">Mỗi dòng là một tính năng</p>
                         </div>
 
-                        <div>
-                          <label htmlFor="product-size" className="block mb-2 font-medium text-gray-700">
-                            Dung lượng <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="product-size"
-                            name="size"
-                            placeholder="Ví dụ: 50MB"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                            defaultValue={editingProduct?.size || ''}
-                          />
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center">
+                            <input
+                              type="checkbox"
+                              id="isFeatured"
+                              name="isFeatured"
+                              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                              defaultChecked={editingProduct?.isFeatured || false}
+                            />
+                            <label htmlFor="isFeatured" className="ml-2 font-medium text-gray-700">
+                              Sản phẩm nổi bật
+                            </label>
+                          </div>
                         </div>
 
-                        <div>
-                          <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
-                            Loại giấy phép <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            id="product-license"
-                            name="licenseType"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            required
-                            defaultValue={editingProduct?.licenseType || ''}
-                          >
-                            <option value="">-- Chọn loại giấy phép --</option>
-                            <option value="Personal">Cá nhân</option>
-                            <option value="Commercial">Thương mại</option>
-                            <option value="Educational">Giáo dục</option>
-                            <option value="Enterprise">Doanh nghiệp</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label htmlFor="product-store" className="block mb-2 font-medium text-gray-700">
-                            Cửa hàng
-                          </label>
-                          <select
-                            id="product-store"
-                            name="storeId"
-                            className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                            defaultValue={editingProduct?.storeId || '1'}
-                          >
-                            <option value="1">XLab Software</option>
-                            <option value="2">VN Tech Solutions</option>
-                            <option value="3">Creative Tools</option>
-                          </select>
-                        </div>
-
-                        <div className="md:col-span-2 flex items-center">
-                          <input
-                            type="checkbox"
-                            id="product-featured"
-                            name="isFeatured"
-                            className="mr-2"
-                            defaultChecked={editingProduct?.isFeatured || false}
-                          />
-                          <label htmlFor="product-featured" className="text-gray-700">
-                            Đánh dấu là sản phẩm nổi bật
-                          </label>
-                        </div>
-
-                        <div className="md:col-span-2 flex items-center">
-                          <input
-                            type="checkbox"
-                            id="product-new"
-                            name="isNew"
-                            className="mr-2"
-                            defaultChecked={editingProduct?.isNew || false}
-                          />
-                          <label htmlFor="product-new" className="text-gray-700">
-                            Đánh dấu là sản phẩm mới
-                          </label>
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center">
+                            <input
+                              type="checkbox"
+                              id="isNew"
+                              name="isNew"
+                              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                              defaultChecked={editingProduct?.isNew || false}
+                            />
+                            <label htmlFor="isNew" className="ml-2 font-medium text-gray-700">
+                              Sản phẩm mới
+                            </label>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="mt-6 flex justify-end space-x-4">
-                        <button
-                          type="button"
-                          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                          onClick={() => editingProduct ? handleCancelEdit() : setShowForm(false)}
-                        >
-                          Hủy
-                        </button>
+                      <div className="mt-6 flex space-x-4">
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 flex items-center"
+                          className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
                           disabled={isSubmitting}
                         >
-                          {isSubmitting && (
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
+                          {isSubmitting ? (
+                            <>
+                              <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              Đang xử lý...
+                            </>
+                          ) : (
+                            <>
+                              {editingProduct ? 'Cập nhật' : 'Thêm sản phẩm'}
+                            </>
                           )}
-                          {editingProduct ? 'Cập nhật sản phẩm' : 'Đăng sản phẩm'}
+                        </button>
+                        <button
+                          type="button"
+                          className="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                          onClick={handleCancelEdit}
+                        >
+                          Hủy
                         </button>
                       </div>
                     </form>
@@ -641,103 +684,151 @@ export default function AdminPage() {
 
                 {/* Danh sách sản phẩm */}
                 <div className="overflow-x-auto">
-                  {isLoading ? (
-                    <div className="py-10 flex justify-center">
-                      <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
-                    </div>
-                  ) : products.length > 0 ? (
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Sản phẩm
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Danh mục
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Giá
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Lượt xem/tải
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Trạng thái
+                        </th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Hành động
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {isLoading ? (
                         <tr>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Sản phẩm
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Danh mục
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Giá
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Trạng thái
-                          </th>
-                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Thao tác
-                          </th>
+                          <td colSpan={6} className="px-6 py-4 text-center">
+                            <div className="flex justify-center">
+                              <div className="animate-spin w-6 h-6 border-2 border-primary-600 border-t-transparent rounded-full"></div>
+                            </div>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {products.map((product) => (
-                          <tr key={product.id}>
+                      ) : products.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                            Chưa có sản phẩm nào
+                          </td>
+                        </tr>
+                      ) : (
+                        products.map((product) => (
+                          <tr key={product.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 relative">
+                                <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
                                   <Image
-                                    src={product.imageUrl || '/images/placeholder-product.jpg'}
+                                    width={40}
+                                    height={40}
+                                    src={product.imageUrl}
                                     alt={product.name}
-                                    fill
-                                    className="rounded-md object-cover"
-                                    onError={(e) => {
-                                      e.currentTarget.src = '/images/placeholder-product.jpg'
-                                    }}
+                                    className="h-10 w-10 rounded object-cover"
                                   />
                                 </div>
                                 <div className="ml-4">
                                   <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                  <div className="text-sm text-gray-500">{product.slug}</div>
+                                  <div className="text-xs text-gray-500 mt-1">ID: {product.id}</div>
+                                  <div className="text-xs text-gray-500">Version: {product.version}</div>
                                 </div>
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900">
-                                {product.categoryId === 'cat-1' && 'Phần mềm doanh nghiệp'}
-                                {product.categoryId === 'cat-2' && 'Phần mềm văn phòng'}
-                                {product.categoryId === 'cat-3' && 'Phần mềm đồ họa'}
-                                {product.categoryId === 'cat-4' && 'Bảo mật & Antivirus'}
-                                {product.categoryId === 'cat-5' && 'Ứng dụng giáo dục'}
+                                {
+                                  product.categoryId === 'cat-1' ? 'Phần mềm doanh nghiệp' :
+                                    product.categoryId === 'cat-2' ? 'Ứng dụng văn phòng' :
+                                      product.categoryId === 'cat-3' ? 'Phần mềm đồ họa' :
+                                        product.categoryId === 'cat-4' ? 'Bảo mật & Antivirus' :
+                                          product.categoryId === 'cat-5' ? 'Ứng dụng giáo dục' :
+                                            'Khác'
+                                }
                               </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{formatCurrency(product.price)}</div>
-                              {product.salePrice && product.salePrice < product.price && (
-                                <div className="text-sm text-gray-500">{formatCurrency(product.salePrice)} (Sale)</div>
+                              {product.price === 0 ? (
+                                <span className="text-green-600 font-medium">Miễn phí</span>
+                              ) : (
+                                <div>
+                                  {product.salePrice && product.salePrice < product.price ? (
+                                    <div>
+                                      <span className="text-green-600 font-medium">{formatCurrency(product.salePrice)}</span>
+                                      <span className="text-xs text-gray-500 line-through ml-2">{formatCurrency(product.price)}</span>
+                                    </div>
+                                  ) : (
+                                    <span className="text-gray-900">{formatCurrency(product.price)}</span>
+                                  )}
+                                </div>
                               )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.isNew ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
-                                {product.isNew ? 'Mới' : 'Đang bán'}
-                              </span>
-                              {product.isFeatured && (
-                                <span className="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                                  Nổi bật
+                              <div className="text-sm text-gray-900">
+                                <span className="inline-flex items-center">
+                                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  {product.viewCount || 0}
                                 </span>
-                              )}
+                                <span className="inline-flex items-center ml-3">
+                                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                  </svg>
+                                  {product.downloadCount || 0}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex flex-col space-y-1">
+                                {product.isFeatured && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    Nổi bật
+                                  </span>
+                                )}
+                                {product.isNew && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Mới
+                                  </span>
+                                )}
+                                {!product.isFeatured && !product.isNew && (
+                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    Thường
+                                  </span>
+                                )}
+                              </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                               <div className="flex space-x-2">
                                 <button
-                                  className="text-primary-600 hover:text-primary-900"
                                   onClick={() => handleEditClick(product)}
+                                  className="text-blue-600 hover:text-blue-900"
                                 >
                                   Sửa
                                 </button>
+                                <span className="text-gray-300">|</span>
                                 <button
-                                  className="text-red-600 hover:text-red-900"
                                   onClick={() => handleDeleteClick(product.id.toString())}
+                                  className="text-red-600 hover:text-red-900"
                                 >
                                   Xóa
                                 </button>
                               </div>
                             </td>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  ) : (
-                    <div className="py-10 text-center">
-                      <p className="text-gray-500">Không có sản phẩm nào. Thêm sản phẩm mới để bắt đầu.</p>
-                    </div>
-                  )}
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -795,18 +886,20 @@ export default function AdminPage() {
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
+
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <svg className="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                      Xác nhận xóa sản phẩm
+                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                      Xác nhận xóa
                     </h3>
                     <div className="mt-2">
                       <p className="text-sm text-gray-500">
@@ -819,7 +912,7 @@ export default function AdminPage() {
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={handleDelete}
                   disabled={isSubmitting}
                 >
@@ -827,7 +920,7 @@ export default function AdminPage() {
                 </button>
                 <button
                   type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={closeDeleteModal}
                 >
                   Hủy
