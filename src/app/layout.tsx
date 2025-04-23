@@ -5,6 +5,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
+import LoginDebug from '@/components/LoginDebug'
 import { siteConfig } from '@/config/siteConfig'
 
 // Load Inter font
@@ -110,6 +111,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <LoginDebug />
         </SessionProvider>
         <Analytics />
       </body>

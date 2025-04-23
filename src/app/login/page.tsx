@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const error = searchParams.get('error');
@@ -19,6 +19,23 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [mounted, setMounted] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<any>({});
+
+  // Debug info
+  useEffect(() => {
+    const info = {
+      status,
+      sessionExists: !!session,
+      callbackUrl,
+      error: error || 'none',
+      mounted,
+      cookies: typeof document !== 'undefined' ? document.cookie : 'SSR',
+      hasNextAuthCookie: typeof document !== 'undefined' ? document.cookie.includes('next-auth') : 'unknown'
+    };
+    
+    setDebugInfo(info);
+    console.log('Login page debug info:', info);
+  }, [status, session, callbackUrl, error, mounted]);
 
   // Kiểm tra trang đã load xong và đã xác định được trạng thái đăng nhập
   useEffect(() => {
@@ -26,6 +43,7 @@ export default function LoginPage() {
     
     // Nếu người dùng đã đăng nhập, chuyển hướng ngay
     if (status === 'authenticated') {
+      console.log('User is authenticated, redirecting to:', callbackUrl);
       router.push(callbackUrl);
     }
   }, [status, router, callbackUrl]);
@@ -62,16 +80,20 @@ export default function LoginPage() {
       setIsLoading(true);
       setLoginError('');
       
+      console.log('Attempting to sign in with credentials...');
       const result = await signIn('credentials', {
         redirect: false,
         email,
         password,
       });
       
+      console.log('Sign in result:', result);
+      
       if (result?.error) {
         setLoginError('Email hoặc mật khẩu không đúng');
       } else if (result?.url) {
         // Đăng nhập thành công, chuyển hướng đến trang trước đó hoặc trang chủ
+        console.log('Sign in successful, redirecting to:', callbackUrl);
         router.push(callbackUrl);
         router.refresh(); // Cập nhật UI toàn cục
       }
@@ -88,6 +110,7 @@ export default function LoginPage() {
       setIsLoading(true);
       setLoginError('');
       
+      console.log('Attempting to sign in with Google...');
       await signIn('google', { 
         callbackUrl
       });
@@ -145,6 +168,15 @@ export default function LoginPage() {
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow-lg sm:rounded-lg sm:px-10">
+            {/* Debug info in development */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="mb-4 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-32">
+                <pre className="whitespace-pre-wrap">
+                  Debug: {JSON.stringify(debugInfo, null, 2)}
+                </pre>
+              </div>
+            )}
+          
             {loginError && (
               <div className="mb-4 bg-red-50 border border-red-200 text-red-600 rounded-md p-3 text-sm text-center">
                 {loginError}
@@ -248,7 +280,7 @@ export default function LoginPage() {
                   <svg className="h-5 w-5" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
                   </svg>
-                  Google
+                  Đăng nhập bằng Google
                 </button>
               </div>
             </div>
