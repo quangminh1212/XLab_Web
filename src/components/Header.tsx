@@ -21,6 +21,11 @@ export default function Header() {
   const isLoading = status === 'loading'
   const isAuthenticated = status === 'authenticated' && !!session
 
+  // Debug session state
+  useEffect(() => {
+    console.log('Header session state:', { status, session, isAuthenticated });
+  }, [status, session, isAuthenticated]);
+
   // Xác định lời chào và thiết lập scroll listener
   useEffect(() => {
     // Xác định lời chào dựa trên thời gian trong ngày
@@ -66,6 +71,7 @@ export default function Header() {
     setUserMenuOpen(false) // Đóng menu trước khi đăng xuất
     
     try {
+      console.log('Signing out...');
       await signOut({ redirect: true, callbackUrl: '/' });
     } catch (error) {
       console.error("Error signing out:", error);
@@ -146,9 +152,10 @@ export default function Header() {
             </button>
 
             {isLoading ? (
-              // Thêm một kích thước nhỏ hơn và cải thiện spinner để hiển thị tốt hơn
-              <div className="w-8 h-8 flex items-center justify-center">
+              // Hiển thị rõ ràng trạng thái đang loading với text
+              <div className="flex items-center space-x-1">
                 <div className="animate-spin h-4 w-4 border-2 border-primary-500 rounded-full border-t-transparent"></div>
+                <span className="text-xs text-gray-500">Đang tải...</span>
               </div>
             ) : isAuthenticated && session ? (
               <div className="flex items-center justify-center space-x-3">
