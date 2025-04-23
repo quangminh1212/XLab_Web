@@ -6,7 +6,6 @@ import Footer from '@/components/Footer'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
 import SessionProvider from '@/components/SessionProvider'
-import Script from 'next/script'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -89,7 +88,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-        <Script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js" strategy="beforeInteractive" />
       </head>
       <body className="font-sans antialiased">
         <SessionProvider>
