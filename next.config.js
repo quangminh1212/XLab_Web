@@ -73,6 +73,27 @@ const nextConfig = {
     largePageDataBytes: 128 * 100000,
   },
   poweredByHeader: false,
+  webpack: (config, { isServer }) => {
+    // Giải quyết lỗi "Cannot read properties of undefined (reading 'call')" với web3
+    
+    // 1. Thiết lập alias cho web3
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'web3': 'web3/dist/web3.min.js',
+    };
+    
+    // 2. Thiết lập fallback cho các module Node.js
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    
+    return config;
+  },
 };
 
 module.exports = nextConfig;
