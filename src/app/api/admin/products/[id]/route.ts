@@ -158,7 +158,7 @@ export async function DELETE(
             );
         }
 
-        const productId = params.id;
+        const productId = await params.id;
         const products = getProducts();
         const newProducts = products.filter((p: Product) => p.id !== productId);
 
