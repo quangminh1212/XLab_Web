@@ -524,6 +524,19 @@ function ProductsManagement() {
                                 </div>
 
                                 <div>
+                                    <label htmlFor="mainFeature" className="block mb-2 font-medium text-gray-700">
+                                        Tính năng chính
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="mainFeature"
+                                        name="mainFeature"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                        placeholder="Mô tả tính năng chính của sản phẩm"
+                                    />
+                                </div>
+
+                                <div>
                                     <label htmlFor="categories" className="block mb-2 font-medium text-gray-700">
                                         Danh mục <span className="text-red-500">*</span>
                                     </label>
@@ -600,9 +613,9 @@ function ProductsManagement() {
                                 <button
                                     type="submit"
                                     className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center"
-                                    disabled={isLoading}
+                                    disabled={isSubmitting}
                                 >
-                                    {isLoading ? (
+                                    {isSubmitting ? (
                                         <>
                                             <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -644,103 +657,103 @@ function ProductsManagement() {
                             <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có sản phẩm nào</h3>
                             <p className="mb-4">Hãy thêm sản phẩm mới để bắt đầu quản lý.</p>
                         </div>
-                    )}
-
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Sản phẩm
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Danh mục
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Giá
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Trạng thái
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Hành động
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {products.map((product) => (
-                                    <tr key={product.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
-                                                    {product.images && product.images[0] && (
-                                                        <Image
-                                                            width={40}
-                                                            height={40}
-                                                            src={product.images[0].url}
-                                                            alt={product.name}
-                                                            className="h-10 w-10 rounded object-cover"
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div className="ml-4">
-                                                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                                    <div className="text-xs text-gray-500">{product.shortDescription}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-900">
-                                                {product.categories?.map(cat => cat.name).join(', ')}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {product.versions && product.versions[0] && (
-                                                <div>
-                                                    <span className="text-gray-900 font-medium">
-                                                        {formatCurrency(product.versions[0].price)}
-                                                    </span>
-                                                    {product.versions[0].originalPrice > product.versions[0].price && (
-                                                        <span className="text-xs text-gray-500 line-through ml-2">
-                                                            {formatCurrency(product.versions[0].originalPrice)}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {product.isPublished ? (
-                                                <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Công khai
-                                                </span>
-                                            ) : (
-                                                <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    Nháp
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm font-medium">
-                                            <div className="flex space-x-2">
-                                                <button
-                                                    onClick={() => handleEditProduct(product.id)}
-                                                    className="text-blue-600 hover:text-blue-900"
-                                                >
-                                                    Sửa
-                                                </button>
-                                                <span className="text-gray-300">|</span>
-                                                <button
-                                                    onClick={() => handleDeleteProduct(product.id)}
-                                                    className="text-red-600 hover:text-red-900"
-                                                >
-                                                    Xóa
-                                                </button>
-                                            </div>
-                                        </td>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Sản phẩm
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Danh mục
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Giá
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Trạng thái
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Hành động
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {products.map((product) => (
+                                        <tr key={product.id} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center">
+                                                    <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
+                                                        {product.images && product.images[0] && (
+                                                            <Image
+                                                                width={40}
+                                                                height={40}
+                                                                src={product.images[0].url}
+                                                                alt={product.name}
+                                                                className="h-10 w-10 rounded object-cover"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                                        <div className="text-xs text-gray-500">{product.shortDescription}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm text-gray-900">
+                                                    {product.categories?.map(cat => typeof cat === 'string' ? cat : cat.name).join(', ')}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {product.versions && product.versions[0] && (
+                                                    <div>
+                                                        <span className="text-gray-900 font-medium">
+                                                            {formatCurrency(product.versions[0].price)}
+                                                        </span>
+                                                        {product.versions[0].originalPrice > product.versions[0].price && (
+                                                            <span className="text-xs text-gray-500 line-through ml-2">
+                                                                {formatCurrency(product.versions[0].originalPrice)}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {product.isPublished ? (
+                                                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        Công khai
+                                                    </span>
+                                                ) : (
+                                                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        Nháp
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm font-medium">
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => handleEditProduct(product.id)}
+                                                        className="text-blue-600 hover:text-blue-900"
+                                                    >
+                                                        Sửa
+                                                    </button>
+                                                    <span className="text-gray-300">|</span>
+                                                    <button
+                                                        onClick={() => handleDeleteProduct(product.id)}
+                                                        className="text-red-600 hover:text-red-900"
+                                                    >
+                                                        Xóa
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
 
