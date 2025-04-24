@@ -11,6 +11,7 @@
     "clean": "rimraf .next .next-dev node_modules/.cache"
   },
   "dependencies": {
+    "@next/swc-win32-x64-msvc": "15.3.1",
     "@radix-ui/react-slot": "1.1.2",
     "@types/uuid": "10.0.0",
     "class-variance-authority": "0.7.1",

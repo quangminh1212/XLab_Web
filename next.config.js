@@ -73,6 +73,17 @@ const nextConfig = {
     largePageDataBytes: 128 * 100000,
   },
   poweredByHeader: false,
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        poll: 1000,
+        aggregateTimeout: 300,
+        ignored: /node_modules/
+      };
+    }
+    return config;
+  },
 };
 
 module.exports = nextConfig;
