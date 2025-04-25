@@ -71,6 +71,8 @@ const nextConfig = {
   },
   experimental: {
     largePageDataBytes: 128 * 100000,
+    serverComponentsExternalPackages: [],
+    optimizePackageImports: ['react', 'react-dom'],
   },
   poweredByHeader: false,
   webpack: (config, { dev, isServer }) => {
@@ -82,6 +84,13 @@ const nextConfig = {
         ignored: /node_modules/
       };
     }
+    
+    // Cấu hình thêm để xử lý tương thích với React Server Components
+    config.module = {
+      ...config.module,
+      exprContextCritical: false,
+    };
+    
     return config;
   },
 };

@@ -11,17 +11,17 @@
     "clean": "rimraf .next .next-dev node_modules/.cache"
   },
   "dependencies": {
-    "@next/swc-win32-x64-msvc": "15.3.1",
-    "@radix-ui/react-slot": "1.1.2",
-    "@types/uuid": "10.0.0",
-    "class-variance-authority": "0.7.1",
-    "clsx": "2.1.1",
-    "next": "15.2.4",
-    "next-auth": "4.24.10",
+    "@next/swc-win32-x64-msvc": "14.1.0",
+    "@radix-ui/react-slot": "1.0.2",
+    "@types/uuid": "9.0.7",
+    "class-variance-authority": "0.7.0",
+    "clsx": "2.0.0",
+    "next": "14.1.0",
+    "next-auth": "4.24.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-merge": "2.2.0",
-    "uuid": "11.1.0"
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "@tailwindcss/forms": "0.5.7",
@@ -30,22 +30,21 @@
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
     "autoprefixer": "10.4.16",
-    "eslint": "9.0.0",
-    "eslint-config-next": "15.2.4",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.1.0",
     "postcss": "8.4.32",
     "rimraf": "5.0.5",
-    "sharp": "0.33.5",
+    "sharp": "0.33.1",
     "tailwindcss": "3.4.0",
     "typescript": "5.3.3"
   },
   "resolutions": {
-    "webpack": "5.92.0",
+    "webpack": "5.88.2",
     "@babel/core": "7.23.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "glob": "9.3.5",
-    "inflight": "2.0.0",
-    "@humanwhocodes/config-array": "@eslint/config-array"
+    "glob": "8.1.0",
+    "inflight": "1.0.6"
   },
   "keywords": [],
   "author": "",
