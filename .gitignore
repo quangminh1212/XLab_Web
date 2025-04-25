@@ -2,6 +2,10 @@
 /node_modules
 /.pnp
 .pnp.js
+node_modules/.package-lock.json
+node_modules/next/dist/server/web/spec-extension/adapters/next-request.js
+node_modules/next/dist/server/web/spec-extension/request.js
+node_modules/next/node_modules/@next/swc-win32-x64-msvc/
 
 # testing
 /coverage
