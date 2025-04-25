@@ -72,11 +72,11 @@ const nextConfig = {
   experimental: {
     largePageDataBytes: 128 * 100000,
   },
+  serverExternalPackages: [],
   poweredByHeader: false,
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
-        ...config.watchOptions,
         poll: 1000,
         aggregateTimeout: 300,
         ignored: /node_modules/
@@ -88,7 +88,8 @@ const nextConfig = {
         ...config.resolve.fallback,
         fs: false,
         net: false,
-        tls: false
+        tls: false,
+        fetch: false
       };
       
       // Fix for "Cannot read properties of undefined (reading 'call')" error

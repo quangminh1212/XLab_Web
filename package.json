@@ -2,15 +2,23 @@
   "name": "xlab_web",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "18.x || 20.x",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
-    "predev": "rimraf .next node_modules/.cache && echo Preparing development environment...",
-    "dev": "cross-env NODE_OPTIONS=\"--no-experimental-fetch\" next dev",
-    "build": "next build",
-    "start": "next start",
+    "predev": "rimraf .next node_modules/.cache && node src/lib/enable-swc.js && node manual-patch.js && echo Preparing development environment...",
+    "dev": "cross-env FAST_REFRESH=false NODE_OPTIONS=\"--require ./src/lib/fetch-polyfill.js --no-experimental-fetch --no-warnings\" next dev",
+    "build": "cross-env NODE_OPTIONS=\"--require ./src/lib/fetch-polyfill.js --no-experimental-fetch --no-warnings\" next build",
+    "start": "cross-env NODE_OPTIONS=\"--require ./src/lib/fetch-polyfill.js --no-experimental-fetch --no-warnings\" next start",
     "lint": "next lint",
-    "clean": "rimraf .next .next-dev node_modules/.cache"
+    "clean": "rimraf .next .next-dev node_modules/.cache",
+    "patch": "node manual-patch.js",
+    "reinstall": "rimraf node_modules/.cache node_modules/next && npm install @next/swc-win32-x64-msvc@15.2.4 --save && npm install && node manual-patch.js",
+    "fix-swc": "npm install @next/swc-win32-x64-msvc@15.2.4 --save && npm run patch"
   },
   "dependencies": {
+    "@next/swc-win32-x64-msvc": "15.2.4",
     "@radix-ui/react-slot": "1.1.2",
     "@types/uuid": "10.0.0",
     "class-variance-authority": "0.7.1",
@@ -20,6 +28,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-merge": "2.2.0",
+    "undici": "5.28.3",
     "uuid": "11.1.0"
   },
   "devDependencies": {
@@ -38,6 +47,11 @@
     "sharp": "0.33.5",
     "tailwindcss": "3.4.0",
     "typescript": "5.3.3"
+  },
+  "overrides": {
+    "next": {
+      "@next/swc-win32-x64-msvc": "15.2.4"
+    }
   },
   "resolutions": {
     "webpack": "5.92.0",
