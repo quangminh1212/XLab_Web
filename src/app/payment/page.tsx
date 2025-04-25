@@ -1,12 +1,14 @@
-import { Metadata } from "next";
-import Link from "next/link";
+'use client';
 
-export const metadata: Metadata = {
-  title: "Thanh toán | XLab - Phần mềm và Dịch vụ",
-  description: "Thanh toán an toàn và nhanh chóng cho các sản phẩm và dịch vụ của XLab."
-};
+import Link from "next/link";
+import { useEffect } from "react";
 
 export default function PaymentPage() {
+  // Update document title
+  useEffect(() => {
+    document.title = "Thanh toán | XLab - Phần mềm và Dịch vụ";
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-center mb-8">Tùy chọn thanh toán</h1>

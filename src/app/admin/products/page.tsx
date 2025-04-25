@@ -312,24 +312,26 @@ function ProductsManagement() {
             // Đặt giá trị cho form
             const formElement = document.getElementById('productForm') as HTMLFormElement;
             if (formElement) {
-                (formElement.elements.namedItem('name') as HTMLInputElement).value = product.name;
-                (formElement.elements.namedItem('price') as HTMLInputElement).value = product.versions?.[0]?.price.toString() || '';
+                (formElement.elements.namedItem('name') as HTMLInputElement).value = product.name || '';
+                (formElement.elements.namedItem('price') as HTMLInputElement).value = 
+                    product.versions?.[0]?.price?.toString() || '';
 
                 // Kiểm tra xem sản phẩm có trường discount không
                 const discountField = formElement.elements.namedItem('discount') as HTMLInputElement;
                 if (discountField && product.versions?.[0]?.hasOwnProperty('discount')) {
-                    discountField.value = (product.versions[0] as any).discount.toString();
+                    discountField.value = (product.versions[0] as any).discount?.toString() || '';
                 }
 
                 const mainFeatureField = formElement.elements.namedItem('mainFeature') as HTMLInputElement;
                 if (mainFeatureField && product.features?.[0]?.description) {
-                    mainFeatureField.value = product.features[0].description;
+                    mainFeatureField.value = product.features[0].description || '';
                 }
 
                 // Xử lý danh sách tính năng
                 const featuresTextarea = document.getElementById('features') as HTMLTextAreaElement;
                 if (featuresTextarea && product.versions?.[0]?.features) {
-                    featuresTextarea.value = product.versions[0].features.join('\n');
+                    const features = product.versions[0].features;
+                    featuresTextarea.value = Array.isArray(features) ? features.join('\n') : '';
                 }
 
                 // Xử lý danh mục
@@ -644,103 +646,106 @@ function ProductsManagement() {
                             <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có sản phẩm nào</h3>
                             <p className="mb-4">Hãy thêm sản phẩm mới để bắt đầu quản lý.</p>
                         </div>
-                    )}
-
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Sản phẩm
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Danh mục
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Giá
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Trạng thái
-                                    </th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Hành động
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {products.map((product) => (
-                                    <tr key={product.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
-                                                    {product.images && product.images[0] && (
-                                                        <Image
-                                                            width={40}
-                                                            height={40}
-                                                            src={product.images[0].url}
-                                                            alt={product.name}
-                                                            className="h-10 w-10 rounded object-cover"
-                                                        />
-                                                    )}
-                                                </div>
-                                                <div className="ml-4">
-                                                    <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                                                    <div className="text-xs text-gray-500">{product.shortDescription}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-900">
-                                                {product.categories?.map(cat => cat.name).join(', ')}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {product.versions && product.versions[0] && (
-                                                <div>
-                                                    <span className="text-gray-900 font-medium">
-                                                        {formatCurrency(product.versions[0].price)}
-                                                    </span>
-                                                    {product.versions[0].originalPrice > product.versions[0].price && (
-                                                        <span className="text-xs text-gray-500 line-through ml-2">
-                                                            {formatCurrency(product.versions[0].originalPrice)}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {product.isPublished ? (
-                                                <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Công khai
-                                                </span>
-                                            ) : (
-                                                <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    Nháp
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm font-medium">
-                                            <div className="flex space-x-2">
-                                                <button
-                                                    onClick={() => handleEditProduct(product.id)}
-                                                    className="text-blue-600 hover:text-blue-900"
-                                                >
-                                                    Sửa
-                                                </button>
-                                                <span className="text-gray-300">|</span>
-                                                <button
-                                                    onClick={() => handleDeleteProduct(product.id)}
-                                                    className="text-red-600 hover:text-red-900"
-                                                >
-                                                    Xóa
-                                                </button>
-                                            </div>
-                                        </td>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Sản phẩm
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Danh mục
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Giá
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Trạng thái
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Hành động
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {products.map((product) => (
+                                        <tr key={product.id} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center">
+                                                    <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded">
+                                                        {product.images && product.images[0] && (
+                                                            <Image
+                                                                width={40}
+                                                                height={40}
+                                                                src={product.images[0].url}
+                                                                alt={product.name}
+                                                                className="h-10 w-10 rounded object-cover"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                                        <div className="text-xs text-gray-500">{product.shortDescription}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm text-gray-900">
+                                                    {product.categories && Array.isArray(product.categories) 
+                                                        ? product.categories.map(cat => cat?.name || '').join(', ')
+                                                        : ''}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {product.versions && product.versions.length > 0 && product.versions[0] ? (
+                                                    <div>
+                                                        <span className="text-gray-900 font-medium">
+                                                            {formatCurrency(product.versions[0].price || 0)}
+                                                        </span>
+                                                        {product.versions[0].originalPrice && product.versions[0].price && 
+                                                         product.versions[0].originalPrice > product.versions[0].price && (
+                                                            <span className="text-xs text-gray-500 line-through ml-2">
+                                                                {formatCurrency(product.versions[0].originalPrice || 0)}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                ) : null}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {product.isPublished ? (
+                                                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        Công khai
+                                                    </span>
+                                                ) : (
+                                                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        Nháp
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm font-medium">
+                                                <div className="flex space-x-2">
+                                                    <button
+                                                        onClick={() => handleEditProduct(product.id)}
+                                                        className="text-blue-600 hover:text-blue-900"
+                                                    >
+                                                        Sửa
+                                                    </button>
+                                                    <span className="text-gray-300">|</span>
+                                                    <button
+                                                        onClick={() => handleDeleteProduct(product.id)}
+                                                        className="text-red-600 hover:text-red-900"
+                                                    >
+                                                        Xóa
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
 

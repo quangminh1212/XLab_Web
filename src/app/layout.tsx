@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
 import SessionProvider from '@/components/SessionProvider'
+import { CartProvider } from '@/lib/CartContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -91,12 +92,14 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <SessionProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-          </div>
-          <Analytics />
+          <CartProvider>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
+            <Analytics />
+          </CartProvider>
         </SessionProvider>
       </body>
     </html>

@@ -16,7 +16,13 @@ const getProducts = (): Product[] => {
             return [];
         }
         const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-        return JSON.parse(fileContent);
+        try {
+            return fileContent ? JSON.parse(fileContent) : [];
+        } catch (parseError) {
+            console.error('Error parsing products JSON:', parseError);
+            // Trả về mảng rỗng nếu có lỗi parse
+            return [];
+        }
     } catch (error) {
         console.error('Error reading products data:', error);
         return [];

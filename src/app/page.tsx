@@ -6,12 +6,26 @@ import ProductCard from '@/components/ProductCard';
 import { products } from '@/data/mockData';
 
 function HomePage() {
+  // Bảo vệ truy cập mảng products
+  const productsList = products || [];
+  
   // Lọc sản phẩm nổi bật
-  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
+  const featuredProducts = productsList
+    .filter(product => product?.isFeatured === true)
+    .slice(0, 4);
 
   // Lọc sản phẩm mới nhất
-  const newProducts = [...products]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  const newProducts = [...productsList]
+    .sort((a, b) => {
+      try {
+        const dateA = new Date(a?.createdAt || 0).getTime();
+        const dateB = new Date(b?.createdAt || 0).getTime();
+        return dateB - dateA;
+      } catch (error) {
+        console.error('Lỗi khi sắp xếp sản phẩm:', error);
+        return 0;
+      }
+    })
     .slice(0, 4);
 
   return (
@@ -59,7 +73,7 @@ function HomePage() {
             {featuredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {featuredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
+                  product ? <ProductCard key={product.id} product={product} /> : null
                 ))}
               </div>
             ) : (
@@ -94,7 +108,7 @@ function HomePage() {
             {newProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {newProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
+                  product ? <ProductCard key={product.id} product={product} /> : null
                 ))}
               </div>
             ) : (

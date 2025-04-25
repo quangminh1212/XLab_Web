@@ -152,10 +152,32 @@ export function debounce<T extends (...args: any[]) => any>(
   fn: T,
   ms = 300
 ): (...args: Parameters<T>) => void {
+  if (typeof fn !== 'function') {
+    throw new Error('Expected a function');
+  }
+  
   let timeoutId: ReturnType<typeof setTimeout>;
-  return function(...args: Parameters<T>) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  
+  // Sử dụng function thông thường thay vì arrow function để giữ this
+  return function(this: any, ...args: Parameters<T>) {
+    const context = this;
+    
+    // Xóa timeout hiện tại nếu có
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    
+    // Thiết lập timeout mới
+    timeoutId = setTimeout(() => {
+      try {
+        if (typeof fn === 'function') {
+          // Gọi hàm một cách an toàn
+          fn.call(context, ...args);
+        }
+      } catch (error) {
+        console.error('Error in debounced function:', error);
+      }
+    }, ms);
   };
 }
 
@@ -168,8 +190,8 @@ const downloadCountCache: Record<string, number> = {};
 
 // Initialize cache from mockData
 products.forEach(product => {
-  viewCountCache[product.slug] = product.viewCount;
-  downloadCountCache[product.slug] = product.downloadCount;
+  viewCountCache[product.slug] = product.viewCount || 0;
+  downloadCountCache[product.slug] = product.downloadCount || 0;
 });
 
 /**
@@ -201,7 +223,7 @@ export function incrementViewCount(slug: string): number {
     return product.viewCount;
   } catch (error) {
     console.error(`Lỗi khi tăng lượt xem cho ${slug}:`, error);
-    return viewCountCache[slug] || 0;
+    return viewCountCache[slug];
   }
 }
 
@@ -226,7 +248,7 @@ export function incrementDownloadCount(slug: string): number {
     return product.downloadCount;
   } catch (error) {
     console.error(`Lỗi khi tăng lượt tải cho ${slug}:`, error);
-    return downloadCountCache[slug] || 0;
+    return downloadCountCache[slug];
   }
 }
 
@@ -235,7 +257,7 @@ export function incrementDownloadCount(slug: string): number {
  */
 export function getViewCount(slug: string): number {
   if (!slug) return 0;
-  return viewCountCache[slug] || 0;
+  return viewCountCache[slug];
 }
 
 /**
@@ -243,5 +265,5 @@ export function getViewCount(slug: string): number {
  */
 export function getDownloadCount(slug: string): number {
   if (!slug) return 0;
-  return downloadCountCache[slug] || 0;
+  return downloadCountCache[slug];
 } 
