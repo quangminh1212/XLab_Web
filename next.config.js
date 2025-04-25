@@ -30,7 +30,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob: https://lh3.googleusercontent.com; font-src 'self' data: https: https://fonts.gstatic.com; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https: accounts.google.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; frame-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self';"
           },
           {
             key: 'X-DNS-Prefetch-Control',
@@ -66,34 +66,23 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config, { dev, isServer }) => {
-    config.optimization = {
-      ...config.optimization,
-      minimize: false,
-      minimizer: [],
-      splitChunks: false,
-      runtimeChunk: false,
-      flagIncludedChunks: false,
-      concatenateModules: false,
-      usedExports: false,
-      sideEffects: false,
-      providedExports: false,
-      innerGraph: false,
-      mangleExports: false,
-    };
-    
-    if (dev) {
-      config.mode = 'none';
-    }
-    
-    if (!isServer) {
-      config.output.libraryTarget = 'var';
-    }
-    
-    return config;
-  },
   compiler: {
     styledComponents: true,
+  },
+  experimental: {
+    largePageDataBytes: 128 * 100000,
+  },
+  poweredByHeader: false,
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        poll: 1000,
+        aggregateTimeout: 300,
+        ignored: /node_modules/
+      };
+    }
+    return config;
   },
 };
 

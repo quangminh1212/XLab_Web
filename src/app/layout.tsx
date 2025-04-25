@@ -3,15 +3,13 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
-import LoginDebug from '@/components/LoginDebug'
 import { siteConfig } from '@/config/siteConfig'
+import SessionProvider from '@/components/SessionProvider'
 
-// Load Inter font
 const inter = Inter({
   subsets: ['latin'],
-  display: 'swap',
+  weight: ['300', '400', '500', '600', '700', '800'],
   variable: '--font-inter',
 })
 
@@ -56,15 +54,15 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   icons: {
     icon: [
-      { url: '/images/logo.jpg' },
-      { url: '/images/logo.jpg', sizes: '16x16', type: 'image/jpeg' },
-      { url: '/images/logo.jpg', sizes: '32x32', type: 'image/jpeg' },
+      { url: '/images/topup.png' },
+      { url: '/images/topup.png', sizes: '16x16', type: 'image/png' },
+      { url: '/images/topup.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
-      { url: '/images/logo.jpg', sizes: '180x180', type: 'image/jpeg' },
+      { url: '/images/topup.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/images/logo.jpg', color: '#0070f3' },
+      { rel: 'mask-icon', url: '/images/topup.png', color: '#0070f3' },
     ],
   },
   other: {
@@ -76,9 +74,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
-  themeColor: '#ffffff',
+  themeColor: '#0F766E',
 }
 
 export default function RootLayout({
@@ -90,30 +86,18 @@ export default function RootLayout({
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
-        <noscript>
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 text-white p-4">
-            <div className="bg-red-600 p-6 rounded-lg max-w-md text-center">
-              <h2 className="text-xl font-bold mb-2">JavaScript Bị Vô Hiệu Hóa</h2>
-              <p>Website này yêu cầu JavaScript để hoạt động đúng. Vui lòng bật JavaScript và tải lại trang.</p>
-            </div>
-          </div>
-        </noscript>
-
+      <body className="font-sans antialiased">
         <SessionProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
-          <Header />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-          <LoginDebug />
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-grow">{children}</main>
+            <Footer />
+          </div>
+          <Analytics />
         </SessionProvider>
-        <Analytics />
       </body>
     </html>
   )

@@ -1,10 +1,8 @@
-import NextAuth from "next-auth";
-import type { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "@/lib/prisma";
-import { compare } from "bcrypt";
+import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+import { SessionStrategy } from "next-auth/core/types";
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -14,160 +12,153 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      phone?: string | null;
+      memberSince?: string | null;
+      customName?: boolean;
+      isAdmin?: boolean;
     }
   }
 }
 
-// Xác định URL xác thực Google với tham số chính xác
-const GOOGLE_AUTHORIZATION_URL =
-  "https://accounts.google.com/o/oauth2/v2/auth?" +
-  new URLSearchParams({
-    prompt: "consent",
-    access_type: "offline",
-    response_type: "code"
-  });
-
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-  secret: process.env.NEXTAUTH_SECRET || "default-secret-key-change-this",
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // 24 hours
-  },
-  pages: {
-    signIn: '/login',
-    signOut: '/',
-    error: '/auth/error',
-    verifyRequest: '/auth/verify-request',
-    newUser: '/register'
-  },
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || 'placeholder-client-id',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder-client-secret',
-      authorization: GOOGLE_AUTHORIZATION_URL,
-    }),
-    CredentialsProvider({
-      name: 'Credentials',
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
-          console.log("Missing credentials");
-          return null;
+      clientId: process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "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",
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code"
         }
-
-        try {
-          const user = await prisma.user.findUnique({
-            where: {
-              email: credentials.email,
-            },
-          });
-
-          if (!user || !user.password) {
-            console.log("No user found with email:", credentials.email);
-            return null;
-          }
-
-          const isPasswordValid = await compare(credentials.password, user.password);
-
-          if (!isPasswordValid) {
-            console.log("Invalid password for user:", credentials.email);
-            return null;
-          }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            image: user.image,
-          };
-        } catch (error) {
-          console.error("Error during credentials authorization:", error);
-          return null;
-        }
-      },
+      }
     }),
   ],
+  pages: {
+    signIn: "/login",
+    error: "/auth/error",
+  },
   callbacks: {
-    async signIn({ user, account, profile }) {
-      try {
-        // Log thông tin để debug
-        console.log('User signing in:', user);
-        console.log('Account:', account);
-        
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+
+        if (token.customName) session.user.customName = token.customName as boolean;
+        if (token.phone) session.user.phone = token.phone as string;
+        if (token.memberSince) session.user.memberSince = token.memberSince as string;
+        if (token.isAdmin) session.user.isAdmin = Boolean(token.isAdmin);
+
+        console.log('Session data after processing:', {
+          id: session.user.id,
+          email: session.user.email,
+          isAdmin: session.user.isAdmin
+        });
+
+        if (token.customName && token.name) {
+          session.user.name = token.name as string;
+        }
+      }
+      return session;
+    },
+    async jwt({ token, user, account, trigger, session }: {
+      token: JWT;
+      user?: any;
+      account?: any;
+      trigger?: string;
+      session?: any;
+    }) {
+      if (user && account) {
+        token.id = user.id;
+        token.provider = account.provider;
+
+        if (user.email) {
+          token.email = user.email;
+        }
+
+        if (token.email === 'xlab.rnd@gmail.com') {
+          console.log('Setting admin rights for', token.email);
+          token.isAdmin = true;
+        } else {
+          token.isAdmin = false;
+        }
+
+        if (!token.memberSince) {
+          const today = new Date();
+          token.memberSince = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+        }
+      }
+
+      // Đảm bảo email hiện tại trong token vẫn được kiểm tra admin
+      // Trong trường hợp token.isAdmin chưa được thiết lập
+      if (token.email === 'xlab.rnd@gmail.com' && token.isAdmin === undefined) {
+        console.log('Re-setting admin rights for', token.email);
+        token.isAdmin = true;
+      }
+
+      console.log('JWT token data:', {
+        id: token.id,
+        email: token.email,
+        isAdmin: token.isAdmin
+      });
+
+      if (trigger === "update" && session) {
+        if (session.name) {
+          token.name = session.name;
+          token.customName = true;
+        }
+        if (session.phone) token.phone = session.phone;
+      }
+
+      return token;
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+      if (account?.provider === "google" && profile?.email) {
         return true;
-      } catch (error) {
-        console.error('Error during sign in callback:', error);
-        return false;
       }
-    },
-    async redirect({ url, baseUrl }) {
-      // Đảm bảo URL hợp lệ
-      try {
-        // Nếu URL là đường dẫn tương đối hoặc thuộc về baseUrl, trả về URL
-        if (url.startsWith('/') || url.startsWith(baseUrl)) {
-          return url;
-        }
-        // Nếu không, trả về baseUrl
-        return baseUrl;
-      } catch (error) {
-        console.error('Error in redirect callback:', error);
-        return baseUrl;
-      }
-    },
-    async jwt({ token, user, account }) {
-      // Bảo vệ callback khỏi lỗi
-      try {
-        if (user) {
-          token.id = user.id;
-        }
-        if (account) {
-          token.accessToken = account.access_token;
-        }
-        return token;
-      } catch (error) {
-        console.error('Error in JWT callback:', error);
-        return token;
-      }
-    },
-    async session({ session, token }) {
-      // Bảo vệ callback khỏi lỗi
-      try {
-        if (token && session.user) {
-          session.user.id = token.id as string;
-        }
-        return session;
-      } catch (error) {
-        console.error('Error in session callback:', error);
-        return session;
-      }
+      return false;
     },
   },
-  events: {
-    async signIn(message) {
-      console.log('User signed in:', message);
-    },
-    async signOut(message) {
-      console.log('User signed out:', message);
-    },
+  debug: process.env.NODE_ENV === "development",
+  secret: process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
+  session: {
+    strategy: "jwt" as SessionStrategy,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: process.env.NODE_ENV === 'development',
-  logger: {
-    error(code, metadata) {
-      console.error(`NextAuth error: ${code}`, metadata);
+  // Sửa cấu hình cookie để đảm bảo hoạt động đúng với Google
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60 // 30 days
+      }
     },
-    warn(code) {
-      console.warn(`NextAuth warning: ${code}`);
+    callbackUrl: {
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.callback-url` : `next-auth.callback-url`,
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      }
     },
-    debug(code, metadata) {
-      console.log(`NextAuth debug: ${code}`, metadata);
-    },
+    csrfToken: {
+      name: process.env.NODE_ENV === "production" ? `__Host-next-auth.csrf-token` : `next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      }
+    }
   },
+  jwt: {
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  }
 };
 
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST }; 
