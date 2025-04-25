@@ -53,12 +53,23 @@ echo engine-strict=false >> .npmrc
 echo save-exact=true >> .npmrc
 
 :: Bước 6: Cài đặt dependencies
-echo [6/8] Installing cross-env and dependencies...
-call npm install cross-env @babel/core --save-dev --no-fund --no-audit --quiet
+echo [6/8] Installing dependencies...
+call npm install cross-env undici@5.28.3 --save --no-fund --no-audit --quiet
 if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install development dependencies
+    echo Failed to install dependencies
     exit /b 1
 )
+
+:: Cài đặt SWC dependencies
+echo Installing SWC binary for Windows...
+call npm install --save-dev @next/swc-win32-x64-msvc@%NEXT_VERSION_FULL% --no-fund --no-audit --quiet
+if %ERRORLEVEL% NEQ 0 (
+    echo Failed to install SWC binary, but continuing...
+)
+
+:: Patch Next.js
+echo Running Next.js patch for Node.js v20...
+node manual-patch.js
 
 call npm install --no-fund --no-audit --quiet
 if %ERRORLEVEL% NEQ 0 (
@@ -78,10 +89,12 @@ echo [Press Ctrl+C to stop the server]
 :: Đặt biến môi trường
 set NODE_ENV=development
 set NEXT_TELEMETRY_DISABLED=1
-set NODE_OPTIONS=--no-experimental-fetch
+set NODE_OPTIONS=--require ./src/lib/fetch-polyfill.js --no-experimental-fetch --no-warnings
+set FAST_REFRESH=false
 set WATCHPACK_POLLING=true
+set CHOKIDAR_USEPOLLING=1
 
 :: Chạy ứng dụng với cross-env để đảm bảo biến môi trường được thiết lập đúng
-call node_modules\.bin\cross-env.cmd NODE_OPTIONS=--no-experimental-fetch npm run dev
+call node_modules\.bin\cross-env.cmd FAST_REFRESH=false NODE_OPTIONS="--require ./src/lib/fetch-polyfill.js --no-experimental-fetch --no-warnings" npm run dev
 
 endlocal 

@@ -41,3 +41,8 @@ next-env.d.ts
 
 # Cache directories
 .cache/
+
+# Generated files at runtime
+.next/trace
+next-require-hook.js
+patch-nextjs.js
