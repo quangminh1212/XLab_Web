@@ -2,6 +2,7 @@
 const webpack = require('webpack');
 const nextConfig = {
   reactStrictMode: true,
+  transpilePackages: ['ajv', 'ajv-keywords', 'schema-utils'],
   images: {
     remotePatterns: [
       {
@@ -148,7 +149,7 @@ const nextConfig = {
     // Add babel rule for JSON parsing with optional chaining and nullish coalescing support
     config.module.rules.push({
       test: /\.(js|jsx|ts|tsx)$/,
-      exclude: /node_modules/,
+      exclude: /node_modules\/(?!(ajv|ajv-keywords|schema-utils))/,
       use: {
         loader: 'babel-loader',
         options: {
