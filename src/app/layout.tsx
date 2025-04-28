@@ -1,6 +1,7 @@
 import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+// Sử dụng CSS thông thường thay vì next/font
+// import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Analytics from '@/components/Analytics'
@@ -12,11 +13,12 @@ import Providers from '@/lib/providers'
 import TopNav from '@/components/TopNav'
 import Script from 'next/script'
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-inter',
-})
+// Thay thế Inter font bằng CSS thông thường
+// const inter = Inter({
+//   subsets: ['latin'],
+//   weight: ['300', '400', '500', '600', '700', '800'],
+//   variable: '--font-inter',
+// })
 
 export const metadata: Metadata = {
   title: 'XLab - Phần mềm và Dịch vụ',
@@ -59,7 +61,7 @@ export default function RootLayout({
     // You could potentially log this to a service
     return (
       <html lang="vi">
-        <body className={inter.className}>
+        <body className="font-sans">
           <div className="min-h-screen flex flex-col items-center justify-center p-4">
             <h1 className="text-2xl font-bold mb-4">Đã xảy ra lỗi</h1>
             <p>Chúng tôi đang cố gắng khắc phục sự cố. Vui lòng thử lại sau.</p>
@@ -71,7 +73,7 @@ export default function RootLayout({
 
   try {
     return (
-      <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+      <html lang="vi" className="scroll-smooth">
         <head>
           <meta charSet="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -129,7 +131,7 @@ export default function RootLayout({
           </Script>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
         </head>
         <body className="font-sans antialiased">
           <Providers>

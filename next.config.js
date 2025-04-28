@@ -98,23 +98,19 @@ const nextConfig = {
   },
   poweredByHeader: false,
   webpack: (config, { isServer, dev }) => {
-    // Provide polyfills for both server and client
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        process: 'process/browser',
-        Buffer: ['buffer', 'Buffer'],
-      })
-    );
+    // Không sử dụng process polyfill thông thường
+    // thay vì sử dụng ProvidePlugin, sử dụng alias để tránh lỗi
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'process': false // Tắt process polyfill để tránh lỗi với process/browser.js
+    };
 
     // Make process available as a global, but avoid conflicting definitions
     config.plugins.push(
       new webpack.DefinePlugin({
-        // Removing 'process.browser' definition as it's causing conflicts
-        'global.process': JSON.stringify({
-          env: { 
-            NODE_ENV: process.env.NODE_ENV,
-            NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || ''
-          }
+        'process.env': JSON.stringify({
+          NODE_ENV: process.env.NODE_ENV,
+          NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || ''
         }),
       })
     );
@@ -143,7 +139,7 @@ const nextConfig = {
       zlib: resolveModule('browserify-zlib'),
       url: resolveModule('url'),
       os: resolveModule('os-browserify/browser'),
-      process: resolveModule('process/browser'),
+      process: false, // Tắt process polyfill
     };
 
     // Add babel rule for JSON parsing with optional chaining and nullish coalescing support
