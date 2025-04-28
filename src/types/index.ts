@@ -50,7 +50,8 @@ export interface User {
   name: string;
   email: string;
   image?: string;
-  role: 'USER' | 'ADMIN';
+  role: 'ADMIN' | 'USER';
+  createdAt?: string;
 }
 
 export interface Session {

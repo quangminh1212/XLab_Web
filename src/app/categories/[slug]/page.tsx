@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { categories, products } from '@/data/mockData';
@@ -14,13 +15,26 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-    const category = categories.find((cat) => cat.slug === params.slug);
+    // Thiết lập tiêu đề trang
+    useEffect(() => {
+        document.title = 'Danh mục sản phẩm | XLab - Phần mềm và Dịch vụ';
+    }, []);
+    
+    // Đảm bảo params và params.slug tồn tại
+    if (!params || !params.slug) {
+        return notFound();
+    }
+    
+    const category = categories.find((cat) => cat?.slug === params.slug);
 
     if (!category) {
-        notFound();
+        return notFound();
     }
 
-    const categoryProducts = products.filter((product) => product.categoryId === category.id);
+    // Đảm bảo category.id và mảng products tồn tại
+    const categoryId = category?.id || '';
+    const productsList = products || [];
+    const categoryProducts = productsList.filter((product) => product?.categoryId === categoryId);
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
@@ -36,8 +50,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     <div className="flex items-center mb-6">
                         <div className="w-16 h-16 bg-teal-50 rounded-lg flex items-center justify-center mr-4">
                             <Image
-                                src={category.imageUrl || '/images/placeholder.png'}
-                                alt={category.name}
+                                src={category?.imageUrl || '/images/placeholder.png'}
+                                alt={category?.name || 'Danh mục'}
                                 width={48}
                                 height={48}
                                 className="object-contain"
@@ -45,8 +59,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                             />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
-                            <p className="text-gray-600 mt-1">{category.description}</p>
+                            <h1 className="text-3xl font-bold text-gray-900">{category?.name || 'Danh mục'}</h1>
+                            <p className="text-gray-600 mt-1">{category?.description || ''}</p>
                         </div>
                     </div>
                 </div>
@@ -54,7 +68,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 {categoryProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {categoryProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            product ? <ProductCard key={product.id} product={product} /> : null
                         ))}
                     </div>
                 ) : (

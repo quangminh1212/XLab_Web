@@ -4,12 +4,14 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 
 interface ProductImageProps {
-  src: string
-  alt: string
+  src?: string
+  alt?: string
   width?: number
   height?: number
   className?: string
   priority?: boolean
+  style?: React.CSSProperties
+  onClick?: () => void
 }
 
 // Biểu tượng mặc định SVG cho VoiceTyping
@@ -86,17 +88,19 @@ const CanvaIcon = () => (
 
 export const ProductImage: React.FC<ProductImageProps> = ({
   src,
-  alt,
-  width = 400,
-  height = 300,
-  className = '',
+  alt = 'Product Image',
+  width = 500,
+  height = 500,
   priority = false,
+  style,
+  className = '',
+  onClick,
 }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   
   const handleError = () => {
-    console.error(`Failed to load image: ${src}`)
+    console.error(`Failed to load image: ${src || 'undefined source'}`)
     setIsError(true)
     setIsLoading(false)
   }
@@ -105,8 +109,44 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     setIsLoading(false)
   }
 
-  // Xác định loại sản phẩm dựa trên đường dẫn ảnh hoặc alt text
-  const sourceLower = ((src ?? '') + ' ' + (alt ?? '')).toLowerCase()
+  // Default image if src is not provided
+  const defaultImage = '/images/products/default-product.png';
+  const imageSrc = src || defaultImage;
+  
+  // Safe URL handling
+  const getSafeImageUrl = (url: string | undefined) => {
+    if (!url) return defaultImage;
+    
+    try {
+      // If it's a relative URL starting with /, keep it as is
+      if (url.startsWith('/')) {
+        return url;
+      }
+      
+      // Try to create a URL to validate it
+      new URL(url);
+      return url;
+    } catch (error) {
+      console.error('Invalid image URL:', url);
+      return defaultImage;
+    }
+  };
+
+  const safeImageSrc = getSafeImageUrl(imageSrc);
+  
+  // Safe event handler
+  const handleClick = () => {
+    if (typeof onClick === 'function') {
+      try {
+        onClick();
+      } catch (error) {
+        console.error('Error in onClick handler:', error);
+      }
+    }
+  };
+
+  // Xác định loại sản phẩm dựa trên đường dẫn ảnh hoặc alt text - với xử lý an toàn
+  const sourceLower = ((safeImageSrc || '') + ' ' + (alt || '')).toLowerCase();
   
   const isVoiceTyping = sourceLower.includes('voice') || sourceLower.includes('typing')
   const isVideoEditor = sourceLower.includes('capcut') || sourceLower.includes('videoeditor') || sourceLower.includes('video editor')
@@ -132,12 +172,13 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     // Nếu không phải loại đặc biệt, tải ảnh bình thường
     return (
       <Image
-        src={src ?? '/images/placeholder-product.jpg'}
-        alt={alt ?? 'Product Image'}
-        width={width}
-        height={height}
+        src={safeImageSrc}
+        alt={alt || 'Product Image'}
+        width={width || 500}
+        height={height || 500}
         className={`object-contain w-full h-full ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
         priority={priority}
+        style={style || {}}
         onLoadingComplete={handleLoadingComplete}
         onError={handleError}
         unoptimized={true}
@@ -146,7 +187,11 @@ export const ProductImage: React.FC<ProductImageProps> = ({
   }
 
   return (
-    <div className={`relative w-full h-full ${className ?? ''}`}>
+    <div 
+      className={`relative overflow-hidden ${className || ''}`} 
+      style={style || {}} 
+      onClick={handleClick}
+    >
       {/* Hiển thị trạng thái loading */}
       {isLoading && !isSpecialIcon && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
@@ -157,8 +202,8 @@ export const ProductImage: React.FC<ProductImageProps> = ({
       {/* Hiển thị ảnh hoặc fallback khi có lỗi */}
       {isError && !isSpecialIcon ? (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <p className="mt-2 text-sm text-gray-500">Không thể tải ảnh</p>
         </div>
@@ -167,4 +212,7 @@ export const ProductImage: React.FC<ProductImageProps> = ({
       )}
     </div>
   )
-} 
+}
+
+// Mặc định export để sử dụng dễ dàng hơn
+export default ProductImage 

@@ -1,4 +1,4 @@
-import { Product, Category, Store } from '@/types';
+import { Product, Category, Store, User } from '@/types';
 
 // Mock Categories
 export const categories: Category[] = [
@@ -399,6 +399,42 @@ export const products: Product[] = [
       'Chứng chỉ hoàn thành được công nhận bởi doanh nghiệp'
     ]
   }
+];
+
+// Mock Users
+export const users: User[] = [
+  {
+    id: '1',
+    name: 'John Doe',
+    email: 'john@example.com',
+    image: '/images/avatar-1.png',
+    role: 'ADMIN',
+    createdAt: '2023-01-01',
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    image: '/images/avatar-2.png',
+    role: 'USER',
+    createdAt: '2023-01-05',
+  },
+  {
+    id: '3',
+    name: 'Bob Johnson',
+    email: 'bob@example.com',
+    image: '/images/avatar-3.png',
+    role: 'USER',
+    createdAt: '2023-01-10',
+  },
+  {
+    id: '4',
+    name: 'Alice Brown',
+    email: 'alice@example.com',
+    image: '/images/avatar-4.png',
+    role: 'USER',
+    createdAt: '2023-01-15',
+  },
 ];
 
 // Mock Reviews (Optional - Can add later if needed)

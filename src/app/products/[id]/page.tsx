@@ -1,20 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import { products } from '@/data/mockData';
 import ProductDetail from '@/app/products/[id]/ProductDetail';
 import { Product } from '@/types';
 
-// Đảm bảo trang được render động với mỗi request
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
-
-// Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage({ params }: { params: { id: string } }) {
+  // Thiết lập tiêu đề trang
+  useEffect(() => {
+    document.title = 'Chi tiết sản phẩm | XLab - Phần mềm và Dịch vụ';
+  }, []);
+  
   try {
-    // Await params trước khi sử dụng thuộc tính của nó
-    const { id: productId } = await Promise.resolve(params);
+    // Lấy productId từ params
+    const { id: productId } = params;
     
     console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
     
@@ -29,7 +29,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
     // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
     if (!product) {
       console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
-      notFound();
+      return notFound();
     }
     
     // Ghi log thông tin truy cập
