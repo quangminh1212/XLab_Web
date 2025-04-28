@@ -63,7 +63,7 @@ const publicRoutes = [
   '/services/.+',
 ];
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ

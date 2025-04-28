@@ -51,6 +51,10 @@ Thumbs.db
 Desktop.ini
 
 # Local env files
+.env
+
+# Middleware copy
+/middleware.ts
 
 # Vercel
 .vercel
