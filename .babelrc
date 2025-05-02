@@ -4,7 +4,13 @@
   ],
   "plugins": [
     ["@babel/plugin-transform-react-jsx", {
-      "runtime": "automatic"
+      "runtime": "automatic",
+      "importSource": "react"
     }]
-  ]
+  ],
+  "env": {
+    "development": {
+      "compact": false
+    }
+  }
 } 

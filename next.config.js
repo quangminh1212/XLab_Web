@@ -92,7 +92,6 @@ const nextConfig = {
   },
   experimental: {
     largePageDataBytes: 128 * 100000,
-    serverExternalPackages: [],
   },
   poweredByHeader: false,
   webpack: (config, { isServer, dev }) => {
@@ -162,6 +161,18 @@ const nextConfig = {
       type: 'javascript/auto',
       use: ['json-loader'],
     });
+
+    // Sửa lỗi useLayoutEffect
+    if (!isServer) {
+      config.module.rules.push({
+        test: /react-dev-overlay\/ui\/components\/shadow-portal\.tsx$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: 'useLayoutEffect',
+          replace: 'useEffect',
+        },
+      });
+    }
 
     return config;
   },
