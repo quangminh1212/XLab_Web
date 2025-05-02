@@ -90,9 +90,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  compiler: {
-    styledComponents: true,
-  },
   experimental: {
     largePageDataBytes: 128 * 100000,
   },
