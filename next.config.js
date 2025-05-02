@@ -92,6 +92,7 @@ const nextConfig = {
   },
   experimental: {
     largePageDataBytes: 128 * 100000,
+    serverExternalPackages: [],
   },
   poweredByHeader: false,
   webpack: (config, { isServer, dev }) => {
@@ -163,6 +164,20 @@ const nextConfig = {
     });
 
     return config;
+  },
+  // Thêm cấu hình để sửa lỗi JSX và cải thiện hiệu suất
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+    styledComponents: true,
+  },
+  // Sửa lỗi về chuyển hướng và 404
+  async rewrites() {
+    return [
+      {
+        source: '/',
+        destination: '/app/page.js',
+      },
+    ];
   },
 };
 

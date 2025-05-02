@@ -181,3 +181,14 @@ coverage
 # Temporary folders
 tmp/
 temp/
+
+# Next.js 15 specific folders
+.next/_not-found/
+.next/app/
+.next/app-build-manifest.json
+.next/build-manifest.json
+.next/react-loadable-manifest.json
+.next/package.json
+.next/server/chunks/
+.next/server/webpack-runtime.js
+.next/server/vendor-chunks/
