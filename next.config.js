@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+<<<<<<< HEAD
   reactStrictMode: false,
   images: {
     remotePatterns: [
@@ -23,6 +24,39 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
+=======
+  // Thiết lập entry point cho trang
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  
+  // Bật strict mode để phát hiện lỗi sớm
+  reactStrictMode: true,
+  
+  // Cấu hình bảo mật và hiệu suất
+  poweredByHeader: false,
+  
+  // Bỏ qua lỗi build TypeScript & ESLint
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
+  // Hỗ trợ styled-components
+  compiler: {
+    styledComponents: true,
+  },
+  
+  // Cấu hình thử nghiệm
+  experimental: {
+    largePageDataBytes: 128 * 100000,
+  },
+  
+  // Cấu hình các gói bên ngoài cho server component
+  serverExternalPackages: [],
+  
+  // Cấu hình headers bảo mật
+>>>>>>> 2aea817a
   async headers() {
     return [
       {
@@ -60,6 +94,7 @@ const nextConfig = {
       }
     ];
   },
+<<<<<<< HEAD
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -79,17 +114,48 @@ const nextConfig = {
     if (dev && !isServer) {
       config.watchOptions = {
         ...config.watchOptions,
+=======
+  
+  // Cấu hình webpack để xử lý các lỗi với RSC
+  webpack: (config, { dev, isServer }) => {
+    // Cấu hình watchOptions cho phát triển
+    if (dev && !isServer) {
+      config.watchOptions = {
+>>>>>>> 2aea817a
         poll: 1000,
         aggregateTimeout: 300,
         ignored: /node_modules/
       };
     }
     
+<<<<<<< HEAD
     // Cấu hình thêm để xử lý tương thích với React Server Components
     config.module = {
       ...config.module,
       exprContextCritical: false,
     };
+=======
+    // Hỗ trợ các polyfill cho browser APIs
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        fetch: false,
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify'),
+        path: require.resolve('path-browserify'),
+        zlib: require.resolve('browserify-zlib'),
+        http: require.resolve('stream-http'),
+        https: require.resolve('https-browserify'),
+        os: require.resolve('os-browserify'),
+      };
+      
+      // Fix for "Cannot read properties of undefined (reading 'call')" error
+      config.optimization.moduleIds = 'named';
+    }
+>>>>>>> 2aea817a
     
     return config;
   },

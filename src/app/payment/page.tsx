@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -7,6 +8,19 @@ export const metadata: Metadata = {
 };
 
 export default function PaymentPage() {
+=======
+'use client';
+
+import Link from "next/link";
+import { useEffect } from "react";
+
+export default function PaymentPage() {
+  // Update document title
+  useEffect(() => {
+    document.title = "Thanh toán | XLab - Phần mềm và Dịch vụ";
+  }, []);
+
+>>>>>>> 2aea817a
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-center mb-8">Tùy chọn thanh toán</h1>

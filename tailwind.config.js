@@ -86,6 +86,19 @@ module.exports = {
         '3xl': '1.5rem',
         'full': '9999px',
       },
+<<<<<<< HEAD
+=======
+      animation: {
+        'loading-bar': 'loading 1.5s infinite ease-in-out',
+      },
+      keyframes: {
+        loading: {
+          '0%': { transform: 'translateX(-100%)' },
+          '50%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+      },
+>>>>>>> 2aea817a
       typography: {
         DEFAULT: {
           css: {

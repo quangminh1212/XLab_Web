@@ -40,6 +40,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
+<<<<<<< HEAD
       if (token && session.user) {
         session.user.id = token.id as string;
 
@@ -59,6 +60,32 @@ export const authOptions: NextAuthOptions = {
         }
       }
       return session;
+=======
+      try {
+        if (token && session?.user) {
+          session.user.id = token.id as string;
+
+          if (token.customName) session.user.customName = token.customName as boolean;
+          if (token.phone) session.user.phone = token.phone as string;
+          if (token.memberSince) session.user.memberSince = token.memberSince as string;
+          if (token.isAdmin) session.user.isAdmin = Boolean(token.isAdmin);
+
+          console.log('Session data after processing:', {
+            id: session.user.id,
+            email: session.user.email,
+            isAdmin: session.user.isAdmin
+          });
+
+          if (token.customName && token.name) {
+            session.user.name = token.name as string;
+          }
+        }
+        return session;
+      } catch (error) {
+        console.error("Error in session callback:", error);
+        return session;
+      }
+>>>>>>> 2aea817a
     },
     async jwt({ token, user, account, trigger, session }: {
       token: JWT;

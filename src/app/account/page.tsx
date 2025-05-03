@@ -107,6 +107,7 @@ export default function AccountPage() {
 
     // Khởi tạo profile từ session nếu có
     if (session?.user) {
+<<<<<<< HEAD
       // Khởi tạo thông tin cơ bản từ session
       const updatedProfile = {
         ...userProfile,
@@ -162,6 +163,74 @@ export default function AccountPage() {
         setProfile(updatedProfile);
         setIsLoading(false);
       }
+=======
+      try {
+        // Khởi tạo thông tin cơ bản từ session
+        const updatedProfile = {
+          ...userProfile,
+          name: session?.user?.name || userProfile.name,
+          email: session?.user?.email || userProfile.email,
+          avatar: session?.user?.image || userProfile.avatar,
+          // Sử dụng thông tin bổ sung từ session nếu có
+          phone: session?.user?.phone || userProfile.phone,
+          memberSince: session?.user?.memberSince || userProfile.memberSince,
+        };
+
+        // Kiểm tra xem có thông tin đã lưu trong localStorage không
+        try {
+          if (typeof window !== 'undefined' && session?.user?.email) {
+            const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
+            if (savedProfile) {
+              const parsedProfile = JSON.parse(savedProfile);
+
+              // Nếu session có customName = true, ưu tiên sử dụng name từ session
+              if (session?.user?.customName) {
+                setProfile({
+                  ...updatedProfile,
+                  // Lấy một số thông tin từ localStorage nếu cần
+                  phone: parsedProfile?.phone || updatedProfile.phone,
+                });
+                console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
+              } else {
+                // Ngược lại, kết hợp thông tin từ localStorage và session
+                setProfile({
+                  ...updatedProfile,
+                  ...(parsedProfile || {}),
+                  email: session?.user?.email || updatedProfile.email,
+                  avatar: session?.user?.image || updatedProfile.avatar
+                });
+                console.log('Đã tải thông tin từ localStorage:', parsedProfile);
+              }
+            } else {
+              // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
+              setProfile(updatedProfile);
+              console.log('Đã tải thông tin từ session');
+            }
+          } else {
+            setProfile(updatedProfile);
+          }
+
+          // Mô phỏng việc tải dữ liệu từ API
+          setTimeout(() => {
+            // Trong thực tế, đây sẽ là một API call để lấy lịch sử mua hàng
+            // Hiện tại chúng ta gán mảng rỗng để hiển thị trạng thái "chưa có sản phẩm"
+            setPurchaseHistory(emptyPurchaseHistory);
+            setIsLoading(false);
+          }, 1000);
+        } catch (error) {
+          console.error('Lỗi khi đọc từ localStorage:', error);
+          // Fallback to session data
+          setProfile(updatedProfile);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Lỗi khi xử lý session:', error);
+        setIsLoading(false);
+      }
+    } else {
+      // Nếu không có session.user, đảm bảo rằng loading state đã tắt
+      setIsLoading(false);
+>>>>>>> 2aea817a
     }
   }, [status, router, session]);
 
@@ -182,7 +251,11 @@ export default function AccountPage() {
 
     try {
       // Lưu thông tin vào localStorage
+<<<<<<< HEAD
       if (session?.user?.email) {
+=======
+      if (typeof window !== 'undefined' && session?.user?.email) {
+>>>>>>> 2aea817a
         localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify({
           name: profile.name,
           phone: profile.phone,
@@ -205,10 +278,21 @@ export default function AccountPage() {
         */
 
         // Cập nhật session để khi refresh trang sẽ giữ nguyên thông tin
+<<<<<<< HEAD
         await updateSession({
           name: profile.name,
           phone: profile.phone
         });
+=======
+        try {
+          await updateSession({
+            name: profile.name,
+            phone: profile.phone
+          });
+        } catch (error) {
+          console.error('Lỗi khi cập nhật session:', error);
+        }
+>>>>>>> 2aea817a
 
         console.log('Đã lưu thông tin vào localStorage và cập nhật session:', {
           name: profile.name,
