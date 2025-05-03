@@ -1,0 +1,47 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/node_modules
+
+# Next.js build output and cache
+/.next/
+/out/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional Editor directories and files
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-project
+*.sublime-workspace
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Environment variables
+.env.local
+.env.*.local
+
+# macOS file system metadata
+.DS_Store
+
+# Production build files
+.next
+out
+
+# Static exports
+out/
+
+# Turborepo cache
+.turbo
+
+# Drizzle migration files (example, adjust if using Drizzle)
+# migrations/*
+# drizzle.config.ts (if it contains secrets)
