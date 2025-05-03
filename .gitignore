@@ -52,6 +52,7 @@ Desktop.ini
 
 # Local env files
 .env
+.env*.local
 
 # Middleware copy
 /middleware.ts
@@ -192,3 +193,9 @@ temp/
 .next/server/chunks/
 .next/server/webpack-runtime.js
 .next/server/vendor-chunks/
+.next/cache/webpack/
+.next/cache/images/
+.next/static/webpack/
+.next/static/development/
+.next/static/chunks/
+.next/static/media/
