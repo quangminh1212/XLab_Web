@@ -6,6 +6,10 @@ const nextConfig = {
   // Bật strict mode để phát hiện lỗi sớm
   reactStrictMode: true,
   
+  // Cấu hình cả App Router và Pages Router
+  // Trong Next.js 15, appDir được bật mặc định nhưng cần cấu hình đúng
+  experimental: {},
+  
   // Cấu hình webpack để xử lý các lỗi với RSC
   webpack: (config, { isServer }) => {
     // Hỗ trợ các polyfill cho browser APIs
