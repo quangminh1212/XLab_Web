@@ -26,22 +26,7 @@ taskkill /f /im node.exe >nul 2>&1
 :: Bước 3: Dọn dẹp môi trường
 echo [3/9] Cleaning up environment...
 echo Cleaning cache folders...
-if exist .next rmdir /s /q .next 2>nul
-if exist .next-dev rmdir /s /q .next-dev 2>nul
 if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul
-if exist .vercel rmdir /s /q .vercel 2>nul
-if exist .turbo rmdir /s /q .turbo 2>nul
-
-:: Xóa các file cache TypeScript
-if exist *.tsbuildinfo del /f /q *.tsbuildinfo 2>nul
-
-:: Xóa các file cache webpack
-if exist .webpack rmdir /s /q .webpack 2>nul
-
-:: Xóa các file lock
-if exist package-lock.json del /f /q package-lock.json 2>nul
-if exist yarn.lock del /f /q yarn.lock 2>nul
-if exist pnpm-lock.yaml del /f /q pnpm-lock.yaml 2>nul
 
 :: Bước 4: Tạo .npmrc để tắt warning và thiết lập cài đặt
 echo [4/9] Configuring Next.js %NEXT_VERSION_FULL%...
@@ -71,7 +56,6 @@ if %ERRORLEVEL% NEQ 0 (
 
 :: Bước 6: Xóa cache của npm
 echo [6/9] Clearing npm cache...
-call npm cache clean --force
 
 :: Bước 7: Kiểm tra cài đặt Next.js
 echo [7/9] Verifying Next.js installation...

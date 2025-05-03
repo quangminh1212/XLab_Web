@@ -1,17 +1,16 @@
-import { Inter } from 'next/font/google';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
   title: 'XLab - Phần mềm và Dịch vụ',
   description: 'XLab cung cấp các giải pháp phần mềm và dịch vụ công nghệ hàng đầu.',
 };
 
-export default function RootLayout({ children }) {
+function RootLayout({ children }) {
   return (
     <html lang="vi">
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
   );
-} 
+}
+
+export default RootLayout; 

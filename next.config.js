@@ -1,60 +1,16 @@
 /** @type {import('next').NextConfig} */
-const webpack = require('webpack');
-
-const nextConfig = {
-  reactStrictMode: true,
-  transpilePackages: ['ajv', 'ajv-keywords', 'schema-utils'],
-  images: {
-    domains: [
-      'localhost',
-      'picsum.photos',
-      'primefaces.org',
-      'fastly.picsum.photos',
-      'loremflickr.com',
-      'placehold.it',
-      'source.unsplash.com',
-      'dummyimage.com',
-      'cdn.dribbble.com',
-      'ui-avatars.com',
-      '*.cloudinary.com',
-      'api.dicebear.com',
-      'images.pexels.com',
-      'cdn.pixabay.com', 
-      'randomuser.me',
-      'res.cloudinary.com'
-    ],
-    unoptimized: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+module.exports = {
+  // Tắt App Router để chỉ sử dụng Pages Router
   experimental: {
-    largePageDataBytes: 128 * 100000,
+    appDir: false
   },
-  poweredByHeader: false,
-  webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      path: false,
-      crypto: false,
-      stream: false,
-      buffer: false,
-      util: false,
-      assert: false,
-      http: false,
-      https: false,
-      zlib: false,
-      url: false,
-      os: false,
-      process: false,
-    };
-    
-    return config;
-  }
+  
+  // Thiết lập entry point cho trang
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  
+  // Bật strict mode để phát hiện lỗi sớm
+  reactStrictMode: true,
+  
+  // Đường dẫn bắt đầu cho các trang
+  basePath: '',
 };
-
-module.exports = nextConfig;
