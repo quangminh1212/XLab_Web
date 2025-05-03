@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 'use client';
 
-=======
->>>>>>> 2aea817a
 export default function Loading() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-primary-50 to-white">
@@ -54,7 +51,6 @@ export default function Loading() {
         
         <div className="mt-8 relative">
           <div className="h-1 w-32 mx-auto bg-gray-200 rounded-full overflow-hidden">
-<<<<<<< HEAD
             <div className="h-full bg-primary-500 rounded-full w-1/3 loading-bar"></div>
           </div>
         </div>
@@ -77,12 +73,6 @@ export default function Loading() {
           animation: loading 1.5s infinite ease-in-out;
         }
       `}</style>
-=======
-            <div className="h-full bg-primary-500 rounded-full w-1/3 animate-loading-bar"></div>
-          </div>
-        </div>
-      </div>
->>>>>>> 2aea817a
     </div>
   );
 } 

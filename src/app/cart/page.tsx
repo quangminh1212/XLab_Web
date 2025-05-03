@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -36,53 +35,6 @@ export default function CartPage() {
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
-=======
-'use client';
-
-import { useState, useEffect } from 'react';
-import Link from 'next/link'
-import Image from 'next/image'
-import { useCart } from '@/lib/CartContext';
-import { formatCurrency } from '@/lib/utils';
-
-// Định nghĩa interface cho cart item
-interface CartItem {
-  id: string;
-  name: string;
-  version: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-export default function CartPage() {
-  const { 
-    cartItems, 
-    removeFromCart, 
-    updateQuantity, 
-    clearCart, 
-    isLoading, 
-    subtotal, 
-    tax, 
-    total 
-  } = useCart();
-  
-  // Cập nhật tiêu đề trang
-  useEffect(() => {
-    document.title = 'Giỏ hàng | XLab - Phần mềm và Dịch vụ';
-  }, []);
-  
-  // Phần loading
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
-          <p className="text-lg text-gray-600">Đang tải giỏ hàng...</p>
-        </div>
-      </div>
-    );
->>>>>>> 2aea817a
   }
   
   return (
@@ -134,14 +86,7 @@ export default function CartPage() {
                           </div>
                           <div className="flex items-center justify-between mt-4">
                             <div className="flex items-center border rounded-md w-32">
-<<<<<<< HEAD
                               <button className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary-600">
-=======
-                              <button 
-                                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary-600"
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                              >
->>>>>>> 2aea817a
                                 -
                               </button>
                               <input
@@ -150,25 +95,11 @@ export default function CartPage() {
                                 readOnly
                                 className="w-12 h-10 text-center border-x"
                               />
-<<<<<<< HEAD
                               <button className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary-600">
                                 +
                               </button>
                             </div>
                             <button className="text-red-500 hover:text-red-700">
-=======
-                              <button 
-                                className="w-10 h-10 flex items-center justify-center text-gray-600 hover:text-primary-600"
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                              >
-                                +
-                              </button>
-                            </div>
-                            <button 
-                              className="text-red-500 hover:text-red-700"
-                              onClick={() => removeFromCart(item.id)}
-                            >
->>>>>>> 2aea817a
                               Xóa
                             </button>
                           </div>
@@ -194,14 +125,7 @@ export default function CartPage() {
                   >
                     Tiếp tục mua sắm
                   </Link>
-<<<<<<< HEAD
                   <button className="btn bg-red-500 text-white">
-=======
-                  <button 
-                    className="btn bg-red-500 text-white"
-                    onClick={clearCart}
-                  >
->>>>>>> 2aea817a
                     Xóa giỏ hàng
                   </button>
                 </div>

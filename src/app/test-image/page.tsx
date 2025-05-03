@@ -1,22 +1,10 @@
 'use client';
 
-<<<<<<< HEAD
 import React from 'react';
-=======
-import React, { useEffect } from 'react';
->>>>>>> 2aea817a
 import Image from 'next/image';
 import { ProductImage } from '@/components/ProductImage';
 
 const TestImagePage = () => {
-<<<<<<< HEAD
-=======
-  // Set document title
-  useEffect(() => {
-    document.title = 'Kiểm tra hình ảnh | XLab - Phần mềm và Dịch vụ';
-  }, []);
-  
->>>>>>> 2aea817a
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Kiểm tra hiển thị hình ảnh</h1>

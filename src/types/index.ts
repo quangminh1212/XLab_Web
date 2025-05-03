@@ -3,7 +3,6 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
-<<<<<<< HEAD
   longDescription: string;
   price: number;
   salePrice: number;
@@ -20,24 +19,6 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   storeId: number | string;
-=======
-  longDescription?: string;
-  price: number;
-  salePrice?: number;
-  categoryId: number | string;
-  imageUrl?: string;
-  isFeatured?: boolean;
-  isNew?: boolean;
-  downloadCount?: number;
-  viewCount?: number;
-  rating?: number;
-  version?: string;
-  size?: string;
-  licenseType?: string;
-  createdAt: string;
-  updatedAt: string;
-  storeId?: number | string;
->>>>>>> 2aea817a
   isAccount?: boolean;
   type?: string;
   features?: string[];
@@ -69,12 +50,7 @@ export interface User {
   name: string;
   email: string;
   image?: string;
-<<<<<<< HEAD
   role: 'USER' | 'ADMIN';
-=======
-  role: 'ADMIN' | 'USER';
-  createdAt?: string;
->>>>>>> 2aea817a
 }
 
 export interface Session {

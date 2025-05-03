@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -6,13 +5,6 @@ export const metadata = {
   title: 'Thanh toán | XLab - Phần mềm và Dịch vụ',
   description: 'Thanh toán đơn hàng của bạn tại XLab - Phần mềm và Dịch vụ',
 }
-=======
-'use client';
-
-import Link from 'next/link'
-import Image from 'next/image'
-import { useEffect } from 'react';
->>>>>>> 2aea817a
 
 // This would normally come from a state management solution or API
 const cartItems = [
@@ -35,14 +27,6 @@ const cartItems = [
 ]
 
 export default function CheckoutPage() {
-<<<<<<< HEAD
-=======
-  // Update document title
-  useEffect(() => {
-    document.title = 'Thanh toán | XLab - Phần mềm và Dịch vụ';
-  }, []);
-
->>>>>>> 2aea817a
   // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const tax = subtotal * 0.1 // 10% tax
