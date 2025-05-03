@@ -2,38 +2,23 @@
 
 # Dependencies
 /node_modules
-/node_modules/.cache
 /.pnp
 .pnp.js
 .yarn/install-state.gz
 
 # Testing
 /coverage
-/cypress/videos/
-/cypress/screenshots/
 
-# Next.js build/cache/output
+# Next.js
 /.next/
-/.next-dev/
 /out/
 /build/
-.next-server/
-.next-static/
-.next-caching/
-.next-trace/
 .swc/
-/.swc-win32-x64-msvc*
-*.tsbuildinfo
-webpack-bundle-analyzer-report.html
-
-# Production
-# /build  # Included in Next.js section
 
 # Misc
 .DS_Store
 *.pem
 *.log
-logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -42,160 +27,20 @@ yarn-error.log*
 *.tmp
 *.temp
 *.bak
-*.swp
-*.swo
-~$*
-._*
-*~
 Thumbs.db
-Desktop.ini
 
 # Local env files
-.env
 .env*.local
-
-# Middleware copy
-/middleware.ts
+.env
 
 # Vercel
 .vercel
-/.vercel_build_output/
 
 # TypeScript
-# *.tsbuildinfo # Included in Next.js section
+*.tsbuildinfo
 next-env.d.ts
 
-# Editor/IDE
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
+# Editor
+.vscode/*
 !.vscode/extensions.json
 .idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-# Package manager lock files (consider keeping these if your team uses them)
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
-
-# Generated files
-/public/sitemap*.xml
-/public/robots.txt
-/public/sw.js
-/public/workbox-*.js
-/public/sw.js.map
-/public/workbox-*.js.map
-/public/fallback-*.js
-
-# Analysis files
-/analyze/
-.analyzerc
-
-# System files
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-
-# Python / VoiceTyping Specific
-/venv/
-/VoiceTyping/venv/
-/VoiceTyping/build/
-/VoiceTyping/dist/
-*.spec
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-
-# Files generated during runtime
-.cache
-.temp
-dist/
-public/temp/
-
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Next.js development server files
-.next/cache/
-.next/server/
-.next/static/
-.next/trace
-.next/types/
-
-# Hot module replacement files
-*.hot-update.*
-
-# Local development files
-/.history/
-.turbo
-.cache/
-
-# Debug files
-*.dump
-npm-debug.log
-yarn-debug.log
-
-# SEO files that are generated at runtime
-/public/sitemap-*.xml
-/public/robots.txt
-
-# PWA generated files
-public/sw.js
-public/sw.js.map
-public/worker-*.js
-public/worker-*.js.map
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage
-*.lcov
-
-# Mac files
-.DS_Store
-
-# Temporary folders
-tmp/
-temp/
-
-# Next.js 15 specific folders
-.next/_not-found/
-.next/app/
-.next/app-build-manifest.json
-.next/build-manifest.json
-.next/react-loadable-manifest.json
-.next/package.json
-.next/server/chunks/
-.next/server/webpack-runtime.js
-.next/server/vendor-chunks/
-.next/cache/webpack/
-.next/cache/images/
-.next/static/webpack/
-.next/static/development/
-.next/static/chunks/
-.next/static/media/

@@ -3,82 +3,28 @@ setlocal enabledelayedexpansion
 
 echo XLab Web - Next.js 15.2.4 Startup Tool
 echo ------------------------------
-echo [Running in Next.js 15.2.4 DEVELOPMENT mode]
 
-:: Cài đặt mặc định phiên bản Next.js 15.2.4 và dùng development
-set NEXT_VERSION_FULL=15.2.4
-set RUN_MODE=dev
-
-:: Bước 1: Kiểm tra cài đặt Node.js
-echo [1/8] Checking Node.js installation...
-node -v > nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    echo Node.js is not installed or not in PATH. Please install Node.js from https://nodejs.org/
-    exit /b 1
-)
-echo Node.js version: 
-node -v
-
-:: Bước 2: Dừng tất cả các tiến trình Node đang chạy
-echo [2/8] Stopping any running Node.js processes...
+:: Dừng tất cả các tiến trình Node đang chạy
+echo Stopping any running Node.js processes...
 taskkill /f /im node.exe >nul 2>&1
 
-:: Bước 3: Dọn dẹp môi trường có chọn lọc (chỉ xóa cache, không xóa các thư mục cấu hình)
-echo [3/8] Cleaning up environment...
-echo Cleaning cache folders...
-if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul
+:: Xóa thư mục .next
+echo Cleaning .next directory...
+if exist .next rmdir /s /q .next 2>nul
 
-:: Bước 4: Tạo .npmrc để tắt warning và thiết lập cài đặt
-echo [4/8] Configuring Next.js %NEXT_VERSION_FULL%...
-echo loglevel=error > .npmrc
-echo fund=false >> .npmrc
-echo audit=false >> .npmrc
-echo update-notifier=false >> .npmrc
-echo legacy-peer-deps=true >> .npmrc
-echo engine-strict=false >> .npmrc
-echo save-exact=true >> .npmrc
-
-:: Bước 5: Cài đặt các dependencies
-echo [5/8] Installing Next.js %NEXT_VERSION_FULL% and dependencies...
-
-:: Cài đặt Next.js và dependencies chính
-call npm install next@%NEXT_VERSION_FULL% --save-exact --no-fund --no-audit --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install Next.js
-    exit /b 1
-)
-
-call npm install --no-fund --no-audit --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install dependencies
-    exit /b 1
-)
-
-:: Bước 6: Kiểm tra cài đặt Next.js
-echo [6/8] Verifying Next.js installation...
-call npm ls next
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to verify Next.js installation
-    exit /b 1
-)
-
-:: Bước 7: Kiểm tra môi trường
-echo [7/8] Checking environment...
-if not exist node_modules\.bin\next.cmd (
-    echo Next.js binary not found
-    exit /b 1
-)
-
-:: Bước 8: Chạy ứng dụng
-echo [8/8] Starting application in %RUN_MODE% mode...
-echo Starting Next.js %NEXT_VERSION_FULL% development server...
-echo [Press Ctrl+C to stop the server]
+:: Xóa file .babelrc nếu tồn tại
+echo Removing .babelrc if it exists...
+if exist .babelrc del /f /q .babelrc >nul 2>&1
 
 :: Đặt biến môi trường
 set NODE_ENV=development
 set NEXT_TELEMETRY_DISABLED=1
 
-:: Chạy ứng dụng với đường dẫn đầy đủ
-call node_modules\.bin\next.cmd dev
+:: Chạy ứng dụng Next.js
+echo Starting Next.js 15.2.4 development server...
+echo [Press Ctrl+C to stop the server]
+
+:: Chạy ứng dụng với npx
+npx next dev
 
 endlocal 

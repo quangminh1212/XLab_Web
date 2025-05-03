@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clean": "rimraf .next .next-dev node_modules/.cache"
+    "clean": "rimraf .next .next-dev node_modules/.cache",
+    "clean:hard": "rimraf .next .next-dev node_modules",
+    "reset": "rimraf .next .next-dev && npm run dev"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.2",

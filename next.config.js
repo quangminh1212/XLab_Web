@@ -1,20 +1,11 @@
 /** @type {import('next').NextConfig} */
-module.exports = {
-  // Tắt App Router để chỉ sử dụng Pages Router
-  experimental: {
-    appDir: false,
-    serverComponentsExternalPackages: [],
-  },
-  
+const nextConfig = {
   // Thiết lập entry point cho trang
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
   
   // Bật strict mode để phát hiện lỗi sớm
   reactStrictMode: true,
   
-  // Đường dẫn bắt đầu cho các trang
-  basePath: '',
-
   // Cấu hình webpack để xử lý các lỗi với RSC
   webpack: (config, { isServer }) => {
     // Hỗ trợ các polyfill cho browser APIs
@@ -36,4 +27,6 @@ module.exports = {
     
     return config;
   },
-}
+};
+
+module.exports = nextConfig;
