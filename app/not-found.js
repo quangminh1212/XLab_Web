@@ -1,7 +1,3 @@
-'use client';
-
-import Link from 'next/link';
-
 export default function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -11,9 +7,9 @@ export default function NotFound() {
         <p className="text-lg text-gray-600 mb-8">
           Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.
         </p>
-        <Link href="/" className="bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 rounded-md">
+        <a href="/" className="bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 rounded-md">
           Về trang chủ
-        </Link>
+        </a>
       </div>
     </div>
   );

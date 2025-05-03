@@ -1,7 +1,3 @@
-'use client';
-
-import Link from 'next/link'
-
 export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -13,20 +9,20 @@ export default function Home() {
           Phần mềm và dịch vụ hàng đầu cho doanh nghiệp của bạn
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-          <Link 
+          <a
             href="/products" 
             className="bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 rounded-md transition-all"
           >
             Xem sản phẩm
-          </Link>
-          <Link 
+          </a>
+          <a
             href="/about" 
             className="bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-6 rounded-md transition-all"
           >
             Giới thiệu
-          </Link>
+          </a>
         </div>
       </div>
     </div>
-  )
+  );
 } 

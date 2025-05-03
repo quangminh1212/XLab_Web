@@ -35,24 +35,7 @@ const nextConfig = {
     largePageDataBytes: 128 * 100000,
   },
   poweredByHeader: false,
-  webpack: (config, { isServer, dev }) => {
-    // Tắt process polyfill để tránh lỗi
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      'process': false
-    };
-
-    // Make process available as a global
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        'process.env': JSON.stringify({
-          NODE_ENV: process.env.NODE_ENV,
-          NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || ''
-        }),
-      })
-    );
-
-    // Add node polyfills
+  webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -69,9 +52,9 @@ const nextConfig = {
       os: false,
       process: false,
     };
-
+    
     return config;
-  },
+  }
 };
 
 module.exports = nextConfig;
