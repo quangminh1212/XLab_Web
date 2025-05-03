@@ -1,11 +1,11 @@
 import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import Analytics from '@/components/Analytics'
+// import Header from '@/components/Header' // Tạm thời comment out
+// import Footer from '@/components/Footer' // Tạm thời comment out
+// import Analytics from '@/components/Analytics' // Vẫn comment out
 import { siteConfig } from '@/config/siteConfig'
-import SessionProvider from '@/components/SessionProvider'
+import SessionProvider from '@/components/SessionProvider' // Khôi phục
 
 const inter = Inter({
   subsets: ['latin'],
@@ -92,11 +92,11 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <SessionProvider>
           <div className="flex flex-col min-h-screen">
-            <Header />
+            {/* <Header /> */}
             <main className="flex-grow">{children}</main>
-            <Footer />
+            {/* <Footer /> */}
           </div>
-          <Analytics />
+          {/* <Analytics /> */}
         </SessionProvider>
       </body>
     </html>

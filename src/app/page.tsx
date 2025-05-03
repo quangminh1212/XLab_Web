@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
@@ -54,13 +56,13 @@ function HomePage() {
               </Link>
             </div>
 
-            {featuredProducts.length > 0 ? (
+            {/* {featuredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {featuredProducts.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
-            ) : (
+            ) : ( */}
               <div className="flex items-center justify-center">
                 <div className="text-center py-16">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,7 +74,7 @@ function HomePage() {
                   </p>
                 </div>
               </div>
-            )}
+            {/* )} */}
           </div>
         </section>
 
@@ -89,13 +91,13 @@ function HomePage() {
               </Link>
             </div>
 
-            {newProducts.length > 0 ? (
+            {/* {newProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {newProducts.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
-            ) : (
+            ) : ( */}
               <div className="flex items-center justify-center">
                 <div className="text-center py-16">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -107,7 +109,7 @@ function HomePage() {
                   </p>
                 </div>
               </div>
-            )}
+            {/* )} */}
           </div>
         </section>
       </div>
