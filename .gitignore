@@ -2,6 +2,7 @@
 
 # Dependencies
 /node_modules
+/node_modules/.cache
 
 # Next.js build output and cache
 /.next/

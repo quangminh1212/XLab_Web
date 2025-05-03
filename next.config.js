@@ -23,6 +23,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
+  /* // Tạm thời comment out headers để debug CSP
   async headers() {
     return [
       {
@@ -60,6 +61,7 @@ const nextConfig = {
       }
     ];
   },
+  */
   typescript: {
     ignoreBuildErrors: true,
   },
