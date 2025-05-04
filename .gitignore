@@ -82,10 +82,7 @@ pnpm-lock.yaml
 .turbo
 
 # environment variables
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
 
 # Generated files during runtime
 /.vercel_build_output/
@@ -237,6 +234,10 @@ yarn-error.log*
 
 # NextJS specific cache và middleware
 .next
+
+# build artifacts and cache
+.swc/
+.turbo/
 
 
 
