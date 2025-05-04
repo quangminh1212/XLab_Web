@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,
-  output: 'standalone',
   env: {
     GOOGLE_CLIENT_ID: "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
     GOOGLE_CLIENT_SECRET: "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",
@@ -22,7 +20,10 @@ const nextConfig = {
         hostname: '**',
       }
     ],
-    unoptimized: process.env.NODE_ENV !== 'production',
+    loader: 'default',
+    path: '',
+    disableStaticImages: false,
+    unoptimized: true,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
     formats: ['image/webp'],
@@ -74,37 +75,34 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   webpack: (config, { dev, isServer }) => {
-    if (!dev) {
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            default: false,
-            vendors: false,
-            commons: {
-              name: 'commons',
-              chunks: 'all',
-              minChunks: 2,
-            },
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendor',
-              chunks: 'all',
-            },
-          },
-        },
-      };
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
+    if (dev) {
+      config.mode = 'none';
     }
-
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
+    }
+    
     return config;
   },
   compiler: {
     styledComponents: true,
   },
-  poweredByHeader: false,
-  generateEtags: true,
-  compress: true,
 };
 
 module.exports = nextConfig;

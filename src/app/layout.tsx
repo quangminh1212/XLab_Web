@@ -13,8 +13,8 @@ const inter = Inter({
   display: 'swap',
   variable: '--font-inter',
   fallback: ['system-ui', 'Arial', 'sans-serif'],
-  preload: false,
-  adjustFontFallback: false,
+  preload: true,
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
@@ -93,7 +93,6 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen bg-gray-50 flex flex-col antialiased">
         <noscript>
