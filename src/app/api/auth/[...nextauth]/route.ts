@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { JWT } from "next-auth/jwt";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -17,14 +17,31 @@ declare module "next-auth" {
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
+      clientSecret: "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",
       authorization: {
         params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code"
+          redirect_uri: "http://localhost:3000/api/auth/callback/google"
         }
+      }
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        // Thực hiện xác thực người dùng ở đây
+        // Đây chỉ là mẫu, bạn cần thay thế bằng logic xác thực thực tế
+        if (credentials?.email && credentials?.password) {
+          return {
+            id: "1",
+            name: "Test User",
+            email: credentials.email,
+          };
+        }
+        return null;
       }
     }),
   ],
@@ -51,11 +68,14 @@ const handler = NextAuth({
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
+      if (account?.provider === "credentials") {
+        return true;
+      }
       return false;
     },
   },
-  debug: false,
-  secret: process.env.NEXTAUTH_SECRET,
+  debug: true,
+  secret: process.env.NEXTAUTH_SECRET || "your_random_string_here",
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days

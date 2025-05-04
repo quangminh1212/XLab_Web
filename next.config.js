@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  env: {
+    GOOGLE_CLIENT_ID: "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
+    GOOGLE_CLIENT_SECRET: "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",
+    NEXTAUTH_SECRET: "your_random_string_here",
+    NEXTAUTH_URL: "http://localhost:3000",
+    NEXTAUTH_SIGNIN_URL: "http://localhost:3000/api/auth/signin/google",
+    NEXTAUTH_CALLBACK_URL: "http://localhost:3000/api/auth/callback/google"
+  },
   images: {
     remotePatterns: [
       {
