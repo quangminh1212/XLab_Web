@@ -4,8 +4,9 @@ export async function GET(req: NextRequest) {
   // Lấy code từ query params
   const url = new URL(req.url);
   const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
   
-  console.log('Callback received from Google:', { code });
+  console.log('Callback received from Google:', { code, state });
   
   if (!code) {
     console.error('No code received from Google');
@@ -13,6 +14,19 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    // Giải mã state để lấy callbackUrl nếu có
+    let callbackUrl = '/';
+    if (state) {
+      try {
+        const stateObj = JSON.parse(Buffer.from(state, 'base64').toString());
+        if (stateObj.callbackUrl) {
+          callbackUrl = stateObj.callbackUrl;
+        }
+      } catch (e) {
+        console.error('Error parsing state parameter:', e);
+      }
+    }
+
     // Gọi API để trao đổi code lấy token
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
@@ -21,9 +35,9 @@ export async function GET(req: NextRequest) {
       },
       body: new URLSearchParams({
         code,
-        client_id: '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com',
-        client_secret: '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',
-        redirect_uri: 'http://localhost:3000/api/auth/callback/google',
+        client_id: process.env.GOOGLE_CLIENT_ID || '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com',
+        client_secret: process.env.GOOGLE_CLIENT_SECRET || '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',
+        redirect_uri: process.env.NEXTAUTH_CALLBACK_URL || 'http://localhost:3000/api/auth/callback/google',
         grant_type: 'authorization_code',
       }),
     });
@@ -58,8 +72,8 @@ export async function GET(req: NextRequest) {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     };
 
-    // Chuyển hướng về trang chủ với session
-    const response = NextResponse.redirect(`${url.origin}/`);
+    // Chuyển hướng về trang đích với session
+    const response = NextResponse.redirect(`${url.origin}${callbackUrl}`);
     
     // Lưu session vào cookie
     response.cookies.set('user-session', JSON.stringify(session), {

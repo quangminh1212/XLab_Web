@@ -16,10 +16,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   // Xử lý lỗi nếu có
   useEffect(() => {
     if (errorType) {
+      console.log('Auth error detected:', errorType);
+      
       switch (errorType) {
         case 'google':
           setError('Đăng nhập với Google không thành công. Vui lòng thử lại.');
@@ -37,7 +40,7 @@ export default function LoginPage() {
           setError('Lỗi xử lý callback từ nhà cung cấp xác thực.');
           break;
         default:
-          setError('Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng thử lại.');
+          setError(`Có lỗi xảy ra trong quá trình đăng nhập: ${errorType}. Vui lòng thử lại.`);
       }
     }
   }, [errorType]);
@@ -74,6 +77,24 @@ export default function LoginPage() {
     }
   };
 
+  // Hàm xử lý đăng nhập với Google
+  const handleGoogleSignIn = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      setGoogleLoading(true);
+      setError('');
+      
+      await signIn('google', { 
+        callbackUrl,
+        redirect: true
+      });
+    } catch (err) {
+      console.error('Lỗi đăng nhập Google:', err);
+      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -103,8 +124,8 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Nút đăng nhập Google - Phương pháp đã chứng minh hoạt động */}
-          <Link
+          {/* Nút đăng nhập Google */}
+          <Link 
             href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
           >

@@ -16,18 +16,28 @@ declare module "next-auth" {
   }
 }
 
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+// Ensure we're using environment variables everywhere
+const googleClientId = process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET || "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";
+const nextAuthSecret = process.env.NEXTAUTH_SECRET || "K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT";
+const nextAuthUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+
+if (!googleClientId || !googleClientSecret) {
   console.warn('Missing Google OAuth credentials in environment variables!');
 }
+
+console.log('NextAuth configuration loaded.');
 
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
       authorization: {
         params: {
-          prompt: "select_account"
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
         }
       }
     }),
@@ -53,18 +63,16 @@ const handler = NextAuth({
   ],
   pages: {
     signIn: "/login",
-    error: "/auth/error",
+    error: "/login",
   },
   callbacks: {
     async session({ session, token }) {
-      console.log('Session callback:', { session, token });
       if (token && session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
     async jwt({ token, user, account }) {
-      console.log('JWT callback:', { token, user, account });
       // Initial sign in
       if (user && account) {
         token.id = user.id;
@@ -73,7 +81,6 @@ const handler = NextAuth({
       return token;
     },
     async signIn({ account, profile }) {
-      console.log('SignIn callback:', { account, profile });
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
@@ -82,15 +89,22 @@ const handler = NextAuth({
       }
       return false;
     },
+    async redirect({ url, baseUrl }) {
+      // Đảm bảo URL chuyển hướng hợp lệ
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      } else if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      return baseUrl;
+    }
   },
-  debug: process.env.NODE_ENV === 'development',
-  secret: process.env.NEXTAUTH_SECRET,
+  debug: true,
+  secret: nextAuthSecret,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 });
-
-console.log('NextAuth configuration loaded.');
 
 export { handler as GET, handler as POST }; 
