@@ -96,12 +96,10 @@ export default function AccountPage() {
                     <Image
                       src={userProfile.avatar}
                       alt={userProfile.name}
-                      layout="fill"
-                      className="rounded-full"
-                      objectFit="cover"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/avatar-placeholder.svg'
-                      }}
+                      width={96}
+                      height={96}
+                      className="rounded-full object-cover"
+                      unoptimized
                     />
                     <div className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

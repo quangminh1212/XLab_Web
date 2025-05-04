@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -10,11 +10,37 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get('callbackUrl') || '/';
+  const errorType = searchParams?.get('error');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Xử lý lỗi nếu có
+  useEffect(() => {
+    if (errorType) {
+      switch (errorType) {
+        case 'google':
+          setError('Đăng nhập với Google không thành công. Vui lòng thử lại.');
+          break;
+        case 'OAuthSignin':
+          setError('Lỗi khi bắt đầu quá trình đăng nhập bằng Google.');
+          break;
+        case 'OAuthCallback':
+          setError('Lỗi xử lý phản hồi từ Google.');
+          break;
+        case 'OAuthAccountNotLinked':
+          setError('Email này đã được sử dụng với một phương thức đăng nhập khác.');
+          break;
+        case 'Callback':
+          setError('Lỗi xử lý callback từ nhà cung cấp xác thực.');
+          break;
+        default:
+          setError('Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng thử lại.');
+      }
+    }
+  }, [errorType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,24 +74,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = () => {
-    try {
-      setLoading(true);
-      setError('');
-      
-      // Sử dụng signIn với redirect: true để đảm bảo chuyển hướng hoạt động đúng
-      signIn('google', { 
-        callbackUrl 
-      });
-      
-      // Không cần thêm logic xử lý chuyển hướng ở đây vì next-auth tự xử lý
-    } catch (err) {
-      console.error('Lỗi đăng nhập với Google:', err);
-      setError('Có lỗi xảy ra khi đăng nhập với Google. Vui lòng thử lại.');
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -95,8 +103,9 @@ export default function LoginPage() {
             </div>
           )}
 
-          <a
-            href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=http://localhost:3000/api/auth/callback/google&response_type=code&scope=openid+email+profile&prompt=select_account"
+          {/* Nút đăng nhập Google - Phương pháp đã chứng minh hoạt động */}
+          <Link
+            href={`/api/auth/signin/google?callbackUrl=${encodeURIComponent(callbackUrl)}`}
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
@@ -106,7 +115,7 @@ export default function LoginPage() {
               <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
             </svg>
             <span>Tiếp tục với Google</span>
-          </a>
+          </Link>
 
           <div className="relative mt-4 mb-6">
             <div className="absolute inset-0 flex items-center">

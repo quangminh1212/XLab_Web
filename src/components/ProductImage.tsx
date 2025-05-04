@@ -33,11 +33,34 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     setLoading(false)
   }
 
-  const handleError = () => {
-    console.error(`Lỗi khi tải ảnh: ${src}`)
-    setError(true)
-    setLoading(false)
-  }
+  // Sử dụng useEffect để kiểm tra hình ảnh thay vì onError
+  useEffect(() => {
+    if (!src) {
+      setError(true)
+      setLoading(false)
+      return
+    }
+
+    // Sử dụng đối tượng HTMLImageElement thay vì hàm tạo Image
+    const img = new window.Image()
+    img.src = src
+    
+    img.onload = () => {
+      setLoading(false)
+      setError(false)
+    }
+    
+    img.onerror = () => {
+      console.error(`Lỗi khi tải ảnh: ${src}`)
+      setError(true)
+      setLoading(false)
+    }
+
+    return () => {
+      img.onload = null
+      img.onerror = null
+    }
+  }, [src])
 
   // Thêm useEffect để đảm bảo loading biến mất sau một khoảng thời gian nhất định
   useEffect(() => {
@@ -69,9 +92,8 @@ export const ProductImage: React.FC<ProductImageProps> = ({
           src={error ? fallbackImage : imageSrc}
           alt={alt}
           className="h-full w-full object-contain"
+          // Sử dụng native event thay vì React props để tránh lỗi
           onLoad={handleLoad}
-          onError={handleError}
-          loading="eager"
         />
       ) : (
         // Sử dụng Next.js Image cho URL nội bộ
@@ -81,8 +103,6 @@ export const ProductImage: React.FC<ProductImageProps> = ({
           width={width || 300}
           height={height || 300}
           className="object-contain h-full w-full"
-          onLoad={handleLoad}
-          onError={handleError}
           priority={true}
           unoptimized={true}
         />

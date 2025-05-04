@@ -84,11 +84,10 @@ export default function AdminPage() {
                     <Image
                       src={session?.user?.image || '/images/avatar-placeholder.svg'}
                       alt={session?.user?.name || 'Admin'}
-                      fill
-                      className="rounded-full"
-                      onError={(e) => {
-                        e.currentTarget.src = '/images/avatar-placeholder.svg'
-                      }}
+                      width={96}
+                      height={96}
+                      className="object-cover rounded-full"
+                      unoptimized
                     />
                   </div>
                   <h2 className="text-xl font-bold">{session?.user?.name || 'Admin'}</h2>
@@ -422,7 +421,8 @@ export default function AdminPage() {
                               <Image
                                 src="/images/placeholder-product.jpg"
                                 alt="XLab Office Suite"
-                                fill
+                                width={40}
+                                height={40}
                                 className="rounded-md"
                               />
                             </div>
@@ -458,7 +458,8 @@ export default function AdminPage() {
                               <Image
                                 src="/images/placeholder-product.jpg"
                                 alt="XLab Design Master"
-                                fill
+                                width={40}
+                                height={40}
                                 className="rounded-md"
                               />
                             </div>

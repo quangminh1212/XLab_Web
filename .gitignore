@@ -21,6 +21,17 @@
 .next-trace/
 .next-dev/
 
+# Cache files
+.cache/
+.next/cache/
+.next/server/middleware-manifest.json
+.next/server/middleware-build-manifest.js
+.next/cache/webpack/
+.next/trace
+.next/types/
+.next/analyze/
+.next/server/
+
 # production
 /build
 
@@ -218,3 +229,19 @@ yarn-debug.log*
 yarn-error.log*
 .DS_Store
 *.pem
+
+# Generated files during development
+/.swc/
+/.cache/
+.eslintcache
+/dist/
+/build-stats.json
+/server-build-stats.json
+.vercel
+
+# NextJS specific cache và middleware
+.next/server/middleware-manifest.json
+.next/server/middleware-build-manifest.js
+.next/server/middleware-react-loadable-manifest.js
+.next/cache/webpack/client-development/*.pack.gz
+.next/cache/webpack/server-development/*.pack.gz
