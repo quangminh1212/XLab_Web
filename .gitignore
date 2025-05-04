@@ -40,8 +40,16 @@
 .next/cache/webpack/edge-server-development/*.pack
 .next/cache/webpack/edge-server-development/*.pack.gz
 
-# Đảm bảo bỏ qua tất cả các file font manifest
+# Font manifest files
 **/*font-manifest*.json
+
+# Static files
+.next/static/chunks/**/*.js
+.next/static/css/**/*.css
+.next/static/media/
+.next/static/webpack/
+.next/static/development/
+.next/static/runtime/
 
 # production
 /build
