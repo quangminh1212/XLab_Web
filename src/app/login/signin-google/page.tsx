@@ -5,12 +5,19 @@ import Link from 'next/link';
 
 export default function SignInWithGoogle() {
   useEffect(() => {
-    // Thử mở URL đăng nhập Google trực tiếp khi trang được tải
+    // Tạo URL đăng nhập Google chính xác với các tham số đã cấu hình trong Google Cloud Console
+    const clientId = '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com';
+    const redirectUri = 'http://localhost:3000/api/auth/callback/google';
+    const scope = 'openid email profile';
+    const responseType = 'code';
+    const state = Date.now().toString(); // Để bảo mật
+
     const googleSignInUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
-      'client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&' +
-      'redirect_uri=http://localhost:3000/api/auth/callback/google&' +
-      'response_type=code&' +
-      'scope=openid%20email%20profile&' +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=${responseType}&` +
+      `scope=${encodeURIComponent(scope)}&` +
+      `state=${state}&` +
       'prompt=select_account';
 
     window.location.href = googleSignInUrl;
@@ -23,12 +30,12 @@ export default function SignInWithGoogle() {
         <p className="text-gray-600 mb-4 text-center">
           Nếu bạn không được chuyển hướng tự động, vui lòng nhấn vào nút bên dưới.
         </p>
-        <Link 
-          href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=http://localhost:3000/api/auth/callback/google&response_type=code&scope=openid%20email%20profile&prompt=select_account"
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+        <a 
+          href="/api/auth/signin/google?callbackUrl=http://localhost:3000"
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 text-center"
         >
           Đăng nhập với Google
-        </Link>
+        </a>
       </div>
     </div>
   );

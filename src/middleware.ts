@@ -76,39 +76,52 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Lấy token xác thực
-  const token = await getToken({
+  // Lấy token xác thực từ NextAuth
+  const nextAuthToken = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || 'your_random_string_here',
   });
+
+  // Lấy session cookie từ Google OAuth custom implementation
+  const googleSession = request.cookies.get('user-session');
+  
+  // Người dùng đã xác thực nếu có nextAuthToken hoặc googleSession
+  const isAuthenticated = !!nextAuthToken || !!googleSession;
 
   // Kiểm tra quyền admin cho các đường dẫn admin
   if (isAdminPath(pathname)) {
-    if (!token) {
+    if (!isAuthenticated) {
       // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
       const url = new URL('/login', request.url);
       url.searchParams.set('callbackUrl', encodeURI(pathname));
       return NextResponse.redirect(url);
-    } else if (token.email !== 'xlab.rnd@gmail.com') {
+    } else if (nextAuthToken?.email !== 'xlab.rnd@gmail.com') {
       // Nếu đã đăng nhập nhưng không phải email admin, chuyển đến trang chủ
       return NextResponse.redirect(new URL('/', request.url));
     }
   }
 
   // Nếu đường dẫn được bảo vệ và người dùng chưa đăng nhập
-  if (isProtectedPath(pathname) && !token) {
+  if (isProtectedPath(pathname) && !isAuthenticated) {
     const url = new URL('/login', request.url);
     url.searchParams.set('callbackUrl', encodeURI(pathname));
     return NextResponse.redirect(url);
   }
 
   // Nếu đường dẫn công khai (login/register) và người dùng đã đăng nhập
-  if ((pathname === '/login' || pathname === '/register') && token) {
+  if ((pathname === '/login' || pathname === '/register') && isAuthenticated) {
     return NextResponse.redirect(new URL('/account', request.url));
   }
 
   // Thêm security headers
   const response = NextResponse.next();
+  
+  // Thêm header để client-side có thể biết người dùng đã đăng nhập hay chưa
+  if (isAuthenticated) {
+    response.headers.set('x-user-authenticated', 'true');
+  } else {
+    response.headers.set('x-user-authenticated', 'false');
+  }
   
   // CSP Header
   const cspHeader = `
@@ -130,4 +143,11 @@ export default async function middleware(request: NextRequest) {
   response.headers.set('Content-Security-Policy', cspHeader);
   
   return response;
-} 
+}
+
+// Cấu hình middleware
+export const config = {
+  matcher: [
+    '/((?!api/auth/callback|_next/static|_next/image|favicon.ico).*)',
+  ],
+}; 

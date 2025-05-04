@@ -95,8 +95,8 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Link 
-            href="/login/signin-google"
+          <a
+            href="https://accounts.google.com/o/oauth2/v2/auth?client_id=909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com&redirect_uri=http://localhost:3000/api/auth/callback/google&response_type=code&scope=openid+email+profile&prompt=select_account"
             className="w-full flex justify-center items-center py-2.5 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 mb-6 relative"
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
@@ -106,7 +106,7 @@ export default function LoginPage() {
               <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
             </svg>
             <span>Tiếp tục với Google</span>
-          </Link>
+          </a>
 
           <div className="relative mt-4 mb-6">
             <div className="absolute inset-0 flex items-center">
