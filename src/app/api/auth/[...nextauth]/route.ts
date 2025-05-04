@@ -2,8 +2,6 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-console.log('Loading NextAuth configuration...');
-
 // Extend the Session interface
 declare module "next-auth" {
   interface Session {
@@ -25,8 +23,6 @@ const nextAuthUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 if (!googleClientId || !googleClientSecret) {
   console.warn('Missing Google OAuth credentials in environment variables!');
 }
-
-console.log('NextAuth configuration loaded.');
 
 const handler = NextAuth({
   providers: [
@@ -99,7 +95,7 @@ const handler = NextAuth({
       return baseUrl;
     }
   },
-  debug: true,
+  debug: false,
   secret: nextAuthSecret,
   session: {
     strategy: "jwt",
