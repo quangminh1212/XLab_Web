@@ -46,10 +46,6 @@ yarn-error.log*
 .pnpm-debug.log*
 app.log
 
-# local env files
-.env*.local
-.env
-
 # vercel
 .vercel
 
@@ -240,8 +236,8 @@ yarn-error.log*
 .vercel
 
 # NextJS specific cache và middleware
-.next/server/middleware-manifest.json
-.next/server/middleware-build-manifest.js
-.next/server/middleware-react-loadable-manifest.js
-.next/cache/webpack/client-development/*.pack.gz
-.next/cache/webpack/server-development/*.pack.gz
+.next
+
+
+
+

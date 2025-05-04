@@ -16,11 +16,15 @@ declare module "next-auth" {
   }
 }
 
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+  console.warn('Missing Google OAuth credentials in environment variables!');
+}
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       authorization: {
         params: {
           prompt: "select_account"
@@ -79,8 +83,8 @@ const handler = NextAuth({
       return false;
     },
   },
-  debug: true,
-  secret: "your_random_string_here",
+  debug: process.env.NODE_ENV === 'development',
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
