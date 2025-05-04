@@ -1,12 +1,8 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { categories, products } from '@/data/mockData';
 import { notFound } from 'next/navigation';
-import ProductCard from '@/components/ProductCard';
-import { ProductImage } from '@/components/ProductImage';
 
 interface CategoryPageProps {
     params: {
@@ -42,7 +38,6 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                                 width={48}
                                 height={48}
                                 className="object-contain"
-                                unoptimized={true}
                             />
                         </div>
                         <div>
@@ -53,9 +48,52 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 </div>
 
                 {categoryProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {categoryProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <Link
+                                key={product.id}
+                                href={`/products/${product.slug}`}
+                                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100 flex flex-col"
+                            >
+                                <div className="aspect-video relative">
+                                    <Image
+                                        src={product.imageUrl || '/images/placeholder.png'}
+                                        alt={product.name}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="p-5">
+                                    <h2 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h2>
+                                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                                        {product.description}
+                                    </p>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center text-yellow-500">
+                                            {Array.from({ length: 5 }).map((_, index) => (
+                                                <svg
+                                                    key={index}
+                                                    className={`w-4 h-4 ${index < Math.floor(product.rating) ? 'fill-current' : 'fill-gray-300'}`}
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                                </svg>
+                                            ))}
+                                            <span className="text-gray-600 text-xs ml-1">{product.rating}</span>
+                                        </div>
+                                        <div className="text-sm">
+                                            {product.salePrice < product.price ? (
+                                                <div>
+                                                    <span className="text-gray-400 line-through">{product.price.toLocaleString('vi-VN')}đ</span>
+                                                    <span className="text-teal-600 font-bold ml-2">{product.salePrice.toLocaleString('vi-VN')}đ</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-teal-600 font-bold">{product.price.toLocaleString('vi-VN')}đ</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
                         ))}
                     </div>
                 ) : (

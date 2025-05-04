@@ -19,9 +19,6 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   storeId: number | string;
-  isAccount?: boolean;
-  type?: string;
-  features?: string[];
 }
 
 export interface Category {

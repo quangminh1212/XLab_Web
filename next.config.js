@@ -23,7 +23,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
-  /* // Tạm thời comment out headers để debug CSP
   async headers() {
     return [
       {
@@ -61,30 +60,40 @@ const nextConfig = {
       }
     ];
   },
-  */
   typescript: {
     ignoreBuildErrors: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
+  webpack: (config, { dev, isServer }) => {
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      minimizer: [],
+      splitChunks: false,
+      runtimeChunk: false,
+      flagIncludedChunks: false,
+      concatenateModules: false,
+      usedExports: false,
+      sideEffects: false,
+      providedExports: false,
+      innerGraph: false,
+      mangleExports: false,
+    };
+    
+    if (dev) {
+      config.mode = 'none';
+    }
+    
+    if (!isServer) {
+      config.output.libraryTarget = 'var';
+    }
+    
+    return config;
+  },
   compiler: {
     styledComponents: true,
-  },
-  experimental: {
-    largePageDataBytes: 128 * 100000,
-  },
-  poweredByHeader: false,
-  webpack: (config, { dev, isServer }) => {
-    if (dev && !isServer) {
-      config.watchOptions = {
-        ...config.watchOptions,
-        poll: 1000,
-        aggregateTimeout: 300,
-        ignored: /node_modules/
-      };
-    }
-    return config;
   },
 };
 

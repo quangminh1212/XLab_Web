@@ -1,48 +1,220 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Dependencies
+# dependencies
 /node_modules
-/node_modules/.cache
+/.pnp
+.pnp.js
+.yarn/install-state.gz
 
-# Next.js build output and cache
+# testing
+/coverage
+
+# next.js
 /.next/
+/.next-dev/
 /out/
+/.swc-win32-x64-msvc*
+/.swc/
+.next-server/
+.next-static/
+.next-caching/
+.next-trace/
+.next-dev/
 
-# TypeScript cache
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+app.log
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
 *.tsbuildinfo
+next-env.d.ts
 
-# Optional Editor directories and files
+# VS Code
+.vscode
+
+# IntelliJ IDEA
+.idea
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Generated files
+/public/sitemap*.xml
+/public/robots.txt
+
+# Cache
+.cache/
+.turbo
+
+# environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Generated files during runtime
+/.vercel_build_output/
+/public/sw.js
+/public/workbox-*.js
+/public/sw.js.map
+/public/workbox-*.js.map
+/public/fallback-*.js
+
+# Analysis files
+/analyze/
+
+# Generated analyzer files
+.analyzerc
+webpack-bundle-analyzer-report.html
+
+# Dependency directories
+node_modules/
+.npm
+.yarn/
+.pnp
+.pnp.js
+
+# Next.js build outputs
+/.next/
+/.next-dev/
+/out/
+/build
+
+# Development files
+.DS_Store
+*.pem
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing
+/coverage
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# auto-generated folders
+/.next-dev
+/.next-dev/trace
+/.next/trace
+.eslintcache
+**/.swc/**
+
+# temp files
+*.tmp
+*.temp
+*.bak
+*.swp
+~$*
+._*
+*~
+
+# VS Code
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-*.sublime-project
-*.sublime-workspace
 
-# Log files
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Runtime generated files
+.next-server/
+.next-caching/
+.next-static/
+*.build-manifest.json
+trace-*.json
+*.buildmanifest.json
+.next-server/
+.webpack/
+public/sw*.js.map
+
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-*.log
+.pnpm-debug.log*
 
-# Environment variables
+# System files that might be created during development
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Next.js runtime files
+.next-server/
+.next-static/
+.next-caching/
+.next-trace/
+
+# SWC compiler files
+.swc/
+**/.swc/
+/.swc-*/
+
+# Thêm các file được tạo ra khi dự án đang chạy
+.next/
+node_modules/
+.vercel/
 .env.local
-.env.*.local
-
-# macOS file system metadata
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 .DS_Store
-
-# Production build files
-.next
-out
-
-# Static exports
-out/
-
-# Turborepo cache
-.turbo
-
-# Drizzle migration files (example, adjust if using Drizzle)
-# migrations/*
-# drizzle.config.ts (if it contains secrets)
+*.pem
