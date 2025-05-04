@@ -1,20 +1,12 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export const metadata = {
-  title: 'Tài khoản | XLab - Phần mềm và Dịch vụ',
-  description: 'Quản lý tài khoản, giấy phép và lịch sử mua hàng của bạn tại XLab',
-}
-
 // This would normally come from a database or API
-const userProfile = {
-  name: 'Nguyễn Văn A',
-  email: 'nguyenvana@example.com',
-  avatar: '/images/avatar-placeholder.svg',
-  memberSince: '01/01/2023',
-  licenseCount: 3,
-}
-
 const purchaseHistory = [
   {
     id: 'ORD-12345',
@@ -62,6 +54,28 @@ const purchaseHistory = [
 ]
 
 export default function AccountPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [company, setCompany] = useState('');
+  
+  // Xử lý chuyển hướng nếu chưa đăng nhập
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
+  
+  // Đồng bộ thông tin từ session khi đã đăng nhập
+  useEffect(() => {
+    if (session?.user) {
+      setFullName(session.user.name || '');
+      setEmail(session.user.email || '');
+    }
+  }, [session]);
+  
   // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
@@ -70,6 +84,15 @@ export default function AccountPage() {
   // Format date (would normally use a proper date library)
   const formatDate = (dateString: string) => {
     return dateString // Already in DD/MM/YYYY format
+  }
+  
+  // Hiển thị trạng thái loading khi đang kiểm tra session
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
   }
   
   return (
@@ -94,8 +117,8 @@ export default function AccountPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src={userProfile.avatar}
-                      alt={userProfile.name}
+                      src={session?.user?.image || '/images/avatar-placeholder.svg'}
+                      alt={session?.user?.name || 'User'}
                       width={96}
                       height={96}
                       className="rounded-full object-cover"
@@ -107,9 +130,9 @@ export default function AccountPage() {
                       </svg>
                     </div>
                   </div>
-                  <h2 className="text-xl font-bold">{userProfile.name}</h2>
-                  <p className="text-gray-600">{userProfile.email}</p>
-                  <p className="text-sm text-gray-500 mt-1">Thành viên từ {userProfile.memberSince}</p>
+                  <h2 className="text-xl font-bold">{session?.user?.name || 'Người dùng'}</h2>
+                  <p className="text-gray-600">{session?.user?.email}</p>
+                  <p className="text-sm text-gray-500 mt-1">Thành viên từ {new Date().toLocaleDateString('vi-VN')}</p>
                 </div>
                 
                 <nav className="space-y-1">
@@ -164,7 +187,7 @@ export default function AccountPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Giấy phép đang hoạt động</span>
-                    <span className="font-bold">{userProfile.licenseCount}</span>
+                    <span className="font-bold">0</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Đơn hàng đã mua</span>
@@ -192,7 +215,8 @@ export default function AccountPage() {
                     <input
                       type="text"
                       id="fullname"
-                      defaultValue={userProfile.name}
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                       className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                     />
                   </div>
@@ -203,8 +227,10 @@ export default function AccountPage() {
                     <input
                       type="email"
                       id="email"
-                      defaultValue={userProfile.email}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                      readOnly
                     />
                   </div>
                   <div>
@@ -214,6 +240,8 @@ export default function AccountPage() {
                     <input
                       type="tel"
                       id="phone"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       placeholder="Nhập số điện thoại"
                       className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                     />
@@ -225,6 +253,8 @@ export default function AccountPage() {
                     <input
                       type="text"
                       id="company"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
                       placeholder="Nhập tên công ty (nếu có)"
                       className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
                     />
@@ -508,179 +538,6 @@ export default function AccountPage() {
                     </svg>
                     Thêm sản phẩm mới
                   </button>
-                </div>
-                
-                {/* Form thêm sản phẩm mới */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-                  <h3 className="text-lg font-semibold mb-4">Thêm phần mềm mới</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="product-name" className="block mb-2 font-medium text-gray-700">
-                        Tên phần mềm <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="product-name"
-                        placeholder="Ví dụ: XLab Office Suite"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-category" className="block mb-2 font-medium text-gray-700">
-                        Danh mục <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        id="product-category"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      >
-                        <option value="">-- Chọn danh mục --</option>
-                        <option value="office">Văn phòng</option>
-                        <option value="design">Thiết kế</option>
-                        <option value="development">Phát triển</option>
-                        <option value="security">Bảo mật</option>
-                        <option value="utility">Tiện ích</option>
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-price" className="block mb-2 font-medium text-gray-700">
-                        Giá (VNĐ) <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="number"
-                        id="product-price"
-                        placeholder="Ví dụ: 1200000"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-sale-price" className="block mb-2 font-medium text-gray-700">
-                        Giá khuyến mãi (VNĐ)
-                      </label>
-                      <input
-                        type="number"
-                        id="product-sale-price"
-                        placeholder="Để trống nếu không có khuyến mãi"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                      />
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label htmlFor="product-description" className="block mb-2 font-medium text-gray-700">
-                        Mô tả ngắn <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        id="product-description"
-                        rows={3}
-                        placeholder="Mô tả ngắn gọn về phần mềm của bạn"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      ></textarea>
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label htmlFor="product-long-description" className="block mb-2 font-medium text-gray-700">
-                        Mô tả chi tiết <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        id="product-long-description"
-                        rows={6}
-                        placeholder="Mô tả chi tiết về tính năng, lợi ích của phần mềm"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      ></textarea>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-version" className="block mb-2 font-medium text-gray-700">
-                        Phiên bản <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="product-version"
-                        placeholder="Ví dụ: 1.0.0"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="product-license" className="block mb-2 font-medium text-gray-700">
-                        Loại giấy phép <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        id="product-license"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
-                        required
-                      >
-                        <option value="">-- Chọn loại giấy phép --</option>
-                        <option value="personal">Cá nhân</option>
-                        <option value="business">Doanh nghiệp</option>
-                        <option value="enterprise">Doanh nghiệp lớn</option>
-                      </select>
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label className="block mb-2 font-medium text-gray-700">
-                        Hình ảnh sản phẩm <span className="text-red-500">*</span>
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                        <input type="file" id="product-image" className="hidden" accept="image/*" />
-                        <label htmlFor="product-image" className="cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <p className="mt-2 text-sm text-gray-600">Kéo thả hoặc nhấp để tải lên hình ảnh</p>
-                          <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF tối đa 2MB</p>
-                        </label>
-                      </div>
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <label className="block mb-2 font-medium text-gray-700">
-                        Tệp cài đặt <span className="text-red-500">*</span>
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                        <input type="file" id="product-file" className="hidden" />
-                        <label htmlFor="product-file" className="cursor-pointer">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                          <p className="mt-2 text-sm text-gray-600">Kéo thả hoặc nhấp để tải lên tệp cài đặt</p>
-                          <p className="mt-1 text-xs text-gray-500">ZIP, EXE, MSI tối đa 500MB</p>
-                        </label>
-                      </div>
-                    </div>
-                    
-                    <div className="md:col-span-2 flex items-center">
-                      <input type="checkbox" id="product-featured" className="mr-2" />
-                      <label htmlFor="product-featured" className="text-gray-700">
-                        Đánh dấu là sản phẩm nổi bật
-                      </label>
-                    </div>
-                    
-                    <div className="md:col-span-2 flex items-center">
-                      <input type="checkbox" id="product-new" className="mr-2" />
-                      <label htmlFor="product-new" className="text-gray-700">
-                        Đánh dấu là sản phẩm mới
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 flex justify-end space-x-4">
-                    <button type="button" className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                      Hủy
-                    </button>
-                    <button type="submit" className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700">
-                      Đăng sản phẩm
-                    </button>
-                  </div>
                 </div>
                 
                 {/* Danh sách sản phẩm */}
