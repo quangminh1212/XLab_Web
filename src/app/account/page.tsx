@@ -61,6 +61,12 @@ export default function AccountPage() {
   const [phone, setPhone] = useState('');
   const [company, setCompany] = useState('');
   const [imageError, setImageError] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  
+  // Xác nhận rằng code đang chạy ở phía client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   // Xử lý chuyển hướng nếu chưa đăng nhập
   useEffect(() => {
@@ -78,19 +84,9 @@ export default function AccountPage() {
   }, [session]);
 
   // Xử lý lỗi hình ảnh
-  useEffect(() => {
-    const imgElement = document.getElementById('profile-image') as HTMLImageElement;
-    if (imgElement) {
-      imgElement.onerror = () => {
-        setImageError(true);
-      };
-    }
-    return () => {
-      if (imgElement) {
-        imgElement.onerror = null;
-      }
-    };
-  }, []);
+  const handleImageError = () => {
+    setImageError(true);
+  };
   
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -102,11 +98,31 @@ export default function AccountPage() {
     return dateString // Already in DD/MM/YYYY format
   }
   
-  // Hiển thị trạng thái loading khi đang kiểm tra session
-  if (status === 'loading') {
+  // Hiển thị trạng thái loading khi đang kiểm tra session hoặc khi chưa ở client
+  if (!isClient || status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  // Hiển thị trang đăng nhập nếu chưa đăng nhập
+  if (status === 'unauthenticated') {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Vui lòng đăng nhập</h2>
+          <p className="text-gray-600 mb-6 text-center">Bạn cần đăng nhập để truy cập trang tài khoản</p>
+          <div className="flex justify-center">
+            <Link
+              href="/login"
+              className="px-6 py-3 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors w-full text-center"
+            >
+              Đăng nhập ngay
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -114,7 +130,7 @@ export default function AccountPage() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-primary-600 text-white py-16">
+      <section className="bg-teal-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Tài khoản của tôi</h1>
           <p className="text-xl max-w-3xl">
@@ -141,10 +157,11 @@ export default function AccountPage() {
                         height={96}
                         className="rounded-full object-cover"
                         unoptimized
+                        onError={handleImageError}
                       />
                     ) : (
                       <div className="w-24 h-24 bg-teal-500 text-white rounded-full flex items-center justify-center text-3xl font-medium">
-                        {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                        {session?.user?.name?.charAt(0)?.toUpperCase() || 'U'}
                       </div>
                     )}
                     <div className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer">
@@ -159,7 +176,7 @@ export default function AccountPage() {
                 </div>
                 
                 <nav className="space-y-1">
-                  <a href="#profile" className="flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-md">
+                  <a href="#profile" className="flex items-center px-4 py-2 bg-teal-50 text-teal-700 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
@@ -240,7 +257,7 @@ export default function AccountPage() {
                       id="fullname"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                     />
                   </div>
                   <div>
@@ -252,7 +269,7 @@ export default function AccountPage() {
                       id="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                       readOnly
                     />
                   </div>
@@ -266,7 +283,7 @@ export default function AccountPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="Nhập số điện thoại"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                     />
                   </div>
                   <div>
@@ -279,7 +296,7 @@ export default function AccountPage() {
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder="Nhập tên công ty (nếu có)"
-                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                      className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                     />
                   </div>
                 </div>
@@ -294,7 +311,7 @@ export default function AccountPage() {
                       <input
                         type="password"
                         id="current-password"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                       />
                     </div>
                     <div>
@@ -304,7 +321,7 @@ export default function AccountPage() {
                       <input
                         type="password"
                         id="new-password"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                       />
                     </div>
                     <div>
@@ -314,14 +331,14 @@ export default function AccountPage() {
                       <input
                         type="password"
                         id="confirm-password"
-                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                        className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600"
                       />
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-8 flex justify-end">
-                  <button className="btn bg-primary-600 text-white">
+                  <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors">
                     Lưu thay đổi
                   </button>
                 </div>
@@ -361,14 +378,14 @@ export default function AccountPage() {
                           </div>
                           
                           <div className="flex flex-wrap gap-3">
-                            <button className="btn bg-primary-600 text-white">
+                            <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors">
                               Tải xuống
                             </button>
-                            <button className="btn border border-gray-300 bg-white text-gray-700">
+                            <button className="px-4 py-2 border border-gray-300 bg-white text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
                               Kích hoạt trên thiết bị khác
                             </button>
                             {!item.updates && (
-                              <button className="btn bg-yellow-500 text-white">
+                              <button className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors">
                                 Gia hạn gói cập nhật
                               </button>
                             )}
@@ -380,7 +397,7 @@ export default function AccountPage() {
                 </div>
                 
                 <div className="mt-6">
-                  <button className="btn border border-dashed border-gray-400 text-gray-700 w-full flex items-center justify-center">
+                  <button className="px-4 py-2 border border-dashed border-gray-400 text-gray-700 w-full rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
@@ -434,8 +451,8 @@ export default function AccountPage() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div className="flex space-x-2">
-                              <a href="#" className="text-primary-600 hover:text-primary-900">Xem</a>
-                              <a href="#" className="text-primary-600 hover:text-primary-900">Hóa đơn</a>
+                              <a href="#" className="text-teal-600 hover:text-teal-900">Xem</a>
+                              <a href="#" className="text-teal-600 hover:text-teal-900">Hóa đơn</a>
                             </div>
                           </td>
                         </tr>
@@ -446,7 +463,7 @@ export default function AccountPage() {
               </div>
               
               {/* Downloads Section */}
-              <div id="downloads" className="bg-white rounded-lg shadow-lg p-6">
+              <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Tải xuống phần mềm</h2>
                 
                 <div className="space-y-6">
@@ -459,13 +476,13 @@ export default function AccountPage() {
                             <p className="text-gray-600">Phiên bản mới nhất: v3.5.2 (Cập nhật: 10/02/2023)</p>
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            <button className="btn bg-primary-600 text-white">
+                            <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors">
                               Windows 64-bit
                             </button>
-                            <button className="btn bg-primary-600 text-white">
+                            <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors">
                               macOS
                             </button>
-                            <button className="btn bg-primary-600 text-white">
+                            <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors">
                               Linux
                             </button>
                           </div>
@@ -480,13 +497,13 @@ export default function AccountPage() {
                                   <p className="text-sm text-gray-600">Cải thiện hiệu suất và sửa lỗi</p>
                                 </div>
                                 <div className="flex flex-wrap gap-2 mt-2 md:mt-0">
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
+                                  <button className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
                                     Windows
                                   </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
+                                  <button className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
                                     macOS
                                   </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
+                                  <button className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
                                     Linux
                                   </button>
                                 </div>
@@ -497,13 +514,13 @@ export default function AccountPage() {
                                   <p className="text-sm text-gray-600">Thêm tính năng mới và sửa lỗi</p>
                                 </div>
                                 <div className="flex flex-wrap gap-2 mt-2 md:mt-0">
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
+                                  <button className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
                                     Windows
                                   </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
+                                  <button className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
                                     macOS
                                   </button>
-                                  <button className="btn-sm bg-gray-200 text-gray-700">
+                                  <button className="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors text-sm">
                                     Linux
                                   </button>
                                 </div>
@@ -523,7 +540,7 @@ export default function AccountPage() {
                       href="#" 
                       className="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <div className="mr-4 text-primary-600">
+                      <div className="mr-4 text-teal-600">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
@@ -537,7 +554,7 @@ export default function AccountPage() {
                       href="#" 
                       className="flex items-center p-4 border rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <div className="mr-4 text-primary-600">
+                      <div className="mr-4 text-teal-600">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
@@ -551,28 +568,145 @@ export default function AccountPage() {
                 </div>
               </div>
 
-              {/* Thêm section quản lý sản phẩm */}
-              <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">Sản phẩm của tôi</h2>
-                  <button className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Thêm sản phẩm mới
-                  </button>
+              {/* Support Section */}
+              <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Hỗ trợ kỹ thuật</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  <div className="border rounded-lg p-6">
+                    <h3 className="font-bold text-lg mb-4">Yêu cầu hỗ trợ mới</h3>
+                    <p className="text-gray-600 mb-4">
+                      Gặp vấn đề với sản phẩm của chúng tôi? Tạo yêu cầu hỗ trợ mới và nhóm kỹ thuật sẽ hỗ trợ bạn trong thời gian sớm nhất.
+                    </p>
+                    <button className="w-full px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors">
+                      Tạo yêu cầu hỗ trợ
+                    </button>
+                  </div>
+                  
+                  <div className="border rounded-lg p-6">
+                    <h3 className="font-bold text-lg mb-4">Tài nguyên hữu ích</h3>
+                    <ul className="space-y-3">
+                      <li>
+                        <a href="#" className="text-teal-600 hover:text-teal-800 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Câu hỏi thường gặp
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="text-teal-600 hover:text-teal-800 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          Video hướng dẫn
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="text-teal-600 hover:text-teal-800 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          Lịch hội thảo trực tuyến
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="text-teal-600 hover:text-teal-800 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                          </svg>
+                          Diễn đàn cộng đồng
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
                 
-                {/* Danh sách sản phẩm */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Phần mềm đã đăng (0)</h3>
+                <h3 className="font-bold text-lg mb-4">Lịch sử yêu cầu hỗ trợ</h3>
+                <div className="bg-gray-100 rounded-lg p-8 text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  <h4 className="text-xl font-medium text-gray-700 mb-2">Chưa có yêu cầu hỗ trợ nào</h4>
+                  <p className="text-gray-500 mb-4">Bạn chưa tạo yêu cầu hỗ trợ nào. Nếu cần giúp đỡ, hãy tạo yêu cầu mới.</p>
+                </div>
+              </div>
+
+              {/* Settings Section */}
+              <div id="settings" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Cài đặt tài khoản</h2>
+                
+                <div className="space-y-6">
+                  <div className="border-b pb-6">
+                    <h3 className="font-bold text-lg mb-4">Thông báo</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium text-gray-900">Thông báo qua email</h4>
+                          <p className="text-sm text-gray-600">Nhận thông báo về cập nhật, khuyến mãi và tin tức mới</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" defaultChecked />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium text-gray-900">Thông báo về cập nhật sản phẩm</h4>
+                          <p className="text-sm text-gray-600">Nhận thông báo khi có phiên bản mới của sản phẩm</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" defaultChecked />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                        </label>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium text-gray-900">Thông báo về khuyến mãi</h4>
+                          <p className="text-sm text-gray-600">Nhận thông báo về ưu đãi và khuyến mãi đặc biệt</p>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                   
-                  <div className="bg-gray-100 rounded-lg p-8 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <h4 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm nào</h4>
-                    <p className="text-gray-500 mb-4">Bạn chưa đăng bán phần mềm nào. Hãy bắt đầu bằng cách thêm sản phẩm đầu tiên.</p>
+                  <div className="border-b pb-6">
+                    <h3 className="font-bold text-lg mb-4">Bảo mật</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium text-gray-900">Xác thực hai yếu tố</h4>
+                          <p className="text-sm text-gray-600">Thêm lớp bảo mật bổ sung cho tài khoản của bạn</p>
+                        </div>
+                        <button className="px-4 py-2 border border-teal-600 text-teal-600 rounded-md hover:bg-teal-50 transition-colors">
+                          Thiết lập
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-medium text-gray-900">Phiên đăng nhập</h4>
+                          <p className="text-sm text-gray-600">Quản lý các thiết bị đã đăng nhập vào tài khoản của bạn</p>
+                        </div>
+                        <button className="px-4 py-2 border border-teal-600 text-teal-600 rounded-md hover:bg-teal-50 transition-colors">
+                          Quản lý
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-bold text-lg mb-4 text-red-600">Vùng nguy hiểm</h3>
+                    <div className="space-y-4">
+                      <button className="px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors">
+                        Xóa tài khoản
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
