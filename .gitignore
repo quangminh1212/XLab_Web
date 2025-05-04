@@ -31,17 +31,6 @@
 .next/types/
 .next/analyze/
 .next/server/
-.next/server/next-font-manifest.json
-.next/server/font-manifest.json
-.next/cache/webpack/client-development/*.pack
-.next/cache/webpack/client-development/*.pack.gz
-.next/cache/webpack/server-development/*.pack
-.next/cache/webpack/server-development/*.pack.gz
-.next/cache/webpack/edge-server-development/*.pack
-.next/cache/webpack/edge-server-development/*.pack.gz
-
-# Đảm bảo bỏ qua tất cả các file font manifest
-**/*font-manifest*.json
 
 # production
 /build

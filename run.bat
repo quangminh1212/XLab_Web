@@ -23,28 +23,9 @@ node -v
 echo [2/9] Stopping any running Node.js processes...
 taskkill /f /im node.exe >nul 2>&1
 
-:: Bổ sung: Chờ một chút để đảm bảo các tiến trình đã dừng hoàn toàn
-echo Waiting for processes to terminate...
-timeout /t 2 /nobreak >nul
-
 :: Bước 3: Dọn dẹp môi trường
 echo [3/9] Cleaning up environment...
 echo Cleaning cache folders...
-
-:: Xóa riêng thư mục trace trước để tránh lỗi EPERM
-echo Removing trace directory...
-if exist .next\trace (
-    attrib -r -s -h .next\trace\*.* /s /d
-    del /f /q .next\trace\*.* >nul 2>&1
-    rmdir /s /q .next\trace >nul 2>&1
-)
-
-:: Xóa file font-manifest trước
-if exist .next\server\next-font-manifest.json (
-    del /f /q .next\server\next-font-manifest.json >nul 2>&1
-)
-
-:: Sau đó mới xóa các thư mục con
 if exist .next rmdir /s /q .next 2>nul
 if exist .next-dev rmdir /s /q .next-dev 2>nul
 if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul

@@ -3,10 +3,9 @@
 import { useState, useEffect, useCallback, memo } from 'react'
 import { useSession } from 'next-auth/react'
 import type { Session } from 'next-auth'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useIsomorphicLayoutEffect } from '@/lib/hooks'
 
 // Kiểu cho item trong purchaseHistory
 interface PurchaseItem {
@@ -228,49 +227,20 @@ OrdersTab.displayName = 'OrdersTab';
 
 export default function AccountPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { data: session, status } = useSession({
     required: false,
     onUnauthenticated() {
-      router.push('/login?callbackUrl=' + encodeURIComponent('/account'));
+      router.push('/login');
     },
   });
   const [isClient, setIsClient] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [imageError, setImageError] = useState(false);
   
-  // Xác nhận rằng code đang chạy ở phía client và đọc tab từ URL
+  // Xác nhận rằng code đang chạy ở phía client
   useEffect(() => {
     setIsClient(true);
-    
-    // Đọc tham số tab từ URL query
-    const tabFromUrl = searchParams?.get('tab');
-    if (tabFromUrl && ['profile', 'orders', 'licenses', 'downloads', 'support'].includes(tabFromUrl)) {
-      setActiveTab(tabFromUrl);
-      // Lưu tab hiện tại vào localStorage
-      try {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('accountActiveTab', tabFromUrl);
-        }
-      } catch (error) {
-        console.error('Không thể lưu tab vào localStorage:', error);
-      }
-    } else {
-      // Nếu không có tab trong URL, thử đọc từ localStorage
-      try {
-        if (typeof window !== 'undefined') {
-          const savedTab = localStorage.getItem('accountActiveTab');
-          if (savedTab && ['profile', 'orders', 'licenses', 'downloads', 'support'].includes(savedTab)) {
-            setActiveTab(savedTab);
-            // Cập nhật URL để phản ánh tab
-            router.push(`/account?tab=${savedTab}`, { scroll: false });
-          }
-        }
-      } catch (error) {
-        console.error('Không thể đọc tab từ localStorage:', error);
-      }
-    }
-  }, [searchParams, router]);
+  }, []);
   
   // Xử lý lỗi hình ảnh
   const handleImageError = useCallback(() => {
@@ -281,31 +251,6 @@ export default function AccountPage() {
   const formatCurrency = useCallback((amount: number) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   }, []);
-  
-  // Xử lý chuyển tab và cập nhật URL
-  const handleTabChange = useCallback((tab: string) => {
-    setActiveTab(tab);
-    // Lưu tab hiện tại vào localStorage
-    try {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('accountActiveTab', tab);
-      }
-    } catch (error) {
-      console.error('Không thể lưu tab vào localStorage:', error);
-    }
-    // Cập nhật URL với query params mới nhưng không tải lại trang
-    router.push(`/account?tab=${tab}`, { scroll: false });
-  }, [router]);
-  
-  // Sử dụng useIsomorphicLayoutEffect thay vì useLayoutEffect
-  useIsomorphicLayoutEffect(() => {
-    if (isClient && activeTab) {
-      // Cập nhật URL mà không làm tải lại trang khi chuyển tab
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.set('tab', activeTab);
-      window.history.pushState({}, '', newUrl.toString());
-    }
-  }, [activeTab, isClient]);
   
   // Hiển thị trạng thái loading khi đang kiểm tra session hoặc khi chưa ở client
   if (!isClient || status === 'loading') {
@@ -361,7 +306,7 @@ export default function AccountPage() {
                 
                 <nav className="space-y-1">
                   <button 
-                    onClick={() => handleTabChange('profile')}
+                    onClick={() => setActiveTab('profile')}
                     className={`flex w-full items-center px-4 py-2 rounded-md ${activeTab === 'profile' ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -370,7 +315,7 @@ export default function AccountPage() {
                     Hồ sơ cá nhân
                   </button>
                   <button 
-                    onClick={() => handleTabChange('orders')}
+                    onClick={() => setActiveTab('orders')}
                     className={`flex w-full items-center px-4 py-2 rounded-md ${activeTab === 'orders' ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -379,7 +324,7 @@ export default function AccountPage() {
                     Lịch sử mua hàng
                   </button>
                   <button 
-                    onClick={() => handleTabChange('licenses')}
+                    onClick={() => setActiveTab('licenses')}
                     className={`flex w-full items-center px-4 py-2 rounded-md ${activeTab === 'licenses' ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -388,7 +333,7 @@ export default function AccountPage() {
                     Quản lý giấy phép
                   </button>
                   <button 
-                    onClick={() => handleTabChange('downloads')}
+                    onClick={() => setActiveTab('downloads')}
                     className={`flex w-full items-center px-4 py-2 rounded-md ${activeTab === 'downloads' ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -397,7 +342,7 @@ export default function AccountPage() {
                     Tải xuống
                   </button>
                   <button 
-                    onClick={() => handleTabChange('support')}
+                    onClick={() => setActiveTab('support')}
                     className={`flex w-full items-center px-4 py-2 rounded-md ${activeTab === 'support' ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-gray-50'}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -7,14 +7,11 @@ import SessionProvider from '@/components/SessionProvider'
 import Analytics from '@/components/Analytics'
 import { siteConfig } from '@/config/siteConfig'
 
-// Cấu hình font với các thiết lập an toàn để tránh lỗi font manifest
+// Load Inter font - cấu hình preload: false để tránh lỗi font manifest
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  fallback: ['system-ui', 'Arial', 'sans-serif'],
-  preload: true,
-  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
