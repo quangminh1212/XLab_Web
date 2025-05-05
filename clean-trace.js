@@ -42,38 +42,68 @@ function deletePackGzFiles() {
   });
 }
 
-// Xử lý tệp trace - sử dụng cả fs và các lệnh hệ thống
-try {
-  if (fs.existsSync(traceFile)) {
-    try {
-      // Thử phương pháp 1: Sử dụng fs.writeFile
-      fs.writeFileSync(traceFile, '', { flag: 'w' });
-      console.log('Đã xóa nội dung tệp trace thành công.');
-    } catch (err) {
-      if (err.code === 'EPERM') {
-        console.log('Không có quyền ghi tệp trace bằng fs, thử phương pháp khác...');
-        // Thử phương pháp 2: Sử dụng các lệnh hệ thống
-        try {
-          // Trên Windows, sử dụng lệnh type nul để xóa nội dung
-          execSync(`type nul > "${traceFile}"`, { stdio: 'pipe' });
-          console.log('Đã xóa nội dung tệp trace bằng lệnh hệ thống.');
-        } catch (cmdErr) {
-          console.error('Không thể xóa nội dung tệp trace bằng lệnh hệ thống:', cmdErr.message);
+// Xử lý tệp trace
+function handleTraceFile() {
+  try {
+    // Kiểm tra sự tồn tại của file trace 
+    if (fs.existsSync(traceFile)) {
+      try {
+        // Kiểm tra quyền ghi file
+        const stats = fs.statSync(traceFile);
+        const isWritable = stats.mode & fs.constants.S_IWUSR;
+        
+        if (isWritable) {
+          // Nếu có quyền ghi, xóa nội dung file
+          fs.writeFileSync(traceFile, '', { flag: 'w' });
+          console.log('Đã xóa nội dung tệp trace thành công.');
+        } else {
+          // Nếu không có quyền ghi, thử đổi quyền truy cập
+          try {
+            fs.chmodSync(traceFile, 0o666);
+            fs.writeFileSync(traceFile, '', { flag: 'w' });
+            console.log('Đã thay đổi quyền và xóa nội dung tệp trace thành công.');
+          } catch (chmodErr) {
+            console.error('Không thể thay đổi quyền cho tệp trace:', chmodErr.message);
+            
+            // Thử cách khác: tạo file mới thay thế
+            try {
+              fs.unlinkSync(traceFile);
+              fs.writeFileSync(traceFile, '', { flag: 'w' });
+              console.log('Đã xóa và tạo lại tệp trace thành công.');
+            } catch (unlinkErr) {
+              console.error('Không thể xóa tệp trace hiện tại:', unlinkErr.message);
+              
+              // Thử phương pháp cuối cùng: dùng lệnh hệ thống
+              try {
+                execSync(`type nul > "${traceFile}"`, { stdio: 'pipe' });
+                console.log('Đã xóa nội dung tệp trace bằng lệnh hệ thống.');
+              } catch (cmdErr) {
+                console.error('Không thể xóa nội dung tệp trace bằng lệnh hệ thống:', cmdErr.message);
+              }
+            }
+          }
         }
-      } else {
+      } catch (err) {
         console.error('Lỗi khi xử lý tệp trace:', err.message);
       }
+    } else {
+      // Đảm bảo thư mục .next tồn tại
+      if (!fs.existsSync(nextDir)) {
+        fs.mkdirSync(nextDir, { recursive: true });
+        console.log('Đã tạo thư mục .next');
+      }
+      
+      // Tạo file trace trống
+      try {
+        fs.writeFileSync(traceFile, '', { flag: 'w' });
+        console.log('Đã tạo tệp trace mới.');
+      } catch (createErr) {
+        console.error('Không thể tạo tệp trace mới:', createErr.message);
+      }
     }
-  } else {
-    // Đảm bảo thư mục .next tồn tại
-    if (!fs.existsSync(nextDir)) {
-      fs.mkdirSync(nextDir, { recursive: true });
-      console.log('Đã tạo thư mục .next');
-    }
-    console.log('Tệp trace không tồn tại, sẽ được tạo khi cần.');
+  } catch (err) {
+    console.error('Lỗi khi kiểm tra tệp trace:', err.message);
   }
-} catch (err) {
-  console.error('Lỗi khi kiểm tra tệp trace:', err.message);
 }
 
 // Đảm bảo các thư mục cache tồn tại
@@ -87,6 +117,9 @@ cacheDirs.forEach(dir => {
     console.error(`Lỗi khi tạo thư mục cache ${dir}:`, err.message);
   }
 });
+
+// Xử lý tệp trace để tránh lỗi EPERM
+handleTraceFile();
 
 // Xóa các file .pack.gz gây lỗi
 deletePackGzFiles();
