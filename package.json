@@ -5,8 +5,10 @@
   "scripts": {
     "predev": "rimraf .next node_modules/.cache && echo Preparing development environment...",
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "cross-env NODE_OPTIONS=\"-r ./src/scripts/suppress-warnings.js\" next build",
+    "start": "cross-env NODE_OPTIONS=\"-r ./src/scripts/suppress-warnings.js\" next start",
+    "start-port": "cross-env NODE_OPTIONS=\"-r ./src/scripts/suppress-warnings.js\" next start -p",
+    "start-clean": "next start",
     "lint": "next lint",
     "clean": "rimraf .next .next-dev node_modules/.cache"
   },
@@ -14,6 +16,7 @@
     "@radix-ui/react-slot": "1.1.2",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
+    "critters": "0.0.20",
     "next": "15.2.4",
     "next-auth": "4.24.10",
     "react": "18.2.0",
@@ -27,6 +30,7 @@
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
     "autoprefixer": "10.4.16",
+    "cross-env": "7.0.3",
     "eslint": "9.0.0",
     "eslint-config-next": "15.2.4",
     "postcss": "8.4.32",

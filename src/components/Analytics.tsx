@@ -1,28 +1,38 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
 
+/**
+ * Component Analytics an toàn không sử dụng SearchParams
+ * Để tránh lỗi "Search params not available during prerendering"
+ */
 export default function Analytics() {
   const pathname = usePathname();
-  
-  // Sử dụng try-catch để tránh lỗi khi sử dụng useSearchParams mà không có Suspense
-  let searchParamsString = '';
-  try {
-    const searchParams = useSearchParams();
-    searchParamsString = searchParams ? searchParams.toString() : '';
-  } catch (e) {
-    // Bỏ qua lỗi khi prerendering
-    console.debug('Search params not available during prerendering');
-  }
 
   useEffect(() => {
-    // Chỉ chạy ở client-side
-    if (typeof window !== 'undefined' && pathname) {
-      // Gửi sự kiện theo dõi lượt xem trang
-      console.log('Page view:', pathname, searchParamsString);
-    }
-  }, [pathname, searchParamsString]);
+    // Safe analytics tracking
+    try {
+      if (typeof window !== 'undefined') {
+        const url = window.location.href;
+        
+        // Gửi dữ liệu phân tích khi route thay đổi
+        console.log('Analytics tracked:', { pathname, url });
 
+        // Gọi API phân tích (nếu cần)
+        // fetch('/api/analytics', { 
+        //   method: 'POST', 
+        //   body: JSON.stringify({ pathname, url }) 
+        // });
+      }
+    } catch (error) {
+      // Bỏ qua lỗi trong môi trường development
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('Analytics error:', error);
+      }
+    }
+  }, [pathname]);
+
+  // Component này không render gì, chỉ theo dõi analytics
   return null;
 } 

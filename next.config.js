@@ -91,10 +91,20 @@ const nextConfig = {
     styledComponents: true,
   },
   experimental: {
-    serverActions: true
+    optimizeCss: false,
+    scrollRestoration: true,
+    serverActions: { 
+      allowedOrigins: ['localhost:3000'],
+      bodySizeLimit: '2mb'
+    }
+  },
+  serverExternalPackages: [],
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
   },
   skipTrailingSlashRedirect: true,
-  skipMiddlewareUrlNormalize: true
+  output: 'standalone'
 };
 
 module.exports = nextConfig;

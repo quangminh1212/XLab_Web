@@ -4,8 +4,11 @@ import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
-import ClientAnalytics from '@/components/ClientAnalytics'
+import ClientAnalytics from '@/components/ui/ClientAnalytics'
 import { siteConfig } from '@/config/siteConfig'
+import { SearchParamsWrapper } from '@/components/ui/SearchParamsWrapper'
+import ClientComponent from '@/components/ui/ClientComponent'
+import { Suspense } from 'react'
 
 // Load Inter font - cấu hình preload: false để tránh lỗi font manifest
 const inter = Inter({
@@ -102,16 +105,21 @@ export default function RootLayout({
         </noscript>
 
         <SessionProvider>
-          <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-primary-500 focus:text-white focus:z-50">
-            Bỏ qua phần điều hướng
-          </a>
-          <Header />
-          <main id="main-content" className="flex-grow">
-            {children}
-          </main>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ClientComponent fallback={<div className="h-16 bg-black"></div>}>
+              <Header />
+            </ClientComponent>
+          </Suspense>
+          <SearchParamsWrapper>
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+          </SearchParamsWrapper>
           <Footer />
+          <Suspense fallback={null}>
+            <ClientAnalytics />
+          </Suspense>
         </SessionProvider>
-        <ClientAnalytics />
       </body>
     </html>
   )
