@@ -123,7 +123,13 @@ export default function Header() {
                 </button>
 
                 {/* User avatar - simplified */}
-                <Link href="/account" className="p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all">
+                <Link 
+                  href="/account" 
+                  className="p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all"
+                  onClick={(e) => {
+                    console.log('Account link clicked, session:', session);
+                  }}
+                >
                   {session.user?.image ? (
                     <Image
                       src={session.user.image}

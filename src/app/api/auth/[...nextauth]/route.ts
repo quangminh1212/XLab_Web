@@ -118,18 +118,36 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ user, account, profile, email, credentials }) {
+      console.log('Sign in callback executed', { provider: account?.provider });
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
       return false;
     },
     async redirect({ url, baseUrl }) {
-      // Nếu đã đăng nhập, luôn chuyển hướng đến trang tài khoản
+      console.log('Redirect callback executed', { url, baseUrl });
+      
+      // Xử lý chuyển hướng sau khi đăng nhập
       if (url.startsWith(baseUrl)) {
-        return `${baseUrl}/account`;
+        if (url.includes('/api/auth/signin') || url.includes('/api/auth/callback')) {
+          return `${baseUrl}/`;
+        }
+        return url;
+      } else if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
       }
-      // Nếu là URL bên ngoài, vẫn sử dụng URL gốc
-      return url.startsWith(baseUrl) ? url : baseUrl;
+      return baseUrl;
+    },
+  },
+  events: {
+    async signIn(message) {
+      console.log('User signed in event', message);
+    },
+    async signOut(message) {
+      console.log('User signed out event', message);
+    },
+    async session(message) {
+      console.log('Session accessed event', message);
     },
   },
   debug: DEBUG_ENABLED,

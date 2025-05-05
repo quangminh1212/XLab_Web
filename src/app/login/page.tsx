@@ -1,20 +1,32 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { useState, useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get('callbackUrl') || '/account';
+  const callbackUrl = searchParams?.get('callbackUrl') || '/';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Kiểm tra nếu đã đăng nhập thì chuyển hướng về trang chủ
+  useEffect(() => {
+    console.log('Session status:', status);
+    console.log('Session data:', session);
+    
+    if (status === 'authenticated' && session) {
+      console.log('User is authenticated, redirecting to homepage');
+      router.replace('/');
+    }
+  }, [session, status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,12 +39,15 @@ export default function LoginPage() {
       setLoading(true);
       setError('');
 
+      console.log('Attempting to sign in with credentials');
       const result = await signIn('credentials', {
         redirect: false,
         email,
         password,
-        callbackUrl: '/account',
+        callbackUrl: '/',
       });
+
+      console.log('Sign in result:', result);
 
       if (result?.error) {
         setError('Email hoặc mật khẩu không chính xác');
@@ -40,7 +55,8 @@ export default function LoginPage() {
         return;
       }
 
-      router.push('/account');
+      console.log('Sign in successful, redirecting to homepage');
+      window.location.href = '/';
     } catch (err) {
       console.error('Lỗi đăng nhập:', err);
       setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
@@ -50,7 +66,8 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = () => {
     setLoading(true);
-    signIn('google', { callbackUrl: '/account' });
+    console.log('Redirecting to Google sign in');
+    signIn('google', { callbackUrl: '/' });
   };
 
   return (

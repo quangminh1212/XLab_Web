@@ -39,7 +39,7 @@ const userProfile = {
 // Khởi tạo lịch sử mua hàng rỗng
 const emptyPurchaseHistory: Order[] = [];
 
-// Dữ liệu mẫu cũ (sẽ không sử dụng)
+// Dữ liệu mẫu để demo
 const samplePurchaseHistory: Order[] = [
   {
     id: 'ORD-12345',
@@ -96,17 +96,40 @@ export default function AccountPage() {
   const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [purchaseHistory, setPurchaseHistory] = useState(emptyPurchaseHistory);
+  const [purchaseHistory, setPurchaseHistory] = useState<Order[]>([]); // Khởi tạo rỗng
   const [isLoading, setIsLoading] = useState(true);
+  const [showDemoData, setShowDemoData] = useState(false); // State cho demo
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [showPasswordMessage, setShowPasswordMessage] = useState(false);
+  const [supportProduct, setSupportProduct] = useState('');
+  const [supportTitle, setSupportTitle] = useState('');
+  const [supportDescription, setSupportDescription] = useState('');
+  const [supportSuccess, setSupportSuccess] = useState(false);
+  const [notificationSettings, setNotificationSettings] = useState({
+    email: true,
+    productUpdates: true,
+    promotions: true,
+    expiryReminders: true
+  });
+  const [settingsSaved, setSettingsSaved] = useState(false);
 
   useEffect(() => {
     // Chuyển hướng người dùng nếu chưa đăng nhập
     if (status === 'unauthenticated') {
+      console.log('User is not authenticated, redirecting to login page');
       router.push('/login?callbackUrl=/account');
+      return;
     }
 
-    // Khởi tạo profile từ session nếu có
-    if (session?.user) {
+    if (status === 'loading') {
+      console.log('Session loading...');
+      return;
+    }
+
+    // Nếu người dùng đã xác thực
+    if (status === 'authenticated' && session?.user) {
+      console.log('User is authenticated, loading profile data:', session.user);
+      
       // Khởi tạo thông tin cơ bản từ session
       const updatedProfile = {
         ...userProfile,
@@ -148,11 +171,45 @@ export default function AccountPage() {
           console.log('Đã tải thông tin từ session');
         }
 
+        // Tải cài đặt thông báo từ localStorage
+        const savedNotificationSettings = localStorage.getItem(`notification_settings_${session.user.email}`);
+        if (savedNotificationSettings) {
+          try {
+            const parsedSettings = JSON.parse(savedNotificationSettings);
+            setNotificationSettings(parsedSettings);
+            console.log('Đã tải cài đặt thông báo:', parsedSettings);
+          } catch (error) {
+            console.error('Lỗi khi parse cài đặt thông báo:', error);
+          }
+        }
+
         // Mô phỏng việc tải dữ liệu từ API
         setTimeout(() => {
-          // Trong thực tế, đây sẽ là một API call để lấy lịch sử mua hàng
-          // Hiện tại chúng ta gán mảng rỗng để hiển thị trạng thái "chưa có sản phẩm"
-          setPurchaseHistory(emptyPurchaseHistory);
+          // Giả lập API call để lấy lịch sử mua hàng
+          // Kiểm tra xem có dữ liệu trên localStorage không, đây sẽ là vị trí gọi API thực tế
+          const savedPurchases = localStorage.getItem(`purchases_${session.user.email}`);
+          
+          if (savedPurchases) {
+            try {
+              const parsedPurchases = JSON.parse(savedPurchases);
+              setPurchaseHistory(parsedPurchases);
+            } catch (e) {
+              console.error('Lỗi khi parse dữ liệu mua hàng:', e);
+              setPurchaseHistory([]);
+            }
+          } else {
+            // Không có dữ liệu thực, kiểm tra nếu người dùng muốn xem dữ liệu mẫu
+            // Demo purpose: Lấy từ localStorage nếu đã lưu
+            const showDemo = localStorage.getItem('show_demo_data') === 'true';
+            setShowDemoData(showDemo);
+            
+            if (showDemo) {
+              setPurchaseHistory(samplePurchaseHistory);
+            } else {
+              setPurchaseHistory([]);
+            }
+          }
+          
           setIsLoading(false);
         }, 1000);
 
@@ -261,6 +318,19 @@ export default function AccountPage() {
     router.push('/');
   };
 
+  // Hàm bật/tắt chế độ demo
+  const toggleDemoMode = () => {
+    const newValue = !showDemoData;
+    setShowDemoData(newValue);
+    localStorage.setItem('show_demo_data', newValue.toString());
+    
+    if (newValue) {
+      setPurchaseHistory(samplePurchaseHistory);
+    } else {
+      setPurchaseHistory([]);
+    }
+  };
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -357,11 +427,28 @@ export default function AccountPage() {
                       style={{ objectFit: 'cover' }}
                       onError={handleImageError}
                     />
-                    <div className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer">
+                    <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                       </svg>
-                    </div>
+                      <input 
+                        id="avatar-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            // Tạo URL ảnh tạm thời
+                            const imageUrl = URL.createObjectURL(file);
+                            // Trong thực tế, bạn sẽ upload ảnh lên server ở đây
+                            // Và cập nhật session và profile với URL mới
+                            setProfile(prev => ({ ...prev, avatar: imageUrl }));
+                            setImageError(false);
+                          }
+                        }}
+                      />
+                    </label>
                   </div>
                   <h2 className="text-xl font-bold">{profile.name}</h2>
                   <p className="text-gray-600">{profile.email}</p>
@@ -431,6 +518,28 @@ export default function AccountPage() {
                     <span className="font-bold">{totalProducts}</span>
                   </div>
                 </div>
+
+                {/* Demo mode toggle - Chỉ hiển thị trong môi trường development */}
+                {process.env.NODE_ENV === 'development' && (
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 text-sm">Chế độ demo</span>
+                      <button
+                        onClick={toggleDemoMode}
+                        className={`px-3 py-1 text-xs rounded-full ${showDemoData 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-800'}`}
+                      >
+                        {showDemoData ? 'Đang bật' : 'Đang tắt'}
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {showDemoData 
+                        ? 'Hiển thị dữ liệu mẫu. Nhấn để tắt.' 
+                        : 'Hiển thị trạng thái rỗng. Nhấn để xem dữ liệu mẫu.'}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -506,6 +615,24 @@ export default function AccountPage() {
 
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="font-semibold text-gray-800 mb-3">Đổi mật khẩu</h3>
+                    {showPasswordMessage && (
+                      <div className="mb-4 p-3 bg-blue-50 text-blue-600 text-sm rounded-md flex items-start justify-between">
+                        <div className="flex items-start">
+                          <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{passwordMessage}</span>
+                        </div>
+                        <button 
+                          onClick={() => setShowPasswordMessage(false)}
+                          className="text-blue-400 hover:text-blue-600"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu hiện tại</label>
@@ -522,7 +649,14 @@ export default function AccountPage() {
                     </div>
 
                     <div className="mt-4 text-right">
-                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                      <button 
+                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPasswordMessage('Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.');
+                          setShowPasswordMessage(true);
+                        }}
+                      >
                         Đổi mật khẩu
                       </button>
                     </div>
@@ -792,10 +926,33 @@ export default function AccountPage() {
                     <h3 className="font-semibold text-lg mb-2">Yêu cầu hỗ trợ mới</h3>
                     <p className="text-gray-600 mb-4">Gửi yêu cầu hỗ trợ kỹ thuật cho sản phẩm bạn đã mua</p>
 
+                    {supportSuccess && (
+                      <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
+                        <div className="flex items-start">
+                          <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Yêu cầu hỗ trợ của bạn đã được gửi thành công! Chúng tôi sẽ phản hồi sớm nhất có thể.</span>
+                        </div>
+                        <button 
+                          onClick={() => setSupportSuccess(false)}
+                          className="text-green-400 hover:text-green-600"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Sản phẩm</label>
-                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500">
+                        <select 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          value={supportProduct}
+                          onChange={(e) => setSupportProduct(e.target.value)}
+                        >
                           <option value="">Chọn sản phẩm cần hỗ trợ</option>
                           {purchaseHistory.flatMap(order => order.items).map((item, index) => (
                             <option key={index} value={item.id}>{item.name} - {item.version}</option>
@@ -804,18 +961,48 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề</label>
-                        <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          placeholder="Nhập tiêu đề vấn đề" />
+                        <input 
+                          type="text" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          placeholder="Nhập tiêu đề vấn đề" 
+                          value={supportTitle}
+                          onChange={(e) => setSupportTitle(e.target.value)}
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả vấn đề</label>
-                        <textarea className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
-                          placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"></textarea>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
+                          placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"
+                          value={supportDescription}
+                          onChange={(e) => setSupportDescription(e.target.value)}
+                        ></textarea>
                       </div>
                     </div>
 
                     <div className="mt-4 text-right">
-                      <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                      <button 
+                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          // Validate form
+                          if (!supportTitle || !supportDescription) {
+                            alert('Vui lòng nhập đầy đủ thông tin');
+                            return;
+                          }
+                          
+                          // Reset form
+                          setSupportProduct('');
+                          setSupportTitle('');
+                          setSupportDescription('');
+                          setSupportSuccess(true);
+                          
+                          // Tự động ẩn thông báo sau 5 giây
+                          setTimeout(() => {
+                            setSupportSuccess(false);
+                          }, 5000);
+                        }}
+                      >
                         Gửi yêu cầu hỗ trợ
                       </button>
                     </div>
@@ -830,36 +1017,109 @@ export default function AccountPage() {
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-md">
                     <h3 className="font-semibold text-lg mb-3">Thông báo</h3>
+                    
+                    {settingsSaved && (
+                      <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
+                        <div className="flex items-start">
+                          <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Cài đặt thông báo đã được lưu thành công!</span>
+                        </div>
+                        <button 
+                          onClick={() => setSettingsSaved(false)}
+                          className="text-green-400 hover:text-green-600"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                    
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-gray-700">Thông báo qua email</span>
                         <label className="inline-flex items-center">
-                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
+                            checked={notificationSettings.email}
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              email: e.target.checked
+                            })}
+                          />
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-700">Thông báo cập nhật sản phẩm</span>
                         <label className="inline-flex items-center">
-                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
+                            checked={notificationSettings.productUpdates}
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              productUpdates: e.target.checked
+                            })}
+                          />
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-700">Thông báo khuyến mãi và ưu đãi</span>
                         <label className="inline-flex items-center">
-                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
+                            checked={notificationSettings.promotions}
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              promotions: e.target.checked
+                            })}
+                          />
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-gray-700">Thông báo hết hạn giấy phép</span>
                         <label className="inline-flex items-center">
-                          <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" defaultChecked />
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
+                            checked={notificationSettings.expiryReminders}
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              expiryReminders: e.target.checked
+                            })}
+                          />
                         </label>
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-4 text-right">
-                    <button className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition">
+                    <button 
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        
+                        // Lưu cài đặt vào localStorage
+                        if (session?.user?.email) {
+                          localStorage.setItem(
+                            `notification_settings_${session.user.email}`, 
+                            JSON.stringify(notificationSettings)
+                          );
+                        }
+                        
+                        // Hiển thị thông báo thành công
+                        setSettingsSaved(true);
+                        
+                        // Tự động ẩn thông báo sau 3 giây
+                        setTimeout(() => {
+                          setSettingsSaved(false);
+                        }, 3000);
+                      }}
+                    >
                       Lưu thay đổi
                     </button>
                   </div>
