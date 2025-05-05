@@ -14,6 +14,7 @@ out/
 .next/server/
 .next/static/
 node_modules/.cache/
+node_modules/.package-lock.json
 
 # misc
 .DS_Store
@@ -41,3 +42,9 @@ Desktop.ini
 # Pack files từ webpack
 *.pack
 *.pack.gz
+
+# Added more specific Next.js files
+.next/trace
+.next/app-build-manifest.json
+.next/build-manifest.json
+.next/react-loadable-manifest.json
