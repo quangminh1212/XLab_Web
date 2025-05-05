@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get('callbackUrl') || '/';
+  const callbackUrl = searchParams?.get('callbackUrl') || '/account';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
-        callbackUrl,
+        callbackUrl: '/account',
       });
 
       if (result?.error) {
@@ -40,7 +40,7 @@ export default function LoginPage() {
         return;
       }
 
-      if (result?.url) router.push(callbackUrl);
+      router.push('/account');
     } catch (err) {
       console.error('Lỗi đăng nhập:', err);
       setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
@@ -50,7 +50,7 @@ export default function LoginPage() {
 
   const handleGoogleSignIn = () => {
     setLoading(true);
-    signIn('google', { callbackUrl });
+    signIn('google', { callbackUrl: '/account' });
   };
 
   return (

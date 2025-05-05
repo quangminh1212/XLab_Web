@@ -42,6 +42,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
     error: "/auth/error",
+    signOut: "/",
   },
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
@@ -121,6 +122,14 @@ export const authOptions: NextAuthOptions = {
         return true;
       }
       return false;
+    },
+    async redirect({ url, baseUrl }) {
+      // Nếu đã đăng nhập, luôn chuyển hướng đến trang tài khoản
+      if (url.startsWith(baseUrl)) {
+        return `${baseUrl}/account`;
+      }
+      // Nếu là URL bên ngoài, vẫn sử dụng URL gốc
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   debug: DEBUG_ENABLED,
