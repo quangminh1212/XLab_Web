@@ -8,7 +8,7 @@ export const categories: Category[] = [
     slug: 'phan-mem-doanh-nghiep',
     description: 'Các phần mềm phục vụ cho doanh nghiệp như ERP, CRM, thanh toán...',
     imageUrl: '/images/categories/productivity.png',
-    productCount: 4
+    productCount: 1
   },
   {
     id: 'cat-2',
@@ -16,7 +16,7 @@ export const categories: Category[] = [
     slug: 'ung-dung-van-phong',
     description: 'Các ứng dụng văn phòng như soạn thảo, bảng tính, thuyết trình...',
     imageUrl: '/images/categories/utilities.png',
-    productCount: 3
+    productCount: 1
   },
   {
     id: 'cat-3',
@@ -40,7 +40,7 @@ export const categories: Category[] = [
     slug: 'ung-dung-giao-duc',
     description: 'Các ứng dụng học ngoại ngữ, lập trình, toán học...',
     imageUrl: '/images/categories/education.png',
-    productCount: 2
+    productCount: 1
   }
 ];
 
@@ -81,424 +81,325 @@ export const stores: Store[] = [
   }
 ];
 
-// Mock Products
+// Danh sách sản phẩm
 export const products: Product[] = [
   {
-    id: 'prod-1',
-    name: 'XLab Office Suite',
-    slug: 'xlab-office-suite',
-    description: 'Bộ ứng dụng văn phòng toàn diện cho doanh nghiệp Việt Nam.',
+    id: 'prod-vt',
+    name: 'VoiceTyping',
+    slug: 'voicetyping',
+    description: 'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition.',
     longDescription: `
-      <p>XLab Office Suite là bộ ứng dụng văn phòng toàn diện được phát triển bởi đội ngũ XLab dành riêng cho người dùng Việt Nam.</p>
-      <p>Bộ phần mềm bao gồm:</p>
+      <h2>VoiceTyping - Nhập liệu bằng giọng nói</h2>
+      <p>VoiceTyping là một ứng dụng Microsoft Office cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, tích hợp với bộ công cụ Microsoft Office.</p>
+
+      <h3>Kiến trúc:</h3>
       <ul>
-        <li>Ứng dụng soạn thảo văn bản với đầy đủ tính năng định dạng</li>
-        <li>Ứng dụng bảng tính với các công thức và biểu đồ phong phú</li>
-        <li>Ứng dụng trình chiếu với nhiều mẫu đẹp mắt</li>
-        <li>Hỗ trợ đầy đủ tiếng Việt và các định dạng văn bản phổ biến</li>
-        <li>Tích hợp lưu trữ đám mây để chia sẻ và đồng bộ dữ liệu giữa các thiết bị</li>
+        <li><strong>Frontend:</strong> Giao diện người dùng (GUI) xây dựng tích hợp với Microsoft Office.</li>
+        <li><strong>Backend:</strong>
+          <ul>
+            <li>Mô-đun nhận dạng giọng nói (Microsoft Speech Recognition API).</li>
+            <li>Mô-đun xử lý văn bản tích hợp với Word, Excel và PowerPoint.</li>
+            <li>Mô-đun điều khiển con trỏ thông minh.</li>
+          </ul>
+        </li>
       </ul>
-      <p>XLab Office Suite là giải pháp hoàn hảo cho doanh nghiệp Việt Nam muốn tối ưu hóa quy trình làm việc văn phòng mà không phụ thuộc vào các giải pháp nước ngoài.</p>
+
+      <h3>Công nghệ sử dụng:</h3>
+      <ul>
+        <li>Microsoft Office Add-in</li>
+        <li>Microsoft Speech API</li>
+        <li>Office 365 Integration</li>
+        <li>Cloud-based processing</li>
+      </ul>
+
+      <h3>Cài đặt và Sử dụng:</h3>
+      <p>Xem chi tiết trong file README đi kèm hoặc tải về bản cài đặt.</p>
+      <p><strong>Yêu cầu:</strong> Microsoft Office 2019 hoặc mới hơn.</p>
+
+      <h3>Giấy phép:</h3>
+      <p>Phân phối dưới giấy phép MIT.</p>
     `,
-    price: 1200000,
-    salePrice: 990000,
-    categoryId: 'cat-2',
-    imageUrl: '/images/products/office-pro.png',
-    isFeatured: true,
-    isNew: false,
-    downloadCount: 1500,
-    viewCount: 4200,
+    price: 0, // Miễn phí
+    salePrice: 0,
+    categoryId: 'cat-2', // Ứng dụng văn phòng
+    imageUrl: '/speech-text.png',
+    isFeatured: true, // Đặt thành true để hiển thị trong mục sản phẩm nổi bật
+    isNew: true,
+    downloadCount: 150,
+    viewCount: 320,
     rating: 4.5,
-    version: '2.5.1',
-    size: '250MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-05-10T08:00:00.000Z',
-    updatedAt: '2023-09-15T10:30:00.000Z',
-    storeId: '1'
+    version: '1.0.0',
+    size: '~50MB',
+    licenseType: 'MIT',
+    createdAt: new Date('2023-08-25').toISOString(),
+    updatedAt: new Date('2023-08-25').toISOString(),
+    storeId: '1', // XLab Software
+    features: [
+      'Nhận dạng giọng nói chính xác với nhiều giọng địa phương',
+      'Tích hợp với Microsoft Office',
+      'Hỗ trợ điều khiển bằng hotkey',
+      'Tự động lưu lịch sử chuyển đổi'
+    ]
   },
+  
+  // Sản phẩm mới: VideoEditor Pro
   {
-    id: 'prod-2',
-    name: 'XLab ERP System',
-    slug: 'xlab-erp-system',
-    description: 'Hệ thống quản lý doanh nghiệp toàn diện cho doanh nghiệp vừa và nhỏ.',
+    id: 'prod-ve',
+    name: 'VideoEditor Pro',
+    slug: 'videoeditor-pro',
+    description: 'Phần mềm biên tập video chuyên nghiệp với các tính năng hiện đại và giao diện dễ sử dụng.',
     longDescription: `
-      <p>XLab ERP System là giải pháp quản lý doanh nghiệp toàn diện được phát triển dành riêng cho các doanh nghiệp vừa và nhỏ tại Việt Nam.</p>
-      <p>Tính năng nổi bật:</p>
+      <h2>VideoEditor Pro - Giải pháp biên tập video toàn diện</h2>
+      <p>VideoEditor Pro là phần mềm biên tập video cao cấp với đầy đủ công cụ và hiệu ứng chuyên nghiệp, giúp người dùng tạo ra các video chất lượng cao.</p>
+
+      <h3>Tính năng chính:</h3>
       <ul>
-        <li>Quản lý tài chính: kế toán, thanh toán, báo cáo tài chính</li>
-        <li>Quản lý nhân sự: hồ sơ nhân viên, chấm công, lương thưởng</li>
-        <li>Quản lý khách hàng: CRM, theo dõi giao dịch, chăm sóc khách hàng</li>
-        <li>Quản lý kho: xuất nhập tồn, tồn kho, đặt hàng tự động</li>
-        <li>Quản lý bán hàng: hóa đơn, đơn hàng, khuyến mãi</li>
-        <li>Báo cáo thống kê đa chiều với giao diện trực quan</li>
+        <li><strong>Biên tập đa track</strong>: Hỗ trợ nhiều track video, audio và overlay đồng thời.</li>
+        <li><strong>Thư viện hiệu ứng phong phú</strong>: Hơn 500 hiệu ứng và transition được phân loại.</li>
+        <li><strong>Công cụ chỉnh màu</strong>: Chỉnh màu chuyên nghiệp với LUTs và color grading.</li>
+        <li><strong>Xuất video đa định dạng</strong>: MP4, AVI, MOV với chất lượng lên đến 4K.</li>
+        <li><strong>Xử lý âm thanh</strong>: Công cụ điều chỉnh và xử lý âm thanh tích hợp.</li>
       </ul>
-      <p>XLab ERP System tối ưu hóa quy trình quản lý của doanh nghiệp, giảm thiểu thời gian và chi phí vận hành, mang lại hiệu quả tối đa trong quản trị doanh nghiệp.</p>
+
+      <h3>Yêu cầu hệ thống:</h3>
+      <ul>
+        <li>Windows 10, 11 (64-bit)</li>
+        <li>CPU: Intel i5 hoặc AMD Ryzen 5 trở lên</li>
+        <li>RAM: 8GB (khuyến nghị 16GB)</li>
+        <li>GPU: NVIDIA/AMD với 2GB VRAM</li>
+        <li>Ổ cứng: 5GB dung lượng trống</li>
+      </ul>
     `,
-    price: 15000000,
-    salePrice: 12000000,
-    categoryId: 'cat-1',
-    imageUrl: '/images/products/system-erp.png',
+    price: 299000,
+    salePrice: 199000,
+    categoryId: 'cat-3', // Phần mềm đồ họa
+    imageUrl: '/capcut.png',
     isFeatured: true,
     isNew: true,
-    downloadCount: 350,
-    viewCount: 1200,
-    rating: 4.8,
-    version: '1.2.0',
-    size: '500MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-08-01T09:00:00.000Z',
-    updatedAt: '2023-10-20T14:45:00.000Z',
-    storeId: '1'
+    downloadCount: 425,
+    viewCount: 780,
+    rating: 4.7,
+    version: '2.1.0',
+    size: '~300MB',
+    licenseType: 'Commercial',
+    createdAt: new Date('2023-09-12').toISOString(),
+    updatedAt: new Date('2023-10-05').toISOString(),
+    storeId: '3', // Creative Tools
+    features: [
+      'Biên tập video đa track chuyên nghiệp',
+      'Thư viện hiệu ứng và transition phong phú',
+      'Công cụ chỉnh màu nâng cao với LUTs',
+      'Xử lý âm thanh tích hợp',
+      'Xuất video chất lượng cao đến 4K',
+      'Tối ưu hóa hiệu suất với GPU acceleration'
+    ]
   },
+  
+  // Sản phẩm mới: SmartAI Assistant
   {
-    id: 'prod-3',
-    name: 'XLab Secure Vault',
-    slug: 'xlab-secure-vault',
-    description: 'Phần mềm bảo mật và mã hóa dữ liệu cho cá nhân và doanh nghiệp.',
+    id: 'prod-ai',
+    name: 'SmartAI Assistant',
+    slug: 'smartai-assistant',
+    description: 'Trợ lý ảo thông minh giúp tự động hóa công việc, trả lời câu hỏi và tối ưu quy trình làm việc.',
     longDescription: `
-      <p>XLab Secure Vault là giải pháp bảo mật và mã hóa dữ liệu hàng đầu cho cá nhân và doanh nghiệp.</p>
-      <p>Tính năng chính:</p>
+      <h2>SmartAI Assistant - Trợ lý AI cá nhân</h2>
+      <p>SmartAI Assistant là ứng dụng trợ lý thông minh sử dụng trí tuệ nhân tạo để hỗ trợ người dùng trong công việc hàng ngày, tăng năng suất và tự động hóa các tác vụ lặp đi lặp lại.</p>
+
+      <h3>Khả năng của SmartAI:</h3>
       <ul>
-        <li>Mã hóa dữ liệu AES-256 bit, đảm bảo an toàn tuyệt đối</li>
-        <li>Quản lý mật khẩu an toàn với tích hợp sinh mật khẩu mạnh</li>
-        <li>Chia sẻ dữ liệu an toàn giữa các thành viên trong tổ chức</li>
-        <li>Xác thực hai yếu tố và sinh khóa bảo mật</li>
-        <li>Tự động sao lưu và khôi phục dữ liệu</li>
-        <li>Xóa dữ liệu từ xa trong trường hợp thiết bị bị mất</li>
+        <li><strong>Trả lời câu hỏi</strong>: Tìm kiếm và tổng hợp thông tin từ nhiều nguồn.</li>
+        <li><strong>Viết và chỉnh sửa văn bản</strong>: Soạn thảo email, báo cáo, và văn bản với nhiều phong cách.</li>
+        <li><strong>Tự động hóa</strong>: Lập lịch, nhắc nhở và thực hiện các tác vụ lặp lại.</li>
+        <li><strong>Phân tích dữ liệu</strong>: Trích xuất insight và tạo báo cáo từ dữ liệu.</li>
+        <li><strong>Tích hợp đa nền tảng</strong>: Làm việc trên Windows, macOS, iOS và Android.</li>
       </ul>
-      <p>XLab Secure Vault được phát triển bởi đội ngũ chuyên gia bảo mật với hơn 10 năm kinh nghiệm, đảm bảo dữ liệu của bạn luôn được bảo vệ an toàn tuyệt đối.</p>
+
+      <h3>Công nghệ cốt lõi:</h3>
+      <p>SmartAI được xây dựng dựa trên mô hình ngôn ngữ GPT tiên tiến, được tối ưu để chạy trên máy tính cá nhân mà không cần kết nối liên tục đến cloud. Dữ liệu người dùng được mã hóa đầu cuối và được lưu trữ cục bộ để đảm bảo quyền riêng tư.</p>
+
+      <h3>Phiên bản:</h3>
+      <p>Phiên bản Premium bao gồm tất cả tính năng và cập nhật miễn phí trong 1 năm.</p>
     `,
-    price: 800000,
-    salePrice: 690000,
-    categoryId: 'cat-4',
-    imageUrl: '/images/products/secure-vault.png',
+    price: 499000,
+    salePrice: 399000,
+    categoryId: 'cat-1', // Phần mềm doanh nghiệp
+    imageUrl: '/chatgpt.png',
+    isFeatured: true,
+    isNew: true,
+    downloadCount: 890,
+    viewCount: 1250,
+    rating: 4.8,
+    version: '1.5.0',
+    size: '~200MB',
+    licenseType: 'Commercial',
+    createdAt: new Date('2023-11-01').toISOString(),
+    updatedAt: new Date('2023-11-15').toISOString(),
+    storeId: '1', // XLab Software
+    features: [
+      'Trợ lý AI cá nhân với khả năng xử lý ngôn ngữ tự nhiên',
+      'Tự động hóa các tác vụ văn phòng và cá nhân',
+      'Tích hợp với email, lịch và ứng dụng văn phòng',
+      'Xử lý dữ liệu cục bộ đảm bảo quyền riêng tư',
+      'Hoạt động đa nền tảng với đồng bộ liền mạch',
+      'Giao diện người dùng trực quan và thân thiện'
+    ]
+  },
+  
+  // Sản phẩm mới: DesignStudio
+  {
+    id: 'prod-ds',
+    name: 'DesignStudio',
+    slug: 'designstudio',
+    description: 'Ứng dụng thiết kế đồ họa toàn diện với công cụ vẽ vector, chỉnh sửa ảnh và thiết kế giao diện.',
+    longDescription: `
+      <h2>DesignStudio - Công cụ thiết kế đồ họa chuyên nghiệp</h2>
+      <p>DesignStudio là giải pháp thiết kế đồ họa trọn gói dành cho designer chuyên nghiệp và người dùng thông thường, cung cấp đầy đủ công cụ từ thiết kế vector đến chỉnh sửa ảnh bitmap.</p>
+
+      <h3>Bộ công cụ đa dạng:</h3>
+      <ul>
+        <li><strong>Thiết kế vector</strong>: Các công cụ vẽ vector chính xác và linh hoạt.</li>
+        <li><strong>Chỉnh sửa ảnh</strong>: Công cụ xử lý ảnh bitmap với nhiều bộ lọc và hiệu ứng.</li>
+        <li><strong>Thiết kế UI/UX</strong>: Thư viện component và grid system cho thiết kế giao diện.</li>
+        <li><strong>Mockup và prototype</strong>: Tạo bản mẫu tương tác cho website và ứng dụng.</li>
+        <li><strong>Thư viện tài nguyên</strong>: Kho hình ảnh, font chữ, icon và template đồng bộ.</li>
+      </ul>
+
+      <h3>Dành cho:</h3>
+      <p>Graphic designer, UI/UX designer, digital marketer và các doanh nghiệp cần tạo nội dung hình ảnh chất lượng cao.</p>
+
+      <h3>Tương thích:</h3>
+      <p>Nhập và xuất file với nhiều định dạng phổ biến như AI, PSD, SVG, PNG, JPEG, PDF và hỗ trợ cả Windows và macOS.</p>
+    `,
+    price: 599000,
+    salePrice: 499000,
+    categoryId: 'cat-3', // Phần mềm đồ họa
+    imageUrl: '/canva.png',
     isFeatured: false,
     isNew: true,
-    downloadCount: 950,
-    viewCount: 2100,
-    rating: 4.7,
-    version: '3.0.1',
-    size: '120MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-06-15T11:20:00.000Z',
-    updatedAt: '2023-10-05T09:15:00.000Z',
-    storeId: '1'
+    downloadCount: 560,
+    viewCount: 920,
+    rating: 4.6,
+    version: '3.0.2',
+    size: '~450MB',
+    licenseType: 'Commercial',
+    createdAt: new Date('2023-10-20').toISOString(),
+    updatedAt: new Date('2023-11-05').toISOString(),
+    storeId: '3', // Creative Tools
+    features: [
+      'Thiết kế vector chuyên nghiệp với pen tool và shape builder',
+      'Chỉnh sửa ảnh với layer và adjustment layers',
+      'Thư viện template và asset phong phú',
+      'Công cụ thiết kế UI/UX với component và grid system',
+      'Tương thích với nhiều định dạng file thiết kế phổ biến',
+      'Tính năng cloud sync để đồng bộ dự án giữa các thiết bị'
+    ]
   },
+  
+  // Sản phẩm mới: SecureGuard Pro
   {
-    id: 'prod-4',
-    name: 'XLab Design Master',
-    slug: 'xlab-design-master',
-    description: 'Phần mềm thiết kế đồ họa chuyên nghiệp với giao diện tiếng Việt.',
+    id: 'prod-sg',
+    name: 'SecureGuard Pro',
+    slug: 'secureguard-pro',
+    description: 'Giải pháp bảo mật toàn diện với tường lửa, chống virus và bảo vệ dữ liệu cá nhân trên mọi thiết bị.',
     longDescription: `
-      <p>XLab Design Master là giải pháp thiết kế đồ họa chuyên nghiệp được phát triển bởi đội ngũ XLab dành cho người dùng Việt Nam.</p>
-      <p>Tính năng nổi bật:</p>
+      <h2>SecureGuard Pro - Bảo vệ toàn diện cho mọi thiết bị</h2>
+      <p>SecureGuard Pro là giải pháp bảo mật đa lớp giúp bảo vệ dữ liệu và thiết bị của bạn khỏi các mối đe dọa trực tuyến như virus, malware, ransomware và các cuộc tấn công lừa đảo.</p>
+
+      <h3>Các lớp bảo vệ:</h3>
       <ul>
-        <li>Thiết kế vector chuyên nghiệp với các công cụ vẽ mạnh mẽ</li>
-        <li>Chỉnh sửa ảnh chuyên sâu với các bộ lọc và hiệu ứng đa dạng</li>
-        <li>Thiết kế giao diện UI/UX với thư viện mẫu phong phú</li>
-        <li>Tạo ấn phẩm in ấn với hỗ trợ đầy đủ cho CMYK</li>
-        <li>Hỗ trợ các định dạng đồ họa phổ biến: PSD, AI, SVG, EPS...</li>
-        <li>Tương thích với các phần mềm thiết kế quốc tế</li>
+        <li><strong>Chống virus và malware</strong>: Quét và loại bỏ mã độc với công nghệ phát hiện hành vi.</li>
+        <li><strong>Tường lửa thông minh</strong>: Kiểm soát lưu lượng mạng và ngăn chặn kết nối độc hại.</li>
+        <li><strong>Bảo vệ web</strong>: Ngăn chặn các trang web lừa đảo và khai thác bảo mật.</li>
+        <li><strong>Bảo vệ dữ liệu</strong>: Mã hóa dữ liệu nhạy cảm và sao lưu tự động.</li>
+        <li><strong>Kiểm soát thiết bị</strong>: Quản lý các thiết bị kết nối vào hệ thống.</li>
       </ul>
-      <p>XLab Design Master là lựa chọn hoàn hảo cho các nhà thiết kế, họa sĩ và các doanh nghiệp cần giải pháp thiết kế đồ họa chuyên nghiệp với giao diện tiếng Việt thân thiện.</p>
+
+      <h3>Bảo mật đa thiết bị:</h3>
+      <p>Một giấy phép SecureGuard Pro bảo vệ đến 5 thiết bị cùng lúc, bao gồm Windows, macOS, Android và iOS.</p>
+
+      <h3>Hiệu suất tối ưu:</h3>
+      <p>Được thiết kế để bảo vệ mà không làm chậm hệ thống, với công nghệ quét thông minh chỉ sử dụng tài nguyên tối thiểu khi cần thiết.</p>
     `,
-    price: 2500000,
-    salePrice: 1990000,
-    categoryId: 'cat-3',
-    imageUrl: '/images/products/design-master.png',
+    price: 399000,
+    salePrice: 299000,
+    categoryId: 'cat-4', // Bảo mật & Antivirus
+    imageUrl: '/secure.png',
     isFeatured: true,
     isNew: false,
     downloadCount: 1200,
-    viewCount: 3500,
+    viewCount: 1850,
     rating: 4.6,
-    version: '4.2.1',
-    size: '850MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-04-20T13:45:00.000Z',
-    updatedAt: '2023-09-28T16:30:00.000Z',
-    storeId: '1'
+    version: '2.5.1',
+    size: '~120MB',
+    licenseType: 'Commercial',
+    createdAt: new Date('2023-06-15').toISOString(),
+    updatedAt: new Date('2023-10-10').toISOString(),
+    storeId: '2', // VN Tech Solutions
+    features: [
+      'Bảo vệ đa lớp chống virus, malware và ransomware',
+      'Tường lửa thông minh giám sát lưu lượng mạng',
+      'Công nghệ phát hiện hành vi tấn công',
+      'Bảo vệ web với chống lừa đảo và theo dõi',
+      'Mã hóa và quản lý mật khẩu tích hợp',
+      'Bảo vệ đồng thời 5 thiết bị với 1 giấy phép'
+    ]
   },
+  
+  // Sản phẩm mới: LearnCode Academy
   {
-    id: 'prod-5',
-    name: 'XLab Code IDE',
-    slug: 'xlab-code-ide',
-    description: 'Môi trường phát triển tích hợp cho lập trình viên với đầy đủ tính năng.',
+    id: 'prod-lc',
+    name: 'LearnCode Academy',
+    slug: 'learncode-academy',
+    description: 'Nền tảng học lập trình tương tác với hơn 50 khóa học từ cơ bản đến nâng cao cho nhiều ngôn ngữ và công nghệ.',
     longDescription: `
-      <p>XLab Code IDE là môi trường phát triển tích hợp mạnh mẽ dành cho lập trình viên Việt Nam và quốc tế.</p>
-      <p>Tính năng chính:</p>
+      <h2>LearnCode Academy - Nền tảng học lập trình toàn diện</h2>
+      <p>LearnCode Academy là ứng dụng học lập trình tương tác với hơn 50 khóa học được thiết kế bởi các chuyên gia trong ngành, giúp người học từ mới bắt đầu đến chuyên gia nâng cao kỹ năng của mình.</p>
+
+      <h3>Khóa học đa dạng:</h3>
       <ul>
-        <li>Hỗ trợ đa ngôn ngữ lập trình: Java, Python, C/C++, JavaScript, PHP, Ruby...</li>
-        <li>Công cụ debug mạnh mẽ với visualizer trực quan</li>
-        <li>Tích hợp Git và các hệ thống quản lý phiên bản khác</li>
-        <li>IntelliSense thông minh và gợi ý code tự động</li>
-        <li>Tích hợp terminal và hệ thống quản lý package</li>
-        <li>Tùy biến giao diện và theme với nhiều lựa chọn</li>
-        <li>Hỗ trợ extension với kho thư viện phong phú</li>
+        <li><strong>Lập trình web</strong>: HTML, CSS, JavaScript, React, Angular, Vue, Node.js...</li>
+        <li><strong>Lập trình di động</strong>: React Native, Flutter, Android, iOS...</li>
+        <li><strong>Backend và cơ sở dữ liệu</strong>: Python, PHP, Java, C#, SQL, MongoDB...</li>
+        <li><strong>Data Science & AI</strong>: Python, R, Machine Learning, Data Analysis...</li>
+        <li><strong>DevOps</strong>: Docker, Kubernetes, CI/CD, AWS, Azure...</li>
       </ul>
-      <p>XLab Code IDE được phát triển bởi đội ngũ lập trình viên giàu kinh nghiệm, mang đến trải nghiệm phát triển phần mềm hiệu quả và tối ưu cho mọi dự án.</p>
+
+      <h3>Phương pháp học:</h3>
+      <ul>
+        <li><strong>Học tương tác</strong>: Biên tập code trực tiếp trong ứng dụng.</li>
+        <li><strong>Dự án thực tế</strong>: Xây dựng portfolio với các dự án thực tế.</li>
+        <li><strong>Theo lộ trình</strong>: Các khóa học được sắp xếp theo lộ trình phát triển kỹ năng.</li>
+        <li><strong>Cộng đồng</strong>: Kết nối với học viên khác và nhận hỗ trợ từ mentor.</li>
+      </ul>
+
+      <h3>Tính năng nổi bật:</h3>
+      <p>Truy cập không giới hạn đến tất cả khóa học, môi trường phát triển tích hợp, code playground và chứng chỉ hoàn thành khóa học được công nhận bởi nhiều doanh nghiệp.</p>
     `,
-    price: 1500000,
-    salePrice: 1200000,
-    categoryId: 'cat-5',
-    imageUrl: '/images/products/code-editor.png',
+    price: 899000,
+    salePrice: 699000,
+    categoryId: 'cat-5', // Ứng dụng giáo dục
+    imageUrl: '/education.png',
     isFeatured: false,
     isNew: true,
-    downloadCount: 850,
-    viewCount: 2300,
-    rating: 4.9,
-    version: '2.1.0',
-    size: '350MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-07-12T10:30:00.000Z',
-    updatedAt: '2023-10-18T09:45:00.000Z',
-    storeId: '1'
-  },
-  {
-    id: 'prod-6',
-    name: 'XLab Backup Pro',
-    slug: 'xlab-backup-pro',
-    description: 'Giải pháp sao lưu và khôi phục dữ liệu tự động cho doanh nghiệp.',
-    longDescription: `
-      <p>XLab Backup Pro là giải pháp sao lưu và khôi phục dữ liệu toàn diện dành cho doanh nghiệp mọi quy mô.</p>
-      <p>Tính năng nổi bật:</p>
-      <ul>
-        <li>Sao lưu tự động theo lịch trình với nhiều cấu hình linh hoạt</li>
-        <li>Hỗ trợ sao lưu gia tăng và sao lưu đầy đủ</li>
-        <li>Mã hóa dữ liệu sao lưu đảm bảo an toàn tuyệt đối</li>
-        <li>Khôi phục nhanh chóng với chế độ instant recovery</li>
-        <li>Sao lưu đám mây với tích hợp các nền tảng lưu trữ phổ biến</li>
-        <li>Quản lý tập trung với bảng điều khiển trực quan</li>
-        <li>Báo cáo chi tiết về trạng thái và lịch sử sao lưu</li>
-      </ul>
-      <p>XLab Backup Pro giúp doanh nghiệp bảo vệ dữ liệu quan trọng, đảm bảo hoạt động kinh doanh liên tục và khả năng phục hồi sau sự cố.</p>
-    `,
-    price: 2200000,
-    salePrice: 1800000,
-    categoryId: 'cat-1',
-    imageUrl: '/images/products/backup-pro.png',
-    isFeatured: true,
-    isNew: false,
-    downloadCount: 650,
-    viewCount: 1800,
-    rating: 4.7,
-    version: '3.1.2',
-    size: '190MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-03-25T14:20:00.000Z',
-    updatedAt: '2023-09-10T11:05:00.000Z',
-    storeId: '2'
-  },
-  {
-    id: 'prod-7',
-    name: 'XLab Photo Editor',
-    slug: 'xlab-photo-editor',
-    description: 'Phần mềm chỉnh sửa ảnh chuyên nghiệp với giao diện tiếng Việt.',
-    longDescription: `
-      <p>XLab Photo Editor là giải pháp chỉnh sửa ảnh chuyên nghiệp dành cho nhiếp ảnh gia và người dùng Việt Nam.</p>
-      <p>Tính năng chính:</p>
-      <ul>
-        <li>Chỉnh sửa ảnh chuyên sâu với các công cụ chuyên nghiệp</li>
-        <li>Bộ lọc và hiệu ứng đa dạng với khả năng tùy chỉnh</li>
-        <li>Xử lý RAW chuyên nghiệp với hỗ trợ đa dạng định dạng máy ảnh</li>
-        <li>Tính năng retouching nâng cao: làm mịn da, xóa vết, thay đổi ánh sáng...</li>
-        <li>Tích hợp AI để tự động cải thiện chất lượng ảnh</li>
-        <li>Quản lý thư viện ảnh với khả năng phân loại và tag</li>
-        <li>Xuất ảnh với nhiều định dạng và tùy chọn chất lượng</li>
-      </ul>
-      <p>XLab Photo Editor là công cụ hoàn hảo cho những người yêu thích nhiếp ảnh và cần một giải pháp chỉnh sửa ảnh chuyên nghiệp với giao diện tiếng Việt thân thiện.</p>
-    `,
-    price: 1400000,
-    salePrice: 1100000,
-    categoryId: 'cat-3',
-    imageUrl: '/images/products/photo-editor.png',
-    isFeatured: false,
-    isNew: true,
-    downloadCount: 900,
-    viewCount: 2700,
-    rating: 4.6,
-    version: '2.3.0',
-    size: '450MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-05-30T09:15:00.000Z',
-    updatedAt: '2023-10-12T13:40:00.000Z',
-    storeId: '2'
-  },
-  {
-    id: 'prod-8',
-    name: 'XLab Document Management',
-    slug: 'xlab-document-management',
-    description: 'Hệ thống quản lý tài liệu và quy trình làm việc cho doanh nghiệp.',
-    longDescription: `
-      <p>XLab Document Management là giải pháp quản lý tài liệu và quy trình làm việc toàn diện cho doanh nghiệp Việt Nam.</p>
-      <p>Tính năng nổi bật:</p>
-      <ul>
-        <li>Lưu trữ tài liệu tập trung với hệ thống phân loại thông minh</li>
-        <li>Tìm kiếm nhanh chóng với công nghệ OCR nhận dạng văn bản</li>
-        <li>Quản lý phiên bản tài liệu, theo dõi lịch sử chỉnh sửa</li>
-        <li>Phân quyền truy cập chi tiết đến từng tài liệu</li>
-        <li>Quy trình làm việc tự động với khả năng tùy chỉnh</li>
-        <li>Tích hợp chữ ký điện tử và xác thực tài liệu</li>
-        <li>Báo cáo thống kê về quá trình sử dụng và truy cập tài liệu</li>
-      </ul>
-      <p>XLab Document Management giúp doanh nghiệp tối ưu hóa quy trình quản lý tài liệu, tăng cường bảo mật và nâng cao hiệu quả làm việc.</p>
-    `,
-    price: 3500000,
-    salePrice: 2800000,
-    categoryId: 'cat-1',
-    imageUrl: '/images/products/document-management.png',
-    isFeatured: true,
-    isNew: false,
-    downloadCount: 420,
-    viewCount: 1500,
-    rating: 4.5,
-    version: '2.0.1',
-    size: '320MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-02-18T08:45:00.000Z',
-    updatedAt: '2023-08-25T15:20:00.000Z',
-    storeId: '3'
-  },
-  {
-    id: 'prod-9',
-    name: 'XLab Web Developer Studio',
-    slug: 'xlab-web-developer-studio',
-    description: 'Môi trường phát triển web tích hợp với nhiều công cụ và framework.',
-    longDescription: `
-      <p>XLab Web Developer Studio là môi trường phát triển web tích hợp toàn diện dành cho lập trình viên web.</p>
-      <p>Tính năng chính:</p>
-      <ul>
-        <li>Hỗ trợ đầy đủ các ngôn ngữ và framework web phổ biến</li>
-        <li>Editor thông minh với gợi ý code và auto-completion</li>
-        <li>Live preview với đồng bộ hóa thời gian thực</li>
-        <li>Công cụ debug JavaScript và PHP mạnh mẽ</li>
-        <li>Tích hợp terminal và quản lý package</li>
-        <li>Hỗ trợ Git và các hệ thống quản lý phiên bản</li>
-        <li>Công cụ tối ưu hóa và kiểm tra hiệu suất website</li>
-        <li>Tích hợp các API và dịch vụ web phổ biến</li>
-      </ul>
-      <p>XLab Web Developer Studio là giải pháp hoàn hảo cho lập trình viên web muốn nâng cao hiệu suất và chất lượng trong phát triển website và ứng dụng web.</p>
-    `,
-    price: 1800000,
-    salePrice: 1500000,
-    categoryId: 'cat-5',
-    imageUrl: '/images/products/web-developer.png',
-    isFeatured: false,
-    isNew: false,
     downloadCount: 750,
-    viewCount: 2000,
-    rating: 4.8,
-    version: '3.2.0',
-    size: '480MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-04-05T11:30:00.000Z',
-    updatedAt: '2023-09-20T10:25:00.000Z',
-    storeId: '1'
-  },
-  {
-    id: 'prod-10',
-    name: 'XLab Language Master',
-    slug: 'xlab-language-master',
-    description: 'Phần mềm học ngoại ngữ thông minh với trí tuệ nhân tạo.',
-    longDescription: `
-      <p>XLab Language Master là giải pháp học ngoại ngữ thông minh dựa trên trí tuệ nhân tạo, đặc biệt phù hợp với người học Việt Nam.</p>
-      <p>Tính năng nổi bật:</p>
-      <ul>
-        <li>Hỗ trợ học 10 ngôn ngữ phổ biến: Anh, Pháp, Đức, Trung, Nhật...</li>
-        <li>Phương pháp học dựa trên AI phân tích điểm mạnh, yếu của người học</li>
-        <li>Công nghệ nhận dạng giọng nói để luyện phát âm chuẩn xác</li>
-        <li>Bài học được thiết kế theo lộ trình từ cơ bản đến nâng cao</li>
-        <li>Trò chơi và bài tập tương tác giúp học từ vựng và ngữ pháp hiệu quả</li>
-        <li>Tính năng chat với AI để luyện hội thoại thực tế</li>
-        <li>Báo cáo tiến độ và đề xuất bài học phù hợp với từng cá nhân</li>
-      </ul>
-      <p>XLab Language Master giúp người học tiếp thu ngoại ngữ một cách tự nhiên và hiệu quả, phù hợp với mọi lứa tuổi và trình độ.</p>
-    `,
-    price: 900000,
-    salePrice: 750000,
-    categoryId: 'cat-5',
-    imageUrl: '/images/products/language-master.png',
-    isFeatured: true,
-    isNew: true,
-    downloadCount: 1100,
-    viewCount: 3200,
-    rating: 4.7,
-    version: '1.5.0',
-    size: '280MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-06-08T12:15:00.000Z',
-    updatedAt: '2023-10-15T14:10:00.000Z',
-    storeId: '3'
-  },
-  {
-    id: 'prod-11',
-    name: 'XLab System Optimizer',
-    slug: 'xlab-system-optimizer',
-    description: 'Công cụ tối ưu hóa và dọn dẹp hệ thống máy tính hiệu quả.',
-    longDescription: `
-      <p>XLab System Optimizer là giải pháp tối ưu hóa và dọn dẹp hệ thống máy tính toàn diện.</p>
-      <p>Tính năng chính:</p>
-      <ul>
-        <li>Dọn dẹp file rác, cache và các file tạm không cần thiết</li>
-        <li>Tối ưu hóa registry để tăng tốc độ hệ thống</li>
-        <li>Quản lý các ứng dụng khởi động cùng Windows</li>
-        <li>Phân tích và giải phóng không gian ổ đĩa</li>
-        <li>Tối ưu hóa RAM và hiệu suất CPU</li>
-        <li>Công cụ gỡ cài đặt ứng dụng triệt để không để lại rác</li>
-        <li>Bảo vệ quyền riêng tư với công cụ xóa lịch sử duyệt web</li>
-        <li>Chế độ tự động tối ưu hóa định kỳ</li>
-      </ul>
-      <p>XLab System Optimizer giúp máy tính của bạn luôn hoạt động ổn định, nhanh chóng và hiệu quả, kéo dài tuổi thọ của thiết bị.</p>
-    `,
-    price: 650000,
-    salePrice: 490000,
-    categoryId: 'cat-1',
-    imageUrl: '/images/products/system-optimizer.png',
-    isFeatured: false,
-    isNew: false,
-    downloadCount: 1800,
-    viewCount: 4000,
-    rating: 4.4,
-    version: '5.2.1',
-    size: '85MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-01-20T09:40:00.000Z',
-    updatedAt: '2023-08-15T10:50:00.000Z',
-    storeId: '2'
-  },
-  {
-    id: 'prod-12',
-    name: 'XLab Cloud Backup',
-    slug: 'xlab-cloud-backup',
-    description: 'Giải pháp sao lưu đám mây an toàn với mã hóa đầu cuối.',
-    longDescription: `
-      <p>XLab Cloud Backup là giải pháp sao lưu đám mây an toàn với mã hóa đầu cuối, bảo vệ dữ liệu của bạn tuyệt đối.</p>
-      <p>Tính năng nổi bật:</p>
-      <ul>
-        <li>Sao lưu tự động các thiết bị: máy tính, điện thoại, máy tính bảng</li>
-        <li>Mã hóa đầu cuối AES-256 bit bảo vệ dữ liệu tuyệt đối</li>
-        <li>Đồng bộ hóa thời gian thực giữa các thiết bị</li>
-        <li>Sao lưu chọn lọc: hình ảnh, tài liệu, video, cấu hình...</li>
-        <li>Khôi phục nhanh chóng trên mọi thiết bị</li>
-        <li>Quản lý phiên bản với khả năng khôi phục các phiên bản cũ</li>
-        <li>Chia sẻ an toàn với liên kết mã hóa và mật khẩu</li>
-        <li>Giám sát hoạt động sao lưu từ xa</li>
-      </ul>
-      <p>XLab Cloud Backup mang lại sự an tâm tuyệt đối về an toàn dữ liệu, bảo vệ những thông tin quan trọng của bạn trong mọi tình huống.</p>
-    `,
-    price: 1100000,
-    salePrice: 890000,
-    categoryId: 'cat-4',
-    imageUrl: '/images/products/cloud-backup.png',
-    isFeatured: false,
-    isNew: true,
-    downloadCount: 550,
-    viewCount: 1300,
+    viewCount: 1100,
     rating: 4.9,
-    version: '2.0.1',
-    size: '110MB',
-    licenseType: 'Thương mại',
-    createdAt: '2023-07-25T15:30:00.000Z',
-    updatedAt: '2023-10-08T11:20:00.000Z',
-    storeId: '2'
+    version: '4.1.0',
+    size: '~350MB',
+    licenseType: 'Educational',
+    createdAt: new Date('2023-09-30').toISOString(),
+    updatedAt: new Date('2023-11-20').toISOString(),
+    storeId: '1', // XLab Software
+    features: [
+      'Hơn 50 khóa học lập trình đa dạng từ cơ bản đến nâng cao',
+      'IDE tích hợp và code playground ngay trong ứng dụng',
+      'Lộ trình học được cá nhân hóa theo mục tiêu',
+      'Dự án thực tế với hướng dẫn chi tiết',
+      'Cộng đồng hỗ trợ và mentor chuyên nghiệp',
+      'Chứng chỉ hoàn thành được công nhận bởi doanh nghiệp'
+    ]
   }
-] 
+];
+
+// Mock Reviews (Optional - Can add later if needed)
+// ... existing code ... 

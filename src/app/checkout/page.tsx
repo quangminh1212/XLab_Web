@@ -292,10 +292,12 @@ export default function CheckoutPage() {
                         <Image
                           src={item.image}
                           alt={item.name}
-                          width={64}
-                          height={64}
-                          className="object-cover rounded-md"
-                          unoptimized
+                          width={60}
+                          height={60}
+                          className="max-w-full h-auto"
+                          onError={(e) => {
+                            e.currentTarget.src = '/images/product-placeholder.svg'
+                          }}
                         />
                       </div>
                       <div className="flex-grow">

@@ -66,10 +66,12 @@ export default function CartPage() {
                           <Image
                             src={item.image}
                             alt={item.name}
-                            width={80}
-                            height={80}
-                            className="object-cover rounded-md"
-                            unoptimized
+                            width={120}
+                            height={120}
+                            className="max-w-full h-auto"
+                            onError={(e) => {
+                              e.currentTarget.src = '/images/product-placeholder.svg'
+                            }}
                           />
                         </div>
                         <div className="md:w-3/4">

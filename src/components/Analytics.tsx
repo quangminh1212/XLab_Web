@@ -1,38 +1,18 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 
-/**
- * Component Analytics an toàn không sử dụng SearchParams
- * Để tránh lỗi "Search params not available during prerendering"
- */
 export default function Analytics() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Safe analytics tracking
-    try {
-      if (typeof window !== 'undefined') {
-        const url = window.location.href;
-        
-        // Gửi dữ liệu phân tích khi route thay đổi
-        console.log('Analytics tracked:', { pathname, url });
-
-        // Gọi API phân tích (nếu cần)
-        // fetch('/api/analytics', { 
-        //   method: 'POST', 
-        //   body: JSON.stringify({ pathname, url }) 
-        // });
-      }
-    } catch (error) {
-      // Bỏ qua lỗi trong môi trường development
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn('Analytics error:', error);
-      }
+    if (pathname) {
+      // Gửi sự kiện theo dõi lượt xem trang
+      console.log('Page view:', pathname);
     }
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
-  // Component này không render gì, chỉ theo dõi analytics
   return null;
 } 

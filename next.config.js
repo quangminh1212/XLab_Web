@@ -1,14 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  env: {
-    GOOGLE_CLIENT_ID: "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
-    GOOGLE_CLIENT_SECRET: "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",
-    NEXTAUTH_SECRET: "your_random_string_here",
-    NEXTAUTH_URL: "http://localhost:3000",
-    NEXTAUTH_SIGNIN_URL: "http://localhost:3000/api/auth/signin/google",
-    NEXTAUTH_CALLBACK_URL: "http://localhost:3000/api/auth/callback/google"
-  },
   images: {
     remotePatterns: [
       {
@@ -74,37 +66,24 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  webpack: (config, { dev, isServer }) => {
-    if (dev) {
-      config.mode = 'development';
-    } else {
-      config.mode = 'production';
-      
-      if (config.optimization) {
-        config.optimization.minimize = true;
-      }
-    }
-    
-    return config;
-  },
   compiler: {
     styledComponents: true,
   },
   experimental: {
-    optimizeCss: false,
-    scrollRestoration: true,
-    serverActions: { 
-      allowedOrigins: ['localhost:3000'],
-      bodySizeLimit: '2mb'
+    largePageDataBytes: 128 * 100000,
+  },
+  poweredByHeader: false,
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        poll: 1000,
+        aggregateTimeout: 300,
+        ignored: /node_modules/
+      };
     }
+    return config;
   },
-  serverExternalPackages: [],
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  },
-  skipTrailingSlashRedirect: true,
-  output: 'standalone'
 };
 
 module.exports = nextConfig;

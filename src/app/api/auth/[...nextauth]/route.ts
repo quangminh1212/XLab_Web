@@ -1,6 +1,8 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+import { SessionStrategy } from "next-auth/core/types";
 
 // Extend the Session interface
 declare module "next-auth" {
@@ -10,97 +12,153 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      phone?: string | null;
+      memberSince?: string | null;
+      customName?: boolean;
+      isAdmin?: boolean;
     }
   }
 }
 
-// Ensure we're using environment variables everywhere
-const googleClientId = process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET || "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";
-const nextAuthSecret = process.env.NEXTAUTH_SECRET || "K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT";
-const nextAuthUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-
-if (!googleClientId || !googleClientSecret) {
-  console.warn('Missing Google OAuth credentials in environment variables!');
-}
-
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: googleClientId,
-      clientSecret: googleClientSecret,
+      clientId: process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "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",
       authorization: {
         params: {
-          prompt: "consent",
+          prompt: "select_account",
           access_type: "offline",
           response_type: "code"
         }
       }
     }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        // Thực hiện xác thực người dùng ở đây
-        // Đây chỉ là mẫu, bạn cần thay thế bằng logic xác thực thực tế
-        if (credentials?.email && credentials?.password) {
-          return {
-            id: "1",
-            name: "Test User",
-            email: credentials.email,
-          };
-        }
-        return null;
-      }
-    }),
   ],
   pages: {
     signIn: "/login",
-    error: "/login",
+    error: "/auth/error",
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+
+        if (token.customName) session.user.customName = token.customName as boolean;
+        if (token.phone) session.user.phone = token.phone as string;
+        if (token.memberSince) session.user.memberSince = token.memberSince as string;
+        if (token.isAdmin) session.user.isAdmin = Boolean(token.isAdmin);
+
+        console.log('Session data after processing:', {
+          id: session.user.id,
+          email: session.user.email,
+          isAdmin: session.user.isAdmin
+        });
+
+        if (token.customName && token.name) {
+          session.user.name = token.name as string;
+        }
       }
       return session;
     },
-    async jwt({ token, user, account }) {
-      // Initial sign in
+    async jwt({ token, user, account, trigger, session }: {
+      token: JWT;
+      user?: any;
+      account?: any;
+      trigger?: string;
+      session?: any;
+    }) {
       if (user && account) {
         token.id = user.id;
         token.provider = account.provider;
+
+        if (user.email) {
+          token.email = user.email;
+        }
+
+        if (token.email === 'xlab.rnd@gmail.com') {
+          console.log('Setting admin rights for', token.email);
+          token.isAdmin = true;
+        } else {
+          token.isAdmin = false;
+        }
+
+        if (!token.memberSince) {
+          const today = new Date();
+          token.memberSince = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+        }
       }
+
+      // Đảm bảo email hiện tại trong token vẫn được kiểm tra admin
+      // Trong trường hợp token.isAdmin chưa được thiết lập
+      if (token.email === 'xlab.rnd@gmail.com' && token.isAdmin === undefined) {
+        console.log('Re-setting admin rights for', token.email);
+        token.isAdmin = true;
+      }
+
+      console.log('JWT token data:', {
+        id: token.id,
+        email: token.email,
+        isAdmin: token.isAdmin
+      });
+
+      if (trigger === "update" && session) {
+        if (session.name) {
+          token.name = session.name;
+          token.customName = true;
+        }
+        if (session.phone) token.phone = session.phone;
+      }
+
       return token;
     },
-    async signIn({ account, profile }) {
+    async signIn({ user, account, profile, email, credentials }) {
       if (account?.provider === "google" && profile?.email) {
-        return true;
-      }
-      if (account?.provider === "credentials") {
         return true;
       }
       return false;
     },
-    async redirect({ url, baseUrl }) {
-      // Đảm bảo URL chuyển hướng hợp lệ
-      if (url.startsWith('/')) {
-        return `${baseUrl}${url}`;
-      } else if (url.startsWith(baseUrl)) {
-        return url;
-      }
-      return baseUrl;
-    }
   },
-  debug: false,
-  secret: nextAuthSecret,
+  debug: process.env.NODE_ENV === "development",
+  secret: process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as SessionStrategy,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-});
+  // Sửa cấu hình cookie để đảm bảo hoạt động đúng với Google
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60 // 30 days
+      }
+    },
+    callbackUrl: {
+      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.callback-url` : `next-auth.callback-url`,
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      }
+    },
+    csrfToken: {
+      name: process.env.NODE_ENV === "production" ? `__Host-next-auth.csrf-token` : `next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      }
+    }
+  },
+  jwt: {
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  }
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST }; 
