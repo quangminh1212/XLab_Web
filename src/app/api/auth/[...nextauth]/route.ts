@@ -20,6 +20,11 @@ declare module "next-auth" {
   }
 }
 
+// Đảm bảo NEXTAUTH_URL được đặt
+const NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+// Không bật debug trong môi trường production
+const DEBUG_ENABLED = process.env.NODE_ENV === 'development';
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -118,7 +123,7 @@ export const authOptions: NextAuthOptions = {
       return false;
     },
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: DEBUG_ENABLED,
   secret: process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
   session: {
     strategy: "jwt" as SessionStrategy,
