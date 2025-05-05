@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SessionProvider from '@/components/SessionProvider'
-import Analytics from '@/components/Analytics'
+import ClientAnalytics from '@/components/ClientAnalytics'
 import { siteConfig } from '@/config/siteConfig'
 
 // Load Inter font - cấu hình preload: false để tránh lỗi font manifest
@@ -111,7 +111,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </SessionProvider>
-        <Analytics />
+        <ClientAnalytics />
       </body>
     </html>
   )
