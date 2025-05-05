@@ -129,13 +129,14 @@ export default function AccountPage() {
     // Nếu người dùng đã xác thực
     if (status === 'authenticated' && session?.user) {
       console.log('User is authenticated, loading profile data:', session.user);
+      console.log('Session info: Name =', session.user.name, 'Email =', session.user.email, 'Image =', session.user.image);
       
       // Khởi tạo thông tin cơ bản từ session
       const updatedProfile = {
         ...userProfile,
         name: session.user.name || userProfile.name,
         email: session.user.email || userProfile.email,
-        avatar: session.user.image || userProfile.avatar,
+        avatar: session.user.image || '/images/avatar-placeholder.svg',
         // Sử dụng thông tin bổ sung từ session nếu có
         phone: session.user.phone || userProfile.phone,
         memberSince: session.user.memberSince || userProfile.memberSince,
@@ -310,6 +311,7 @@ export default function AccountPage() {
   // Xử lý lỗi hình ảnh
   const handleImageError = () => {
     setImageError(true);
+    console.log('Lỗi khi tải ảnh đại diện, sử dụng ảnh mặc định');
   };
 
   // Hàm xử lý đăng xuất
@@ -420,12 +422,17 @@ export default function AccountPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src={imageError ? '/images/avatar-placeholder.svg' : (session?.user?.image || profile.avatar)}
+                      src={imageError ? '/images/avatar-placeholder.svg' : (session?.user?.image || '/images/avatar-placeholder.svg')}
                       alt={profile.name}
                       fill
                       className="rounded-full"
                       style={{ objectFit: 'cover' }}
-                      onError={handleImageError}
+                      onError={(e) => {
+                        console.log('Avatar image error in account page, using fallback');
+                        setImageError(true);
+                        console.log('Lỗi khi tải ảnh đại diện, sử dụng ảnh mặc định');
+                      }}
+                      priority
                     />
                     <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -452,7 +459,7 @@ export default function AccountPage() {
                   </div>
                   <h2 className="text-xl font-bold">{profile.name}</h2>
                   <p className="text-gray-600">{profile.email}</p>
-                  <p className="text-sm text-gray-500 mt-1">Thành viên từ {profile.memberSince}</p>
+                  <p className="text-sm text-gray-500">Thành viên từ {profile.memberSince}</p>
                 </div>
 
                 <nav className="space-y-1">

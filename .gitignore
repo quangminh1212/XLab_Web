@@ -48,3 +48,11 @@ Desktop.ini
 .next/app-build-manifest.json
 .next/build-manifest.json
 .next/react-loadable-manifest.json
+
+# Thêm các file sinh ra khi dự án chạy
+.next/cache/.temp
+.next/server/.temp
+.next/static/.temp
+.next/types/
+.next/analyze/
+.vercel/

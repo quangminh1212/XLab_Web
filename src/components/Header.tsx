@@ -128,15 +128,23 @@ export default function Header() {
                   className="p-1 rounded-full border-2 border-transparent hover:border-primary-300 transition-all"
                   onClick={(e) => {
                     console.log('Account link clicked, session:', session);
+                    console.log('User image from session:', session?.user?.image);
                   }}
                 >
                   {session.user?.image ? (
                     <Image
                       src={session.user.image}
-                      alt="Avatar"
+                      alt={session.user?.name || 'User avatar'}
                       width={36}
                       height={36}
-                      className="rounded-full shadow-sm"
+                      className="rounded-full object-cover w-9 h-9 border-2 border-white shadow-sm"
+                      onError={(e) => {
+                        // Sử dụng fallback khi ảnh lỗi
+                        console.log('Avatar image error, using fallback');
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = '/images/avatar-placeholder.svg';
+                      }}
                     />
                   ) : (
                     <div className="w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">

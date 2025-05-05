@@ -34,8 +34,18 @@ export const authOptions: NextAuthOptions = {
         params: {
           prompt: "select_account",
           access_type: "offline",
-          response_type: "code"
+          response_type: "code",
+          scope: "openid email profile"
         }
+      },
+      profile(profile) {
+        console.log('Google profile from provider:', profile);
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
       }
     }),
   ],
@@ -46,6 +56,9 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
+      console.log('Session callback - Session before:', JSON.stringify(session));
+      console.log('Session callback - Token:', JSON.stringify(token));
+      
       if (token && session.user) {
         session.user.id = token.id as string;
 
@@ -53,10 +66,24 @@ export const authOptions: NextAuthOptions = {
         if (token.phone) session.user.phone = token.phone as string;
         if (token.memberSince) session.user.memberSince = token.memberSince as string;
         if (token.isAdmin) session.user.isAdmin = Boolean(token.isAdmin);
+        
+        // Truyền thông tin hình ảnh từ token sang session
+        if (token.picture) {
+          session.user.image = token.picture as string;
+          console.log(`Setting image in session: ${token.picture}`);
+        }
+        
+        // Truyền thông tin tên từ token sang session nếu không phải tên tùy chỉnh
+        if (!token.customName && token.name) {
+          session.user.name = token.name as string;
+          console.log(`Setting name in session: ${token.name}`);
+        }
 
-        console.log('Session data after processing:', {
+        console.log('Session callback - Session after processing:', {
           id: session.user.id,
+          name: session.user.name,
           email: session.user.email,
+          image: session.user.image,
           isAdmin: session.user.isAdmin
         });
 
@@ -74,11 +101,25 @@ export const authOptions: NextAuthOptions = {
       session?: any;
     }) {
       if (user && account) {
+        console.log('JWT callback - User:', JSON.stringify(user));
+        console.log('JWT callback - Account:', JSON.stringify(account));
+        
         token.id = user.id;
         token.provider = account.provider;
 
         if (user.email) {
           token.email = user.email;
+        }
+        
+        // Lưu tên và hình ảnh từ tài khoản Google
+        if (user.name) {
+          token.name = user.name;
+          console.log(`Setting user name to token: ${user.name}`);
+        }
+        
+        if (user.image) {
+          token.picture = user.image;
+          console.log(`Setting user image to token: ${user.image}`);
         }
 
         if (token.email === 'xlab.rnd@gmail.com') {
@@ -101,9 +142,12 @@ export const authOptions: NextAuthOptions = {
         token.isAdmin = true;
       }
 
+      console.log('JWT token data FULL:', token);
       console.log('JWT token data:', {
         id: token.id,
+        name: token.name,
         email: token.email,
+        picture: token.picture,
         isAdmin: token.isAdmin
       });
 
@@ -118,7 +162,11 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ user, account, profile, email, credentials }) {
-      console.log('Sign in callback executed', { provider: account?.provider });
+      console.log('Sign in callback executed', { 
+        provider: account?.provider,
+        profile: profile,
+        user: user
+      });
       if (account?.provider === "google" && profile?.email) {
         return true;
       }
