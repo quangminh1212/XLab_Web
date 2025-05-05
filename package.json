@@ -3,15 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "rimraf .next node_modules/.cache && echo Preparing development environment...",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "predev": "node clean-trace.js && rimraf .next/cache/.temp .next/server/.temp .next/static/.temp node_modules/.cache/.temp && echo Preparing development environment...",
+    "dev": "cross-env NODE_OPTIONS=-r./src/scripts/suppress-warnings.js next dev",
+    "prebuild": "node clean-trace.js && rimraf .next && echo Preparing build environment...",
+    "build": "cross-env NODE_OPTIONS=-r./src/scripts/suppress-warnings.js next build",
+    "start": "cross-env NODE_OPTIONS=-r./src/scripts/suppress-warnings.js next start",
     "lint": "next lint",
-    "clean": "rimraf .next .next-dev node_modules/.cache"
+    "clean": "node clean-trace.js && rimraf .next/cache .next/server .next/static node_modules/.cache",
+    "deep-clean": "rimraf .next node_modules/.cache && npm cache clean --force",
+    "clean-trace": "node clean-trace.js"
   },
   "dependencies": {
-    "@next/swc-win32-x64-msvc": "15.3.1",
     "@radix-ui/react-slot": "1.1.2",
     "@types/uuid": "10.0.0",
     "class-variance-authority": "0.7.1",
@@ -30,6 +32,7 @@
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
     "autoprefixer": "10.4.16",
+    "cross-env": "7.0.3",
     "eslint": "9.0.0",
     "eslint-config-next": "15.2.4",
     "postcss": "8.4.32",
