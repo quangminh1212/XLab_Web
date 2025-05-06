@@ -101,12 +101,11 @@ const getProductIcon = (productSlug: string) => {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   if (!product) return null;
 
-  const discount = product.price > 0
-    ? Math.round(((product.price - (product.salePrice || product.price)) / product.price) * 100)
-    : 0;
-
-  // Xác định nếu là sản phẩm VoiceTyping
-  const isVoiceTyping = product.slug.includes('voice') || product.slug.includes('typing');
+  // Tính toán giảm giá
+  const discount = product.salePrice ? Math.round((1 - product.salePrice / product.price) * 100) : 0;
+  
+  // Kiểm tra xem có phải là VoiceTyping không
+  const isVoiceTyping = product.slug === 'voicetyping' || product.name === 'VoiceTyping';
 
   // Xác định đường dẫn sản phẩm dựa vào loại
   const productLink = product.isAccount || product.type === 'account'
@@ -114,25 +113,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     : `/products/${product.id}`;
 
   return (
-    <Link
+    <Link 
       href={productLink}
-      className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all hover:border-primary-200 flex flex-col h-full"
+      className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all h-full"
     >
-      <div className="relative aspect-[4/3] w-full bg-gray-50 overflow-hidden flex items-center justify-center">
+      <div className="relative w-full pt-[75%] bg-gray-50 overflow-hidden">
         {isVoiceTyping ? (
           // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50 absolute top-0 left-0">
             <div className="relative w-full h-full">
               <img
                 src="/speech-text.png"
                 alt="VoiceTyping"
-                className="w-full h-full object-contain group-hover:scale-105 transition-all duration-300"
+                className="w-full h-full object-contain group-hover:scale-105 transition-all duration-300 absolute top-0 left-0"
               />
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary-900/20"></div>
               {/* Badge cho VoiceTyping */}
-              <div className="absolute bottom-2 left-2 z-10">
-                <span className="inline-block px-2 py-1 bg-primary-600 text-white text-xs font-medium rounded-md">
+              <div className="absolute bottom-1 left-1 z-10">
+                <span className="inline-block px-1.5 py-0.5 bg-primary-600 text-white text-[10px] font-medium rounded">
                   Voice Typing
                 </span>
               </div>
@@ -140,61 +139,61 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         ) : (
           // Sử dụng ProductImage cho các sản phẩm khác
-          <div className="w-full h-full">
+          <div className="w-full h-full absolute top-0 left-0">
             <ProductImage
               src={product.imageUrl || '/images/placeholder-product.jpg'}
               alt={product.name}
-              width={400}
-              height={300}
-              className="object-contain group-hover:scale-105 transition-transform duration-300"
+              width={120}
+              height={90}
+              className="object-contain group-hover:scale-105 transition-transform duration-300 w-full h-full"
               priority={true}
             />
           </div>
         )}
 
         {discount > 0 && (
-          <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-20">
+          <div className="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full z-20">
             -{discount}%
           </div>
         )}
 
         {product.isNew && (
-          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full z-20">
+          <div className="absolute top-1 left-1 bg-blue-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full z-20">
             Mới
           </div>
         )}
       </div>
 
-      <div className="flex flex-col flex-grow p-3">
-        <h3 className="text-xs md:text-sm font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2">
+      <div className="flex flex-col flex-grow p-2">
+        <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 min-h-[2.5rem]">
           {product.name}
         </h3>
 
-        <p className="text-xs text-gray-500 mt-1 mb-2 line-clamp-1 flex-grow">
+        <p className="text-[10px] text-gray-500 mt-0.5 mb-1.5 line-clamp-1 flex-grow">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+        <div className="flex items-center justify-between mt-auto pt-1.5 border-t border-gray-100">
           <div className="flex flex-col">
             {product.salePrice && product.salePrice < product.price ? (
               <>
-                <span className="text-xs font-semibold text-primary-600">
+                <span className="text-[10px] font-semibold text-primary-600">
                   {formatCurrency(product.salePrice)}
                 </span>
-                <span className="text-xs text-gray-400 line-through">
+                <span className="text-[8px] text-gray-400 line-through">
                   {formatCurrency(product.price)}
                 </span>
               </>
             ) : (
-              <span className="text-xs font-semibold text-primary-600">
+              <span className="text-[10px] font-semibold text-primary-600">
                 {formatCurrency(product.price)}
               </span>
             )}
           </div>
 
-          <div className="flex items-center text-xs text-gray-500">
+          <div className="flex items-center text-[9px] text-gray-500">
             <span className="inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400 mr-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-2.5 h-2.5 text-yellow-400 mr-0.5">
                 <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
               </svg>
               {product.rating}
@@ -203,7 +202,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <span className="mx-1">•</span>
 
             <span className="inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-gray-400 mr-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-2.5 h-2.5 text-gray-400 mr-0.5">
                 <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
                 <path fillRule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clipRule="evenodd" />
                 <path d="M2.25 18a.75.75 0 000 1.5h19.5a.75.75 0 000-1.5H2.25z" />
