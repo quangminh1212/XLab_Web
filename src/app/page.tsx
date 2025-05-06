@@ -82,92 +82,19 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Featured products */}
-        <section className="py-6 bg-gray-50">
-          <div className="mx-auto w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl md:text-2xl font-bold">Sản phẩm nổi bật</h2>
-              <Link
-                href="/products?filter=featured"
-                className="text-teal-600 hover:text-teal-800 transition-colors"
-              >
-                Xem tất cả
-              </Link>
-            </div>
-
-            {featuredProducts.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4 justify-items-center">
-                {featuredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center">
-                <div className="text-center py-16">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                  <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm nổi bật</h3>
-                  <p className="text-gray-500 max-w-lg mx-auto">
-                    Chúng tôi sẽ sớm cập nhật các sản phẩm tốt nhất.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* New products */}
-        <section className="py-6 bg-white">
-          <div className="mx-auto w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl md:text-2xl font-bold">Sản phẩm mới</h2>
-              <Link
-                href="/products?filter=new"
-                className="text-teal-600 hover:text-teal-800 transition-colors"
-              >
-                Xem tất cả
-              </Link>
-            </div>
-
-            {newProducts.length > 0 ? (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 lg:gap-4 justify-items-center">
-                {newProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center">
-                <div className="text-center py-16">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                  </svg>
-                  <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm mới</h3>
-                  <p className="text-gray-500 max-w-lg mx-auto">
-                    Hãy quay lại sau để xem các Sản phẩm mới nhất.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* XLab và Đánh giá khách hàng - Bố cục 2 phần ngang */}
-        <section className="py-6 bg-gray-50">
-          <div className="mx-auto w-full flex flex-col sm:flex-row gap-4 sm:gap-6">
-            {/* Về XLab - Bên trái */}
-            <div className="flex flex-col h-full sm:w-1/2">
-              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-teal-500 to-blue-500 p-1 mb-3 h-full">
-                <div className="bg-white rounded-lg p-3 sm:p-4 h-full">
+        {/* Main 3-column layout */}
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+          {/* Left Column - Về XLab */}
+          <div className="w-full lg:w-1/4 order-2 lg:order-1">
+            <section className="bg-gray-50 rounded-xl overflow-hidden">
+              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-teal-500 to-blue-500 p-1 mb-3">
+                <div className="bg-white rounded-lg p-3 sm:p-4">
                   <h2 className="text-lg sm:text-xl font-bold mb-2">Về XLab</h2>
                   <p className="text-gray-600 mb-2 text-xs sm:text-sm">
                     XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.
                   </p>
                   <p className="text-gray-600 mb-2 text-xs sm:text-sm">
                     Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
-                  </p>
-                  <p className="text-gray-600 mb-3 text-xs sm:text-sm">
-                    Chúng tôi liên tục phát triển và cập nhật các sản phẩm để đáp ứng nhu cầu ngày càng cao của người dùng, với cam kết mang lại trải nghiệm tốt nhất cho khách hàng.
                   </p>
                   <Link 
                     href="/about"
@@ -181,7 +108,7 @@ function HomePage() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 p-2">
                 <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-lg p-2 shadow-sm">
                   <div className="bg-white rounded-full w-6 h-6 flex items-center justify-center mb-1">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-teal-600">
@@ -220,19 +147,90 @@ function HomePage() {
                   <p className="text-[10px] sm:text-xs text-gray-600">Nhiều lựa chọn phù hợp mọi ngân sách</p>
                 </div>
               </div>
-            </div>
-            
-            {/* Khách hàng nói gì - Bên phải */}
-            <div className="flex flex-col h-full sm:w-1/2">
-              <div className="mb-2">
+            </section>
+          </div>
+          
+          {/* Middle Column - Products */}
+          <div className="w-full lg:w-2/4 order-1 lg:order-2">
+            {/* Featured products */}
+            <section className="mb-6 bg-white rounded-xl p-4 shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Sản phẩm nổi bật</h2>
+                <Link
+                  href="/products?filter=featured"
+                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                >
+                  Xem tất cả
+                </Link>
+              </div>
+
+              {featuredProducts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center">
+                  {featuredProducts.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <div className="text-center py-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <h3 className="text-lg font-medium text-gray-700 mb-2">Chưa có sản phẩm nổi bật</h3>
+                    <p className="text-gray-500 max-w-lg mx-auto text-sm">
+                      Chúng tôi sẽ sớm cập nhật các sản phẩm tốt nhất.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* New products */}
+            <section className="mb-6 bg-white rounded-xl p-4 shadow-sm">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Sản phẩm mới</h2>
+                <Link
+                  href="/products?filter=new"
+                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                >
+                  Xem tất cả
+                </Link>
+              </div>
+
+              {newProducts.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center">
+                  {newProducts.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <div className="text-center py-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <h3 className="text-lg font-medium text-gray-700 mb-2">Chưa có sản phẩm mới</h3>
+                    <p className="text-gray-500 max-w-lg mx-auto text-sm">
+                      Hãy quay lại sau để xem các Sản phẩm mới nhất.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </section>
+          </div>
+          
+          {/* Right Column - Khách hàng nói gì */}
+          <div className="w-full lg:w-1/4 order-3">
+            <section className="bg-gray-50 rounded-xl p-4">
+              <div className="mb-3">
                 <h2 className="text-lg sm:text-xl font-bold mb-1">Khách hàng nói gì về chúng tôi</h2>
                 <p className="text-gray-600 mb-3 text-xs sm:text-sm">
                   Những đánh giá chân thực từ khách hàng đã sử dụng sản phẩm của XLab
                 </p>
               </div>
 
-              <div className="space-y-2 flex-grow">
-                <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 hover:shadow-md transition-all">
+              <div className="space-y-3">
+                <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-md transition-all">
                   <div className="flex items-center mb-1.5">
                     <div className="bg-teal-100 rounded-full p-1.5 mr-2">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-teal-600">
@@ -256,7 +254,7 @@ function HomePage() {
                   </p>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 hover:shadow-md transition-all">
+                <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-md transition-all">
                   <div className="flex items-center mb-1.5">
                     <div className="bg-teal-100 rounded-full p-1.5 mr-2">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-teal-600">
@@ -280,7 +278,7 @@ function HomePage() {
                   </p>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 hover:shadow-md transition-all">
+                <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-md transition-all">
                   <div className="flex items-center mb-1.5">
                     <div className="bg-teal-100 rounded-full p-1.5 mr-2">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-teal-600">
@@ -304,9 +302,9 @@ function HomePage() {
                   </p>
                 </div>
               </div>
-            </div>
+            </section>
           </div>
-        </section>
+        </div>
 
         {/* Câu hỏi thường gặp */}
         <section className="py-10 bg-gray-50">
