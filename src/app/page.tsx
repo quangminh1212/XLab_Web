@@ -45,47 +45,11 @@ function HomePage() {
       </section>
 
       <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 w-full max-w-full">
-        {/* Danh mục sản phẩm */}
-        <section className="py-8 bg-white">
-          <div className="mx-auto w-full">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl md:text-2xl font-bold">Danh mục sản phẩm</h2>
-              <Link
-                href="/categories"
-                className="text-teal-600 hover:text-teal-800 transition-colors"
-              >
-                Xem tất cả
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2 md:gap-3">
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/categories/${category.slug}`}
-                  className="flex flex-col items-center bg-gray-50 hover:bg-gray-100 rounded-lg p-2 transition-colors"
-                >
-                  <div className="bg-white rounded-full p-1.5 mb-1.5 shadow-sm">
-                    <Image
-                      src={category.imageUrl || '/images/placeholder/category.png'}
-                      alt={category.name}
-                      width={32}
-                      height={32}
-                      className="w-6 h-6 object-contain"
-                    />
-                  </div>
-                  <h3 className="text-xs font-medium text-center">{category.name}</h3>
-                  <p className="text-xs text-gray-500 mt-0.5">{category.productCount} sản phẩm</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Main 3-column layout */}
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-          {/* Left Column - Về XLab */}
-          <div className="w-full lg:w-1/4 order-2 lg:order-1">
+        {/* Chuyển sang layout 2 cột với sidebar bên trái */}
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+          {/* Sidebar Column - Left */}
+          <div className="w-full md:w-1/4 space-y-4">
+            {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-teal-500 to-blue-500 p-1 mb-3">
                 <div className="bg-white rounded-lg p-3 sm:p-4">
@@ -148,83 +112,8 @@ function HomePage() {
                 </div>
               </div>
             </section>
-          </div>
-          
-          {/* Middle Column - Products */}
-          <div className="w-full lg:w-2/4 order-1 lg:order-2">
-            {/* Featured products */}
-            <section className="mb-4 bg-white rounded-xl p-3 shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-bold">Sản phẩm nổi bật</h2>
-                <Link
-                  href="/products?filter=featured"
-                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
-                >
-                  Xem tất cả
-                </Link>
-              </div>
 
-              {featuredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 justify-items-center">
-                  {featuredProducts.map(product => (
-                    <div className="w-full max-w-[150px]" key={product.id}>
-                      <ProductCard key={product.id} product={product} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <div className="text-center py-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm nổi bật</h3>
-                    <p className="text-gray-500 max-w-lg mx-auto text-xs">
-                      Chúng tôi sẽ sớm cập nhật các sản phẩm tốt nhất.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </section>
-
-            {/* New products */}
-            <section className="mb-4 bg-white rounded-xl p-3 shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-bold">Sản phẩm mới</h2>
-                <Link
-                  href="/products?filter=new"
-                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
-                >
-                  Xem tất cả
-                </Link>
-              </div>
-
-              {newProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 justify-items-center">
-                  {newProducts.map(product => (
-                    <div className="w-full max-w-[150px]" key={product.id}>
-                      <ProductCard key={product.id} product={product} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <div className="text-center py-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm mới</h3>
-                    <p className="text-gray-500 max-w-lg mx-auto text-xs">
-                      Hãy quay lại sau để xem các sản phẩm mới nhất.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </section>
-          </div>
-          
-          {/* Right Column - Khách hàng nói gì */}
-          <div className="w-full lg:w-1/4 order-3">
+            {/* Testimonials Section */}
             <section className="bg-gray-50 rounded-xl p-4">
               <div className="mb-4">
                 <h2 className="text-xl sm:text-2xl font-bold mb-2 text-gray-800">Khách hàng nói gì về chúng tôi</h2>
@@ -306,6 +195,79 @@ function HomePage() {
                   </p>
                 </div>
               </div>
+            </section>
+          </div>
+          
+          {/* Main Content Column - Right */}
+          <div className="w-full md:w-3/4">
+            {/* Featured products */}
+            <section className="mb-4 bg-white rounded-xl p-3 shadow-sm">
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-bold">Sản phẩm nổi bật</h2>
+                <Link
+                  href="/products?filter=featured"
+                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                >
+                  Xem tất cả
+                </Link>
+              </div>
+
+              {featuredProducts.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 justify-items-center">
+                  {featuredProducts.map(product => (
+                    <div className="w-full max-w-[150px]" key={product.id}>
+                      <ProductCard key={product.id} product={product} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <div className="text-center py-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm nổi bật</h3>
+                    <p className="text-gray-500 max-w-lg mx-auto text-xs">
+                      Chúng tôi sẽ sớm cập nhật các sản phẩm tốt nhất.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* New products */}
+            <section className="mb-4 bg-white rounded-xl p-3 shadow-sm">
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-lg font-bold">Sản phẩm mới</h2>
+                <Link
+                  href="/products?filter=new"
+                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                >
+                  Xem tất cả
+                </Link>
+              </div>
+
+              {newProducts.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 justify-items-center">
+                  {newProducts.map(product => (
+                    <div className="w-full max-w-[150px]" key={product.id}>
+                      <ProductCard key={product.id} product={product} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <div className="text-center py-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm mới</h3>
+                    <p className="text-gray-500 max-w-lg mx-auto text-xs">
+                      Hãy quay lại sau để xem các sản phẩm mới nhất.
+                    </p>
+                  </div>
+                </div>
+              )}
             </section>
           </div>
         </div>
