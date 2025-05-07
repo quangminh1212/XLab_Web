@@ -67,7 +67,6 @@ export default function Header() {
                   priority
                 />
               </div>
-              <span className="ml-2 text-xl font-bold text-gray-900">XLab</span>
             </Link>
           </div>
 
