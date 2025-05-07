@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node clean-trace.js && rimraf .next/cache/.temp .next/server/.temp .next/static/.temp node_modules/.cache/.temp && echo Preparing development environment...",
+    "predev": "node clean-trace.js && echo Preparing development environment...",
     "dev": "next dev",
     "prebuild": "node clean-trace.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clean": "node clean-trace.js && rimraf .next/cache .next/server .next/static node_modules/.cache",
+    "clean": "node clean-trace.js",
     "deep-clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "clean-trace": "node clean-trace.js"
   },
