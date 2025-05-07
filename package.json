@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "predev": "node clean-trace.js && rimraf .next/cache/.temp .next/server/.temp .next/static/.temp node_modules/.cache/.temp && echo Preparing development environment...",
-    "dev": "cross-env NODE_OPTIONS=\"-r ./src/scripts/suppress-warnings.js\" next dev",
+    "dev": "next dev",
     "prebuild": "node clean-trace.js && rimraf .next && echo Preparing build environment...",
-    "build": "cross-env NODE_OPTIONS=\"-r ./src/scripts/suppress-warnings.js\" next build",
-    "start": "cross-env NODE_OPTIONS=\"-r ./src/scripts/suppress-warnings.js\" next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint",
     "clean": "node clean-trace.js && rimraf .next/cache .next/server .next/static node_modules/.cache",
     "deep-clean": "rimraf .next node_modules/.cache && npm cache clean --force",

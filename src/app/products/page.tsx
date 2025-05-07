@@ -129,7 +129,7 @@ export default function ProductsPage() {
 
   return (
     <div className="py-4 bg-gray-50">
-      <div className="container mx-auto px-1 md:px-2 max-w-none w-[98%]">
+      <div className="container mx-auto px-2 md:px-4 max-w-none w-[94%]">
         <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Phần mềm máy tính</h1>
           <p className="text-sm text-gray-600">
@@ -165,7 +165,7 @@ export default function ProductsPage() {
         
         <div className="flex flex-col md:flex-row gap-4">
           {/* Main content */}
-          <div className="w-full md:w-4/5">
+          <div className="w-full md:w-[85%]">
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm text-gray-600">
@@ -188,7 +188,7 @@ export default function ProductsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {softwareProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -196,7 +196,7 @@ export default function ProductsPage() {
           </div>
           
           {/* Sidebar */}
-          <div className="w-full md:w-1/5">
+          <div className="w-full md:w-[15%]">
             {/* Categories */}
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
               <h3 className="font-medium text-gray-900 mb-2 text-sm">Danh Mục Sản Phẩm</h3>

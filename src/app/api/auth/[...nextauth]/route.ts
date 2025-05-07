@@ -30,23 +30,6 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "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",
-      authorization: {
-        params: {
-          prompt: "select_account",
-          access_type: "offline",
-          response_type: "code",
-          scope: "openid email profile"
-        }
-      },
-      profile(profile) {
-        console.log('Google profile from provider:', profile);
-        return {
-          id: profile.sub,
-          name: profile.name,
-          email: profile.email,
-          image: profile.picture,
-        };
-      }
     }),
   ],
   pages: {
@@ -55,153 +38,25 @@ export const authOptions: NextAuthOptions = {
     signOut: "/",
   },
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
-      console.log('Session callback - Session before:', JSON.stringify(session));
-      console.log('Session callback - Token:', JSON.stringify(token));
-      
+    async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.id as string;
-
-        if (token.customName) session.user.customName = token.customName as boolean;
-        if (token.phone) session.user.phone = token.phone as string;
-        if (token.memberSince) session.user.memberSince = token.memberSince as string;
-        if (token.isAdmin) session.user.isAdmin = Boolean(token.isAdmin);
-        
-        // Truyền thông tin hình ảnh từ token sang session
-        if (token.picture) {
-          session.user.image = token.picture as string;
-          console.log(`Setting image in session: ${token.picture}`);
-        }
-        
-        // Truyền thông tin tên từ token sang session nếu không phải tên tùy chỉnh
-        if (!token.customName && token.name) {
-          session.user.name = token.name as string;
-          console.log(`Setting name in session: ${token.name}`);
-        }
-
-        console.log('Session callback - Session after processing:', {
-          id: session.user.id,
-          name: session.user.name,
-          email: session.user.email,
-          image: session.user.image,
-          isAdmin: session.user.isAdmin
-        });
-
-        if (token.customName && token.name) {
-          session.user.name = token.name as string;
+        session.user.id = token.sub;
+        if (token.email === 'xlab.rnd@gmail.com') {
+          session.user.isAdmin = true;
         }
       }
       return session;
     },
-    async jwt({ token, user, account, trigger, session }: {
-      token: JWT;
-      user?: any;
-      account?: any;
-      trigger?: string;
-      session?: any;
-    }) {
-      if (user && account) {
-        console.log('JWT callback - User:', JSON.stringify(user));
-        console.log('JWT callback - Account:', JSON.stringify(account));
-        
+    async jwt({ token, user }) {
+      if (user) {
         token.id = user.id;
-        token.provider = account.provider;
-
-        if (user.email) {
-          token.email = user.email;
-        }
-        
-        // Lưu tên và hình ảnh từ tài khoản Google
-        if (user.name) {
-          token.name = user.name;
-          console.log(`Setting user name to token: ${user.name}`);
-        }
-        
-        if (user.image) {
-          token.picture = user.image;
-          console.log(`Setting user image to token: ${user.image}`);
-        }
-
-        if (token.email === 'xlab.rnd@gmail.com') {
-          console.log('Setting admin rights for', token.email);
-          token.isAdmin = true;
-        } else {
-          token.isAdmin = false;
-        }
-
-        if (!token.memberSince) {
-          const today = new Date();
-          token.memberSince = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
-        }
       }
-
-      // Đảm bảo email hiện tại trong token vẫn được kiểm tra admin
-      // Trong trường hợp token.isAdmin chưa được thiết lập
-      if (token.email === 'xlab.rnd@gmail.com' && token.isAdmin === undefined) {
-        console.log('Re-setting admin rights for', token.email);
-        token.isAdmin = true;
-      }
-
-      console.log('JWT token data FULL:', token);
-      console.log('JWT token data:', {
-        id: token.id,
-        name: token.name,
-        email: token.email,
-        picture: token.picture,
-        isAdmin: token.isAdmin
-      });
-
-      if (trigger === "update" && session) {
-        if (session.name) {
-          token.name = session.name;
-          token.customName = true;
-        }
-        if (session.phone) token.phone = session.phone;
-      }
-
       return token;
     },
-    async signIn({ user, account, profile, email, credentials }) {
-      console.log('Sign in callback executed', { 
-        provider: account?.provider,
-        profile: profile,
-        user: user
-      });
-      if (account?.provider === "google" && profile?.email) {
-        return true;
-      }
-      return false;
-    },
-    async redirect({ url, baseUrl }) {
-      console.log('Redirect callback executed', { url, baseUrl });
-      
-      // Xử lý chuyển hướng sau khi đăng nhập
-      if (url.startsWith(baseUrl)) {
-        if (url.includes('/api/auth/signin') || url.includes('/api/auth/callback')) {
-          return `${baseUrl}/`;
-        }
-        return url;
-      } else if (url.startsWith('/')) {
-        return `${baseUrl}${url}`;
-      }
-      return baseUrl;
-    },
   },
-  events: {
-    async signIn(message) {
-      console.log('User signed in event', message);
-    },
-    async signOut(message) {
-      console.log('User signed out event', message);
-    },
-    async session(message) {
-      console.log('Session accessed event', message);
-    },
-  },
-  debug: DEBUG_ENABLED,
   secret: process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
   session: {
-    strategy: "jwt" as SessionStrategy,
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   // Sửa cấu hình cookie để đảm bảo hoạt động đúng với Google

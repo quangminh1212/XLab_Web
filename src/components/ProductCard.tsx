@@ -131,14 +131,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       href={productLink}
       className="group flex flex-col overflow-hidden rounded border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all h-full"
     >
-      <div className="relative w-full pt-[55%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-        <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center p-2">
-          <div className="w-12 h-12 relative">
+      <div className="relative w-full pt-[68%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+        <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center p-3">
+          <div className="w-16 h-16 relative">
             <ProductImage
               src={product.imageUrl || '/images/placeholder-product.jpg'}
               alt={product.name}
-              width={60} 
-              height={60}
+              width={80} 
+              height={80}
               className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-sm"
               priority={true}
             />
@@ -147,48 +147,48 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Badge giảm giá */}
         {discount > 0 && (
-          <div className="absolute top-0.5 right-0.5 bg-red-500 text-white text-[10px] font-bold px-1 py-0.5 rounded-sm z-10 shadow-sm">
+          <div className="absolute top-1 right-1 bg-red-500 text-white text-sm font-bold px-2 py-0.5 rounded-sm z-10 shadow-sm">
             -{discount}%
           </div>
         )}
 
         {/* Badge sản phẩm mới */}
         {product.isNew && (
-          <div className="absolute top-0.5 left-0.5 bg-blue-500 text-white text-[10px] font-bold px-1 py-0.5 rounded-sm z-10 shadow-sm">
+          <div className="absolute top-1 left-1 bg-blue-500 text-white text-sm font-bold px-2 py-0.5 rounded-sm z-10 shadow-sm">
             Mới
           </div>
         )}
       </div>
 
-      <div className="flex flex-col flex-grow p-2">
-        <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1 mb-0.5">
+      <div className="flex flex-col flex-grow p-3">
+        <h3 className="text-base font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1 mb-1">
           {product.name}
         </h3>
 
-        <p className="text-[10px] text-gray-500 line-clamp-1 mb-1.5">
+        <p className="text-sm text-gray-500 line-clamp-2 mb-2">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-auto pt-1.5 border-t border-gray-100">
+        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
           <div className="flex flex-col">
             {product.salePrice && product.salePrice < product.price ? (
               <>
-                <span className="text-[11px] font-bold text-primary-600">
+                <span className="text-base font-bold text-primary-600">
                   {formatCurrency(product.salePrice)}
                 </span>
-                <span className="text-[9px] text-gray-400 line-through">
+                <span className="text-sm text-gray-400 line-through">
                   {formatCurrency(product.price)}
                 </span>
               </>
             ) : (
-              <span className="text-[11px] font-bold text-primary-600">
+              <span className="text-base font-bold text-primary-600">
                 {formatCurrency(product.price)}
               </span>
             )}
           </div>
 
-          <div className="flex items-center text-[9px] text-gray-500 bg-gray-50 px-1 py-0.5 rounded">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-2 h-2 text-yellow-400 mr-0.5">
+          <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-yellow-400 mr-0.5">
               <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
             </svg>
             {product.rating}

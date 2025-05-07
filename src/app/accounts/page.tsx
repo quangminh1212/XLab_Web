@@ -167,6 +167,102 @@ export default function AccountsPage() {
       size: 'N/A',
       licenseType: 'Premium',
       storeId: '1'
+    },
+    {
+      id: 'account-5',
+      slug: 'office-365',
+      name: 'Microsoft 365',
+      description: 'Truy cập toàn bộ bộ Office và các dịch vụ đám mây của Microsoft.',
+      longDescription: 'Tài khoản Microsoft 365 chính hãng với quyền truy cập toàn bộ bộ Office và các dịch vụ đám mây của Microsoft.',
+      imageUrl: '/images/products/capcut-logo.png',
+      price: 890000,
+      salePrice: 690000,
+      categoryId: 'office',
+      rating: 4.9,
+      downloadCount: 380,
+      viewCount: 550,
+      isAccount: true,
+      type: 'account',
+      isFeatured: false,
+      isNew: true,
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1'
+    },
+    {
+      id: 'account-6',
+      slug: 'google-workspace',
+      name: 'Google Workspace',
+      description: 'Truy cập toàn bộ dịch vụ Google với dung lượng lưu trữ đám mây không giới hạn.',
+      longDescription: 'Tài khoản Google Workspace chính hãng với quyền truy cập toàn bộ dịch vụ Google và dung lượng lưu trữ đám mây không giới hạn.',
+      imageUrl: '/images/products/chatgpt-logo.png',
+      price: 790000,
+      salePrice: 590000,
+      categoryId: 'office',
+      rating: 4.7,
+      downloadCount: 290,
+      viewCount: 480,
+      isAccount: true,
+      type: 'account',
+      isFeatured: false,
+      isNew: false,
+      createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1'
+    },
+    {
+      id: 'account-7',
+      slug: 'midjourney',
+      name: 'Midjourney',
+      description: 'Tạo hình ảnh AI với Midjourney - công cụ tạo hình ảnh AI hàng đầu hiện nay.',
+      longDescription: 'Tài khoản Midjourney chính hãng cho phép bạn tạo những hình ảnh AI chất lượng cao và sáng tạo.',
+      imageUrl: '/images/products/adobe-logo.png',
+      price: 990000,
+      salePrice: 790000,
+      categoryId: 'ai',
+      rating: 4.8,
+      downloadCount: 340,
+      viewCount: 520,
+      isAccount: true,
+      type: 'account',
+      isFeatured: false,
+      isNew: true,
+      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now()).toISOString(),
+      version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1'
+    },
+    {
+      id: 'account-8',
+      slug: 'nordvpn',
+      name: 'NordVPN',
+      description: 'Bảo vệ quyền riêng tư và truy cập internet an toàn với NordVPN.',
+      longDescription: 'Tài khoản NordVPN chính hãng giúp bạn bảo vệ quyền riêng tư và truy cập internet an toàn từ mọi nơi trên thế giới.',
+      imageUrl: '/images/products/canva-logo.png',
+      price: 590000,
+      salePrice: 490000,
+      categoryId: 'security',
+      rating: 4.7,
+      downloadCount: 280,
+      viewCount: 460,
+      isAccount: true,
+      type: 'account',
+      isFeatured: false,
+      isNew: false,
+      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      version: '1.0',
+      size: 'N/A',
+      licenseType: 'Premium',
+      storeId: '1'
     }
   ];
 
@@ -175,16 +271,16 @@ export default function AccountsPage() {
   // Danh mục sản phẩm
   const categories = [
     { id: 'all', name: 'Tất cả', count: accounts.length },
-    { id: 'ai', name: 'AI & Chatbot', count: 3 },
-    { id: 'design', name: 'Thiết kế & Đồ họa', count: 2 },
-    { id: 'office', name: 'Văn phòng', count: 2 },
-    { id: 'storage', name: 'Lưu trữ & Backup', count: 1 },
-    { id: 'security', name: 'Bảo mật', count: 1 },
+    { id: 'ai', name: 'AI & Chatbot', count: accounts.filter(a => a.categoryId === 'ai').length },
+    { id: 'design', name: 'Thiết kế & Đồ họa', count: accounts.filter(a => a.categoryId === 'design').length },
+    { id: 'office', name: 'Văn phòng', count: accounts.filter(a => a.categoryId === 'office').length },
+    { id: 'storage', name: 'Lưu trữ & Backup', count: accounts.filter(a => a.categoryId === 'storage').length },
+    { id: 'security', name: 'Bảo mật', count: accounts.filter(a => a.categoryId === 'security').length },
   ];
 
   return (
     <div className="py-4 bg-gray-50">
-      <div className="container mx-auto px-1 md:px-2 max-w-none w-[98%]">
+      <div className="container mx-auto px-2 md:px-4 max-w-none w-[94%]">
         <div className="mb-4">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Tài khoản dịch vụ</h1>
           <p className="text-sm md:text-base text-gray-600">
@@ -220,7 +316,7 @@ export default function AccountsPage() {
         
         <div className="flex flex-col md:flex-row gap-4">
           {/* Main content */}
-          <div className="w-full md:w-3/4">
+          <div className="w-full md:w-[85%]">
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm md:text-base text-gray-600">
@@ -251,7 +347,7 @@ export default function AccountsPage() {
           </div>
           
           {/* Sidebar */}
-          <div className="w-full md:w-1/4">
+          <div className="w-full md:w-[15%]">
             {/* Categories */}
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
               <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Danh Mục Sản Phẩm</h3>
