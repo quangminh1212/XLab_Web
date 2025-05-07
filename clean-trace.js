@@ -33,7 +33,7 @@ const filesToCreate = [
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'app-paths-manifest.json'),
-    content: '{"/_not-found":{"resolvedPagePath":"next/dist/client/components/not-found-error"},"/":{/":"app/page.js"}}'
+    content: '{"/_not-found":{"resolvedPagePath":"next/dist/client/components/not-found-error"},"/":{"/":"app/page.js"}}'
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'webpack-runtime.js'),
@@ -264,6 +264,26 @@ const filesToCreate = [
   }
 ];
 
+// Thêm các tệp tĩnh mới cần thiết
+const staticFilesToCreate = [
+  {
+    path: path.join(__dirname, '.next', 'static', 'chunks', 'app-pages-internals.js'),
+    content: '// Placeholder for app-pages-internals.js'
+  },
+  {
+    path: path.join(__dirname, '.next', 'static', 'chunks', 'app', 'not-found.js'),
+    content: '// Placeholder for not-found.js'
+  },
+  {
+    path: path.join(__dirname, '.next', 'static', 'chunks', 'app', 'page.js'),
+    content: '// Placeholder for page.js'
+  },
+  {
+    path: path.join(__dirname, '.next', 'static', 'chunks', 'app', 'loading.js'),
+    content: '// Placeholder for loading.js'
+  }
+];
+
 // Hàm an toàn để kiểm tra xem một file có tồn tại không
 function fileExists(filePath) {
   try {
@@ -392,6 +412,13 @@ function createRequiredFiles() {
     safeCreateDir(dir);
   });
 
+  // Đảm bảo các thư mục App được tạo
+  safeCreateDir(path.join(__dirname, '.next', 'static', 'chunks', 'app'));
+  safeCreateDir(path.join(__dirname, '.next', 'static', 'chunks', 'app', '_not-found'));
+  safeCreateDir(path.join(__dirname, '.next', 'server', 'app'));
+  safeCreateDir(path.join(__dirname, '.next', 'server', 'app', '_not-found'));
+  safeCreateDir(path.join(__dirname, '.next', 'static', 'css', 'app'));
+
   // Tạo các file Next.js cần thiết
   filesToCreate.forEach(file => {
     try {
@@ -405,6 +432,20 @@ function createRequiredFiles() {
       console.error(`Lỗi khi tạo file ${file.path}: ${err.message}`);
     }
   });
+
+  // Tạo thêm các tệp tĩnh mới
+  staticFilesToCreate.forEach(file => {
+    try {
+      const dir = path.dirname(file.path);
+      if (!fileExists(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(file.path, file.content);
+      console.log(`Đã tạo file tĩnh: ${file.path}`);
+    } catch (err) {
+      console.error(`Lỗi khi tạo file tĩnh ${file.path}: ${err.message}`);
+    }
+  });
 }
 
 // Tạo các file static placeholder
@@ -413,25 +454,93 @@ function createStaticPlaceholders() {
     // Tạo thư mục static
     const staticDirs = [
       path.join(__dirname, '.next', 'static', 'chunks', 'app'),
+      path.join(__dirname, '.next', 'static', 'chunks', 'app', '_not-found'),
       path.join(__dirname, '.next', 'static', 'chunks', 'pages'),
       path.join(__dirname, '.next', 'static', 'chunks', 'webpack'),
-      path.join(__dirname, '.next', 'static', 'css', 'app')
+      path.join(__dirname, '.next', 'static', 'css'),
+      path.join(__dirname, '.next', 'static', 'css', 'app'),
+      path.join(__dirname, '.next', 'static', 'media'),
+      path.join(__dirname, '.next', 'static', 'webpack') // Thêm thư mục webpack cho hot update
     ];
 
     staticDirs.forEach(dir => {
       safeCreateDir(dir);
       console.log(`Đã tạo thư mục static: ${dir}`);
+      
+      // Đảm bảo thư mục có quyền ghi
+      try {
+        fs.chmodSync(dir, 0o777);
+      } catch (chmodErr) {
+        console.log(`Không thể cập nhật quyền cho thư mục ${dir}: ${chmodErr.message}`);
+      }
     });
 
-    // Tạo file placeholder cho CSS
-    const cssPlaceholder = path.join(__dirname, '.next', 'static', 'css', 'app', 'layout.css');
-    fs.writeFileSync(cssPlaceholder, '/* CSS placeholder */');
-    console.log(`Đã tạo file static placeholder: ${cssPlaceholder}`);
+    // Tạo file hot update cho webpack với các ID động
+    const generateHexId = () => {
+      return Math.random().toString(16).slice(2, 18);
+    };
+
+    // Tạo 5 file hot update với ID ngẫu nhiên
+    for (let i = 0; i < 5; i++) {
+      const id = generateHexId();
+      const hotUpdateFile = path.join(__dirname, '.next', 'static', 'webpack', `${id}.webpack.hot-update.json`);
+      fs.writeFileSync(hotUpdateFile, '{"h":"","c":{},"r":[]}');
+      console.log(`Đã tạo file webpack hot update: ${hotUpdateFile}`);
+    }
+
+    // Tạo thư mục CSS/app xong rồi mới tạo file trong đó
+    const cssAppDir = path.join(__dirname, '.next', 'static', 'css', 'app');
+    safeCreateDir(cssAppDir);
+    console.log(`Đã tạo thư mục CSS: ${cssAppDir}`);
+
+    // Tạo file placeholder cho CSS với nội dung tailwind cơ bản
+    const cssPlaceholderPath = path.join(cssAppDir, 'layout.css');
+    const tailwindCSS = `
+/*
+! tailwindcss v3.3.5 | MIT License | https://tailwindcss.com
+*/
+*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}
+.container{width:100%}
+@media (min-width:640px){.container{max-width:640px}}
+@media (min-width:768px){.container{max-width:768px}}
+@media (min-width:1024px){.container{max-width:1024px}}
+@media (min-width:1280px){.container{max-width:1280px}}
+@media (min-width:1536px){.container{max-width:1536px}}
+`;
+    fs.writeFileSync(cssPlaceholderPath, tailwindCSS);
+    console.log(`Đã tạo file static CSS: ${cssPlaceholderPath}`);
+
+    // Tạo một file layout-manifest.json để Next.js biết có file CSS
+    const cssManifestPath = path.join(__dirname, '.next', 'build-manifest.json');
+    const cssManifest = {
+      "polyfillFiles": [],
+      "devFiles": ["static/development/dll/dll_5de4531dc031fc53f873.js", "static/development/dll/dll_5de4531dc031fc53f873.js.map"],
+      "ampDevFiles": [],
+      "lowPriorityFiles": ["static/development/_buildManifest.js", "static/development/_ssgManifest.js"],
+      "rootMainFiles": ["static/chunks/webpack-1c8e1cb7c773f8a5.js", "static/chunks/fd9d1056-eff92f9fd528dc77.js", "static/chunks/472-bd0c769973fd9bb3.js", "static/chunks/main-app-e5eebe8e1efb9fc8.js"],
+      "pages": {
+        "/_app": ["static/chunks/webpack-1c8e1cb7c773f8a5.js", "static/chunks/framework-aec8b63b2a06b90f.js", "static/chunks/main-e5f270a497bd5087.js", "static/chunks/pages/_app-5841ab2cb8c5af32.js"],
+        "/_error": ["static/chunks/webpack-1c8e1cb7c773f8a5.js", "static/chunks/framework-aec8b63b2a06b90f.js", "static/chunks/main-e5f270a497bd5087.js", "static/chunks/pages/_error-91a5938854a6f402.js"]
+      },
+      "ampFirstPages": []
+    };
+    fs.writeFileSync(cssManifestPath, JSON.stringify(cssManifest, null, 2));
+    console.log(`Đã tạo file manifest CSS: ${cssManifestPath}`);
 
     // Tạo file placeholder cho JS
     const jsPlaceholder = path.join(__dirname, '.next', 'static', 'chunks', 'main-app.js');
-    fs.writeFileSync(jsPlaceholder, '// JS placeholder');
+    fs.writeFileSync(jsPlaceholder, '// JS placeholder for main-app.js');
     console.log(`Đã tạo file static placeholder: ${jsPlaceholder}`);
+
+    // Tạo các file tĩnh bị thiếu
+    staticFilesToCreate.forEach(file => {
+      const dir = path.dirname(file.path);
+      if (!fileExists(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(file.path, file.content);
+      console.log(`Đã tạo file tĩnh: ${file.path}`);
+    });
   } catch (err) {
     console.error(`Lỗi khi tạo static placeholders: ${err.message}`);
   }
@@ -464,6 +573,12 @@ function createWebpackPlaceholders() {
 
 // Xóa webpack cache
 function cleanWebpackCache() {
+  // Không xóa cache nếu đang ở chế độ development
+  if (process.env.NODE_ENV === 'development') {
+    console.log("Đang chạy trong chế độ development, bỏ qua việc xóa cache webpack.");
+    return;
+  }
+  
   try {
     // Client development
     ['0', '1', '2'].forEach(index => {
@@ -494,7 +609,7 @@ function cleanWebpackCache() {
 }
 
 // Kiểm tra môi trường và gán
-if (!process.env.NODE_ENV && process.argv.includes('dev')) {
+if (!process.env.NODE_ENV && (process.argv.includes('dev') || process.argv.includes('start'))) {
   process.env.NODE_ENV = 'development';
 }
 
@@ -505,17 +620,23 @@ try {
     deleteNextFolder();
   }
   
+  // Tạo các thư mục cache và file cần thiết
   createRequiredFiles();
+  
+  // Xử lý file trace
   cleanTrace();
   
-  // Tạo các placeholder chỉ khi không phải trong quá trình dev
+  // Tạo các placeholder cho webpack cache
+  createWebpackPlaceholders();
+  
+  // Tạo các static placeholder
+  createStaticPlaceholders();
+
+  // Trong môi trường development, không xóa cache sau khi đã tạo
   if (process.env.NODE_ENV !== 'development') {
-    createWebpackPlaceholders();
-    // Xóa cache sau khi đã tạo để tránh lỗi
     cleanWebpackCache();
   }
   
-  createStaticPlaceholders();
   console.log("Hoàn tất việc dọn dẹp và chuẩn bị môi trường.");
 } catch (err) {
   console.error(`Lỗi trong quá trình thực thi: ${err.message}`);

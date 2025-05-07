@@ -82,6 +82,7 @@ const nextConfig = {
   staticPageGenerationTimeout: 180,
   poweredByHeader: false,
   compress: true,
+  assetPrefix: '',
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
@@ -108,9 +109,17 @@ const nextConfig = {
       hints: false,
     };
 
+    config.output = {
+      ...config.output,
+      publicPath: '/_next/',
+    };
+
     return config;
   },
   distDir: '.next',
+  generateBuildId: async () => {
+    return 'build-' + Date.now();
+  },
 };
 
 module.exports = nextConfig;

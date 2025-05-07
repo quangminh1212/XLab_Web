@@ -57,12 +57,12 @@ export default function Header() {
           {/* Logo và Brand */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center group">
-              <div className="w-12 h-12 rounded-md overflow-hidden flex items-center justify-center">
+              <div className="w-16 h-16 rounded-md overflow-hidden flex items-center justify-center">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={48}
-                  height={48}
+                  width={64}
+                  height={64}
                   className="object-contain"
                   priority
                 />

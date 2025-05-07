@@ -23,6 +23,13 @@
 .next/react-loadable-manifest.json
 **/*.pack
 **/*.pack.gz
+.next/static/chunks/app-pages-internals.js
+.next/static/chunks/app/not-found.js
+.next/static/chunks/app/page.js
+.next/static/chunks/app/loading.js
+.next/static/css/app/layout.css
+.next/static/chunks/main-app.js
+.next/static/webpack/*.webpack.hot-update.json
 
 # build output
 /build
