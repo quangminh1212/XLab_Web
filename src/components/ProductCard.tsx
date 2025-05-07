@@ -148,15 +148,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       href={productLink}
       className="group flex flex-col overflow-hidden rounded border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all h-full"
     >
-      <div className="relative w-full pt-[68%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+      <div className="relative w-full pt-[100%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center p-3">
-          <div className="w-16 h-16 relative">
+          <div className="w-full h-full relative flex items-center justify-center">
             <ProductImage
               src={product.imageUrl || '/images/product-placeholder.svg'}
               alt={product.name}
-              width={80} 
-              height={80}
-              className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-sm"
+              width={200} 
+              height={200}
+              className="w-4/5 h-4/5 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-sm"
               priority={true}
             />
           </div>

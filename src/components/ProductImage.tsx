@@ -133,9 +133,9 @@ export const ProductImage: React.FC<ProductImageProps> = ({
         alt={alt}
         width={width}
         height={height}
-        className={`object-contain w-full h-full ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        className={`object-contain max-w-full max-h-full ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
         priority={priority}
-        onLoadingComplete={handleLoadingComplete}
+        onLoad={handleLoadingComplete}
         onError={handleError}
         unoptimized={true}
       />
