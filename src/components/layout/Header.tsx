@@ -40,7 +40,6 @@ const Header = () => {
                 height={50}
                 className="w-10 h-10 rounded-full"
               />
-              <span className="ml-2 text-xl font-bold text-gray-800">XLab</span>
             </Link>
           </div>
 

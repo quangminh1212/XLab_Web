@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useCart } from '@/components/ui/CartContext'
+import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
 import { useState } from 'react'
 import { products } from '@/data/mockData'
 
 export default function CartPage() {
-  const { cart, removeItemFromCart, updateItemQuantity, clearCart, addItemToCart } = useCart();
+  const { items: cart, removeItem: removeItemFromCart, updateQuantity: updateItemQuantity, clearCart, addItem: addItemToCart } = useCart();
   const [couponCode, setCouponCode] = useState('');
   
   // Calculate cart totals
