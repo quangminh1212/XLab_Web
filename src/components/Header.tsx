@@ -53,25 +53,26 @@ export default function Header() {
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between">
           {/* Logo và Brand */}
-          <div className="flex-shrink-0 flex items-center justify-center w-1/3">
-            <Link href="/" className="flex items-center justify-center group">
-              <div className="w-16 h-16 rounded-md overflow-hidden flex items-center justify-center">
+          <div className="flex-shrink-0 flex items-center">
+            <Link href="/" className="flex items-center group">
+              <div className="w-12 h-12 rounded-md overflow-hidden flex items-center justify-center">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={64}
-                  height={64}
+                  width={48}
+                  height={48}
                   className="object-contain"
                   priority
                 />
               </div>
+              <span className="ml-2 text-xl font-bold text-gray-900">XLab</span>
             </Link>
           </div>
 
           {/* Desktop Menu - Centered */}
-          <nav className="hidden md:flex space-x-1 flex-1 justify-center">
+          <nav className="hidden md:flex space-x-1 mx-4">
             <Link 
               href="/" 
               className={`px-4 py-2 rounded-md text-base font-medium ${
@@ -125,7 +126,7 @@ export default function Header() {
           </nav>
 
           {/* Right-side Actions */}
-          <div className="flex items-center space-x-4 w-1/3 justify-end">
+          <div className="flex items-center space-x-4">
             {/* Search button */}
             <div className="relative hidden md:block">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
