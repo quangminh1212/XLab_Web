@@ -47,21 +47,21 @@ export default function Header() {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
-        ? 'bg-white/95 backdrop-blur-sm shadow-md py-1'
-        : 'bg-white/90 backdrop-blur-sm py-2'
+        ? 'bg-white/95 backdrop-blur-sm shadow-md py-2'
+        : 'bg-white/90 backdrop-blur-sm py-3'
         }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center">
               <span className="w-20 h-20 inline-flex items-center justify-center">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={70}
-                  height={70}
+                  width={80}
+                  height={80}
                   className="object-contain rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300"
                   priority
                 />
@@ -70,8 +70,8 @@ export default function Header() {
 
             {/* Lời chào và tên người dùng trên desktop */}
             {!isLoading && session?.user && (
-              <div className="hidden md:flex items-center ml-4 text-sm font-medium text-gray-600">
-                <span className="bg-primary-50 text-primary-700 px-3 py-1.5 rounded-full shadow-sm text-center">
+              <div className="hidden md:flex items-center ml-4 text-base font-medium text-gray-600">
+                <span className="bg-primary-50 text-primary-700 px-4 py-2 rounded-full shadow-sm text-center">
                   {greeting}, {session.user.name?.split(' ')[0] || 'bạn'}!
                 </span>
               </div>
@@ -79,47 +79,47 @@ export default function Header() {
           </div>
 
           {/* Menu desktop */}
-          <nav className="hidden md:flex items-center justify-center space-x-2">
-            <Link href="/" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
+          <nav className="hidden md:flex items-center justify-center space-x-3">
+            <Link href="/" className={`px-5 py-3 rounded-md transition-colors font-medium text-lg text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Trang chủ
             </Link>
-            <Link href="/accounts" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname && (pathname.startsWith('/products') || pathname.startsWith('/accounts')) ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
+            <Link href="/accounts" className={`px-5 py-3 rounded-md transition-colors font-medium text-lg text-center ${pathname && (pathname.startsWith('/products') || pathname.startsWith('/accounts')) ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
+            <Link href="/services" className={`px-5 py-3 rounded-md transition-colors font-medium text-lg text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/about' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
+            <Link href="/about" className={`px-5 py-3 rounded-md transition-colors font-medium text-lg text-center ${pathname === '/about' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className={`px-4 py-2 rounded-md transition-colors font-medium text-center ${pathname === '/contact' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
+            <Link href="/contact" className={`px-5 py-3 rounded-md transition-colors font-medium text-lg text-center ${pathname === '/contact' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50/70'}`}>
               Liên hệ
             </Link>
           </nav>
 
           {/* Buttons */}
-          <div className="flex items-center justify-center space-x-3">
+          <div className="flex items-center justify-center space-x-4">
             {/* Tìm kiếm */}
             <button
-              className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors flex items-center justify-center"
+              className="p-2.5 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors flex items-center justify-center"
               aria-label="Tìm kiếm"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
 
             {!isLoading && session ? (
-              <div className="flex items-center justify-center space-x-3">
+              <div className="flex items-center justify-center space-x-4">
                 {/* Thông báo */}
                 <button
-                  className="p-2 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors relative flex items-center justify-center"
+                  className="p-2.5 text-gray-600 hover:text-primary-600 rounded-full hover:bg-primary-50/80 transition-colors relative flex items-center justify-center"
                   aria-label="Thông báo"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                   </svg>
-                  <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-primary-500 ring-2 ring-white"></span>
+                  <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-primary-500 ring-2 ring-white"></span>
                 </button>
 
                 {/* User avatar - simplified */}
@@ -135,9 +135,9 @@ export default function Header() {
                     <Image
                       src={session.user.image}
                       alt={session.user?.name || 'User avatar'}
-                      width={36}
-                      height={36}
-                      className="rounded-full object-cover w-9 h-9 border-2 border-white shadow-sm"
+                      width={42}
+                      height={42}
+                      className="rounded-full object-cover w-10 h-10 border-2 border-white shadow-sm"
                       onError={(e) => {
                         // Sử dụng fallback khi ảnh lỗi
                         console.log('Avatar image error, using fallback');
@@ -147,7 +147,7 @@ export default function Header() {
                       }}
                     />
                   ) : (
-                    <div className="w-9 h-9 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium shadow-sm">
+                    <div className="w-10 h-10 bg-primary-500 text-white rounded-full flex items-center justify-center text-base font-medium shadow-sm">
                       {session.user?.name?.charAt(0) || 'U'}
                     </div>
                   )}
@@ -157,13 +157,13 @@ export default function Header() {
               <div className="hidden sm:flex items-center justify-center space-x-3">
                 <Link
                   href="/login"
-                  className="px-5 py-2 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 hover:shadow-sm transition-all font-medium text-center"
+                  className="px-6 py-2.5 border border-primary-500 text-primary-600 rounded-full hover:bg-primary-50 hover:shadow-sm transition-all font-medium text-base text-center"
                 >
                   Đăng nhập
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 hover:shadow-md transition-all font-medium text-center"
+                  className="px-6 py-2.5 bg-primary-500 text-white rounded-full hover:bg-primary-600 hover:shadow-md transition-all font-medium text-base text-center"
                 >
                   Đăng ký
                 </Link>
@@ -177,11 +177,11 @@ export default function Header() {
               aria-label="Menu"
             >
               {mobileMenuOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -191,39 +191,39 @@ export default function Header() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden pt-2 pb-3 space-y-1 border-t mt-2">
+          <div className="md:hidden pt-3 pb-4 space-y-2 border-t mt-3">
             {!isLoading && session && (
-              <div className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 rounded-md text-center">
+              <div className="px-4 py-2.5 text-base font-medium text-gray-600 bg-gray-50 rounded-md text-center">
                 {greeting}, {session.user?.name?.split(' ')[0] || 'bạn'}!
               </div>
             )}
-            <Link href="/" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/" className={`block px-4 py-3 text-lg font-medium rounded-md text-center ${pathname === '/' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Trang chủ
             </Link>
-            <Link href="/accounts" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname && (pathname.startsWith('/products') || pathname.startsWith('/accounts')) ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/accounts" className={`block px-4 py-3 text-lg font-medium rounded-md text-center ${pathname && (pathname.startsWith('/products') || pathname.startsWith('/accounts')) ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Sản phẩm
             </Link>
-            <Link href="/services" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/services" className={`block px-4 py-3 text-lg font-medium rounded-md text-center ${pathname === '/services' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Dịch vụ
             </Link>
-            <Link href="/about" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/about' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/about" className={`block px-4 py-3 text-lg font-medium rounded-md text-center ${pathname === '/about' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Giới thiệu
             </Link>
-            <Link href="/contact" className={`block px-4 py-2.5 text-base font-medium rounded-md text-center ${pathname === '/contact' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
+            <Link href="/contact" className={`block px-4 py-3 text-lg font-medium rounded-md text-center ${pathname === '/contact' ? 'text-primary-600 bg-primary-50 shadow-sm' : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'}`}>
               Liên hệ
             </Link>
 
             {!isLoading && !session && (
-              <div className="flex space-x-3 mt-3 px-3">
+              <div className="flex space-x-3 mt-4 px-3">
                 <Link
                   href="/login"
-                  className="flex-1 px-4 py-2.5 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors font-medium"
+                  className="flex-1 px-4 py-3 border border-primary-500 text-primary-600 rounded-full text-center hover:bg-primary-50 transition-colors font-medium text-base"
                 >
                   Đăng nhập
                 </Link>
                 <Link
                   href="/register"
-                  className="flex-1 px-4 py-2.5 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors font-medium"
+                  className="flex-1 px-4 py-3 bg-primary-500 text-white rounded-full text-center hover:bg-primary-600 transition-colors font-medium text-base"
                 >
                   Đăng ký
                 </Link>

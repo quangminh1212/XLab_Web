@@ -131,8 +131,8 @@ export default function ProductsPage() {
     <div className="py-4 bg-gray-50">
       <div className="container mx-auto px-2 md:px-4 max-w-none w-[94%]">
         <div className="mb-4">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Phần mềm máy tính</h1>
-          <p className="text-sm text-gray-600">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Phần mềm máy tính</h1>
+          <p className="text-sm md:text-base text-gray-600">
             Danh sách các phần mềm chất lượng cao với mức giá tốt nhất thị trường.
           </p>
         </div>

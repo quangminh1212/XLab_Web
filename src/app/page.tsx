@@ -433,32 +433,6 @@ function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* Call to action */}
-        <section className="py-16 bg-gradient-to-r from-teal-500 to-blue-500 text-white">
-          <div className="mx-auto px-4 w-full">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <div className="mb-6 md:mb-0">
-                <h2 className="text-2xl font-bold mb-2">Bắt đầu sử dụng các sản phẩm của XLab ngay hôm nay</h2>
-                <p className="text-teal-100">Tải xuống miễn phí hoặc mua sản phẩm với giá ưu đãi</p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/products"
-                  className="inline-block px-6 py-3 bg-white text-teal-600 font-medium rounded-lg hover:bg-teal-50 transition-colors text-center"
-                >
-                  Khám phá sản phẩm
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-block px-6 py-3 bg-transparent border border-white text-white font-medium rounded-lg hover:bg-white/10 transition-colors text-center"
-                >
-                  Liên hệ với chúng tôi
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );
