@@ -26,8 +26,11 @@ taskkill /f /im node.exe >nul 2>&1
 :: Bước 3: Dọn dẹp môi trường
 echo [3/9] Cleaning up environment...
 echo Cleaning cache folders...
-if exist .next rmdir /s /q .next 2>nul
-if exist .next-dev rmdir /s /q .next-dev 2>nul
+
+:: Chạy script clean-trace.js để dọn dẹp thư mục .next
+node clean-trace.js
+
+:: Xóa một số thư mục cache bổ sung
 if exist node_modules\.cache rmdir /s /q node_modules\.cache 2>nul
 if exist .vercel rmdir /s /q .vercel 2>nul
 if exist .turbo rmdir /s /q .turbo 2>nul
@@ -88,8 +91,17 @@ if not exist node_modules\.bin\next.cmd (
     exit /b 1
 )
 
-:: Bước 9: Chạy ứng dụng
+:: Bước 9: Chuẩn bị thư mục .next
 echo [9/9] Starting application in %RUN_MODE% mode...
+
+:: Tạo các thư mục cần thiết cho Next.js
+if not exist .next\server mkdir .next\server
+if not exist .next\static mkdir .next\static
+if not exist .next\cache mkdir .next\cache
+
+:: Tạo font manifest file để khắc phục lỗi
+echo {} > .next\server\next-font-manifest.json
+
 echo Starting Next.js %NEXT_VERSION_FULL% development server...
 echo [Press Ctrl+C to stop the server]
 

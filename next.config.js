@@ -60,18 +60,23 @@ const nextConfig = {
       }
     ];
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
   compiler: {
     styledComponents: true,
   },
   experimental: {
-    largePageDataBytes: 128 * 100000,
+    largePageDataBytes: 12800000,
   },
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 4,
+  },
+  staticPageGenerationTimeout: 120,
   poweredByHeader: false,
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
