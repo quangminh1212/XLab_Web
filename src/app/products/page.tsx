@@ -129,7 +129,7 @@ export default function ProductsPage() {
 
   return (
     <div className="py-4 bg-gray-50">
-      <div className="container mx-auto px-2 max-w-full">
+      <div className="container mx-auto px-1 md:px-2 max-w-none w-[98%]">
         <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Phần mềm máy tính</h1>
           <p className="text-sm text-gray-600">
