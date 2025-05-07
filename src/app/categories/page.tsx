@@ -26,7 +26,7 @@ export default function CategoriesPage() {
                                 
                                 <div className="relative h-full flex items-center justify-center p-8">
                                     <Image
-                                        src={category.imageUrl || '/images/placeholder.png'}
+                                        src={category.imageUrl || '/images/placeholder.svg'}
                                         alt={category.name}
                                         width={100}
                                         height={100}

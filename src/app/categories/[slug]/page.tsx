@@ -37,7 +37,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     <div className="flex items-center mb-6">
                         <div className="w-16 h-16 bg-teal-50 rounded-lg flex items-center justify-center mr-4">
                             <Image
-                                src={category.imageUrl || '/images/placeholder.png'}
+                                src={category.imageUrl || '/images/placeholder.svg'}
                                 alt={category.name}
                                 width={48}
                                 height={48}
