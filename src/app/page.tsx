@@ -200,74 +200,182 @@ function HomePage() {
           
           {/* Main Content Column - Right */}
           <div className="w-full md:w-3/4">
-            {/* Featured products */}
-            <section className="mb-4 bg-white rounded-xl p-3 shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-bold">Sản phẩm nổi bật</h2>
-                <Link
-                  href="/products?filter=featured"
-                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
-                >
-                  Xem tất cả
+            {/* Tabs điều hướng */}
+            <div className="mb-4 bg-white rounded-xl p-3 shadow-sm">
+              <div className="flex space-x-4 border-b border-gray-200 pb-2 mb-3">
+                <button className="py-2 px-3 text-teal-600 border-b-2 border-teal-600 font-medium">
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Phần mềm
+                  </div>
+                </button>
+                <Link href="/accounts">
+                  <div className="py-2 px-3 text-gray-500 hover:text-gray-700 font-medium">
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Tài khoản
+                    </div>
+                  </div>
                 </Link>
               </div>
 
-              {featuredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                  {featuredProducts.map(product => (
-                    <div className="w-full" key={product.id}>
-                      <ProductCard key={product.id} product={product} />
-                    </div>
-                  ))}
+              {/* Phần mềm - Sản phẩm nổi bật */}
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-lg font-bold">Phần mềm nổi bật</h2>
+                  <Link
+                    href="/products?filter=featured"
+                    className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                  >
+                    Xem tất cả
+                  </Link>
                 </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <div className="text-center py-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm nổi bật</h3>
-                    <p className="text-gray-500 max-w-lg mx-auto text-xs">
-                      Chúng tôi sẽ sớm cập nhật các sản phẩm tốt nhất.
-                    </p>
+
+                {featuredProducts.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                    {featuredProducts
+                      .filter(product => !product.isAccount && product.type !== 'account')
+                      .slice(0, 4)
+                      .map(product => (
+                        <div className="w-full" key={product.id}>
+                          <ProductCard key={product.id} product={product} />
+                        </div>
+                      ))}
                   </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <div className="text-center py-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm nổi bật</h3>
+                      <p className="text-gray-500 max-w-lg mx-auto text-xs">
+                        Chúng tôi sẽ sớm cập nhật các sản phẩm tốt nhất.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Tài khoản nổi bật */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-lg font-bold">Tài khoản nổi bật</h2>
+                  <Link
+                    href="/accounts"
+                    className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                  >
+                    Xem tất cả
+                  </Link>
                 </div>
-              )}
-            </section>
+
+                {featuredProducts.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                    {featuredProducts
+                      .filter(product => product.isAccount || product.type === 'account')
+                      .slice(0, 4)
+                      .map(product => (
+                        <div className="w-full" key={product.id}>
+                          <ProductCard key={product.id} product={product} />
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <div className="text-center py-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có tài khoản nổi bật</h3>
+                      <p className="text-gray-500 max-w-lg mx-auto text-xs">
+                        Chúng tôi sẽ sớm cập nhật các tài khoản tốt nhất.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* New products */}
             <section className="mb-4 bg-white rounded-xl p-3 shadow-sm">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-lg font-bold">Sản phẩm mới</h2>
-                <Link
-                  href="/products?filter=new"
-                  className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
-                >
-                  Xem tất cả
-                </Link>
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-lg font-bold">Phần mềm mới</h2>
+                  <Link
+                    href="/products?filter=new"
+                    className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                  >
+                    Xem tất cả
+                  </Link>
+                </div>
+
+                {newProducts.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                    {newProducts
+                      .filter(product => !product.isAccount && product.type !== 'account')
+                      .slice(0, 4)
+                      .map(product => (
+                        <div className="w-full" key={product.id}>
+                          <ProductCard key={product.id} product={product} />
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <div className="text-center py-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có phần mềm mới</h3>
+                      <p className="text-gray-500 max-w-lg mx-auto text-xs">
+                        Hãy quay lại sau để xem các phần mềm mới nhất.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {newProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                  {newProducts.map(product => (
-                    <div className="w-full" key={product.id}>
-                      <ProductCard key={product.id} product={product} />
-                    </div>
-                  ))}
+              {/* Tài khoản mới */}
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-lg font-bold">Tài khoản mới</h2>
+                  <Link
+                    href="/accounts"
+                    className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                  >
+                    Xem tất cả
+                  </Link>
                 </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <div className="text-center py-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                    <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm mới</h3>
-                    <p className="text-gray-500 max-w-lg mx-auto text-xs">
-                      Hãy quay lại sau để xem các sản phẩm mới nhất.
-                    </p>
+
+                {newProducts.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                    {newProducts
+                      .filter(product => product.isAccount || product.type === 'account')
+                      .slice(0, 4)
+                      .map(product => (
+                        <div className="w-full" key={product.id}>
+                          <ProductCard key={product.id} product={product} />
+                        </div>
+                      ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <div className="text-center py-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có tài khoản mới</h3>
+                      <p className="text-gray-500 max-w-lg mx-auto text-xs">
+                        Hãy quay lại sau để xem các tài khoản mới nhất.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </section>
           </div>
         </div>

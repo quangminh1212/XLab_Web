@@ -398,6 +398,140 @@ export const products: Product[] = [
       'Cộng đồng hỗ trợ và mentor chuyên nghiệp',
       'Chứng chỉ hoàn thành được công nhận bởi doanh nghiệp'
     ]
+  },
+
+  // Thêm tài khoản cho demo
+  {
+    id: 'acc-capcut',
+    name: 'CapCut Pro',
+    slug: 'capcut-pro',
+    description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp.',
+    longDescription: `
+      <h2>CapCut Pro - Tài khoản cao cấp</h2>
+      <p>Tài khoản CapCut Pro chính hãng với đầy đủ tính năng chỉnh sửa video chuyên nghiệp, không giới hạn thời gian sử dụng.</p>
+      
+      <h3>Tính năng:</h3>
+      <ul>
+        <li><strong>Xuất video 4K</strong>: Xuất video chất lượng cao không giới hạn</li>
+        <li><strong>Hiệu ứng chuyên nghiệp</strong>: Truy cập toàn bộ hiệu ứng và template</li>
+        <li><strong>Không watermark</strong>: Video không có logo</li>
+        <li><strong>Tích hợp AI</strong>: Công cụ chỉnh sửa tự động bằng AI</li>
+      </ul>
+    `,
+    price: 290000,
+    salePrice: 199000,
+    categoryId: 'cat-3',
+    imageUrl: '/capcut.png',
+    isFeatured: true,
+    isNew: true,
+    downloadCount: 280,
+    viewCount: 450,
+    rating: 4.8,
+    version: '1.0',
+    size: 'N/A',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-11-20').toISOString(),
+    updatedAt: new Date('2023-11-20').toISOString(),
+    storeId: '3',
+    isAccount: true,
+    type: 'account',
+    features: [
+      'Tất cả hiệu ứng chuyên nghiệp',
+      'Xuất video 4K không giới hạn',
+      'Không watermark',
+      'Công cụ chỉnh sửa AI',
+      'Sử dụng trên nhiều thiết bị',
+      'Đồng bộ cloud'
+    ]
+  },
+
+  {
+    id: 'acc-chatgpt',
+    name: 'ChatGPT Plus',
+    slug: 'chatgpt-plus',
+    description: 'Tài khoản ChatGPT Plus chính hãng với đầy đủ các tính năng cao cấp nhất của OpenAI.',
+    longDescription: `
+      <h2>ChatGPT Plus - Tài khoản cao cấp</h2>
+      <p>Tài khoản ChatGPT Plus chính hãng với đầy đủ tính năng cao cấp từ OpenAI. Truy cập ưu tiên, không giới hạn lượt chat.</p>
+      
+      <h3>Tính năng:</h3>
+      <ul>
+        <li><strong>Truy cập GPT-4</strong>: Mô hình AI tiên tiến nhất</li>
+        <li><strong>Truy cập ưu tiên</strong>: Không bị giới hạn trong giờ cao điểm</li>
+        <li><strong>Plugin & Custom GPTs</strong>: Sử dụng plugin và tạo GPT riêng</li>
+        <li><strong>DALL-E 3</strong>: Tích hợp tạo hình ảnh bằng AI</li>
+      </ul>
+    `,
+    price: 790000,
+    salePrice: 690000,
+    categoryId: 'cat-1',
+    imageUrl: '/chatgpt.png',
+    isFeatured: true,
+    isNew: true,
+    downloadCount: 450,
+    viewCount: 780,
+    rating: 4.9,
+    version: '1.0',
+    size: 'N/A',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-11-25').toISOString(),
+    updatedAt: new Date('2023-11-25').toISOString(),
+    storeId: '1',
+    isAccount: true,
+    type: 'account',
+    features: [
+      'Truy cập GPT-4 không giới hạn',
+      'Ưu tiên trong giờ cao điểm',
+      'Tạo hình ảnh DALL-E 3',
+      'Browser & plugins',
+      'Phát triển ứng dụng AI',
+      'Đọc và tải file'
+    ]
+  },
+
+  {
+    id: 'acc-adobe',
+    name: 'Adobe Creative Cloud',
+    slug: 'adobe-creative-cloud',
+    description: 'Tài khoản Adobe Creative Cloud với đầy đủ ứng dụng thiết kế và chỉnh sửa chuyên nghiệp.',
+    longDescription: `
+      <h2>Adobe Creative Cloud - Tài khoản cao cấp</h2>
+      <p>Truy cập toàn bộ bộ ứng dụng Adobe Creative Cloud với tài khoản chính hãng. Sử dụng Photoshop, Illustrator, Premiere Pro và nhiều ứng dụng khác.</p>
+      
+      <h3>Bao gồm:</h3>
+      <ul>
+        <li><strong>Photoshop</strong>: Chỉnh sửa ảnh chuyên nghiệp</li>
+        <li><strong>Illustrator</strong>: Thiết kế vector</li>
+        <li><strong>Premiere Pro</strong>: Biên tập video</li>
+        <li><strong>After Effects</strong>: Hiệu ứng và motion graphics</li>
+        <li><strong>Nhiều ứng dụng khác</strong>: InDesign, XD, Lightroom...</li>
+      </ul>
+    `,
+    price: 1290000,
+    salePrice: 1290000,
+    categoryId: 'cat-3',
+    imageUrl: '/adobe.png',
+    isFeatured: true,
+    isNew: false,
+    downloadCount: 310,
+    viewCount: 450,
+    rating: 4.8,
+    version: '1.0',
+    size: 'N/A',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-08-15').toISOString(),
+    updatedAt: new Date('2023-10-10').toISOString(),
+    storeId: '3',
+    isAccount: true,
+    type: 'account',
+    features: [
+      'Truy cập toàn bộ bộ ứng dụng Adobe',
+      'Cập nhật phiên bản mới nhất',
+      'Lưu trữ cloud 100GB',
+      'Thư viện font, template và asset',
+      'Các công cụ AI tích hợp',
+      'Đồng bộ giữa các thiết bị'
+    ]
   }
 ];
 
