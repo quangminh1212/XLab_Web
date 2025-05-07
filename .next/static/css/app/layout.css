@@ -1923,6 +1923,9 @@ select {
 .max-h-full {
   max-height: 100%;
 }
+.max-h-\[100px\] {
+  max-height: 100px;
+}
 .min-h-\[120px\] {
   min-height: 120px;
 }
@@ -1931,6 +1934,12 @@ select {
 }
 .min-h-screen {
   min-height: 100vh;
+}
+.min-h-\[2\.5rem\] {
+  min-height: 2.5rem;
+}
+.min-h-\[2rem\] {
+  min-height: 2rem;
 }
 .w-1\/2 {
   width: 50%;
@@ -2042,6 +2051,9 @@ select {
 }
 .max-w-xl {
   max-width: 36rem;
+}
+.max-w-\[100px\] {
+  max-width: 100px;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -2773,6 +2785,9 @@ select {
 }
 .pt-\[80\%\] {
   padding-top: 80%;
+}
+.pt-\[75\%\] {
+  padding-top: 75%;
 }
 .text-left {
   text-align: left;

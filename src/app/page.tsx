@@ -213,9 +213,9 @@ function HomePage() {
               </div>
 
               {featuredProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 justify-items-center">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {featuredProducts.map(product => (
-                    <div className="w-full max-w-[150px]" key={product.id}>
+                    <div className="w-full" key={product.id}>
                       <ProductCard key={product.id} product={product} />
                     </div>
                   ))}
@@ -248,9 +248,9 @@ function HomePage() {
               </div>
 
               {newProducts.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 justify-items-center">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {newProducts.map(product => (
-                    <div className="w-full max-w-[150px]" key={product.id}>
+                    <div className="w-full" key={product.id}>
                       <ProductCard key={product.id} product={product} />
                     </div>
                   ))}

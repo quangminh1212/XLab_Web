@@ -131,61 +131,39 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       href={productLink}
       className="group flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all h-full"
     >
-      <div className="relative w-full pt-[80%] bg-gray-50 overflow-hidden">
-        {isVoiceTyping ? (
-          // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-teal-50 absolute top-0 left-0">
-            <div className="relative w-full h-full">
-              <img
-                src="/speech-text.png"
-                alt="VoiceTyping"
-                className="w-full h-full object-contain group-hover:scale-110 transition-all duration-300 absolute top-0 left-0"
-              />
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary-900/20"></div>
-              {/* Badge cho VoiceTyping */}
-              <div className="absolute bottom-2 left-2 z-10">
-                <span className="inline-block px-2 py-1 bg-primary-600 text-white text-xs font-medium rounded">
-                  Voice Typing
-                </span>
-              </div>
-            </div>
-          </div>
-        ) : (
-          // Sử dụng ProductImage cho các sản phẩm khác với kích thước lớn hơn
-          <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
-            <div className="w-3/4 h-3/4 relative flex items-center justify-center">
-              <ProductImage
-                src={product.imageUrl || '/images/placeholder-product.jpg'}
-                alt={product.name}
-                width={150} 
-                height={120}
-                className="object-contain group-hover:scale-110 transition-transform duration-300 w-full h-full"
-                priority={true}
-              />
-            </div>
-          </div>
-        )}
+      <div className="relative w-full pt-[75%] bg-gray-50 overflow-hidden">
+        <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center p-4">
+          <ProductImage
+            src={product.imageUrl || '/images/placeholder-product.jpg'}
+            alt={product.name}
+            width={120} 
+            height={120}
+            className="w-full h-full object-contain max-w-[100px] max-h-[100px] mx-auto group-hover:scale-110 transition-transform duration-300"
+            priority={true}
+          />
+        </div>
 
+        {/* Badge giảm giá */}
         {discount > 0 && (
-          <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-20">
+          <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
             -{discount}%
           </div>
         )}
 
+        {/* Badge sản phẩm mới */}
         {product.isNew && (
-          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full z-20">
+          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10">
             Mới
           </div>
         )}
       </div>
 
-      <div className="flex flex-col flex-grow p-3">
-        <h3 className="text-sm font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 mb-1">
+      <div className="flex flex-col flex-grow p-4">
+        <h3 className="text-sm font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 min-h-[2.5rem]">
           {product.name}
         </h3>
 
-        <p className="text-xs text-gray-600 mb-2 line-clamp-2 flex-grow">
+        <p className="text-xs text-gray-600 mb-3 line-clamp-2 min-h-[2rem] mt-1">
           {product.description}
         </p>
 
