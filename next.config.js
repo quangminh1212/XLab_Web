@@ -2,7 +2,8 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
+  swcMinify: true,
   images: {
     remotePatterns: [
       {
@@ -70,19 +71,17 @@ const nextConfig = {
   },
   compiler: {
     styledComponents: true,
-    removeConsole: {
-      exclude: ['error', 'warn'],
-    },
   },
   experimental: {
     largePageDataBytes: 12800000,
-    disableOptimizedLoading: true,
     appDocumentPreloading: false,
-    suppressHydrationWarning: true,
+  },
+  future: {
+    webpack5: true,
   },
   onDemandEntries: {
-    maxInactiveAge: 60 * 1000,
-    pagesBufferLength: 6,
+    maxInactiveAge: 30 * 1000,
+    pagesBufferLength: 5,
   },
   staticPageGenerationTimeout: 180,
   poweredByHeader: false,
@@ -112,13 +111,6 @@ const nextConfig = {
       ...config.performance,
       hints: false,
     };
-
-    if (isServer) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'react': path.resolve(__dirname, 'node_modules/react'),
-      };
-    }
 
     return config;
   },

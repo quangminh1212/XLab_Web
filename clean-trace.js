@@ -13,6 +13,7 @@ const cacheDirs = [
   path.join(__dirname, '.next', 'cache', 'webpack', 'server-development'),
   path.join(__dirname, '.next', 'cache', 'webpack', 'edge-server-development'),
   path.join(__dirname, '.next', 'server'),
+  path.join(__dirname, '.next', 'server', 'pages'),
   path.join(__dirname, '.next', 'server', 'vendor-chunks'),
   path.join(__dirname, '.next', 'static'),
   path.join(__dirname, '.next', 'static', 'chunks'),
@@ -36,11 +37,289 @@ const filesToCreate = [
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'webpack-runtime.js'),
-    content: 'module.exports = { moduleLoading: true, loadModule: function() { return Promise.resolve({ default: {} }); } };'
+    content: `
+    /******/ (() => { // webpackBootstrap
+    /******/ 	"use strict";
+    /******/ 	var __webpack_modules__ = ({});
+    /******/ 	
+    /******/ 	// The module cache
+    /******/ 	var __webpack_module_cache__ = {};
+    /******/ 	
+    /******/ 	// The require function
+    /******/ 	function __webpack_require__(moduleId) {
+    /******/ 		// Check if module is in cache
+    /******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+    /******/ 		if (cachedModule !== undefined) {
+    /******/ 			return cachedModule.exports;
+    /******/ 		}
+    /******/ 		// Create a new module (and put it into the cache)
+    /******/ 		var module = __webpack_module_cache__[moduleId] = {
+    /******/ 			// no module.id needed
+    /******/ 			// no module.loaded needed
+    /******/ 			exports: {}
+    /******/ 		};
+    /******/ 		
+    /******/ 		// Execute the module function
+    /******/ 		var threw = true;
+    /******/ 		try {
+    /******/ 			__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+    /******/ 			threw = false;
+    /******/ 		} finally {
+    /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
+    /******/ 		}
+    /******/ 		
+    /******/ 		// Return the exports of the module
+    /******/ 		return module.exports;
+    /******/ 	}
+    /******/ 	
+    /******/ 	__webpack_require__.X = (result, moduleKeys) => {};
+    /******/ 	// Module API
+    /******/ 	__webpack_require__.f = {};
+    /******/ 	__webpack_require__.e = (chunkId) => Promise.resolve(chunkId);
+    /******/ 	
+    /******/ 	/* webpack/runtime/compat get default export */
+    /******/ 	(() => {
+    /******/ 		// getDefaultExport function for compatibility with non-harmony modules
+    /******/ 		__webpack_require__.n = (module) => {
+    /******/ 			var getter = module && module.__esModule ?
+    /******/ 				() => (module['default']) :
+    /******/ 				() => (module);
+    /******/ 			__webpack_require__.d(getter, { a: getter });
+    /******/ 			return getter;
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/define property getters */
+    /******/ 	(() => {
+    /******/ 		// define getter functions for harmony exports
+    /******/ 		__webpack_require__.d = (exports, definition) => {
+    /******/ 			for(var key in definition) {
+    /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+    /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+    /******/ 				}
+    /******/ 			}
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/ensure chunk */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.f.ensure = (chunkId, promises) => {
+    /******/   		return Promise.all(promises);
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/get javascript chunk filename */
+    /******/ 	(() => {
+    /******/ 		// This function allow to reference async chunks and sibling chunks for the entrypoint
+    /******/ 		__webpack_require__.u = (chunkId) => {
+    /******/ 			return "" + chunkId + ".js";
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/make namespace object */
+    /******/ 	(() => {
+    /******/ 		// define __esModule on exports
+    /******/ 		__webpack_require__.r = (exports) => {
+    /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+    /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+    /******/ 			}
+    /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/trusted types policy */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.tt = () => { return {} }
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/trusted types script url */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.tu = (url) => { return url };
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/publicPath */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.p = "/_next/";
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/importScripts chunk loading */
+    /******/ 	(() => {
+    /******/ 		// no baseURI
+    /******/ 		
+    /******/ 		// object to store loaded chunks
+    /******/ 		// "1" means "already loaded"
+    /******/ 		var installedChunks = {
+    /******/ 			"webpack-runtime": 1
+    /******/ 		};
+    /******/ 		
+    /******/ 		// no chunk install function needed
+    /******/ 		
+    /******/ 		// no chunk loading
+    /******/ 		
+    /******/ 		// no external install chunk
+    /******/ 		
+    /******/ 		// no HMR
+    /******/ 		
+    /******/ 		// no HMR manifest
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/startup chunk dependencies */
+    /******/ 	(() => {
+    /******/ 		var next = __webpack_require__.x;
+    /******/ 		__webpack_require__.x = () => {
+    /******/ 			return Promise.resolve();
+    /******/ 		};
+    /******/ 	})();
+    /******/ })();
+    `
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'pages', 'webpack-runtime.js'),
-    content: 'module.exports = { moduleLoading: true, loadModule: function() { return Promise.resolve({ default: {} }); } };'
+    content: `
+    /******/ (() => { // webpackBootstrap
+    /******/ 	"use strict";
+    /******/ 	var __webpack_modules__ = ({});
+    /******/ 	
+    /******/ 	// The module cache
+    /******/ 	var __webpack_module_cache__ = {};
+    /******/ 	
+    /******/ 	// The require function
+    /******/ 	function __webpack_require__(moduleId) {
+    /******/ 		// Check if module is in cache
+    /******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+    /******/ 		if (cachedModule !== undefined) {
+    /******/ 			return cachedModule.exports;
+    /******/ 		}
+    /******/ 		// Create a new module (and put it into the cache)
+    /******/ 		var module = __webpack_module_cache__[moduleId] = {
+    /******/ 			// no module.id needed
+    /******/ 			// no module.loaded needed
+    /******/ 			exports: {}
+    /******/ 		};
+    /******/ 		
+    /******/ 		// Execute the module function
+    /******/ 		var threw = true;
+    /******/ 		try {
+    /******/ 			__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+    /******/ 			threw = false;
+    /******/ 		} finally {
+    /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
+    /******/ 		}
+    /******/ 		
+    /******/ 		// Return the exports of the module
+    /******/ 		return module.exports;
+    /******/ 	}
+    /******/ 	
+    /******/ 	__webpack_require__.X = (result, moduleKeys) => {};
+    /******/ 	// Module API
+    /******/ 	__webpack_require__.f = {};
+    /******/ 	__webpack_require__.e = (chunkId) => Promise.resolve(chunkId);
+    /******/ 	
+    /******/ 	/* webpack/runtime/compat get default export */
+    /******/ 	(() => {
+    /******/ 		// getDefaultExport function for compatibility with non-harmony modules
+    /******/ 		__webpack_require__.n = (module) => {
+    /******/ 			var getter = module && module.__esModule ?
+    /******/ 				() => (module['default']) :
+    /******/ 				() => (module);
+    /******/ 			__webpack_require__.d(getter, { a: getter });
+    /******/ 			return getter;
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/define property getters */
+    /******/ 	(() => {
+    /******/ 		// define getter functions for harmony exports
+    /******/ 		__webpack_require__.d = (exports, definition) => {
+    /******/ 			for(var key in definition) {
+    /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+    /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+    /******/ 				}
+    /******/ 			}
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/ensure chunk */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.f.ensure = (chunkId, promises) => {
+    /******/   		return Promise.all(promises);
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/get javascript chunk filename */
+    /******/ 	(() => {
+    /******/ 		// This function allow to reference async chunks and sibling chunks for the entrypoint
+    /******/ 		__webpack_require__.u = (chunkId) => {
+    /******/ 			return "" + chunkId + ".js";
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/make namespace object */
+    /******/ 	(() => {
+    /******/ 		// define __esModule on exports
+    /******/ 		__webpack_require__.r = (exports) => {
+    /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+    /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+    /******/ 			}
+    /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+    /******/ 		};
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/trusted types policy */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.tt = () => { return {} }
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/trusted types script url */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.tu = (url) => { return url };
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/publicPath */
+    /******/ 	(() => {
+    /******/ 		__webpack_require__.p = "/_next/";
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/importScripts chunk loading */
+    /******/ 	(() => {
+    /******/ 		// no baseURI
+    /******/ 		
+    /******/ 		// object to store loaded chunks
+    /******/ 		// "1" means "already loaded"
+    /******/ 		var installedChunks = {
+    /******/ 			"webpack-runtime": 1
+    /******/ 		};
+    /******/ 		
+    /******/ 		// no chunk install function needed
+    /******/ 		
+    /******/ 		// no chunk loading
+    /******/ 		
+    /******/ 		// no external install chunk
+    /******/ 		
+    /******/ 		// no HMR
+    /******/ 		
+    /******/ 		// no HMR manifest
+    /******/ 	})();
+    /******/ 	
+    /******/ 	/* webpack/runtime/startup chunk dependencies */
+    /******/ 	(() => {
+    /******/ 		var next = __webpack_require__.x;
+    /******/ 		__webpack_require__.x = () => {
+    /******/ 			return Promise.resolve();
+    /******/ 		};
+    /******/ 	})();
+    /******/ })();
+    `
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'middleware-manifest.json'),
@@ -54,9 +333,38 @@ const filesToCreate = [
     path: path.join(__dirname, '.next', 'react-loadable-manifest.json'),
     content: '{}'
   },
-  { 
+  {
     path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'next.js'),
-    content: 'module.exports = { createContext: () => ({}) };'
+    content: 'module.exports = require("next/dist/lib/constants");'
+  },
+  {
+    path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'react.js'),
+    content: `
+      module.exports = {
+        __esModule: true,
+        cache: function(fn) { return fn; },
+        default: require("react"),
+        useCallback: require("react").useCallback,
+        useContext: require("react").useContext,
+        useEffect: require("react").useEffect,
+        useId: require("react").useId,
+        useImperativeHandle: require("react").useImperativeHandle,
+        useLayoutEffect: require("react").useLayoutEffect,
+        useMemo: require("react").useMemo,
+        useReducer: require("react").useReducer,
+        useRef: require("react").useRef,
+        useState: require("react").useState,
+        use: require("react").use,
+        Fragment: require("react").Fragment,
+        Suspense: require("react").Suspense,
+        createElement: require("react").createElement,
+        createContext: require("react").createContext
+      };
+    `
+  },
+  {
+    path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'react-dom.js'),
+    content: 'module.exports = require("react-dom");'
   }
 ];
 
@@ -218,13 +526,13 @@ function createStaticPlaceholders() {
     console.error(`Lỗi khi tạo file ${cssPlaceholder}:`, err.message);
   }
   
-  // Tạo file vendor-chunks/next.js
-  const vendorNextJs = path.join(__dirname, '.next', 'server', 'vendor-chunks', 'next.js');
+  // Tạo file JS chunks placeholder
+  const mainAppJs = path.join(__dirname, '.next', 'static', 'chunks', 'main-app.js');
   try {
-    fs.writeFileSync(vendorNextJs, 'module.exports = { createContext: () => ({}) };');
-    console.log(`Đã tạo file vendor next.js: ${vendorNextJs}`);
+    fs.writeFileSync(mainAppJs, '// Placeholder for main-app.js');
+    console.log(`Đã tạo file static placeholder: ${mainAppJs}`);
   } catch (err) {
-    console.error(`Lỗi khi tạo file ${vendorNextJs}:`, err.message);
+    console.error(`Lỗi khi tạo file ${mainAppJs}:`, err.message);
   }
 }
 
@@ -245,12 +553,13 @@ function createWebpackPlaceholders() {
       console.log(`Đã tạo thư mục cache: ${dir}`);
     }
 
-    // Tạo 5 tệp .pack và .pack.gz placeholder để đầy đủ hơn
-    for (let i = 0; i < 5; i++) {
+    // Tạo 3 tệp .pack và .pack.gz placeholder
+    for (let i = 0; i < 3; i++) {
       const packFile = path.join(dir, `${i}.pack`);
       const gzipFile = path.join(dir, `${i}.pack.gz`);
       
       try {
+        // Nội dung cho file .pack
         fs.writeFileSync(packFile, '{"version":1,"content":{}}');
         console.log(`Đã tạo file placeholder: ${packFile}`);
         

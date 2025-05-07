@@ -56,7 +56,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo và Brand */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center space-x-2 group">
+            <Link href="/" className="flex items-center group">
               <div className="w-10 h-10 rounded-md overflow-hidden">
                 <Image
                   src="/images/logo.jpg"
@@ -67,10 +67,6 @@ export default function Header() {
                   priority
                 />
               </div>
-              <span className="text-xl font-bold">
-                <span className="text-blue-600">X</span>
-                <span className="text-gray-900">Lab</span>
-              </span>
             </Link>
           </div>
 
