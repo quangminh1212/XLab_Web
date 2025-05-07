@@ -315,8 +315,8 @@ export const clearCart = (): CartItem[] => {
 
 export const calculateCartTotals = (cart: CartItem[]) => {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + tax;
+  const tax = 0; // Không tính thuế
+  const total = subtotal; // Tổng cộng bằng tạm tính
 
   return { subtotal, tax, total };
 }; 

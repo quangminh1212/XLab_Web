@@ -139,10 +139,6 @@ export default function CartPage() {
                       <span>Tạm tính</span>
                       <span>{formatCurrency(subtotal)}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Thuế (10%)</span>
-                      <span>{formatCurrency(tax)}</span>
-                    </div>
                     {/* Coupon code input */}
                     <div className="pt-4 border-t border-gray-200">
                       <label htmlFor="coupon" className="block mb-2 font-semibold">
