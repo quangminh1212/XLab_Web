@@ -3,7 +3,6 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     remotePatterns: [
       {
@@ -75,9 +74,6 @@ const nextConfig = {
   experimental: {
     largePageDataBytes: 12800000,
     appDocumentPreloading: false,
-  },
-  future: {
-    webpack5: true,
   },
   onDemandEntries: {
     maxInactiveAge: 30 * 1000,

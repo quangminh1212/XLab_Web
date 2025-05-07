@@ -55,14 +55,14 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo và Brand */}
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center group">
-              <div className="w-10 h-10 rounded-md overflow-hidden">
+          <div className="flex-shrink-0 flex items-center justify-center w-1/3">
+            <Link href="/" className="flex items-center justify-center group">
+              <div className="w-16 h-16 rounded-md overflow-hidden flex items-center justify-center">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={40}
-                  height={40}
+                  width={64}
+                  height={64}
                   className="object-contain"
                   priority
                 />
@@ -125,7 +125,7 @@ export default function Header() {
           </nav>
 
           {/* Right-side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 w-1/3 justify-end">
             {/* Search button */}
             <div className="relative hidden md:block">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
