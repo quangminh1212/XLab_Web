@@ -129,16 +129,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <Link 
       href={productLink}
-      className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all h-full"
+      className="group flex flex-col overflow-hidden rounded border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all h-full"
     >
-      <div className="relative w-full pt-[75%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-        <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center p-4">
-          <div className="w-20 h-20 md:w-24 md:h-24 relative">
+      <div className="relative w-full pt-[55%] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+        <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center p-2">
+          <div className="w-12 h-12 relative">
             <ProductImage
               src={product.imageUrl || '/images/placeholder-product.jpg'}
               alt={product.name}
-              width={120} 
-              height={120}
+              width={60} 
+              height={60}
               className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-sm"
               priority={true}
             />
@@ -147,64 +147,51 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Badge giảm giá */}
         {discount > 0 && (
-          <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-sm">
+          <div className="absolute top-0.5 right-0.5 bg-red-500 text-white text-[10px] font-bold px-1 py-0.5 rounded-sm z-10 shadow-sm">
             -{discount}%
           </div>
         )}
 
         {/* Badge sản phẩm mới */}
         {product.isNew && (
-          <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-sm">
+          <div className="absolute top-0.5 left-0.5 bg-blue-500 text-white text-[10px] font-bold px-1 py-0.5 rounded-sm z-10 shadow-sm">
             Mới
           </div>
         )}
       </div>
 
-      <div className="flex flex-col flex-grow p-4">
-        <h3 className="text-sm font-semibold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 mb-1">
+      <div className="flex flex-col flex-grow p-2">
+        <h3 className="text-xs font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1 mb-0.5">
           {product.name}
         </h3>
 
-        <p className="text-xs text-gray-500 line-clamp-2 mb-3 min-h-[2.5rem]">
+        <p className="text-[10px] text-gray-500 line-clamp-1 mb-1.5">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between mt-auto pt-1.5 border-t border-gray-100">
           <div className="flex flex-col">
             {product.salePrice && product.salePrice < product.price ? (
               <>
-                <span className="text-sm font-bold text-primary-600">
+                <span className="text-[11px] font-bold text-primary-600">
                   {formatCurrency(product.salePrice)}
                 </span>
-                <span className="text-xs text-gray-400 line-through">
+                <span className="text-[9px] text-gray-400 line-through">
                   {formatCurrency(product.price)}
                 </span>
               </>
             ) : (
-              <span className="text-sm font-bold text-primary-600">
+              <span className="text-[11px] font-bold text-primary-600">
                 {formatCurrency(product.price)}
               </span>
             )}
           </div>
 
-          <div className="flex items-center text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
-            <span className="inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400 mr-0.5">
-                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-              </svg>
-              {product.rating}
-            </span>
-
-            <span className="mx-1 text-gray-300">|</span>
-
-            <span className="inline-flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-gray-400 mr-0.5">
-                <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
-                <path fillRule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clipRule="evenodd" />
-                <path d="M2.25 18a.75.75 0 000 1.5h19.5a.75.75 0 000-1.5H2.25z" />
-              </svg>
-              {product.downloadCount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-            </span>
+          <div className="flex items-center text-[9px] text-gray-500 bg-gray-50 px-1 py-0.5 rounded">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-2 h-2 text-yellow-400 mr-0.5">
+              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+            </svg>
+            {product.rating}
           </div>
         </div>
       </div>

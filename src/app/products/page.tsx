@@ -69,6 +69,16 @@ export default function ProductsPage() {
     (b.downloadCount || 0) - (a.downloadCount || 0)
   ).slice(0, 6);
 
+  // Danh mục sản phẩm
+  const productCategories = [
+    { id: 'all', name: 'Tất cả', count: softwareProducts.length },
+    ...categories.map(cat => ({
+      id: cat.id,
+      name: cat.name,
+      count: softwareProducts.filter(p => p.categoryId === cat.id).length
+    }))
+  ];
+
   // Only show loading for a maximum of 1 second
   if (loading) {
     return (
@@ -118,32 +128,32 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="py-8 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Phần mềm của XLab</h1>
-          <p className="text-gray-600">
-            Khám phá các giải pháp phần mềm và ứng dụng chất lượng cao do XLab cung cấp.
+    <div className="py-4 bg-gray-50">
+      <div className="container mx-auto px-2 max-w-full">
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Phần mềm máy tính</h1>
+          <p className="text-sm text-gray-600">
+            Danh sách các phần mềm chất lượng cao với mức giá tốt nhất thị trường.
           </p>
         </div>
-
+        
         {/* Tabs điều hướng */}
-        <div className="border-b border-gray-200 mb-8">
+        <div className="border-b border-gray-200 mb-4">
           <div className="flex space-x-4">
             <Link href="/products">
-              <div className="py-4 px-2 border-b-2 border-primary-600 text-primary-600 font-medium">
+              <div className="py-2 px-2 border-b-2 border-primary-600 text-primary-600 font-medium text-sm">
                 <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  Phần mềm
+                  Máy tính
                 </div>
               </div>
             </Link>
             <Link href="/accounts">
-              <div className="py-4 px-2 text-gray-500 hover:text-gray-700 font-medium">
+              <div className="py-2 px-2 text-gray-500 hover:text-gray-700 font-medium text-sm">
                 <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   Tài khoản
@@ -152,180 +162,117 @@ export default function ProductsPage() {
             </Link>
           </div>
         </div>
-
-        {/* Hiển thị tiêu đề */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Phần mềm
-          </h2>
-          <p className="text-gray-600 mt-2">
-            Các ứng dụng và phần mềm máy tính do XLab phát triển và phân phối.
-          </p>
-        </div>
-
-        {(!softwareProducts || softwareProducts.length === 0) ? (
-          <div className="py-12 text-center">
-            <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Chưa có phần mềm nào
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Hiện tại chúng tôi chưa có phần mềm nào. Các sản phẩm sẽ được thêm vào sau.
-              </p>
-              <Link
-                href="/"
-                className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Về trang chủ
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-12">
-            {/* Bộ lọc và tìm kiếm */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-              <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-                <div className="flex-grow">
-                  <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      id="search"
-                      placeholder="Tìm kiếm phần mềm..."
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <svg className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">Danh mục</label>
-                  <select
-                    id="category"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
-                  >
-                    <option value="all">Tất cả danh mục</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-1">Sắp xếp</label>
-                  <select
-                    id="sort"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    value={sort}
-                    onChange={(e) => setSort(e.target.value)}
-                  >
-                    <option value="newest">Mới nhất</option>
-                    <option value="popular">Phổ biến nhất</option>
-                    <option value="rating">Đánh giá cao</option>
-                    <option value="price-low">Giá thấp đến cao</option>
-                    <option value="price-high">Giá cao đến thấp</option>
-                  </select>
-                </div>
+        
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Main content */}
+          <div className="w-full md:w-4/5">
+            {/* Filters bar */}
+            <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
+              <div className="text-sm text-gray-600">
+                Hiển thị {softwareProducts.length} kết quả
+              </div>
+              <div className="flex items-center space-x-2">
+                <label htmlFor="sort" className="text-sm text-gray-700">Sắp xếp:</label>
+                <select 
+                  id="sort"
+                  className="text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                >
+                  <option value="newest">Mới nhất</option>
+                  <option value="price-low">Giá thấp đến cao</option>
+                  <option value="price-high">Giá cao đến thấp</option>
+                  <option value="popular">Phổ biến nhất</option>
+                </select>
               </div>
             </div>
-
-            {/* Kết quả tìm kiếm */}
-            {searchTerm || filter !== 'all' ? (
-              <section>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">
-                    Kết quả lọc ({sortedProducts.length} sản phẩm)
-                  </h2>
-                  {(searchTerm || filter !== 'all') && (
-                    <button
-                      onClick={() => {
-                        setSearchTerm('');
-                        setFilter('all');
-                      }}
-                      className="text-sm text-primary-600 hover:underline"
-                    >
-                      Xóa bộ lọc
-                    </button>
-                  )}
-                </div>
-
-                {sortedProducts.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sortedProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <h3 className="text-xl font-medium text-gray-700 mb-2">Không tìm thấy kết quả</h3>
-                    <p className="text-gray-500 max-w-lg mx-auto">
-                      Không có sản phẩm nào phù hợp với bộ lọc của bạn. Hãy thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc.
-                    </p>
-                  </div>
-                )}
-              </section>
-            ) : (
-              <>
-                {featuredProducts.length > 0 && (
-                  <section>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                      Sản phẩm nổi bật
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {featuredProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {newProducts.length > 0 && (
-                  <section>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                      Sản phẩm mới
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {newProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {popularProducts.length > 0 && (
-                  <section>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                      Phần mềm phổ biến nhất
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {popularProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                      ))}
-                    </div>
-                  </section>
-                )}
-              </>
-            )}
+            
+            {/* Product grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
+              {softwareProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
-        )}
+          
+          {/* Sidebar */}
+          <div className="w-full md:w-1/5">
+            {/* Categories */}
+            <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
+              <h3 className="font-medium text-gray-900 mb-2 text-sm">Danh Mục Sản Phẩm</h3>
+              <ul className="space-y-1">
+                {productCategories.map(category => (
+                  <li key={category.id}>
+                    <a 
+                      href={`#${category.id}`}
+                      className={`flex justify-between items-center text-sm py-1 px-2 rounded-md hover:bg-gray-50 ${
+                        category.id === 'all' ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
+                      }`}
+                    >
+                      <span>{category.name}</span>
+                      <span className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">
+                        {category.count}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Featured product */}
+            <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
+              <h3 className="font-medium text-gray-900 mb-2 text-sm">Nổi Bật</h3>
+              <div className="space-y-2">
+                {softwareProducts.filter(p => p.isFeatured).slice(0, 3).map(product => (
+                  <Link 
+                    href={`/products/${product.id}`}
+                    key={product.id}
+                    className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
+                  >
+                    <div className="w-10 h-10 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                      <img 
+                        src={product.imageUrl} 
+                        alt={product.name}
+                        className="w-7 h-7 object-contain"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <h4 className="font-medium text-gray-900 text-xs">{product.name}</h4>
+                      <div className="text-xs text-primary-600 font-medium">
+                        {product.salePrice ? formatCurrency(product.salePrice) : formatCurrency(product.price)}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            
+            {/* Help box */}
+            <div className="bg-primary-50 rounded-lg p-3">
+              <h3 className="font-medium text-primary-700 mb-2 text-sm">Cần trợ giúp?</h3>
+              <p className="text-xs text-primary-600 mb-2">
+                Liên hệ với chúng tôi nếu bạn cần hỗ trợ hoặc tư vấn thêm về các phần mềm máy tính.
+              </p>
+              <a
+                href="/contact"
+                className="w-full flex items-center justify-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-primary-600 hover:bg-primary-700"
+              >
+                Liên Hệ Ngay
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
+}
+
+// Helper function to format currency
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
 } 
