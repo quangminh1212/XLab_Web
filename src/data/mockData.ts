@@ -41,6 +41,14 @@ export const categories: Category[] = [
     description: 'Các ứng dụng học ngoại ngữ, lập trình, toán học...',
     imageUrl: '/images/categories/education.png',
     productCount: 1
+  },
+  {
+    id: 'cat-6',
+    name: 'Tài khoản học tập',
+    slug: 'tai-khoan-hoc-tap',
+    description: 'Các tài khoản premium cho các nền tảng học trực tuyến phổ biến.',
+    imageUrl: '/images/categories/accounts.svg',
+    productCount: 2
   }
 ];
 
@@ -139,6 +147,130 @@ export const products: Product[] = [
       'Tích hợp với Microsoft Office',
       'Hỗ trợ điều khiển bằng hotkey',
       'Tự động lưu lịch sử chuyển đổi'
+    ]
+  },
+  
+  // Tài khoản Coursera Plus
+  {
+    id: 'prod-coursera',
+    name: 'Tài khoản Coursera Plus',
+    slug: 'tai-khoan-coursera-plus',
+    description: 'Truy cập không giới hạn hơn 7.000 khóa học từ các trường đại học và đối tác hàng đầu thế giới.',
+    longDescription: `
+      <h2>Tài khoản Coursera Plus - Học từ những nguồn tốt nhất</h2>
+      <p>Coursera Plus là dịch vụ đăng ký thuê bao cao cấp từ nền tảng học trực tuyến Coursera. Với Coursera Plus, bạn có thể học không giới hạn trong số hơn 7.000 khóa học và nhận chứng chỉ từ các trường đại học và đối tác hàng đầu thế giới.</p>
+
+      <h3>Tính năng nổi bật:</h3>
+      <ul>
+        <li><strong>Truy cập không giới hạn</strong>: Học hơn 7.000 khóa học từ các trường top thế giới.</li>
+        <li><strong>Chứng chỉ được công nhận</strong>: Nhận chứng chỉ mang tên bạn sau khi hoàn thành khóa học.</li>
+        <li><strong>Đa dạng lĩnh vực</strong>: Từ CNTT, kinh doanh, đến khoa học dữ liệu, marketing và nhiều lĩnh vực khác.</li>
+        <li><strong>Học theo lộ trình</strong>: Các khóa học được tổ chức theo lộ trình phát triển sự nghiệp.</li>
+        <li><strong>Bài tập thực hành</strong>: Dự án thực tế giúp bạn áp dụng kiến thức đã học.</li>
+      </ul>
+
+      <h3>Bảng giá tài khoản:</h3>
+      <ul>
+        <li><strong>Gói 3 tháng</strong>: 590.000đ (tiết kiệm 59% so với giá gốc)</li>
+        <li><strong>Gói 6 tháng</strong>: 890.000đ (tiết kiệm 63% so với giá gốc)</li>
+        <li><strong>Gói 1 năm</strong>: 1.190.000đ (tiết kiệm 75% so với giá gốc)</li>
+      </ul>
+
+      <h3>Lưu ý quan trọng:</h3>
+      <p>- Tài khoản được nâng cấp trực tiếp từ tài khoản Coursera của bạn.<br>
+      - Bảo hành trọn thời gian sử dụng.<br>
+      - Nhận chứng chỉ mang tên bạn sau khi hoàn thành khóa học.</p>
+    `,
+    price: 1190000,
+    salePrice: 890000,
+    categoryId: 'cat-6', // Tài khoản học tập
+    imageUrl: '/images/coursera-plus.svg',
+    isFeatured: true,
+    isNew: true,
+    downloadCount: 320,
+    viewCount: 580,
+    rating: 4.9,
+    version: '2023',
+    size: 'N/A',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-11-20').toISOString(),
+    updatedAt: new Date('2023-11-20').toISOString(),
+    storeId: '1', // XLab Software
+    isAccount: true,
+    type: 'account',
+    features: [
+      'Truy cập không giới hạn hơn 7.000 khóa học',
+      'Chứng chỉ được công nhận từ trường đại học hàng đầu',
+      'Học từ các đối tác như Google, IBM, Meta và nhiều tổ chức khác',
+      'Cập nhật nội dung mới liên tục',
+      'Học linh hoạt mọi lúc, mọi nơi',
+      'Bảo hành 1 đổi 1 trong thời gian sử dụng'
+    ],
+    options: [
+      { name: '3 Tháng', price: 590000 },
+      { name: '6 Tháng', price: 890000 },
+      { name: '1 Năm', price: 1190000 }
+    ]
+  },
+  
+  // Tài khoản Udemy Premium
+  {
+    id: 'prod-udemy',
+    name: 'Tài khoản Udemy Premium',
+    slug: 'tai-khoan-udemy-premium',
+    description: 'Truy cập hàng ngàn khóa học thực hành từ các chuyên gia trong ngành.',
+    longDescription: `
+      <h2>Tài khoản Udemy Premium - Phát triển kỹ năng không giới hạn</h2>
+      <p>Udemy là nền tảng học trực tuyến hàng đầu với hơn 185.000 khóa học về gần như mọi chủ đề. Với tài khoản Udemy Premium, bạn có thể truy cập không giới hạn các khóa học chất lượng cao từ các chuyên gia hàng đầu trong ngành.</p>
+
+      <h3>Tính năng nổi bật:</h3>
+      <ul>
+        <li><strong>Đa dạng chủ đề</strong>: Lập trình, thiết kế, marketing, kinh doanh, phát triển cá nhân và nhiều lĩnh vực khác.</li>
+        <li><strong>Nội dung chất lượng cao</strong>: Video HD, bài tập thực hành và tài liệu đi kèm.</li>
+        <li><strong>Chứng nhận hoàn thành</strong>: Nhận chứng chỉ sau khi hoàn thành khóa học.</li>
+        <li><strong>Cập nhật trọn đời</strong>: Tiếp cận các cập nhật mới nhất của khóa học.</li>
+        <li><strong>Học theo tốc độ riêng</strong>: Không giới hạn thời gian, học bất cứ khi nào bạn muốn.</li>
+      </ul>
+
+      <h3>Bảng giá tài khoản:</h3>
+      <ul>
+        <li><strong>Gói 6 tháng</strong>: 450.000đ (tiết kiệm 70% so với giá gốc)</li>
+        <li><strong>Gói 1 năm</strong>: 750.000đ (tiết kiệm 75% so với giá gốc)</li>
+      </ul>
+
+      <h3>Lưu ý quan trọng:</h3>
+      <p>- Tài khoản được cấp, có thể đổi mật khẩu.<br>
+      - Bảo hành trong suốt thời gian sử dụng.<br>
+      - Có thể tải khóa học để học offline.</p>
+    `,
+    price: 750000,
+    salePrice: 450000,
+    categoryId: 'cat-6', // Tài khoản học tập
+    imageUrl: '/images/udemy-premium.svg',
+    isFeatured: true,
+    isNew: false,
+    downloadCount: 280,
+    viewCount: 450,
+    rating: 4.7,
+    version: '2023',
+    size: 'N/A',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-10-15').toISOString(),
+    updatedAt: new Date('2023-10-15').toISOString(),
+    storeId: '2', // VN Tech Solutions
+    isAccount: true,
+    type: 'account',
+    features: [
+      'Truy cập không giới hạn tất cả khóa học',
+      'Nội dung chất lượng cao từ các chuyên gia',
+      'Chứng chỉ hoàn thành được công nhận',
+      'Truy cập trọn đời các khóa học đã mua',
+      'Tải về học offline',
+      'Bảo hành trọn thời gian sử dụng'
+    ],
+    options: [
+      { name: '6 Tháng', price: 450000 },
+      { name: '1 Năm', price: 750000 }
     ]
   },
   

@@ -1,0 +1,29 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" rx="10" fill="#F5F5F5"/>
+  
+  <!-- Udemy logo shape -->
+  <path d="M40 68H60V132H40V68Z" fill="#A435F0"/>
+  <path d="M70 68H150C160 68 160 78 160 88V112C160 122 160 132 150 132H70V68Z" fill="#A435F0"/>
+  
+  <!-- U letter -->
+  <path d="M60 85V115C60 120 65 124 70 124H90C95 124 100 120 100 115V85" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Premium badge -->
+  <circle cx="150" cy="50" r="30" fill="#A435F0"/>
+  <path d="M140 50L148 58L162 44" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Premium text -->
+  <path d="M75 105H125" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <path d="M85 85H115" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <path d="M95 85V125" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  <path d="M105 85V125" stroke="white" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Crown -->
+  <path d="M100 152L120 142L140 152L120 162L100 152Z" fill="#FFD700"/>
+  <path d="M80 142L100 152L80 162L60 152L80 142Z" fill="#FFD700"/>
+  <path d="M60 152V162" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <path d="M80 162V172" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <path d="M100 152V162" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <path d="M120 162V172" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+  <path d="M140 152V162" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+</svg> 

@@ -22,6 +22,7 @@ export interface Product {
   isAccount?: boolean;
   type?: string;
   features?: string[];
+  options?: { name: string; price: number }[];
 }
 
 export interface Category {
