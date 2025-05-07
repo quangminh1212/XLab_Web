@@ -14,14 +14,25 @@
 /out/
 .next
 .vercel
+.next/
+.next/cache
+.next/static
+.next/server
+.next/trace
+.next/build-manifest.json
+.next/react-loadable-manifest.json
+**/*.pack
+**/*.pack.gz
 
-# production
+# build output
 /build
+/dist
 
 # misc
 .DS_Store
 *.pem
 Thumbs.db
+desktop.ini
 
 # debug
 npm-debug.log*
@@ -48,4 +59,10 @@ next-env.d.ts
 # Temporary files
 .temp
 .cache
-/temp 
+/temp
+.turbo
+.webpack
+
+# OS generated files
+desktop.ini
+ehthumbs.db 

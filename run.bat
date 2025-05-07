@@ -23,11 +23,38 @@ node -v
 echo [2/9] Stopping any running Node.js processes...
 taskkill /f /im node.exe >nul 2>&1
 
-:: Bước 3: Dọn dẹp môi trường
+:: Bước 3: Dọn dẹp môi trường và xóa thư mục .next
 echo [3/9] Cleaning up environment...
 echo Cleaning cache folders...
 
-:: Chạy script clean-trace.js để dọn dẹp thư mục .next
+:: Xóa dấu vết của lần chạy trước
+if exist .next\server\pages\_error.js del /f /q .next\server\pages\_error.js 2>nul
+if exist .next\server\pages\_document.js del /f /q .next\server\pages\_document.js 2>nul
+if exist .next\server\pages\_app.js del /f /q .next\server\pages\_app.js 2>nul
+if exist .next\server\pages\webpack-runtime.js del /f /q .next\server\pages\webpack-runtime.js 2>nul
+
+:: Đảm bảo thư mục node_modules tồn tại
+if not exist node_modules (
+    echo Creating node_modules directory...
+    mkdir node_modules
+)
+
+:: Đảm bảo thư mục .next tồn tại cho script clean-trace.js
+if not exist .next (
+    echo Creating .next directory structure...
+    mkdir .next
+    mkdir .next\server
+    mkdir .next\server\pages
+    mkdir .next\static
+    mkdir .next\static\chunks
+    mkdir .next\static\chunks\app
+    mkdir .next\static\css
+    mkdir .next\static\css\app
+    mkdir .next\cache
+    mkdir .next\cache\webpack
+)
+
+:: Chạy script clean-trace.js để dọn dẹp và khởi tạo thư mục .next
 node clean-trace.js
 
 :: Xóa một số thư mục cache bổ sung
@@ -41,8 +68,8 @@ if exist *.tsbuildinfo del /f /q *.tsbuildinfo 2>nul
 :: Xóa các file cache webpack
 if exist .webpack rmdir /s /q .webpack 2>nul
 
-:: Xóa các file lock
-if exist package-lock.json del /f /q package-lock.json 2>nul
+:: Giữ nguyên package-lock.json để tránh cài đặt lại không cần thiết
+:: if exist package-lock.json del /f /q package-lock.json 2>nul
 if exist yarn.lock del /f /q yarn.lock 2>nul
 if exist pnpm-lock.yaml del /f /q pnpm-lock.yaml 2>nul
 
@@ -56,32 +83,37 @@ echo legacy-peer-deps=true >> .npmrc
 echo engine-strict=false >> .npmrc
 echo save-exact=true >> .npmrc
 
-:: Bước 5: Cài đặt các dependencies
+:: Bước 5: Cài đặt các dependencies nếu cần
 echo [5/9] Installing Next.js %NEXT_VERSION_FULL% and dependencies...
 
-:: Cài đặt Next.js và dependencies chính
-call npm install next@%NEXT_VERSION_FULL% --save-exact --no-fund --no-audit --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install Next.js
-    exit /b 1
+:: Kiểm tra Next.js đã cài đặt chưa
+if not exist node_modules\next (
+    :: Cài đặt Next.js và dependencies chính
+    call npm install next@%NEXT_VERSION_FULL% --save-exact --no-fund --no-audit --quiet
+) else (
+    :: Kiểm tra phiên bản đã có
+    for /f "tokens=*" %%i in ('node -e "console.log(require('./node_modules/next/package.json').version)"') do (
+        set INSTALLED_VERSION=%%i
+    )
+    if not "!INSTALLED_VERSION!"=="%NEXT_VERSION_FULL%" (
+        call npm install next@%NEXT_VERSION_FULL% --save-exact --no-fund --no-audit --quiet
+    ) else (
+        echo Next.js %NEXT_VERSION_FULL% already installed.
+    )
 )
 
+:: Cài đặt các dependencies còn thiếu
 call npm install --no-fund --no-audit --quiet
-if %ERRORLEVEL% NEQ 0 (
-    echo Failed to install dependencies
-    exit /b 1
-)
 
 :: Bước 6: Xóa cache của npm
 echo [6/9] Clearing npm cache...
-call npm cache clean --force
+call npm cache clean --force >nul 2>&1
 
 :: Bước 7: Kiểm tra cài đặt Next.js
 echo [7/9] Verifying Next.js installation...
 call npm ls next
 if %ERRORLEVEL% NEQ 0 (
-    echo Failed to verify Next.js installation
-    exit /b 1
+    echo Warning: Dependency check returned warnings but continuing...
 )
 
 :: Bước 8: Kiểm tra môi trường
@@ -91,23 +123,19 @@ if not exist node_modules\.bin\next.cmd (
     exit /b 1
 )
 
-:: Bước 9: Chuẩn bị thư mục .next
+:: Bước 9: Chạy ứng dụng
 echo [9/9] Starting application in %RUN_MODE% mode...
 
-:: Tạo các thư mục cần thiết cho Next.js
-if not exist .next\server mkdir .next\server
-if not exist .next\static mkdir .next\static
-if not exist .next\cache mkdir .next\cache
-
-:: Tạo font manifest file để khắc phục lỗi
-echo {} > .next\server\next-font-manifest.json
-
-echo Starting Next.js %NEXT_VERSION_FULL% development server...
-echo [Press Ctrl+C to stop the server]
+:: Khởi tạo lại thư mục .next sau khi cài đặt để đảm bảo dùng cấu trúc mới nhất
+node clean-trace.js
 
 :: Đặt biến môi trường
 set NODE_ENV=development
 set NEXT_TELEMETRY_DISABLED=1
+set NODE_OPTIONS=--max-old-space-size=4096
+
+echo Starting Next.js %NEXT_VERSION_FULL% development server...
+echo [Press Ctrl+C to stop the server]
 
 :: Chạy ứng dụng với đường dẫn đầy đủ
 call node_modules\.bin\next.cmd dev

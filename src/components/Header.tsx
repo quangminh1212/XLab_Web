@@ -57,23 +57,19 @@ export default function Header() {
           {/* Logo và Brand */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div className="relative w-10 h-10 rounded-lg shadow-sm overflow-hidden transform transition-all group-hover:shadow-md group-hover:scale-105">
-                <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-blue-500 rounded-lg"></div>
-                <div className="absolute inset-0.5 bg-white rounded-md flex items-center justify-center">
-                  <Image
-                    src="/images/logo.jpg"
-                    alt={`${siteConfig.name} Logo`}
-                    width={36}
-                    height={36}
-                    className="object-contain rounded-md"
-                    priority
-                  />
-                </div>
+              <div className="w-10 h-10 rounded-md overflow-hidden">
+                <Image
+                  src="/images/logo.jpg"
+                  alt={`${siteConfig.name} Logo`}
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                  priority
+                />
               </div>
-              <span className="text-xl font-bold group-hover:opacity-80 transition-opacity duration-200">
-                <span className="bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent">X</span>
+              <span className="text-xl font-bold">
+                <span className="text-blue-600">X</span>
                 <span className="text-gray-900">Lab</span>
-                <span className="ml-1 text-xs text-gray-500 font-normal hidden sm:inline-flex">v1.0</span>
               </span>
             </Link>
           </div>

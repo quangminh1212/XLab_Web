@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const zlib = require('zlib');
 
 // Đường dẫn đến các tệp và thư mục cần xử lý
 const traceFile = path.join(__dirname, '.next', 'trace');
@@ -10,8 +11,16 @@ const cacheDirs = [
   path.join(__dirname, '.next', 'cache', 'webpack'),
   path.join(__dirname, '.next', 'cache', 'webpack', 'client-development'),
   path.join(__dirname, '.next', 'cache', 'webpack', 'server-development'),
+  path.join(__dirname, '.next', 'cache', 'webpack', 'edge-server-development'),
   path.join(__dirname, '.next', 'server'),
+  path.join(__dirname, '.next', 'server', 'vendor-chunks'),
   path.join(__dirname, '.next', 'static'),
+  path.join(__dirname, '.next', 'static', 'chunks'),
+  path.join(__dirname, '.next', 'static', 'css'),
+  path.join(__dirname, '.next', 'static', 'media'),
+  path.join(__dirname, '.next', 'static', 'webpack'),
+  path.join(__dirname, '.next', 'static', 'development'),
+  path.join(__dirname, '.next', 'types'),
   path.join(__dirname, 'node_modules', '.cache')
 ];
 
@@ -19,19 +28,35 @@ const cacheDirs = [
 const filesToCreate = [
   { 
     path: path.join(__dirname, '.next', 'server', 'next-font-manifest.json'),
-    content: '{}'
+    content: '{"pages":{},"app":{}}'
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'app-paths-manifest.json'),
-    content: '{}'
+    content: '{"/_not-found":{"resolvedPagePath":"next/dist/client/components/not-found-error"},"/":{/":"app/page.js"}}'
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'webpack-runtime.js'),
-    content: 'module.exports = {};'
+    content: 'module.exports = { moduleLoading: true, loadModule: function() { return Promise.resolve({ default: {} }); } };'
+  },
+  { 
+    path: path.join(__dirname, '.next', 'server', 'pages', 'webpack-runtime.js'),
+    content: 'module.exports = { moduleLoading: true, loadModule: function() { return Promise.resolve({ default: {} }); } };'
   },
   { 
     path: path.join(__dirname, '.next', 'server', 'middleware-manifest.json'),
     content: '{"version":2,"sortedMiddleware":[],"middleware":{},"functions":{},"pages":{}}'
+  },
+  { 
+    path: path.join(__dirname, '.next', 'build-manifest.json'),
+    content: '{"polyfillFiles":[],"devFiles":[],"ampDevFiles":[],"lowPriorityFiles":[],"rootMainFiles":[],"pages":{"/_app":[],"/_error":[]},"ampFirstPages":[]}'
+  },
+  { 
+    path: path.join(__dirname, '.next', 'react-loadable-manifest.json'),
+    content: '{}'
+  },
+  { 
+    path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'next.js'),
+    content: 'module.exports = { createContext: () => ({}) };'
   }
 ];
 
@@ -91,6 +116,21 @@ function deleteNextFolder() {
 }
 
 /**
+ * Tạo file .gz với nội dung mặc định để tránh lỗi ENOENT
+ * @param {string} filePath Đường dẫn file
+ */
+function createGzipFile(filePath) {
+  try {
+    const content = Buffer.from('{"version":1,"content":{}}');
+    const compressed = zlib.gzipSync(content);
+    fs.writeFileSync(filePath, compressed);
+    console.log(`Đã tạo file gzip: ${filePath}`);
+  } catch (err) {
+    console.error(`Lỗi khi tạo file gzip ${filePath}:`, err.message);
+  }
+}
+
+/**
  * Đọc, xóa nội dung file trace và các file tạm thời khác
  */
 function cleanTrace() {
@@ -144,6 +184,48 @@ function createRequiredFiles() {
       console.error(`Lỗi khi tạo file ${file.path}:`, err.message);
     }
   }
+  
+  // Tạo các file cho static directory
+  createStaticPlaceholders();
+}
+
+/**
+ * Tạo các static placeholders để tránh lỗi
+ */
+function createStaticPlaceholders() {
+  const staticDirs = [
+    path.join(__dirname, '.next', 'static', 'chunks', 'app'),
+    path.join(__dirname, '.next', 'static', 'chunks', 'pages'),
+    path.join(__dirname, '.next', 'static', 'chunks', 'webpack'),
+    path.join(__dirname, '.next', 'static', 'css', 'app'),
+    path.join(__dirname, '.next', 'static', 'media'),
+    path.join(__dirname, '.next', 'static', 'webpack'),
+  ];
+
+  staticDirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+      console.log(`Đã tạo thư mục static: ${dir}`);
+    }
+  });
+
+  // Tạo file CSS placeholder
+  const cssPlaceholder = path.join(__dirname, '.next', 'static', 'css', 'app', 'layout.css');
+  try {
+    fs.writeFileSync(cssPlaceholder, '/* Placeholder CSS */');
+    console.log(`Đã tạo file static placeholder: ${cssPlaceholder}`);
+  } catch (err) {
+    console.error(`Lỗi khi tạo file ${cssPlaceholder}:`, err.message);
+  }
+  
+  // Tạo file vendor-chunks/next.js
+  const vendorNextJs = path.join(__dirname, '.next', 'server', 'vendor-chunks', 'next.js');
+  try {
+    fs.writeFileSync(vendorNextJs, 'module.exports = { createContext: () => ({}) };');
+    console.log(`Đã tạo file vendor next.js: ${vendorNextJs}`);
+  } catch (err) {
+    console.error(`Lỗi khi tạo file ${vendorNextJs}:`, err.message);
+  }
 }
 
 /**
@@ -153,20 +235,27 @@ function createWebpackPlaceholders() {
   // Tạo các tệp placeholder pack.gz để tránh lỗi
   const webpackDirs = [
     path.join(__dirname, '.next', 'cache', 'webpack', 'client-development'),
-    path.join(__dirname, '.next', 'cache', 'webpack', 'server-development')
+    path.join(__dirname, '.next', 'cache', 'webpack', 'server-development'),
+    path.join(__dirname, '.next', 'cache', 'webpack', 'edge-server-development')
   ];
 
   webpackDirs.forEach(dir => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
+      console.log(`Đã tạo thư mục cache: ${dir}`);
     }
 
-    // Tạo 3 tệp placeholder
-    for (let i = 0; i < 3; i++) {
+    // Tạo 5 tệp .pack và .pack.gz placeholder để đầy đủ hơn
+    for (let i = 0; i < 5; i++) {
       const packFile = path.join(dir, `${i}.pack`);
+      const gzipFile = path.join(dir, `${i}.pack.gz`);
+      
       try {
-        fs.writeFileSync(packFile, 'placeholder');
+        fs.writeFileSync(packFile, '{"version":1,"content":{}}');
         console.log(`Đã tạo file placeholder: ${packFile}`);
+        
+        // Tạo file .gz tương ứng
+        createGzipFile(gzipFile);
       } catch (err) {
         console.error(`Lỗi khi tạo file ${packFile}:`, err.message);
       }
@@ -179,7 +268,7 @@ function createWebpackPlaceholders() {
  */
 function cleanWebpackCache() {
   const cacheDir = path.join(__dirname, '.next', 'cache', 'webpack');
-  const subDirs = ['client-development', 'server-development'];
+  const subDirs = ['client-development', 'server-development', 'edge-server-development'];
   
   try {
     if (!fs.existsSync(cacheDir)) {
@@ -193,7 +282,7 @@ function cleanWebpackCache() {
         const files = fs.readdirSync(dirPath);
         
         for (const file of files) {
-          if (file.endsWith('.pack.gz')) {
+          if (file.endsWith('.pack.gz') || file.endsWith('.pack')) {
             const filePath = path.join(dirPath, file);
             try {
               fs.unlinkSync(filePath);

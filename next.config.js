@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -68,16 +70,23 @@ const nextConfig = {
   },
   compiler: {
     styledComponents: true,
+    removeConsole: {
+      exclude: ['error', 'warn'],
+    },
   },
   experimental: {
     largePageDataBytes: 12800000,
+    disableOptimizedLoading: true,
+    appDocumentPreloading: false,
+    suppressHydrationWarning: true,
   },
   onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 4,
+    maxInactiveAge: 60 * 1000,
+    pagesBufferLength: 6,
   },
-  staticPageGenerationTimeout: 120,
+  staticPageGenerationTimeout: 180,
   poweredByHeader: false,
+  compress: true,
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
@@ -87,8 +96,33 @@ const nextConfig = {
         ignored: /node_modules/
       };
     }
+
+    config.infrastructureLogging = {
+      level: 'error',
+    };
+
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      path: false,
+      os: false,
+    };
+
+    config.performance = {
+      ...config.performance,
+      hints: false,
+    };
+
+    if (isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        'react': path.resolve(__dirname, 'node_modules/react'),
+      };
+    }
+
     return config;
   },
+  distDir: '.next',
 };
 
 module.exports = nextConfig;
