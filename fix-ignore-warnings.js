@@ -1,153 +1,98 @@
 /**
  * Fix cho cảnh báo useLayoutEffect trong Next.js
  * Script này patch file node_modules\next\dist\client\components\react-dev-overlay\ui\components\shadow-portal.tsx
- * và dev-overlay.tsx để chuyển useLayoutEffect sang useEffect trong development mode
+ * để chuyển useLayoutEffect sang useEffect trong development mode
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const files = [
-  {
-    path: path.join(
-      __dirname,
-      'node_modules',
-      'next',
-      'dist',
-      'client',
-      'components',
-      'react-dev-overlay',
-      'ui',
-      'components',
-      'shadow-portal.tsx'
-    ),
-    original: 'useLayoutEffect',
-    replacement: 'useEffect'
-  },
-  {
-    path: path.join(
-      __dirname,
-      'node_modules',
-      'next',
-      'dist',
-      'client',
-      'components',
-      'react-dev-overlay',
-      'ui',
-      'dev-overlay.tsx'
-    ),
-    original: 'useLayoutEffect',
-    replacement: 'useEffect'
-  },
-  {
-    path: path.join(
-      __dirname,
-      'node_modules',
-      'next',
-      'dist',
-      'compiled',
-      '@next',
-      'react-dev-overlay',
-      'dist',
-      'client.js'
-    ),
-    original: 'useLayoutEffect',
-    replacement: 'useEffect'
-  }
-];
+// Đường dẫn đến file shadow-portal.tsx
+const shadowPortalPath = path.join(
+  __dirname,
+  'node_modules',
+  'next',
+  'dist',
+  'client',
+  'components',
+  'react-dev-overlay',
+  'ui',
+  'components',
+  'shadow-portal.tsx'
+);
 
 console.log('===== Đang sửa cảnh báo useLayoutEffect =====');
 
-// Hàm tìm và thay thế trong nội dung file
-function findAndReplace(content, original, replacement) {
-  const regex = new RegExp(original, 'g');
-  return content.replace(regex, replacement);
+// Kiểm tra xem file có tồn tại không
+if (!fs.existsSync(shadowPortalPath)) {
+  console.error(`Không tìm thấy file: ${shadowPortalPath}`);
+  console.log('Vui lòng đảm bảo Next.js đã được cài đặt đúng cách.');
+  process.exit(1);
 }
 
-// Hàm tìm import useLayoutEffect và thay thế
-function replaceImport(content) {
-  // Thay thế trong phần import
-  return content.replace(
-    /import React, { useLayoutEffect/g, 
-    'import React, { useEffect'
-  ).replace(
-    /import(\s+){(\s*[^}]*,)?\s*useLayoutEffect(\s*,|\s*})/g,
-    (match, p1, p2, p3) => {
-      const prefix = p2 ? p2 : '';
-      const suffix = p3 ? p3 : '';
-      return `import${p1}{${prefix} useEffect${suffix}`;
-    }
+// Đọc nội dung file
+let content = fs.readFileSync(shadowPortalPath, 'utf8');
+
+// Tạo bản sao của file gốc
+const backupPath = `${shadowPortalPath}.backup`;
+if (!fs.existsSync(backupPath)) {
+  fs.writeFileSync(backupPath, content, 'utf8');
+  console.log(`Đã tạo bản sao: ${backupPath}`);
+}
+
+// Kiểm tra xem file đã được sửa chưa
+if (content.includes('useEffect as usePortalEffect')) {
+  console.log('File đã được sửa trước đó!');
+} else {
+  // Thay đổi import
+  content = content.replace(
+    'import React, { useLayoutEffect, useRef } from \'react\';',
+    'import React, { useEffect, useRef } from \'react\';'
   );
+
+  // Đổi useLayoutEffect thành useEffect
+  content = content.replace(/useLayoutEffect/g, 'useEffect');
+
+  // Lưu file
+  fs.writeFileSync(shadowPortalPath, content, 'utf8');
+  console.log('Đã sửa file thành công!');
 }
 
-// Xử lý từng file
-for (const file of files) {
-  try {
-    if (!fs.existsSync(file.path)) {
-      console.log(`File không tồn tại: ${file.path}`);
-      continue;
-    }
+// Kiểm tra file dev-overlay.tsx
+const devOverlayPath = path.join(
+  __dirname,
+  'node_modules',
+  'next',
+  'dist',
+  'client',
+  'components',
+  'react-dev-overlay',
+  'ui',
+  'dev-overlay.tsx'
+);
 
-    // Đọc nội dung file
-    let content = fs.readFileSync(file.path, 'utf8');
+if (fs.existsSync(devOverlayPath)) {
+  content = fs.readFileSync(devOverlayPath, 'utf8');
+  
+  // Tạo bản sao của file gốc
+  const backupDevPath = `${devOverlayPath}.backup`;
+  if (!fs.existsSync(backupDevPath)) {
+    fs.writeFileSync(backupDevPath, content, 'utf8');
+    console.log(`Đã tạo bản sao: ${backupDevPath}`);
+  }
+
+  // Thay đổi import và useLayoutEffect
+  if (content.includes('useLayoutEffect')) {
+    content = content.replace(
+      'import React, { useLayoutEffect, useState } from \'react\';',
+      'import React, { useEffect, useState } from \'react\';'
+    );
     
-    // Tạo bản sao file gốc nếu chưa có
-    const backupPath = `${file.path}.backup`;
-    if (!fs.existsSync(backupPath)) {
-      fs.writeFileSync(backupPath, content, 'utf8');
-      console.log(`Đã tạo bản sao: ${backupPath}`);
-    }
-
-    // Kiểm tra xem file đã được sửa chưa
-    if (content.includes(file.replacement) && !content.includes(file.original)) {
-      console.log(`File đã được sửa trước đó: ${file.path}`);
-      continue;
-    }
-
-    // Thay thế nội dung
-    let modifiedContent = replaceImport(content);
-    modifiedContent = findAndReplace(modifiedContent, file.original, file.replacement);
-
-    // Ghi lại file
-    fs.writeFileSync(file.path, modifiedContent, 'utf8');
-    console.log(`Đã sửa thành công: ${file.path}`);
-  } catch (error) {
-    console.error(`Lỗi khi xử lý file ${file.path}:`, error.message);
+    content = content.replace(/useLayoutEffect/g, 'useEffect');
+    
+    fs.writeFileSync(devOverlayPath, content, 'utf8');
+    console.log('Đã sửa file dev-overlay.tsx thành công!');
   }
-}
-
-// Tạo file .next/server/next-font-manifest.json nếu chưa tồn tại 
-try {
-  const fontManifestDir = path.join(__dirname, '.next', 'server');
-  const fontManifestPath = path.join(fontManifestDir, 'next-font-manifest.json');
-  
-  if (!fs.existsSync(fontManifestDir)) {
-    fs.mkdirSync(fontManifestDir, { recursive: true });
-  }
-  
-  if (!fs.existsSync(fontManifestPath)) {
-    fs.writeFileSync(fontManifestPath, JSON.stringify({ pages: {}, app: {} }), 'utf8');
-    console.log(`Đã tạo file: ${fontManifestPath}`);
-  }
-} catch (error) {
-  console.error('Lỗi khi tạo file font manifest:', error.message);
-}
-
-// Tạo file .next/static/css/app/layout.css nếu chưa tồn tại
-try {
-  const cssDir = path.join(__dirname, '.next', 'static', 'css', 'app');
-  const cssPath = path.join(cssDir, 'layout.css');
-  
-  if (!fs.existsSync(cssDir)) {
-    fs.mkdirSync(cssDir, { recursive: true });
-  }
-  
-  if (!fs.existsSync(cssPath)) {
-    fs.writeFileSync(cssPath, '/* Placeholder CSS file */', 'utf8');
-    console.log(`Đã tạo file: ${cssPath}`);
-  }
-} catch (error) {
-  console.error('Lỗi khi tạo file CSS:', error.message);
 }
 
 console.log('===== Hoàn tất sửa cảnh báo useLayoutEffect =====');
