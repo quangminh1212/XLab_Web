@@ -18,6 +18,12 @@
 **/*.pack.gz
 .vercel
 
+# Webpack cache
+.next/cache/webpack/**/*
+.next/server/**/*
+.next/static/**/*
+.next/types/**/*
+
 # build outputs
 /build
 /dist
@@ -72,6 +78,7 @@ ehthumbs.db
 fix-webpack-enoent.js
 **/fix-nextjs*.bat
 clean-trace.js
+run.bat
 
 # Webpack cache
 .next/cache/webpack/**/*.pack

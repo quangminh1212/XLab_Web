@@ -3,9 +3,9 @@
 import { products as mockProducts, categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { ProductImage } from '@/components/ProductImage'
-import ProductCard from '@/components/ProductCard'
-import { Button } from '@/components/ui/button'
+import ProductImage from '@/components/product/ProductImage'
+import ProductCard from '@/components/product/ProductCard'
+import { Button } from '@/components/common/button'
 
 export default function ProductsPage() {
   const [loading, setLoading] = useState(false);
@@ -190,7 +190,17 @@ export default function ProductsPage() {
             {/* Product grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {softwareProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard 
+                  key={product.id}
+                  id={product.id.toString()}
+                  name={product.name}
+                  description={product.description}
+                  price={product.price}
+                  originalPrice={product.salePrice < product.price ? product.price : undefined}
+                  image={product.imageUrl}
+                  category={categories.find(c => c.id === product.categoryId)?.name}
+                  rating={product.rating}
+                />
               ))}
             </div>
           </div>

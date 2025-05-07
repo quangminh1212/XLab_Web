@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import ProductCard from '@/components/ProductCard'
+import ProductCard from '@/components/product/ProductCard'
 import { Product } from '@/types'
 import { useState } from 'react'
 
@@ -339,9 +339,18 @@ export default function AccountsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {accounts.map((account) => (
-                <ProductCard key={account.id} product={account} />
+                <ProductCard
+                  key={account.id}
+                  id={account.id.toString()}
+                  name={account.name}
+                  description={account.description}
+                  price={account.salePrice || account.price}
+                  originalPrice={account.salePrice ? account.price : undefined}
+                  image={account.imageUrl}
+                  rating={account.rating}
+                />
               ))}
             </div>
           </div>

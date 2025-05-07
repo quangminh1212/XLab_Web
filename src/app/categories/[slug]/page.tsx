@@ -5,8 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { categories, products } from '@/data/mockData';
 import { notFound } from 'next/navigation';
-import ProductCard from '@/components/ProductCard';
-import { ProductImage } from '@/components/ProductImage';
+import ProductCard from '@/components/product/ProductCard';
+import ProductImage from '@/components/product/ProductImage';
 
 interface CategoryPageProps {
     params: {
@@ -55,7 +55,16 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 {categoryProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {categoryProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard 
+                                key={product.id}
+                                id={product.id.toString()}
+                                name={product.name}
+                                description={product.description}
+                                price={product.price}
+                                originalPrice={product.salePrice < product.price ? product.price : undefined}
+                                image={product.imageUrl}
+                                rating={product.rating}
+                            />
                         ))}
                     </div>
                 ) : (

@@ -1,12 +1,11 @@
 import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
-import Analytics from '@/components/Analytics'
+import { Header, Footer } from '@/components/layout'
+import { Analytics } from '@/components/common'
 import { siteConfig } from '@/config/siteConfig'
-import SessionProvider from '@/components/SessionProvider'
-import { CartProvider } from '@/components/ui/CartContext'
+import { SessionProvider } from '@/components/auth'
+import { CartProvider } from '@/components/cart'
 
 const inter = Inter({
   subsets: ['latin'],

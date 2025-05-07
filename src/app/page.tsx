@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from '@/components/product/ProductCard';
 import { products, categories } from '@/data/mockData';
 import Image from 'next/image';
 
@@ -284,15 +284,20 @@ function HomePage() {
                 </div>
 
                 {products.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                    {products
-                      .filter(product => !product.isAccount && product.type !== 'account')
-                      .slice(0, 8)
-                      .map(product => (
-                        <div className="w-full" key={product.id}>
-                          <ProductCard key={product.id} product={product} />
-                        </div>
-                      ))}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                    {featuredProducts.map((product) => (
+                      <ProductCard 
+                        key={product.id}
+                        id={product.id.toString()}
+                        name={product.name}
+                        description={product.description}
+                        price={product.price}
+                        originalPrice={product.salePrice < product.price ? product.price : undefined}
+                        image={product.imageUrl}
+                        category={products.find(p => p.categoryId === product.categoryId)?.name}
+                        rating={product.rating}
+                      />
+                    ))}
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
@@ -322,14 +327,22 @@ function HomePage() {
                 </div>
 
                 {featuredProducts.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 md:gap-4">
                     {featuredProducts
                       .filter(product => product.isAccount || product.type === 'account')
                       .slice(0, 4)
-                      .map(product => (
-                        <div className="w-full" key={product.id}>
-                          <ProductCard key={product.id} product={product} />
-                        </div>
+                      .map((product) => (
+                        <ProductCard 
+                          key={product.id}
+                          id={product.id.toString()}
+                          name={product.name}
+                          description={product.description}
+                          price={product.price}
+                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          image={product.imageUrl}
+                          category={products.find(p => p.categoryId === product.categoryId)?.name}
+                          rating={product.rating}
+                        />
                       ))}
                   </div>
                 ) : (
@@ -362,14 +375,22 @@ function HomePage() {
                 </div>
 
                 {newProducts.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 md:gap-4">
                     {newProducts
                       .filter(product => product.isAccount || product.type === 'account')
                       .slice(0, 4)
-                      .map(product => (
-                        <div className="w-full" key={product.id}>
-                          <ProductCard key={product.id} product={product} />
-                        </div>
+                      .map((product) => (
+                        <ProductCard 
+                          key={product.id}
+                          id={product.id.toString()}
+                          name={product.name}
+                          description={product.description}
+                          price={product.price}
+                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          image={product.imageUrl}
+                          category={products.find(p => p.categoryId === product.categoryId)?.name}
+                          rating={product.rating}
+                        />
                       ))}
                   </div>
                 ) : (
