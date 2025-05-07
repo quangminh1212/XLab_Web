@@ -20,16 +20,23 @@ declare module "next-auth" {
   }
 }
 
-// Đảm bảo NEXTAUTH_URL được đặt
+// Đảm bảo NEXTAUTH_URL được đặt đúng - luôn sử dụng URL tuyệt đối
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 // Không bật debug trong môi trường production
 const DEBUG_ENABLED = process.env.NODE_ENV === 'development';
 
+// Secret key cho NextAuth
+const AUTH_SECRET = process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=";
+
+// Google OAuth credentials
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "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";
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "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",
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
     }),
   ],
   pages: {
@@ -54,12 +61,12 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
+  secret: AUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as SessionStrategy,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  // Sửa cấu hình cookie để đảm bảo hoạt động đúng với Google
+  debug: DEBUG_ENABLED,
   cookies: {
     sessionToken: {
       name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,

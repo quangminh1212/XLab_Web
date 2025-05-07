@@ -10,6 +10,8 @@ const cacheDirs = [
   path.join(__dirname, '.next', 'cache', 'webpack'),
   path.join(__dirname, '.next', 'cache', 'webpack', 'client-development'),
   path.join(__dirname, '.next', 'cache', 'webpack', 'server-development'),
+  path.join(__dirname, '.next', 'server'),
+  path.join(__dirname, '.next', 'static'),
   path.join(__dirname, 'node_modules', '.cache')
 ];
 
@@ -18,6 +20,18 @@ const filesToCreate = [
   { 
     path: path.join(__dirname, '.next', 'server', 'next-font-manifest.json'),
     content: '{}'
+  },
+  { 
+    path: path.join(__dirname, '.next', 'server', 'app-paths-manifest.json'),
+    content: '{}'
+  },
+  { 
+    path: path.join(__dirname, '.next', 'server', 'webpack-runtime.js'),
+    content: 'module.exports = {};'
+  },
+  { 
+    path: path.join(__dirname, '.next', 'server', 'middleware-manifest.json'),
+    content: '{"version":2,"sortedMiddleware":[],"middleware":{},"functions":{},"pages":{}}'
   }
 ];
 
@@ -133,6 +147,34 @@ function createRequiredFiles() {
 }
 
 /**
+ * Tạo các webpack cache placeholder để tránh lỗi
+ */
+function createWebpackPlaceholders() {
+  // Tạo các tệp placeholder pack.gz để tránh lỗi
+  const webpackDirs = [
+    path.join(__dirname, '.next', 'cache', 'webpack', 'client-development'),
+    path.join(__dirname, '.next', 'cache', 'webpack', 'server-development')
+  ];
+
+  webpackDirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    // Tạo 3 tệp placeholder
+    for (let i = 0; i < 3; i++) {
+      const packFile = path.join(dir, `${i}.pack`);
+      try {
+        fs.writeFileSync(packFile, 'placeholder');
+        console.log(`Đã tạo file placeholder: ${packFile}`);
+      } catch (err) {
+        console.error(`Lỗi khi tạo file ${packFile}:`, err.message);
+      }
+    }
+  });
+}
+
+/**
  * Xóa các file cache webpack gây lỗi
  */
 function cleanWebpackCache() {
@@ -183,6 +225,9 @@ cacheDirs.forEach(dir => {
     console.error(`Lỗi khi tạo thư mục cache ${dir}:`, err.message);
   }
 });
+
+// Tạo các placeholder cho webpack cache
+createWebpackPlaceholders();
 
 // Thực thi hàm
 cleanTrace();
