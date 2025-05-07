@@ -131,7 +131,7 @@ function HomePage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900 text-sm">Nguyễn Văn A</h3>
+                      <h3 className="font-medium text-gray-900 text-sm">Trần Minh Đức</h3>
                       <p className="text-xs text-gray-500">Giám đốc công nghệ</p>
                     </div>
                   </div>
@@ -143,7 +143,7 @@ function HomePage() {
                     ))}
                   </div>
                   <p className="text-sm text-gray-700">
-                    "SmartAI Assistant đã giúp công ty chúng tôi tự động hóa nhiều quy trình, tiết kiệm thời gian và nguồn lực đáng kể."
+                    "X Lab đã giúp công ty chúng tôi tự động hóa nhiều quy trình, tiết kiệm thời gian và nguồn lực đáng kể. Chất lượng dịch vụ và sản phẩm thực sự ấn tượng."
                   </p>
                 </div>
 
@@ -155,7 +155,7 @@ function HomePage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900 text-sm">Trần Thị B</h3>
+                      <h3 className="font-medium text-gray-900 text-sm">Nguyễn Thanh Hà</h3>
                       <p className="text-xs text-gray-500">Nhà thiết kế</p>
                     </div>
                   </div>
@@ -167,7 +167,7 @@ function HomePage() {
                     ))}
                   </div>
                   <p className="text-sm text-gray-700">
-                    "VideoEditor Pro là phần mềm chỉnh sửa video tốt nhất tôi từng dùng. Giao diện trực quan và đầy đủ tính năng chuyên nghiệp."
+                    "Sản phẩm của X Lab có giao diện trực quan và đầy đủ tính năng chuyên nghiệp. Tôi đặc biệt thích cách họ thiết kế mọi thứ đơn giản nhưng vẫn đầy đủ công năng."
                   </p>
                 </div>
 
@@ -179,7 +179,7 @@ function HomePage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900 text-sm">Lê Văn C</h3>
+                      <h3 className="font-medium text-gray-900 text-sm">Phạm Hoàng Nam</h3>
                       <p className="text-xs text-gray-500">Sinh viên</p>
                     </div>
                   </div>
@@ -191,7 +191,55 @@ function HomePage() {
                     ))}
                   </div>
                   <p className="text-sm text-gray-700">
-                    "VoiceTyping giúp tôi ghi chép bài giảng nhanh hơn rất nhiều. Ứng dụng miễn phí nhưng chất lượng không kém các phần mềm trả phí."
+                    "X Lab cung cấp các giải pháp công nghệ hiệu quả với giá cả phải chăng cho sinh viên. Tôi rất hài lòng với chất lượng sản phẩm và dịch vụ hỗ trợ khách hàng."
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-3">
+                    <div className="bg-primary-100 rounded-full p-2 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary-600">
+                        <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97zM6.75 8.25a.75.75 0 01.75-.75h9a.75.75 0 010 1.5h-9a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H7.5z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-900 text-sm">Lê Thị Minh Trang</h3>
+                      <p className="text-xs text-gray-500">Giám đốc Marketing</p>
+                    </div>
+                  </div>
+                  <div className="mb-2 flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-yellow-400">
+                        <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-700">
+                    "Các công cụ phân tích của X Lab đã giúp chúng tôi tăng hiệu quả chiến dịch marketing lên 40%. Đặc biệt ấn tượng với khả năng phân tích thị trường và dự đoán xu hướng người dùng."
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
+                  <div className="flex items-center mb-3">
+                    <div className="bg-primary-100 rounded-full p-2 mr-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary-600">
+                        <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97zM6.75 8.25a.75.75 0 01.75-.75h9a.75.75 0 010 1.5h-9a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H7.5z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-gray-900 text-sm">Bùi Văn Thịnh</h3>
+                      <p className="text-xs text-gray-500">Chủ doanh nghiệp vừa và nhỏ</p>
+                    </div>
+                  </div>
+                  <div className="mb-2 flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-4 h-4 ${star <= 5 ? 'text-yellow-400' : 'text-gray-300'}`}>
+                        <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-700">
+                    "Là chủ doanh nghiệp nhỏ, tôi rất lo ngại về chi phí đầu tư công nghệ. X Lab đã cung cấp giải pháp giá cả hợp lý mà vẫn đáp ứng mọi nhu cầu. Hỗ trợ kỹ thuật nhanh chóng và hiệu quả."
                   </p>
                 </div>
               </div>
