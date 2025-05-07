@@ -7,6 +7,7 @@ import { formatCurrency } from '@/lib/utils';
 import { Product } from '@/types';
 import { ProductImage } from '@/components/ProductImage';
 import { products } from '@/data/mockData';
+import { useCart } from '@/components/ui/CartContext';
 
 // Component hiển thị yêu cầu hệ thống
 const SystemRequirements = () => (
@@ -103,6 +104,20 @@ export default function ProductDetail({ product }: { product: Product }) {
 
   // State để theo dõi số lượt xem
   const [viewCount, setViewCount] = useState(product.viewCount || 0);
+  
+  // Hook cart context
+  const { addItemToCart } = useCart();
+  
+  // Xử lý thêm vào giỏ hàng
+  const handleAddToCart = () => {
+    addItemToCart({
+      id: String(product.id),
+      name: product.name,
+      price: product.salePrice || product.price,
+      image: product.imageUrl || '/images/product-placeholder.svg',
+      quantity: 1
+    });
+  };
 
   // Tăng số lượt xem khi người dùng truy cập trang
   useEffect(() => {
@@ -128,7 +143,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                   // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
                   <div className="relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg">
                     <img
-                      src="/speech-text.png"
+                      src="/images/speech-text.svg"
                       alt={product.name}
                       className="w-full h-full object-contain transition-all duration-500 hover:scale-105"
                     />
@@ -144,7 +159,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                 ) : (
                   // Sử dụng ProductImage cho các sản phẩm khác
                   <ProductImage
-                    src={product.imageUrl || '/images/placeholder-product.jpg'}
+                    src={product.imageUrl || '/images/product-placeholder.svg'}
                     alt={product.name}
                     width={300}
                     height={300}
@@ -272,15 +287,15 @@ export default function ProductDetail({ product }: { product: Product }) {
                   Tải xuống
                 </a>
                 
-                <a 
-                  href={`/api/cart/add?id=${product.id}`}
+                <button 
+                  onClick={handleAddToCart}
                   className="border border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium inline-flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                   Thêm vào giỏ hàng
-                </a>
+                </button>
               </div>
               
               {/* Nút chia sẻ */}

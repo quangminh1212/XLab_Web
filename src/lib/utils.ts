@@ -153,7 +153,7 @@ export function debounce<T extends (...args: any[]) => any>(
   ms = 300
 ): (...args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout>;
-  return function(...args: Parameters<T>) {
+  return function(this: any, ...args: Parameters<T>) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), ms);
   };
@@ -244,4 +244,79 @@ export function getViewCount(slug: string): number {
 export function getDownloadCount(slug: string): number {
   if (!slug) return 0;
   return downloadCountCache[slug] || 0;
-} 
+}
+
+// Cart type definitions
+export interface CartItem {
+  id: string;
+  name: string;
+  version?: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
+// Cart utility functions
+export const getCartFromLocalStorage = (): CartItem[] => {
+  if (typeof window === 'undefined') return [];
+  
+  try {
+    const cartData = localStorage.getItem('cart');
+    return cartData ? JSON.parse(cartData) : [];
+  } catch (error) {
+    console.error('Error getting cart from localStorage:', error);
+    return [];
+  }
+};
+
+export const saveCartToLocalStorage = (cart: CartItem[]): void => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  } catch (error) {
+    console.error('Error saving cart to localStorage:', error);
+  }
+};
+
+export const addItemToCart = (cart: CartItem[], item: CartItem): CartItem[] => {
+  const existingItemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
+  
+  if (existingItemIndex >= 0) {
+    // Item already exists, update quantity
+    const newCart = [...cart];
+    newCart[existingItemIndex].quantity += item.quantity;
+    return newCart;
+  } else {
+    // Add new item
+    return [...cart, item];
+  }
+};
+
+export const removeItemFromCart = (cart: CartItem[], itemId: string): CartItem[] => {
+  return cart.filter((item) => item.id !== itemId);
+};
+
+export const updateItemQuantity = (cart: CartItem[], itemId: string, quantity: number): CartItem[] => {
+  return cart.map((item) => {
+    if (item.id === itemId) {
+      return { ...item, quantity: Math.max(1, quantity) };
+    }
+    return item;
+  });
+};
+
+export const clearCart = (): CartItem[] => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('cart');
+  }
+  return [];
+};
+
+export const calculateCartTotals = (cart: CartItem[]) => {
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const tax = subtotal * 0.1; // 10% tax
+  const total = subtotal + tax;
+
+  return { subtotal, tax, total };
+}; 

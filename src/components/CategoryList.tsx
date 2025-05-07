@@ -89,7 +89,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
         >
           <div className="relative w-14 h-14 mb-2">
             <Image
-              src={category.imageUrl || '/images/placeholder-product.jpg'}
+              src={category.imageUrl || '/images/product-placeholder.svg'}
               alt={category.name}
               width={64}
               height={64}

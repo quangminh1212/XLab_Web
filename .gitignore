@@ -31,6 +31,14 @@
 .next/static/chunks/main-app.js
 .next/static/webpack/*.webpack.hot-update.json
 
+# Thêm các mục bao gồm tất cả các tệp webpack cache có thể được tạo ra
+.next/cache/webpack/client-development/*.pack
+.next/cache/webpack/client-development/*.pack.gz
+.next/cache/webpack/server-development/*.pack
+.next/cache/webpack/server-development/*.pack.gz
+.next/cache/webpack/edge-server-development/*.pack
+.next/cache/webpack/edge-server-development/*.pack.gz
+
 # build output
 /build
 /dist

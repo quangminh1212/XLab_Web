@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Product } from '@/types';
 import { ProductImage } from './ProductImage';
 import { formatCurrency } from '@/lib/utils';
+import { useCart } from './ui/CartContext';
 
 interface ProductCardProps {
   product: Product;
@@ -113,6 +114,8 @@ const getProductIcon = (productSlug: string) => {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addItemToCart } = useCart();
+  
   if (!product) return null;
 
   // Tính toán giảm giá
@@ -125,6 +128,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const productLink = product.isAccount || product.type === 'account'
     ? `/accounts/${product.id}`
     : `/products/${product.id}`;
+    
+  // Xử lý thêm vào giỏ hàng
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Ngăn chặn chuyển hướng khi nhấp vào liên kết
+    e.stopPropagation(); // Ngăn lan truyền sự kiện
+    
+    addItemToCart({
+      id: String(product.id),
+      name: product.name,
+      price: product.salePrice || product.price,
+      image: product.imageUrl || '/images/product-placeholder.svg',
+      quantity: 1
+    });
+  };
 
   return (
     <Link 
@@ -135,7 +152,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center p-3">
           <div className="w-16 h-16 relative">
             <ProductImage
-              src={product.imageUrl || '/images/placeholder-product.jpg'}
+              src={product.imageUrl || '/images/product-placeholder.svg'}
               alt={product.name}
               width={80} 
               height={80}
@@ -187,12 +204,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
           </div>
 
-          <div className="flex items-center text-sm text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-yellow-400 mr-0.5">
-              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-            </svg>
-            {product.rating}
-          </div>
+          <button 
+            onClick={handleAddToCart}
+            className="bg-primary-600 hover:bg-primary-700 text-white text-xs px-2 py-1 rounded transition-colors"
+          >
+            Thêm vào giỏ
+          </button>
         </div>
       </div>
     </Link>

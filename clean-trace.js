@@ -550,19 +550,19 @@ function createStaticPlaceholders() {
 function createWebpackPlaceholders() {
   try {
     // Client development placeholders
-    ['0', '1', '2'].forEach(index => {
+    ['0', '1', '2', '3', '4', '5'].forEach(index => {
       const clientPackPath = path.join(__dirname, '.next', 'cache', 'webpack', 'client-development', `${index}.pack`);
       createGzipFile(clientPackPath);
     });
 
     // Server development placeholders
-    ['0', '1', '2'].forEach(index => {
+    ['0', '1', '2', '3', '4', '5'].forEach(index => {
       const serverPackPath = path.join(__dirname, '.next', 'cache', 'webpack', 'server-development', `${index}.pack`);
       createGzipFile(serverPackPath);
     });
 
     // Edge server development placeholders
-    ['0', '1', '2'].forEach(index => {
+    ['0', '1', '2', '3', '4', '5'].forEach(index => {
       const edgePackPath = path.join(__dirname, '.next', 'cache', 'webpack', 'edge-server-development', `${index}.pack`);
       createGzipFile(edgePackPath);
     });
@@ -581,7 +581,7 @@ function cleanWebpackCache() {
   
   try {
     // Client development
-    ['0', '1', '2'].forEach(index => {
+    ['0', '1', '2', '3', '4', '5'].forEach(index => {
       const clientPackPath = path.join(__dirname, '.next', 'cache', 'webpack', 'client-development', `${index}.pack`);
       const clientGzipPath = `${clientPackPath}.gz`;
       safeDeleteFile(clientPackPath);
@@ -589,7 +589,7 @@ function cleanWebpackCache() {
     });
 
     // Server development
-    ['0', '1', '2'].forEach(index => {
+    ['0', '1', '2', '3', '4', '5'].forEach(index => {
       const serverPackPath = path.join(__dirname, '.next', 'cache', 'webpack', 'server-development', `${index}.pack`);
       const serverGzipPath = `${serverPackPath}.gz`;
       safeDeleteFile(serverPackPath);
@@ -597,7 +597,7 @@ function cleanWebpackCache() {
     });
 
     // Edge server development
-    ['0', '1', '2'].forEach(index => {
+    ['0', '1', '2', '3', '4', '5'].forEach(index => {
       const edgePackPath = path.join(__dirname, '.next', 'cache', 'webpack', 'edge-server-development', `${index}.pack`);
       const edgeGzipPath = `${edgePackPath}.gz`;
       safeDeleteFile(edgePackPath);

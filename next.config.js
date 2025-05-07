@@ -82,7 +82,7 @@ const nextConfig = {
   staticPageGenerationTimeout: 180,
   poweredByHeader: false,
   compress: true,
-  assetPrefix: '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
@@ -111,7 +111,7 @@ const nextConfig = {
 
     config.output = {
       ...config.output,
-      publicPath: '/_next/',
+      publicPath: dev ? '/_next/' : undefined,
     };
 
     return config;
