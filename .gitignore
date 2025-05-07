@@ -12,16 +12,21 @@
 # next.js
 /.next/
 /out/
-.next
+.next/
 .next/**/*
 **/*.pack
 **/*.pack.gz
 .vercel
 
 # Webpack cache
+.next/cache/
+.next/cache/webpack/
 .next/cache/webpack/**/*
+.next/server/
 .next/server/**/*
+.next/static/
 .next/static/**/*
+.next/types/
 .next/types/**/*
 
 # build outputs
@@ -67,6 +72,8 @@ next-env.d.ts
 # OS generated files
 desktop.ini
 ehthumbs.db
+Icon?
+Thumbs.db
 
 # Backup files
 **/*-backup*

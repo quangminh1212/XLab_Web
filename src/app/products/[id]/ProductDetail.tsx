@@ -5,9 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import { Product } from '@/types';
-import { ProductImage } from '@/components/ProductImage';
+import ProductImage from '@/components/product/ProductImage';
 import { products } from '@/data/mockData';
-import { useCart } from '@/components/ui/CartContext';
+import { useCart } from '@/components/cart/CartContext';
 
 // Component hiển thị yêu cầu hệ thống
 const SystemRequirements = () => (
@@ -74,11 +74,9 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
             <div className="flex items-center space-x-3">
               <div className="w-16 h-16 bg-white rounded-md overflow-hidden flex items-center justify-center">
                 <ProductImage
-                  src={product.imageUrl}
-                  alt={product.name}
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-contain"
+                  images={[product.imageUrl || '/images/product-placeholder.svg']}
+                  name={product.name}
+                  aspectRatio="square"
                 />
               </div>
               <div className="flex-1">
@@ -106,17 +104,22 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [viewCount, setViewCount] = useState(product.viewCount || 0);
   
   // Hook cart context
-  const { addItemToCart } = useCart();
+  const { addItem } = useCart();
   
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
-    addItemToCart({
-      id: String(product.id),
-      name: product.name,
-      price: product.salePrice || product.price,
-      image: product.imageUrl || '/images/product-placeholder.svg',
-      quantity: 1
-    });
+    const selectedProduct = products.find(p => p.id === parseInt(product.id));
+    if (selectedProduct) {
+      addItem({
+        id: selectedProduct.id.toString(),
+        name: selectedProduct.name,
+        price: selectedProduct.salePrice || selectedProduct.price,
+        quantity: 1,
+        image: selectedProduct.imageUrl
+      });
+      return true;
+    }
+    return false;
   };
 
   // Tăng số lượt xem khi người dùng truy cập trang
@@ -142,9 +145,11 @@ export default function ProductDetail({ product }: { product: Product }) {
                 {isVoiceTyping ? (
                   // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
                   <div className="relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg">
-                    <img
+                    <Image
                       src="/images/speech-text.svg"
                       alt={product.name}
+                      width={300}
+                      height={300}
                       className="w-full h-full object-contain transition-all duration-500 hover:scale-105"
                     />
                     {/* Overlay gradient */}
@@ -159,12 +164,9 @@ export default function ProductDetail({ product }: { product: Product }) {
                 ) : (
                   // Sử dụng ProductImage cho các sản phẩm khác
                   <ProductImage
-                    src={product.imageUrl || '/images/product-placeholder.svg'}
-                    alt={product.name}
-                    width={300}
-                    height={300}
-                    className="max-h-full max-w-full"
-                    priority={true}
+                    images={[product.imageUrl || '/images/product-placeholder.svg']}
+                    name={product.name}
+                    aspectRatio="square"
                   />
                 )}
               </div>

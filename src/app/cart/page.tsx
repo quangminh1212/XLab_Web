@@ -7,9 +7,25 @@ import { calculateCartTotals, formatCurrency } from '@/lib/utils'
 import { useState } from 'react'
 import { products } from '@/data/mockData'
 
+// Kết hợp interface CartItem từ CartContext và utils
+interface CartItemWithVersion {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  version?: string;
+}
+
 export default function CartPage() {
-  const { items: cart, removeItem: removeItemFromCart, updateQuantity: updateItemQuantity, clearCart, addItem: addItemToCart } = useCart();
+  const { items: cartItems, removeItem: removeItemFromCart, updateQuantity: updateItemQuantity, clearCart, addItem: addItemToCart } = useCart();
   const [couponCode, setCouponCode] = useState('');
+  
+  // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
+  const cart = cartItems.map(item => ({
+    ...item,
+    image: item.image || '/images/product-placeholder.svg'
+  }));
   
   // Calculate cart totals
   const { subtotal, tax, total } = calculateCartTotals(cart);
@@ -77,7 +93,6 @@ export default function CartPage() {
                           <div className="flex flex-col md:flex-row md:justify-between">
                             <div>
                               <h3 className="text-lg font-bold">{item.name}</h3>
-                              {item.version && <p className="text-sm text-gray-600">Phiên bản: {item.version}</p>}
                             </div>
                             <p className="text-lg font-bold text-primary-600 mt-1 md:mt-0">
                               {formatCurrency(item.price)}
@@ -280,12 +295,11 @@ export default function CartPage() {
                     <button 
                       className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded text-sm transition-colors"
                       onClick={() => addItemToCart({
-                        id: String(product.id),
+                        id: product.id.toString(),
                         name: product.name,
                         price: product.salePrice || product.price,
-                        image: product.imageUrl || '/images/product-placeholder.svg',
                         quantity: 1,
-                        version: product.version
+                        image: product.imageUrl || '/images/product-placeholder.svg'
                       })}
                     >
                       Thêm vào giỏ
