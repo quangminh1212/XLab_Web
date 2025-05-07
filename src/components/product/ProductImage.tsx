@@ -1,0 +1,130 @@
+'use client'
+
+import { useState } from 'react'
+import Image from 'next/image'
+
+interface ProductImageProps {
+  images: string[] | undefined
+  name: string
+  aspectRatio?: string
+}
+
+const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProps) => {
+  const [mainImage, setMainImage] = useState(images?.[0] || '/images/placeholder/product-placeholder.jpg')
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isZoomed, setIsZoomed] = useState(false)
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 })
+
+  // Fallback array if images is undefined
+  const imageArray = images?.length ? images : ['/images/placeholder/product-placeholder.jpg']
+
+  const handleThumbnailClick = (image: string, index: number) => {
+    setMainImage(image)
+    setSelectedIndex(index)
+    setIsLoading(true)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isZoomed) return
+
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - left) / width) * 100
+    const y = ((e.clientY - top) / height) * 100
+
+    setZoomPosition({ x, y })
+  }
+
+  const handleMouseEnter = () => {
+    setIsZoomed(true)
+  }
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false)
+  }
+
+  // Pick aspect ratio classes based on the prop
+  const getAspectRatioClass = () => {
+    switch (aspectRatio) {
+      case 'square':
+        return 'pt-[100%]' // 1:1
+      case 'landscape':
+        return 'pt-[75%]' // 4:3
+      case 'portrait':
+        return 'pt-[133.33%]' // 3:4
+      case 'widescreen':
+        return 'pt-[56.25%]' // 16:9
+      default:
+        return 'pt-[100%]' // Default to square
+    }
+  }
+
+  return (
+    <div className="w-full">
+      {/* Main Image */}
+      <div
+        className={`relative ${getAspectRatioClass()} mb-3 bg-gray-100 border border-gray-200 rounded-lg overflow-hidden`}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="absolute inset-0">
+          <Image
+            src={mainImage}
+            alt={name}
+            fill
+            className={`object-contain transition-opacity duration-300 ${
+              isLoading ? 'opacity-0' : 'opacity-100'
+            }`}
+            onLoad={() => setIsLoading(false)}
+            style={{
+              transform: isZoomed ? 'scale(1.5)' : 'scale(1)',
+              transformOrigin: isZoomed ? `${zoomPosition.x}% ${zoomPosition.y}%` : 'center',
+              transition: isZoomed ? 'none' : 'transform 0.3s ease',
+            }}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
+        </div>
+
+        {/* Loading spinner */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        )}
+
+        {/* Zoom instruction */}
+        <div className="absolute bottom-2 right-2 text-xs bg-black bg-opacity-50 text-white py-1 px-2 rounded">
+          Di chuột để phóng to
+        </div>
+      </div>
+
+      {/* Thumbnails row */}
+      {imageArray.length > 1 && (
+        <div className="flex space-x-2 overflow-x-auto pb-2">
+          {imageArray.map((image, index) => (
+            <button
+              key={index}
+              onClick={() => handleThumbnailClick(image, index)}
+              className={`relative w-16 h-16 flex-shrink-0 border-2 rounded overflow-hidden focus:outline-none ${
+                selectedIndex === index ? 'border-blue-500' : 'border-gray-200'
+              }`}
+              aria-label={`View image ${index + 1}`}
+            >
+              <Image
+                src={image}
+                alt={`${name} - thumbnail ${index + 1}`}
+                fill
+                className="object-cover"
+                sizes="64px"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default ProductImage 

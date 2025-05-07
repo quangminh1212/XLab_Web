@@ -13,33 +13,12 @@
 /.next/
 /out/
 .next
-.vercel
-.next/
-.next/cache
-.next/static
-.next/server
-.next/trace
-.next/build-manifest.json
-.next/react-loadable-manifest.json
+.next/**/*
 **/*.pack
 **/*.pack.gz
-.next/static/chunks/app-pages-internals.js
-.next/static/chunks/app/not-found.js
-.next/static/chunks/app/page.js
-.next/static/chunks/app/loading.js
-.next/static/css/app/layout.css
-.next/static/chunks/main-app.js
-.next/static/webpack/*.webpack.hot-update.json
+.vercel
 
-# Thêm các mục bao gồm tất cả các tệp webpack cache có thể được tạo ra
-.next/cache/webpack/client-development/*.pack
-.next/cache/webpack/client-development/*.pack.gz
-.next/cache/webpack/server-development/*.pack
-.next/cache/webpack/server-development/*.pack.gz
-.next/cache/webpack/edge-server-development/*.pack
-.next/cache/webpack/edge-server-development/*.pack.gz
-
-# production
+# build outputs
 /build
 /dist
 
@@ -60,9 +39,6 @@ yarn-error.log*
 .env.*
 !.env.example
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
@@ -80,7 +56,23 @@ next-env.d.ts
 /temp
 .turbo
 .webpack
+.swc
 
 # OS generated files
 desktop.ini
-ehthumbs.db 
+ehthumbs.db
+
+# Backup files
+**/*-backup*
+**/*.backup.*
+**/*.bak
+**/backup-*
+
+# Các file fix script tự tạo
+fix-webpack-enoent.js
+**/fix-nextjs*.bat
+clean-trace.js
+
+# Webpack cache
+.next/cache/webpack/**/*.pack
+.next/cache/webpack/**/*.pack.gz 
