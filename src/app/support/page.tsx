@@ -244,7 +244,7 @@ export default function SupportPage() {
                 1900-1234
               </a>
               <p className="text-sm text-gray-500 mt-2">
-                8:00 - 17:30, Thứ 2 - Thứ 6
+                8:00 - 17:30, Thứ 2 - Chủ Nhật
               </p>
             </div>
             
