@@ -6,6 +6,7 @@ import { Analytics } from '@/components/common'
 import { siteConfig } from '@/config/siteConfig'
 import { SessionProvider } from '@/components/auth'
 import { CartProvider } from '@/components/cart'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -91,14 +92,16 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <SessionProvider>
-          <CartProvider>
-            <div className="flex flex-col min-h-screen">
-              <Header />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
-            <Analytics />
-          </CartProvider>
+          <NotificationProvider>
+            <CartProvider>
+              <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+              </div>
+              <Analytics />
+            </CartProvider>
+          </NotificationProvider>
         </SessionProvider>
       </body>
     </html>

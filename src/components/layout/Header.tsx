@@ -5,12 +5,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+
+  // Sử dụng NotificationContext
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   const isActive = (path: string) => {
     return pathname === path ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600';
@@ -19,11 +24,19 @@ const Header = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
     if (isProfileOpen) setIsProfileOpen(false);
+    if (isNotificationOpen) setIsNotificationOpen(false);
   };
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
     if (isOpen) setIsOpen(false);
+    if (isNotificationOpen) setIsNotificationOpen(false);
+  };
+
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+    if (isOpen) setIsOpen(false);
+    if (isProfileOpen) setIsProfileOpen(false);
   };
 
   return (
@@ -82,6 +95,86 @@ const Header = () => {
 
           {/* Right Side - Auth + Cart */}
           <div className="flex items-center space-x-4">
+            {/* Notification Icon */}
+            {session && (
+              <div className="relative">
+                <button
+                  onClick={toggleNotification}
+                  className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                  aria-label="Thông báo"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notification Dropdown */}
+                {isNotificationOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-10">
+                    <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="text-sm font-semibold text-gray-900">Thông báo</h3>
+                      {unreadCount > 0 && (
+                        <button 
+                          onClick={markAllAsRead}
+                          className="text-xs text-primary-600 hover:text-primary-800"
+                        >
+                          Đánh dấu tất cả đã đọc
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.slice(0, 5).map((notification) => (
+                          <div 
+                            key={notification.id} 
+                            className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
+                            onClick={() => markAsRead(notification.id)}
+                          >
+                            <div className="flex justify-between items-start">
+                              <h4 className="text-sm font-medium text-gray-900">{notification.title}</h4>
+                              <span className="text-xs text-gray-500">{notification.time}</span>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1">{notification.content}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="px-4 py-6 text-center">
+                          <p className="text-sm text-gray-500">Không có thông báo nào</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="px-4 py-2 border-t border-gray-100 text-center">
+                      <Link
+                        href="/notifications"
+                        className="text-xs text-primary-600 hover:text-primary-800"
+                        onClick={() => setIsNotificationOpen(false)}
+                      >
+                        Xem tất cả thông báo
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Cart Icon */}
             <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
               <svg
