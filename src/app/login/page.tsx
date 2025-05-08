@@ -56,7 +56,7 @@ export default function LoginPage() {
       }
 
       console.log('Sign in successful, redirecting to homepage');
-      window.location.href = '/';
+      router.push(callbackUrl);
     } catch (err) {
       console.error('Lỗi đăng nhập:', err);
       setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.');
