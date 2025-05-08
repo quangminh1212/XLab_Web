@@ -4,7 +4,7 @@ export default function ServicesPage() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-secondary-600 text-white py-16">
+      <section className="bg-primary-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Dịch vụ</h1>
           <p className="text-xl max-w-3xl">
@@ -20,7 +20,7 @@ export default function ServicesPage() {
             {/* Service 1 */}
             <div className="flex flex-col md:flex-row gap-6">
               <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-secondary-100 text-secondary-600 rounded-full w-20 h-20 flex items-center justify-center">
+                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-10 w-10"
@@ -44,7 +44,7 @@ export default function ServicesPage() {
                 </p>
                 <Link
                   href="/services/software-development"
-                  className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
+                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
                 >
                   Tìm hiểu thêm
                   <svg
@@ -66,7 +66,7 @@ export default function ServicesPage() {
             {/* Service 2 */}
             <div className="flex flex-col md:flex-row gap-6">
               <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-secondary-100 text-secondary-600 rounded-full w-20 h-20 flex items-center justify-center">
+                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-10 w-10"
@@ -90,7 +90,7 @@ export default function ServicesPage() {
                 </p>
                 <Link
                   href="/services/cloud-services"
-                  className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
+                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
                 >
                   Tìm hiểu thêm
                   <svg
@@ -112,7 +112,7 @@ export default function ServicesPage() {
             {/* Service 3 */}
             <div className="flex flex-col md:flex-row gap-6">
               <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-secondary-100 text-secondary-600 rounded-full w-20 h-20 flex items-center justify-center">
+                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-10 w-10"
@@ -136,7 +136,7 @@ export default function ServicesPage() {
                 </p>
                 <Link
                   href="/services/consulting"
-                  className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
+                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
                 >
                   Tìm hiểu thêm
                   <svg
@@ -158,7 +158,7 @@ export default function ServicesPage() {
             {/* Service 4 */}
             <div className="flex flex-col md:flex-row gap-6">
               <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-secondary-100 text-secondary-600 rounded-full w-20 h-20 flex items-center justify-center">
+                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-10 w-10"
@@ -182,7 +182,7 @@ export default function ServicesPage() {
                 </p>
                 <Link
                   href="/services/technical-support"
-                  className="text-secondary-600 font-medium hover:text-secondary-700 inline-flex items-center"
+                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
                 >
                   Tìm hiểu thêm
                   <svg
@@ -208,7 +208,7 @@ export default function ServicesPage() {
       <section className="py-16 bg-gray-50">
         <div className="container">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Dịch vụ bổ sung</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Dịch vụ bổ sung</h2>
             <p className="text-gray-600 max-w-3xl mx-auto">
               Ngoài các dịch vụ chính, chúng tôi còn cung cấp nhiều dịch vụ bổ sung để đáp ứng đầy đủ nhu cầu của doanh nghiệp.
             </p>
@@ -260,8 +260,82 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* Service Features */}
+      <section className="py-16">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Các tính năng nổi bật</h2>
+            <p className="text-gray-600 max-w-3xl mx-auto">
+              Chúng tôi cung cấp nhiều tính năng và lợi ích để đảm bảo dịch vụ của chúng tôi đáp ứng được nhu cầu của bạn.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Chất lượng cao</h3>
+              <p className="text-gray-600">Đảm bảo chất lượng cao nhất trong mọi dịch vụ chúng tôi cung cấp.</p>
+            </div>
+
+            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Đúng thời hạn</h3>
+              <p className="text-gray-600">Hoàn thành dự án đúng thời hạn mà không làm ảnh hưởng đến chất lượng.</p>
+            </div>
+
+            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Bảo mật</h3>
+              <p className="text-gray-600">Bảo vệ dữ liệu và thông tin của bạn với các tiêu chuẩn bảo mật cao nhất.</p>
+            </div>
+
+            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Chi phí hợp lý</h3>
+              <p className="text-gray-600">Cung cấp dịch vụ với chi phí phải chăng và minh bạch, không có phí ẩn.</p>
+            </div>
+
+            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 8l-7 7-7-7" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Mở rộng dễ dàng</h3>
+              <p className="text-gray-600">Dễ dàng mở rộng dịch vụ khi nhu cầu kinh doanh của bạn tăng lên.</p>
+            </div>
+
+            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Hiệu suất cao</h3>
+              <p className="text-gray-600">Tối ưu hóa hiệu suất cho mọi dịch vụ và giải pháp chúng tôi cung cấp.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-16 bg-secondary-600 text-white">
+      <section className="py-16 bg-primary-600 text-white">
         <div className="container">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-6">
@@ -272,7 +346,7 @@ export default function ServicesPage() {
             </p>
             <Link
               href="/contact"
-              className="btn bg-white text-secondary-600 hover:bg-gray-100 px-8 py-3 text-lg"
+              className="btn bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 text-lg"
             >
               Đặt lịch tư vấn
             </Link>
