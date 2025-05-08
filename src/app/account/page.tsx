@@ -369,7 +369,7 @@ export default function AccountPage() {
       <section className="py-8 bg-gray-50">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md h-full">
               <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng sản phẩm đã mua</h3>
               <p className="text-3xl font-bold text-gray-800">
                 {totalProducts}
@@ -393,7 +393,7 @@ export default function AccountPage() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md h-full">
               <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
               <p className="text-3xl font-bold text-gray-800">{formatCurrency(totalSpent)}</p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
@@ -404,7 +404,7 @@ export default function AccountPage() {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-lg shadow-md h-full">
               <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
               <p className="text-3xl font-bold text-green-600">{formatCurrency(totalSaved)}</p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
