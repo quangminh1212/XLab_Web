@@ -314,10 +314,10 @@ function HomePage() {
                 )}
               </div>
 
-              {/* Tài khoản nổi bật */}
+              {/* Tài khoản */}
               <div>
                 <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-lg font-bold">Tài khoản nổi bật</h2>
+                  <h2 className="text-lg font-bold">Tài khoản</h2>
                   <Link
                     href="/accounts"
                     className="text-primary-600 hover:text-primary-800 transition-colors text-sm"
@@ -351,7 +351,7 @@ function HomePage() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
-                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có tài khoản nổi bật</h3>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có tài khoản</h3>
                       <p className="text-gray-500 max-w-lg mx-auto text-xs">
                         Chúng tôi sẽ sớm cập nhật các tài khoản tốt nhất.
                       </p>
@@ -361,109 +361,61 @@ function HomePage() {
               </div>
             </div>
 
-            {/* Tài khoản mới */}
-            <section className="mb-4 bg-white rounded-xl p-3 shadow-sm">
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-lg font-bold">Tài khoản mới</h2>
-                  <Link
-                    href="/accounts"
-                    className="text-primary-600 hover:text-primary-800 transition-colors text-sm"
+            {/* Câu hỏi thường gặp */}
+            <section className="py-10 bg-gray-50">
+              <div className="mx-auto px-4 w-full">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
+                  <p className="text-gray-600 max-w-2xl mx-auto">
+                    Giải đáp những thắc mắc phổ biến của khách hàng về sản phẩm và dịch vụ của XLab
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-none mx-auto">
+                  <div className="bg-white p-5 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Làm thế nào để tải xuống phần mềm?</h3>
+                    <p className="text-gray-600">
+                      Bạn có thể tải xuống phần mềm miễn phí tại trang sản phẩm tương ứng sau khi đăng nhập vào tài khoản của mình. Đối với sản phẩm trả phí, bạn cần hoàn tất thanh toán trước khi tải xuống.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white p-5 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Làm thế nào để kích hoạt bản quyền?</h3>
+                    <p className="text-gray-600">
+                      Sau khi mua sản phẩm, bạn sẽ nhận được mã kích hoạt qua email. Mở ứng dụng, vào phần "Kích hoạt bản quyền" và nhập mã này để sử dụng đầy đủ tính năng.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white p-5 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Tôi có thể sử dụng trên mấy thiết bị?</h3>
+                    <p className="text-gray-600">
+                      Mỗi bản quyền cho phép bạn sử dụng trên tối đa 3 thiết bị cùng một lúc. Bạn có thể quản lý danh sách thiết bị trong phần "Tài khoản" trên website.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white p-5 rounded-lg shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Chính sách hoàn tiền như thế nào?</h3>
+                    <p className="text-gray-600">
+                      Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được hướng dẫn.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="text-center mt-8">
+                  <Link 
+                    href="/support"
+                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium"
                   >
-                    Xem tất cả
+                    Xem thêm câu hỏi
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
                   </Link>
                 </div>
-
-                {newProducts.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 md:gap-4">
-                    {newProducts
-                      .filter(product => product.isAccount || product.type === 'account')
-                      .slice(0, 4)
-                      .map((product) => (
-                        <ProductCard 
-                          key={product.id}
-                          id={product.id.toString()}
-                          name={product.name}
-                          description={product.description}
-                          price={product.price}
-                          originalPrice={product.salePrice < product.price ? product.price : undefined}
-                          image={product.imageUrl}
-                          category={products.find(p => p.categoryId === product.categoryId)?.name}
-                          rating={product.rating}
-                        />
-                      ))}
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center">
-                    <div className="text-center py-6">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                      </svg>
-                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có tài khoản mới</h3>
-                      <p className="text-gray-500 max-w-lg mx-auto text-xs">
-                        Hãy quay lại sau để xem các tài khoản mới nhất.
-                      </p>
-                    </div>
-                  </div>
-                )}
               </div>
             </section>
           </div>
         </div>
-
-        {/* Câu hỏi thường gặp */}
-        <section className="py-10 bg-gray-50">
-          <div className="mx-auto px-4 w-full">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                Giải đáp những thắc mắc phổ biến của khách hàng về sản phẩm và dịch vụ của XLab
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-none mx-auto">
-              <div className="bg-white p-5 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Làm thế nào để tải xuống phần mềm?</h3>
-                <p className="text-gray-600">
-                  Bạn có thể tải xuống phần mềm miễn phí tại trang sản phẩm tương ứng sau khi đăng nhập vào tài khoản của mình. Đối với sản phẩm trả phí, bạn cần hoàn tất thanh toán trước khi tải xuống.
-                </p>
-              </div>
-              
-              <div className="bg-white p-5 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Làm thế nào để kích hoạt bản quyền?</h3>
-                <p className="text-gray-600">
-                  Sau khi mua sản phẩm, bạn sẽ nhận được mã kích hoạt qua email. Mở ứng dụng, vào phần "Kích hoạt bản quyền" và nhập mã này để sử dụng đầy đủ tính năng.
-                </p>
-              </div>
-              
-              <div className="bg-white p-5 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Tôi có thể sử dụng trên mấy thiết bị?</h3>
-                <p className="text-gray-600">
-                  Mỗi bản quyền cho phép bạn sử dụng trên tối đa 3 thiết bị cùng một lúc. Bạn có thể quản lý danh sách thiết bị trong phần "Tài khoản" trên website.
-                </p>
-              </div>
-              
-              <div className="bg-white p-5 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Chính sách hoàn tiền như thế nào?</h3>
-                <p className="text-gray-600">
-                  Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được hướng dẫn.
-                </p>
-              </div>
-            </div>
-            
-            <div className="text-center mt-8">
-              <Link 
-                href="/support"
-                className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium"
-              >
-                Xem thêm câu hỏi
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
   );

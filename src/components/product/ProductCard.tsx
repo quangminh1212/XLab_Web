@@ -103,7 +103,7 @@ const ProductCard = ({
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      <div className="relative pt-[56.25%] bg-gray-100">
+      <div className="relative pt-[100%] bg-gray-100">
         {originalPrice && discountPercentage > 0 && (
           <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
             -{discountPercentage}%
