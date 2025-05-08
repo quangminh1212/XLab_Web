@@ -4,7 +4,10 @@ import { products } from '@/data/mockData';
 import { Product } from '@/types';
 
 /**
- * Combines classNames with Tailwind classes
+ * Kết hợp các class CSS với clsx và tailwind-merge
+ * Cho phép kết hợp nhiều className động và loại bỏ các class trùng lặp
+ * @param inputs Danh sách các class cần kết hợp
+ * @returns Chuỗi class đã được kết hợp
  */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

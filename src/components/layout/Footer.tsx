@@ -16,7 +16,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center justify-center sm:justify-start mb-4">
               <span className="w-auto h-auto inline-flex items-center justify-center p-2 rounded-xl bg-white">
                 <Image
-                  src="/images/logo.svg"
+                  src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
                   width={120}
                   height={50}

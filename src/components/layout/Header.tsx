@@ -34,7 +34,7 @@ const Header = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/logo.svg"
+                src="/images/logo.jpg"
                 alt="XLab Logo"
                 width={50}
                 height={30}
