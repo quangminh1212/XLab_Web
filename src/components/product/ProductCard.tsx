@@ -161,9 +161,6 @@ const ProductCard = ({
       </div>
 
       <div className="p-4">
-        {category && (
-          <div className="text-xs text-blue-600 font-medium mb-1">{category}</div>
-        )}
         <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{name}</h3>
         <p className="text-gray-600 text-sm mb-2 line-clamp-2">{description}</p>
         <div className="flex items-center justify-between">
