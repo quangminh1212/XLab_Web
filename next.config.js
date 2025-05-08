@@ -74,9 +74,11 @@ const nextConfig = {
   experimental: {
     largePageDataBytes: 12800000,
     appDocumentPreloading: false,
+    esmExternals: true,
+    optimizeCss: true
   },
   onDemandEntries: {
-    maxInactiveAge: 30 * 1000,
+    maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
   },
   staticPageGenerationTimeout: 180,
@@ -112,6 +114,19 @@ const nextConfig = {
     config.output = {
       ...config.output,
       publicPath: dev ? '/_next/' : undefined,
+    };
+
+    // Ngăn chặn lỗi ENOENT bằng cách bỏ qua webpack pack cache
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+      cacheDirectory: path.resolve('.next/cache'),
+      name: isServer 
+        ? (config.name === 'edge-server' ? 'edge-server' : 'server') 
+        : 'client',
+      version: '1.0.0'
     };
 
     return config;

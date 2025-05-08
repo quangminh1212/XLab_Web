@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node clean-trace.js && echo Preparing development environment...",
+    "predev": "node src/scripts/fix-next-errors.js && node clean-trace.js && echo Preparing development environment...",
     "dev": "next dev",
     "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot",
     "prebuild": "node clean-trace.js && rimraf .next && echo Preparing build environment...",
@@ -12,7 +12,8 @@
     "lint": "next lint",
     "clean": "node clean-trace.js",
     "deep-clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "clean-trace": "node clean-trace.js"
+    "clean-trace": "node clean-trace.js",
+    "fix-next": "node src/scripts/fix-next-errors.js"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.2",

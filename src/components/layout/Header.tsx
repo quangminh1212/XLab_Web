@@ -13,7 +13,7 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
 
   const isActive = (path: string) => {
-    return pathname === path ? 'text-blue-500' : 'text-gray-700 hover:text-blue-500';
+    return pathname === path ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600';
   };
 
   const toggleMenu = () => {
@@ -77,7 +77,7 @@ const Header = () => {
           {/* Right Side - Auth + Cart */}
           <div className="flex items-center space-x-4">
             {/* Cart Icon */}
-            <Link href="/cart" className="text-gray-700 hover:text-blue-500 relative">
+            <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -92,7 +92,7 @@ const Header = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                 0
               </span>
             </Link>
@@ -102,7 +102,7 @@ const Header = () => {
               {session ? (
                 <button
                   onClick={toggleProfile}
-                  className="flex items-center text-gray-700 hover:text-blue-500 focus:outline-none"
+                  className="flex items-center text-gray-700 hover:text-primary-600 focus:outline-none"
                 >
                   <Image
                     src={session.user?.image || "/images/profiles/default-avatar.png"}
@@ -131,7 +131,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -184,7 +184,7 @@ const Header = () => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-gray-700 hover:text-blue-500 focus:outline-none"
+              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none"
               onClick={toggleMenu}
             >
               <svg
@@ -250,7 +250,7 @@ const Header = () => {
                     signIn();
                     setIsOpen(false);
                   }}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors w-full text-left"
+                  className="text-primary-600 hover:text-primary-700 transition-colors"
                 >
                   Đăng nhập
                 </button>

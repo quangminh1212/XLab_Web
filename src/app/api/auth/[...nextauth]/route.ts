@@ -23,7 +23,7 @@ declare module "next-auth" {
 // Đảm bảo NEXTAUTH_URL được đặt đúng - luôn sử dụng URL tuyệt đối
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 // Không bật debug trong môi trường production
-const DEBUG_ENABLED = process.env.NODE_ENV === 'development';
+// const DEBUG_ENABLED = process.env.NODE_ENV === 'development';
 
 // Secret key cho NextAuth
 const AUTH_SECRET = process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=";
@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
     signOut: "/",
   },
   callbacks: {
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.sub;
         if (token.email === 'xlab.rnd@gmail.com') {
@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt" as SessionStrategy,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: DEBUG_ENABLED,
+  debug: false, // Force debug always off to prevent warnings
   cookies: {
     sessionToken: {
       name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
@@ -103,4 +103,4 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST }; 
+export { handler as GET, handler as POST };

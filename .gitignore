@@ -12,43 +12,24 @@
 # next.js
 /.next/
 /out/
-.next/
-.next/**/*
-**/*.pack
-**/*.pack.gz
-.vercel
 
-# Webpack cache
-.next/cache/
-.next/cache/webpack/
-.next/cache/webpack/**/*
-.next/server/
-.next/server/**/*
-.next/static/
-.next/static/**/*
-.next/types/
-.next/types/**/*
-
-# build outputs
+# production
 /build
-/dist
 
 # misc
 .DS_Store
 *.pem
-Thumbs.db
-desktop.ini
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
 # local env files
 .env*.local
-.env.*
-!.env.example
+
+# vercel
+.vercel
 
 # typescript
 *.tsbuildinfo
@@ -87,6 +68,22 @@ fix-webpack-enoent.js
 clean-trace.js
 run.bat
 
-# Webpack cache
-.next/cache/webpack/**/*.pack
-.next/cache/webpack/**/*.pack.gz 
+# Next.js build output
+.next/
+**/.next/**/*
+**/node_modules/.cache/
+.next/cache/
+.next/server/
+.next/static/
+
+# Ignoring specific webpack cache files that cause ENOENT errors
+**/.next/cache/webpack/**/*.pack
+**/.next/cache/webpack/**/*.pack.gz
+
+# Debug logs and temporary files
+.vercel_build_output
+.swc/
+.env.development.local
+.env.test.local
+.env.production.local
+

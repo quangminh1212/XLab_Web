@@ -62,11 +62,11 @@ export const metadata: Metadata = {
       { url: '/images/topup.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/images/topup.png', color: '#0070f3' },
+      { rel: 'mask-icon', url: '/images/topup.png', color: '#2563EB' },
     ],
   },
   other: {
-    'msapplication-TileColor': '#0070f3',
+    'msapplication-TileColor': '#2563EB',
     'theme-color': '#ffffff',
   },
 }
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0F766E',
+  themeColor: '#2563EB',
 }
 
 export default function RootLayout({

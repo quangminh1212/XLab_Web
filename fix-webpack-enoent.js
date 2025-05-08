@@ -2,70 +2,129 @@ const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 
-// Đường dẫn tới các thư mục webpack cache
-const webpackCacheDirs = [
-  path.join(__dirname, '.next', 'cache', 'webpack', 'client-development'),
-  path.join(__dirname, '.next', 'cache', 'webpack', 'server-development'),
-  path.join(__dirname, '.next', 'cache', 'webpack', 'edge-server-development')
-];
+/**
+ * Fix cho lỗi webpack ENOENT khi Next.js cố gắng đọc file .pack hoặc .pack.gz
+ * trong thư mục cache mà đã bị xóa
+ */
 
-// Hàm tạo file placeholder và file gzip
-function createPlaceholderFiles(directory) {
-  // Tạo thư mục nếu chưa có
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory, { recursive: true });
-    console.log(`Đã tạo thư mục: ${directory}`);
-  }
+// Tạo thư mục cache nếu chưa tồn tại
+const createCacheFolders = () => {
+  const cacheDirs = [
+    '.next/cache/webpack/client-development',
+    '.next/cache/webpack/server-development',
+    '.next/cache/webpack/edge-server-development',
+    '.next/static/chunks',
+    '.next/server/app',
+    '.next/server/chunks',
+    '.next/static/css'
+  ];
 
-  // Tạo các file placeholder từ 0.pack đến 9.pack và file gzip tương ứng
-  for (let i = 0; i < 10; i++) {
-    const packFile = path.join(directory, `${i}.pack`);
-    const gzipFile = path.join(directory, `${i}.pack.gz`);
-
-    // Tạo file pack trống
-    if (!fs.existsSync(packFile)) {
-      fs.writeFileSync(packFile, Buffer.alloc(1024), { flag: 'w' });
-      console.log(`Đã tạo file placeholder: ${packFile}`);
+  cacheDirs.forEach(dir => {
+    const fullPath = path.join(process.cwd(), dir);
+    if (!fs.existsSync(fullPath)) {
+      fs.mkdirSync(fullPath, { recursive: true });
+      console.log(`Đã tạo thư mục: ${fullPath}`);
     }
+  });
+};
 
-    // Tạo file gzip
-    if (!fs.existsSync(gzipFile)) {
-      const input = fs.readFileSync(packFile);
-      const gzipped = zlib.gzipSync(input);
-      fs.writeFileSync(gzipFile, gzipped, { flag: 'w' });
-      console.log(`Đã tạo file gzip: ${gzipFile}`);
-    }
-  }
-}
+// Xóa hết các file .pack và .pack.gz
+const cleanupPackFiles = () => {
+  const cacheRoot = path.join(process.cwd(), '.next/cache/webpack');
+  if (!fs.existsSync(cacheRoot)) return;
 
-// Hàm xóa bỏ file trong webpack cache
-function clearWebpackCache() {
-  webpackCacheDirs.forEach(dir => {
-    if (fs.existsSync(dir)) {
-      try {
-        const files = fs.readdirSync(dir);
-        console.log(`Đang xóa ${files.length} file trong ${dir}`);
-        files.forEach(file => {
-          const filePath = path.join(dir, file);
+  const dirs = ['client-development', 'server-development', 'edge-server-development'];
+  
+  dirs.forEach(dir => {
+    const dirPath = path.join(cacheRoot, dir);
+    if (fs.existsSync(dirPath)) {
+      const files = fs.readdirSync(dirPath);
+      files.forEach(file => {
+        if (file.endsWith('.pack') || file.endsWith('.pack.gz')) {
+          const filePath = path.join(dirPath, file);
           fs.unlinkSync(filePath);
           console.log(`Đã xóa file: ${filePath}`);
-        });
-      } catch (err) {
-        console.error(`Lỗi khi xóa cache trong ${dir}: ${err.message}`);
+        }
+      });
+    }
+  });
+};
+
+// Tạo các file .pack trống để ngăn lỗi ENOENT
+const createEmptyPackFiles = () => {
+  const cacheRoot = path.join(process.cwd(), '.next/cache/webpack');
+  if (!fs.existsSync(cacheRoot)) return;
+
+  const dirs = ['client-development', 'server-development', 'edge-server-development'];
+  
+  dirs.forEach(dir => {
+    const dirPath = path.join(cacheRoot, dir);
+    if (fs.existsSync(dirPath)) {
+      for (let i = 0; i <= 5; i++) {
+        const packFile = path.join(dirPath, `${i}.pack`);
+        fs.writeFileSync(packFile, '');
+        console.log(`Đã tạo file trống: ${packFile}`);
+        
+        const packGzFile = path.join(dirPath, `${i}.pack.gz`);
+        fs.writeFileSync(packGzFile, '');
+        console.log(`Đã tạo file trống: ${packGzFile}`);
       }
     }
   });
-}
+};
 
-console.log('===== Đang sửa lỗi ENOENT với file webpack cache =====');
+// Tạo CSS file để ngăn lỗi 404
+const createPlaceholderCssFile = () => {
+  const cssDir = path.join(process.cwd(), '.next/static/css');
+  if (!fs.existsSync(cssDir)) {
+    fs.mkdirSync(cssDir, { recursive: true });
+  }
+  
+  const cssFile = path.join(cssDir, 'app-layout.css');
+  fs.writeFileSync(cssFile, '/* Placeholder CSS file */');
+  console.log(`Đã tạo file CSS placeholder: ${cssFile}`);
+};
 
-// Xóa cache webpack
-clearWebpackCache();
+// Tạo file static placeholder
+const createStaticPlaceholders = () => {
+  const staticChunksDir = path.join(process.cwd(), '.next/static/chunks');
+  if (!fs.existsSync(staticChunksDir)) {
+    fs.mkdirSync(staticChunksDir, { recursive: true });
+  }
+  
+  const files = [
+    'main-app.js',
+    'app-pages-internals.js',
+    'app/not-found.js',
+    'app/page.js',
+    'app/loading.js'
+  ];
+  
+  files.forEach(file => {
+    const filePath = path.join(staticChunksDir, file);
+    const dirPath = path.dirname(filePath);
+    
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    
+    fs.writeFileSync(filePath, '// Placeholder file');
+    console.log(`Đã tạo file tĩnh: ${filePath}`);
+  });
+};
 
-// Tạo lại các file placeholder trong tất cả các thư mục webpack cache
-webpackCacheDirs.forEach(dir => {
-  createPlaceholderFiles(dir);
-});
+// Thực hiện dọn dẹp và sửa lỗi
+const runFix = () => {
+  try {
+    createCacheFolders();
+    cleanupPackFiles();
+    createEmptyPackFiles();
+    createPlaceholderCssFile();
+    createStaticPlaceholders();
+    console.log('Hoàn tất việc dọn dẹp và chuẩn bị môi trường.');
+  } catch (error) {
+    console.error('Lỗi khi thực hiện sửa lỗi webpack:', error);
+  }
+};
 
-console.log('===== Hoàn tất sửa lỗi =====');
-console.log('Bây giờ bạn có thể chạy "npm run dev" để khởi động lại server.'); 
+runFix(); 
