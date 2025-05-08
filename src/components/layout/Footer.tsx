@@ -12,19 +12,19 @@ export default function Footer() {
       <div className="container mx-auto px-6 pt-20 pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
           {/* Logo và giới thiệu */}
-          <div className="mb-12 flex flex-col items-center sm:items-start">
+          <div className="mb-12 flex flex-col items-center">
             <Link href="/" className="flex items-center justify-center mb-8">
-              <span className="w-auto h-auto inline-flex items-center justify-center p-5 rounded-xl bg-white">
+              <span className="w-auto h-auto inline-flex items-center justify-center p-6 rounded-xl bg-white">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={200}
-                  height={80}
-                  className="w-auto h-24"
+                  width={250}
+                  height={100}
+                  className="w-auto h-28"
                 />
               </span>
             </Link>
-            <p className="text-gray-400 mb-8 text-lg text-center sm:text-left">
+            <p className="text-gray-400 mb-8 text-lg text-center">
               Chúng tôi chuyên cung cấp các giải pháp phần mềm và dịch vụ công nghệ
               giúp doanh nghiệp tối ưu hóa hoạt động và tăng trưởng bền vững.
             </p>
@@ -49,9 +49,9 @@ export default function Footer() {
           </div>
 
           {/* Liên kết nhanh */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-center">
             <h3 className="text-white text-xl font-semibold mb-6">Liên kết nhanh</h3>
-            <ul className="space-y-4 text-center sm:text-left">
+            <ul className="space-y-4 text-center">
               <li>
                 <Link href="/" className="hover:text-white text-lg transition-colors">Trang chủ</Link>
               </li>
@@ -71,9 +71,9 @@ export default function Footer() {
           </div>
 
           {/* Sản phẩm */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-center">
             <h3 className="text-white text-xl font-semibold mb-6">Sản phẩm</h3>
-            <ul className="space-y-4 text-center sm:text-left">
+            <ul className="space-y-4 text-center">
               <li>
                 <Link href="/products/xlab-office-suite" className="hover:text-white text-lg transition-colors">
                   XLab Office Suite
@@ -103,29 +103,29 @@ export default function Footer() {
           </div>
 
           {/* Thông tin liên hệ */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-center">
             <h3 className="text-white text-xl font-semibold mb-6">Liên hệ</h3>
-            <ul className="space-y-4 text-center sm:text-left">
-              <li className="flex items-start justify-center sm:justify-start">
+            <ul className="space-y-4 text-center">
+              <li className="flex items-start justify-center">
                 <svg className="h-6 w-6 text-primary-500 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
                 <span className="text-lg">{siteConfig.contact.address}</span>
               </li>
-              <li className="flex items-start justify-center sm:justify-start">
+              <li className="flex items-start justify-center">
                 <svg className="h-6 w-6 text-primary-500 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 <span className="text-lg">{siteConfig.contact.phone}</span>
               </li>
-              <li className="flex items-start justify-center sm:justify-start">
+              <li className="flex items-start justify-center">
                 <svg className="h-6 w-6 text-primary-500 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span className="text-lg">{siteConfig.contact.email}</span>
               </li>
-              <li className="flex items-start justify-center sm:justify-start">
+              <li className="flex items-start justify-center">
                 <svg className="h-6 w-6 text-primary-500 mt-1 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>

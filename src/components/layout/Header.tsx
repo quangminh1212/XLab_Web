@@ -41,60 +41,60 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-6 py-4">
+      <div className="container mx-auto px-5 py-3">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
+          <div className="flex items-center justify-center">
+            <Link href="/" className="flex items-center justify-center">
               <Image
                 src="/images/logo.jpg"
                 alt="XLab Logo"
-                width={110}
-                height={65}
+                width={120}
+                height={72}
                 className="w-auto h-16"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-10">
-            <Link href="/" className={`${isActive('/')} transition-colors text-lg font-medium`}>
+          <nav className="hidden md:flex space-x-8">
+            <Link href="/" className={`${isActive('/')} transition-colors text-base font-medium`}>
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`${isActive('/products')} transition-colors text-lg font-medium`}
+              className={`${isActive('/products')} transition-colors text-base font-medium`}
             >
               Sản phẩm
             </Link>
             <Link
               href="/services"
-              className={`${isActive('/services')} transition-colors text-lg font-medium`}
+              className={`${isActive('/services')} transition-colors text-base font-medium`}
             >
               Dịch vụ
             </Link>
             <Link
               href="/about"
-              className={`${isActive('/about')} transition-colors text-lg font-medium`}
+              className={`${isActive('/about')} transition-colors text-base font-medium`}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className={`${isActive('/contact')} transition-colors text-lg font-medium`}
+              className={`${isActive('/contact')} transition-colors text-base font-medium`}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-lg font-medium`}
+              className={`${isActive('/bao-hanh')} transition-colors text-base font-medium`}
             >
               Bảo hành
             </Link>
           </nav>
 
           {/* Right Side - Auth + Cart */}
-          <div className="flex items-center space-x-5">
+          <div className="flex items-center space-x-4">
             {/* Notification Icon */}
             {session && (
               <div className="relative">
@@ -105,7 +105,7 @@ const Header = () => {
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-8 w-8"
+                    className="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -179,7 +179,7 @@ const Header = () => {
             <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -206,9 +206,9 @@ const Header = () => {
                   <Image
                     src={session.user?.image || "/images/profiles/default-avatar.png"}
                     alt={session.user?.name || "User"}
-                    width={44}
-                    height={44}
-                    className="w-11 h-11 rounded-full"
+                    width={36}
+                    height={36}
+                    className="w-9 h-9 rounded-full"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -230,7 +230,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors"
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-lg text-base font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -288,7 +288,7 @@ const Header = () => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -306,46 +306,46 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden mt-5 pb-5 border-t border-gray-200 pt-5">
-            <div className="flex flex-col space-y-5">
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
+            <div className="flex flex-col space-y-4">
               <Link
                 href="/"
-                className={`${isActive('/')} transition-colors block text-center text-lg font-medium`}
+                className={`${isActive('/')} transition-colors block text-center text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Trang chủ
               </Link>
               <Link
                 href="/products"
-                className={`${isActive('/products')} transition-colors block text-center text-lg font-medium`}
+                className={`${isActive('/products')} transition-colors block text-center text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Sản phẩm
               </Link>
               <Link
                 href="/services"
-                className={`${isActive('/services')} transition-colors block text-center text-lg font-medium`}
+                className={`${isActive('/services')} transition-colors block text-center text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Dịch vụ
               </Link>
               <Link
                 href="/about"
-                className={`${isActive('/about')} transition-colors block text-center text-lg font-medium`}
+                className={`${isActive('/about')} transition-colors block text-center text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Giới thiệu
               </Link>
               <Link
                 href="/contact"
-                className={`${isActive('/contact')} transition-colors block text-center text-lg font-medium`}
+                className={`${isActive('/contact')} transition-colors block text-center text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Liên hệ
               </Link>
               <Link
                 href="/bao-hanh"
-                className={`${isActive('/bao-hanh')} transition-colors block text-center text-lg font-medium`}
+                className={`${isActive('/bao-hanh')} transition-colors block text-center text-base font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Bảo hành
@@ -356,7 +356,7 @@ const Header = () => {
                     signIn();
                     setIsOpen(false);
                   }}
-                  className="text-primary-600 hover:text-primary-700 transition-colors text-center text-lg font-medium mx-auto block"
+                  className="text-primary-600 hover:text-primary-700 transition-colors text-center text-base font-medium mx-auto block"
                 >
                   Đăng nhập
                 </button>
