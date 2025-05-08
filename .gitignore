@@ -77,6 +77,11 @@ fix-critters.js
 .next/server/
 .next/static/
 
+# Webpack hot update files
+**/*.hot-update.js
+**/*.hot-update.js.map
+**/*.hot-update.json
+
 # Ignoring specific webpack cache files that cause ENOENT errors
 **/.next/cache/webpack/**/*.pack
 **/.next/cache/webpack/**/*.pack.gz

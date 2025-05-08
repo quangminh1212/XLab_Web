@@ -96,6 +96,13 @@ const nextConfig = {
         aggregateTimeout: 300,
         ignored: /node_modules/
       };
+
+      // Sửa lỗi hot update 404
+      config.output = {
+        ...config.output,
+        hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
+        hotUpdateMainFilename: 'static/webpack/[fullhash].hot-update.json',
+      };
     }
 
     config.infrastructureLogging = {
@@ -114,6 +121,7 @@ const nextConfig = {
       hints: false,
     };
 
+    // Chỉ cập nhật publicPath khi trong môi trường phát triển, nếu không để undefined
     config.output = {
       ...config.output,
       publicPath: dev ? '/_next/' : undefined,
@@ -129,7 +137,7 @@ const nextConfig = {
       name: isServer 
         ? (config.name === 'edge-server' ? 'edge-server' : 'server') 
         : 'client',
-      version: '1.0.0'
+      version: '1.1.0' // Tăng version cache để buộc webpack tạo lại
     };
 
     return config;

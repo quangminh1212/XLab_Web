@@ -6,6 +6,7 @@
     "predev": "node src/scripts/fix-next-errors.js && node clean-trace.js && node fix-webpack-enoent.js && node fix-ignore-warnings.js && node fix-critters.js && echo Preparing development environment...",
     "dev": "next dev --no-optimize-css",
     "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot --no-optimize-css",
+    "dev:clean": "npm run fix-webpack-hot && next dev --no-optimize-css",
     "prebuild": "node clean-trace.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "start": "next start",
@@ -14,7 +15,8 @@
     "deep-clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "clean-trace": "node clean-trace.js",
     "fix-next": "node src/scripts/fix-next-errors.js",
-    "fix-critters": "node fix-critters.js"
+    "fix-critters": "node fix-critters.js",
+    "fix-webpack-hot": "node fix-webpack-hot-update.js"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.2",
