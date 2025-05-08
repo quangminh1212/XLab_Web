@@ -57,37 +57,37 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/" className={`${isActive('/')} transition-colors text-base font-medium`}>
+          <nav className="hidden md:flex space-x-10">
+            <Link href="/" className={`${isActive('/')} transition-colors text-lg tracking-wide font-medium`}>
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`${isActive('/products')} transition-colors text-base font-medium`}
+              className={`${isActive('/products')} transition-colors text-lg tracking-wide font-medium`}
             >
               Sản phẩm
             </Link>
             <Link
               href="/services"
-              className={`${isActive('/services')} transition-colors text-base font-medium`}
+              className={`${isActive('/services')} transition-colors text-lg tracking-wide font-medium`}
             >
               Dịch vụ
             </Link>
             <Link
               href="/about"
-              className={`${isActive('/about')} transition-colors text-base font-medium`}
+              className={`${isActive('/about')} transition-colors text-lg tracking-wide font-medium`}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className={`${isActive('/contact')} transition-colors text-base font-medium`}
+              className={`${isActive('/contact')} transition-colors text-lg tracking-wide font-medium`}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-base font-medium`}
+              className={`${isActive('/bao-hanh')} transition-colors text-lg tracking-wide font-medium`}
             >
               Bảo hành
             </Link>
@@ -230,7 +230,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-lg text-base font-medium transition-colors"
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-lg text-lg tracking-wide font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -310,42 +310,42 @@ const Header = () => {
             <div className="flex flex-col space-y-4">
               <Link
                 href="/"
-                className={`${isActive('/')} transition-colors block text-center text-base font-medium`}
+                className={`${isActive('/')} transition-colors block text-center text-lg tracking-wide font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Trang chủ
               </Link>
               <Link
                 href="/products"
-                className={`${isActive('/products')} transition-colors block text-center text-base font-medium`}
+                className={`${isActive('/products')} transition-colors block text-center text-lg tracking-wide font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Sản phẩm
               </Link>
               <Link
                 href="/services"
-                className={`${isActive('/services')} transition-colors block text-center text-base font-medium`}
+                className={`${isActive('/services')} transition-colors block text-center text-lg tracking-wide font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Dịch vụ
               </Link>
               <Link
                 href="/about"
-                className={`${isActive('/about')} transition-colors block text-center text-base font-medium`}
+                className={`${isActive('/about')} transition-colors block text-center text-lg tracking-wide font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Giới thiệu
               </Link>
               <Link
                 href="/contact"
-                className={`${isActive('/contact')} transition-colors block text-center text-base font-medium`}
+                className={`${isActive('/contact')} transition-colors block text-center text-lg tracking-wide font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Liên hệ
               </Link>
               <Link
                 href="/bao-hanh"
-                className={`${isActive('/bao-hanh')} transition-colors block text-center text-base font-medium`}
+                className={`${isActive('/bao-hanh')} transition-colors block text-center text-lg tracking-wide font-medium`}
                 onClick={() => setIsOpen(false)}
               >
                 Bảo hành
@@ -356,7 +356,7 @@ const Header = () => {
                     signIn();
                     setIsOpen(false);
                   }}
-                  className="text-primary-600 hover:text-primary-700 transition-colors text-center text-base font-medium mx-auto block"
+                  className="text-primary-600 hover:text-primary-700 transition-colors text-center text-lg tracking-wide font-medium mx-auto block"
                 >
                   Đăng nhập
                 </button>
