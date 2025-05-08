@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node src/scripts/fix-next-errors.js && node clean-trace.js && echo Preparing development environment...",
+    "predev": "node src/scripts/fix-next-errors.js && node clean-trace.js && node fix-webpack-enoent.js && node fix-ignore-warnings.js && echo Preparing development environment...",
     "dev": "next dev",
     "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot",
     "prebuild": "node clean-trace.js && rimraf .next && echo Preparing build environment...",

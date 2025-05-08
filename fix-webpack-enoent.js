@@ -62,12 +62,14 @@ const createEmptyPackFiles = () => {
     if (fs.existsSync(dirPath)) {
       for (let i = 0; i <= 5; i++) {
         const packFile = path.join(dirPath, `${i}.pack`);
-        fs.writeFileSync(packFile, '');
-        console.log(`Đã tạo file trống: ${packFile}`);
+        fs.writeFileSync(packFile, '{}');
+        console.log(`Đã tạo file: ${packFile}`);
         
         const packGzFile = path.join(dirPath, `${i}.pack.gz`);
-        fs.writeFileSync(packGzFile, '');
-        console.log(`Đã tạo file trống: ${packGzFile}`);
+        // Tạo file gzip hợp lệ thay vì file trống
+        const gzipData = zlib.gzipSync(Buffer.from('{}'));
+        fs.writeFileSync(packGzFile, gzipData);
+        console.log(`Đã tạo file gzip: ${packGzFile}`);
       }
     }
   });
