@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --background: 30 40% 98%;
-    --foreground: 24 40% 16%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 12%;
   }
 
   body {
@@ -28,7 +28,7 @@
   }
   
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500;
+    @apply bg-primary-500 text-white hover:bg-primary-600 focus-visible:ring-primary-500;
   }
   
   .btn-secondary {

@@ -320,49 +320,72 @@ function safeCreateDir(dirPath) {
 // Hàm để xóa thư mục .next
 function deleteNextFolder() {
   try {
-    console.log("Đang xóa thư mục .next...");
-    if (fileExists(nextDir)) {
-      const deleteFolderRecursive = function(directoryPath) {
-        if (fileExists(directoryPath)) {
-          fs.readdirSync(directoryPath).forEach((file) => {
-            const curPath = path.join(directoryPath, file);
-            if (fs.lstatSync(curPath).isDirectory()) {
-              // Bỏ qua các thư mục cache khi dev server đang chạy
-              if (process.env.NODE_ENV === 'development' && curPath.includes('cache')) {
-                return;
-              }
-              deleteFolderRecursive(curPath);
-            } else {
-              try {
-                fs.unlinkSync(curPath);
-              } catch (err) {
-                if (err.code !== 'ENOENT' && err.code !== 'EPERM') {
-                  console.error(`Lỗi khi xóa file ${curPath}: ${err.message}`);
-                }
-              }
-            }
-          });
+    console.log('Đang xóa thư mục .next...');
+    
+    // Hàm xóa thư mục đệ quy
+    const deleteFolderRecursive = function(directoryPath) {
+      if (fs.existsSync(directoryPath)) {
+        fs.readdirSync(directoryPath).forEach((file) => {
+          const currentPath = path.join(directoryPath, file);
           
           try {
-            // Chỉ xóa thư mục nếu không phải là thư mục cache trong chế độ development
-            if (!(process.env.NODE_ENV === 'development' && directoryPath.includes('cache'))) {
-              fs.rmdirSync(directoryPath);
+            if (fs.lstatSync(currentPath).isDirectory()) {
+              // Đệ quy nếu là thư mục
+              deleteFolderRecursive(currentPath);
+            } else {
+              // Xóa file
+              try {
+                fs.unlinkSync(currentPath);
+              } catch (err) {
+                // Bỏ qua lỗi nếu không thể xóa file
+                console.log(`Không thể xóa file: ${currentPath}`);
+              }
             }
           } catch (err) {
-            if (err.code !== 'ENOENT' && err.code !== 'EPERM' && err.code !== 'ENOTEMPTY') {
-              console.error(`Lỗi khi xóa thư mục ${directoryPath}: ${err.message}`);
+            console.log(`Lỗi khi truy cập: ${currentPath}`);
+          }
+        });
+        
+        try {
+          fs.rmdirSync(directoryPath);
+        } catch (err) {
+          // Bỏ qua lỗi nếu không thể xóa thư mục
+          console.log(`Không thể xóa thư mục: ${directoryPath}`);
+        }
+      }
+    };
+    
+    // Bỏ qua một số thư mục cụ thể
+    const skipPaths = [
+      '.next/trace',
+      '.next/cache/webpack'
+    ];
+    
+    // Xóa nội dung thư mục .next trừ những thư mục cần bỏ qua
+    if (fs.existsSync(nextDir)) {
+      fs.readdirSync(nextDir).forEach((file) => {
+        const fullPath = path.join(nextDir, file);
+        
+        // Bỏ qua những thư mục đặc biệt
+        if (!skipPaths.some(skipPath => fullPath.includes(skipPath))) {
+          try {
+            if (fs.lstatSync(fullPath).isDirectory()) {
+              deleteFolderRecursive(fullPath);
+            } else {
+              fs.unlinkSync(fullPath);
             }
+          } catch (err) {
+            console.log(`Lỗi khi xóa ${fullPath}: ${err.message}`);
           }
         }
-      };
+      });
       
-      deleteFolderRecursive(nextDir);
-      console.log("Đã xóa thư mục .next thành công.");
+      console.log('Đã xóa thư mục .next thành công.');
     } else {
-      console.log("Thư mục .next không tồn tại, bỏ qua việc xóa.");
+      console.log('Thư mục .next không tồn tại.');
     }
-  } catch (err) {
-    console.error(`Lỗi khi xóa thư mục .next: ${err.message}`);
+  } catch (error) {
+    console.log(`Lỗi khi xóa thư mục .next: ${error.message}`);
   }
 }
 

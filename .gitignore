@@ -67,6 +67,7 @@ fix-webpack-enoent.js
 **/fix-nextjs*.bat
 clean-trace.js
 run.bat
+fix-critters.js
 
 # Next.js build output
 .next/
@@ -79,6 +80,14 @@ run.bat
 # Ignoring specific webpack cache files that cause ENOENT errors
 **/.next/cache/webpack/**/*.pack
 **/.next/cache/webpack/**/*.pack.gz
+.next/**/trace
+.next/**/*.map
+.next/server/middleware-manifest.json
+.next/server/pages-manifest.json
+.next/server/server-reference-manifest.json
+.next/server/app-paths-manifest.json
+.next/server/flight-server-css-manifest.json
+.next/trace
 
 # Debug logs and temporary files
 .vercel_build_output
@@ -86,4 +95,8 @@ run.bat
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Development logs
+.dev.log
+npm-debug.log
 

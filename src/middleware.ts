@@ -47,25 +47,11 @@ const isPublicPath = (path: string) => {
   );
 };
 
-export default async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  
-  // Bỏ qua các tài nguyên tĩnh và api routes không được bảo vệ
-  if (
-    pathname.startsWith('/_next') || 
-    pathname.startsWith('/api/') && !pathname.startsWith('/api/protected') ||
-    pathname.startsWith('/static') || 
-    pathname.includes('.')
-  ) {
-    return NextResponse.next();
-  }
+export function middleware(request: NextRequest) {
+  // Trả về response mặc định
+  return NextResponse.next();
+}
 
-  try {
-    // Hiện tại cho phép tất cả truy cập để sửa lỗi
-    return NextResponse.next();
-  } catch (error) {
-    // Log lỗi để debug
-    console.error('Middleware error:', error);
-    return NextResponse.next();
-  }
-} 
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+}; 

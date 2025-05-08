@@ -34,11 +34,11 @@ const Header = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/logo.jpg"
+                src="/images/logo.svg"
                 alt="XLab Logo"
                 width={50}
-                height={50}
-                className="w-10 h-10 rounded-full"
+                height={30}
+                className="w-auto h-10"
               />
             </Link>
           </div>
@@ -131,7 +131,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
                   Đăng nhập
                 </button>

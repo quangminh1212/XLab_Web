@@ -75,7 +75,10 @@ const nextConfig = {
     largePageDataBytes: 12800000,
     appDocumentPreloading: false,
     esmExternals: true,
-    optimizeCss: true
+    optimizeCss: false,
+    craCompat: false,
+    forceSwcTransforms: true,
+    swcTraceProfiling: false
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,

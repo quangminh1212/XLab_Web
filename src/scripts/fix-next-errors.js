@@ -95,11 +95,48 @@ const checkEnvFiles = () => {
   }
 };
 
+// 5. Tạo file route.js cho NextAuth để tránh lỗi 404
+const createNextAuthPlaceholder = () => {
+  // Đường dẫn tới thư mục route của NextAuth
+  const nextAuthDir = path.join(process.cwd(), '.next', 'server', 'app', 'api', 'auth', '[...nextauth]');
+  
+  // Tạo thư mục nếu chưa tồn tại
+  if (!fs.existsSync(nextAuthDir)) {
+    fs.mkdirSync(nextAuthDir, { recursive: true });
+  }
+  
+  // Đường dẫn tới file route.js
+  const routeFilePath = path.join(nextAuthDir, 'route.js');
+  
+  // Nội dung file route.js
+  const routeContent = `
+// Placeholder file for NextAuth route
+export async function GET(req) {
+  return new Response(JSON.stringify({ auth: 'API is working' }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+export async function POST(req) {
+  return new Response(JSON.stringify({ auth: 'API is working' }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+`;
+  
+  // Ghi file
+  fs.writeFileSync(routeFilePath, routeContent);
+  console.log(`✅ Đã tạo file route giả cho NextAuth: ${routeFilePath}`);
+};
+
 // Thực thi tất cả các bước sửa lỗi
 try {
   createEmptyPackFiles();
   createPlaceholderFiles();
   checkEnvFiles();
+  createNextAuthPlaceholder();
   console.log('✨ Đã hoàn tất sửa lỗi Next.js!');
 } catch (error) {
   console.error('❌ Lỗi khi sửa Next.js:', error);

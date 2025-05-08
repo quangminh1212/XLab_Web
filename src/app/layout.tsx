@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    'msapplication-TileColor': '#2563EB',
+    'msapplication-TileColor': '#00A19A',
     'theme-color': '#ffffff',
   },
 }
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#2563EB',
+  themeColor: '#00A19A',
 }
 
 export default function RootLayout({

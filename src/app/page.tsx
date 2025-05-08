@@ -18,11 +18,11 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-teal-50 via-white to-teal-50 py-10 sm:py-12">
+      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-10 sm:py-12">
         <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 max-w-full">
           <div className="flex flex-col items-center text-center">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              <span className="text-gray-900">X</span><span className="text-teal-600">Lab</span>
+              <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mb-8">
               Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay
@@ -32,9 +32,9 @@ function HomePage() {
               <input
                 type="text"
                 placeholder="Tìm kiếm phần mềm, ứng dụng..."
-                className="w-full px-4 py-3 pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-gray-800"
+                className="w-full px-4 py-3 pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-teal-600 transition-colors">
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                   <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
                 </svg>
@@ -51,7 +51,7 @@ function HomePage() {
           <div className="w-full md:w-1/4 space-y-4">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
-              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-teal-500 to-blue-500 p-1 mb-3">
+              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
                 <div className="bg-white rounded-lg p-3 sm:p-4">
                   <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-800">Về XLab</h2>
                   <p className="text-sm sm:text-base text-gray-700 mb-3">
@@ -73,7 +73,7 @@ function HomePage() {
               </div>
               
               <div className="grid grid-cols-2 gap-2 p-2">
-                <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-lg p-3 shadow">
+                <div className="bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-3 shadow">
                   <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary-600">
                       <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -82,7 +82,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-1 text-sm">Sản phẩm trong nước</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Phát triển bởi đội ngũ kỹ sư Việt Nam</p>
                 </div>
-                <div className="bg-gradient-to-br from-teal-50 to-blue-50 rounded-lg p-3 shadow">
+                <div className="bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-3 shadow">
                   <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary-600">
                       <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
@@ -91,7 +91,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-1 text-sm">Hỗ trợ 24/7</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Đội ngũ hỗ trợ tận tâm</p>
                 </div>
-                <div className="bg-gradient-to-br from-teal-50 to-blue-50 rounded-lg p-3 shadow">
+                <div className="bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-3 shadow">
                   <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary-600">
                       <path fillRule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.75.75 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
@@ -100,7 +100,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-1 text-sm">Bảo mật cao</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Dữ liệu được mã hóa an toàn</p>
                 </div>
-                <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-lg p-3 shadow">
+                <div className="bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-3 shadow">
                   <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary-600">
                       <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 01-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004zM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 01-.921.42z" />
@@ -251,7 +251,7 @@ function HomePage() {
             {/* Tabs điều hướng */}
             <div className="mb-4 bg-white rounded-xl p-3 shadow-sm">
               <div className="flex space-x-4 border-b border-gray-200 pb-2 mb-3">
-                <button className="py-2 px-3 text-teal-600 border-b-2 border-teal-600 font-medium">
+                <button className="py-2 px-3 text-primary-600 border-b-2 border-primary-600 font-medium">
                   <div className="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -277,7 +277,7 @@ function HomePage() {
                   <h2 className="text-lg font-bold">Phần mềm</h2>
                   <Link
                     href="/products"
-                    className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                    className="text-primary-600 hover:text-primary-800 transition-colors text-sm"
                   >
                     Xem tất cả
                   </Link>
@@ -320,7 +320,7 @@ function HomePage() {
                   <h2 className="text-lg font-bold">Tài khoản nổi bật</h2>
                   <Link
                     href="/accounts"
-                    className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                    className="text-primary-600 hover:text-primary-800 transition-colors text-sm"
                   >
                     Xem tất cả
                   </Link>
@@ -368,7 +368,7 @@ function HomePage() {
                   <h2 className="text-lg font-bold">Tài khoản mới</h2>
                   <Link
                     href="/accounts"
-                    className="text-teal-600 hover:text-teal-800 transition-colors text-sm"
+                    className="text-primary-600 hover:text-primary-800 transition-colors text-sm"
                   >
                     Xem tất cả
                   </Link>
@@ -454,7 +454,7 @@ function HomePage() {
             <div className="text-center mt-8">
               <Link 
                 href="/support"
-                className="inline-flex items-center text-teal-600 hover:text-teal-800 font-medium"
+                className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium"
               >
                 Xem thêm câu hỏi
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">

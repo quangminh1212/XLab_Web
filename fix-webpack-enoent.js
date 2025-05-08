@@ -82,9 +82,18 @@ const createPlaceholderCssFile = () => {
     fs.mkdirSync(cssDir, { recursive: true });
   }
   
+  const appCssDir = path.join(cssDir, 'app');
+  if (!fs.existsSync(appCssDir)) {
+    fs.mkdirSync(appCssDir, { recursive: true });
+  }
+  
   const cssFile = path.join(cssDir, 'app-layout.css');
   fs.writeFileSync(cssFile, '/* Placeholder CSS file */');
   console.log(`Đã tạo file CSS placeholder: ${cssFile}`);
+  
+  const layoutCssFile = path.join(appCssDir, 'layout.css');
+  fs.writeFileSync(layoutCssFile, '/* Placeholder CSS file */');
+  console.log(`Đã tạo file CSS app/layout: ${layoutCssFile}`);
 };
 
 // Tạo file static placeholder
