@@ -288,15 +288,21 @@ export default function AccountPage() {
     }
   };
 
-  // Format currency
+  // Hàm định dạng tiền tệ
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
-  }
+    return amount.toLocaleString('vi-VN') + ' ₫';
+  };
 
-  // Format date (would normally use a proper date library)
+  // Hàm định dạng ngày
   const formatDate = (dateString: string) => {
-    return dateString // Already in DD/MM/YYYY format
-  }
+    // Giả sử định dạng đầu vào là DD/MM/YYYY
+    return dateString;
+  };
+
+  // Thêm liên kết đến trang đơn hàng
+  const goToOrdersPage = () => {
+    router.push('/orders');
+  };
 
   // Tính tổng số tiền đã chi
   const totalSpent = purchaseHistory.reduce((sum, order) => sum + order.total, 0);
@@ -385,27 +391,27 @@ export default function AccountPage() {
                   </>
                 )}
               </div>
-            </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
-              <p className="text-3xl font-bold text-gray-800">{formatCurrency(totalSpent)}</p>
-              <div className="mt-2 flex items-center text-sm text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-                <span>Qua {purchaseHistory.length} đơn hàng</span>
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
+                <p className="text-3xl font-bold text-gray-800">{formatCurrency(totalSpent)}</p>
+                <div className="mt-2 flex items-center text-sm text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  <span>Qua {purchaseHistory.length} đơn hàng</span>
+                </div>
               </div>
-            </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
-              <p className="text-3xl font-bold text-green-600">{formatCurrency(totalSaved)}</p>
-              <div className="mt-2 flex items-center text-sm text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12a1 1 0 11-2 0 1 1 0 012 0zm-1-3a1 1 0 00-1 1v.5a.5.5 0 001 0V12zm0-5a.5.5 0 00-.5.5v3a.5.5 0 001 0v-3A.5.5 0 0010 6z" clipRule="evenodd" />
-                </svg>
-                <span>So với giá gốc</span>
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
+                <p className="text-3xl font-bold text-green-600">{formatCurrency(totalSaved)}</p>
+                <div className="mt-2 flex items-center text-sm text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12a1 1 0 11-2 0 1 1 0 012 0zm-1-3a1 1 0 00-1 1v.5a.5.5 0 001 0V12zm0-5a.5.5 0 00-.5.5v3a.5.5 0 001 0v-3A.5.5 0 0010 6z" clipRule="evenodd" />
+                  </svg>
+                  <span>So với giá gốc</span>
+                </div>
               </div>
             </div>
           </div>
@@ -812,7 +818,17 @@ export default function AccountPage() {
 
               {/* Phần Lịch sử mua hàng */}
               <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Lịch sử mua hàng</h2>
+                <h2 className="text-2xl font-bold mb-6">
+                  Lịch sử mua hàng
+                  {hasProducts && (
+                    <button 
+                      onClick={goToOrdersPage}
+                      className="ml-4 text-sm font-medium text-primary-600 hover:text-primary-700"
+                    >
+                      Xem tất cả đơn hàng
+                    </button>
+                  )}
+                </h2>
 
                 {hasProducts ? (
                   <div className="space-y-6">
@@ -855,9 +871,12 @@ export default function AccountPage() {
                               Tổng: {formatCurrency(order.total)}
                             </div>
                             <div className="flex space-x-3">
-                              <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm">
-                                Chi tiết hóa đơn
-                              </button>
+                              <Link 
+                                href={`/orders/${order.id}`}
+                                className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm"
+                              >
+                                Chi tiết đơn hàng
+                              </Link>
                               <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
                                 Tải hóa đơn PDF
                               </button>
@@ -866,6 +885,18 @@ export default function AccountPage() {
                         </div>
                       </div>
                     ))}
+                    
+                    <div className="text-center mt-6">
+                      <button 
+                        onClick={goToOrdersPage}
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Xem tất cả đơn hàng
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="text-center py-10 bg-gray-50 rounded-lg">
