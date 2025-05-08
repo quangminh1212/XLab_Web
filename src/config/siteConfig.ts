@@ -14,7 +14,7 @@ export const siteConfig = {
         email: 'xlab.rnd@gmail.com',
         phone: '+84 866 528 014', // Thay đổi thành số điện thoại thật
         address: 'Long Biên, Hà Nội',
-        workingHours: ' 8:00 - 22:00',
+        workingHours: ' 24/7',
     },
 
     // Mạng xã hội
