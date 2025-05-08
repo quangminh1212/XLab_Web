@@ -25,7 +25,7 @@ function HomePage() {
               <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mb-8">
-              Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay
+              Tối ưu hiệu quả, tối thiểu chi phí!
             </p>
 
             <div className="relative w-full max-w-2xl">

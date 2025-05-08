@@ -72,6 +72,12 @@ const Header = () => {
             >
               Liên hệ
             </Link>
+            <Link
+              href="/bao-hanh"
+              className={`${isActive('/bao-hanh')} transition-colors`}
+            >
+              Bảo hành
+            </Link>
           </nav>
 
           {/* Right Side - Auth + Cart */}
@@ -243,6 +249,13 @@ const Header = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Liên hệ
+              </Link>
+              <Link
+                href="/bao-hanh"
+                className={`${isActive('/bao-hanh')} transition-colors block`}
+                onClick={() => setIsOpen(false)}
+              >
+                Bảo hành
               </Link>
               {!session && (
                 <button

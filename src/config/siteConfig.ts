@@ -6,7 +6,7 @@
 export const siteConfig = {
     // Thông tin cơ bản
     name: 'XLab',
-    description: 'Phần mềm riêng của bạn - Tải về và sử dụng ngay hôm nay',
+    description: 'Tối ưu hiệu quả, tối thiểu chi phí!',
     url: 'https://xlab.vn',
 
     // Thông tin liên hệ
@@ -37,7 +37,7 @@ export const siteConfig = {
     // Cấu hình SEO
     seo: {
         titleTemplate: '%s | XLab',
-        defaultTitle: 'XLab - Phần mềm riêng của bạn',
+        defaultTitle: 'XLab - Tối ưu hiệu quả, tối thiểu chi phí!',
         defaultDescription: 'XLab cung cấp các ứng dụng, phần mềm chất lượng cao cho cá nhân và doanh nghiệp.',
         twitterHandle: '@xlabvn',
         ogImage: '/images/og-image.jpg',
