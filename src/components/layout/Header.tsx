@@ -18,7 +18,7 @@ const Header = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   const isActive = (path: string) => {
-    return pathname === path ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600';
+    return pathname === path ? 'text-primary-600 font-medium' : 'text-gray-700 hover:text-primary-600';
   };
 
   const toggleMenu = () => {
@@ -40,8 +40,8 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3">
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center">
@@ -49,52 +49,52 @@ const Header = () => {
               <Image
                 src="/images/logo.jpg"
                 alt="XLab Logo"
-                width={50}
-                height={30}
-                className="w-auto h-10"
+                width={100}
+                height={60}
+                className="w-auto h-14"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <Link href="/" className={`${isActive('/')} transition-colors`}>
+          <nav className="hidden md:flex space-x-10">
+            <Link href="/" className={`${isActive('/')} transition-colors text-base`}>
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`${isActive('/products')} transition-colors`}
+              className={`${isActive('/products')} transition-colors text-base`}
             >
               Sản phẩm
             </Link>
             <Link
               href="/services"
-              className={`${isActive('/services')} transition-colors`}
+              className={`${isActive('/services')} transition-colors text-base`}
             >
               Dịch vụ
             </Link>
             <Link
               href="/about"
-              className={`${isActive('/about')} transition-colors`}
+              className={`${isActive('/about')} transition-colors text-base`}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className={`${isActive('/contact')} transition-colors`}
+              className={`${isActive('/contact')} transition-colors text-base`}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors`}
+              className={`${isActive('/bao-hanh')} transition-colors text-base`}
             >
               Bảo hành
             </Link>
           </nav>
 
           {/* Right Side - Auth + Cart */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-5">
             {/* Notification Icon */}
             {session && (
               <div className="relative">
@@ -105,7 +105,7 @@ const Header = () => {
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
+                    className="h-7 w-7"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -126,45 +126,45 @@ const Header = () => {
 
                 {/* Notification Dropdown */}
                 {isNotificationOpen && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-10">
-                    <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                      <h3 className="text-sm font-semibold text-gray-900">Thông báo</h3>
+                  <div className="absolute right-0 mt-3 w-96 bg-white rounded-lg shadow-xl py-3 z-10">
+                    <div className="px-5 py-3 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
                       {unreadCount > 0 && (
                         <button 
                           onClick={markAllAsRead}
-                          className="text-xs text-primary-600 hover:text-primary-800"
+                          className="text-sm text-primary-600 hover:text-primary-800"
                         >
                           Đánh dấu tất cả đã đọc
                         </button>
                       )}
                     </div>
                     
-                    <div className="max-h-80 overflow-y-auto">
+                    <div className="max-h-96 overflow-y-auto">
                       {notifications.length > 0 ? (
                         notifications.slice(0, 5).map((notification) => (
                           <div 
                             key={notification.id} 
-                            className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
+                            className={`px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
                             onClick={() => markAsRead(notification.id)}
                           >
                             <div className="flex justify-between items-start">
                               <h4 className="text-sm font-medium text-gray-900">{notification.title}</h4>
                               <span className="text-xs text-gray-500">{notification.time}</span>
                             </div>
-                            <p className="text-xs text-gray-600 mt-1">{notification.content}</p>
+                            <p className="text-sm text-gray-600 mt-1">{notification.content}</p>
                           </div>
                         ))
                       ) : (
-                        <div className="px-4 py-6 text-center">
-                          <p className="text-sm text-gray-500">Không có thông báo nào</p>
+                        <div className="px-5 py-8 text-center">
+                          <p className="text-base text-gray-500">Không có thông báo nào</p>
                         </div>
                       )}
                     </div>
                     
-                    <div className="px-4 py-2 border-t border-gray-100 text-center">
+                    <div className="px-5 py-3 border-t border-gray-100 text-center">
                       <Link
                         href="/notifications"
-                        className="text-xs text-primary-600 hover:text-primary-800"
+                        className="text-sm text-primary-600 hover:text-primary-800"
                         onClick={() => setIsNotificationOpen(false)}
                       >
                         Xem tất cả thông báo
@@ -179,7 +179,7 @@ const Header = () => {
             <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-7 w-7"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -206,13 +206,13 @@ const Header = () => {
                   <Image
                     src={session.user?.image || "/images/profiles/default-avatar.png"}
                     alt={session.user?.name || "User"}
-                    width={32}
-                    height={32}
-                    className="w-8 h-8 rounded-full"
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-full"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`h-4 w-4 ml-1 transform ${
+                    className={`h-5 w-5 ml-1 transform ${
                       isProfileOpen ? "rotate-180" : ""
                     } transition-transform`}
                     fill="none"
@@ -230,7 +230,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2.5 rounded-lg text-base font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -238,23 +238,23 @@ const Header = () => {
 
               {/* Profile Dropdown */}
               {isProfileOpen && session && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm font-semibold">{session.user?.name}</p>
-                    <p className="text-xs text-gray-500 truncate">
+                <div className="absolute right-0 mt-3 w-56 bg-white rounded-lg shadow-xl py-3 z-10">
+                  <div className="px-5 py-3 border-b border-gray-100">
+                    <p className="text-base font-semibold">{session.user?.name}</p>
+                    <p className="text-sm text-gray-500 truncate">
                       {session.user?.email}
                     </p>
                   </div>
                   <Link
                     href="/account"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block px-5 py-2.5 text-gray-700 hover:bg-gray-100 text-base"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Tài khoản
                   </Link>
                   <Link
                     href="/orders"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block px-5 py-2.5 text-gray-700 hover:bg-gray-100 text-base"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Đơn hàng
@@ -262,7 +262,7 @@ const Header = () => {
                   {session.user?.isAdmin && (
                     <Link
                       href="/admin"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      className="block px-5 py-2.5 text-gray-700 hover:bg-gray-100 text-base"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Quản trị
@@ -273,7 +273,7 @@ const Header = () => {
                       signOut();
                       setIsProfileOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block w-full text-left px-5 py-2.5 text-gray-700 hover:bg-gray-100 text-base"
                   >
                     Đăng xuất
                   </button>
@@ -288,7 +288,7 @@ const Header = () => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-8 w-8"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -306,46 +306,46 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
-            <div className="flex flex-col space-y-4">
+          <div className="md:hidden mt-5 pb-5 border-t border-gray-200 pt-5">
+            <div className="flex flex-col space-y-5">
               <Link
                 href="/"
-                className={`${isActive('/')} transition-colors block`}
+                className={`${isActive('/')} transition-colors block text-center text-base`}
                 onClick={() => setIsOpen(false)}
               >
                 Trang chủ
               </Link>
               <Link
                 href="/products"
-                className={`${isActive('/products')} transition-colors block`}
+                className={`${isActive('/products')} transition-colors block text-center text-base`}
                 onClick={() => setIsOpen(false)}
               >
                 Sản phẩm
               </Link>
               <Link
                 href="/services"
-                className={`${isActive('/services')} transition-colors block`}
+                className={`${isActive('/services')} transition-colors block text-center text-base`}
                 onClick={() => setIsOpen(false)}
               >
                 Dịch vụ
               </Link>
               <Link
                 href="/about"
-                className={`${isActive('/about')} transition-colors block`}
+                className={`${isActive('/about')} transition-colors block text-center text-base`}
                 onClick={() => setIsOpen(false)}
               >
                 Giới thiệu
               </Link>
               <Link
                 href="/contact"
-                className={`${isActive('/contact')} transition-colors block`}
+                className={`${isActive('/contact')} transition-colors block text-center text-base`}
                 onClick={() => setIsOpen(false)}
               >
                 Liên hệ
               </Link>
               <Link
                 href="/bao-hanh"
-                className={`${isActive('/bao-hanh')} transition-colors block`}
+                className={`${isActive('/bao-hanh')} transition-colors block text-center text-base`}
                 onClick={() => setIsOpen(false)}
               >
                 Bảo hành
@@ -356,7 +356,7 @@ const Header = () => {
                     signIn();
                     setIsOpen(false);
                   }}
-                  className="text-primary-600 hover:text-primary-700 transition-colors"
+                  className="text-primary-600 hover:text-primary-700 transition-colors text-center text-base font-medium mx-auto block"
                 >
                   Đăng nhập
                 </button>
