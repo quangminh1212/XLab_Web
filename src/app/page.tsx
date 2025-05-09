@@ -440,18 +440,12 @@ function HomePage() {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Sẵn sàng nâng cao hiệu suất công việc với XLab?</h2>
             <p className="text-white/90 text-base md:text-lg mb-8 max-w-2xl mx-auto">
-              Đăng ký ngay hôm nay để nhận ưu đãi đặc biệt 20% cho tất cả các sản phẩm và tài khoản trong tháng này. Chúng tôi cam kết mang đến cho bạn những giải pháp tốt nhất với chi phí hợp lý nhất.
+              Chúng tôi cung cấp nhiều mức giá ưu đãi đặc biệt dành cho khách hàng mua số lượng lớn. Càng mua nhiều, mức giảm giá càng cao. Chúng tôi cam kết mang đến cho bạn những giải pháp tốt nhất với chi phí hợp lý nhất.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
-                href="/register" 
-                className="bg-white text-primary-600 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl"
-              >
-                Đăng ký ngay
-              </Link>
-              <Link 
                 href="/contact" 
-                className="bg-transparent hover:bg-white/10 border-2 border-white font-medium py-3 px-6 rounded-lg transition-all"
+                className="bg-white text-primary-600 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl"
               >
                 Liên hệ tư vấn
               </Link>
