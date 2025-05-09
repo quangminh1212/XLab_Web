@@ -185,9 +185,7 @@ const nextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now();
   },
-  // Tùy chỉnh cách Next.js xử lý CSS
-  cssModules: false, // Tắt CSS modules
-  ignoreDuringBuilds: true,
+  // Cấu hình sass nằm trong mục tùy chọn hợp lệ
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
