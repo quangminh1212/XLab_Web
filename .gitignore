@@ -195,3 +195,9 @@ app-debug.log
 /restart-dev.js
 /restart.bat
 /restart.ps1
+
+/check-fix.ps1
+/commit-changes.ps1
+/.next/cache/**/*
+**/*.hot-update.*
+**/*.js.map

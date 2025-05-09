@@ -1,10 +1,9 @@
 /**
- * Script tổng hợp sửa tất cả lỗi Next.js và tối ưu hóa dự án
- * - Tạo vendor chunks
- * - Tạo manifest files
- * - Tạo static files
- * - Xóa cache và các file tạm
- * - Dọn dẹp file không cần thiết
+ * Script tổng hợp cho Next.js
+ * - Dọn dẹp và sửa lỗi tự động
+ * - Tạo cấu trúc file tối thiểu cho .next
+ * - Xóa file tạm thời
+ * - Tối ưu hóa dự án
  */
 
 const fs = require('fs');
@@ -12,20 +11,28 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 // Thiết lập
-const LOG_TO_FILE = true;
-const CLEANUP_ENABLED = true;
+const VERBOSE = false; // True để hiển thị tất cả log, False để chỉ hiển thị log quan trọng
 const MIN_FILES_ONLY = true; // Chỉ tạo các file tối thiểu cần thiết
+const CLEANUP_TEMP_FILES = true; // Tự động xóa các script tạm thời sau khi chạy
 
-// Ghi log ra file để debug
-function log(message) {
-  const logMessage = `[${new Date().toISOString()}] ${message}\n`;
-  if (LOG_TO_FILE) {
-    fs.appendFileSync('fix-all-errors.log', logMessage);
+// Danh sách file tạm thời sẽ bị xóa khi kết thúc
+const TEMP_FILES = [
+  'check-config.js',
+  'restart-dev.js',
+  'restart.bat',
+  'restart.ps1',
+  'check-fix.ps1', 
+  'commit-changes.ps1'
+];
+
+// Ghi log
+function log(message, isImportant = false) {
+  if (VERBOSE || isImportant) {
+    console.log(message);
   }
-  console.log(message);
 }
 
-log('=== Bắt đầu sửa tất cả lỗi Next.js ===');
+log('=== Tối ưu hóa dự án Next.js ===', true);
 
 // Tạo thư mục nếu chưa tồn tại
 function ensureDirectoryExists(dirPath) {
@@ -44,358 +51,288 @@ function createFileWithContent(filePath, content) {
   log(`✅ Đã tạo file: ${filePath}`);
 }
 
-// Sửa lỗi vendor chunks - nhẹ nhất có thể
-function fixVendorChunks() {
-  log('📦 Sửa lỗi vendor chunks...');
-
-  const basePath = path.join(__dirname, '.next', 'server');
-  ensureDirectoryExists(path.join(basePath, 'vendor-chunks'));
-  ensureDirectoryExists(path.join(basePath, 'pages', 'vendor-chunks'));
-  ensureDirectoryExists(path.join(basePath, 'chunks'));
+// Sửa lỗi Next.js config để tương thích với phiên bản mới nhất
+function fixNextConfig() {
+  log('🔧 Kiểm tra và sửa cấu hình Next.js...', true);
   
-  // Chỉ tạo các vendor chunks thực sự cần thiết
-  const essentialVendors = MIN_FILES_ONLY ? ['next', 'react', 'react-dom'] : [
-    'next',
-    'react',
-    'react-dom',
-    'scheduler',
-    'use-sync-external-store',
-    'next-auth',
-    '@swc',
-    'styled-jsx',
-    'client-only',
-    'next-client-pages-loader',
-    'react-server-dom-webpack',
-    'react-server-dom-webpack-client'
-  ];
+  const configPath = path.join(__dirname, 'next.config.js');
+  if (!fs.existsSync(configPath)) {
+    log('❌ Không tìm thấy file next.config.js', true);
+    return;
+  }
   
-  essentialVendors.forEach(vendor => {
-    // Tạo trong vendor-chunks
-    createFileWithContent(
-      path.join(basePath, 'vendor-chunks', `${vendor}.js`),
-      `module.exports = require("${vendor}");`
-    );
+  // Tạo bản sao lưu
+  try {
+    fs.copyFileSync(configPath, `${configPath}.bak`);
+    log('✅ Đã tạo bản sao lưu next.config.js.bak');
+  } catch (err) {
+    log(`❌ Lỗi khi tạo bản sao lưu: ${err.message}`, true);
+  }
+  
+  // Đọc nội dung file
+  const configContent = fs.readFileSync(configPath, 'utf8');
+  
+  // Kiểm tra xem outputFileTracingExcludes có trong experimental không
+  const hasExperimentalTracing = configContent.includes('experimental') && 
+    configContent.includes('outputFileTracingExcludes') && 
+    /experimental\s*:\s*{[^}]*outputFileTracingExcludes/.test(configContent);
+  
+  if (hasExperimentalTracing) {
+    log('🔄 Đang sửa cấu hình next.config.js...', true);
     
-    // Tạo trong pages/vendor-chunks
-    createFileWithContent(
-      path.join(basePath, 'pages', 'vendor-chunks', `${vendor}.js`),
-      `module.exports = require("${vendor}");`
-    );
+    // Thay thế bằng cách đưa outputFileTracingExcludes ra khỏi experimental
+    let newConfig = configContent;
     
-    // Tạo trong chunks
-    createFileWithContent(
-      path.join(basePath, 'chunks', `${vendor}.js`),
-      `module.exports = require("${vendor}");`
-    );
-  });
-  
-  log('✅ Đã sửa xong vendor chunks');
-}
-
-// Sửa lỗi manifest files
-function fixManifestFiles() {
-  log('📄 Sửa lỗi manifest files...');
-  
-  const basePath = path.join(__dirname, '.next', 'server');
-  
-  // Tạo app-paths-manifest.json (tối thiểu)
-  createFileWithContent(
-    path.join(basePath, 'app-paths-manifest.json'),
-    JSON.stringify({
-      "/": "app/page.js"
-    }, null, 2)
-  );
-  
-  // Tạo next-font-manifest.json
-  createFileWithContent(
-    path.join(basePath, 'next-font-manifest.json'),
-    JSON.stringify({
-      pages: {},
-      app: {}
-    }, null, 2)
-  );
-  
-  // Tạo middleware-manifest.json
-  createFileWithContent(
-    path.join(basePath, 'middleware-manifest.json'),
-    JSON.stringify({
-      middleware: {},
-      functions: {},
-      version: 2
-    }, null, 2)
-  );
-  
-  // Tạo build-manifest.json
-  createFileWithContent(
-    path.join(__dirname, '.next', 'build-manifest.json'),
-    JSON.stringify({
-      polyfillFiles: [],
-      devFiles: [],
-      ampDevFiles: [],
-      lowPriorityFiles: [],
-      rootMainFiles: [
-        "static/chunks/main-app.js"
-      ],
-      pages: {},
-      ampFirstPages: []
-    }, null, 2)
-  );
-  
-  log('✅ Đã sửa xong manifest files');
-}
-
-// Sửa lỗi static files
-function fixStaticFiles() {
-  log('🖼️ Sửa lỗi static files...');
-  
-  const staticDir = path.join(__dirname, '.next', 'static');
-  ensureDirectoryExists(path.join(staticDir, 'chunks'));
-  ensureDirectoryExists(path.join(staticDir, 'chunks', 'app'));
-  ensureDirectoryExists(path.join(staticDir, 'chunks', 'webpack'));
-  ensureDirectoryExists(path.join(staticDir, 'css'));
-  ensureDirectoryExists(path.join(staticDir, 'css', 'app'));
-  
-  // Tạo các file tối thiểu cần thiết
-  const essentialFiles = [
-    {
-      path: path.join(staticDir, 'chunks', 'main-app.js'),
-      content: '// Main App Chunk - Minimal Content\n'
-    },
-    {
-      path: path.join(staticDir, 'chunks', 'webpack', 'webpack.js'),
-      content: '// Webpack Runtime - Minimal Content\n'
-    },
-    {
-      path: path.join(staticDir, 'chunks', 'app', 'page.js'),
-      content: '// Home Page - Minimal Content\n'
-    },
-    {
-      path: path.join(staticDir, 'css', 'app-layout.css'),
-      content: '/* Minimal Layout CSS */\n'
-    },
-    {
-      path: path.join(staticDir, 'css', 'app', 'layout.css'),
-      content: '/* Minimal App Layout CSS */\n'
+    try {
+      // Trích xuất nội dung của outputFileTracingExcludes
+      const tracingMatch = /outputFileTracingExcludes\s*:\s*({[^}]*})/.exec(configContent);
+      if (tracingMatch && tracingMatch[1]) {
+        const tracingContent = tracingMatch[1];
+        
+        // Xóa nó khỏi experimental
+        newConfig = newConfig.replace(/(\s*outputFileTracingExcludes\s*:\s*{[^}]*}),?/g, '');
+        
+        // Thêm nó như một tùy chọn cấp cao nhất
+        newConfig = newConfig.replace(/(experimental\s*:\s*{[^}]*}\s*),?/g, '$1,\n  outputFileTracingExcludes: ' + tracingContent + ',\n  ');
+        
+        fs.writeFileSync(configPath, newConfig);
+        log('✅ Đã sửa cấu hình next.config.js thành công', true);
+      } else {
+        log('⚠️ Không thể tìm thấy nội dung outputFileTracingExcludes', true);
+      }
+    } catch (err) {
+      log(`❌ Lỗi khi sửa cấu hình: ${err.message}`, true);
+      // Khôi phục bản sao lưu
+      fs.copyFileSync(`${configPath}.bak`, configPath);
+      log('⚠️ Đã khôi phục bản sao lưu next.config.js', true);
     }
-  ];
-  
-  essentialFiles.forEach(file => {
-    createFileWithContent(file.path, file.content);
-  });
-  
-  // Tạo vài tệp webpack dummy (tối thiểu)
-  const chunkPrefixes = MIN_FILES_ONLY 
-    ? ['webpack-', 'framework-', 'main-'] 
-    : ['webpack-', 'framework-', 'main-', 'app-', 'polyfills-'];
-    
-  chunkPrefixes.forEach(prefix => {
-    const randomHash = Math.random().toString(36).substring(2, 6);
-    createFileWithContent(
-      path.join(staticDir, 'chunks', `${prefix}${randomHash}.js`),
-      `// ${prefix} chunk - Minimal Content\n`
-    );
-  });
-  
-  log('✅ Đã sửa xong static files');
+  } else {
+    log('✅ Cấu hình next.config.js đã hợp lệ', true);
+  }
 }
 
-// Sửa lỗi app routes
-function fixAppRoutes() {
-  log('🛣️ Sửa lỗi app routes...');
+// Xử lý file trace
+function fixTraceFile() {
+  log('🔍 Kiểm tra và xử lý file trace...', true);
   
-  const basePath = path.join(__dirname, '.next', 'server', 'app');
-  
-  ensureDirectoryExists(path.join(basePath, 'api', 'auth', '[...nextauth]'));
-  
-  // Tạo file route.js
-  createFileWithContent(
-    path.join(basePath, 'api', 'auth', '[...nextauth]', 'route.js'),
-    '// Next Auth Route - Minimal Content'
-  );
-  
-  log('✅ Đã sửa xong app routes');
-}
-
-// Xóa cache và file thừa
-function clearCache() {
-  log('🧹 Xóa cache...');
-  
-  const nextDir = path.join(__dirname, '.next');
-  const cachePath = path.join(nextDir, 'cache');
-  const tracePath = path.join(nextDir, 'trace');
-  
-  // Xóa file trace nếu tồn tại
+  const tracePath = path.join(__dirname, '.next', 'trace');
   if (fs.existsSync(tracePath)) {
     try {
-      // Thử xóa bằng fs.unlinkSync
-      fs.chmodSync(tracePath, 0o666);
-      fs.unlinkSync(tracePath);
-      log('✅ Đã xóa file trace');
-    } catch (traceErr) {
-      log(`⚠️ Không thể xóa file trace (không ảnh hưởng): ${traceErr.message}`);
+      // Đặt lại quyền truy cập
+      try {
+        fs.chmodSync(tracePath, 0o666);
+        log('✅ Đã đặt lại quyền truy cập cho file trace');
+      } catch (chmodErr) {
+        log(`⚠️ Không thể đặt lại quyền truy cập: ${chmodErr.message}`);
+      }
+      
+      // Xóa file trace
+      try {
+        fs.unlinkSync(tracePath);
+        log('✅ Đã xóa file trace thành công', true);
+      } catch (unlinkErr) {
+        log(`❌ Không thể xóa file trace: ${unlinkErr.message}`, true);
+        
+        // Thử phương pháp khác trên Windows
+        try {
+          execSync('attrib -r -s -h .next\\trace');
+          execSync('del /f /q .next\\trace');
+          if (!fs.existsSync(tracePath)) {
+            log('✅ Đã xóa file trace thành công bằng CMD', true);
+          }
+        } catch (cmdErr) {
+          log(`❌ Vẫn không thể xóa file trace, vui lòng xóa thủ công: ${cmdErr.message}`, true);
+        }
+      }
+    } catch (error) {
+      log(`❌ Lỗi khi xử lý file trace: ${error.message}`, true);
     }
+  } else {
+    log('✅ Không tìm thấy file trace, không cần xử lý', true);
   }
-  
-  // Xóa cache webpack
-  if (fs.existsSync(cachePath)) {
-    try {
-      fs.rmSync(cachePath, { recursive: true, force: true });
-      log(`✅ Đã xóa cache: ${cachePath}`);
-    } catch (cacheErr) {
-      log(`⚠️ Không thể xóa cache: ${cacheErr.message}`);
-    }
-  }
-  
-  // Xóa webpack build files thừa
-  const staticWebpackDir = path.join(nextDir, 'static', 'webpack');
-  if (fs.existsSync(staticWebpackDir)) {
-    try {
-      fs.rmSync(staticWebpackDir, { recursive: true, force: true });
-      log(`✅ Đã xóa cache: ${staticWebpackDir}`);
-    } catch (webpackErr) {
-      log(`⚠️ Không thể xóa webpack cache: ${webpackErr.message}`);
-    }
-  }
-  
-  // Tạo lại thư mục cache trống
-  ensureDirectoryExists(cachePath);
-  ensureDirectoryExists(path.join(cachePath, 'webpack'));
-  
-  log('✅ Đã xong quá trình xóa cache');
 }
 
-// Tạo các file .gitkeep để duy trì cấu trúc thư mục trong Git
-function createGitkeepFiles() {
-  log('📁 Tạo các file .gitkeep để giữ cấu trúc thư mục...');
+// Tạo cấu trúc thư mục tối thiểu cho .next
+function createMinimalNextStructure() {
+  log('📁 Tạo cấu trúc thư mục tối thiểu cho Next.js...', true);
   
   const nextDir = path.join(__dirname, '.next');
-  const dirs = [
+  ensureDirectoryExists(nextDir);
+  
+  // Tạo các thư mục cốt lõi
+  const coreDirs = [
     path.join(nextDir, 'cache'),
     path.join(nextDir, 'server'),
     path.join(nextDir, 'static'),
     path.join(nextDir, 'static', 'chunks'),
-    path.join(nextDir, 'static', 'css')
+    path.join(nextDir, 'static', 'css'),
+    path.join(nextDir, 'server', 'pages'),
+    path.join(nextDir, 'server', 'chunks')
   ];
   
-  if (!MIN_FILES_ONLY) {
-    dirs.push(
-      path.join(nextDir, 'static', 'webpack'),
-      path.join(nextDir, 'server', 'chunks'),
-      path.join(nextDir, 'server', 'pages'),
-      path.join(nextDir, 'server', 'vendor-chunks'),
-      path.join(nextDir, 'server', 'app')
-    );
-  }
+  coreDirs.forEach(dir => ensureDirectoryExists(dir));
   
-  dirs.forEach(dir => {
-    ensureDirectoryExists(dir);
+  // Tạo file .gitkeep trong mỗi thư mục
+  coreDirs.forEach(dir => {
     const gitkeepPath = path.join(dir, '.gitkeep');
-    fs.writeFileSync(gitkeepPath, '');
-    log(`✅ Đã tạo file: ${gitkeepPath}`);
-  });
-  
-  log('✅ Đã hoàn thành việc tạo các file .gitkeep');
-}
-
-// Dọn dẹp file thừa
-function cleanupUnnecessaryFiles() {
-  if (!CLEANUP_ENABLED) return;
-  
-  log('🧹 Dọn dẹp các file không cần thiết...');
-  
-  const nextDir = path.join(__dirname, '.next');
-  const patterns = [
-    // Cache và webpack
-    ['**/*.hot-update.*', 'Hot update files'],
-    ['**/webpack/webpack.*', 'Webpack temporary files'],
-    ['**/*.pack', 'Webpack pack files'],
-    
-    // Các file nhạy cảm
-    ['.env.local.backup', 'Backup env files'],
-    ['.env.*.backup', 'Backup env files'],
-    ['**/*.log', 'Log files'],
-    
-    // File tạm
-    ['**/tmp-*', 'Temporary files'],
-    ['**/*.tmp', 'Temporary files'],
-    
-    // File tạm thời của Next.js
-    ['**/*.js.map', 'Source map files']
-  ];
-  
-  const filesToDelete = [];
-  
-  // Function để tìm file theo pattern
-  function findFilesInDir(dir, pattern) {
-    if (!fs.existsSync(dir)) return [];
-    
-    const results = [];
-    const list = fs.readdirSync(dir);
-    
-    list.forEach(file => {
-      file = path.join(dir, file);
-      const stat = fs.statSync(file);
-      
-      if (stat && stat.isDirectory()) {
-        results.push(...findFilesInDir(file, pattern));
-      } else {
-        if (file.match(new RegExp(pattern.replace(/\*/g, '.*')))) {
-          results.push(file);
-        }
-      }
-    });
-    
-    return results;
-  }
-  
-  patterns.forEach(([pattern, description]) => {
-    try {
-      const files = findFilesInDir(nextDir, pattern);
-      if (files.length > 0) {
-        log(`🔍 Tìm thấy ${files.length} ${description}`);
-        filesToDelete.push(...files);
-      }
-    } catch (err) {
-      log(`⚠️ Lỗi khi tìm ${description}: ${err.message}`);
+    if (!fs.existsSync(gitkeepPath)) {
+      fs.writeFileSync(gitkeepPath, '');
     }
   });
   
-  // Xóa các file không cần thiết
-  if (filesToDelete.length > 0) {
-    log(`🗑️ Xóa ${filesToDelete.length} file không cần thiết...`);
-    
-    filesToDelete.forEach(file => {
+  // Tạo các file manifest cơ bản
+  createFileWithContent(
+    path.join(nextDir, 'server', 'middleware-manifest.json'),
+    JSON.stringify({ middleware: {}, functions: {}, version: 2 }, null, 2)
+  );
+  
+  log('✅ Đã tạo xong cấu trúc thư mục tối thiểu', true);
+}
+
+// Xóa cache và file tạm thời
+function cleanupProject() {
+  log('🧹 Đang dọn dẹp dự án...', true);
+  
+  const nextDir = path.join(__dirname, '.next');
+  
+  // Xóa cache
+  const cacheDirs = [
+    path.join(nextDir, 'cache'),
+    path.join(nextDir, 'static', 'webpack')
+  ];
+  
+  cacheDirs.forEach(dir => {
+    if (fs.existsSync(dir)) {
       try {
-        fs.unlinkSync(file);
-        log(`✅ Đã xóa file: ${file}`);
+        fs.rmSync(dir, { recursive: true, force: true });
+        log(`✅ Đã xóa thư mục cache: ${dir}`);
+        ensureDirectoryExists(dir);
       } catch (err) {
-        log(`⚠️ Không thể xóa file ${file}: ${err.message}`);
+        log(`⚠️ Không thể xóa thư mục ${dir}: ${err.message}`);
+      }
+    }
+  });
+  
+  // Xóa các file tạm thời
+  if (CLEANUP_TEMP_FILES) {
+    TEMP_FILES.forEach(file => {
+      const filePath = path.join(__dirname, file);
+      if (fs.existsSync(filePath) && file !== 'fix-all-errors.js') {
+        try {
+          fs.unlinkSync(filePath);
+          log(`✅ Đã xóa file tạm thời: ${file}`, true);
+        } catch (err) {
+          log(`⚠️ Không thể xóa file ${file}: ${err.message}`);
+        }
       }
     });
-  } else {
-    log('✅ Không tìm thấy file không cần thiết để xóa');
   }
   
-  log('✅ Đã hoàn thành việc dọn dẹp');
+  log('✅ Đã hoàn tất dọn dẹp dự án', true);
 }
 
-// Chạy các hàm
-function main() {
-  try {
-    fixVendorChunks();
-    fixManifestFiles();
-    fixStaticFiles();
-    fixAppRoutes();
-    clearCache();
-    createGitkeepFiles();
-    cleanupUnnecessaryFiles();
-    
-    log('✅ Đã hoàn tất tất cả các bước sửa lỗi');
-    log('🚀 Khởi động lại ứng dụng để áp dụng thay đổi');
-  } catch (error) {
-    log(`❌ Lỗi trong quá trình sửa lỗi: ${error.message}`);
-    log(`Stack: ${error.stack}`);
+// Cập nhật gitignore để loại trừ các file tạm thời
+function updateGitignore() {
+  log('📝 Cập nhật .gitignore...', true);
+  
+  const gitignorePath = path.join(__dirname, '.gitignore');
+  if (!fs.existsSync(gitignorePath)) {
+    log('❌ Không tìm thấy file .gitignore', true);
+    return;
+  }
+  
+  let gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+  
+  // Danh sách các mẫu cần thêm vào .gitignore
+  const ignorePatterns = [
+    '# Temporary files',
+    '/check-config.js',
+    '/restart-dev.js',
+    '/restart.bat',
+    '/restart.ps1',
+    '/check-fix.ps1',
+    '/commit-changes.ps1',
+    '/node_modules/.cache/',
+    '/.next/cache/**/*',
+    '/.next/trace*',
+    '**/*.hot-update.*',
+    '**/*.js.map'
+  ];
+  
+  // Thêm các mẫu chưa có vào .gitignore
+  let updated = false;
+  ignorePatterns.forEach(pattern => {
+    if (!gitignoreContent.includes(pattern)) {
+      gitignoreContent += `\n${pattern}`;
+      updated = true;
+    }
+  });
+  
+  if (updated) {
+    fs.writeFileSync(gitignorePath, gitignoreContent);
+    log('✅ Đã cập nhật .gitignore', true);
+  } else {
+    log('✅ .gitignore đã chứa tất cả các mẫu cần thiết', true);
   }
 }
 
+// Tạo file run.bat đơn giản
+function createRunScript() {
+  log('📄 Tạo file run.bat đơn giản...', true);
+  
+  const runBatContent = `@echo off
+echo ===========================================================
+echo Starting Next.js application - XLab_Web
+echo ===========================================================
+
+REM Kiểm tra và xử lý file trace
+if exist ".next\\trace" (
+  echo Fixing trace file...
+  attrib -r -s -h .next\\trace
+  del /f /q .next\\trace
+)
+
+REM Khởi động ứng dụng
+echo Starting Next.js application...
+npm run dev
+
+pause`;
+  
+  const runBatPath = path.join(__dirname, 'run.bat');
+  fs.writeFileSync(runBatPath, runBatContent);
+  log('✅ Đã tạo file run.bat thành công', true);
+}
+
+// Chạy tất cả các chức năng
+async function main() {
+  try {
+    log('🚀 Bắt đầu quá trình tối ưu hóa...', true);
+    
+    // Xử lý file trace
+    fixTraceFile();
+    
+    // Sửa cấu hình Next.js
+    fixNextConfig();
+    
+    // Tạo cấu trúc thư mục tối thiểu
+    createMinimalNextStructure();
+    
+    // Dọn dẹp dự án
+    cleanupProject();
+    
+    // Cập nhật gitignore
+    updateGitignore();
+    
+    // Tạo file run.bat đơn giản
+    createRunScript();
+    
+    log('✅ Đã hoàn tất quá trình tối ưu hóa!', true);
+    log('🚀 Chạy file run.bat để khởi động dự án', true);
+  } catch (error) {
+    log(`❌ Lỗi trong quá trình tối ưu hóa: ${error.message}`, true);
+    log(`Stack: ${error.stack}`, true);
+  }
+}
+
+// Chạy chương trình
 main(); 
