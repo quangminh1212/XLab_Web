@@ -122,7 +122,7 @@ function HomePage() {
                 </p>
               </div>
 
-              <div className="h-[350px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+              <div className="h-[420px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
                 <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
                   <div className="flex items-center mb-3">
                     <div className="bg-primary-100 rounded-full p-2 mr-3">
