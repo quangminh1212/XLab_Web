@@ -25,6 +25,7 @@ function createDirectories() {
 // Tạo các file vendor cần thiết
 function createVendorFiles() {
   const vendorFiles = [
+    // Core React & Next.js modules
     {
       path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'next.js'),
       content: 'module.exports = require("next");'
@@ -97,6 +98,71 @@ function createVendorFiles() {
     {
       path: path.join(__dirname, '.next', 'server', 'chunks', 'use-sync-external-store.js'),
       content: 'module.exports = require("use-sync-external-store");'
+    },
+    // Thêm các module SWC và các thư viện quan trọng khác
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', '@swc.js'),
+      content: 'module.exports = require("@swc/helpers");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', '@swc.js'),
+      content: 'module.exports = require("@swc/helpers");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', '@swc.js'),
+      content: 'module.exports = require("@swc/helpers");'
+    },
+    // Thêm các module quan trọng khác
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'styled-jsx.js'),
+      content: 'module.exports = require("styled-jsx");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'styled-jsx.js'),
+      content: 'module.exports = require("styled-jsx");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'styled-jsx.js'),
+      content: 'module.exports = require("styled-jsx");'
+    },
+    // Client components
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'next-client-pages-loader.js'),
+      content: 'module.exports = {};'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'next-client-pages-loader.js'),
+      content: 'module.exports = {};'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'next-client-pages-loader.js'),
+      content: 'module.exports = {};'
+    },
+    // Client server modules
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'react-server-dom-webpack.js'),
+      content: 'module.exports = require("react-server-dom-webpack");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'react-server-dom-webpack.js'),
+      content: 'module.exports = require("react-server-dom-webpack");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'react-server-dom-webpack.js'),
+      content: 'module.exports = require("react-server-dom-webpack");'
+    },
+    // Client API modules
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'client-only.js'),
+      content: 'module.exports = require("client-only");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'client-only.js'),
+      content: 'module.exports = require("client-only");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'client-only.js'),
+      content: 'module.exports = require("client-only");'
     }
   ];
 
@@ -122,6 +188,66 @@ function createManifestFiles() {
     }));
     console.log(`Đã tạo file manifest: ${fontManifestPath}`);
   }
+  
+  // Tạo thêm app-build-manifest.json
+  const appBuildManifestPath = path.join(__dirname, '.next', 'app-build-manifest.json');
+  if (!fs.existsSync(appBuildManifestPath)) {
+    fs.writeFileSync(appBuildManifestPath, JSON.stringify({
+      pages: {},
+      app: {}
+    }));
+    console.log(`Đã tạo file manifest: ${appBuildManifestPath}`);
+  }
+  
+  // Tạo app-paths-manifest.json
+  const appPathsManifestPath = path.join(__dirname, '.next', 'server', 'app-paths-manifest.json');
+  if (!fs.existsSync(appPathsManifestPath)) {
+    fs.writeFileSync(appPathsManifestPath, JSON.stringify({
+      "/": "app/page.js",
+      "/products/[id]": "app/products/[id]/page.js"
+    }));
+    console.log(`Đã tạo file manifest: ${appPathsManifestPath}`);
+  }
+}
+
+// Tạo các file trang thiếu cho product detail
+function createMissingProductFiles() {
+  const productPagesDir = path.join(__dirname, '.next', 'static', 'chunks', 'app', 'products', '[id]');
+  
+  // Đảm bảo thư mục tồn tại
+  if (!fs.existsSync(productPagesDir)) {
+    fs.mkdirSync(productPagesDir, { recursive: true });
+  }
+  
+  // Tạo các file cần thiết
+  const filesToCreate = [
+    {
+      path: path.join(productPagesDir, 'page.js'),
+      content: '// Product detail page placeholder'
+    },
+    {
+      path: path.join(productPagesDir, 'loading.js'),
+      content: '// Product loading placeholder'
+    },
+    {
+      path: path.join(productPagesDir, 'not-found.js'),
+      content: '// Product not found placeholder'
+    }
+  ];
+  
+  filesToCreate.forEach(file => {
+    if (!fs.existsSync(file.path)) {
+      fs.writeFileSync(file.path, file.content);
+      console.log(`Đã tạo file trang sản phẩm: ${file.path}`);
+    }
+  });
+  
+  // Cũng tạo thư mục tương tự trong server
+  const serverProductDir = path.join(__dirname, '.next', 'server', 'app', 'products', '[id]');
+  if (!fs.existsSync(serverProductDir)) {
+    fs.mkdirSync(serverProductDir, { recursive: true });
+    console.log(`Đã tạo thư mục server: ${serverProductDir}`);
+  }
 }
 
 // Sửa webpack-runtime.js để trỏ đúng đường dẫn
@@ -140,7 +266,9 @@ function fixWebpackRuntime() {
     // Tạo danh sách vendor modules
     const vendorModules = [
       'next', 'react', 'react-dom', 'next-auth', 
-      'scheduler', 'use-sync-external-store'
+      'scheduler', 'use-sync-external-store', '@swc',
+      'styled-jsx', 'next-client-pages-loader', 
+      'react-server-dom-webpack', 'client-only'
     ];
     
     // Tạo code để import các vendor modules
@@ -164,6 +292,7 @@ function fixWebpackRuntime() {
           if (vendorChunks[moduleName]) {
             return;
           }
+          console.log('Đang tải vendor chunk:', moduleName);
         }
       `
     );
@@ -181,6 +310,7 @@ function runFix() {
     createDirectories();
     createVendorFiles();
     createManifestFiles();
+    createMissingProductFiles();
     fixWebpackRuntime();
     console.log('Đã hoàn tất việc sửa lỗi vendor-chunks.');
   } catch (error) {

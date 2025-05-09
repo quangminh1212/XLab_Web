@@ -217,3 +217,16 @@ yarn-error.log*
 /.next/server/flight-server-css-manifest.json
 /.next/server/flight-client-css-manifest.json
 
+# URL Encoded files và placeholders
+/.next/static/chunks/app/products/%5Bid%5D/*.js
+/.next/static/chunks/app/**/*.js
+/.next/static/webpack/**/*
+/.next/static/development/_buildManifest.js
+/.next/static/development/_ssgManifest.js
+
+# Module không tìm thấy lỗi
+**/@swc*
+**/client-only*
+**/styled-jsx*
+**/next-client-pages-loader*
+
