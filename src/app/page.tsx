@@ -48,7 +48,7 @@ function HomePage() {
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           {/* Sidebar Column - Left */}
-          <div className="w-full md:w-[15%] space-y-3">
+          <div className="w-full md:w-[18%] space-y-3">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
@@ -122,7 +122,7 @@ function HomePage() {
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="h-[350px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
                 <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
                   <div className="flex items-center mb-3">
                     <div className="bg-primary-100 rounded-full p-2 mr-3">
@@ -243,11 +243,23 @@ function HomePage() {
                   </p>
                 </div>
               </div>
+              
+              <div className="mt-3 text-center">
+                <Link 
+                  href="/testimonials"
+                  className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm"
+                >
+                  Xem tất cả đánh giá
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </Link>
+              </div>
             </section>
           </div>
           
           {/* Main Content Column - Right */}
-          <div className="w-full md:w-[85%]">
+          <div className="w-full md:w-[82%]">
             {/* Phần mềm */}
             <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
               <div className="mb-4">
