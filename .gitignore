@@ -178,3 +178,20 @@ app-debug.log
 !fix-all-errors.js
 !fix-trace-error.js
 !fix-auth-component.js
+
+# Thêm các file động được tạo ra khi chạy ứng dụng
+/.next/static/chunks/webpack-*.js
+/.next/static/chunks/main-*.js
+/.next/static/chunks/framework-*.js
+/.next/static/chunks/app-*.js
+/.next/static/chunks/polyfills-*.js
+/.next/server/app/api/auth/**/*.js
+/.next/server/pages/api/auth/**/*.js
+/.next/static/media/*
+/.next/server/client-reference-manifest*
+
+# Script kiểm tra tạm thời
+/check-config.js
+/restart-dev.js
+/restart.bat
+/restart.ps1

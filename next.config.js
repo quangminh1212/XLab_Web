@@ -78,8 +78,6 @@ const nextConfig = {
     forceSwcTransforms: true,
     appDocumentPreloading: false,
   },
-  outputFileTracing: false,
-  outputFileTracingIgnores: ['.next/trace', '.next/trace*'],
   outputFileTracingExcludes: {
     '*': ['node_modules/**', '.next/**']
   },
@@ -92,7 +90,6 @@ const nextConfig = {
   compress: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
   trailingSlash: false,
-  // Vô hiệu hóa cảnh báo cho CSS tùy chỉnh (Tailwind CSS)
   modularizeImports: {
     'tailwindcss/utilities': {
       transform: 'tailwindcss/utilities/{{member}}',
@@ -107,7 +104,6 @@ const nextConfig = {
         ignored: /node_modules/
       };
 
-      // Sửa lỗi hot update 404
       config.output = {
         ...config.output,
         hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
@@ -131,7 +127,6 @@ const nextConfig = {
       hints: false,
     };
 
-    // Đảm bảo publicPath luôn được đặt đúng để tránh lỗi 404
     config.output = {
       ...config.output,
       publicPath: '/_next/',
@@ -144,16 +139,13 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Ngăn chặn lỗi ENOENT
     config.cache = false;
 
-    // Loại bỏ cảnh báo Critical dependency
     config.module = {
       ...config.module,
       exprContextCritical: false,
       rules: [
         ...config.module.rules,
-        // Loại bỏ quy tắc CSS để sử dụng hỗ trợ CSS built-in của Next.js
         {
           test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
           type: 'asset/resource',
@@ -161,10 +153,8 @@ const nextConfig = {
       ],
     };
 
-    // Enables hot module replacement
     config.optimization.runtimeChunk = 'single';
     
-    // Thêm plugin để đảm bảo tệp static được tạo đúng cách
     if (!isServer) {
       const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
       config.plugins.push(
@@ -190,7 +180,6 @@ const nextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now();
   },
-  // Cấu hình sass nằm trong mục tùy chọn hợp lệ
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
