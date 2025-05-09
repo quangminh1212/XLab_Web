@@ -4,7 +4,6 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: false,
-  swcMinify: true,
   images: {
     remotePatterns: [
       {

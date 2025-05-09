@@ -24,6 +24,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+app-debug.log
+*.log
 
 # local env files
 .env*.local
@@ -71,6 +73,10 @@ fix-critters.js
 fix-webpack-hot-update.js
 fix-nextjs-vendor-paths.js
 fix-nextjs-missing-files.js
+fix-vendor-chunks.js
+fix-all.js
+fix-run-debug.bat
+build-run.bat
 
 # Next.js build output
 .next/
@@ -98,6 +104,7 @@ fix-nextjs-missing-files.js
 .next/server/app-paths-manifest.json
 .next/server/flight-server-css-manifest.json
 .next/server/next-font-manifest.json
+.next/server/_not-found.json
 .next/fallback-build-manifest.json
 .next/trace
 
@@ -111,4 +118,7 @@ fix-nextjs-missing-files.js
 # Development logs
 .dev.log
 npm-debug.log
+
+# Admin scripts
+.getadmin.vbs
 
