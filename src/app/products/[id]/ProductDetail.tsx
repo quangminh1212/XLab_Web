@@ -7,6 +7,13 @@ import { formatCurrency } from '@/lib/utils';
 import { Product } from '@/types';
 import { products } from '@/data/mockData';
 import { useCart } from '@/components/cart/CartContext';
+import dynamic from 'next/dynamic';
+
+// Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
+const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
+  loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
+  ssr: false // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
+});
 
 // Component hiển thị lợi ích của sản phẩm chỉ hiển thị trong trang chi tiết của website
 const ProductBenefits = () => (
@@ -202,6 +209,9 @@ export default function ProductDetail({ product }: { product: Product }) {
     }
   };
 
+  // Kiểm tra xem sản phẩm có phải là VoiceTyping không
+  const isVoiceTyping = product.id === 'prod-vt' || product.slug === 'voicetyping';
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-5xl mx-auto">
@@ -345,6 +355,12 @@ export default function ProductDetail({ product }: { product: Product }) {
         
         {/* Chi tiết sản phẩm */}
         <ProductDescription description={product.longDescription} />
+        
+        {/* Demo VoiceTyping nếu sản phẩm là VoiceTyping */}
+        {isVoiceTyping && <VoiceTypingDemo />}
+        
+        {/* Lợi ích sản phẩm */}
+        <ProductBenefits />
         
         {/* Sản phẩm liên quan */}
         <div className="mt-12">
