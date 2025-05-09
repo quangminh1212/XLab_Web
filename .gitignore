@@ -17,6 +17,7 @@
 /.next/server/
 /.next/static/
 /.next/trace
+/.next/trace*
 /.next/*.json
 /.next/server/vendor-chunks/
 /.next/server/chunks/

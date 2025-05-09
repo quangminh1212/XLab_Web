@@ -240,28 +240,42 @@ function fixAppRoutes() {
 function clearCache() {
   log('🧹 Xóa cache...');
   
-  // Tạo danh sách các cache cần xóa
-  const cacheDirs = [
-    path.join(__dirname, '.next', 'cache'),
-    path.join(__dirname, '.next', 'static', 'webpack'),
-    path.join(__dirname, 'node_modules', '.cache')
-  ];
+  const cachePath = path.join(__dirname, '.next', 'cache');
+  const tracePath = path.join(__dirname, '.next', 'trace');
   
-  // Xóa từng thư mục cache
-  cacheDirs.forEach(dir => {
-    if (fs.existsSync(dir)) {
-      try {
-        fs.rmSync(dir, { recursive: true, force: true });
-        log(`✅ Đã xóa cache: ${dir}`);
-      } catch (err) {
-        log(`❌ Lỗi khi xóa cache ${dir}: ${err.message}`);
-      }
+  // Xóa file trace nếu tồn tại để tránh lỗi EPERM
+  try {
+    if (fs.existsSync(tracePath)) {
+      fs.unlinkSync(tracePath);
+      log(`✅ Đã xóa file trace: ${tracePath}`);
     }
-  });
+  } catch (error) {
+    log(`⚠️ Không thể xóa file trace (không ảnh hưởng): ${error.message}`);
+  }
   
-  // Tạo lại thư mục cache cần thiết
-  ensureDirectoryExists(path.join(__dirname, '.next', 'cache'));
-  ensureDirectoryExists(path.join(__dirname, '.next', 'cache', 'webpack'));
+  // Xóa và tạo lại thư mục cache
+  if (fs.existsSync(cachePath)) {
+    try {
+      fs.rmSync(cachePath, { recursive: true, force: true });
+      log(`✅ Đã xóa cache: ${cachePath}`);
+    } catch (error) {
+      log(`⚠️ Lỗi khi xóa cache: ${error.message}`);
+    }
+  }
+  
+  const webpackCachePath = path.join(__dirname, '.next', 'static', 'webpack');
+  if (fs.existsSync(webpackCachePath)) {
+    try {
+      fs.rmSync(webpackCachePath, { recursive: true, force: true });
+      log(`✅ Đã xóa cache: ${webpackCachePath}`);
+    } catch (error) {
+      log(`⚠️ Lỗi khi xóa webpack cache: ${error.message}`);
+    }
+  }
+  
+  // Tạo lại thư mục cache
+  ensureDirectoryExists(cachePath);
+  ensureDirectoryExists(path.join(cachePath, 'webpack'));
   
   log('✅ Đã xong quá trình xóa cache');
 }
