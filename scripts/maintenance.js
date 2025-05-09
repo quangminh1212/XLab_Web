@@ -179,16 +179,6 @@ function createMinimalNextStructure() {
     }
   }
   
-  // Tạo file manifest cơ bản
-  const manifestPath = path.join(nextDir, 'server', 'middleware-manifest.json');
-  if (!fs.existsSync(manifestPath)) {
-    createFileWithContent(
-      manifestPath,
-      JSON.stringify({ middleware: {}, functions: {}, version: 2 }, null, 2)
-    );
-    createdAny = true;
-  }
-  
   if (createdAny) {
     console.log('✅ Đã tạo xong cấu trúc thư mục tối thiểu');
   } else {
@@ -196,10 +186,89 @@ function createMinimalNextStructure() {
   }
 }
 
+// Tạo các file manifest cần thiết cho Next.js
+function createNextManifestFiles() {
+  console.log('📄 Tạo các file manifest quan trọng...');
+
+  const serverDir = path.join(nextDir, 'server');
+  ensureDirectoryExists(serverDir);
+
+  const manifestFiles = [
+    {
+      path: path.join(serverDir, 'middleware-manifest.json'),
+      content: JSON.stringify({ middleware: {}, functions: {}, version: 2 }, null, 2)
+    },
+    {
+      path: path.join(serverDir, 'pages-manifest.json'),
+      content: JSON.stringify({}, null, 2)
+    },
+    {
+      path: path.join(serverDir, 'app-paths-manifest.json'),
+      content: JSON.stringify({}, null, 2)
+    },
+    {
+      path: path.join(serverDir, 'next-font-manifest.json'),
+      content: JSON.stringify({ pages: {}, app: {} }, null, 2)
+    },
+    {
+      path: path.join(nextDir, 'build-manifest.json'),
+      content: JSON.stringify({ 
+        polyfillFiles: [], 
+        devFiles: [], 
+        ampDevFiles: [], 
+        lowPriorityFiles: [],
+        rootMainFiles: [],
+        pages: { "/_app": [] },
+        ampFirstPages: []
+      }, null, 2)
+    }
+  ];
+
+  let createdAny = false;
+  for (const file of manifestFiles) {
+    if (!fs.existsSync(file.path)) {
+      createFileWithContent(file.path, file.content);
+      console.log(`✅ Đã tạo file manifest: ${file.path}`);
+      createdAny = true;
+    }
+  }
+
+  if (!createdAny) {
+    console.log('ℹ️ Tất cả file manifest đã tồn tại');
+  } else {
+    console.log('✅ Đã tạo các file manifest cần thiết');
+  }
+}
+
 // Xóa cache và file tạm thời
 function cleanupProject() {
   console.log('🧹 Dọn dẹp dự án...');
   
+  // Lưu trữ các file manifest quan trọng
+  const serverDir = path.join(nextDir, 'server');
+  const manifestBackups = [];
+  
+  if (fs.existsSync(serverDir)) {
+    const manifestFiles = [
+      path.join(serverDir, 'middleware-manifest.json'),
+      path.join(serverDir, 'pages-manifest.json'),
+      path.join(serverDir, 'app-paths-manifest.json'),
+      path.join(serverDir, 'next-font-manifest.json'),
+      path.join(nextDir, 'build-manifest.json')
+    ];
+    
+    for (const filePath of manifestFiles) {
+      if (fs.existsSync(filePath)) {
+        try {
+          const content = fs.readFileSync(filePath, 'utf8');
+          manifestBackups.push({ path: filePath, content });
+        } catch (error) {
+          console.log(`⚠️ Không thể sao lưu file ${filePath}: ${error.message}`);
+        }
+      }
+    }
+  }
+
   // Xóa cache
   const cacheDir = path.join(nextDir, 'cache');
   if (fs.existsSync(cacheDir)) {
@@ -219,13 +288,39 @@ function cleanupProject() {
   const webpackCacheDir = path.join(nextDir, 'static', 'webpack');
   if (fs.existsSync(webpackCacheDir)) {
     try {
+      // Lưu danh sách các file .gitkeep trước khi xóa
+      const gitkeepFiles = [];
+      if (fs.existsSync(webpackCacheDir)) {
+        const gitkeepPath = path.join(webpackCacheDir, '.gitkeep');
+        if (fs.existsSync(gitkeepPath)) {
+          gitkeepFiles.push(gitkeepPath);
+        }
+      }
+      
       fs.rmSync(webpackCacheDir, { recursive: true, force: true });
       console.log('✅ Đã xóa cache:', webpackCacheDir);
       
       // Tạo lại thư mục webpack
       ensureDirectoryExists(webpackCacheDir);
+      
+      // Khôi phục các file .gitkeep
+      for (const filePath of gitkeepFiles) {
+        fs.writeFileSync(filePath, '');
+      }
     } catch (error) {
       console.log('❌ Lỗi khi xóa webpack cache:', error.message);
+    }
+  }
+  
+  // Khôi phục các file manifest
+  for (const backup of manifestBackups) {
+    try {
+      const dirPath = path.dirname(backup.path);
+      ensureDirectoryExists(dirPath);
+      fs.writeFileSync(backup.path, backup.content);
+      console.log(`✅ Đã khôi phục file: ${backup.path}`);
+    } catch (error) {
+      console.log(`❌ Lỗi khi khôi phục file ${backup.path}: ${error.message}`);
     }
   }
   
@@ -435,6 +530,9 @@ async function main() {
   // Tạo cấu trúc thư mục tối thiểu
   createMinimalNextStructure();
   
+  // Tạo các file manifest
+  createNextManifestFiles();
+  
   // Kiểm tra và sửa cấu hình Next.js
   fixNextConfig();
   
@@ -448,6 +546,9 @@ async function main() {
   // Dọn dẹp dự án
   cleanupProject();
   
+  // Tạo lại các file manifest sau khi dọn dẹp
+  createNextManifestFiles();
+  
   // Đảm bảo các thành phần xác thực
   ensureAuthComponents();
   
@@ -456,10 +557,14 @@ async function main() {
   
   console.log('✅ Đã hoàn tất quá trình bảo trì!');
   console.log('📝 Bạn có thể khởi động dự án bây giờ');
+  
+  return true;
 }
 
 // Chạy chương trình
 main().catch(error => {
   console.error('❌ Lỗi:', error);
   process.exit(1);
+}).finally(() => {
+  console.log('✅ Script bảo trì đã hoàn thành, khởi động Next.js đã sẵn sàng.');
 }); 

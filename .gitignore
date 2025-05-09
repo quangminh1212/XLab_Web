@@ -208,3 +208,8 @@ next.config.js.new
 /.next/cache/**/*
 **/*.hot-update.*
 **/*.js.map
+.next/
+node_modules/
+dist/
+out/
+.env.local
