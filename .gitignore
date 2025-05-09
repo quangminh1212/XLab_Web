@@ -174,10 +174,17 @@ app-debug.log
 # Webpack manifest files
 /asset-manifest.json
 
-# make sure fix scripts are included
-!fix-all-errors.js
-!fix-trace-error.js
-!fix-auth-component.js
+# Các script không còn sử dụng
+fix-all-errors.js
+fix-all-errors.log
+fix-trace-error.js
+fix-auth-component.js
+update-gitignore.js
+check-env.js
+test-app.js
+test-app-manual.js
+next.config.js.bak
+next.config.js.new
 
 # Thêm các file động được tạo ra khi chạy ứng dụng
 /.next/static/chunks/webpack-*.js
