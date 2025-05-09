@@ -240,17 +240,30 @@ function fixAppRoutes() {
 function clearCache() {
   log('🧹 Xóa cache...');
   
-  const cachePath = path.join(__dirname, '.next', 'cache');
-  const tracePath = path.join(__dirname, '.next', 'trace');
+  const nextDir = path.join(__dirname, '.next');
+  const cachePath = path.join(nextDir, 'cache');
+  const tracePath = path.join(nextDir, 'trace');
   
-  // Xóa file trace nếu tồn tại để tránh lỗi EPERM
+  // Xóa file trace và các file liên quan nếu tồn tại để tránh lỗi EPERM
   try {
-    if (fs.existsSync(tracePath)) {
-      fs.unlinkSync(tracePath);
-      log(`✅ Đã xóa file trace: ${tracePath}`);
+    // Kiểm tra và xóa tất cả các file trace
+    if (fs.existsSync(nextDir)) {
+      const files = fs.readdirSync(nextDir);
+      files.forEach(file => {
+        if (file === 'trace' || file.startsWith('trace-')) {
+          try {
+            const filePath = path.join(nextDir, file);
+            fs.chmodSync(filePath, 0o666); // Thay đổi quyền truy cập
+            fs.unlinkSync(filePath);
+            log(`✅ Đã xóa file trace: ${filePath}`);
+          } catch (err) {
+            log(`⚠️ Không thể xóa file ${file} (không ảnh hưởng): ${err.message}`);
+          }
+        }
+      });
     }
   } catch (error) {
-    log(`⚠️ Không thể xóa file trace (không ảnh hưởng): ${error.message}`);
+    log(`⚠️ Lỗi khi xử lý file trace (không ảnh hưởng): ${error.message}`);
   }
   
   // Xóa và tạo lại thư mục cache
@@ -263,7 +276,7 @@ function clearCache() {
     }
   }
   
-  const webpackCachePath = path.join(__dirname, '.next', 'static', 'webpack');
+  const webpackCachePath = path.join(nextDir, 'static', 'webpack');
   if (fs.existsSync(webpackCachePath)) {
     try {
       fs.rmSync(webpackCachePath, { recursive: true, force: true });
@@ -280,6 +293,35 @@ function clearCache() {
   log('✅ Đã xong quá trình xóa cache');
 }
 
+// Tạo file .gitkeep trong các thư mục quan trọng để giữ cấu trúc thư mục
+function createGitkeepFiles() {
+  log('📁 Tạo các file .gitkeep để giữ cấu trúc thư mục...');
+  
+  const importantDirs = [
+    path.join(__dirname, '.next', 'cache'),
+    path.join(__dirname, '.next', 'server'),
+    path.join(__dirname, '.next', 'static'),
+    path.join(__dirname, '.next', 'static', 'chunks'),
+    path.join(__dirname, '.next', 'static', 'css'),
+    path.join(__dirname, '.next', 'static', 'webpack'),
+    path.join(__dirname, '.next', 'server', 'chunks'),
+    path.join(__dirname, '.next', 'server', 'pages'),
+    path.join(__dirname, '.next', 'server', 'vendor-chunks'),
+    path.join(__dirname, '.next', 'server', 'app'),
+  ];
+  
+  importantDirs.forEach(dir => {
+    ensureDirectoryExists(dir);
+    const gitkeepPath = path.join(dir, '.gitkeep');
+    if (!fs.existsSync(gitkeepPath)) {
+      fs.writeFileSync(gitkeepPath, '# This file is used to keep the directory structure\n');
+      log(`✅ Đã tạo file: ${gitkeepPath}`);
+    }
+  });
+  
+  log('✅ Đã hoàn thành việc tạo các file .gitkeep');
+}
+
 // Chạy tất cả các bước sửa lỗi
 try {
   // Đảm bảo thư mục .next tồn tại
@@ -291,6 +333,7 @@ try {
   fixStaticFiles();
   fixAppRoutes();
   clearCache();
+  createGitkeepFiles();
   
   log('✅ Đã hoàn tất tất cả các bước sửa lỗi');
   log('🚀 Khởi động lại ứng dụng để áp dụng thay đổi');
