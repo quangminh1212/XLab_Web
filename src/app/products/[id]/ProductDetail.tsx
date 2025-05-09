@@ -74,6 +74,63 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
   );
 };
 
+// Component xử lý hiển thị mô tả sản phẩm bao gồm text và hình ảnh
+const ProductDescription = ({ description }: { description: string }) => {
+  // Hàm để tách các đường dẫn ảnh từ văn bản mô tả
+  const processContent = () => {
+    if (!description) return { html: '', images: [] };
+    
+    // Tìm tất cả các img tag trong mô tả
+    const imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
+    const images: string[] = [];
+    let match;
+    
+    // Thu thập tất cả các src của img
+    while ((match = imgRegex.exec(description)) !== null) {
+      images.push(match[1]);
+    }
+    
+    // Tách văn bản thành các phần, loại bỏ các thẻ img
+    const html = description.replace(imgRegex, 'IMAGE_PLACEHOLDER');
+    const parts = html.split('IMAGE_PLACEHOLDER');
+    
+    return { parts, images };
+  };
+  
+  const { parts, images } = processContent();
+  
+  return (
+    <div className="mt-10">
+      <div className="prose max-w-none">
+        {parts && parts.length > 0 ? (
+          <>
+            {parts.map((part, index) => (
+              <div key={index}>
+                {part && <div dangerouslySetInnerHTML={{ __html: part }} />}
+                {images[index] && (
+                  <div className="my-6">
+                    <div className="relative w-full h-auto rounded-lg overflow-hidden shadow-md">
+                      <Image
+                        src={images[index]}
+                        alt={`Mô tả hình ảnh ${index + 1}`}
+                        width={800}
+                        height={500}
+                        className="object-contain w-full"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </>
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: description }} />
+        )}
+      </div>
+    </div>
+  );
+};
+
 export default function ProductDetail({ product }: { product: Product }) {
   // Update document title khi component được render
   useEffect(() => {
@@ -287,11 +344,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         </div>
         
         {/* Chi tiết sản phẩm */}
-        <div className="mt-10">
-          <div className="prose max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: product.longDescription }} />
-          </div>
-        </div>
+        <ProductDescription description={product.longDescription} />
         
         {/* Sản phẩm liên quan */}
         <div className="mt-12">

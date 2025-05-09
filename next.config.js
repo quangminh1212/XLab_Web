@@ -3,13 +3,18 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
-  reactStrictMode: false,
+  reactStrictMode: true,
   images: {
+    domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**',
       },
+      {
+        protocol: 'http',
+        hostname: '**',
+      }
     ],
     loader: 'default',
     path: '',
@@ -128,6 +133,9 @@ const nextConfig = {
       ...config.module,
       exprContextCritical: false,
     };
+
+    // Enables hot module replacement
+    config.optimization.runtimeChunk = 'single';
 
     return config;
   },
