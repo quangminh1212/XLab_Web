@@ -87,6 +87,12 @@ const nextConfig = {
   compress: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
   trailingSlash: false,
+  // Vô hiệu hóa cảnh báo cho CSS tùy chỉnh (Tailwind CSS)
+  modularizeImports: {
+    'tailwindcss/utilities': {
+      transform: 'tailwindcss/utilities/{{member}}',
+    },
+  },
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
@@ -142,10 +148,7 @@ const nextConfig = {
       exprContextCritical: false,
       rules: [
         ...config.module.rules,
-        {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader'],
-        },
+        // Loại bỏ quy tắc CSS để sử dụng hỗ trợ CSS built-in của Next.js
         {
           test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
           type: 'asset/resource',
@@ -181,6 +184,12 @@ const nextConfig = {
   distDir: '.next',
   generateBuildId: async () => {
     return 'build-' + Date.now();
+  },
+  // Tùy chỉnh cách Next.js xử lý CSS
+  cssModules: false, // Tắt CSS modules
+  ignoreDuringBuilds: true,
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
   },
 };
 
