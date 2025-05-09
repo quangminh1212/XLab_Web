@@ -2,7 +2,7 @@ import '@/styles/globals.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components/layout'
-import { Analytics } from '@/components/common'
+import { Analytics, CompileIndicator } from '@/components/common'
 import { siteConfig } from '@/config/siteConfig'
 import { SessionProvider } from '@/components/auth'
 import { CartProvider } from '@/components/cart'
@@ -102,6 +102,7 @@ export default function RootLayout({
                 <Footer />
               </div>
               <Analytics />
+              <CompileIndicator />
             </CartProvider>
           </NotificationProvider>
         </SessionProvider>
