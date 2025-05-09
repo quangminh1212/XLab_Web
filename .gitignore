@@ -80,17 +80,49 @@ build-run.bat
 start-dev.bat
 
 # Next.js build output
-.next/
-**/.next/**/*
-**/node_modules/.cache/
-/.next/cache/
-/.next/server/
-/.next/static/
-/.next/trace/
-/.next/vendor-chunks/
-/.next/types/
-/.next/static/development/
-/.next/static/webpack/
+.next
+.swc
+**/.next/**
+
+# Node dependencies
+node_modules
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment files
+.env*.local
+
+# Vercel deployment
+.vercel
+
+# TypeScript compiler
+*.tsbuildinfo
+next-env.d.ts
+
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/fallback-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map
+
+# Hot update files
+**/*.hot-update.js
+**/*.hot-update.json
+
+# Local build files
+dist
+build
+
+# OS files
+.DS_Store
+Thumbs.db
 
 # Webpack hot update files
 **/*.hot-update.js

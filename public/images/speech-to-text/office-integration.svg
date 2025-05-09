@@ -1,0 +1,45 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#F0F4F8" />
+  
+  <!-- Office document -->
+  <rect x="100" y="100" width="400" height="500" rx="10" fill="white" stroke="#D1D5DB" stroke-width="2" />
+  
+  <!-- Document header -->
+  <rect x="100" y="100" width="400" height="60" rx="10" fill="#F3F4F6" />
+  <text x="150" y="140" font-family="Arial, sans-serif" font-size="24" fill="#374151">Document.docx</text>
+  
+  <!-- Document content -->
+  <line x1="130" y1="200" x2="470" y2="200" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="240" x2="470" y2="240" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="280" x2="470" y2="280" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="320" x2="470" y2="320" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="360" x2="470" y2="360" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="400" x2="400" y2="400" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="440" x2="350" y2="440" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="480" x2="420" y2="480" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="520" x2="380" y2="520" stroke="#D1D5DB" stroke-width="1" />
+  <line x1="130" y1="560" x2="300" y2="560" stroke="#D1D5DB" stroke-width="1" />
+  
+  <!-- Microphone icon -->
+  <circle cx="650" cy="200" r="80" fill="#DBEAFE" />
+  <rect x="625" y="150" width="50" height="80" rx="25" fill="#3B82F6" />
+  <rect x="640" y="230" width="20" height="30" fill="#3B82F6" />
+  <path d="M600 200C600 170 600 150 650 150C700 150 700 170 700 200" stroke="#3B82F6" stroke-width="5" stroke-linecap="round" fill="none" />
+  <rect x="615" y="260" width="70" height="10" rx="5" fill="#3B82F6" />
+  
+  <!-- Integration arrows -->
+  <path d="M580 300L550 330L520 360" stroke="#3B82F6" stroke-width="3" stroke-dasharray="5 5" />
+  <path d="M580 300L550 360L520 420" stroke="#3B82F6" stroke-width="3" stroke-dasharray="5 5" />
+  <path d="M580 300L550 390L520 480" stroke="#3B82F6" stroke-width="3" stroke-dasharray="5 5" />
+  
+  <!-- Office icons -->
+  <circle cx="650" cy="400" r="50" fill="#DBEAFE" />
+  <text x="650" y="415" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#3B82F6" text-anchor="middle">W</text>
+  
+  <circle cx="650" cy="500" r="50" fill="#DCFCE7" />
+  <text x="650" y="515" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#10B981" text-anchor="middle">E</text>
+  
+  <!-- Title -->
+  <text x="400" y="50" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1E40AF" text-anchor="middle">Microsoft Office Integration</text>
+</svg> 
