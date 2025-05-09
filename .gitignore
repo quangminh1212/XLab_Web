@@ -120,22 +120,6 @@ next-env.d.ts
 # Images
 /public/images/promotion-image.png
 
-# Scripts - these should be committed to git repository
-# They are needed for the consolidated run.bat to work
-# fix-webpack-enoent.js
-# **/fix-nextjs*.bat
-# clean-trace.js
-# run.bat
-# fix-critters.js
-# fix-webpack-hot-update.js
-# fix-nextjs-vendor-paths.js
-# fix-nextjs-missing-files.js
-# fix-vendor-chunks.js
-# fix-all.js
-# fix-run-debug.bat
-# build-run.bat
-# start-dev.bat
-
 # Các file cần ignore sinh ra trong quá trình chạy dự án
 /.next/static/*.js
 
