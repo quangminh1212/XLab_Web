@@ -126,17 +126,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Loại bỏ kiểm tra cho tất cả các tệp static
+  // Chỉ áp dụng cho các đường dẫn cần kiểm tra
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images (local images)
-     * - api/auth (NextAuth API routes)
-     * - Common file extensions
-     */
-    '/((?!_next/static|_next/image|favicon\\.ico|images|api/auth|.*\\.(png|jpg|jpeg|svg|gif|ico|webmanifest|css|js|json|xml|txt)).*)',
+    '/admin/:path*',
+    '/account/:path*',
+    '/checkout/:path*',
+    '/api/protected/:path*'
   ],
 }; 
