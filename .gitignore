@@ -122,16 +122,3 @@ npm-debug.log
 # Admin scripts
 .getadmin.vbs
 
-# Thêm các file mới được tạo khi chạy dự án
-.next/types/**/*
-.next/cache/swc/**/*
-.next/server/vendor-chunks/**/*
-.next/server/app/**/*
-.next/static/chunks/**/*
-.next/static/development/**/*
-.next/static/webpack/**/*
-.next/fallback-build-manifest.json
-.next/server/font-manifest.json
-.next/server/webpack-runtime.js
-.next/build-manifest.json
-

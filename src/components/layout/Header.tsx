@@ -40,8 +40,8 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto py-2">
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-3 max-w-6xl">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center justify-center">
@@ -49,52 +49,52 @@ const Header = () => {
               <Image
                 src="/images/logo.jpg"
                 alt="XLab Logo"
-                width={100}
-                height={60}
-                className="w-auto h-10 md:h-12"
+                width={120}
+                height={72}
+                className="w-auto h-14 md:h-16"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-3 lg:space-x-4">
-            <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium`}>
+          <nav className="hidden md:flex space-x-4 lg:space-x-6 xl:space-x-8">
+            <Link href="/" className={`${isActive('/')} transition-colors text-base lg:text-lg tracking-wide font-medium`}>
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/products')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Sản phẩm
             </Link>
             <Link
               href="/services"
-              className={`${isActive('/services')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/services')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Dịch vụ
             </Link>
             <Link
               href="/about"
-              className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/about')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/contact')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/bao-hanh')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Bảo hành
             </Link>
           </nav>
 
           {/* Right Side - Auth + Cart */}
-          <div className="flex items-center space-x-2 md:space-x-3">
+          <div className="flex items-center space-x-3 md:space-x-4 lg:space-x-6">
             {/* Notification Icon */}
             {session && (
               <div className="relative">
@@ -105,7 +105,7 @@ const Header = () => {
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
+                    className="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -118,7 +118,7 @@ const Header = () => {
                     />
                   </svg>
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                       {unreadCount}
                     </span>
                   )}
@@ -126,45 +126,45 @@ const Header = () => {
 
                 {/* Notification Dropdown */}
                 {isNotificationOpen && (
-                  <div className="absolute right-0 mt-2 w-64 sm:w-72 md:w-80 bg-white rounded-lg shadow-xl py-2 z-10">
-                    <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                      <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
+                  <div className="absolute right-0 mt-3 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-3 z-10">
+                    <div className="px-5 py-3 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="text-lg font-semibold text-gray-900">Thông báo</h3>
                       {unreadCount > 0 && (
                         <button 
                           onClick={markAllAsRead}
-                          className="text-xs sm:text-sm text-primary-600 hover:text-primary-800"
+                          className="text-sm sm:text-base text-primary-600 hover:text-primary-800"
                         >
                           Đánh dấu tất cả đã đọc
                         </button>
                       )}
                     </div>
                     
-                    <div className="max-h-80 overflow-y-auto">
+                    <div className="max-h-96 overflow-y-auto">
                       {notifications.length > 0 ? (
                         notifications.slice(0, 5).map((notification) => (
                           <div 
                             key={notification.id} 
-                            className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
+                            className={`px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
                             onClick={() => markAsRead(notification.id)}
                           >
                             <div className="flex justify-between items-start">
-                              <h4 className="text-xs sm:text-sm font-medium text-gray-900">{notification.title}</h4>
-                              <span className="text-xs text-gray-500">{notification.time}</span>
+                              <h4 className="text-sm sm:text-base font-medium text-gray-900">{notification.title}</h4>
+                              <span className="text-xs sm:text-sm text-gray-500">{notification.time}</span>
                             </div>
-                            <p className="text-xs text-gray-600 mt-1">{notification.content}</p>
+                            <p className="text-sm text-gray-600 mt-1">{notification.content}</p>
                           </div>
                         ))
                       ) : (
-                        <div className="px-4 py-6 text-center">
-                          <p className="text-xs sm:text-sm text-gray-500">Không có thông báo nào</p>
+                        <div className="px-5 py-8 text-center">
+                          <p className="text-sm sm:text-base text-gray-500">Không có thông báo nào</p>
                         </div>
                       )}
                     </div>
                     
-                    <div className="px-4 py-2 border-t border-gray-100 text-center">
+                    <div className="px-5 py-3 border-t border-gray-100 text-center">
                       <Link
                         href="/notifications"
-                        className="text-xs sm:text-sm text-primary-600 hover:text-primary-800"
+                        className="text-sm sm:text-base text-primary-600 hover:text-primary-800"
                         onClick={() => setIsNotificationOpen(false)}
                       >
                         Xem tất cả thông báo
@@ -179,7 +179,7 @@ const Header = () => {
             <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -191,7 +191,7 @@ const Header = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                 0
               </span>
             </Link>
@@ -206,13 +206,13 @@ const Header = () => {
                   <Image
                     src={session.user?.image || "/images/profiles/default-avatar.png"}
                     alt={session.user?.name || "User"}
-                    width={32}
-                    height={32}
-                    className="w-7 h-7 md:w-8 md:h-8 rounded-full"
+                    width={36}
+                    height={36}
+                    className="w-8 h-8 md:w-9 md:h-9 rounded-full"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`h-3 w-3 ml-1 transform ${
+                    className={`h-4 w-4 ml-1 transform ${
                       isProfileOpen ? "rotate-180" : ""
                     } transition-transform`}
                     fill="none"
@@ -230,7 +230,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 md:px-4 md:py-1.5 rounded-lg text-xs md:text-sm tracking-wide font-medium transition-colors"
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-1.5 md:px-5 md:py-2 rounded-lg text-sm md:text-lg tracking-wide font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -238,23 +238,23 @@ const Header = () => {
 
               {/* Profile Dropdown */}
               {isProfileOpen && session && (
-                <div className="absolute right-0 mt-2 w-48 md:w-56 bg-white rounded-lg shadow-xl py-2 z-10">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm md:text-base font-semibold">{session.user?.name}</p>
-                    <p className="text-xs md:text-sm text-gray-500 truncate">
+                <div className="absolute right-0 mt-3 w-56 md:w-60 bg-white rounded-lg shadow-xl py-3 z-10">
+                  <div className="px-5 py-3 border-b border-gray-100">
+                    <p className="text-base md:text-lg font-semibold">{session.user?.name}</p>
+                    <p className="text-sm md:text-base text-gray-500 truncate">
                       {session.user?.email}
                     </p>
                   </div>
                   <Link
                     href="/account"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                    className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Tài khoản
                   </Link>
                   <Link
                     href="/orders"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                    className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Đơn hàng
@@ -262,7 +262,7 @@ const Header = () => {
                   {session.user?.isAdmin && (
                     <Link
                       href="/admin"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                      className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Quản trị
@@ -273,7 +273,7 @@ const Header = () => {
                       signOut();
                       setIsProfileOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                    className="block w-full text-left px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                   >
                     Đăng xuất
                   </button>
@@ -281,108 +281,86 @@ const Header = () => {
               )}
             </div>
 
-            {/* Hamburger Menu (Mobile) */}
-            <div className="md:hidden">
-              <button
-                onClick={toggleMenu}
-                className="text-gray-700 hover:text-primary-600 focus:outline-none"
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none"
+              onClick={toggleMenu}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                {isOpen ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                )}
-              </button>
-            </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                />
+              </svg>
+            </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden bg-white border-t border-gray-100 py-2">
-            <div className="container mx-auto">
-              <nav className="flex flex-col space-y-2">
-                <Link
-                  href="/"
-                  className={`${
-                    isActive('/')
-                  } px-3 py-2 text-sm font-medium transition-colors`}
-                  onClick={() => setIsOpen(false)}
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
+            <div className="flex flex-col space-y-4">
+              <Link
+                href="/"
+                className={`${isActive('/')} transition-colors block text-center text-lg tracking-wide font-medium`}
+                onClick={() => setIsOpen(false)}
+              >
+                Trang chủ
+              </Link>
+              <Link
+                href="/products"
+                className={`${isActive('/products')} transition-colors block text-center text-lg tracking-wide font-medium`}
+                onClick={() => setIsOpen(false)}
+              >
+                Sản phẩm
+              </Link>
+              <Link
+                href="/services"
+                className={`${isActive('/services')} transition-colors block text-center text-lg tracking-wide font-medium`}
+                onClick={() => setIsOpen(false)}
+              >
+                Dịch vụ
+              </Link>
+              <Link
+                href="/about"
+                className={`${isActive('/about')} transition-colors block text-center text-lg tracking-wide font-medium`}
+                onClick={() => setIsOpen(false)}
+              >
+                Giới thiệu
+              </Link>
+              <Link
+                href="/contact"
+                className={`${isActive('/contact')} transition-colors block text-center text-lg tracking-wide font-medium`}
+                onClick={() => setIsOpen(false)}
+              >
+                Liên hệ
+              </Link>
+              <Link
+                href="/bao-hanh"
+                className={`${isActive('/bao-hanh')} transition-colors block text-center text-lg tracking-wide font-medium`}
+                onClick={() => setIsOpen(false)}
+              >
+                Bảo hành
+              </Link>
+              {!session && (
+                <button
+                  onClick={() => {
+                    signIn();
+                    setIsOpen(false);
+                  }}
+                  className="text-primary-600 hover:text-primary-700 transition-colors text-center text-lg tracking-wide font-medium mx-auto block"
                 >
-                  Trang chủ
-                </Link>
-                <Link
-                  href="/products"
-                  className={`${
-                    isActive('/products')
-                  } px-3 py-2 text-sm font-medium transition-colors`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Sản phẩm
-                </Link>
-                <Link
-                  href="/services"
-                  className={`${
-                    isActive('/services')
-                  } px-3 py-2 text-sm font-medium transition-colors`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Dịch vụ
-                </Link>
-                <Link
-                  href="/about"
-                  className={`${
-                    isActive('/about')
-                  } px-3 py-2 text-sm font-medium transition-colors`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Giới thiệu
-                </Link>
-                <Link
-                  href="/contact"
-                  className={`${
-                    isActive('/contact')
-                  } px-3 py-2 text-sm font-medium transition-colors`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Liên hệ
-                </Link>
-                <Link
-                  href="/bao-hanh"
-                  className={`${
-                    isActive('/bao-hanh')
-                  } px-3 py-2 text-sm font-medium transition-colors`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  Bảo hành
-                </Link>
-              </nav>
+                  Đăng nhập
+                </button>
+              )}
             </div>
           </div>
         )}
