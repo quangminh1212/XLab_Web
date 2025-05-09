@@ -46,9 +46,9 @@ function HomePage() {
 
       <div className="container mx-auto py-6">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
-        <div className="flex flex-col md:flex-row gap-4 md:gap-5">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           {/* Sidebar Column - Left */}
-          <div className="w-full md:w-1/6 space-y-4">
+          <div className="w-full md:w-[15%] space-y-3">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
@@ -247,7 +247,7 @@ function HomePage() {
           </div>
           
           {/* Main Content Column - Right */}
-          <div className="w-full md:w-5/6">
+          <div className="w-full md:w-[85%]">
             <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-5">
@@ -261,7 +261,7 @@ function HomePage() {
                 </div>
 
                 {products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
                     {featuredProducts.map((product) => (
                       <ProductCard 
                         key={product.id}
@@ -302,7 +302,7 @@ function HomePage() {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 max-w-none mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4 max-w-none mx-auto">
                   <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
                     <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để tải xuống phần mềm?</h3>
                     <p className="text-gray-600 text-sm">
