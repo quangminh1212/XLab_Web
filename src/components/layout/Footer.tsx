@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-gray-900 text-gray-300">
-      <div className="container pt-20 pb-12">
+      <div className="container max-w-[85%] mx-auto pt-20 pb-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
           {/* Logo và giới thiệu */}
           <div className="mb-12 flex flex-col items-center">

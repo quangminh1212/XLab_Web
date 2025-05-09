@@ -394,6 +394,20 @@ function HomePage() {
                       Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được hướng dẫn.
                     </p>
                   </div>
+
+                  <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để liên hệ hỗ trợ kỹ thuật?</h3>
+                    <p className="text-gray-600 text-sm">
+                      Bạn có thể liên hệ với đội ngũ hỗ trợ kỹ thuật thông qua email support@xlab.vn, hotline 1900.xxxx, hoặc chat trực tiếp trên website. Chúng tôi phản hồi trong vòng 24 giờ làm việc.
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">XLab có cung cấp giải pháp cho doanh nghiệp?</h3>
+                    <p className="text-gray-600 text-sm">
+                      Có, chúng tôi có các gói dịch vụ đặc biệt dành cho doanh nghiệp với nhiều ưu đãi về giá và hỗ trợ kỹ thuật chuyên biệt. Liên hệ với chúng tôi để được tư vấn phương án phù hợp nhất.
+                    </p>
+                  </div>
                 </div>
                 
                 <div className="text-center mt-6">
@@ -423,7 +437,26 @@ function HomePage() {
       {/* Call to Action */}
       <section className="py-8 sm:py-10 md:py-12 bg-gradient-to-br from-primary-500 to-primary-600 text-white">
         <div className="container">
-          {/* ... existing code ... */}
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">Sẵn sàng nâng cao hiệu suất công việc với XLab?</h2>
+            <p className="text-white/90 text-base md:text-lg mb-8 max-w-2xl mx-auto">
+              Đăng ký ngay hôm nay để nhận ưu đãi đặc biệt 20% cho tất cả các sản phẩm và tài khoản trong tháng này. Chúng tôi cam kết mang đến cho bạn những giải pháp tốt nhất với chi phí hợp lý nhất.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/register" 
+                className="bg-white text-primary-600 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl"
+              >
+                Đăng ký ngay
+              </Link>
+              <Link 
+                href="/contact" 
+                className="bg-transparent hover:bg-white/10 border-2 border-white font-medium py-3 px-6 rounded-lg transition-all"
+              >
+                Liên hệ tư vấn
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>
