@@ -12,9 +12,9 @@ function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     products: 0,
-    users: 0,
-    orders: 0,
-    revenue: 0
+    users: 5,
+    orders: 5,
+    revenue: 6020000
   });
 
   // Chuyển đổi số thành định dạng tiền tệ
@@ -65,19 +65,25 @@ function AdminDashboard() {
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">Người dùng</h3>
               <p className="mt-2 text-3xl font-bold">{stats.users}</p>
-              <span className="text-gray-500 text-sm mt-1 inline-block">Đang phát triển...</span>
+              <Link href="/admin/users" className="text-primary-600 hover:text-primary-800 text-sm mt-1 inline-block">
+                Quản lý →
+              </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">Đơn hàng</h3>
               <p className="mt-2 text-3xl font-bold">{stats.orders}</p>
-              <span className="text-gray-500 text-sm mt-1 inline-block">Đang phát triển...</span>
+              <Link href="/admin/orders" className="text-primary-600 hover:text-primary-800 text-sm mt-1 inline-block">
+                Quản lý →
+              </Link>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-gray-500 text-sm font-medium">Doanh thu</h3>
               <p className="mt-2 text-3xl font-bold">{formatCurrency(stats.revenue)}</p>
-              <span className="text-gray-500 text-sm mt-1 inline-block">Đang phát triển...</span>
+              <Link href="/admin/orders" className="text-primary-600 hover:text-primary-800 text-sm mt-1 inline-block">
+                Xem chi tiết →
+              </Link>
             </div>
           </div>
         )}
@@ -133,29 +139,35 @@ function AdminDashboard() {
               </div>
             </Link>
 
-            <div className="block p-3 bg-gray-50 text-gray-400 rounded-lg">
+            <Link
+              href="/admin/users"
+              className="block p-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg transition"
+            >
               <div className="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 <div>
                   <h3 className="font-medium">Quản lý người dùng</h3>
-                  <p className="text-sm">Đang phát triển...</p>
+                  <p className="text-sm">Xem và quản lý tài khoản người dùng</p>
                 </div>
               </div>
-            </div>
+            </Link>
 
-            <div className="block p-3 bg-gray-50 text-gray-400 rounded-lg">
+            <Link
+              href="/admin/orders"
+              className="block p-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition"
+            >
               <div className="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
                 <div>
                   <h3 className="font-medium">Quản lý đơn hàng</h3>
-                  <p className="text-sm">Đang phát triển...</p>
+                  <p className="text-sm">Xem và xử lý đơn hàng của khách hàng</p>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
