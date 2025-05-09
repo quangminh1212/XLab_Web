@@ -33,9 +33,9 @@
 @layer components {
   .container {
     @apply mx-auto w-full max-w-[99%] px-0 sm:px-0.5 md:px-0.5 lg:px-0.5;
-    width: 100%;
-    padding-right: 1rem;
-    padding-left: 1rem;
+    width: 96%;
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
     margin-right: auto;
     margin-left: auto;
   }
@@ -222,31 +222,31 @@
 /* Make sure tailwind utilities are applied correctly */
 @media (min-width: 640px) {
   .container {
-    max-width: 640px;
+    max-width: 95%;
   }
 }
 
 @media (min-width: 768px) {
   .container {
-    max-width: 768px;
+    max-width: 95%;
   }
 }
 
 @media (min-width: 1024px) {
   .container {
-    max-width: 1024px;
+    max-width: 95%;
   }
 }
 
 @media (min-width: 1280px) {
   .container {
-    max-width: 1280px;
+    max-width: 95%;
   }
 }
 
 @media (min-width: 1536px) {
   .container {
-    max-width: 1536px;
+    max-width: 95%;
   }
 }
 
