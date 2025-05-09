@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 export default function AdminLayout({
     children,
@@ -10,11 +11,35 @@ export default function AdminLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
+    const router = useRouter();
 
     const isActive = (path: string) => {
         return pathname === path ? 'bg-primary-800' : '';
     };
+    
+    useEffect(() => {
+        if (status === 'loading') return;
+        
+        if (!session) {
+            router.push('/login');
+            return;
+        }
+        
+        if (session.user?.email !== 'xlab.rnd@gmail.com') {
+            router.push('/');
+            return;
+        }
+    }, [session, status, router]);
+    
+    // Hiển thị loading khi đang kiểm tra session
+    if (status === 'loading' || !session || session.user?.email !== 'xlab.rnd@gmail.com') {
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-100">

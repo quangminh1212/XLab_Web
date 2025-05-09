@@ -259,7 +259,7 @@ const Header = () => {
                   >
                     Đơn hàng
                   </Link>
-                  {session.user?.isAdmin && (
+                  {session.user?.email === 'xlab.rnd@gmail.com' && (
                     <Link
                       href="/admin"
                       className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
