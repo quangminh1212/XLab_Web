@@ -1,338 +1,250 @@
 /**
- * Sửa tất cả các lỗi trong Next.js
+ * Script tổng hợp thực hiện tất cả các bước sửa lỗi cho Next.js
  */
 
 const fs = require('fs');
 const path = require('path');
-const rimraf = require('rimraf');
-const zlib = require('zlib');
+const { spawn, execSync } = require('child_process');
 
-// Xóa thư mục .next
-async function cleanNextFolder() {
-  try {
-    console.log('Bắt đầu xóa thư mục .next...');
-    await rimraf.rimraf('.next');
-    console.log('Đã xóa thư mục .next thành công');
-  } catch (error) {
-    console.error('Lỗi khi xóa thư mục .next:', error);
+// Danh sách các script cần chạy theo thứ tự
+const scripts = [
+  'fix-nextjs-vendor-paths.js',
+  'fix-nextjs-missing-files.js',
+  'fix-webpack-enoent.js',
+  'fix-vendor-chunks.js',
+  'fix-webpack-hot-update.js',
+  'fix-critters.js'
+];
+
+// Kiểm tra và tạo .next nếu chưa tồn tại
+function ensureNextDirectory() {
+  const nextDir = path.join(__dirname, '.next');
+  if (!fs.existsSync(nextDir)) {
+    fs.mkdirSync(nextDir, { recursive: true });
+    console.log('Đã tạo thư mục .next');
   }
 }
 
-// Tạo các thư mục cần thiết
-function createDirectories() {
-  const dirs = [
-    '.next/server',
-    '.next/server/app',
-    '.next/server/app/_not-found',
-    '.next/server/pages',
-    '.next/server/vendor-chunks',
-    '.next/server/chunks',
-    '.next/static/chunks',
-    '.next/static/css',
-    '.next/static/css/app',
-    '.next/cache/server',
+// Thêm các file bị thiếu vào .gitignore
+function updateGitignore() {
+  const gitignorePath = path.join(__dirname, '.gitignore');
+  
+  if (!fs.existsSync(gitignorePath)) {
+    console.log('Không tìm thấy file .gitignore');
+    return;
+  }
+  
+  let gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+  
+  // Danh sách các mục cần thêm vào .gitignore
+  const itemsToAdd = [
+    '# Vendor chunks files',
+    '/.next/server/vendor-chunks/*.js',
+    '/.next/server/pages/vendor-chunks/*.js',
+    '/.next/server/chunks/*.js',
+    '',
+    '# Các file tạm thời của Next.js',
+    '/.next/trace',
+    '/.next/trace-*',
+    '/.next/server/chunks/react*.js',
+    '/.next/server/middleware-build-manifest.js',
+    '/.next/server/middleware-manifest.json',
+    '/.next/server/middleware-react-loadable-manifest.json',
+    '/.next/server/app-paths-manifest.json',
+    '/.next/server/pages-manifest.json',
+    '/.next/server/flight-server-css-manifest.json',
+    '/.next/server/flight-client-css-manifest.json'
   ];
   
-  dirs.forEach(dir => {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-      console.log(`Đã tạo thư mục: ${dir}`);
+  // Kiểm tra xem các mục đã có trong .gitignore chưa
+  let needsUpdate = false;
+  for (const item of itemsToAdd) {
+    if (!gitignoreContent.includes(item) && item.startsWith('/')) {
+      needsUpdate = true;
+      break;
     }
-  });
+  }
+  
+  // Nếu cần cập nhật thì thêm vào cuối file
+  if (needsUpdate) {
+    gitignoreContent += '\n' + itemsToAdd.join('\n') + '\n';
+    fs.writeFileSync(gitignorePath, gitignoreContent);
+    console.log('Đã cập nhật file .gitignore');
+  } else {
+    console.log('File .gitignore đã được cập nhật trước đó');
+  }
 }
 
-// Tạo vendor modules
-function createVendorModules() {
-  const vendorModules = [
-    { name: 'next.js', package: 'next' },
-    { name: 'react.js', package: 'react' },
-    { name: 'react-dom.js', package: 'react-dom' },
-    { name: 'scheduler.js', package: 'scheduler' },
-    { name: 'use-sync-external-store.js', package: 'use-sync-external-store' },
-    { name: 'react-server-dom-webpack.js', package: 'react-server-dom-webpack' },
-    { name: 'react-server-dom-webpack-client.js', package: 'react-server-dom-webpack/client' }
-  ];
-  
-  // Tạo trong cả thư mục vendor-chunks và pages/vendor-chunks
-  const directories = [
-    '.next/server/vendor-chunks',
-    '.next/server/pages/vendor-chunks'
-  ];
-  
-  directories.forEach(dir => {
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+// Kiểm tra trạng thái Next.js
+function checkNextjsStatus() {
+  try {
+    // Kiểm tra các thư mục và file bắt buộc
+    const requiredDirs = [
+      '.next/server',
+      '.next/static',
+      '.next/cache'
+    ];
+    
+    let missingDirs = [];
+    for (const dir of requiredDirs) {
+      const fullPath = path.join(__dirname, dir);
+      if (!fs.existsSync(fullPath)) {
+        missingDirs.push(dir);
+      }
     }
     
-    vendorModules.forEach(module => {
-      const filePath = path.join(dir, module.name);
-      try {
-        fs.writeFileSync(filePath, `module.exports = require("${module.package}");`);
-        console.log(`Đã tạo module: ${filePath}`);
-      } catch (error) {
-        console.error(`Lỗi khi tạo module ${filePath}:`, error);
-      }
-    });
-  });
-  
-  // Tạo file chunks/next.js
-  try {
-    const chunksPath = path.join('.next', 'server', 'chunks', 'next.js');
-    fs.writeFileSync(chunksPath, `module.exports = require("next");`);
-    console.log(`Đã tạo module: ${chunksPath}`);
-  } catch (error) {
-    console.error(`Lỗi khi tạo module chunks/next.js:`, error);
-  }
-}
-
-// Tạo các file manifest
-function createManifestFiles() {
-  const manifestFiles = [
-    {
-      path: path.join('.next', 'server', 'next-font-manifest.json'),
-      content: '{"pages":{},"app":{}}'
-    },
-    {
-      path: path.join('.next', 'fallback-build-manifest.json'),
-      content: '{"polyfillFiles":[],"devFiles":[],"ampDevFiles":[],"lowPriorityFiles":[],"rootMainFiles":[],"pages":{"/_app":["static/chunks/webpack.js","static/chunks/main.js","static/chunks/pages/_app.js"],"/_error":["static/chunks/webpack.js","static/chunks/main.js","static/chunks/pages/_error.js"]},"ampFirstPages":[]}'
-    },
-    {
-      path: path.join('.next', 'server', 'pages-manifest.json'),
-      content: '{"/_app":"pages/_app.js","/_error":"pages/_error.js","/_document":"pages/_document.js"}'
-    },
-    {
-      path: path.join('.next', 'server', 'app-paths-manifest.json'),
-      content: '{"/_not-found":"app/_not-found/page.js","/:":"app/page.js"}'
-    },
-    {
-      path: path.join('.next', 'server', 'middleware-manifest.json'),
-      content: '{"middleware":{},"functions":{},"version":2}'
-    },
-    {
-      path: path.join('.next', 'build-manifest.json'),
-      content: '{"polyfillFiles":[],"devFiles":[],"ampDevFiles":[],"lowPriorityFiles":[],"rootMainFiles":[],"pages":{"/_app":["static/chunks/webpack.js","static/chunks/main.js","static/chunks/pages/_app.js"],"/_error":["static/chunks/webpack.js","static/chunks/main.js","static/chunks/pages/_error.js"]},"ampFirstPages":[]}'
-    },
-    {
-      path: path.join('.next', 'server', '_not-found.json'),
-      content: '{"page":"/_not-found"}'
+    if (missingDirs.length > 0) {
+      console.log(`Cảnh báo: Không tìm thấy các thư mục: ${missingDirs.join(', ')}`);
+      console.log('Có thể Next.js chưa được build hoặc chạy lần đầu');
+    } else {
+      console.log('Cấu trúc thư mục Next.js OK');
     }
-  ];
-  
-  manifestFiles.forEach(file => {
-    try {
-      fs.writeFileSync(file.path, file.content);
-      console.log(`Đã tạo file manifest: ${file.path}`);
-    } catch (error) {
-      console.error(`Lỗi khi tạo file manifest ${file.path}:`, error);
-    }
-  });
-  
-  // Cụ thể cho file trace có vấn đề với quyền
-  try {
-    // Thay vì tạo file trace, tạo thư mục trace
-    const tracePath = path.join('.next', 'trace');
-    if (!fs.existsSync(tracePath)) {
-      fs.mkdirSync(tracePath, { recursive: true });
-      console.log(`Đã tạo thư mục trace: ${tracePath}`);
-    }
-  } catch (error) {
-    console.warn(`Không thể tạo thư mục trace (không ảnh hưởng đến hoạt động):`, error);
-  }
-
-  // Tạo thêm file font manifest với nội dung cơ bản
-  const fontManifestContent = JSON.stringify({
-    pages: {},
-    app: {},
-    version: 1
-  }, null, 2);
-  
-  // Đảm bảo file font manifest luôn tồn tại
-  fs.writeFileSync(path.join('.next', 'server', 'next-font-manifest.json'), fontManifestContent);
-  console.log('Đã tạo file font manifest chi tiết: .next\\server\\next-font-manifest.json');
-  
-  // Tạo các file JS tĩnh với nội dung giả để tránh lỗi 404
-  const staticChunksDir = path.join('.next', 'static', 'chunks');
-  if (!fs.existsSync(path.join(staticChunksDir, 'app'))) {
-    fs.mkdirSync(path.join(staticChunksDir, 'app'), { recursive: true });
-  }
-  
-  // Tạo các file JS tĩnh
-  fs.writeFileSync(path.join(staticChunksDir, 'app-pages-internals.js'), '// Placeholder');
-  console.log('Đã tạo file tĩnh: .next\\static\\chunks\\app-pages-internals.js');
-  
-  fs.writeFileSync(path.join(staticChunksDir, 'main-app.js'), '// Placeholder');
-  console.log('Đã tạo file tĩnh: .next\\static\\chunks\\main-app.js');
-  
-  fs.writeFileSync(path.join(staticChunksDir, 'app', 'not-found.js'), '// Placeholder');
-  console.log('Đã tạo file tĩnh: .next\\static\\chunks\\app\\not-found.js');
-  
-  fs.writeFileSync(path.join(staticChunksDir, 'app', 'page.js'), '// Placeholder');
-  console.log('Đã tạo file tĩnh: .next\\static\\chunks\\app\\page.js');
-  
-  fs.writeFileSync(path.join(staticChunksDir, 'app', 'loading.js'), '// Placeholder');
-  console.log('Đã tạo file tĩnh: .next\\static\\chunks\\app\\loading.js');
-}
-
-// Tạo các file CSS placeholder cơ bản
-function createCssPlaceholders() {
-  const cssDir = path.join('.next', 'static', 'css');
-  const appCssDir = path.join(cssDir, 'app');
-  
-  if (!fs.existsSync(cssDir)) {
-    fs.mkdirSync(cssDir, { recursive: true });
-  }
-  
-  if (!fs.existsSync(appCssDir)) {
-    fs.mkdirSync(appCssDir, { recursive: true });
-  }
-  
-  const cssFiles = [
-    { path: path.join(cssDir, 'app-layout.css'), content: '/* Placeholder CSS */' },
-    { path: path.join(appCssDir, 'layout.css'), content: '/* App Layout CSS */' },
-    { path: path.join(appCssDir, 'page.css'), content: '/* App Page CSS */' }
-  ];
-  
-  cssFiles.forEach(file => {
-    try {
-      fs.writeFileSync(file.path, file.content);
-      console.log(`Đã tạo file CSS: ${file.path}`);
-    } catch (error) {
-      console.error(`Lỗi khi tạo file CSS ${file.path}:`, error);
-    }
-  });
-}
-
-// Tạo _not-found.js placeholder
-function createNotFoundPage() {
-  const notFoundPath = path.join('.next', 'server', 'app', '_not-found', 'page.js');
-  const content = `
-// Generated Next.js _not-found page
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-function NotFound() {
-  return {
-    notFound: true
-  };
-}
-exports.default = NotFound;`;
-
-  try {
-    fs.writeFileSync(notFoundPath, content);
-    console.log(`Đã tạo file _not-found: ${notFoundPath}`);
-  } catch (error) {
-    console.error(`Lỗi khi tạo file _not-found:`, error);
-  }
-}
-
-// Tạo các server pack files (gặp lỗi ENOENT)
-function createServerPackFiles() {
-  // Server pack files
-  for (let i = 0; i <= 5; i++) {
-    try {
-      const packFile = path.join('.next', 'cache', 'server', `${i}.pack`);
-      fs.writeFileSync(packFile, '{}');
-      console.log(`Đã tạo file: ${packFile}`);
+    
+    // Kiểm tra package.json
+    const packageJsonPath = path.join(__dirname, 'package.json');
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
       
-      const gzipContent = zlib.gzipSync(Buffer.from('{}'));
-      const gzipFile = `${packFile}.gz`;
-      fs.writeFileSync(gzipFile, gzipContent);
-      console.log(`Đã tạo file: ${gzipFile}`);
-    } catch (error) {
-      console.error(`Lỗi khi tạo server pack file:`, error);
+      // Kiểm tra các dependencies cần thiết
+      const requiredDeps = ['next', 'react', 'react-dom'];
+      let missingDeps = [];
+      
+      for (const dep of requiredDeps) {
+        if (!packageJson.dependencies[dep]) {
+          missingDeps.push(dep);
+        }
+      }
+      
+      if (missingDeps.length > 0) {
+        console.log(`Cảnh báo: Thiếu các dependencies: ${missingDeps.join(', ')}`);
+      } else {
+        console.log('Các dependencies Next.js OK');
+      }
+      
+      // Kiểm tra script build và dev
+      if (!packageJson.scripts.build || !packageJson.scripts.dev) {
+        console.log('Cảnh báo: Thiếu script build hoặc dev trong package.json');
+      }
+    } else {
+      console.log('Không tìm thấy file package.json');
+    }
+  } catch (error) {
+    console.error('Lỗi khi kiểm tra trạng thái Next.js:', error);
+  }
+}
+
+// Chạy từng script theo thứ tự
+async function runScripts() {
+  console.log('=== Bắt đầu chạy các script sửa lỗi ===');
+  
+  for (const script of scripts) {
+    const scriptPath = path.join(__dirname, script);
+    if (fs.existsSync(scriptPath)) {
+      console.log(`\n=== Đang chạy script: ${script} ===`);
+      try {
+        // Sử dụng execSync để chạy đồng bộ script
+        execSync(`node "${scriptPath}"`, { stdio: 'inherit' });
+        console.log(`=== Hoàn thành script: ${script} ===`);
+      } catch (error) {
+        console.error(`Lỗi khi chạy script ${script}:`, error.message);
+      }
+    } else {
+      console.log(`Script không tồn tại: ${script}`);
     }
   }
+  
+  console.log('\n=== Đã hoàn thành tất cả các script ===');
 }
 
-// Thêm webpack runtime placeholder
-function createWebpackRuntime() {
-  const runtimePath = path.join('.next', 'server', 'webpack-runtime.js');
-  const content = `
-/******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ({});
-/******/ 	
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
-/******/ 			// no module.loaded needed
-/******/ 			exports: {}
-/******/ 		};
-/******/ 		
-/******/ 		// Execute the module function
-/******/ 		var threw = true;
-/******/ 		try {
-/******/ 			__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 			threw = false;
-/******/ 		} finally {
-/******/ 			if(threw) delete __webpack_module_cache__[moduleId];
-/******/ 		}
-/******/ 		
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = __webpack_modules__;
-/******/ 	
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = __webpack_module_cache__;
-/******/ 	
-/******/ 	// Custom chunk loading function
-/******/ 	__webpack_require__.f = {};
-/******/ 	
-/******/ 	// Custom handling for requires
-/******/ 	__webpack_require__.f.require = function(chunkId, promises) {
-/******/ 		// Xử lý vendor chunks
-/******/ 		if (chunkId.includes('vendor-chunks')) {
-/******/ 			const moduleName = chunkId.replace('./vendor-chunks/', '');
-/******/ 			try {
-/******/ 				return require('./vendor-chunks/' + moduleName);
-/******/ 			} catch (e) {
-/******/ 				console.warn('Failed to load vendor chunk:', moduleName);
-/******/ 			}
-/******/ 		}
-/******/ 		return Promise.resolve();
-/******/ 	};
-/******/ 	
-/******/ 	__webpack_require__.e = function() { return Promise.resolve(); };
-/******/ 	
-/******/ 	__webpack_require__.X = function() { return Promise.resolve(); };
-/******/ 	
-/******/ })();`;
-
+// Kiểm tra và sửa lỗi biên dịch TypeScript
+function fixTypeScriptErrors() {
   try {
-    fs.writeFileSync(runtimePath, content);
-    console.log(`Đã tạo file webpack-runtime: ${runtimePath}`);
+    console.log('\n=== Kiểm tra và sửa lỗi TypeScript ===');
+    
+    // Kiểm tra tsconfig.json
+    const tsconfigPath = path.join(__dirname, 'tsconfig.json');
+    if (fs.existsSync(tsconfigPath)) {
+      const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, 'utf8'));
+      
+      // Kiểm tra và thêm các cấu hình cần thiết
+      let updated = false;
+      
+      if (!tsconfig.compilerOptions) {
+        tsconfig.compilerOptions = {};
+        updated = true;
+      }
+      
+      if (!tsconfig.compilerOptions.moduleResolution) {
+        tsconfig.compilerOptions.moduleResolution = "bundler";
+        updated = true;
+      }
+      
+      if (!tsconfig.compilerOptions.jsx) {
+        tsconfig.compilerOptions.jsx = "preserve";
+        updated = true;
+      }
+      
+      if (tsconfig.compilerOptions.strict === undefined) {
+        tsconfig.compilerOptions.strict = true;
+        updated = true;
+      }
+      
+      if (!tsconfig.compilerOptions.paths) {
+        tsconfig.compilerOptions.paths = {
+          "@/*": ["./src/*"]
+        };
+        updated = true;
+      }
+      
+      if (updated) {
+        fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig, null, 2));
+        console.log('Đã cập nhật tsconfig.json');
+      } else {
+        console.log('tsconfig.json không cần cập nhật');
+      }
+    } else {
+      console.log('Không tìm thấy file tsconfig.json');
+    }
+    
+    // Kiểm tra next-env.d.ts
+    const nextEnvPath = path.join(__dirname, 'next-env.d.ts');
+    if (!fs.existsSync(nextEnvPath)) {
+      const nextEnvContent = `/// <reference types="next" />\n/// <reference types="next/image-types/global" />\n\n// NOTE: This file should not be edited\n// see https://nextjs.org/docs/basic-features/typescript for more information.\n`;
+      fs.writeFileSync(nextEnvPath, nextEnvContent);
+      console.log('Đã tạo file next-env.d.ts');
+    }
+    
+    console.log('=== Hoàn thành kiểm tra TypeScript ===');
   } catch (error) {
-    console.error(`Lỗi khi tạo webpack-runtime:`, error);
+    console.error('Lỗi khi sửa lỗi TypeScript:', error);
   }
 }
 
-// Thực thi tất cả các bước sửa lỗi
-async function fixAll() {
-  try {
-    await cleanNextFolder();
-    createDirectories();
-    createVendorModules();
-    createManifestFiles();
-    createCssPlaceholders();
-    createNotFoundPage();
-    createServerPackFiles();
-    createWebpackRuntime();
-    console.log('Đã hoàn tất việc sửa tất cả các lỗi Next.js');
-  } catch (error) {
-    console.error('Lỗi khi sửa các lỗi Next.js:', error);
-  }
+// Hàm chính thực hiện tất cả các bước
+async function main() {
+  console.log('=== Bắt đầu quá trình sửa lỗi tổng hợp ===');
+  
+  // Kiểm tra trạng thái NextJS
+  checkNextjsStatus();
+  
+  // Đảm bảo thư mục .next tồn tại
+  ensureNextDirectory();
+  
+  // Cập nhật .gitignore
+  updateGitignore();
+  
+  // Sửa lỗi TypeScript
+  fixTypeScriptErrors();
+  
+  // Chạy các script sửa lỗi
+  await runScripts();
+  
+  console.log('\n=== Hoàn tất quá trình sửa lỗi ===');
+  console.log('Bạn có thể chạy "npm run dev" để khởi động dự án');
 }
 
-fixAll(); 
+// Chạy hàm main
+main().catch(error => {
+  console.error('Lỗi nghiêm trọng:', error);
+  process.exit(1);
+}); 

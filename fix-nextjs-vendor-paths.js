@@ -131,33 +131,45 @@ function fixWebpackRuntime() {
   if (fs.existsSync(webpackRuntimePath)) {
     let content = fs.readFileSync(webpackRuntimePath, 'utf8');
     
+    // Kiểm tra xem file đã được patch chưa
+    if (content.includes('/***** PATCHED FOR VENDOR CHUNKS *****/')) {
+      console.log('File webpack-runtime.js đã được sửa trước đó. Bỏ qua.');
+      return;
+    }
+    
+    // Tạo danh sách vendor modules
+    const vendorModules = [
+      'next', 'react', 'react-dom', 'next-auth', 
+      'scheduler', 'use-sync-external-store'
+    ];
+    
+    // Tạo code để import các vendor modules
+    const vendorImports = vendorModules.map(module => 
+      `'${module}': require('./vendor-chunks/${module}.js')`
+    ).join(',\n        ');
+    
     // Sửa các đường dẫn trong file webpack-runtime.js
     content = content.replace(
       /\/\*\*\*\*\*\*\/ __webpack_require__\.f\.require = \(chunkId, promises\) => {/g,
       `/***** PATCHED FOR VENDOR CHUNKS *****/
       // Fix lỗi không tìm thấy vendor-chunks
       var vendorChunks = {
-        'next': require('./vendor-chunks/next.js'),
-        'react': require('./vendor-chunks/react.js'),
-        'react-dom': require('./vendor-chunks/react-dom.js'),
-        'next-auth': require('./vendor-chunks/next-auth.js'),
-        'scheduler': require('./vendor-chunks/scheduler.js'),
-        'use-sync-external-store': require('./vendor-chunks/use-sync-external-store.js')
+        ${vendorImports}
       };
       
       /******/ __webpack_require__.f.require = (chunkId, promises) => {
-        // Đối với vendor chunks, sử dụng các file đã tạo sẵn
-        if (chunkId.startsWith('./vendor-chunks/')) {
+        // Xử lý vendor chunks
+        if (typeof chunkId === 'string' && chunkId.startsWith('./vendor-chunks/')) {
           const moduleName = chunkId.replace('./vendor-chunks/', '').replace('.js', '');
           if (vendorChunks[moduleName]) {
-            return vendorChunks[moduleName];
+            return;
           }
         }
       `
     );
     
     fs.writeFileSync(webpackRuntimePath, content);
-    console.log(`Đã sửa file webpack-runtime.js`);
+    console.log(`Đã sửa file webpack-runtime.js thành công`);
   } else {
     console.log(`Không tìm thấy file webpack-runtime.js để sửa`);
   }

@@ -200,3 +200,20 @@ yarn-error.log*
 # webpack cache
 .next/cache/webpack/*
 
+# Vendor chunks files
+/.next/server/vendor-chunks/*.js
+/.next/server/pages/vendor-chunks/*.js
+/.next/server/chunks/*.js
+
+# Các file tạm thời của Next.js
+/.next/trace
+/.next/trace-*
+/.next/server/chunks/react*.js
+/.next/server/middleware-build-manifest.js
+/.next/server/middleware-manifest.json
+/.next/server/middleware-react-loadable-manifest.json
+/.next/server/app-paths-manifest.json
+/.next/server/pages-manifest.json
+/.next/server/flight-server-css-manifest.json
+/.next/server/flight-client-css-manifest.json
+
