@@ -9,15 +9,49 @@
 # testing
 /coverage
 
-# next.js
+# next.js - consolidated rules
 /.next/
 /out/
+/.next/**/*
+/.next/cache/
+/.next/server/
+/.next/static/
+/.next/trace
+/.next/*.json
+/.next/server/vendor-chunks/
+/.next/server/chunks/
+/.next/server/pages/
+/.next/server/*.json
+/.next/static/chunks/
+/.next/static/css/
+/.next/static/development/
+/.next/static/webpack/
+/.next/types/
+**/@swc*
+**/client-only*
+**/styled-jsx*
+**/next-client-pages-loader*
 
-# production
+# URL encoded paths and dynamic routes
+/.next/static/chunks/app/products/%5Bid%5D/*.js
+/.next/static/chunks/app/**/*.js
+/.next/static/webpack/**/*
+
+# build output
 /build
+/dist
+
+# development artifacts
+/.swc/
+/.turbo/
+.webpack
 
 # misc
 .DS_Store
+desktop.ini
+ehthumbs.db
+Icon?
+Thumbs.db
 *.pem
 
 # debug
@@ -26,82 +60,44 @@ yarn-debug.log*
 yarn-error.log*
 app-debug.log
 *.log
+.dev.log
+.pnpm-debug.log*
 
-# local env files
+# env files
 .env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env
 
 # vercel
 .vercel
+.vercel_build_output
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
-# vs code settings
+# editor settings
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+*.sublime-project
+*.sublime-workspace
 
 # Temporary files
 .temp
 .cache
 /temp
-.turbo
-.webpack
-.swc
+/node_modules/.cache/
 
-# OS generated files
-desktop.ini
-ehthumbs.db
-Icon?
-Thumbs.db
-
-# Backup files
-**/*-backup*
-**/*.backup.*
-**/*.bak
-**/backup-*
-
-# Các file fix script tự tạo
-fix-webpack-enoent.js
-**/fix-nextjs*.bat
-clean-trace.js
-run.bat
-fix-critters.js
-fix-webpack-hot-update.js
-fix-nextjs-vendor-paths.js
-fix-nextjs-missing-files.js
-fix-vendor-chunks.js
-fix-all.js
-fix-run-debug.bat
-build-run.bat
-start-dev.bat
-
-# Next.js build output
-.next
-.swc
-**/.next/**
-
-# Node dependencies
-node_modules
-
-# Debug logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Environment files
-.env*.local
-
-# Vercel deployment
-.vercel
-
-# TypeScript compiler
-*.tsbuildinfo
-next-env.d.ts
+# hot update files
+**/*.hot-update.js
+**/*.hot-update.js.map
+**/*.hot-update.json
+**/webpack-hmr
 
 # PWA files
 **/public/sw.js
@@ -112,93 +108,36 @@ next-env.d.ts
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
 
-# Hot update files
-**/*.hot-update.js
-**/*.hot-update.json
+# Next-auth
+.next-auth
 
-# Local build files
-dist
-build
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Webpack hot update files
-**/*.hot-update.js
-**/*.hot-update.js.map
-**/*.hot-update.json
-**/webpack-hmr
-
-# Specific files causing errors
-/.next/server/next-font-manifest.json
-/.next/fallback-build-manifest.json
-/.next/server/middleware*.json
-/.next/server/*-manifest*.json
-/.next/types/
-/.next/cache/webpack/**/*.pack
-/.next/cache/webpack/**/*.pack.gz
-/.next/cache/server/**/*.pack
-/.next/cache/server/**/*.pack.gz
-
-# Webpack cache files
-/.next/cache/webpack/client-development/
-/.next/cache/webpack/server-development/
-/.next/cache/webpack/edge-server-development/
+# Backup files
+**/*-backup*
+**/*.backup.*
+**/*.bak
+**/backup-*
 
 # Images
 /public/images/promotion-image.png
 
-# Debug logs and temporary files
-.vercel_build_output
-.swc/
-.env.development.local
-.env.test.local
-.env.production.local
+# Scripts - these should be committed to git repository
+# They are needed for the consolidated run.bat to work
+# fix-webpack-enoent.js
+# **/fix-nextjs*.bat
+# clean-trace.js
+# run.bat
+# fix-critters.js
+# fix-webpack-hot-update.js
+# fix-nextjs-vendor-paths.js
+# fix-nextjs-missing-files.js
+# fix-vendor-chunks.js
+# fix-all.js
+# fix-run-debug.bat
+# build-run.bat
+# start-dev.bat
 
-# Development logs
-.dev.log
-npm-debug.log
-
-# Admin scripts
-.getadmin.vbs
-
-# Generated files during development run
-.next/
-.DS_Store
-/public/hot
-/.next
-/.next/**/*
-/out
-/.swc
-/.turbo
-/.vercel
-*.tsbuildinfo
-next-env.d.ts
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env
-/node_modules
-*.log
-.vscode/*
-!.vscode/settings.json
-!.vscode/extensions.json
-*.sublime-project
-*.sublime-workspace
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# next-auth
-.next-auth
-
-# IDE
-.vscode/*
-
-# webpack cache
-.next/cache/webpack/*
+# Các file cần ignore sinh ra trong quá trình chạy dự án
+/.next/static/*.js
 
 # Vendor chunks files
 /.next/server/vendor-chunks/*.js
@@ -216,17 +155,3 @@ yarn-error.log*
 /.next/server/pages-manifest.json
 /.next/server/flight-server-css-manifest.json
 /.next/server/flight-client-css-manifest.json
-
-# URL Encoded files và placeholders
-/.next/static/chunks/app/products/%5Bid%5D/*.js
-/.next/static/chunks/app/**/*.js
-/.next/static/webpack/**/*
-/.next/static/development/_buildManifest.js
-/.next/static/development/_ssgManifest.js
-
-# Module không tìm thấy lỗi
-**/@swc*
-**/client-only*
-**/styled-jsx*
-**/next-client-pages-loader*
-
