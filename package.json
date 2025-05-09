@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node src/scripts/fix-next-errors.js && node clean-trace.js && node fix-webpack-enoent.js && node fix-ignore-warnings.js && node fix-critters.js && echo Preparing development environment...",
-    "dev": "next dev --no-optimize-css",
-    "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot --no-optimize-css",
-    "dev:clean": "npm run fix-webpack-hot && next dev --no-optimize-css",
+    "predev": "node src/scripts/fix-next-errors.js && node clean-trace.js && node fix-webpack-enoent.js && node fix-ignore-warnings.js && node fix-critters.js && node fix-nextjs-vendor-paths.js && echo Preparing development environment...",
+    "dev": "next dev",
+    "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot",
+    "dev:clean": "npm run fix-webpack-hot && next dev",
     "prebuild": "node clean-trace.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "start": "next start",
@@ -16,7 +16,8 @@
     "clean-trace": "node clean-trace.js",
     "fix-next": "node src/scripts/fix-next-errors.js",
     "fix-critters": "node fix-critters.js",
-    "fix-webpack-hot": "node fix-webpack-hot-update.js"
+    "fix-webpack-hot": "node fix-webpack-hot-update.js",
+    "fix-nextjs-vendor": "node fix-nextjs-vendor-paths.js"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.2",

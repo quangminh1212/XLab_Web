@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { promisify } = require('util');
-const rimraf = promisify(require('rimraf'));
+const rimraf = require('rimraf');
 
 async function cleanWebpackCache() {
   console.log('Bắt đầu xóa cache Next.js và Webpack...');
@@ -16,7 +15,7 @@ async function cleanWebpackCache() {
     for (const dir of directories) {
       if (fs.existsSync(dir)) {
         console.log(`Đang xóa ${dir}...`);
-        await rimraf(dir);
+        await rimraf.rimraf(dir);
         console.log(`Đã xóa ${dir} thành công.`);
       } else {
         console.log(`Thư mục ${dir} không tồn tại, bỏ qua.`);

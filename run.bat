@@ -1,6 +1,7 @@
 @echo off
-echo Clearing Next.js cache and fixing webpack issues...
+echo Preparing NextJS application...
 node fix-webpack-hot-update.js
+node fix-nextjs-vendor-paths.js
 
 echo Starting development server...
-npm run dev:clean 
+npm run dev 
