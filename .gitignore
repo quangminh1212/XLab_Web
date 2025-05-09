@@ -68,6 +68,9 @@ fix-webpack-enoent.js
 clean-trace.js
 run.bat
 fix-critters.js
+fix-webpack-hot-update.js
+fix-nextjs-vendor-paths.js
+fix-nextjs-missing-files.js
 
 # Next.js build output
 .next/
@@ -85,6 +88,8 @@ fix-critters.js
 # Ignoring specific webpack cache files that cause ENOENT errors
 **/.next/cache/webpack/**/*.pack
 **/.next/cache/webpack/**/*.pack.gz
+**/.next/cache/server/**/*.pack
+**/.next/cache/server/**/*.pack.gz
 .next/**/trace
 .next/**/*.map
 .next/server/middleware-manifest.json
@@ -92,6 +97,8 @@ fix-critters.js
 .next/server/server-reference-manifest.json
 .next/server/app-paths-manifest.json
 .next/server/flight-server-css-manifest.json
+.next/server/next-font-manifest.json
+.next/fallback-build-manifest.json
 .next/trace
 
 # Debug logs and temporary files

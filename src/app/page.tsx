@@ -18,8 +18,8 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-10 sm:py-12">
-        <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-16 xl:px-24 max-w-full">
+      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-8 sm:py-10 md:py-12">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl">
           <div className="flex flex-col items-center text-center">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
@@ -44,7 +44,7 @@ function HomePage() {
         </div>
       </section>
 
-      <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 w-full max-w-full">
+      <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 w-full max-w-6xl py-6">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           {/* Sidebar Column - Left */}
@@ -362,52 +362,52 @@ function HomePage() {
             </div>
 
             {/* Câu hỏi thường gặp */}
-            <section className="py-10 bg-gray-50">
-              <div className="mx-auto px-4 w-full">
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
-                  <p className="text-gray-600 max-w-2xl mx-auto">
+            <section className="py-8 bg-gray-50 rounded-xl">
+              <div className="px-4 w-full">
+                <div className="text-center mb-6">
+                  <h2 className="text-xl md:text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
+                  <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
                     Giải đáp những thắc mắc phổ biến của khách hàng về sản phẩm và dịch vụ của XLab
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-none mx-auto">
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Làm thế nào để tải xuống phần mềm?</h3>
-                    <p className="text-gray-600">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 max-w-none mx-auto">
+                  <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để tải xuống phần mềm?</h3>
+                    <p className="text-gray-600 text-sm md:text-base">
                       Bạn có thể tải xuống phần mềm miễn phí tại trang sản phẩm tương ứng sau khi đăng nhập vào tài khoản của mình. Đối với sản phẩm trả phí, bạn cần hoàn tất thanh toán trước khi tải xuống.
                     </p>
                   </div>
                   
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Làm thế nào để kích hoạt bản quyền?</h3>
-                    <p className="text-gray-600">
+                  <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để kích hoạt bản quyền?</h3>
+                    <p className="text-gray-600 text-sm md:text-base">
                       Sau khi mua sản phẩm, bạn sẽ nhận được mã kích hoạt qua email. Mở ứng dụng, vào phần "Kích hoạt bản quyền" và nhập mã này để sử dụng đầy đủ tính năng.
                     </p>
                   </div>
                   
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Tôi có thể sử dụng trên mấy thiết bị?</h3>
-                    <p className="text-gray-600">
+                  <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Tôi có thể sử dụng trên mấy thiết bị?</h3>
+                    <p className="text-gray-600 text-sm md:text-base">
                       Mỗi bản quyền cho phép bạn sử dụng trên tối đa 3 thiết bị cùng một lúc. Bạn có thể quản lý danh sách thiết bị trong phần "Tài khoản" trên website.
                     </p>
                   </div>
                   
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Chính sách hoàn tiền như thế nào?</h3>
-                    <p className="text-gray-600">
+                  <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+                    <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Chính sách hoàn tiền như thế nào?</h3>
+                    <p className="text-gray-600 text-sm md:text-base">
                       Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được hướng dẫn.
                     </p>
                   </div>
                 </div>
                 
-                <div className="text-center mt-8">
+                <div className="text-center mt-6">
                   <Link 
                     href="/support"
-                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium"
+                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm md:text-base"
                   >
                     Xem thêm câu hỏi
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   </Link>
@@ -417,6 +417,20 @@ function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Software Categories */}
+      <section className="py-8 sm:py-10 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl">
+          {/* ... existing code ... */}
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-8 sm:py-10 md:py-12 bg-gradient-to-br from-primary-500 to-primary-600 text-white">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl">
+          {/* ... existing code ... */}
+        </div>
+      </section>
     </div>
   );
 }

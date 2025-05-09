@@ -9,25 +9,29 @@ echo - Webpack cache errors
 echo - Server runtime errors
 echo - Static file errors
 echo.
-echo [1/8] Stopping all Node.js processes...
+echo [1/10] Stopping all Node.js processes...
 taskkill /f /im node.exe >nul 2>&1
 timeout /t 2 /nobreak >nul
 
-echo [2/8] Completely removing .next directory...
+echo [2/10] Completely removing .next directory...
 if exist .next rmdir /s /q .next 
 if exist node_modules\.cache rmdir /s /q node_modules\.cache
 
-echo [3/8] Creating basic Next.js directory structure...
+echo [3/10] Creating basic Next.js directory structure...
 mkdir .next
 mkdir .next\cache
 mkdir .next\cache\webpack
 mkdir .next\cache\webpack\client-development
 mkdir .next\cache\webpack\server-development
 mkdir .next\cache\webpack\edge-server-development
+mkdir .next\cache\server
 mkdir .next\server
 mkdir .next\server\pages
 mkdir .next\server\app
+mkdir .next\server\app\_not-found
 mkdir .next\server\vendor-chunks
+mkdir .next\server\pages\vendor-chunks
+mkdir .next\server\chunks
 mkdir .next\static
 mkdir .next\static\chunks
 mkdir .next\static\chunks\app
@@ -38,32 +42,36 @@ mkdir .next\static\css\app
 mkdir .next\static\media
 mkdir .next\static\webpack
 
-echo [4/8] Creating webpack placeholder files...
+echo [4/10] Creating webpack placeholder files...
 node fix-webpack-enoent.js
 
-echo [5/8] Creating font manifest and other required files...
+echo [5/10] Creating webpack hot update fixes...
+node fix-webpack-hot-update.js
+
+echo [6/10] Creating vendor chunks fixes...
+node fix-nextjs-vendor-paths.js
+
+echo [7/10] Creating missing files fixes...
+node fix-nextjs-missing-files.js
+
+echo [8/10] Creating font manifest and other required files...
 echo {"pages":{},"app":{}} > .next\server\next-font-manifest.json
 echo {"pages":{},"app":{}} > .next\server\app-paths-manifest.json
 echo {"middleware":{},"functions":{},"version":2} > .next\server\middleware-manifest.json
 echo {} > .next\build-manifest.json
 echo {} > .next\react-loadable-manifest.json
+echo {} > .next\fallback-build-manifest.json
 
-echo [6/8] Creating fallback files...
+echo [9/10] Creating fallback files...
 echo // Fallback file > .next\static\chunks\fallback\main.js
 echo // Fallback file > .next\static\chunks\fallback\webpack.js
 echo // Fallback file > .next\static\chunks\fallback\react-refresh.js
 echo // Fallback file > .next\static\chunks\fallback\pages\_app.js
 echo // Fallback file > .next\static\chunks\fallback\pages\_error.js
 
-echo [7/8] Running clean-trace.js to create additional files...
+echo [10/10] Running clean-trace.js to create additional files...
 node clean-trace.js
-
-echo [8/8] Creating empty app folder and page.js...
-if not exist .next\server\app mkdir .next\server\app
-echo module.exports=function(){return null} > .next\server\app\page.js
-echo module.exports=function(){return null} > .next\server\pages\_document.js
-echo module.exports=function(){return null} > .next\server\pages\_app.js
-echo module.exports=function(){return null} > .next\server\pages\_error.js
+node fix-critters.js
 
 echo.
 echo ====================================

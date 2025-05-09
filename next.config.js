@@ -2,17 +2,15 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
+  reactStrictMode: false,
+  swcMinify: true,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**',
       },
-      {
-        protocol: 'http',
-        hostname: '**',
-      }
     ],
     loader: 'default',
     path: '',
@@ -73,12 +71,8 @@ const nextConfig = {
   },
   experimental: {
     largePageDataBytes: 12800000,
-    appDocumentPreloading: false,
-    esmExternals: true,
-    optimizeCss: false,
-    craCompat: false,
     forceSwcTransforms: true,
-    swcTraceProfiling: false
+    appDocumentPreloading: false,
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
@@ -138,6 +132,12 @@ const nextConfig = {
         ? (config.name === 'edge-server' ? 'edge-server' : 'server') 
         : 'client',
       version: '1.1.0' // Tăng version cache để buộc webpack tạo lại
+    };
+
+    // Loại bỏ cảnh báo Critical dependency
+    config.module = {
+      ...config.module,
+      exprContextCritical: false,
     };
 
     return config;

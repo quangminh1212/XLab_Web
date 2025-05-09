@@ -41,7 +41,7 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-5 py-3">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-3 max-w-6xl">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center justify-center">
@@ -51,50 +51,50 @@ const Header = () => {
                 alt="XLab Logo"
                 width={120}
                 height={72}
-                className="w-auto h-16"
+                className="w-auto h-14 md:h-16"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-10">
-            <Link href="/" className={`${isActive('/')} transition-colors text-lg tracking-wide font-medium`}>
+          <nav className="hidden md:flex space-x-4 lg:space-x-6 xl:space-x-8">
+            <Link href="/" className={`${isActive('/')} transition-colors text-base lg:text-lg tracking-wide font-medium`}>
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`${isActive('/products')} transition-colors text-lg tracking-wide font-medium`}
+              className={`${isActive('/products')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Sản phẩm
             </Link>
             <Link
               href="/services"
-              className={`${isActive('/services')} transition-colors text-lg tracking-wide font-medium`}
+              className={`${isActive('/services')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Dịch vụ
             </Link>
             <Link
               href="/about"
-              className={`${isActive('/about')} transition-colors text-lg tracking-wide font-medium`}
+              className={`${isActive('/about')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className={`${isActive('/contact')} transition-colors text-lg tracking-wide font-medium`}
+              className={`${isActive('/contact')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-lg tracking-wide font-medium`}
+              className={`${isActive('/bao-hanh')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
               Bảo hành
             </Link>
           </nav>
 
           {/* Right Side - Auth + Cart */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3 md:space-x-4 lg:space-x-6">
             {/* Notification Icon */}
             {session && (
               <div className="relative">
@@ -118,7 +118,7 @@ const Header = () => {
                     />
                   </svg>
                   {unreadCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full">
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                       {unreadCount}
                     </span>
                   )}
@@ -126,13 +126,13 @@ const Header = () => {
 
                 {/* Notification Dropdown */}
                 {isNotificationOpen && (
-                  <div className="absolute right-0 mt-3 w-96 bg-white rounded-lg shadow-xl py-3 z-10">
+                  <div className="absolute right-0 mt-3 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-3 z-10">
                     <div className="px-5 py-3 border-b border-gray-100 flex justify-between items-center">
                       <h3 className="text-lg font-semibold text-gray-900">Thông báo</h3>
                       {unreadCount > 0 && (
                         <button 
                           onClick={markAllAsRead}
-                          className="text-base text-primary-600 hover:text-primary-800"
+                          className="text-sm sm:text-base text-primary-600 hover:text-primary-800"
                         >
                           Đánh dấu tất cả đã đọc
                         </button>
@@ -148,15 +148,15 @@ const Header = () => {
                             onClick={() => markAsRead(notification.id)}
                           >
                             <div className="flex justify-between items-start">
-                              <h4 className="text-base font-medium text-gray-900">{notification.title}</h4>
-                              <span className="text-sm text-gray-500">{notification.time}</span>
+                              <h4 className="text-sm sm:text-base font-medium text-gray-900">{notification.title}</h4>
+                              <span className="text-xs sm:text-sm text-gray-500">{notification.time}</span>
                             </div>
-                            <p className="text-base text-gray-600 mt-1">{notification.content}</p>
+                            <p className="text-sm text-gray-600 mt-1">{notification.content}</p>
                           </div>
                         ))
                       ) : (
                         <div className="px-5 py-8 text-center">
-                          <p className="text-base text-gray-500">Không có thông báo nào</p>
+                          <p className="text-sm sm:text-base text-gray-500">Không có thông báo nào</p>
                         </div>
                       )}
                     </div>
@@ -164,7 +164,7 @@ const Header = () => {
                     <div className="px-5 py-3 border-t border-gray-100 text-center">
                       <Link
                         href="/notifications"
-                        className="text-base text-primary-600 hover:text-primary-800"
+                        className="text-sm sm:text-base text-primary-600 hover:text-primary-800"
                         onClick={() => setIsNotificationOpen(false)}
                       >
                         Xem tất cả thông báo
@@ -191,7 +191,7 @@ const Header = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                 0
               </span>
             </Link>
@@ -208,11 +208,11 @@ const Header = () => {
                     alt={session.user?.name || "User"}
                     width={36}
                     height={36}
-                    className="w-9 h-9 rounded-full"
+                    className="w-8 h-8 md:w-9 md:h-9 rounded-full"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`h-5 w-5 ml-2 transform ${
+                    className={`h-4 w-4 ml-1 transform ${
                       isProfileOpen ? "rotate-180" : ""
                     } transition-transform`}
                     fill="none"
@@ -230,7 +230,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-lg text-lg tracking-wide font-medium transition-colors"
+                  className="bg-primary-500 hover:bg-primary-600 text-white px-4 py-1.5 md:px-5 md:py-2 rounded-lg text-sm md:text-lg tracking-wide font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -238,23 +238,23 @@ const Header = () => {
 
               {/* Profile Dropdown */}
               {isProfileOpen && session && (
-                <div className="absolute right-0 mt-3 w-60 bg-white rounded-lg shadow-xl py-3 z-10">
+                <div className="absolute right-0 mt-3 w-56 md:w-60 bg-white rounded-lg shadow-xl py-3 z-10">
                   <div className="px-5 py-3 border-b border-gray-100">
-                    <p className="text-lg font-semibold">{session.user?.name}</p>
-                    <p className="text-base text-gray-500 truncate">
+                    <p className="text-base md:text-lg font-semibold">{session.user?.name}</p>
+                    <p className="text-sm md:text-base text-gray-500 truncate">
                       {session.user?.email}
                     </p>
                   </div>
                   <Link
                     href="/account"
-                    className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-lg"
+                    className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Tài khoản
                   </Link>
                   <Link
                     href="/orders"
-                    className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-lg"
+                    className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                     onClick={() => setIsProfileOpen(false)}
                   >
                     Đơn hàng
@@ -262,7 +262,7 @@ const Header = () => {
                   {session.user?.isAdmin && (
                     <Link
                       href="/admin"
-                      className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-lg"
+                      className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Quản trị
@@ -273,7 +273,7 @@ const Header = () => {
                       signOut();
                       setIsProfileOpen(false);
                     }}
-                    className="block w-full text-left px-5 py-3 text-gray-700 hover:bg-gray-100 text-lg"
+                    className="block w-full text-left px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                   >
                     Đăng xuất
                   </button>
