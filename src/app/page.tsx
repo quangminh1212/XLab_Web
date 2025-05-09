@@ -19,7 +19,7 @@ function HomePage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-8 sm:py-10 md:py-12">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl">
+        <div className="container mx-auto">
           <div className="flex flex-col items-center text-center">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
@@ -44,11 +44,11 @@ function HomePage() {
         </div>
       </section>
 
-      <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 w-full max-w-6xl py-6">
+      <div className="container mx-auto py-6">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           {/* Sidebar Column - Left */}
-          <div className="w-full md:w-1/4 space-y-4">
+          <div className="w-full md:w-1/5 space-y-4">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
@@ -247,7 +247,7 @@ function HomePage() {
           </div>
           
           {/* Main Content Column - Right */}
-          <div className="w-full md:w-3/4">
+          <div className="w-full md:w-4/5">
             {/* Tabs điều hướng */}
             <div className="mb-4 bg-white rounded-xl p-3 shadow-sm">
               <div className="flex space-x-4 border-b border-gray-200 pb-2 mb-3">

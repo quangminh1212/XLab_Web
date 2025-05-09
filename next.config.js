@@ -120,18 +120,8 @@ const nextConfig = {
       publicPath: dev ? '/_next/' : undefined,
     };
 
-    // Ngăn chặn lỗi ENOENT bằng cách bỏ qua webpack pack cache
-    config.cache = {
-      type: 'filesystem',
-      buildDependencies: {
-        config: [__filename],
-      },
-      cacheDirectory: path.resolve('.next/cache'),
-      name: isServer 
-        ? (config.name === 'edge-server' ? 'edge-server' : 'server') 
-        : 'client',
-      version: '1.1.0' // Tăng version cache để buộc webpack tạo lại
-    };
+    // Ngăn chặn lỗi ENOENT
+    config.cache = false;
 
     // Loại bỏ cảnh báo Critical dependency
     config.module = {

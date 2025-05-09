@@ -77,36 +77,45 @@ fix-vendor-chunks.js
 fix-all.js
 fix-run-debug.bat
 build-run.bat
+start-dev.bat
 
 # Next.js build output
 .next/
 **/.next/**/*
 **/node_modules/.cache/
-.next/cache/
-.next/server/
-.next/static/
+/.next/cache/
+/.next/server/
+/.next/static/
+/.next/trace/
+/.next/vendor-chunks/
+/.next/types/
+/.next/static/development/
+/.next/static/webpack/
 
 # Webpack hot update files
 **/*.hot-update.js
 **/*.hot-update.js.map
 **/*.hot-update.json
+**/webpack-hmr
 
-# Ignoring specific webpack cache files that cause ENOENT errors
-**/.next/cache/webpack/**/*.pack
-**/.next/cache/webpack/**/*.pack.gz
-**/.next/cache/server/**/*.pack
-**/.next/cache/server/**/*.pack.gz
-.next/**/trace
-.next/**/*.map
-.next/server/middleware-manifest.json
-.next/server/pages-manifest.json
-.next/server/server-reference-manifest.json
-.next/server/app-paths-manifest.json
-.next/server/flight-server-css-manifest.json
-.next/server/next-font-manifest.json
-.next/server/_not-found.json
-.next/fallback-build-manifest.json
-.next/trace
+# Specific files causing errors
+/.next/server/next-font-manifest.json
+/.next/fallback-build-manifest.json
+/.next/server/middleware*.json
+/.next/server/*-manifest*.json
+/.next/types/
+/.next/cache/webpack/**/*.pack
+/.next/cache/webpack/**/*.pack.gz
+/.next/cache/server/**/*.pack
+/.next/cache/server/**/*.pack.gz
+
+# Webpack cache files
+/.next/cache/webpack/client-development/
+/.next/cache/webpack/server-development/
+/.next/cache/webpack/edge-server-development/
+
+# Images
+/public/images/promotion-image.png
 
 # Debug logs and temporary files
 .vercel_build_output
