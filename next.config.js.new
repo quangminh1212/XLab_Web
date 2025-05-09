@@ -78,8 +78,8 @@ const nextConfig = {
     forceSwcTransforms: true,
     appDocumentPreloading: false,
   },
+  // Cấu hình tracing - đã được di chuyển ra khỏi experimental
   outputFileTracing: false,
-  outputFileTracingIgnores: ['.next/trace', '.next/trace*'],
   outputFileTracingExcludes: {
     '*': ['node_modules/**', '.next/**']
   },
@@ -196,4 +196,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = nextConfig; 

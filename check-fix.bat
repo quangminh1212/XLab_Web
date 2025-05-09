@@ -1,0 +1,6 @@
+@echo off
+echo Checking and fixing trace error...
+node fix-trace-error.js > fix-trace-error.log 2>&1
+echo Starting Next.js app...
+npm run dev > dev-output.log 2>&1
+echo Done! Check the log files for results. 
