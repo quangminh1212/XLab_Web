@@ -578,46 +578,97 @@ export const products: Product[] = [
   },
 
   {
-    id: 'acc-chatgpt',
-    name: 'ChatGPT Plus',
-    slug: 'chatgpt-plus',
-    description: 'Tài khoản ChatGPT Plus chính hãng với đầy đủ các tính năng cao cấp nhất của OpenAI.',
+    id: 'acc-chatgpt-plus',
+    name: 'Tài khoản ChatGPT Plus – OpenAI',
+    slug: 'tai-khoan-chatgpt-plus-openai',
+    description: 'Tài khoản ChatGPT Plus chính hãng với đầy đủ tính năng cao cấp từ OpenAI, luôn cập nhật tính năng mới.',
     longDescription: `
-      <h2>ChatGPT Plus - Tài khoản cao cấp</h2>
-      <p>Tài khoản ChatGPT Plus chính hãng với đầy đủ tính năng cao cấp từ OpenAI. Truy cập ưu tiên, không giới hạn lượt chat.</p>
-      
-      <h3>Tính năng:</h3>
-      <ul>
-        <li><strong>Truy cập GPT-4</strong>: Mô hình AI tiên tiến nhất</li>
-        <li><strong>Truy cập ưu tiên</strong>: Không bị giới hạn trong giờ cao điểm</li>
-        <li><strong>Plugin & Custom GPTs</strong>: Sử dụng plugin và tạo GPT riêng</li>
-        <li><strong>DALL-E 3</strong>: Tích hợp tạo hình ảnh bằng AI</li>
-      </ul>
+      <h2>ChatGPT là một chat bot cực mạnh hiện nay</h2>
+      <p>Có thể trả lời được rất nhiều các câu hỏi cả tiếng anh và tiếng việt. Có thể hỗ trợ cả lập trình từ Front-end cho tới Back-end. Ngoài ra, tài khoản ChatGPT có khả năng trả lời nhiều loại câu hỏi khác nhau, bao gồm cả câu hỏi có liên quan đến lĩnh vực tri thức, văn hóa, xã hội và các lĩnh vực khác.</p>
+
+      <h3>I. Bảng giá Tài khoản ChatGPT Plus – OpenAI</h3>
+      <p>– Công nghệ GPT-4o, chuẩn bị cập nhật GPT-5 mới nhất.<br/>
+      – Tài khoản chính hãng, đầy đủ tính năng Plus<br/>
+      – Bảo hành trọn thời gian sử dụng</p>
+
+      <p><strong>1) Gói dùng chung: 149.000đ/ 1 tháng, 399.000đ/ 3 tháng</strong></p>
+      <p>– Tài khoản cấp dùng chung<br/>
+      – Đăng nhập 1-2 thiết bị cố định.<br/>
+      – Không đổi mật khẩu</p>
+
+      <p><strong>2) Gói dùng riêng/ nâng cấp: 449.000đ / 1 tháng</strong></p>
+      <p>– Nhận tài khoản tạo sẵn hoặc Nâng cấp tài khoản chính chủ, dùng riêng 100%.<br/>
+      – Dùng nhiều thiết bị.<br/>
+      – Được đổi mật khẩu.</p>
+
+      <h3>II. Giới thiệu tài khoản ChatGPT – OpenAI</h3>
+      <p>ChatGPT là một mô hình ngôn ngữ được huấn luyện bằng công nghệ transformer và được phát triển bởi OpenAI. Nó có khả năng học từ dữ liệu văn bản lớn và tự động sinh các câu trả lời liên quan đến các câu hỏi được đặt ra. Tài khoản ChatGPT có thể được sử dụng trong các ứng dụng chatbot, trò chuyện tự động và các hệ thống tư vấn khác. Nó cũng có khả năng tự động hoá các tác vụ như dịch văn bản, tự động điền vào mẫu và các tác vụ khác liên quan đến ngôn ngữ.</p>
+
+      <p>ChatGPT có khả năng trả lời nhiều loại câu hỏi khác nhau, bao gồm cả câu hỏi có liên quan đến lĩnh vực tri thức, văn hóa, xã hội và các lĩnh vực khác. Nó cũng có thể trả lời các câu hỏi có tính chất hỏi đáp và câu hỏi yêu cầu phân tích sâu hơn. Tuy nhiên, Tài khoản ChatGPT không phải là một người hoặc hệ thống chuyên gia và không thể cung cấp các lời khuyên hoặc đưa ra các quyết định chuyên sâu trong các lĩnh vực cụ thể. Nó chỉ có thể trả lời các câu hỏi dựa trên dữ liệu văn bản mà nó được huấn luyện và không thể đưa ra các lời khuyên hoặc đưa ra các quyết định chuyên sâu.</p>
+
+      <h3>III. Thông tin sản phẩm tài khoản OpenAI – ChatGPT</h3>
+      <p>Đây là tài khoản đã được kích hoạt số điện thoại để sử dụng được ở mọi nơi.</p>
+
+      <p>Để đăng nhập vào tài khoản bạn truy cập: <a href="https://chat.openai.com/chat/">https://chat.openai.com/chat/</a></p>
+
+      <p>Trong tài khoản cũng có sẵn 5$ để có thể sử dụng các ứng dụng các ứng dụng khác của OpenAI thông qua API.</p>
+
+      <p>Ví dụ: – Ứng dụng AI tự tạo hình ảnh: DALL-E</p>
+
+      <p>– Kết nối các chức năng của OpenAI ra ứng dụng bên ngoài thông qua API.</p>
+
+      <h3>IV. Câu hỏi thường gặp</h3>
+      <p><strong>1. ChatGPT là gì?</strong></p>
+      <p>ChatGPT là một mô hình ngôn ngữ được huấn luyện bằng công nghệ transformer và được phát triển bởi OpenAI. Nó có khả năng học từ dữ liệu văn bản lớn và tự động sinh các câu trả lời liên quan đến các câu hỏi được đặt ra. Tài khoản ChatGPT có thể được sử dụng trong các ứng dụng chatbot, trò chuyện tự động và các hệ thống tư vấn khác. Nó cũng có khả năng tự động hoá các tác vụ như dịch văn bản, tự động điền vào mẫu và các tác vụ khác liên quan đến ngôn ngữ.</p>
+
+      <p><strong>2. ChatGPT có thể trả lời những câu hỏi gì?</strong></p>
+      <p>Tài khoản Premium ChatGPT Plus có khả năng trả lời nhiều loại câu hỏi khác nhau, bao gồm cả câu hỏi có liên quan đến lĩnh vực tri thức, văn hóa, xã hội và các lĩnh vực khác. Nó cũng có thể trả lời các câu hỏi có tính chất hỏi đáp và câu hỏi yêu cầu phân tích sâu hơn.</p>
+
+      <p><strong>3. ChatGPT có thể trả lời tiếng Việt không?</strong></p>
+      <p>Tài khoản ChatGPT có khả năng trả lời Tiếng Việt. Nếu ChatGPT không trả lời Tiếng Việt bạn có thể bắt đầu cuộc hội thoại mới và bắt đầu với câu hỏi "Bạn có thể nói tiếng Việt không?" sau đó chat bình thường bằng tiếng Việt. Tuy nhiên ChatGPT sẽ trả lời tốt nhất bằng tiếng Anh vì vậy bạn nên hỏi bằng Tiếng Anh sau đó yêu cầu "Translate to Vietnamese" để dịch nội dung tiếng Anh qua tiếng Việt</p>
+
+      <p><strong>4. ChatGPT bị ngắt khi chưa trả lời hết câu thì làm như thế nào?</strong></p>
+      <p>Khi nội dung trả lời quá dài thì thường ChatGPT sẽ bị dừng giữa chừng và chưa đưa ra hết câu trả lời. Vấn đề này thường gặp khi hỏi đáp bằng tiếng Việt. Để AI đưa ra câu trả lời đầy đủ, bạn chat "Continue" hoặc "Tiếp tục" để AI viết tiếp nội dung đang trả lời. Nếu vẫn không được bạn nhấn vào "Regenerate response" để AI tạo lại nội dung.</p>
+
+      <p><strong>5. Làm thế nào để ChatGPT theo sát một chủ đề mà tôi hỏi?</strong></p>
+      <p>Bạn nên tạo các cuộc hội thoại theo từng chủ đề mà bạn muốn để Tài khoản ChatGPT có thể theo sát nhất từng chủ đề. Đồng thời việc này sẽ lưu lại các chủ đề bạn hỏi để sau này có thể hỏi tiếp. Đặc biệt hữu ích khi bạn hỏi đáp chuyên sâu về Lập Trình, AI sẽ hiểu được các lỗi bạn gặp phải ở chủ đề đó và đưa ra gợi ý chính xác hơn.</p>
+
+      <p><strong>6. ChatGPT có miễn phí không?</strong></p>
+      <p>Hiện tại chức năng chat với AI đang được miễn phí hoàn toàn. Bạn sẽ chỉ phải trả phí nếu sử dụng các tính năng nâng cao như: Kết nối API ra bên ngoài, Tự Training dữ liệu trả lời riêng. Chính sách miễn phí có thể thay đổi tùy theo định hướng của công ty OpenAI.</p>
+
+      <p><strong>7. Tôi vào chat nhưng nhận được thông báo We're experiencing exceptionally high demand. Please hang tight as we work on scaling our systems. Sau đó tôi chat nhưng Bot trả lời rất chậm, tại sao lại như vậy?</strong></p>
+      <p>Thông báo đó có nghĩa là chat OpenAI đang phải xử lý lượng truy cập quá lớn, hệ thống của họ chưa đáp ứng được nên sẽ có thể xảy ra hiện tượng lag, chậm. Nếu bạn gặp thông báo này thì có thể kiên nhẫn thử lại sau ạ.</p>
     `,
-    price: 790000,
-    salePrice: 690000,
-    categoryId: 'cat-1',
+    price: 449000,
+    salePrice: 149000,
+    categoryId: 'cat-6', // Tài khoản học tập
     imageUrl: '/chatgpt.png',
     isFeatured: true,
     isNew: true,
-    downloadCount: 450,
-    viewCount: 780,
+    downloadCount: 820,
+    viewCount: 1580,
     rating: 4.9,
-    version: '1.0',
+    version: '2024',
     size: 'N/A',
-    licenseType: 'Premium',
-    createdAt: new Date('2023-11-25').toISOString(),
-    updatedAt: new Date('2023-11-25').toISOString(),
-    storeId: '1',
+    licenseType: 'Premium Account',
+    createdAt: new Date('2024-01-05').toISOString(),
+    updatedAt: new Date('2024-01-10').toISOString(),
+    storeId: '1', // XLab Software
     isAccount: true,
     type: 'account',
     features: [
-      'Truy cập GPT-4 không giới hạn',
-      'Ưu tiên trong giờ cao điểm',
-      'Tạo hình ảnh DALL-E 3',
-      'Browser & plugins',
-      'Phát triển ứng dụng AI',
-      'Đọc và tải file'
+      'Tài khoản chính hãng, luôn update tính năng mới',
+      'Nhiều loại tài khoản để bạn chọn theo nhu cầu',
+      'Đăng nhập sử dụng trực tiếp tại Việt Nam không cần VPN',
+      'Bảo hành 1 đổi 1 ngay khi có lỗi',
+      'Công nghệ GPT-4o, chuẩn bị cập nhật GPT-5 mới nhất',
+      'Truy cập đầy đủ tính năng Plus như DALL-E'
+    ],
+    options: [
+      { name: 'Dùng chung - 1 tháng', price: 149000 },
+      { name: 'Dùng chung - 3 tháng', price: 399000 },
+      { name: 'Dùng riêng - 1 tháng', price: 449000 },
+      { name: 'Nâng cấp - 1 tháng', price: 449000 }
     ]
   },
 

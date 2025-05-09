@@ -52,6 +52,14 @@ function createVendorFiles() {
     {
       path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'react-dom.js'),
       content: 'module.exports = require("react-dom");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'next-auth.js'),
+      content: 'module.exports = require("next-auth");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'next-auth.js'),
+      content: 'module.exports = require("next-auth");'
     }
   ];
 
@@ -81,7 +89,8 @@ function fixWebpackRuntime() {
       var vendorChunks = {
         'next': require('./vendor-chunks/next.js'),
         'react': require('./vendor-chunks/react.js'),
-        'react-dom': require('./vendor-chunks/react-dom.js')
+        'react-dom': require('./vendor-chunks/react-dom.js'),
+        'next-auth': require('./vendor-chunks/next-auth.js')
       };
       
       /******/ __webpack_require__.f.require = (chunkId, promises) => {

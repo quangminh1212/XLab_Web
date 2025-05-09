@@ -94,6 +94,28 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
   );
 };
 
+// Component hiển thị lợi ích của sản phẩm
+const ProductBenefits = () => (
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mt-6">
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Giao hàng<br/>nhanh chóng</h3>
+      <p className="text-xs text-gray-600 text-center">Giao tài khoản ngay trong vòng 5h sau khi nhận được thanh toán.</p>
+    </div>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Rẻ nhất<br/>thị trường</h3>
+      <p className="text-xs text-gray-600 text-center">Cam kết giá rẻ nhất thị trường, tiết kiệm lên đến 90% so với giá gốc.</p>
+    </div>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Bảo hành<br/>1 đổi 1</h3>
+      <p className="text-xs text-gray-600 text-center">Đổi tài khoản mới ngay trong 24h nếu tài khoản phát sinh lỗi.</p>
+    </div>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Hỗ trợ<br/>nhanh chóng</h3>
+      <p className="text-xs text-gray-600 text-center">Chúng tôi sẵn sàng hỗ trợ mọi khó khăn trong quá trình sử dụng tài khoản.</p>
+    </div>
+  </div>
+);
+
 export default function ProductDetail({ product }: { product: Product }) {
   // Update document title khi component được render
   useEffect(() => {
@@ -103,19 +125,35 @@ export default function ProductDetail({ product }: { product: Product }) {
   // State để theo dõi số lượt xem
   const [viewCount, setViewCount] = useState(product.viewCount || 0);
   
+  // State để lưu loại sản phẩm được chọn
+  const [selectedOption, setSelectedOption] = useState(
+    product.options && product.options.length > 0 ? product.options[0].name : ''
+  );
+  
+  // Tính toán giá dựa trên option được chọn
+  const calculatePrice = () => {
+    if (!product.options || product.options.length === 0) {
+      return product.salePrice || product.price;
+    }
+    
+    const option = product.options.find(opt => opt.name === selectedOption);
+    return option ? option.price : (product.salePrice || product.price);
+  };
+  
   // Hook cart context
   const { addItem } = useCart();
   
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
-    const selectedProduct = products.find(p => p.id === parseInt(product.id));
+    const selectedProduct = products.find(p => p.id === product.id);
     if (selectedProduct) {
       addItem({
         id: selectedProduct.id.toString(),
         name: selectedProduct.name,
-        price: selectedProduct.salePrice || selectedProduct.price,
+        price: calculatePrice(),
         quantity: 1,
-        image: selectedProduct.imageUrl
+        image: selectedProduct.imageUrl,
+        options: selectedOption ? [selectedOption] : undefined
       });
       return true;
     }
@@ -131,197 +169,193 @@ export default function ProductDetail({ product }: { product: Product }) {
     console.log(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
   }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Kiểm tra xem có phải là sản phẩm VoiceTyping hay không
-  const isVoiceTyping = product.slug.includes('voice') || product.slug.includes('typing');
+  // Kiểm tra xem có phải là sản phẩm tài khoản hay không
+  const isAccount = product.isAccount || product.type === 'account';
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="p-6 md:p-8">
-          <div className="flex flex-col md:flex-row">
-            {/* Phần hình ảnh */}
-            <div className="w-full md:w-1/3 mb-6 md:mb-0 md:pr-6">
-              <div className={`p-4 rounded-lg flex items-center justify-center h-72 ${isVoiceTyping ? 'bg-gradient-to-br from-blue-50 to-teal-50' : 'bg-gray-100'}`}>
-                {isVoiceTyping ? (
-                  // Hiển thị hình ảnh đẹp hơn cho VoiceTyping
-                  <div className="relative flex items-center justify-center w-full h-full overflow-hidden rounded-lg">
+      <div className="flex flex-col gap-4">
+        {/* Breadcrumbs */}
+        <div className="flex items-center text-sm mb-4">
+          <Link href="/" className="text-gray-500 hover:text-primary-600">
+            Trang chủ
+          </Link>
+          <span className="mx-2 text-gray-400">/</span>
+          <Link 
+            href={isAccount ? "/accounts" : "/products"} 
+            className="text-gray-500 hover:text-primary-600"
+          >
+            {isAccount ? "Tài khoản" : "Sản phẩm"}
+          </Link>
+          <span className="mx-2 text-gray-400">/</span>
+          <span className="text-gray-900 font-medium">{product.name}</span>
+        </div>
+
+        {/* Sản phẩm chính */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="p-6 md:p-8">
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Phần hình ảnh bên trái */}
+              <div className="w-full lg:w-2/5">
+                <div className="bg-white p-4 border border-gray-200 rounded-lg">
+                  <div className="relative pt-[100%]">
                     <Image
-                      src="/images/speech-text.svg"
+                      src={product.imageUrl || '/images/product-placeholder.svg'}
                       alt={product.name}
-                      width={300}
-                      height={300}
-                      className="w-full h-full object-contain transition-all duration-500 hover:scale-105"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 400px"
+                      className="object-contain rounded-md"
+                      priority
                     />
-                    {/* Overlay gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary-900/30 via-transparent to-transparent"></div>
-                    {/* Badge ở góc */}
-                    <div className="absolute bottom-3 left-3">
-                      <span className="inline-block px-3 py-1 bg-primary-600 text-white text-sm font-medium rounded-md shadow-sm">
-                        Voice Typing Pro
+                  </div>
+                </div>
+              </div>
+              
+              {/* Thông tin sản phẩm bên phải */}
+              <div className="w-full lg:w-3/5">
+                <h1 className="text-2xl md:text-3xl font-bold mb-2">{product.name}</h1>
+                
+                <div className="flex items-center mb-4">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <svg 
+                        key={star} 
+                        className={`w-4 h-4 ${star <= Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`} 
+                        fill="currentColor" 
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <span className="ml-1 text-sm text-gray-500">({Math.round(product.downloadCount / 5)} đánh giá)</span>
+                </div>
+                
+                <div className="mb-4">
+                  <div className="flex items-center">
+                    <span className="text-3xl font-bold text-primary-600">
+                      {formatCurrency(calculatePrice())}
+                    </span>
+                    {product.price > calculatePrice() && (
+                      <span className="ml-2 text-gray-500 line-through text-lg">
+                        {formatCurrency(product.price)}
                       </span>
+                    )}
+                    {product.price > calculatePrice() && (
+                      <span className="ml-2 px-2 py-1 bg-red-100 text-red-700 text-sm font-medium rounded">
+                        Giảm {Math.round(((product.price - calculatePrice()) / product.price) * 100)}%
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="mb-4">
+                  <p className="text-gray-700 mb-4">{product.description}</p>
+                </div>
+                
+                {/* Hiển thị tính năng nổi bật */}
+                {product.features && product.features.length > 0 && (
+                  <div className="mb-6">
+                    <ul className="space-y-2">
+                      {product.features.map((feature, index) => (
+                        <li key={index} className="flex items-start">
+                          <svg className="w-5 h-5 mr-2 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-700">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {/* Dropdown chọn loại tài khoản nếu là tài khoản */}
+                {isAccount && product.options && product.options.length > 0 && (
+                  <div className="mb-6">
+                    <label htmlFor="account-type" className="block text-sm font-medium text-gray-700 mb-2">
+                      Tài khoản
+                    </label>
+                    <div className="relative">
+                      <select
+                        id="account-type"
+                        value={selectedOption}
+                        onChange={(e) => setSelectedOption(e.target.value)}
+                        className="block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
+                      >
+                        {product.options.map((option, index) => (
+                          <option key={index} value={option.name}>
+                            {option.name} - {formatCurrency(option.price)}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                ) : (
-                  // Sử dụng ProductImage cho các sản phẩm khác
-                  <ProductImage
-                    images={[product.imageUrl || '/images/product-placeholder.svg']}
-                    name={product.name}
-                    aspectRatio="square"
-                  />
                 )}
-              </div>
-
-              <div className="mt-4 text-sm text-gray-500">
-                <div className="flex items-center">
-                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Lượt xem: {viewCount}
-                </div>
-                <div className="flex items-center mt-1">
-                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Lượt tải: {product.downloadCount || 0}
-                </div>
-                <div className="flex items-center mt-1">
-                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Cập nhật: {new Date(product.updatedAt).toLocaleDateString('vi-VN')}
-                </div>
-                <div className="flex items-center mt-1">
-                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Phiên bản: {product.version || '1.0.0'}
-                </div>
-                <div className="flex items-center mt-1">
-                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                  </svg>
-                  Kích thước: {product.size || 'Chưa xác định'}
-                </div>
-                <div className="flex items-center mt-1">
-                  <svg className="w-4 h-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  Giấy phép: {product.licenseType || 'Standard'}
-                </div>
-                <div className="flex items-center mt-1">
-                  <svg className="w-4 h-4 mr-1 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                  </svg>
-                  <span className="mr-1">{product.rating || 4.0}</span>
-                  <div className="text-xs text-gray-500">({Math.round(product.downloadCount / 5)} đánh giá)</div>
-                </div>
-              </div>
-              
-              {/* Yêu cầu hệ thống */}
-              <SystemRequirements />
-            </div>
-            
-            {/* Phần thông tin */}
-            <div className="w-full md:w-2/3">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">{product.name}</h1>
-              <p className="text-sm text-gray-500 mb-4">
-                Phiên bản {product.version || '1.0.0'} | Cập nhật: {new Date(product.updatedAt).toLocaleDateString('vi-VN')}
-              </p>
-              
-              <div className="mb-4">
-                <h2 className="text-lg font-semibold mb-2">Mô tả</h2>
-                <p className="text-gray-700">{product.description}</p>
-              </div>
-              
-              {/* Hiển thị danh sách tính năng nếu có */}
-              {product.features && product.features.length > 0 && (
-                <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <h2 className="text-lg font-semibold mb-2">Tính năng nổi bật</h2>
-                  <ul className="space-y-2">
-                    {product.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <svg className="w-5 h-5 mr-2 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold mb-2">Chi tiết</h2>
-                <div className="prose max-w-none">
-                  {product.longDescription ? (
-                    <div dangerouslySetInnerHTML={{ __html: product.longDescription }} />
-                  ) : (
-                    <p>Chưa có thông tin chi tiết về sản phẩm này.</p>
-                  )}
-                </div>
-              </div>
-              
-              <div className="mb-4">
-                <span className="text-2xl font-bold text-primary-600">
-                  {product.price === 0 ? 'Miễn phí' : formatCurrency(product.salePrice || product.price)}
-                </span>
-                {product.salePrice && product.price > product.salePrice && (
-                  <span className="ml-2 text-gray-500 line-through">
-                    {formatCurrency(product.price)}
-                  </span>
-                )}
-                {product.salePrice && product.price > product.salePrice && (
-                  <span className="ml-2 px-2 py-1 bg-red-100 text-red-700 text-sm font-medium rounded">
-                    Giảm {Math.round(((product.price - product.salePrice) / product.price) * 100)}%
-                  </span>
-                )}
-              </div>
-              
-              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-                <a 
-                  href={`/api/download?slug=${product.slug}`}
-                  className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium inline-flex items-center justify-center"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Tải xuống
-                </a>
                 
-                <button 
-                  onClick={handleAddToCart}
-                  className="border border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium inline-flex items-center justify-center"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                  Thêm vào giỏ hàng
-                </button>
+                {/* Nút thêm vào giỏ hàng */}
+                <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                  <button
+                    onClick={handleAddToCart}
+                    className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Thêm vào giỏ hàng
+                  </button>
+                </div>
+                
+                {/* Thông tin thêm cho tài khoản */}
+                {isAccount && (
+                  <div className="border-t border-gray-200 pt-4 mt-4 text-sm text-gray-600">
+                    <p className="mb-2">
+                      <span className="font-medium text-gray-700">Thời gian giao hàng:</span> Trong vòng 5 giờ sau khi thanh toán thành công
+                    </p>
+                    <p className="mb-2">
+                      <span className="font-medium text-gray-700">Bảo hành:</span> Bảo hành 1 đổi 1 trong thời gian sử dụng
+                    </p>
+                    <p className="mb-2">
+                      <span className="font-medium text-gray-700">Hỗ trợ:</span> 24/7 qua email và chat
+                    </p>
+                  </div>
+                )}
               </div>
-              
-              {/* Nút chia sẻ */}
-              <SocialShareButtons />
             </div>
           </div>
         </div>
+        
+        {/* Hiển thị lợi ích của sản phẩm */}
+        {isAccount && <ProductBenefits />}
+        
+        {/* Nội dung chi tiết */}
+        <div className="bg-white rounded-lg shadow overflow-hidden p-6 md:p-8">
+          <div className="prose max-w-none">
+            <div dangerouslySetInnerHTML={{ __html: product.longDescription }} />
+          </div>
+        </div>
+        
+        {/* Sản phẩm tương tự */}
+        <div className="bg-white rounded-lg shadow overflow-hidden p-6 md:p-8">
+          <h2 className="text-xl font-bold mb-4">Sản phẩm tương tự</h2>
+          <RelatedProducts currentProductId={product.id} categoryId={product.categoryId} />
+        </div>
       </div>
       
-      {/* Hiển thị sản phẩm liên quan */}
-      <RelatedProducts 
-        currentProductId={product.id} 
-        categoryId={product.categoryId} 
-      />
-      
+      {/* Nút quay về */}
       <div className="mt-6">
         <Link 
-          href={product.isAccount || product.type === 'account' ? "/accounts" : "/products"} 
+          href={isAccount ? "/accounts" : "/products"} 
           className="text-primary-600 hover:underline flex items-center"
         >
           <svg className="w-5 h-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          Quay lại danh sách {product.isAccount || product.type === 'account' ? "tài khoản" : "sản phẩm"}
+          Quay lại danh sách {isAccount ? "tài khoản" : "sản phẩm"}
         </Link>
       </div>
     </div>
