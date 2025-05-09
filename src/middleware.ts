@@ -48,6 +48,27 @@ const isPublicPath = (path: string) => {
   );
 };
 
+// Kiểm tra nếu đường dẫn là tệp tĩnh
+const isStaticFile = (path: string) => {
+  return (
+    path.includes('/_next/') ||
+    path.includes('/images/') ||
+    path.includes('/favicon.ico') ||
+    path.endsWith('.png') ||
+    path.endsWith('.jpg') ||
+    path.endsWith('.jpeg') ||
+    path.endsWith('.svg') ||
+    path.endsWith('.gif') ||
+    path.endsWith('.ico') ||
+    path.endsWith('.webmanifest') ||
+    path.endsWith('.css') ||
+    path.endsWith('.js') ||
+    path.endsWith('.json') ||
+    path.endsWith('.xml') ||
+    path.endsWith('.txt')
+  );
+};
+
 // Hàm debug để kiểm tra token và đường dẫn
 const debug = (request: NextRequest, token: any) => {
   if (process.env.NODE_ENV === 'development') {
@@ -63,10 +84,8 @@ export async function middleware(request: NextRequest) {
   
   // Bỏ qua các file static và api routes không cần kiểm tra
   if (
-    pathname.includes('/_next') ||
-    pathname.includes('/api/auth') ||
-    pathname.includes('/images') ||
-    pathname.includes('/favicon.ico')
+    isStaticFile(pathname) ||
+    pathname.includes('/api/auth')
   ) {
     return NextResponse.next();
   }
@@ -107,5 +126,17 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  // Loại bỏ kiểm tra cho tất cả các tệp static
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - images (local images)
+     * - api/auth (NextAuth API routes)
+     * - Common file extensions
+     */
+    '/((?!_next/static|_next/image|favicon\\.ico|images|api/auth|.*\\.(png|jpg|jpeg|svg|gif|ico|webmanifest|css|js|json|xml|txt)).*)',
+  ],
 }; 

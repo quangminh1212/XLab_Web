@@ -37,6 +37,7 @@
 /.next/server/middleware-manifest.json
 /.next/server/next-font-manifest.json
 /.next/build-manifest.json
+/.next/asset-manifest.json
 
 # URL encoded paths and dynamic routes
 /.next/static/chunks/app/products/%5Bid%5D/*.js
@@ -167,3 +168,6 @@ app-debug.log
 /.next/server/pages-manifest.json
 /.next/server/flight-server-css-manifest.json
 /.next/server/flight-client-css-manifest.json
+
+# Webpack manifest files
+/asset-manifest.json

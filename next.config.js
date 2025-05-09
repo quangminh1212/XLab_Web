@@ -86,6 +86,7 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
+  trailingSlash: false,
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
@@ -123,6 +124,13 @@ const nextConfig = {
     config.output = {
       ...config.output,
       publicPath: '/_next/',
+      assetModuleFilename: 'static/[hash][ext]',
+      chunkFilename: isServer ? 
+        'server/chunks/[name].[contenthash].js' :
+        'static/chunks/[name].[contenthash].js',
+      filename: isServer ?
+        'server/[name].js' :
+        'static/[name].[contenthash].js',
     };
 
     // Ngăn chặn lỗi ENOENT
@@ -132,10 +140,41 @@ const nextConfig = {
     config.module = {
       ...config.module,
       exprContextCritical: false,
+      rules: [
+        ...config.module.rules,
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
+          type: 'asset/resource',
+        },
+      ],
     };
 
     // Enables hot module replacement
     config.optimization.runtimeChunk = 'single';
+    
+    // Thêm plugin để đảm bảo tệp static được tạo đúng cách
+    if (!isServer) {
+      const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+      config.plugins.push(
+        new WebpackManifestPlugin({
+          fileName: 'asset-manifest.json',
+          publicPath: '/_next/',
+          generate: (seed, files) => {
+            const manifestFiles = files.reduce((manifest, file) => {
+              manifest[file.name] = file.path;
+              return manifest;
+            }, seed);
+            return {
+              files: manifestFiles,
+            };
+          },
+        })
+      );
+    }
 
     return config;
   },
