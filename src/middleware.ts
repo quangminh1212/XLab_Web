@@ -48,6 +48,16 @@ const isPublicPath = (path: string) => {
   );
 };
 
+// Hàm debug để kiểm tra token và đường dẫn
+const debug = (request: NextRequest, token: any) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Middleware Debug]:', {
+      path: request.nextUrl.pathname,
+      token: token ? `Found (${token.email})` : 'Not found',
+    });
+  }
+};
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
@@ -61,15 +71,26 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  // Lấy token từ cookie
+  // Lấy token từ cookie với secret cố định
   const token = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
   });
   
-  // Nếu là đường dẫn admin và không phải email xlab.rnd@gmail.com, chuyển hướng về trang chủ
+  // Log thông tin debug
+  debug(request, token);
+  
+  // Nếu là đường dẫn admin
   if (isAdminPath(pathname)) {
-    if (!token || token.email !== 'xlab.rnd@gmail.com') {
+    // Nếu chưa đăng nhập, chuyển đến login
+    if (!token) {
+      const url = new URL('/login', request.url);
+      url.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(url);
+    }
+    
+    // Nếu không phải admin email, chuyển đến trang chủ
+    if (token.email !== 'xlab.rnd@gmail.com') {
       const url = new URL('/', request.url);
       return NextResponse.redirect(url);
     }

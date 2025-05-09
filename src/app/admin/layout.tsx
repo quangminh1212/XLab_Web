@@ -18,6 +18,17 @@ export default function AdminLayout({
         return pathname === path ? 'bg-primary-800' : '';
     };
     
+    // Log cho mục đích debug
+    useEffect(() => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log('AdminLayout Debug:', { 
+                status, 
+                session: session ? 'session exists' : 'no session',
+                userEmail: session?.user?.email
+            });
+        }
+    }, [session, status]);
+    
     useEffect(() => {
         if (status === 'loading') return;
         
