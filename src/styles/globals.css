@@ -20,7 +20,7 @@
 
 @layer components {
   .container {
-    @apply mx-auto w-[99%] max-w-screen-2xl px-0.5 sm:px-1 md:px-1 lg:px-1.5;
+    @apply mx-auto w-full max-w-[99%] px-0 sm:px-0.5 md:px-0.5 lg:px-0.5;
   }
   
   .btn {
