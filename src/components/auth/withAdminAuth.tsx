@@ -21,8 +21,8 @@ export default function withAdminAuth<P extends object>(
         return
       }
 
-      // Kiểm tra nếu người dùng không phải là admin
-      if (!session.user?.isAdmin) {
+      // Kiểm tra nếu người dùng không phải là admin hoặc không phải email xlab.rnd@gmail.com
+      if (!session.user?.isAdmin || session.user?.email !== 'xlab.rnd@gmail.com') {
         router.push('/') // Chuyển hướng về trang chủ
       }
     }, [session, status, router, pathname])
@@ -38,7 +38,7 @@ export default function withAdminAuth<P extends object>(
       )
     }
 
-    if (!session || !session.user?.isAdmin) {
+    if (!session || !session.user?.isAdmin || session.user?.email !== 'xlab.rnd@gmail.com') {
       return null
     }
 

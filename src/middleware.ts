@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 // Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
 const protectedPaths = [
@@ -47,8 +48,40 @@ const isPublicPath = (path: string) => {
   );
 };
 
-export function middleware(request: NextRequest) {
-  // Trả về response mặc định
+export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  
+  // Bỏ qua các file static và api routes không cần kiểm tra
+  if (
+    pathname.includes('/_next') ||
+    pathname.includes('/api/auth') ||
+    pathname.includes('/images') ||
+    pathname.includes('/favicon.ico')
+  ) {
+    return NextResponse.next();
+  }
+  
+  // Lấy token từ cookie
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+  
+  // Nếu là đường dẫn admin và không phải email xlab.rnd@gmail.com, chuyển hướng về trang chủ
+  if (isAdminPath(pathname)) {
+    if (!token || token.email !== 'xlab.rnd@gmail.com') {
+      const url = new URL('/', request.url);
+      return NextResponse.redirect(url);
+    }
+  }
+  
+  // Nếu là đường dẫn được bảo vệ và chưa đăng nhập, chuyển hướng đến trang đăng nhập
+  if (isProtectedPath(pathname) && !token) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(url);
+  }
+  
   return NextResponse.next();
 }
 
