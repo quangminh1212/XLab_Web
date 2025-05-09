@@ -46,11 +46,19 @@ function createVendorFiles() {
       content: 'module.exports = require("react");'
     },
     {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'react.js'),
+      content: 'module.exports = require("react");'
+    },
+    {
       path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'react-dom.js'),
       content: 'module.exports = require("react-dom");'
     },
     {
       path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'react-dom.js'),
+      content: 'module.exports = require("react-dom");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'react-dom.js'),
       content: 'module.exports = require("react-dom");'
     },
     {
@@ -60,6 +68,35 @@ function createVendorFiles() {
     {
       path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'next-auth.js'),
       content: 'module.exports = require("next-auth");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'next-auth.js'),
+      content: 'module.exports = require("next-auth");'
+    },
+    // Thêm các module thường sử dụng khác
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'scheduler.js'),
+      content: 'module.exports = require("scheduler");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'scheduler.js'),
+      content: 'module.exports = require("scheduler");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'scheduler.js'),
+      content: 'module.exports = require("scheduler");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'vendor-chunks', 'use-sync-external-store.js'),
+      content: 'module.exports = require("use-sync-external-store");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'pages', 'vendor-chunks', 'use-sync-external-store.js'),
+      content: 'module.exports = require("use-sync-external-store");'
+    },
+    {
+      path: path.join(__dirname, '.next', 'server', 'chunks', 'use-sync-external-store.js'),
+      content: 'module.exports = require("use-sync-external-store");'
     }
   ];
 
@@ -72,6 +109,19 @@ function createVendorFiles() {
     fs.writeFileSync(file.path, file.content);
     console.log(`Đã tạo file vendor: ${file.path}`);
   });
+}
+
+// Tạo hoặc sửa các file manifest cần thiết
+function createManifestFiles() {
+  // next-font-manifest.json
+  const fontManifestPath = path.join(__dirname, '.next', 'server', 'next-font-manifest.json');
+  if (!fs.existsSync(fontManifestPath)) {
+    fs.writeFileSync(fontManifestPath, JSON.stringify({
+      pages: {},
+      app: {}
+    }));
+    console.log(`Đã tạo file manifest: ${fontManifestPath}`);
+  }
 }
 
 // Sửa webpack-runtime.js để trỏ đúng đường dẫn
@@ -90,7 +140,9 @@ function fixWebpackRuntime() {
         'next': require('./vendor-chunks/next.js'),
         'react': require('./vendor-chunks/react.js'),
         'react-dom': require('./vendor-chunks/react-dom.js'),
-        'next-auth': require('./vendor-chunks/next-auth.js')
+        'next-auth': require('./vendor-chunks/next-auth.js'),
+        'scheduler': require('./vendor-chunks/scheduler.js'),
+        'use-sync-external-store': require('./vendor-chunks/use-sync-external-store.js')
       };
       
       /******/ __webpack_require__.f.require = (chunkId, promises) => {
@@ -116,6 +168,7 @@ function runFix() {
   try {
     createDirectories();
     createVendorFiles();
+    createManifestFiles();
     fixWebpackRuntime();
     console.log('Đã hoàn tất việc sửa lỗi vendor-chunks.');
   } catch (error) {
