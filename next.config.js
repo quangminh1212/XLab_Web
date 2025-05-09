@@ -114,10 +114,10 @@ const nextConfig = {
       hints: false,
     };
 
-    // Chỉ cập nhật publicPath khi trong môi trường phát triển, nếu không để undefined
+    // Đảm bảo publicPath luôn được đặt đúng để tránh lỗi 404
     config.output = {
       ...config.output,
-      publicPath: dev ? '/_next/' : undefined,
+      publicPath: '/_next/',
     };
 
     // Ngăn chặn lỗi ENOENT

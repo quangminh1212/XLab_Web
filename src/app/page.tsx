@@ -248,10 +248,11 @@ function HomePage() {
           
           {/* Main Content Column - Right */}
           <div className="w-full md:w-[85%]">
+            {/* Phần mềm */}
             <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-2xl font-bold text-gray-800">Sản phẩm nổi bật</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">Phần mềm</h2>
                   <Link
                     href="/products"
                     className="text-primary-600 hover:text-primary-800 transition-colors text-base font-medium"
@@ -262,19 +263,22 @@ function HomePage() {
 
                 {products.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
-                    {featuredProducts.map((product) => (
-                      <ProductCard 
-                        key={product.id}
-                        id={product.id.toString()}
-                        name={product.name}
-                        description={product.description}
-                        price={product.price}
-                        originalPrice={product.salePrice < product.price ? product.price : undefined}
-                        image={product.imageUrl}
-                        category={products.find(p => p.categoryId === product.categoryId)?.name}
-                        rating={product.rating}
-                      />
-                    ))}
+                    {featuredProducts
+                      .filter(product => !product.isAccount && product.type !== 'account')
+                      .slice(0, 6)
+                      .map((product) => (
+                        <ProductCard 
+                          key={product.id}
+                          id={product.id.toString()}
+                          name={product.name}
+                          description={product.description}
+                          price={product.price}
+                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          image={product.imageUrl}
+                          category={products.find(p => p.categoryId === product.categoryId)?.name}
+                          rating={product.rating}
+                        />
+                      ))}
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
@@ -282,9 +286,57 @@ function HomePage() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
-                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có sản phẩm</h3>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có phần mềm</h3>
                       <p className="text-gray-500 max-w-lg mx-auto text-sm">
-                        Chúng tôi sẽ sớm cập nhật các sản phẩm.
+                        Chúng tôi sẽ sớm cập nhật các phần mềm.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Tài khoản */}
+            <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-5">
+                  <h2 className="text-2xl font-bold text-gray-800">Tài khoản</h2>
+                  <Link
+                    href="/accounts"
+                    className="text-primary-600 hover:text-primary-800 transition-colors text-base font-medium"
+                  >
+                    Xem tất cả
+                  </Link>
+                </div>
+
+                {products.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+                    {featuredProducts
+                      .filter(product => product.isAccount || product.type === 'account')
+                      .slice(0, 6)
+                      .map((product) => (
+                        <ProductCard 
+                          key={product.id}
+                          id={product.id.toString()}
+                          name={product.name}
+                          description={product.description}
+                          price={product.price}
+                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          image={product.imageUrl}
+                          category={products.find(p => p.categoryId === product.categoryId)?.name}
+                          rating={product.rating}
+                        />
+                      ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <div className="text-center py-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                      </svg>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có tài khoản</h3>
+                      <p className="text-gray-500 max-w-lg mx-auto text-sm">
+                        Chúng tôi sẽ sớm cập nhật các tài khoản.
                       </p>
                     </div>
                   </div>
