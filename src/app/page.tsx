@@ -46,23 +46,23 @@ function HomePage() {
 
       <div className="container mx-auto py-6">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-5">
           {/* Sidebar Column - Left */}
-          <div className="w-full md:w-1/5 space-y-4">
+          <div className="w-full md:w-1/6 space-y-4">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
-                <div className="bg-white rounded-lg p-3 sm:p-4">
+                <div className="bg-white rounded-lg p-3">
                   <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-800">Về XLab</h2>
-                  <p className="text-sm sm:text-base text-gray-700 mb-3">
+                  <p className="text-sm text-gray-700 mb-3">
                     XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.
                   </p>
-                  <p className="text-sm sm:text-base text-gray-700 mb-3">
+                  <p className="text-sm text-gray-700 mb-3">
                     Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
                   </p>
                   <Link 
                     href="/about"
-                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm sm:text-base"
+                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm"
                   >
                     Tìm hiểu thêm
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
@@ -247,7 +247,7 @@ function HomePage() {
           </div>
           
           {/* Main Content Column - Right */}
-          <div className="w-full md:w-4/5">
+          <div className="w-full md:w-5/6">
             {/* Tabs điều hướng */}
             <div className="mb-4 bg-white rounded-xl p-3 shadow-sm">
               <div className="flex space-x-4 border-b border-gray-200 pb-2 mb-3">
@@ -284,7 +284,7 @@ function HomePage() {
                 </div>
 
                 {products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                     {featuredProducts.map((product) => (
                       <ProductCard 
                         key={product.id}
@@ -327,7 +327,7 @@ function HomePage() {
                 </div>
 
                 {featuredProducts.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                     {featuredProducts
                       .filter(product => product.isAccount || product.type === 'account')
                       .slice(0, 4)
@@ -371,31 +371,31 @@ function HomePage() {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 max-w-none mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 max-w-none mx-auto">
                   <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
                     <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để tải xuống phần mềm?</h3>
-                    <p className="text-gray-600 text-sm md:text-base">
+                    <p className="text-gray-600 text-sm">
                       Bạn có thể tải xuống phần mềm miễn phí tại trang sản phẩm tương ứng sau khi đăng nhập vào tài khoản của mình. Đối với sản phẩm trả phí, bạn cần hoàn tất thanh toán trước khi tải xuống.
                     </p>
                   </div>
                   
                   <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
                     <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để kích hoạt bản quyền?</h3>
-                    <p className="text-gray-600 text-sm md:text-base">
+                    <p className="text-gray-600 text-sm">
                       Sau khi mua sản phẩm, bạn sẽ nhận được mã kích hoạt qua email. Mở ứng dụng, vào phần "Kích hoạt bản quyền" và nhập mã này để sử dụng đầy đủ tính năng.
                     </p>
                   </div>
                   
                   <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
                     <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Tôi có thể sử dụng trên mấy thiết bị?</h3>
-                    <p className="text-gray-600 text-sm md:text-base">
+                    <p className="text-gray-600 text-sm">
                       Mỗi bản quyền cho phép bạn sử dụng trên tối đa 3 thiết bị cùng một lúc. Bạn có thể quản lý danh sách thiết bị trong phần "Tài khoản" trên website.
                     </p>
                   </div>
                   
                   <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
                     <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Chính sách hoàn tiền như thế nào?</h3>
-                    <p className="text-gray-600 text-sm md:text-base">
+                    <p className="text-gray-600 text-sm">
                       Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được hướng dẫn.
                     </p>
                   </div>
@@ -420,14 +420,14 @@ function HomePage() {
 
       {/* Software Categories */}
       <section className="py-8 sm:py-10 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl">
+        <div className="container">
           {/* ... existing code ... */}
         </div>
       </section>
 
       {/* Call to Action */}
       <section className="py-8 sm:py-10 md:py-12 bg-gradient-to-br from-primary-500 to-primary-600 text-white">
-        <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-6xl">
+        <div className="container">
           {/* ... existing code ... */}
         </div>
       </section>
