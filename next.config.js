@@ -78,10 +78,7 @@ const nextConfig = {
     forceSwcTransforms: true,
     appDocumentPreloading: false,
   },
-  swcMinify: true,
-  swcLoader: {
-    implementation: "@next/swc-wasm-nodejs",
-  },
+
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
@@ -111,6 +108,12 @@ const nextConfig = {
         ...config.output,
         hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
         hotUpdateMainFilename: 'static/webpack/[fullhash].hot-update.json',
+      };
+      
+      // Use wasm SWC compiler
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        '@next/swc-win32-x64-msvc': '@next/swc-wasm-nodejs',
       };
     }
 
