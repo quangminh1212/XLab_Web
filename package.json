@@ -16,7 +16,8 @@
     "start:export": "serve out -p 3000",
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "maintenance": "node scripts/maintenance.js"
+    "maintenance": "node scripts/maintenance.js",
+    "fix-middleware": "node fix-middleware.js"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.2",
