@@ -153,7 +153,11 @@ function AdminProductsPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative h-12 w-12">
                         <Image
-                          src={product.images?.[0]?.url || '/images/placeholder/product.png'}
+                          src={Array.isArray(product.images) && product.images.length > 0 
+                              ? (typeof product.images[0] === 'string' 
+                                ? product.images[0] 
+                                : product.images[0]?.url || '/images/placeholder/product.png')
+                              : '/images/placeholder/product.png'}
                           alt={product.name}
                           fill
                           className="object-cover rounded"
