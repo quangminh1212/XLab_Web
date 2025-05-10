@@ -108,6 +108,10 @@
   .react-hydrated {
     visibility: visible !important;
   }
+
+  .container-custom {
+    @apply container mx-auto max-w-[90%];
+  }
 }
 
 /* Animation classes */
