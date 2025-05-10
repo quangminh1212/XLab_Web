@@ -18,8 +18,9 @@
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "fix-errors": "node fix-all-errors.js",
     "fix-swc": "node fix-swc-warnings.js",
+    "fix-webpack": "node fix-webpack-warnings.js",
     "cleanup-swc": "node cleanup-swc.js",
-    "dev:safe-full": "node cleanup-swc.js && node fix-swc-warnings.js && node fix-all-errors.js && next dev"
+    "dev:safe-full": "node cleanup-swc.js && node fix-swc-warnings.js && node fix-webpack-warnings.js && node fix-all-errors.js && next dev"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.2",
