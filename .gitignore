@@ -26,6 +26,10 @@ yarn-debug.log*
 yarn-error.log*
 error.log
 fix-all-errors.log
+# Keep fix scripts
+!fix-all-errors.js
+!fix-swc-warnings.js
+!fix-middleware.js
 
 # local env files
 .env*.local

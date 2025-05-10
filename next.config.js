@@ -78,6 +78,10 @@ const nextConfig = {
     forceSwcTransforms: true,
     appDocumentPreloading: false,
   },
+  swcMinify: true,
+  swcLoader: {
+    implementation: "@next/swc-wasm-nodejs",
+  },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
