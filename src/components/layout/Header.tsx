@@ -264,7 +264,7 @@ const Header = () => {
                     Đơn hàng của tôi
                   </Link>
                   {/* Admin link if user has admin role */}
-                  {session.user?.role === 'admin' && (
+                  {session.user?.isAdmin && (
                     <Link
                       href="/admin"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
