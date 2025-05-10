@@ -74,6 +74,12 @@ const Header = () => {
               Dịch vụ
             </Link>
             <Link
+              href="/testimonials"
+              className={`${isActive('/testimonials')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
+            >
+              Đánh giá
+            </Link>
+            <Link
               href="/about"
               className={`${isActive('/about')} transition-colors text-base lg:text-lg tracking-wide font-medium`}
             >
@@ -248,31 +254,26 @@ const Header = () => {
                   <Link
                     href="/account"
                     className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
-                    onClick={() => setIsProfileOpen(false)}
                   >
-                    Tài khoản
+                    Tài khoản của tôi
                   </Link>
                   <Link
                     href="/orders"
                     className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
-                    onClick={() => setIsProfileOpen(false)}
                   >
-                    Đơn hàng
+                    Đơn hàng của tôi
                   </Link>
-                  {session.user?.email === 'xlab.rnd@gmail.com' && (
+                  {/* Admin link if user has admin role */}
+                  {session.user?.role === 'admin' && (
                     <Link
                       href="/admin"
                       className="block px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
-                      onClick={() => setIsProfileOpen(false)}
                     >
-                      Quản trị
+                      Quản trị viên
                     </Link>
                   )}
                   <button
-                    onClick={() => {
-                      signOut();
-                      setIsProfileOpen(false);
-                    }}
+                    onClick={() => signOut()}
                     className="block w-full text-left px-5 py-3 text-gray-700 hover:bg-gray-100 text-sm md:text-lg"
                   >
                     Đăng xuất
@@ -281,24 +282,34 @@ const Header = () => {
               )}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile menu button */}
             <button
-              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none"
               onClick={toggleMenu}
+              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none"
+              aria-label="Toggle menu"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
+                className="h-8 w-8"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                />
+                {isOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
               </svg>
             </button>
           </div>
@@ -306,63 +317,70 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
-            <div className="flex flex-col space-y-4">
-              <Link
-                href="/"
-                className={`${isActive('/')} transition-colors block text-center text-lg tracking-wide font-medium`}
-                onClick={() => setIsOpen(false)}
-              >
-                Trang chủ
-              </Link>
-              <Link
-                href="/products"
-                className={`${isActive('/products')} transition-colors block text-center text-lg tracking-wide font-medium`}
-                onClick={() => setIsOpen(false)}
-              >
-                Sản phẩm
-              </Link>
-              <Link
-                href="/services"
-                className={`${isActive('/services')} transition-colors block text-center text-lg tracking-wide font-medium`}
-                onClick={() => setIsOpen(false)}
-              >
-                Dịch vụ
-              </Link>
-              <Link
-                href="/about"
-                className={`${isActive('/about')} transition-colors block text-center text-lg tracking-wide font-medium`}
-                onClick={() => setIsOpen(false)}
-              >
-                Giới thiệu
-              </Link>
-              <Link
-                href="/contact"
-                className={`${isActive('/contact')} transition-colors block text-center text-lg tracking-wide font-medium`}
-                onClick={() => setIsOpen(false)}
-              >
-                Liên hệ
-              </Link>
-              <Link
-                href="/bao-hanh"
-                className={`${isActive('/bao-hanh')} transition-colors block text-center text-lg tracking-wide font-medium`}
-                onClick={() => setIsOpen(false)}
-              >
-                Bảo hành
-              </Link>
-              {!session && (
+          <nav className="md:hidden mt-4 py-4 border-t border-gray-200">
+            <Link
+              href="/"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Trang chủ
+            </Link>
+            <Link
+              href="/products"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Sản phẩm
+            </Link>
+            <Link
+              href="/services"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Dịch vụ
+            </Link>
+            <Link
+              href="/testimonials"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Đánh giá
+            </Link>
+            <Link
+              href="/about"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Giới thiệu
+            </Link>
+            <Link
+              href="/contact"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Liên hệ
+            </Link>
+            <Link
+              href="/bao-hanh"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Bảo hành
+            </Link>
+            {!session && (
+              <div className="mt-3 px-4">
                 <button
                   onClick={() => {
                     signIn();
                     setIsOpen(false);
                   }}
-                  className="text-primary-600 hover:text-primary-700 transition-colors text-center text-lg tracking-wide font-medium mx-auto block"
+                  className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 rounded-lg text-lg tracking-wide font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
-              )}
-            </div>
-          </div>
+              </div>
+            )}
+          </nav>
         )}
       </div>
     </header>
