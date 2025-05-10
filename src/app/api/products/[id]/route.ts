@@ -13,11 +13,6 @@ export async function GET(
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });
     }
     
-    // Chỉ cho phép truy cập sản phẩm VoiceTyping - sản phẩm thực tế duy nhất
-    if (id !== 'prod-vt' && id !== 'voicetyping') {
-      return NextResponse.json({ error: 'Sản phẩm không tồn tại hoặc đã bị xóa' }, { status: 404 });
-    }
-    
     // Tìm sản phẩm theo ID hoặc slug
     const product = products.find(p => p.id === id || p.slug === id);
     
@@ -43,11 +38,6 @@ export async function PUT(
     
     if (!id) {
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });
-    }
-    
-    // Chỉ cho phép cập nhật sản phẩm VoiceTyping
-    if (id !== 'prod-vt' && id !== 'voicetyping') {
-      return NextResponse.json({ error: 'Sản phẩm không tồn tại hoặc đã bị xóa' }, { status: 404 });
     }
     
     // Tìm index của sản phẩm
@@ -90,12 +80,23 @@ export async function DELETE(
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });
     }
     
-    // Không cho phép xóa sản phẩm thực tế
-    return NextResponse.json({ 
-      error: 'Không thể xóa sản phẩm này', 
-      message: 'Sản phẩm này không thể bị xóa vì là sản phẩm thực tế'
-    }, { status: 403 });
+    // Tìm index của sản phẩm
+    const productIndex = products.findIndex(p => p.id === id || p.slug === id);
     
+    if (productIndex === -1) {
+      return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
+    }
+    
+    // Trong môi trường thực tế, chúng ta sẽ xóa sản phẩm từ cơ sở dữ liệu
+    // Ở đây, chúng ta chỉ xóa từ mảng products
+    const deletedProduct = products[productIndex];
+    products.splice(productIndex, 1);
+    
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Sản phẩm đã được xóa thành công',
+      data: deletedProduct
+    });
   } catch (error: any) {
     console.error('Lỗi khi xóa sản phẩm:', error);
     return NextResponse.json({ error: error.message || 'Lỗi máy chủ nội bộ' }, { status: 500 });
