@@ -193,6 +193,70 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  async redirects() {
+    return [
+      // Redirect timestamp versioned CSS files to base files
+      {
+        source: '/_next/static/css/app/layout.css',
+        has: [
+          {
+            type: 'query',
+            key: 'v',
+          },
+        ],
+        destination: '/_next/static/css/app/layout.css',
+        permanent: true,
+      },
+      // Redirect timestamp versioned JS files to base files
+      {
+        source: '/_next/static/main-app.aef085aefcb8f66f.js',
+        has: [
+          {
+            type: 'query',
+            key: 'v',
+          },
+        ],
+        destination: '/_next/static/main-app.aef085aefcb8f66f.js',
+        permanent: true,
+      },
+      // Redirect for admin layout files
+      {
+        source: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
+        destination: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
+        permanent: true,
+      },
+      // Redirect for admin page files
+      {
+        source: '/_next/static/app/admin/page.20e1580ca904d554.js',
+        destination: '/_next/static/app/admin/page.20e1580ca904d554.js',
+        permanent: true,
+      },
+      // Redirect for not-found files
+      {
+        source: '/_next/static/app/not-found.7d3561764989b0ed.js',
+        destination: '/_next/static/app/not-found.7d3561764989b0ed.js',
+        permanent: true,
+      },
+      // Redirect for layout files
+      {
+        source: '/_next/static/app/layout.32d8c3be6202d9b3.js',
+        destination: '/_next/static/app/layout.32d8c3be6202d9b3.js',
+        permanent: true,
+      },
+      // Redirect for app-pages-internals files
+      {
+        source: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
+        destination: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
+        permanent: true,
+      },
+      // Redirect for loading files
+      {
+        source: '/_next/static/app/loading.062c877ec63579d3.js',
+        destination: '/_next/static/app/loading.062c877ec63579d3.js',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;
