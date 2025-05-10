@@ -8,11 +8,14 @@ import Image from 'next/image';
 function NewProductPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const featuredImageInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [descriptionImages, setDescriptionImages] = useState<string[]>([]);
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [featuredImage, setFeaturedImage] = useState<string | null>(null);
+  const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
@@ -28,6 +31,17 @@ function NewProductPage() {
     if (newImageUrl.trim() && isValidImageUrl(newImageUrl)) {
       setDescriptionImages([...descriptionImages, newImageUrl]);
       setNewImageUrl('');
+    } else {
+      setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  // Xử lý thêm ảnh đại diện từ URL
+  const handleAddFeaturedImageUrl = () => {
+    if (featuredImageUrl.trim() && isValidImageUrl(featuredImageUrl)) {
+      setFeaturedImage(featuredImageUrl);
+      setFeaturedImageUrl('');
     } else {
       setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
       setTimeout(() => setError(null), 3000);
@@ -71,11 +85,49 @@ function NewProductPage() {
     }
   };
   
+  // Xử lý upload ảnh đại diện
+  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    
+    // Giới hạn kích thước file là 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Kích thước file không được vượt quá 5MB');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Chỉ cho phép các loại file ảnh
+    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+      setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Tạo URL tạm thời cho hình ảnh
+    const imageUrl = URL.createObjectURL(file);
+    setFeaturedImage(imageUrl);
+    
+    // Reset input file
+    if (featuredImageInputRef.current) {
+      featuredImageInputRef.current.value = '';
+    }
+  };
+  
   // Xử lý xóa hình ảnh
   const handleRemoveImage = (index: number) => {
     const newImages = [...descriptionImages];
     newImages.splice(index, 1);
     setDescriptionImages(newImages);
+  };
+  
+  // Xử lý xóa ảnh đại diện
+  const handleRemoveFeaturedImage = () => {
+    setFeaturedImage(null);
+    if (featuredImageInputRef.current) {
+      featuredImageInputRef.current.value = '';
+    }
   };
   
   // Xử lý chèn hình ảnh vào mô tả
@@ -114,7 +166,7 @@ function NewProductPage() {
         description: formData.description,
         isPublished: formData.isPublished,
         slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
-        images: [],
+        images: featuredImage ? [featuredImage] : [],
         descriptionImages: descriptionImages, // Thêm danh sách hình ảnh mô tả
         features: [],
         requirements: [],
@@ -275,6 +327,70 @@ function NewProductPage() {
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+        
+        {/* Phần thêm ảnh đại diện sản phẩm */}
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl font-bold mb-4">Ảnh đại diện sản phẩm</h2>
+          
+          <div className="space-y-4">
+            {/* Thêm ảnh đại diện từ URL */}
+            <div className="flex">
+              <input
+                type="text"
+                value={featuredImageUrl}
+                onChange={(e) => setFeaturedImageUrl(e.target.value)}
+                placeholder="Nhập URL ảnh đại diện"
+                className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <button
+                type="button"
+                onClick={handleAddFeaturedImageUrl}
+                className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
+              >
+                Thêm URL
+              </button>
+            </div>
+            
+            {/* Thêm ảnh đại diện từ máy tính */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                Hoặc tải lên từ máy tính
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                ref={featuredImageInputRef}
+                onChange={handleFeaturedImageUpload}
+                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            
+            {/* Hiển thị ảnh đại diện đã chọn */}
+            {featuredImage && (
+              <div className="mt-4">
+                <h4 className="font-medium mb-2">Ảnh đại diện đã chọn</h4>
+                <div className="relative border border-gray-200 rounded p-2 max-w-xs">
+                  <div className="relative h-40 w-full overflow-hidden rounded">
+                    <img 
+                      src={featuredImage} 
+                      alt="Ảnh đại diện sản phẩm" 
+                      className="object-contain w-full h-full"
+                    />
+                  </div>
+                  <div className="mt-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleRemoveFeaturedImage}
+                      className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors"
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         
