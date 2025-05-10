@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/models/ProductModel';
 import withAdminAuth from '@/components/withAdminAuth';
@@ -14,9 +14,12 @@ interface AdminEditProductPageProps {
 
 function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [newImageUrl, setNewImageUrl] = useState('');
+  const [descriptionImages, setDescriptionImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
@@ -49,6 +52,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           price: productData.versions?.[0]?.price || 0,
           salePrice: productData.versions?.[0]?.originalPrice || 0
         });
+        
+        // Set description images if available
+        if (productData.descriptionImages && Array.isArray(productData.descriptionImages)) {
+          setDescriptionImages(productData.descriptionImages);
+        }
       } catch (err) {
         setError((err as Error).message);
         console.error('Error fetching product:', err);
@@ -59,6 +67,70 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
     fetchProduct();
   }, [params.id]);
+
+  // Xử lý thêm hình ảnh từ URL
+  const handleAddImageUrl = () => {
+    if (newImageUrl.trim() && isValidImageUrl(newImageUrl)) {
+      setDescriptionImages([...descriptionImages, newImageUrl]);
+      setNewImageUrl('');
+    } else {
+      setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  // Kiểm tra URL hình ảnh có hợp lệ không
+  const isValidImageUrl = (url: string) => {
+    return url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null || 
+           url.startsWith('https://') || 
+           url.startsWith('http://');
+  };
+
+  // Xử lý upload hình ảnh
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    
+    // Giới hạn kích thước file là 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Kích thước file không được vượt quá 5MB');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Chỉ cho phép các loại file ảnh
+    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+      setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Tạo URL tạm thời cho hình ảnh
+    const imageUrl = URL.createObjectURL(file);
+    setDescriptionImages([...descriptionImages, imageUrl]);
+    
+    // Reset input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  
+  // Xử lý xóa hình ảnh
+  const handleRemoveImage = (index: number) => {
+    const newImages = [...descriptionImages];
+    newImages.splice(index, 1);
+    setDescriptionImages(newImages);
+  };
+  
+  // Xử lý chèn hình ảnh vào mô tả
+  const handleInsertImageToDescription = (imageUrl: string) => {
+    const imageTag = `<img src="${imageUrl}" alt="Mô tả sản phẩm" style="max-width:100%; height:auto; margin:10px 0;" />`;
+    setFormData({
+      ...formData,
+      description: formData.description + '\n' + imageTag
+    });
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -86,6 +158,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         shortDescription: formData.shortDescription,
         description: formData.description,
         isPublished: formData.isPublished,
+        descriptionImages: descriptionImages, // Thêm danh sách hình ảnh mô tả
         versions: product?.versions?.map((version, index) => {
           if (index === 0) {
             return {
@@ -268,29 +341,81 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 rows={6}
               />
             </div>
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Hình ảnh sản phẩm</h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {product.images && product.images.map((image, index) => (
-              <div key={index} className="relative h-40 bg-gray-100 rounded overflow-hidden">
-                <Image
-                  src={image.url}
-                  alt={image.alt || product.name}
-                  fill
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
-            ))}
             
-            {(!product.images || product.images.length === 0) && (
-              <div className="text-gray-500 col-span-full text-center py-8">
-                Không có hình ảnh
+            {/* Phần thêm hình ảnh cho mô tả */}
+            <div className="mt-6">
+              <h3 className="text-lg font-medium mb-4">Thêm hình ảnh vào mô tả</h3>
+              
+              <div className="space-y-4">
+                {/* Thêm hình ảnh từ URL */}
+                <div className="flex">
+                  <input
+                    type="text"
+                    value={newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                    placeholder="Nhập URL hình ảnh"
+                    className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddImageUrl}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
+                  >
+                    Thêm URL
+                  </button>
+                </div>
+                
+                {/* Thêm hình ảnh từ máy tính */}
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Hoặc tải lên từ máy tính
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+                
+                {/* Hiển thị danh sách hình ảnh đã thêm */}
+                {descriptionImages.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2">Hình ảnh đã thêm</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                      {descriptionImages.map((imageUrl, index) => (
+                        <div key={index} className="relative border border-gray-200 rounded p-2 group">
+                          <div className="relative h-40 w-full overflow-hidden rounded">
+                            <img 
+                              src={imageUrl} 
+                              alt={`Hình ảnh ${index + 1}`} 
+                              className="object-contain w-full h-full"
+                            />
+                          </div>
+                          <div className="mt-2 flex justify-between">
+                            <button
+                              type="button"
+                              onClick={() => handleInsertImageToDescription(imageUrl)}
+                              className="text-sm bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors"
+                            >
+                              Chèn vào mô tả
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveImage(index)}
+                              className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors"
+                            >
+                              Xóa
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
         
@@ -298,14 +423,15 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           <button
             type="button"
             onClick={() => router.push('/admin/products')}
-            className="px-6 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+            className="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400"
           >
             Hủy
           </button>
+          
           <button
             type="submit"
-            className="px-6 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
             disabled={loading}
+            className="bg-primary-600 text-white px-6 py-2 rounded hover:bg-primary-700"
           >
             {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
           </button>
