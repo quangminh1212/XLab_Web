@@ -98,8 +98,22 @@ export default function AdminLayout({
                                         Quản lý sản phẩm
                                     </Link>
                                 </li>
-                                <li className="px-4 py-2 text-gray-400">Quản lý người dùng</li>
-                                <li className="px-4 py-2 text-gray-400">Quản lý đơn hàng</li>
+                                <li>
+                                    <Link
+                                        href="/admin/users"
+                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/users')}`}
+                                    >
+                                        Quản lý người dùng
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin/orders"
+                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/orders')}`}
+                                    >
+                                        Quản lý đơn hàng
+                                    </Link>
+                                </li>
                                 <li className="px-4 py-2 text-gray-400">Cài đặt hệ thống</li>
                             </ul>
                         </nav>
