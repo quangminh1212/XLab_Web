@@ -13,6 +13,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function containerClass(...additionalClasses: ClassValue[]) {
+  return cn('container-custom', ...additionalClasses);
+}
+
 /**
  * Format a number as Vietnamese currency (VND)
  */

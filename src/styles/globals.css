@@ -32,10 +32,17 @@
 
 @layer components {
   .container {
+<<<<<<< HEAD
     @apply mx-auto w-full max-w-[99%] px-0 sm:px-0.5 md:px-0.5 lg:px-0.5;
     width: 96%;
     padding-right: 0.25rem;
     padding-left: 0.25rem;
+=======
+    @apply mx-auto w-full max-w-[98%] px-0 sm:px-0 md:px-0 lg:px-0;
+    width: 100%;
+    padding-right: 0;
+    padding-left: 0;
+>>>>>>> 7f9fef078514cf434a40ad8dd43fb23d38dd30c6
     margin-right: auto;
     margin-left: auto;
   }
@@ -107,6 +114,10 @@
   
   .react-hydrated {
     visibility: visible !important;
+  }
+
+  .container-custom {
+    @apply container mx-auto max-w-[98%];
   }
 }
 
@@ -234,19 +245,31 @@
 
 @media (min-width: 1024px) {
   .container {
+<<<<<<< HEAD
     max-width: 95%;
+=======
+    max-width: 98%;
+>>>>>>> 7f9fef078514cf434a40ad8dd43fb23d38dd30c6
   }
 }
 
 @media (min-width: 1280px) {
   .container {
+<<<<<<< HEAD
     max-width: 95%;
+=======
+    max-width: 98%;
+>>>>>>> 7f9fef078514cf434a40ad8dd43fb23d38dd30c6
   }
 }
 
 @media (min-width: 1536px) {
   .container {
+<<<<<<< HEAD
     max-width: 95%;
+=======
+    max-width: 98%;
+>>>>>>> 7f9fef078514cf434a40ad8dd43fb23d38dd30c6
   }
 }
 
