@@ -3,20 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node fix-all-errors.js && echo Preparing development environment...",
+    "predev": "node fix-all-errors.js && node fix-swc-warnings.js && echo Preparing development environment...",
     "dev": "next dev",
     "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot",
-    "dev:clean": "node fix-all-errors.js && next dev",
+    "dev:clean": "node fix-all-errors.js && node fix-swc-warnings.js && next dev",
     "dev:export": "NEXT_PUBLIC_EXPORT=true next dev",
     "dev:safe": "NODE_OPTIONS='--no-warnings' next dev --turbo=false",
-    "prebuild": "node fix-all-errors.js && rimraf .next && echo Preparing build environment...",
+    "prebuild": "node fix-all-errors.js && node fix-swc-warnings.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "build:export": "NEXT_PUBLIC_EXPORT=true next build",
     "start": "next start",
     "start:export": "serve out -p 3000",
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "fix-errors": "node fix-all-errors.js"
+    "fix-errors": "node fix-all-errors.js",
+    "fix-swc": "node fix-swc-warnings.js",
+    "fix-webpack": "node fix-webpack-warnings.js",
+    "cleanup-swc": "node cleanup-swc.js",
+    "dev:safe-full": "node cleanup-swc.js && node fix-swc-warnings.js && node fix-webpack-warnings.js && node fix-all-errors.js && next dev"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.1.2",
@@ -31,6 +35,7 @@
     "uuid": "11.1.0"
   },
   "devDependencies": {
+    "@next/swc-wasm-nodejs": "15.3.2",
     "@next/swc-win32-x64-msvc": "15.2.4",
     "@tailwindcss/forms": "0.5.7",
     "@tailwindcss/typography": "0.5.10",
