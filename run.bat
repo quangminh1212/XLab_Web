@@ -41,6 +41,22 @@ if exist fix-all-errors.js (
   echo Không tìm thấy file fix-all-errors.js, bỏ qua...
 )
 
+REM Sửa lỗi các file static có hash
+echo Đang sửa lỗi các file static cụ thể...
+if exist fix-static-files.js (
+  node fix-static-files.js
+) else (
+  echo Không tìm thấy file fix-static-files.js, bỏ qua...
+)
+
+REM Sửa lỗi 404 cho các file static cụ thể
+echo Đang sửa lỗi 404 cho các file static...
+if exist fix-404-errors.bat (
+  call fix-404-errors.bat
+) else (
+  echo Không tìm thấy file fix-404-errors.bat, bỏ qua...
+)
+
 REM Cập nhật .gitignore nếu cần
 echo Đang cập nhật .gitignore...
 if exist update-gitignore.js (
@@ -59,4 +75,4 @@ npm run dev
 
 echo.
 echo Server đã dừng, nhấn phím bất kỳ để đóng cửa sổ...
-pause 
+pause
