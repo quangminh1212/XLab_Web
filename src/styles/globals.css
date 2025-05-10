@@ -32,10 +32,10 @@
 
 @layer components {
   .container {
-    @apply mx-auto w-full max-w-[99.5%] px-0 sm:px-0 md:px-0 lg:px-0;
+    @apply mx-auto w-full max-w-[98%] px-0 sm:px-0 md:px-0 lg:px-0;
     width: 100%;
-    padding-right: 0.1rem;
-    padding-left: 0.1rem;
+    padding-right: 0;
+    padding-left: 0;
     margin-right: auto;
     margin-left: auto;
   }
@@ -110,7 +110,7 @@
   }
 
   .container-custom {
-    @apply container mx-auto max-w-[99.5%];
+    @apply container mx-auto max-w-[98%];
   }
 }
 
@@ -226,31 +226,31 @@
 /* Make sure tailwind utilities are applied correctly */
 @media (min-width: 640px) {
   .container {
-    max-width: 640px;
+    max-width: 95%;
   }
 }
 
 @media (min-width: 768px) {
   .container {
-    max-width: 768px;
+    max-width: 95%;
   }
 }
 
 @media (min-width: 1024px) {
   .container {
-    max-width: 1024px;
+    max-width: 98%;
   }
 }
 
 @media (min-width: 1280px) {
   .container {
-    max-width: 1280px;
+    max-width: 98%;
   }
 }
 
 @media (min-width: 1536px) {
   .container {
-    max-width: 1536px;
+    max-width: 98%;
   }
 }
 
