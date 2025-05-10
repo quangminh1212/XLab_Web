@@ -24,8 +24,7 @@ export default function AdminLayout({
             console.log('AdminLayout Debug:', { 
                 status, 
                 session: session ? 'session exists' : 'no session',
-                userEmail: session?.user?.email,
-                isAdmin: session?.user?.isAdmin
+                userEmail: session?.user?.email
             });
         }
     }, [session, status]);
@@ -38,15 +37,14 @@ export default function AdminLayout({
             return;
         }
         
-        // Sử dụng isAdmin thay vì kiểm tra email trực tiếp
-        if (!session.user?.isAdmin) {
+        if (session.user?.email !== 'xlab.rnd@gmail.com') {
             router.push('/');
             return;
         }
     }, [session, status, router]);
     
     // Hiển thị loading khi đang kiểm tra session
-    if (status === 'loading' || !session || !session.user?.isAdmin) {
+    if (status === 'loading' || !session || session.user?.email !== 'xlab.rnd@gmail.com') {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
@@ -100,22 +98,8 @@ export default function AdminLayout({
                                         Quản lý sản phẩm
                                     </Link>
                                 </li>
-                                <li>
-                                    <Link
-                                        href="/admin/users"
-                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/users')}`}
-                                    >
-                                        Quản lý người dùng
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        href="/admin/orders"
-                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/orders')}`}
-                                    >
-                                        Quản lý đơn hàng
-                                    </Link>
-                                </li>
+                                <li className="px-4 py-2 text-gray-400">Quản lý người dùng</li>
+                                <li className="px-4 py-2 text-gray-400">Quản lý đơn hàng</li>
                                 <li className="px-4 py-2 text-gray-400">Cài đặt hệ thống</li>
                             </ul>
                         </nav>

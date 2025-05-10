@@ -3,12 +3,9 @@ import { products } from '@/data/mockData';
 
 export async function GET(request: Request) {
   try {
-    // Lọc chỉ lấy sản phẩm VoiceTyping - sản phẩm thực tế duy nhất
-    const realProducts = products.filter(product => product.id === 'prod-vt');
-    
     return NextResponse.json({ 
       success: true, 
-      data: realProducts
+      data: products
     });
   } catch (error: any) {
     console.error('Error fetching products:', error);

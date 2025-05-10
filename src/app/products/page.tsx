@@ -1,6 +1,6 @@
 'use client'
 
-import { categories } from '@/data/mockData'
+import { products as mockProducts, categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import ProductImage from '@/components/product/ProductImage'
@@ -8,8 +8,8 @@ import ProductCard from '@/components/product/ProductCard'
 import { Button } from '@/components/common/button'
 
 export default function ProductsPage() {
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState<any[]>(mockProducts || []);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
@@ -18,30 +18,6 @@ export default function ProductsPage() {
   // Update title when component is rendered
   useEffect(() => {
     document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ'
-  }, []);
-
-  // Tải dữ liệu sản phẩm từ API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/products');
-        
-        if (!response.ok) {
-          throw new Error('Không thể tải dữ liệu sản phẩm');
-        }
-        
-        const data = await response.json();
-        setProducts(data.data || []);
-      } catch (error: any) {
-        setError(error.message || 'Đã xảy ra lỗi khi tải sản phẩm');
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchProducts();
   }, []);
 
   // Lọc sản phẩm theo loại: chỉ lấy phần mềm
@@ -153,7 +129,7 @@ export default function ProductsPage() {
 
   return (
     <div className="py-4 bg-gray-50">
-      <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
+      <div className="container mx-auto px-2 md:px-4 max-w-none w-[94%]">
         <div className="mb-4">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Phần mềm máy tính</h1>
           <p className="text-sm md:text-base text-gray-600">

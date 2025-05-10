@@ -113,14 +113,6 @@ export async function PUT(
 
         const productData = await request.json();
 
-        // Handle images format - ensure it's compatible
-        if (!productData.images) {
-            productData.images = [];
-        } else if (Array.isArray(productData.images)) {
-            // Accept both string arrays and object arrays
-            // We'll handle the display in the frontend
-        }
-
         // Convert categories to proper format with name
         if (productData.categories && Array.isArray(productData.categories)) {
             productData.categories = (productData.categories as unknown as string[]).map((categoryId: string) => ({

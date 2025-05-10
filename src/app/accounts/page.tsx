@@ -280,7 +280,7 @@ export default function AccountsPage() {
 
   return (
     <div className="py-4 bg-gray-50">
-      <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
+      <div className="container mx-auto px-2 md:px-4 max-w-none w-[94%]">
         <div className="mb-4">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Tài khoản dịch vụ</h1>
           <p className="text-sm md:text-base text-gray-600">

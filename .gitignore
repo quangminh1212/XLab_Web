@@ -9,53 +9,16 @@
 # testing
 /coverage
 
-# next.js
+# next.js - consolidated rules
 /.next/
 /out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-error.log
-fix-all-errors.log
-
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# IDE
-.idea/
-.vscode/
-
-# Generated files during development
-.next/cache/
-.next/static/
-.next/server/
-.next/types/
-.next/build-manifest.json
-.next/app-paths-manifest.json
-.next/middleware-manifest.json
-.next/asset-manifest.json
-# Các file cần ignore sinh ra trong quá trình chạy dự án
+/.next/**/*
+!/.next/**/.gitkeep
 /.next/cache/
 /.next/server/
 /.next/static/
 /.next/trace
+/.next/trace*
 /.next/*.json
 /.next/server/vendor-chunks/
 /.next/server/chunks/
@@ -65,14 +28,110 @@ next-env.d.ts
 /.next/static/css/
 /.next/static/development/
 /.next/static/webpack/
-/.next/static/*.js
+/.next/types/
+**/@swc*
+**/client-only*
+**/styled-jsx*
+**/next-client-pages-loader*
+
+# Thêm các file bị thiếu vào danh sách bỏ qua
+/.next/server/app-paths-manifest.json
+/.next/server/middleware-manifest.json
+/.next/server/next-font-manifest.json
+/.next/build-manifest.json
+/.next/asset-manifest.json
+
+# URL encoded paths and dynamic routes
+/.next/static/chunks/app/products/%5Bid%5D/*.js
+/.next/static/chunks/app/**/*.js
+/.next/static/webpack/**/*
+
+# build output
+/build
+/dist
+
+# development artifacts
 /.swc/
 /.turbo/
-**/*.hot-update.js
-**/*.hot-update.json
+.webpack/
+*.webpack/
+*.pack
+*.pack.gz
+*.chunk.js
+*.hot-update.*
+*.log
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# next-pwa
+public/sw.js
+public/sw.js.map
+public/workbox-*.js
+public/workbox-*.js.map
+public/worker-*.js
+public/worker-*.js.map
+
+# Mac/OS generated 
+.DS_Store
+._*
+
+# VS Code
+.vscode/
+
+# Editor directories and files
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# misc
+desktop.ini
+ehthumbs.db
+Icon?
+Thumbs.db
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+app-debug.log
+.dev.log
+.pnpm-debug.log*
+
+# env files
+.env.development.local
+.env.test.local
+.env.production.local
+.env
+
+# vercel
+.vercel_build_output
+
+# editor settings
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-project
+*.sublime-workspace
+
+# Temporary files
+.temp
+.cache
+/temp
 /node_modules/.cache/
 
-<<<<<<< HEAD
 # hot update files
 **/*.hot-update.js
 **/*.hot-update.js.map
@@ -154,11 +213,3 @@ node_modules/
 dist/
 out/
 .env.local
-=======
-# Added by update-gitignore.js
-# Next.js runtime files
-/.next/build-manifest.json
-/.next/app-paths-manifest.json
-/.next/next-font-manifest.json
-/.next/middleware-manifest.json
->>>>>>> 7f9fef078514cf434a40ad8dd43fb23d38dd30c6

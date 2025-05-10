@@ -22,58 +22,151 @@ function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [timeFilter, setTimeFilter] = useState<string>('all');
 
-  // Lấy dữ liệu đơn hàng từ API
+  // Giả lập dữ liệu đơn hàng
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setIsLoading(true);
-        // Gọi API lấy dữ liệu đơn hàng
-        const response = await fetch('/api/admin/orders');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch orders');
-        }
-        
-        const data = await response.json();
-        const ordersData = data.orders || [];
-        setOrders(ordersData);
-        
-        // Tính toán số liệu thống kê
-        const totalOrders = ordersData.length;
-        const pendingOrders = ordersData.filter((order: Order) => order.status === 'pending').length;
-        const processingOrders = ordersData.filter((order: Order) => order.status === 'processing').length;
-        const completedOrders = ordersData.filter((order: Order) => order.status === 'completed').length;
-        const cancelledOrders = ordersData.filter((order: Order) => order.status === 'cancelled').length;
-        const refundedOrders = ordersData.filter((order: Order) => order.status === 'refunded').length;
-        
-        // Tính tổng doanh thu từ các đơn hàng đã hoàn thành
-        const revenue = ordersData
-          .filter((order: Order) => order.status === 'completed')
-          .reduce((sum: number, order: Order) => sum + order.totalAmount, 0);
-        
-        // Tính giá trị trung bình đơn hàng
-        const averageOrderValue = totalOrders > 0 
-          ? ordersData.reduce((sum: number, order: Order) => sum + order.totalAmount, 0) / totalOrders 
-          : 0;
-
-        setStats({
-          total: totalOrders,
-          pending: pendingOrders,
-          processing: processingOrders,
-          completed: completedOrders,
-          cancelled: cancelledOrders,
-          refunded: refundedOrders,
-          revenue,
-          averageOrderValue
-        });
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setIsLoading(false);
+    // Trong thực tế, đây sẽ là API call
+    const mockOrders: Order[] = [
+      {
+        id: 'ORD-001',
+        userId: '1',
+        userName: 'Nguyễn Văn A',
+        userEmail: 'nguyenvana@example.com',
+        items: [
+          {
+            productId: 'prod-vt',
+            productName: 'VoiceTyping',
+            quantity: 1,
+            price: 990000
+          }
+        ],
+        totalAmount: 990000,
+        status: 'completed',
+        paymentMethod: 'bank_transfer',
+        paymentStatus: 'paid',
+        createdAt: '2023-05-20T08:30:00Z',
+        updatedAt: '2023-05-20T10:15:00Z',
+        notes: 'Khách hàng VIP'
+      },
+      {
+        id: 'ORD-002',
+        userId: '2',
+        userName: 'Trần Thị B',
+        userEmail: 'tranthib@example.com',
+        items: [
+          {
+            productId: 'prod-office',
+            productName: 'Office Suite',
+            quantity: 1,
+            price: 1200000
+          },
+          {
+            productId: 'prod-backup',
+            productName: 'Backup Pro',
+            quantity: 1,
+            price: 500000
+          }
+        ],
+        totalAmount: 1700000,
+        status: 'processing',
+        paymentMethod: 'momo',
+        paymentStatus: 'paid',
+        createdAt: '2023-05-28T14:20:00Z',
+        updatedAt: '2023-05-28T14:25:00Z'
+      },
+      {
+        id: 'ORD-003',
+        userId: '3',
+        userName: 'Lê Văn C',
+        userEmail: 'levanc@example.com',
+        items: [
+          {
+            productId: 'prod-secure',
+            productName: 'Secure Vault',
+            quantity: 1,
+            price: 850000
+          }
+        ],
+        totalAmount: 850000,
+        status: 'pending',
+        paymentMethod: 'bank_transfer',
+        paymentStatus: 'pending',
+        createdAt: '2023-05-29T09:45:00Z',
+        updatedAt: '2023-05-29T09:45:00Z'
+      },
+      {
+        id: 'ORD-004',
+        userId: '4',
+        userName: 'Phạm Thị D',
+        userEmail: 'phamthid@example.com',
+        items: [
+          {
+            productId: 'prod-design',
+            productName: 'Design Master',
+            quantity: 1,
+            price: 1500000
+          }
+        ],
+        totalAmount: 1500000,
+        status: 'cancelled',
+        paymentMethod: 'credit_card',
+        paymentStatus: 'refunded',
+        createdAt: '2023-05-15T16:30:00Z',
+        updatedAt: '2023-05-16T10:20:00Z',
+        notes: 'Khách hàng yêu cầu hủy'
+      },
+      {
+        id: 'ORD-005',
+        userId: '5',
+        userName: 'Hoàng Văn E',
+        userEmail: 'hoangvane@example.com',
+        items: [
+          {
+            productId: 'prod-vt',
+            productName: 'VoiceTyping',
+            quantity: 2,
+            price: 990000
+          }
+        ],
+        totalAmount: 1980000,
+        status: 'completed',
+        paymentMethod: 'zalopay',
+        paymentStatus: 'paid',
+        createdAt: '2023-05-25T11:10:00Z',
+        updatedAt: '2023-05-25T13:40:00Z'
       }
-    };
+    ];
 
-    fetchOrders();
+    // Tính toán số liệu thống kê
+    const totalOrders = mockOrders.length;
+    const pendingOrders = mockOrders.filter(order => order.status === 'pending').length;
+    const processingOrders = mockOrders.filter(order => order.status === 'processing').length;
+    const completedOrders = mockOrders.filter(order => order.status === 'completed').length;
+    const cancelledOrders = mockOrders.filter(order => order.status === 'cancelled').length;
+    const refundedOrders = mockOrders.filter(order => order.status === 'refunded').length;
+    
+    // Tính tổng doanh thu từ các đơn hàng đã hoàn thành
+    const revenue = mockOrders
+      .filter(order => order.status === 'completed')
+      .reduce((sum, order) => sum + order.totalAmount, 0);
+    
+    // Tính giá trị trung bình đơn hàng
+    const averageOrderValue = totalOrders > 0 
+      ? mockOrders.reduce((sum, order) => sum + order.totalAmount, 0) / totalOrders 
+      : 0;
+
+    setOrders(mockOrders);
+    setStats({
+      total: totalOrders,
+      pending: pendingOrders,
+      processing: processingOrders,
+      completed: completedOrders,
+      cancelled: cancelledOrders,
+      refunded: refundedOrders,
+      revenue,
+      averageOrderValue
+    });
+    
+    setIsLoading(false);
   }, []);
 
   // Lọc đơn hàng theo tìm kiếm, trạng thái và thời gian

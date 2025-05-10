@@ -20,45 +20,84 @@ function UsersPage() {
 
   // Giả lập dữ liệu người dùng
   useEffect(() => {
-    // Lấy dữ liệu người dùng từ API
-    const fetchUsers = async () => {
-      try {
-        setIsLoading(true);
-        // Thay thế với API endpoint thực tế khi có
-        const response = await fetch('/api/admin/users');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch users');
-        }
-        
-        const data = await response.json();
-        setUsers(data.users || []);
-        
-        // Tính toán số liệu thống kê
-        const totalUsers = data.users ? data.users.length : 0;
-        const activeUsers = data.users ? data.users.filter((user: User) => user.isActive).length : 0;
-        const inactiveUsers = totalUsers - activeUsers;
-        
-        // Tính người dùng mới trong tháng này
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const newUsers = data.users ? data.users.filter((user: User) => new Date(user.createdAt) >= startOfMonth).length : 0;
-        
-        setStats({
-          total: totalUsers,
-          active: activeUsers,
-          inactive: inactiveUsers,
-          newThisMonth: newUsers
-        });
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        // Hiển thị thông báo lỗi nếu cần
-      } finally {
-        setIsLoading(false);
+    // Trong thực tế, đây sẽ là API call
+    const mockUsers: User[] = [
+      {
+        id: '1',
+        name: 'Nguyễn Văn A',
+        email: 'nguyenvana@example.com',
+        image: 'https://randomuser.me/api/portraits/men/1.jpg',
+        isAdmin: true,
+        isActive: true,
+        createdAt: '2023-01-15T08:30:00Z',
+        updatedAt: '2023-05-22T14:45:00Z',
+        lastLogin: '2023-06-01T09:15:00Z'
+      },
+      {
+        id: '2',
+        name: 'Trần Thị B',
+        email: 'tranthib@example.com',
+        image: 'https://randomuser.me/api/portraits/women/2.jpg',
+        isAdmin: false,
+        isActive: true,
+        createdAt: '2023-02-20T10:00:00Z',
+        updatedAt: '2023-05-25T16:30:00Z',
+        lastLogin: '2023-05-30T11:45:00Z'
+      },
+      {
+        id: '3',
+        name: 'Lê Văn C',
+        email: 'levanc@example.com',
+        image: 'https://randomuser.me/api/portraits/men/3.jpg',
+        isAdmin: false,
+        isActive: false,
+        createdAt: '2023-03-10T14:20:00Z',
+        updatedAt: '2023-04-28T09:10:00Z',
+        lastLogin: '2023-04-28T09:00:00Z'
+      },
+      {
+        id: '4',
+        name: 'Phạm Thị D',
+        email: 'phamthid@example.com',
+        image: 'https://randomuser.me/api/portraits/women/4.jpg',
+        isAdmin: false,
+        isActive: true,
+        createdAt: '2023-05-05T11:15:00Z',
+        updatedAt: '2023-05-28T17:20:00Z',
+        lastLogin: '2023-05-29T14:30:00Z'
+      },
+      {
+        id: '5',
+        name: 'Hoàng Văn E',
+        email: 'hoangvane@example.com',
+        image: 'https://randomuser.me/api/portraits/men/5.jpg',
+        isAdmin: false,
+        isActive: true,
+        createdAt: '2023-05-18T16:40:00Z',
+        updatedAt: '2023-05-29T13:25:00Z',
+        lastLogin: '2023-05-29T13:20:00Z'
       }
-    };
+    ];
 
-    fetchUsers();
+    // Tính toán số liệu thống kê
+    const totalUsers = mockUsers.length;
+    const activeUsers = mockUsers.filter(user => user.isActive).length;
+    const inactiveUsers = totalUsers - activeUsers;
+    
+    // Tính người dùng mới trong tháng này
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const newUsers = mockUsers.filter(user => new Date(user.createdAt) >= startOfMonth).length;
+
+    setUsers(mockUsers);
+    setStats({
+      total: totalUsers,
+      active: activeUsers,
+      inactive: inactiveUsers,
+      newThisMonth: newUsers
+    });
+    
+    setIsLoading(false);
   }, []);
 
   // Lọc người dùng theo tìm kiếm và bộ lọc

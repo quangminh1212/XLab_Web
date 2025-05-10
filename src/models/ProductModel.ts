@@ -35,8 +35,7 @@ export interface Product {
     slug: string;
     description: string;
     shortDescription: string;
-    images: ProductImage[] | string[];
-    descriptionImages?: string[];
+    images: ProductImage[];
     features: ProductFeature[];
     requirements: ProductRequirement[];
     versions: ProductVersion[];
@@ -52,8 +51,7 @@ export interface ProductFormData {
     slug: string;
     description: string;
     shortDescription: string;
-    images: ProductImage[] | string[];
-    descriptionImages?: string[];
+    images: ProductImage[];
     features: ProductFeature[];
     requirements: ProductRequirement[];
     versions: ProductVersion[];

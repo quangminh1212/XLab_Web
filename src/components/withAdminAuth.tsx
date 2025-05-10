@@ -21,9 +21,9 @@ function withAdminAuth<P extends object>(Component: ComponentType<P>) {
         return
       }
       
-      // Kiểm tra nếu không phải admin thì chuyển hướng về trang chủ
-      // Sử dụng session.user.isAdmin thay vì role
-      if (session.user && !session.user.isAdmin) {
+      // Kiểm tra nếu người dùng không phải admin thì chuyển hướng về trang chủ
+      // Giả sử vai trò admin được lưu trong session.user.role
+      if (session.user && (session.user as any).role !== 'admin') {
         router.push('/')
         return
       }
@@ -39,7 +39,7 @@ function withAdminAuth<P extends object>(Component: ComponentType<P>) {
     }
     
     // Kiểm tra nếu không phải admin thì hiển thị thông báo
-    if (session.user && !session.user.isAdmin) {
+    if (session.user && (session.user as any).role !== 'admin') {
       return (
         <div className="flex flex-col justify-center items-center min-h-screen p-4">
           <h1 className="text-2xl font-bold text-red-600 mb-4">Truy cập bị từ chối</h1>
