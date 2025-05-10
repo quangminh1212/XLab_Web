@@ -1,6 +1,6 @@
 'use client'
 
-import { products as mockProducts, categories } from '@/data/mockData'
+import { categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import ProductImage from '@/components/product/ProductImage'
@@ -8,8 +8,8 @@ import ProductCard from '@/components/product/ProductCard'
 import { Button } from '@/components/common/button'
 
 export default function ProductsPage() {
-  const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState<any[]>(mockProducts || []);
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
@@ -18,6 +18,30 @@ export default function ProductsPage() {
   // Update title when component is rendered
   useEffect(() => {
     document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ'
+  }, []);
+
+  // Tải dữ liệu sản phẩm từ API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/products');
+        
+        if (!response.ok) {
+          throw new Error('Không thể tải dữ liệu sản phẩm');
+        }
+        
+        const data = await response.json();
+        setProducts(data.data || []);
+      } catch (error: any) {
+        setError(error.message || 'Đã xảy ra lỗi khi tải sản phẩm');
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchProducts();
   }, []);
 
   // Lọc sản phẩm theo loại: chỉ lấy phần mềm
