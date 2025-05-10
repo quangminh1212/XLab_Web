@@ -71,3 +71,10 @@ next-env.d.ts
 **/*.hot-update.js
 **/*.hot-update.json
 /node_modules/.cache/
+
+# Added by update-gitignore.js
+# Next.js runtime files
+/.next/build-manifest.json
+/.next/app-paths-manifest.json
+/.next/next-font-manifest.json
+/.next/middleware-manifest.json

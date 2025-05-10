@@ -24,7 +24,8 @@ export default function AdminLayout({
             console.log('AdminLayout Debug:', { 
                 status, 
                 session: session ? 'session exists' : 'no session',
-                userEmail: session?.user?.email
+                userEmail: session?.user?.email,
+                isAdmin: session?.user?.isAdmin
             });
         }
     }, [session, status]);
@@ -37,14 +38,15 @@ export default function AdminLayout({
             return;
         }
         
-        if (session.user?.email !== 'xlab.rnd@gmail.com') {
+        // Sử dụng isAdmin thay vì kiểm tra email trực tiếp
+        if (!session.user?.isAdmin) {
             router.push('/');
             return;
         }
     }, [session, status, router]);
     
     // Hiển thị loading khi đang kiểm tra session
-    if (status === 'loading' || !session || session.user?.email !== 'xlab.rnd@gmail.com') {
+    if (status === 'loading' || !session || !session.user?.isAdmin) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
