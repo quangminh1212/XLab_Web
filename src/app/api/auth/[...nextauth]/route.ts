@@ -20,6 +20,9 @@ declare module "next-auth" {
   }
 }
 
+// Danh sách các email có quyền admin
+const ADMIN_EMAILS = ['xlab.rnd@gmail.com'];
+
 // Đảm bảo NEXTAUTH_URL được đặt đúng - luôn sử dụng URL tuyệt đối
 const NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 // Không bật debug trong môi trường production
@@ -48,8 +51,11 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.sub;
-        if (token.email === 'xlab.rnd@gmail.com') {
+        // Kiểm tra email có trong danh sách admin không
+        if (token.email && ADMIN_EMAILS.includes(token.email as string)) {
           session.user.isAdmin = true;
+        } else {
+          session.user.isAdmin = false;
         }
       }
       return session;

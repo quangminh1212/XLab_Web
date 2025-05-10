@@ -78,9 +78,6 @@ const nextConfig = {
     forceSwcTransforms: true,
     appDocumentPreloading: false,
   },
-  outputFileTracingExcludes: {
-    '*': ['node_modules/**', '.next/**']
-  },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
@@ -90,6 +87,7 @@ const nextConfig = {
   compress: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
   trailingSlash: false,
+  // Vô hiệu hóa cảnh báo cho CSS tùy chỉnh (Tailwind CSS)
   modularizeImports: {
     'tailwindcss/utilities': {
       transform: 'tailwindcss/utilities/{{member}}',
@@ -104,6 +102,7 @@ const nextConfig = {
         ignored: /node_modules/
       };
 
+      // Sửa lỗi hot update 404
       config.output = {
         ...config.output,
         hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
@@ -127,6 +126,7 @@ const nextConfig = {
       hints: false,
     };
 
+    // Đảm bảo publicPath luôn được đặt đúng để tránh lỗi 404
     config.output = {
       ...config.output,
       publicPath: '/_next/',
@@ -139,13 +139,16 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
+    // Ngăn chặn lỗi ENOENT
     config.cache = false;
 
+    // Loại bỏ cảnh báo Critical dependency
     config.module = {
       ...config.module,
       exprContextCritical: false,
       rules: [
         ...config.module.rules,
+        // Loại bỏ quy tắc CSS để sử dụng hỗ trợ CSS built-in của Next.js
         {
           test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
           type: 'asset/resource',
@@ -153,25 +156,31 @@ const nextConfig = {
       ],
     };
 
+    // Enables hot module replacement
     config.optimization.runtimeChunk = 'single';
     
+    // Thêm plugin để đảm bảo tệp static được tạo đúng cách
     if (!isServer) {
-      const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-      config.plugins.push(
-        new WebpackManifestPlugin({
-          fileName: 'asset-manifest.json',
-          publicPath: '/_next/',
-          generate: (seed, files) => {
-            const manifestFiles = files.reduce((manifest, file) => {
-              manifest[file.name] = file.path;
-              return manifest;
-            }, seed);
-            return {
-              files: manifestFiles,
-            };
-          },
-        })
-      );
+      try {
+        const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+        config.plugins.push(
+          new WebpackManifestPlugin({
+            fileName: 'asset-manifest.json',
+            publicPath: '/_next/',
+            generate: (seed, files) => {
+              const manifestFiles = files.reduce((manifest, file) => {
+                manifest[file.name] = file.path;
+                return manifest;
+              }, seed);
+              return {
+                files: manifestFiles,
+              };
+            },
+          })
+        );
+      } catch (error) {
+        console.warn('webpack-manifest-plugin not found. Skipping manifest generation.');
+      }
     }
 
     return config;
@@ -180,8 +189,73 @@ const nextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now();
   },
+  // Cấu hình sass nằm trong mục tùy chọn hợp lệ
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
+  },
+  async redirects() {
+    return [
+      // Redirect timestamp versioned CSS files to base files
+      {
+        source: '/_next/static/css/app/layout.css',
+        has: [
+          {
+            type: 'query',
+            key: 'v',
+          },
+        ],
+        destination: '/_next/static/css/app/layout.css',
+        permanent: true,
+      },
+      // Redirect timestamp versioned JS files to base files
+      {
+        source: '/_next/static/main-app.aef085aefcb8f66f.js',
+        has: [
+          {
+            type: 'query',
+            key: 'v',
+          },
+        ],
+        destination: '/_next/static/main-app.aef085aefcb8f66f.js',
+        permanent: true,
+      },
+      // Redirect for admin layout files
+      {
+        source: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
+        destination: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
+        permanent: true,
+      },
+      // Redirect for admin page files
+      {
+        source: '/_next/static/app/admin/page.20e1580ca904d554.js',
+        destination: '/_next/static/app/admin/page.20e1580ca904d554.js',
+        permanent: true,
+      },
+      // Redirect for not-found files
+      {
+        source: '/_next/static/app/not-found.7d3561764989b0ed.js',
+        destination: '/_next/static/app/not-found.7d3561764989b0ed.js',
+        permanent: true,
+      },
+      // Redirect for layout files
+      {
+        source: '/_next/static/app/layout.32d8c3be6202d9b3.js',
+        destination: '/_next/static/app/layout.32d8c3be6202d9b3.js',
+        permanent: true,
+      },
+      // Redirect for app-pages-internals files
+      {
+        source: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
+        destination: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
+        permanent: true,
+      },
+      // Redirect for loading files
+      {
+        source: '/_next/static/app/loading.062c877ec63579d3.js',
+        destination: '/_next/static/app/loading.062c877ec63579d3.js',
+        permanent: true,
+      },
+    ]
   },
 };
 

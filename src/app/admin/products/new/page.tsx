@@ -1,80 +1,30 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Product } from '@/models/ProductModel';
 import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 
-interface AdminEditProductPageProps {
-  params: {
-    id: string;
-  };
-}
-
-function AdminEditProductPage({ params }: AdminEditProductPageProps) {
+function NewProductPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const featuredImageInputRef = useRef<HTMLInputElement>(null);
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [newImageUrl, setNewImageUrl] = useState('');
-  const [featuredImageUrl, setFeaturedImageUrl] = useState('');
-  const [featuredImage, setFeaturedImage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [descriptionImages, setDescriptionImages] = useState<string[]>([]);
+  const [newImageUrl, setNewImageUrl] = useState('');
+  const [featuredImage, setFeaturedImage] = useState<string | null>(null);
+  const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
     description: '',
     isPublished: false,
     price: 0,
-    salePrice: 0
+    salePrice: 0,
+    categoryId: 'office-software'
   });
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/admin/products/${params.id}`);
-        
-        if (!response.ok) {
-          throw new Error('Không thể tải thông tin sản phẩm');
-        }
-        
-        const productData = await response.json();
-        setProduct(productData);
-        
-        // Populate form data
-        setFormData({
-          name: productData.name || '',
-          shortDescription: productData.shortDescription || '',
-          description: productData.description || '',
-          isPublished: productData.isPublished || false,
-          price: productData.versions?.[0]?.price || 0,
-          salePrice: productData.versions?.[0]?.originalPrice || 0
-        });
-        
-        // Set description images if available
-        if (productData.descriptionImages && Array.isArray(productData.descriptionImages)) {
-          setDescriptionImages(productData.descriptionImages);
-        }
-        
-        // Set featured image if available
-        if (productData.images && productData.images.length > 0) {
-          setFeaturedImage(productData.images[0]);
-        }
-      } catch (err) {
-        setError((err as Error).message);
-        console.error('Error fetching product:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [params.id]);
 
   // Xử lý thêm hình ảnh từ URL
   const handleAddImageUrl = () => {
@@ -202,114 +152,105 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     }));
   };
 
-  const handleSaveProduct = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       setLoading(true);
+      setError(null);
       
-      // Update product with form data
-      const updatedProduct = {
-        ...product,
+      // Prepare the product data
+      const productData = {
         name: formData.name,
         shortDescription: formData.shortDescription,
         description: formData.description,
         isPublished: formData.isPublished,
+        slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
         images: featuredImage ? [featuredImage] : [],
         descriptionImages: descriptionImages, // Thêm danh sách hình ảnh mô tả
-        versions: product?.versions?.map((version, index) => {
-          if (index === 0) {
-            return {
-              ...version,
-              price: formData.price,
-              originalPrice: formData.salePrice
-            };
+        features: [],
+        requirements: [],
+        versions: [
+          {
+            name: 'Standard',
+            description: 'Phiên bản tiêu chuẩn',
+            price: formData.price,
+            originalPrice: formData.salePrice || formData.price,
+            features: []
           }
-          return version;
-        }) || []
+        ],
+        categories: [formData.categoryId]
       };
       
-      // Send the update request
-      const response = await fetch(`/api/admin/products/${params.id}`, {
-        method: 'PUT',
+      // Send the create request
+      const response = await fetch('/api/admin/products', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updatedProduct)
+        body: JSON.stringify(productData)
       });
       
       if (!response.ok) {
-        throw new Error('Không thể cập nhật sản phẩm');
+        throw new Error('Không thể tạo sản phẩm mới');
       }
       
       const result = await response.json();
-      setProduct(result);
-      setSuccessMessage('Sản phẩm đã được cập nhật thành công!');
+      setSuccessMessage('Sản phẩm đã được tạo thành công!');
       
-      // Hide success message after 3 seconds
+      // Redirect to the product edit page after 1 second
       setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
+        router.push(`/admin/products/${result.id}`);
+      }, 1000);
       
     } catch (err) {
       setError((err as Error).message);
-      console.error('Error updating product:', err);
+      console.error('Error creating product:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="container flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
-
-  if (error || !product) {
-    return (
-      <div className="container">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>{error || 'Không tìm thấy sản phẩm'}</p>
-          <button 
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            onClick={() => router.push('/admin/products')}
-          >
-            Quay lại danh sách
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const categoryOptions = [
+    { id: 'office-software', name: 'Phần mềm văn phòng' },
+    { id: 'business-solutions', name: 'Giải pháp doanh nghiệp' },
+    { id: 'security-software', name: 'Phần mềm bảo mật' },
+    { id: 'data-protection', name: 'Bảo vệ dữ liệu' },
+    { id: 'design-software', name: 'Phần mềm thiết kế' },
+  ];
 
   return (
-    <div className="container">
-      <h1 className="text-2xl font-bold mb-6">Chỉnh sửa sản phẩm</h1>
-      
-      <div className="mb-6">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Thêm sản phẩm mới</h1>
         <button
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
           onClick={() => router.push('/admin/products')}
+          className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
         >
-          &larr; Quay lại danh sách
+          ← Quay lại danh sách
         </button>
       </div>
-
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+      
       {successMessage && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
           {successMessage}
         </div>
       )}
-
-      <form onSubmit={handleSaveProduct} className="space-y-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-bold mb-4">Thông tin cơ bản</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                Tên sản phẩm
+                Tên sản phẩm <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -323,23 +264,25 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                Trạng thái
+                Danh mục
               </label>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="isPublished"
-                  checked={formData.isPublished}
-                  onChange={handleInputChange}
-                  className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-gray-700">Công khai</span>
-              </div>
+              <select
+                name="categoryId"
+                value={formData.categoryId}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                {categoryOptions.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
             </div>
             
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                Giá bán (VNĐ)
+                Giá bán (VNĐ) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -366,12 +309,29 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 min="0"
                 step="1000"
               />
+              <p className="text-sm text-gray-500 mt-1">Điền giá gốc nếu có khuyến mãi, nếu không thì để trống</p>
+            </div>
+            
+            <div className="col-span-2">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="isPublished"
+                  name="isPublished"
+                  checked={formData.isPublished}
+                  onChange={handleInputChange}
+                  className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                />
+                <label htmlFor="isPublished" className="ml-2 text-gray-700">
+                  Công khai sản phẩm ngay
+                </label>
+              </div>
             </div>
           </div>
         </div>
         
         {/* Phần thêm ảnh đại diện sản phẩm */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-bold mb-4">Ảnh đại diện sản phẩm</h2>
           
           <div className="space-y-4">
@@ -434,13 +394,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-lg shadow-md">
+        <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-bold mb-4">Mô tả sản phẩm</h2>
           
           <div className="space-y-4">
             <div>
               <label className="block text-gray-700 font-medium mb-2">
-                Mô tả ngắn
+                Mô tả ngắn <span className="text-red-500">*</span>
               </label>
               <textarea
                 name="shortDescription"
@@ -448,7 +408,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 onChange={handleInputChange}
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                 rows={3}
+                required
               />
+              <p className="text-sm text-gray-500 mt-1">Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)</p>
             </div>
             
             <div>
@@ -462,6 +424,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                 rows={6}
               />
+              <p className="text-sm text-gray-500 mt-1">Mô tả chi tiết về sản phẩm (hiển thị ở trang chi tiết)</p>
             </div>
             
             {/* Phần thêm hình ảnh cho mô tả */}
@@ -545,7 +508,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           <button
             type="button"
             onClick={() => router.push('/admin/products')}
-            className="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400"
+            className="py-2 px-4 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
           >
             Hủy
           </button>
@@ -553,9 +516,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           <button
             type="submit"
             disabled={loading}
-            className="bg-primary-600 text-white px-6 py-2 rounded hover:bg-primary-700"
+            className={`py-2 px-6 rounded-lg bg-primary-500 text-white hover:bg-primary-600 transition-colors ${
+              loading ? 'opacity-70 cursor-not-allowed' : ''
+            }`}
           >
-            {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
+            {loading ? 'Đang xử lý...' : 'Tạo sản phẩm'}
           </button>
         </div>
       </form>
@@ -563,4 +528,4 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   );
 }
 
-export default withAdminAuth(AdminEditProductPage); 
+export default withAdminAuth(NewProductPage); 

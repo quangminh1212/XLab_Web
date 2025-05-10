@@ -14,6 +14,9 @@ const adminPaths = [
   '/admin',
 ];
 
+// Danh sách email admin (giữ đồng bộ với NextAuth)
+const ADMIN_EMAILS = ['xlab.rnd@gmail.com'];
+
 // Danh sách các đường dẫn công khai (không cần đăng nhập)
 const publicPaths = [
   '/login',
@@ -108,8 +111,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
     
-    // Nếu không phải admin email, chuyển đến trang chủ
-    if (token.email !== 'xlab.rnd@gmail.com') {
+    // Kiểm tra email có trong danh sách admin không
+    if (!token.email || !ADMIN_EMAILS.includes(token.email)) {
       const url = new URL('/', request.url);
       return NextResponse.redirect(url);
     }

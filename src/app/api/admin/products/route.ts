@@ -73,6 +73,19 @@ export async function POST(request: NextRequest) {
 
         const productData = await request.json();
 
+        // Ensure images is always in the correct format
+        if (productData.images) {
+            // Convert string array to required format if needed
+            if (Array.isArray(productData.images) && productData.images.length > 0) {
+                // If the array contains strings (direct URLs), convert to the expected format
+                if (typeof productData.images[0] === 'string') {
+                    // Keep as is, we'll handle both formats in the frontend
+                }
+            }
+        } else {
+            productData.images = [];
+        }
+
         // Thêm ID và ngày tạo
         const newProduct: Product = {
             id: uuidv4(),
