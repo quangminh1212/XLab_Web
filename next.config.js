@@ -161,22 +161,26 @@ const nextConfig = {
     
     // Thêm plugin để đảm bảo tệp static được tạo đúng cách
     if (!isServer) {
-      const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-      config.plugins.push(
-        new WebpackManifestPlugin({
-          fileName: 'asset-manifest.json',
-          publicPath: '/_next/',
-          generate: (seed, files) => {
-            const manifestFiles = files.reduce((manifest, file) => {
-              manifest[file.name] = file.path;
-              return manifest;
-            }, seed);
-            return {
-              files: manifestFiles,
-            };
-          },
-        })
-      );
+      try {
+        const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+        config.plugins.push(
+          new WebpackManifestPlugin({
+            fileName: 'asset-manifest.json',
+            publicPath: '/_next/',
+            generate: (seed, files) => {
+              const manifestFiles = files.reduce((manifest, file) => {
+                manifest[file.name] = file.path;
+                return manifest;
+              }, seed);
+              return {
+                files: manifestFiles,
+              };
+            },
+          })
+        );
+      } catch (error) {
+        console.warn('webpack-manifest-plugin not found. Skipping manifest generation.');
+      }
     }
 
     return config;
