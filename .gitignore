@@ -29,6 +29,7 @@ yarn-debug.log*
 yarn-error.log*
 error.log
 fix-all-errors.log
+fix-static-files.log
 
 # local env files
 .env*.local
@@ -82,3 +83,16 @@ next-env.d.ts
 /.next/next-font-manifest.json
 /.next/middleware-manifest.json
 node_modules/@next/swc-*
+
+# Thêm các file được sinh ra khi dự án chạy
+/.next/static/app/**/*.js
+/.next/static/app/**/*.css
+/.next/static/css/app/layout-*.css
+/.next/static/main-app-*.js
+/.next/server/app/**/*.js
+/.next/server/app/api/**/*.js
+/.next/static/chunks/app/**.js
+/.next/static/chunks/app-*.js
+/.next/static/css/app-*.css
+/.next/static/development/_buildManifest.js
+/.next/static/development/_ssgManifest.js

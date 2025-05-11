@@ -91,6 +91,7 @@ export const stores: Store[] = [
 
 // Danh sách sản phẩm
 export const products: Product[] = [
+  // VoiceTyping
   {
     id: 'prod-vt',
     name: 'VoiceTyping',
@@ -127,20 +128,20 @@ export const products: Product[] = [
       <h3>Giấy phép:</h3>
       <p>Phân phối dưới giấy phép MIT.</p>
     `,
-    price: 0, // Miễn phí
-    salePrice: 0,
+    price: 990000,
+    salePrice: 990000,
     categoryId: 'cat-2', // Ứng dụng văn phòng
     imageUrl: '/images/speech-text.svg',
-    isFeatured: true, // Đặt thành true để hiển thị trong mục sản phẩm nổi bật
+    isFeatured: true,
     isNew: true,
     downloadCount: 150,
     viewCount: 320,
     rating: 4.5,
     version: '1.0.0',
     size: '~50MB',
-    licenseType: 'MIT',
-    createdAt: new Date('2023-08-25').toISOString(),
-    updatedAt: new Date('2023-08-25').toISOString(),
+    licenseType: 'Premium',
+    createdAt: new Date('2023-05-15').toISOString(),
+    updatedAt: new Date('2023-05-15').toISOString(),
     storeId: '1', // XLab Software
     features: [
       'Nhận dạng giọng nói chính xác với nhiều giọng địa phương',
@@ -150,537 +151,167 @@ export const products: Product[] = [
     ]
   },
   
-  // Tài khoản Coursera Plus
+  // Office Suite
   {
-    id: 'prod-coursera',
-    name: 'Tài khoản Coursera Plus',
-    slug: 'tai-khoan-coursera-plus',
-    description: 'Truy cập không giới hạn hơn 7.000 khóa học từ các trường đại học và đối tác hàng đầu thế giới.',
+    id: 'prod-office',
+    name: 'Office Suite',
+    slug: 'office-suite',
+    description: 'Bộ ứng dụng văn phòng toàn diện với các tính năng xử lý văn bản, bảng tính và thuyết trình.',
     longDescription: `
-      <h2>Tài khoản Coursera Plus - Học từ những nguồn tốt nhất</h2>
-      <p>Coursera Plus là dịch vụ đăng ký thuê bao cao cấp từ nền tảng học trực tuyến Coursera. Với Coursera Plus, bạn có thể học không giới hạn trong số hơn 7.000 khóa học và nhận chứng chỉ từ các trường đại học và đối tác hàng đầu thế giới.</p>
-
-      <h3>Tính năng nổi bật:</h3>
-      <ul>
-        <li><strong>Truy cập không giới hạn</strong>: Học hơn 7.000 khóa học từ các trường top thế giới.</li>
-        <li><strong>Chứng chỉ được công nhận</strong>: Nhận chứng chỉ mang tên bạn sau khi hoàn thành khóa học.</li>
-        <li><strong>Đa dạng lĩnh vực</strong>: Từ CNTT, kinh doanh, đến khoa học dữ liệu, marketing và nhiều lĩnh vực khác.</li>
-        <li><strong>Học theo lộ trình</strong>: Các khóa học được tổ chức theo lộ trình phát triển sự nghiệp.</li>
-        <li><strong>Bài tập thực hành</strong>: Dự án thực tế giúp bạn áp dụng kiến thức đã học.</li>
-      </ul>
-
-      <h3>Bảng giá tài khoản:</h3>
-      <ul>
-        <li><strong>Gói 3 tháng</strong>: 590.000đ (tiết kiệm 59% so với giá gốc)</li>
-        <li><strong>Gói 6 tháng</strong>: 890.000đ (tiết kiệm 63% so với giá gốc)</li>
-        <li><strong>Gói 1 năm</strong>: 1.190.000đ (tiết kiệm 75% so với giá gốc)</li>
-      </ul>
-
-      <h3>Lưu ý quan trọng:</h3>
-      <p>- Tài khoản được nâng cấp trực tiếp từ tài khoản Coursera của bạn.<br>
-      - Bảo hành trọn thời gian sử dụng.<br>
-      - Nhận chứng chỉ mang tên bạn sau khi hoàn thành khóa học.</p>
-    `,
-    price: 1190000,
-    salePrice: 890000,
-    categoryId: 'cat-6', // Tài khoản học tập
-    imageUrl: '/images/coursera-plus.svg',
-    isFeatured: true,
-    isNew: true,
-    downloadCount: 320,
-    viewCount: 580,
-    rating: 4.9,
-    version: '2023',
-    size: 'N/A',
-    licenseType: 'Premium',
-    createdAt: new Date('2023-11-20').toISOString(),
-    updatedAt: new Date('2023-11-20').toISOString(),
-    storeId: '1', // XLab Software
-    isAccount: true,
-    type: 'account',
-    features: [
-      'Truy cập không giới hạn hơn 7.000 khóa học',
-      'Chứng chỉ được công nhận từ trường đại học hàng đầu',
-      'Học từ các đối tác như Google, IBM, Meta và nhiều tổ chức khác',
-      'Cập nhật nội dung mới liên tục',
-      'Học linh hoạt mọi lúc, mọi nơi',
-      'Bảo hành 1 đổi 1 trong thời gian sử dụng'
-    ],
-    options: [
-      { name: '3 Tháng', price: 590000 },
-      { name: '6 Tháng', price: 890000 },
-      { name: '1 Năm', price: 1190000 }
-    ]
-  },
-  
-  // Tài khoản Udemy Premium
-  {
-    id: 'prod-udemy',
-    name: 'Tài khoản Udemy Premium',
-    slug: 'tai-khoan-udemy-premium',
-    description: 'Truy cập hàng ngàn khóa học thực hành từ các chuyên gia trong ngành.',
-    longDescription: `
-      <h2>Tài khoản Udemy Premium - Phát triển kỹ năng không giới hạn</h2>
-      <p>Udemy là nền tảng học trực tuyến hàng đầu với hơn 185.000 khóa học về gần như mọi chủ đề. Với tài khoản Udemy Premium, bạn có thể truy cập không giới hạn các khóa học chất lượng cao từ các chuyên gia hàng đầu trong ngành.</p>
-
-      <h3>Tính năng nổi bật:</h3>
-      <ul>
-        <li><strong>Đa dạng chủ đề</strong>: Lập trình, thiết kế, marketing, kinh doanh, phát triển cá nhân và nhiều lĩnh vực khác.</li>
-        <li><strong>Nội dung chất lượng cao</strong>: Video HD, bài tập thực hành và tài liệu đi kèm.</li>
-        <li><strong>Chứng nhận hoàn thành</strong>: Nhận chứng chỉ sau khi hoàn thành khóa học.</li>
-        <li><strong>Cập nhật trọn đời</strong>: Tiếp cận các cập nhật mới nhất của khóa học.</li>
-        <li><strong>Học theo tốc độ riêng</strong>: Không giới hạn thời gian, học bất cứ khi nào bạn muốn.</li>
-      </ul>
-
-      <h3>Bảng giá tài khoản:</h3>
-      <ul>
-        <li><strong>Gói 6 tháng</strong>: 450.000đ (tiết kiệm 70% so với giá gốc)</li>
-        <li><strong>Gói 1 năm</strong>: 750.000đ (tiết kiệm 75% so với giá gốc)</li>
-      </ul>
-
-      <h3>Lưu ý quan trọng:</h3>
-      <p>- Tài khoản được cấp, có thể đổi mật khẩu.<br>
-      - Bảo hành trong suốt thời gian sử dụng.<br>
-      - Có thể tải khóa học để học offline.</p>
-    `,
-    price: 750000,
-    salePrice: 450000,
-    categoryId: 'cat-6', // Tài khoản học tập
-    imageUrl: '/images/udemy-premium.svg',
-    isFeatured: true,
-    isNew: false,
-    downloadCount: 280,
-    viewCount: 450,
-    rating: 4.7,
-    version: '2023',
-    size: 'N/A',
-    licenseType: 'Premium',
-    createdAt: new Date('2023-10-15').toISOString(),
-    updatedAt: new Date('2023-10-15').toISOString(),
-    storeId: '2', // VN Tech Solutions
-    isAccount: true,
-    type: 'account',
-    features: [
-      'Truy cập không giới hạn tất cả khóa học',
-      'Nội dung chất lượng cao từ các chuyên gia',
-      'Chứng chỉ hoàn thành được công nhận',
-      'Truy cập trọn đời các khóa học đã mua',
-      'Tải về học offline',
-      'Bảo hành trọn thời gian sử dụng'
-    ],
-    options: [
-      { name: '6 Tháng', price: 450000 },
-      { name: '1 Năm', price: 750000 }
-    ]
-  },
-  
-  // Sản phẩm mới: VideoEditor Pro
-  {
-    id: 'prod-ve',
-    name: 'VideoEditor Pro',
-    slug: 'videoeditor-pro',
-    description: 'Phần mềm biên tập video chuyên nghiệp với các tính năng hiện đại và giao diện dễ sử dụng.',
-    longDescription: `
-      <h2>VideoEditor Pro - Giải pháp biên tập video toàn diện</h2>
-      <p>VideoEditor Pro là phần mềm biên tập video cao cấp với đầy đủ công cụ và hiệu ứng chuyên nghiệp, giúp người dùng tạo ra các video chất lượng cao.</p>
+      <h2>Office Suite - Bộ ứng dụng văn phòng toàn diện</h2>
+      <p>Office Suite là bộ ứng dụng văn phòng toàn diện cung cấp các công cụ xử lý văn bản, bảng tính và thuyết trình với đầy đủ tính năng cần thiết cho công việc văn phòng hàng ngày.</p>
 
       <h3>Tính năng chính:</h3>
       <ul>
-        <li><strong>Biên tập đa track</strong>: Hỗ trợ nhiều track video, audio và overlay đồng thời.</li>
-        <li><strong>Thư viện hiệu ứng phong phú</strong>: Hơn 500 hiệu ứng và transition được phân loại.</li>
-        <li><strong>Công cụ chỉnh màu</strong>: Chỉnh màu chuyên nghiệp với LUTs và color grading.</li>
-        <li><strong>Xuất video đa định dạng</strong>: MP4, AVI, MOV với chất lượng lên đến 4K.</li>
-        <li><strong>Xử lý âm thanh</strong>: Công cụ điều chỉnh và xử lý âm thanh tích hợp.</li>
-      </ul>
-
-      <h3>Yêu cầu hệ thống:</h3>
-      <ul>
-        <li>Windows 10, 11 (64-bit)</li>
-        <li>CPU: Intel i5 hoặc AMD Ryzen 5 trở lên</li>
-        <li>RAM: 8GB (khuyến nghị 16GB)</li>
-        <li>GPU: NVIDIA/AMD với 2GB VRAM</li>
-        <li>Ổ cứng: 5GB dung lượng trống</li>
+        <li><strong>Word Processor:</strong> Tạo và chỉnh sửa tài liệu với nhiều định dạng văn bản.</li>
+        <li><strong>Spreadsheet:</strong> Xử lý bảng tính với công thức và biểu đồ.</li>
+        <li><strong>Presentation:</strong> Tạo bài thuyết trình chuyên nghiệp với hiệu ứng và templates.</li>
+        <li><strong>Cloud Integration:</strong> Đồng bộ hóa tài liệu trên nhiều thiết bị.</li>
       </ul>
     `,
-    price: 299000,
-    salePrice: 199000,
-    categoryId: 'cat-3', // Phần mềm đồ họa
-    imageUrl: '/capcut.png',
+    price: 1200000,
+    salePrice: 1200000,
+    categoryId: 'cat-2', // Ứng dụng văn phòng
+    imageUrl: '/images/products/office-suite-1.jpg',
     isFeatured: true,
-    isNew: true,
-    downloadCount: 425,
-    viewCount: 780,
-    rating: 4.7,
+    isNew: false,
+    downloadCount: 250,
+    viewCount: 420,
+    rating: 4.8,
     version: '2.1.0',
-    size: '~300MB',
-    licenseType: 'Commercial',
-    createdAt: new Date('2023-09-12').toISOString(),
-    updatedAt: new Date('2023-10-05').toISOString(),
-    storeId: '3', // Creative Tools
+    size: '~100MB',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-04-10').toISOString(),
+    updatedAt: new Date('2023-04-10').toISOString(),
+    storeId: '1',
     features: [
-      'Biên tập video đa track chuyên nghiệp',
-      'Thư viện hiệu ứng và transition phong phú',
-      'Công cụ chỉnh màu nâng cao với LUTs',
-      'Xử lý âm thanh tích hợp',
-      'Xuất video chất lượng cao đến 4K',
-      'Tối ưu hóa hiệu suất với GPU acceleration'
+      'Tương thích với nhiều định dạng file',
+      'Giao diện người dùng thân thiện',
+      'Hỗ trợ đa ngôn ngữ',
+      'Cập nhật thường xuyên với tính năng mới'
     ]
   },
-  
-  // Sản phẩm mới: SmartAI Assistant
+
+  // Backup Pro
   {
-    id: 'prod-ai',
-    name: 'SmartAI Assistant',
-    slug: 'smartai-assistant',
-    description: 'Trợ lý ảo thông minh giúp tự động hóa công việc, trả lời câu hỏi và tối ưu quy trình làm việc.',
+    id: 'prod-backup',
+    name: 'Backup Pro',
+    slug: 'backup-pro',
+    description: 'Giải pháp sao lưu dữ liệu tự động, bảo vệ dữ liệu quan trọng của bạn khỏi mất mát.',
     longDescription: `
-      <h2>SmartAI Assistant - Trợ lý AI cá nhân</h2>
-      <p>SmartAI Assistant là ứng dụng trợ lý thông minh sử dụng trí tuệ nhân tạo để hỗ trợ người dùng trong công việc hàng ngày, tăng năng suất và tự động hóa các tác vụ lặp đi lặp lại.</p>
+      <h2>Backup Pro - Giải pháp sao lưu dữ liệu toàn diện</h2>
+      <p>Backup Pro cung cấp giải pháp sao lưu dữ liệu tự động và an toàn, giúp bạn bảo vệ các tệp tin quan trọng khỏi mất mát do lỗi phần cứng, phần mềm hoặc tấn công mạng.</p>
 
-      <h3>Khả năng của SmartAI:</h3>
+      <h3>Tính năng chính:</h3>
       <ul>
-        <li><strong>Trả lời câu hỏi</strong>: Tìm kiếm và tổng hợp thông tin từ nhiều nguồn.</li>
-        <li><strong>Viết và chỉnh sửa văn bản</strong>: Soạn thảo email, báo cáo, và văn bản với nhiều phong cách.</li>
-        <li><strong>Tự động hóa</strong>: Lập lịch, nhắc nhở và thực hiện các tác vụ lặp lại.</li>
-        <li><strong>Phân tích dữ liệu</strong>: Trích xuất insight và tạo báo cáo từ dữ liệu.</li>
-        <li><strong>Tích hợp đa nền tảng</strong>: Làm việc trên Windows, macOS, iOS và Android.</li>
+        <li><strong>Sao lưu tự động:</strong> Lên lịch sao lưu theo giờ, ngày hoặc tuần.</li>
+        <li><strong>Mã hóa dữ liệu:</strong> Bảo vệ dữ liệu sao lưu bằng mã hóa AES-256.</li>
+        <li><strong>Cloud Backup:</strong> Sao lưu lên đám mây để truy cập từ mọi nơi.</li>
+        <li><strong>Khôi phục nhanh chóng:</strong> Dễ dàng khôi phục dữ liệu từ các bản sao lưu.</li>
       </ul>
-
-      <h3>Công nghệ cốt lõi:</h3>
-      <p>SmartAI được xây dựng dựa trên mô hình ngôn ngữ GPT tiên tiến, được tối ưu để chạy trên máy tính cá nhân mà không cần kết nối liên tục đến cloud. Dữ liệu người dùng được mã hóa đầu cuối và được lưu trữ cục bộ để đảm bảo quyền riêng tư.</p>
-
-      <h3>Phiên bản:</h3>
-      <p>Phiên bản Premium bao gồm tất cả tính năng và cập nhật miễn phí trong 1 năm.</p>
     `,
-    price: 499000,
-    salePrice: 399000,
-    categoryId: 'cat-1', // Phần mềm doanh nghiệp
-    imageUrl: '/chatgpt.png',
-    isFeatured: true,
-    isNew: true,
-    downloadCount: 890,
-    viewCount: 1250,
-    rating: 4.8,
-    version: '1.5.0',
-    size: '~200MB',
-    licenseType: 'Commercial',
-    createdAt: new Date('2023-11-01').toISOString(),
-    updatedAt: new Date('2023-11-15').toISOString(),
-    storeId: '1', // XLab Software
-    features: [
-      'Trợ lý AI cá nhân với khả năng xử lý ngôn ngữ tự nhiên',
-      'Tự động hóa các tác vụ văn phòng và cá nhân',
-      'Tích hợp với email, lịch và ứng dụng văn phòng',
-      'Xử lý dữ liệu cục bộ đảm bảo quyền riêng tư',
-      'Hoạt động đa nền tảng với đồng bộ liền mạch',
-      'Giao diện người dùng trực quan và thân thiện'
-    ]
-  },
-  
-  // Sản phẩm mới: DesignStudio
-  {
-    id: 'prod-ds',
-    name: 'DesignStudio',
-    slug: 'designstudio',
-    description: 'Ứng dụng thiết kế đồ họa toàn diện với công cụ vẽ vector, chỉnh sửa ảnh và thiết kế giao diện.',
-    longDescription: `
-      <h2>DesignStudio - Công cụ thiết kế đồ họa chuyên nghiệp</h2>
-      <p>DesignStudio là giải pháp thiết kế đồ họa trọn gói dành cho designer chuyên nghiệp và người dùng thông thường, cung cấp đầy đủ công cụ từ thiết kế vector đến chỉnh sửa ảnh bitmap.</p>
-
-      <h3>Bộ công cụ đa dạng:</h3>
-      <ul>
-        <li><strong>Thiết kế vector</strong>: Các công cụ vẽ vector chính xác và linh hoạt.</li>
-        <li><strong>Chỉnh sửa ảnh</strong>: Công cụ xử lý ảnh bitmap với nhiều bộ lọc và hiệu ứng.</li>
-        <li><strong>Thiết kế UI/UX</strong>: Thư viện component và grid system cho thiết kế giao diện.</li>
-        <li><strong>Mockup và prototype</strong>: Tạo bản mẫu tương tác cho website và ứng dụng.</li>
-        <li><strong>Thư viện tài nguyên</strong>: Kho hình ảnh, font chữ, icon và template đồng bộ.</li>
-      </ul>
-
-      <h3>Dành cho:</h3>
-      <p>Graphic designer, UI/UX designer, digital marketer và các doanh nghiệp cần tạo nội dung hình ảnh chất lượng cao.</p>
-
-      <h3>Tương thích:</h3>
-      <p>Nhập và xuất file với nhiều định dạng phổ biến như AI, PSD, SVG, PNG, JPEG, PDF và hỗ trợ cả Windows và macOS.</p>
-    `,
-    price: 599000,
-    salePrice: 499000,
-    categoryId: 'cat-3', // Phần mềm đồ họa
-    imageUrl: '/canva.png',
-    isFeatured: false,
-    isNew: true,
-    downloadCount: 560,
-    viewCount: 920,
-    rating: 4.6,
-    version: '3.0.2',
-    size: '~450MB',
-    licenseType: 'Commercial',
-    createdAt: new Date('2023-10-20').toISOString(),
-    updatedAt: new Date('2023-11-05').toISOString(),
-    storeId: '3', // Creative Tools
-    features: [
-      'Thiết kế vector chuyên nghiệp với pen tool và shape builder',
-      'Chỉnh sửa ảnh với layer và adjustment layers',
-      'Thư viện template và asset phong phú',
-      'Công cụ thiết kế UI/UX với component và grid system',
-      'Tương thích với nhiều định dạng file thiết kế phổ biến',
-      'Tính năng cloud sync để đồng bộ dự án giữa các thiết bị'
-    ]
-  },
-  
-  // Sản phẩm mới: SecureGuard Pro
-  {
-    id: 'prod-sg',
-    name: 'SecureGuard Pro',
-    slug: 'secureguard-pro',
-    description: 'Giải pháp bảo mật toàn diện với tường lửa, chống virus và bảo vệ dữ liệu cá nhân trên mọi thiết bị.',
-    longDescription: `
-      <h2>SecureGuard Pro - Bảo vệ toàn diện cho mọi thiết bị</h2>
-      <p>SecureGuard Pro là giải pháp bảo mật đa lớp giúp bảo vệ dữ liệu và thiết bị của bạn khỏi các mối đe dọa trực tuyến như virus, malware, ransomware và các cuộc tấn công lừa đảo.</p>
-
-      <h3>Các lớp bảo vệ:</h3>
-      <ul>
-        <li><strong>Chống virus và malware</strong>: Quét và loại bỏ mã độc với công nghệ phát hiện hành vi.</li>
-        <li><strong>Tường lửa thông minh</strong>: Kiểm soát lưu lượng mạng và ngăn chặn kết nối độc hại.</li>
-        <li><strong>Bảo vệ web</strong>: Ngăn chặn các trang web lừa đảo và khai thác bảo mật.</li>
-        <li><strong>Bảo vệ dữ liệu</strong>: Mã hóa dữ liệu nhạy cảm và sao lưu tự động.</li>
-        <li><strong>Kiểm soát thiết bị</strong>: Quản lý các thiết bị kết nối vào hệ thống.</li>
-      </ul>
-
-      <h3>Bảo mật đa thiết bị:</h3>
-      <p>Một giấy phép SecureGuard Pro bảo vệ đến 5 thiết bị cùng lúc, bao gồm Windows, macOS, Android và iOS.</p>
-
-      <h3>Hiệu suất tối ưu:</h3>
-      <p>Được thiết kế để bảo vệ mà không làm chậm hệ thống, với công nghệ quét thông minh chỉ sử dụng tài nguyên tối thiểu khi cần thiết.</p>
-    `,
-    price: 399000,
-    salePrice: 299000,
+    price: 500000,
+    salePrice: 500000,
     categoryId: 'cat-4', // Bảo mật & Antivirus
-    imageUrl: '/secure.png',
-    isFeatured: true,
+    imageUrl: '/images/products/backup-pro.jpg',
+    isFeatured: false,
     isNew: false,
-    downloadCount: 1200,
-    viewCount: 1850,
+    downloadCount: 180,
+    viewCount: 290,
     rating: 4.6,
-    version: '2.5.1',
-    size: '~120MB',
-    licenseType: 'Commercial',
-    createdAt: new Date('2023-06-15').toISOString(),
-    updatedAt: new Date('2023-10-10').toISOString(),
-    storeId: '2', // VN Tech Solutions
+    version: '3.0.5',
+    size: '~80MB',
+    licenseType: 'Premium',
+    createdAt: new Date('2023-03-20').toISOString(),
+    updatedAt: new Date('2023-03-20').toISOString(),
+    storeId: '1',
     features: [
-      'Bảo vệ đa lớp chống virus, malware và ransomware',
-      'Tường lửa thông minh giám sát lưu lượng mạng',
-      'Công nghệ phát hiện hành vi tấn công',
-      'Bảo vệ web với chống lừa đảo và theo dõi',
-      'Mã hóa và quản lý mật khẩu tích hợp',
-      'Bảo vệ đồng thời 5 thiết bị với 1 giấy phép'
+      'Sao lưu tự động và lên lịch',
+      'Mã hóa dữ liệu an toàn',
+      'Hỗ trợ nhiều định dạng lưu trữ',
+      'Khôi phục dữ liệu nhanh chóng'
     ]
   },
-  
-  // Sản phẩm mới: LearnCode Academy
+
+  // Secure Vault
   {
-    id: 'prod-lc',
-    name: 'LearnCode Academy',
-    slug: 'learncode-academy',
-    description: 'Nền tảng học lập trình tương tác với hơn 50 khóa học từ cơ bản đến nâng cao cho nhiều ngôn ngữ và công nghệ.',
+    id: 'prod-secure',
+    name: 'Secure Vault',
+    slug: 'secure-vault',
+    description: 'Giải pháp lưu trữ và mã hóa dữ liệu nhạy cảm với bảo mật đa lớp.',
     longDescription: `
-      <h2>LearnCode Academy - Nền tảng học lập trình toàn diện</h2>
-      <p>LearnCode Academy là ứng dụng học lập trình tương tác với hơn 50 khóa học được thiết kế bởi các chuyên gia trong ngành, giúp người học từ mới bắt đầu đến chuyên gia nâng cao kỹ năng của mình.</p>
+      <h2>Secure Vault - Bảo mật dữ liệu nhạy cảm</h2>
+      <p>Secure Vault là giải pháp lưu trữ và mã hóa dữ liệu nhạy cảm, giúp bảo vệ thông tin cá nhân và tài liệu quan trọng khỏi truy cập trái phép.</p>
 
-      <h3>Khóa học đa dạng:</h3>
+      <h3>Tính năng chính:</h3>
       <ul>
-        <li><strong>Lập trình web</strong>: HTML, CSS, JavaScript, React, Angular, Vue, Node.js...</li>
-        <li><strong>Lập trình di động</strong>: React Native, Flutter, Android, iOS...</li>
-        <li><strong>Backend và cơ sở dữ liệu</strong>: Python, PHP, Java, C#, SQL, MongoDB...</li>
-        <li><strong>Data Science & AI</strong>: Python, R, Machine Learning, Data Analysis...</li>
-        <li><strong>DevOps</strong>: Docker, Kubernetes, CI/CD, AWS, Azure...</li>
+        <li><strong>Mã hóa quân sự:</strong> Sử dụng chuẩn mã hóa AES-256 để bảo vệ dữ liệu.</li>
+        <li><strong>Kho mật khẩu:</strong> Quản lý mật khẩu an toàn với tạo mật khẩu mạnh.</li>
+        <li><strong>Xác thực hai yếu tố:</strong> Bảo vệ bổ sung với xác thực hai lớp.</li>
+        <li><strong>Tự hủy dữ liệu:</strong> Tự động xóa dữ liệu sau nhiều lần nhập sai mật khẩu.</li>
       </ul>
-
-      <h3>Phương pháp học:</h3>
-      <ul>
-        <li><strong>Học tương tác</strong>: Biên tập code trực tiếp trong ứng dụng.</li>
-        <li><strong>Dự án thực tế</strong>: Xây dựng portfolio với các dự án thực tế.</li>
-        <li><strong>Theo lộ trình</strong>: Các khóa học được sắp xếp theo lộ trình phát triển kỹ năng.</li>
-        <li><strong>Cộng đồng</strong>: Kết nối với học viên khác và nhận hỗ trợ từ mentor.</li>
-      </ul>
-
-      <h3>Tính năng nổi bật:</h3>
-      <p>Truy cập không giới hạn đến tất cả khóa học, môi trường phát triển tích hợp, code playground và chứng chỉ hoàn thành khóa học được công nhận bởi nhiều doanh nghiệp.</p>
     `,
-    price: 899000,
-    salePrice: 699000,
-    categoryId: 'cat-5', // Ứng dụng giáo dục
-    imageUrl: '/education.png',
+    price: 850000,
+    salePrice: 850000,
+    categoryId: 'cat-4', // Bảo mật & Antivirus
+    imageUrl: '/images/products/secure-vault-1.jpg',
     isFeatured: false,
     isNew: true,
-    downloadCount: 750,
-    viewCount: 1100,
-    rating: 4.9,
-    version: '4.1.0',
-    size: '~350MB',
-    licenseType: 'Educational',
-    createdAt: new Date('2023-09-30').toISOString(),
-    updatedAt: new Date('2023-11-20').toISOString(),
-    storeId: '1', // XLab Software
-    features: [
-      'Hơn 50 khóa học lập trình đa dạng từ cơ bản đến nâng cao',
-      'IDE tích hợp và code playground ngay trong ứng dụng',
-      'Lộ trình học được cá nhân hóa theo mục tiêu',
-      'Dự án thực tế với hướng dẫn chi tiết',
-      'Cộng đồng hỗ trợ và mentor chuyên nghiệp',
-      'Chứng chỉ hoàn thành được công nhận bởi doanh nghiệp'
-    ]
-  },
-
-  // Thêm tài khoản cho demo
-  {
-    id: 'acc-capcut',
-    name: 'CapCut Pro',
-    slug: 'capcut-pro',
-    description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp.',
-    longDescription: `
-      <h2>CapCut Pro - Tài khoản cao cấp</h2>
-      <p>Tài khoản CapCut Pro chính hãng với đầy đủ tính năng chỉnh sửa video chuyên nghiệp, không giới hạn thời gian sử dụng.</p>
-      
-      <h3>Tính năng:</h3>
-      <ul>
-        <li><strong>Xuất video 4K</strong>: Xuất video chất lượng cao không giới hạn</li>
-        <li><strong>Hiệu ứng chuyên nghiệp</strong>: Truy cập toàn bộ hiệu ứng và template</li>
-        <li><strong>Không watermark</strong>: Video không có logo</li>
-        <li><strong>Tích hợp AI</strong>: Công cụ chỉnh sửa tự động bằng AI</li>
-      </ul>
-    `,
-    price: 290000,
-    salePrice: 199000,
-    categoryId: 'cat-3',
-    imageUrl: '/capcut.png',
-    isFeatured: true,
-    isNew: true,
-    downloadCount: 280,
-    viewCount: 450,
-    rating: 4.8,
-    version: '1.0',
-    size: 'N/A',
+    downloadCount: 120,
+    viewCount: 210,
+    rating: 4.7,
+    version: '1.5.2',
+    size: '~45MB',
     licenseType: 'Premium',
-    createdAt: new Date('2023-11-20').toISOString(),
-    updatedAt: new Date('2023-11-20').toISOString(),
-    storeId: '3',
-    isAccount: true,
-    type: 'account',
+    createdAt: new Date('2023-05-05').toISOString(),
+    updatedAt: new Date('2023-05-05').toISOString(),
+    storeId: '1',
     features: [
-      'Tất cả hiệu ứng chuyên nghiệp',
-      'Xuất video 4K không giới hạn',
-      'Không watermark',
-      'Công cụ chỉnh sửa AI',
-      'Sử dụng trên nhiều thiết bị',
-      'Đồng bộ cloud'
+      'Mã hóa dữ liệu chuẩn quân sự',
+      'Quản lý mật khẩu an toàn',
+      'Xác thực đa yếu tố',
+      'Giao diện thân thiện, dễ sử dụng'
     ]
   },
 
+  // Design Master
   {
-    id: 'acc-chatgpt-plus',
-    name: 'Tài khoản ChatGPT Plus – OpenAI',
-    slug: 'tai-khoan-chatgpt-plus-openai',
-    description: 'Tài khoản ChatGPT Plus chính hãng với đầy đủ tính năng cao cấp từ OpenAI, luôn cập nhật tính năng mới.',
+    id: 'prod-design',
+    name: 'Design Master',
+    slug: 'design-master',
+    description: 'Phần mềm thiết kế đồ họa chuyên nghiệp với đầy đủ công cụ cho các nhà thiết kế.',
     longDescription: `
-      <h2>ChatGPT là một chat bot cực mạnh hiện nay</h2>
-      <p>Có thể trả lời được rất nhiều các câu hỏi cả tiếng anh và tiếng việt. Có thể hỗ trợ cả lập trình từ Front-end cho tới Back-end. Ngoài ra, tài khoản ChatGPT có khả năng trả lời nhiều loại câu hỏi khác nhau, bao gồm cả câu hỏi có liên quan tới khoa học, toán học, thơ ca, hội họa, v.v.</p>
-      
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1200px-ChatGPT_logo.svg.png" alt="ChatGPT Plus với giao diện mới" />
-      
-      <h3>Phiên bản mới nhất với GPT-4o</h3>
-      <p>ChatGPT Plus được trang bị model GPT-4o mới nhất, mang lại trải nghiệm trò chuyện mượt mà và tự nhiên nhất. Có thể xử lý đa phương tiện, bao gồm hình ảnh, âm thanh, và ghi chú thoại.</p>
-      
-      <img src="https://www.zdnet.com/a/img/resize/f22ea4a3dfc6f0c2549eb756c46c5d58a3fa5588/2023/08/31/c7f2d3c9-ac89-434a-bd5f-ce50ae29c629/img-6020.jpg?auto=webp&width=1280" alt="ChatGPT Plus với tính năng mới" />
-      
-      <h3>Nên mua tài khoản ChatGPT Plus khi nào?</h3>
-      <ul>
-        <li>Khi bạn cần một trợ lý AI chất lượng cao để xử lý công việc hàng ngày</li>
-        <li>Khi bạn muốn truy cập không giới hạn vào mô hình tiên tiến nhất của OpenAI</li>
-        <li>Khi bạn muốn sử dụng các tính năng độc quyền mà phiên bản miễn phí không có</li>
-        <li>Khi bạn cần sử dụng AI để tăng năng suất làm việc hoặc học tập</li>
-      </ul>
-      
-      <h3>Lợi ích của ChatGPT Plus</h3>
-      <ol>
-        <li>Truy cập ưu tiên trong giờ cao điểm</li>
-        <li>Phản hồi nhanh hơn</li>
-        <li>Truy cập sớm các tính năng mới</li>
-        <li>Khả năng xử lý đa phương tiện</li>
-        <li>Khả năng đọc và phân tích hình ảnh</li>
-      </ol>
-      
-      <img src="https://www.zdnet.com/a/img/resize/c4e10c0b51714b16bf47c5a295e5a4cd3d398820/2023/02/20/80beefc2-7723-480a-a67c-fe2b3e7b14a8/chatgpt-code-review.jpg?auto=webp&width=1280" alt="ChatGPT Plus với khả năng phân tích hình ảnh" />
-      
-      <h3>Lưu ý khi sử dụng tài khoản</h3>
-      <p>Sau khi mua tài khoản, khách hàng sẽ nhận được email và mật khẩu để đăng nhập. Chỉ nên sử dụng trên một thiết bị để tránh bị khóa tài khoản. Không sử dụng VPN khi sử dụng ChatGPT Plus.</p>
-    `,
-    price: 449000,
-    salePrice: 149000,
-    categoryId: 'cat-6', // Tài khoản học tập
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1200px-ChatGPT_logo.svg.png',
-    descriptionImages: [
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1200px-ChatGPT_logo.svg.png',
-      'https://www.zdnet.com/a/img/resize/f22ea4a3dfc6f0c2549eb756c46c5d58a3fa5588/2023/08/31/c7f2d3c9-ac89-434a-bd5f-ce50ae29c629/img-6020.jpg?auto=webp&width=1280',
-      'https://www.zdnet.com/a/img/resize/c4e10c0b51714b16bf47c5a295e5a4cd3d398820/2023/02/20/80beefc2-7723-480a-a67c-fe2b3e7b14a8/chatgpt-code-review.jpg?auto=webp&width=1280'
-    ],
-    isFeatured: true,
-    isNew: true,
-    ratings: 4.9,
-    reviewCount: 42,
-    features: [
-      'Truy cập ưu tiên trong giờ cao điểm',
-      'Phản hồi nhanh hơn phiên bản miễn phí',
-      'Sử dụng GPT-4o - mô hình mạnh nhất',
-      'Truy cập sớm các tính năng mới',
-      'Khả năng xử lý đa phương tiện'
-    ],
-    tags: ['ChatGPT', 'OpenAI', 'AI', 'GPT-4o', 'Plus'],
-    relatedProducts: ['prod-1', 'prod-3', 'prod-vt']
-  },
+      <h2>Design Master - Công cụ thiết kế đồ họa chuyên nghiệp</h2>
+      <p>Design Master là phần mềm thiết kế đồ họa chuyên nghiệp cung cấp đầy đủ công cụ để tạo ra các tác phẩm thiết kế chất lượng cao cho cả in ấn và web.</p>
 
-  {
-    id: 'acc-adobe',
-    name: 'Adobe Creative Cloud',
-    slug: 'adobe-creative-cloud',
-    description: 'Tài khoản Adobe Creative Cloud với đầy đủ ứng dụng thiết kế và chỉnh sửa chuyên nghiệp.',
-    longDescription: `
-      <h2>Adobe Creative Cloud - Tài khoản cao cấp</h2>
-      <p>Truy cập toàn bộ bộ ứng dụng Adobe Creative Cloud với tài khoản chính hãng. Sử dụng Photoshop, Illustrator, Premiere Pro và nhiều ứng dụng khác.</p>
-      
-      <h3>Bao gồm:</h3>
+      <h3>Tính năng chính:</h3>
       <ul>
-        <li><strong>Photoshop</strong>: Chỉnh sửa ảnh chuyên nghiệp</li>
-        <li><strong>Illustrator</strong>: Thiết kế vector</li>
-        <li><strong>Premiere Pro</strong>: Biên tập video</li>
-        <li><strong>After Effects</strong>: Hiệu ứng và motion graphics</li>
-        <li><strong>Nhiều ứng dụng khác</strong>: InDesign, XD, Lightroom...</li>
+        <li><strong>Công cụ vẽ vector:</strong> Tạo và chỉnh sửa hình ảnh vector chất lượng cao.</li>
+        <li><strong>Chỉnh sửa ảnh:</strong> Công cụ chỉnh sửa ảnh toàn diện với các bộ lọc và hiệu ứng.</li>
+        <li><strong>Thiết kế UI/UX:</strong> Công cụ chuyên dụng cho thiết kế giao diện người dùng.</li>
+        <li><strong>Thư viện template:</strong> Nhiều mẫu thiết kế sẵn cho các dự án khác nhau.</li>
       </ul>
     `,
-    price: 1290000,
-    salePrice: 1290000,
-    categoryId: 'cat-3',
-    imageUrl: '/adobe.png',
+    price: 1500000,
+    salePrice: 1500000,
+    categoryId: 'cat-3', // Phần mềm đồ họa
+    imageUrl: '/images/products/design-master.jpg',
     isFeatured: true,
     isNew: false,
-    downloadCount: 310,
-    viewCount: 450,
-    rating: 4.8,
-    version: '1.0',
-    size: 'N/A',
+    downloadCount: 200,
+    viewCount: 350,
+    rating: 4.9,
+    version: '2.2.0',
+    size: '~200MB',
     licenseType: 'Premium',
-    createdAt: new Date('2023-08-15').toISOString(),
-    updatedAt: new Date('2023-10-10').toISOString(),
-    storeId: '3',
-    isAccount: true,
-    type: 'account',
+    createdAt: new Date('2023-02-15').toISOString(),
+    updatedAt: new Date('2023-02-15').toISOString(),
+    storeId: '3', // Creative Tools
     features: [
-      'Truy cập toàn bộ bộ ứng dụng Adobe',
-      'Cập nhật phiên bản mới nhất',
-      'Lưu trữ cloud 100GB',
-      'Thư viện font, template và asset',
-      'Các công cụ AI tích hợp',
-      'Đồng bộ giữa các thiết bị'
+      'Công cụ vẽ vector chuyên nghiệp',
+      'Chỉnh sửa ảnh toàn diện',
+      'Nhiều template và tài nguyên có sẵn',
+      'Hỗ trợ xuất file cho web và in ấn'
     ]
   }
 ];

@@ -24,7 +24,33 @@ function OrdersPage() {
 
   // Giả lập dữ liệu đơn hàng
   useEffect(() => {
-    // Trong thực tế, đây sẽ là API call
+    // CHÚ Ý: Đây là dữ liệu mẫu để hiển thị giao diện
+    // Trong ứng dụng thực tế, cần thay thế bằng API call đến backend
+    // Ví dụ: 
+    // const fetchOrders = async () => {
+    //   try {
+    //     setIsLoading(true);
+    //     const response = await fetch('/api/admin/orders');
+    //     const data = await response.json();
+    //     setOrders(data.orders);
+    //     setStats({
+    //       total: data.stats.total,
+    //       pending: data.stats.pending,
+    //       processing: data.stats.processing,
+    //       completed: data.stats.completed,
+    //       cancelled: data.stats.cancelled, 
+    //       refunded: data.stats.refunded,
+    //       revenue: data.stats.revenue,
+    //       averageOrderValue: data.stats.averageOrderValue
+    //     });
+    //   } catch (error) {
+    //     console.error('Error fetching orders:', error);
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // };
+    // fetchOrders();
+
     const mockOrders: Order[] = [
       {
         id: 'ORD-001',
@@ -43,9 +69,8 @@ function OrdersPage() {
         status: 'completed',
         paymentMethod: 'bank_transfer',
         paymentStatus: 'paid',
-        createdAt: '2023-05-20T08:30:00Z',
-        updatedAt: '2023-05-20T10:15:00Z',
-        notes: 'Khách hàng VIP'
+        createdAt: '2023-05-20T15:30:00Z',
+        updatedAt: '2023-05-20T15:30:00Z'
       },
       {
         id: 'ORD-002',
@@ -70,8 +95,8 @@ function OrdersPage() {
         status: 'processing',
         paymentMethod: 'momo',
         paymentStatus: 'paid',
-        createdAt: '2023-05-28T14:20:00Z',
-        updatedAt: '2023-05-28T14:25:00Z'
+        createdAt: '2023-05-28T21:20:00Z',
+        updatedAt: '2023-05-28T21:20:00Z'
       },
       {
         id: 'ORD-003',
@@ -90,8 +115,8 @@ function OrdersPage() {
         status: 'pending',
         paymentMethod: 'bank_transfer',
         paymentStatus: 'pending',
-        createdAt: '2023-05-29T09:45:00Z',
-        updatedAt: '2023-05-29T09:45:00Z'
+        createdAt: '2023-05-29T16:45:00Z',
+        updatedAt: '2023-05-29T16:45:00Z'
       },
       {
         id: 'ORD-004',
@@ -110,9 +135,8 @@ function OrdersPage() {
         status: 'cancelled',
         paymentMethod: 'credit_card',
         paymentStatus: 'refunded',
-        createdAt: '2023-05-15T16:30:00Z',
-        updatedAt: '2023-05-16T10:20:00Z',
-        notes: 'Khách hàng yêu cầu hủy'
+        createdAt: '2023-05-15T23:30:00Z',
+        updatedAt: '2023-05-15T23:30:00Z'
       },
       {
         id: 'ORD-005',
@@ -131,28 +155,24 @@ function OrdersPage() {
         status: 'completed',
         paymentMethod: 'zalopay',
         paymentStatus: 'paid',
-        createdAt: '2023-05-25T11:10:00Z',
-        updatedAt: '2023-05-25T13:40:00Z'
+        createdAt: '2023-05-25T18:10:00Z',
+        updatedAt: '2023-05-25T18:10:00Z'
       }
     ];
 
     // Tính toán số liệu thống kê
-    const totalOrders = mockOrders.length;
-    const pendingOrders = mockOrders.filter(order => order.status === 'pending').length;
-    const processingOrders = mockOrders.filter(order => order.status === 'processing').length;
-    const completedOrders = mockOrders.filter(order => order.status === 'completed').length;
-    const cancelledOrders = mockOrders.filter(order => order.status === 'cancelled').length;
-    const refundedOrders = mockOrders.filter(order => order.status === 'refunded').length;
+    const totalOrders = 5;
+    const pendingOrders = 1; // Chờ xử lý
+    const processingOrders = 1; // Đang xử lý
+    const completedOrders = 2; // Hoàn thành
+    const cancelledOrders = 1; // Đã hủy
+    const refundedOrders = 0; // Hoàn tiền
     
-    // Tính tổng doanh thu từ các đơn hàng đã hoàn thành
-    const revenue = mockOrders
-      .filter(order => order.status === 'completed')
-      .reduce((sum, order) => sum + order.totalAmount, 0);
+    // Tổng doanh thu: 990.000 + 1.980.000 = 2.970.000đ
+    const revenue = 2970000;
     
-    // Tính giá trị trung bình đơn hàng
-    const averageOrderValue = totalOrders > 0 
-      ? mockOrders.reduce((sum, order) => sum + order.totalAmount, 0) / totalOrders 
-      : 0;
+    // Giá trị trung bình đơn hàng
+    const averageOrderValue = revenue / completedOrders;
 
     setOrders(mockOrders);
     setStats({
@@ -249,8 +269,8 @@ function OrdersPage() {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'processing': return 'bg-blue-100 text-blue-800';
       case 'completed': return 'bg-green-100 text-green-800';
-      case 'cancelled': return 'bg-gray-100 text-gray-800';
-      case 'refunded': return 'bg-red-100 text-red-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      case 'refunded': return 'bg-orange-100 text-orange-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
