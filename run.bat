@@ -13,22 +13,12 @@ REM Kết thúc các tiến trình Node.js đang chạy
 echo Dang dung cac tien trinh Node.js dang chay...
 taskkill /f /im node.exe > nul 2>&1
 
-REM Chọn chế độ
-echo Chon che do khoi dong:
-echo 1. Khoi dong binh thuong (dev)
-echo 2. Khoi dong va sua loi (dev + fix errors)
-echo 3. Khoi dong nhanh khong fix loi (fast dev)
-echo 4. Chi sua loi khong khoi dong (fix only)
-echo.
-set /p mode="Nhap so tuong ung (mac dinh: 1): "
-
-if "%mode%"=="" set mode=1
+REM Tự động chọn chế độ 2 (Khởi động và sửa lỗi)
+set mode=2
 
 echo Đang chuẩn bị môi trường NextJS...
-set NODE_OPTIONS=--no-warnings --max-old-space-size=4096 --openssl-legacy-provider
+set NODE_OPTIONS=--no-warnings --max-old-space-size=4096
 set NEXT_TELEMETRY_DISABLED=1
-
-if "%mode%"=="4" goto fix_only
 
 REM Sửa lỗi trong cấu hình Next.js
 echo Cập nhật cấu hình Next.js...
@@ -37,8 +27,6 @@ if exist next.config.js (
 ) else (
   echo ⚠️ Không tìm thấy file next.config.js, bỏ qua...
 )
-
-if "%mode%"=="3" goto start_dev
 
 REM Kiểm tra và xóa các thư mục tạm thời
 echo Đang xóa các file tạm thời...
@@ -155,21 +143,18 @@ if exist verify-config.js (
   echo ⚠️ Không tìm thấy file verify-config.js, bỏ qua...
 )
 
-:fix_only
-if "%mode%"=="4" (
-  echo ================================================
-  echo  Đã hoàn thành việc sửa lỗi, không khởi động server
-  echo ================================================
-  echo.
-  echo Nhấn phím bất kỳ để thoát...
-  pause
-  exit
-)
-
-:start_dev
 echo.
 echo ================================================
-echo  Khởi động máy chủ phát triển...
+echo  Kiểm tra và cài đặt các module thiếu...
+echo ================================================
+echo.
+
+REM Kiểm tra và cài đặt các module thiếu
+npm install
+
+echo.
+echo ================================================
+echo  Khởi động máy chủ...
 echo ================================================
 echo.
 
@@ -177,11 +162,7 @@ REM Ghi log nếu cần
 set "LOG_FILE=next-start.log"
 echo Starting Next.js at %time% %date% > %LOG_FILE%
 
-if "%mode%"=="2" (
-  npm run dev >> %LOG_FILE% 2>&1
-) else (
-  npm run dev
-)
+npm start
 
 echo.
 echo Server đã dừng, nhấn phím bất kỳ để đóng cửa sổ...
