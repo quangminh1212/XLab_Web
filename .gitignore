@@ -67,6 +67,7 @@ next-env.d.ts
 /.next/static/webpack/
 /.next/static/*.js
 /.swc/
+.swcrc
 /.turbo/
 **/*.hot-update.js
 **/*.hot-update.json

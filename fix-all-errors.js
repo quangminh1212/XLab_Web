@@ -552,6 +552,83 @@ function createGitkeepFiles() {
   log('✅ Đã hoàn thành việc tạo các file .gitkeep');
 }
 
+// Sửa lỗi SWC
+console.log('🔧 Sửa lỗi SWC...');
+try {
+  // Kiểm tra phiên bản Next.js
+  const nextPkg = require('./node_modules/next/package.json');
+  console.log(`Phiên bản Next.js: ${nextPkg.version}`);
+
+  // Cập nhật cấu hình Next.js
+  const nextConfigPath = path.join(__dirname, 'next.config.js');
+  let nextConfig = fs.readFileSync(nextConfigPath, 'utf8');
+  
+  // Xóa swcMinify nếu tồn tại
+  nextConfig = nextConfig.replace(/,\s*swcMinify:\s*false/g, '');
+  
+  // Cập nhật cấu hình compiler và experimental
+  nextConfig = nextConfig.replace(
+    /compiler:\s*{[^}]*}/g,
+    `compiler: {
+    styledComponents: true
+  }`
+  );
+  
+  nextConfig = nextConfig.replace(
+    /experimental:\s*{[^}]*}/g,
+    `experimental: {
+    largePageDataBytes: 12800000,
+    forceSwcTransforms: false,
+    appDocumentPreloading: false
+  }`
+  );
+  
+  fs.writeFileSync(nextConfigPath, nextConfig);
+  console.log('✅ Đã cập nhật cấu hình Next.js');
+  
+  // Tạo .swcrc
+  const swcrcPath = path.join(__dirname, '.swcrc');
+  const swcrcContent = JSON.stringify({
+    jsc: {
+      parser: {
+        syntax: "ecmascript",
+        jsx: true,
+        dynamicImport: true,
+        privateMethod: true,
+        functionBind: true,
+        exportDefaultFrom: true,
+        exportNamespaceFrom: true,
+        decorators: true,
+        decoratorsBeforeExport: true,
+        topLevelAwait: true,
+        importMeta: true
+      },
+      transform: {
+        react: {
+          runtime: "automatic",
+          pragma: "React.createElement",
+          pragmaFrag: "React.Fragment",
+          throwIfNamespace: true,
+          development: false,
+          useBuiltins: false
+        }
+      },
+      target: "es2021",
+      loose: false,
+      externalHelpers: false,
+      keepClassNames: true
+    },
+    minify: false,
+    isModule: true
+  }, null, 2);
+  
+  fs.writeFileSync(swcrcPath, swcrcContent);
+  console.log('✅ Đã tạo file .swcrc');
+  console.log('✅ Đã sửa xong lỗi SWC');
+} catch (error) {
+  console.error('⚠️ Lỗi khi sửa SWC:', error);
+}
+
 // Chạy tất cả các bước sửa lỗi
 try {
   // Đảm bảo thư mục .next tồn tại
