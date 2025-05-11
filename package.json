@@ -19,6 +19,7 @@
     "fix-errors": "node fix-all-errors.js"
   },
   "dependencies": {
+    "@next/swc-wasm-nodejs": "15.3.2",
     "@radix-ui/react-slot": "1.1.2",
     "@types/uuid": "10.0.0",
     "class-variance-authority": "0.7.1",

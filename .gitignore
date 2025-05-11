@@ -78,3 +78,4 @@ next-env.d.ts
 /.next/app-paths-manifest.json
 /.next/next-font-manifest.json
 /.next/middleware-manifest.json
+node_modules/@next/swc-*
