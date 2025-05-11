@@ -30,169 +30,42 @@ function OrdersPage() {
     // QUAN TRỌNG: Đã tạo API endpoint tại /api/admin/orders
     // Bỏ comment dưới đây để sử dụng API thực tế khi đã có dữ liệu thật
     
-    /*
     const fetchOrders = async () => {
       try {
         setIsLoading(true);
         const response = await fetch('/api/admin/orders');
         const data = await response.json();
-        setOrders(data.orders);
+        setOrders(data.orders || []);
         setStats({
-          total: data.stats.total,
-          pending: data.stats.pending,
-          processing: data.stats.processing,
-          completed: data.stats.completed,
-          cancelled: data.stats.cancelled, 
-          refunded: data.stats.refunded,
-          revenue: data.stats.revenue,
-          averageOrderValue: data.stats.averageOrderValue
+          total: data.stats?.total || 0,
+          pending: data.stats?.pending || 0,
+          processing: data.stats?.processing || 0,
+          completed: data.stats?.completed || 0,
+          cancelled: data.stats?.cancelled || 0, 
+          refunded: data.stats?.refunded || 0,
+          revenue: data.stats?.revenue || 0,
+          averageOrderValue: data.stats?.averageOrderValue || 0
         });
       } catch (error) {
         console.error('Error fetching orders:', error);
+        // Set empty data when error occurs
+        setOrders([]);
+        setStats({
+          total: 0,
+          pending: 0,
+          processing: 0,
+          completed: 0,
+          cancelled: 0,
+          refunded: 0,
+          revenue: 0,
+          averageOrderValue: 0
+        });
       } finally {
         setIsLoading(false);
       }
     };
     fetchOrders();
-    return; // Dừng việc thực thi code dưới đây nếu sử dụng API thật
-    */
-
-    const mockOrders: Order[] = [
-      {
-        id: 'ORD-001',
-        userId: '1',
-        userName: 'Nguyễn Văn A',
-        userEmail: 'nguyenvana@example.com',
-        items: [
-          {
-            productId: 'prod-vt',
-            productName: 'VoiceTyping',
-            quantity: 1,
-            price: 990000
-          }
-        ],
-        totalAmount: 990000,
-        status: 'completed',
-        paymentMethod: 'bank_transfer',
-        paymentStatus: 'paid',
-        createdAt: '2023-05-20T15:30:00Z',
-        updatedAt: '2023-05-20T15:30:00Z'
-      },
-      {
-        id: 'ORD-002',
-        userId: '2',
-        userName: 'Trần Thị B',
-        userEmail: 'tranthib@example.com',
-        items: [
-          {
-            productId: 'prod-office',
-            productName: 'Office Suite',
-            quantity: 1,
-            price: 1200000
-          },
-          {
-            productId: 'prod-backup',
-            productName: 'Backup Pro',
-            quantity: 1,
-            price: 500000
-          }
-        ],
-        totalAmount: 1700000,
-        status: 'processing',
-        paymentMethod: 'momo',
-        paymentStatus: 'paid',
-        createdAt: '2023-05-28T21:20:00Z',
-        updatedAt: '2023-05-28T21:20:00Z'
-      },
-      {
-        id: 'ORD-003',
-        userId: '3',
-        userName: 'Lê Văn C',
-        userEmail: 'levanc@example.com',
-        items: [
-          {
-            productId: 'prod-secure',
-            productName: 'Secure Vault',
-            quantity: 1,
-            price: 850000
-          }
-        ],
-        totalAmount: 850000,
-        status: 'pending',
-        paymentMethod: 'bank_transfer',
-        paymentStatus: 'pending',
-        createdAt: '2023-05-29T16:45:00Z',
-        updatedAt: '2023-05-29T16:45:00Z'
-      },
-      {
-        id: 'ORD-004',
-        userId: '4',
-        userName: 'Phạm Thị D',
-        userEmail: 'phamthid@example.com',
-        items: [
-          {
-            productId: 'prod-design',
-            productName: 'Design Master',
-            quantity: 1,
-            price: 1500000
-          }
-        ],
-        totalAmount: 1500000,
-        status: 'cancelled',
-        paymentMethod: 'credit_card',
-        paymentStatus: 'refunded',
-        createdAt: '2023-05-15T23:30:00Z',
-        updatedAt: '2023-05-15T23:30:00Z'
-      },
-      {
-        id: 'ORD-005',
-        userId: '5',
-        userName: 'Hoàng Văn E',
-        userEmail: 'hoangvane@example.com',
-        items: [
-          {
-            productId: 'prod-vt',
-            productName: 'VoiceTyping',
-            quantity: 2,
-            price: 990000
-          }
-        ],
-        totalAmount: 1980000,
-        status: 'completed',
-        paymentMethod: 'zalopay',
-        paymentStatus: 'paid',
-        createdAt: '2023-05-25T18:10:00Z',
-        updatedAt: '2023-05-25T18:10:00Z'
-      }
-    ];
-
-    // Tính toán số liệu thống kê
-    const totalOrders = 5;
-    const pendingOrders = 1; // Chờ xử lý
-    const processingOrders = 1; // Đang xử lý
-    const completedOrders = 2; // Hoàn thành
-    const cancelledOrders = 1; // Đã hủy
-    const refundedOrders = 0; // Hoàn tiền
     
-    // Tổng doanh thu: 990.000 + 1.980.000 = 2.970.000đ
-    const revenue = 2970000;
-    
-    // Giá trị trung bình đơn hàng
-    const averageOrderValue = revenue / completedOrders;
-
-    setOrders(mockOrders);
-    setStats({
-      total: totalOrders,
-      pending: pendingOrders,
-      processing: processingOrders,
-      completed: completedOrders,
-      cancelled: cancelledOrders,
-      refunded: refundedOrders,
-      revenue,
-      averageOrderValue
-    });
-    
-    setIsLoading(false);
   }, []);
 
   // Lọc đơn hàng theo tìm kiếm, trạng thái và thời gian
@@ -463,7 +336,42 @@ function OrdersPage() {
             
             {filteredOrders.length === 0 && (
               <div className="py-12 text-center text-gray-500">
-                <p>Không tìm thấy đơn hàng phù hợp.</p>
+                {orders.length === 0 ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mx-auto mb-4 text-gray-400">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                    </svg>
+                    <p className="text-lg font-medium mb-2">Chưa có đơn hàng nào</p>
+                    <p className="mb-4">Hiện tại chưa có đơn hàng nào được tạo trong hệ thống.</p>
+                    <Link href="/admin" className="inline-flex items-center text-primary-600 hover:text-primary-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                      </svg>
+                      Quay lại bảng điều khiển
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 mx-auto mb-4 text-gray-400">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                    <p className="text-lg font-medium mb-2">Không tìm thấy đơn hàng</p>
+                    <p className="mb-4">Không tìm thấy đơn hàng nào phù hợp với bộ lọc đã chọn.</p>
+                    <button 
+                      onClick={() => {
+                        setSearchTerm('');
+                        setStatusFilter('all');
+                        setTimeFilter('all');
+                      }}
+                      className="inline-flex items-center text-primary-600 hover:text-primary-700"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                      </svg>
+                      Xóa bộ lọc
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </>
