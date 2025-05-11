@@ -12,11 +12,7 @@ function HomePage() {
 
   // Lọc sản phẩm mới nhất
   const newProducts = [...products]
-    .sort((a, b) => {
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return dateB - dateA;
-    })
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 4);
 
   return (
@@ -25,16 +21,9 @@ function HomePage() {
       <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-8 sm:py-10 md:py-12">
         <div className="container mx-auto">
           <div className="flex flex-col items-center text-center">
-            <div className="mb-4">
-              <Image 
-                src="/images/logo.png" 
-                alt="XLab Logo" 
-                width={200} 
-                height={80} 
-                className="h-auto"
-                priority
-              />
-            </div>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+              <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
+            </h1>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mb-8">
               Tối ưu hiệu quả, tối thiểu chi phí!
             </p>
@@ -133,7 +122,7 @@ function HomePage() {
                 </p>
               </div>
 
-              <div className="flex flex-col overflow-y-auto gap-4 pr-1 max-h-[450px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
                   <div className="flex items-center mb-3">
                     <div className="bg-primary-100 rounded-full p-2 mr-3">
@@ -205,18 +194,18 @@ function HomePage() {
                     "X Lab cung cấp các giải pháp công nghệ hiệu quả với giá cả phải chăng cho sinh viên. Tôi rất hài lòng với chất lượng sản phẩm và dịch vụ hỗ trợ khách hàng."
                   </p>
                 </div>
-                
-                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
-                  <Link 
-                    href="/testimonials"
-                    className="flex items-center justify-center text-primary-600 hover:text-primary-800 w-full h-full"
-                  >
-                    <span className="font-medium text-sm">Xem tất cả đánh giá</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L11.586 12H6a1 1 0 110-2h5.586l-2.293-2.293a1 1 0 111.414-1.414l4 4z" clipRule="evenodd" />
-                    </svg>
-                  </Link>
-                </div>
+              </div>
+              
+              <div className="mt-5 text-center">
+                <Link 
+                  href="/testimonials"
+                  className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm"
+                >
+                  Xem tất cả đánh giá
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </Link>
               </div>
             </section>
           </div>
@@ -248,7 +237,7 @@ function HomePage() {
                           name={product.name}
                           description={product.description}
                           price={product.price}
-                          originalPrice={product.salePrice !== undefined && product.salePrice < product.price ? product.price : undefined}
+                          originalPrice={product.salePrice < product.price ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}
@@ -296,7 +285,7 @@ function HomePage() {
                           name={product.name}
                           description={product.description}
                           price={product.price}
-                          originalPrice={product.salePrice !== undefined && product.salePrice < product.price ? product.price : undefined}
+                          originalPrice={product.salePrice < product.price ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}

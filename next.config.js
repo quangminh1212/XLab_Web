@@ -77,9 +77,7 @@ const nextConfig = {
     largePageDataBytes: 12800000,
     forceSwcTransforms: true,
     appDocumentPreloading: false,
-    swcTraceProfiling: false,
   },
-
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
@@ -109,12 +107,6 @@ const nextConfig = {
         ...config.output,
         hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
         hotUpdateMainFilename: 'static/webpack/[fullhash].hot-update.json',
-      };
-      
-      // Use wasm SWC compiler
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        '@next/swc-win32-x64-msvc': '@next/swc-wasm-nodejs',
       };
     }
 
@@ -187,7 +179,7 @@ const nextConfig = {
           })
         );
       } catch (error) {
-        console.warn('webpack-manifest-plugin not found or failed to initialize. Skipping manifest generation.');
+        console.warn('webpack-manifest-plugin not found. Skipping manifest generation.');
       }
     }
 
@@ -264,10 +256,6 @@ const nextConfig = {
         permanent: true,
       },
     ]
-  },
-  swcMinify: true,
-  swcLoader: {
-    implementation: require.resolve("@next/swc-wasm-nodejs"),
   },
 };
 
