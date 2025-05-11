@@ -138,4 +138,5 @@ start-without-warnings.bat
 
 # Babel, SWC related
 .babelrc
+.babelrc.backup
 babel.config.js
