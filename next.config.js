@@ -71,14 +71,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   compiler: {
-    styledComponents: true
+    styledComponents: true,
   },
   experimental: {
     largePageDataBytes: 12800000,
-    forceSwcTransforms: false,
+    forceSwcTransforms: true,
     appDocumentPreloading: false,
-    disableOptimizedLoading: true,
-    disablePostcssPresetEnv: true
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,

@@ -26,9 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 error.log
 fix-all-errors.log
-next-start.log
-next-start-check.log
-run.log
 
 # local env files
 .env*.local
@@ -59,8 +56,6 @@ next-env.d.ts
 /.next/server/
 /.next/static/
 /.next/trace
-/.next/trace-*
-/.next/.empty_trace
 /.next/*.json
 /.next/server/vendor-chunks/
 /.next/server/chunks/
@@ -72,7 +67,6 @@ next-env.d.ts
 /.next/static/webpack/
 /.next/static/*.js
 /.swc/
-.swcrc
 /.turbo/
 **/*.hot-update.js
 **/*.hot-update.json
