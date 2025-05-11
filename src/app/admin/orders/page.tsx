@@ -26,30 +26,36 @@ function OrdersPage() {
   useEffect(() => {
     // CHÚ Ý: Đây là dữ liệu mẫu để hiển thị giao diện
     // Trong ứng dụng thực tế, cần thay thế bằng API call đến backend
-    // Ví dụ: 
-    // const fetchOrders = async () => {
-    //   try {
-    //     setIsLoading(true);
-    //     const response = await fetch('/api/admin/orders');
-    //     const data = await response.json();
-    //     setOrders(data.orders);
-    //     setStats({
-    //       total: data.stats.total,
-    //       pending: data.stats.pending,
-    //       processing: data.stats.processing,
-    //       completed: data.stats.completed,
-    //       cancelled: data.stats.cancelled, 
-    //       refunded: data.stats.refunded,
-    //       revenue: data.stats.revenue,
-    //       averageOrderValue: data.stats.averageOrderValue
-    //     });
-    //   } catch (error) {
-    //     console.error('Error fetching orders:', error);
-    //   } finally {
-    //     setIsLoading(false);
-    //   }
-    // };
-    // fetchOrders();
+    
+    // QUAN TRỌNG: Đã tạo API endpoint tại /api/admin/orders
+    // Bỏ comment dưới đây để sử dụng API thực tế khi đã có dữ liệu thật
+    
+    /*
+    const fetchOrders = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/admin/orders');
+        const data = await response.json();
+        setOrders(data.orders);
+        setStats({
+          total: data.stats.total,
+          pending: data.stats.pending,
+          processing: data.stats.processing,
+          completed: data.stats.completed,
+          cancelled: data.stats.cancelled, 
+          refunded: data.stats.refunded,
+          revenue: data.stats.revenue,
+          averageOrderValue: data.stats.averageOrderValue
+        });
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchOrders();
+    return; // Dừng việc thực thi code dưới đây nếu sử dụng API thật
+    */
 
     const mockOrders: Order[] = [
       {
@@ -279,12 +285,28 @@ function OrdersPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
-        <Link
-          href="/admin"
-          className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
-        >
-          ← Quay lại Dashboard
-        </Link>
+        <div className="flex space-x-3">
+          <Link
+            href="/orders/history"
+            className="bg-primary-50 hover:bg-primary-100 text-primary-700 py-2 px-4 rounded-lg flex items-center text-sm transition-colors"
+            target="_blank"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1">
+              <path fillRule="evenodd" d="M4.25 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8.5a.75.75 0 00.75-.75v-4a.75.75 0 011.5 0v4A2.25 2.25 0 0112.75 17h-8.5A2.25 2.25 0 012 14.75v-8.5A2.25 2.25 0 014.25 4h5a.75.75 0 010 1.5h-5z" clipRule="evenodd" />
+              <path fillRule="evenodd" d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z" clipRule="evenodd" />
+            </svg>
+            Xem trang khách hàng
+          </Link>
+          <Link
+            href="/admin"
+            className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 mr-1">
+              <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+            </svg>
+            Quay lại Dashboard
+          </Link>
+        </div>
       </div>
       
       {/* Thống kê */}

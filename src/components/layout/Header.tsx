@@ -258,7 +258,7 @@ const Header = () => {
                     Tài khoản của tôi
                   </Link>
                   <Link
-                    href="/orders"
+                    href="/orders/history"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                   >
                     Đơn hàng của tôi
