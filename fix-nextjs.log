@@ -1,0 +1,124 @@
+[2025-05-11T05:39:30.796Z] === Starting Next.js Fix Script ===
+[2025-05-11T05:39:30.804Z] 🔧 Fixing SWC (Rust Compiler) issues...
+[2025-05-11T05:39:30.806Z] 🔍 Found SWC directory at: C:\VF\XLab_Web\node_modules\@next\swc-win32-x64-msvc
+[2025-05-11T05:39:30.807Z] ⚠️ SWC binary not found at: C:\VF\XLab_Web\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+[2025-05-11T05:39:30.809Z] 📦 Installing @next/swc-wasm-nodejs...
+[2025-05-11T05:39:30.809Z] 🔍 Checking if @next/swc-wasm-nodejs is already installed...
+[2025-05-11T05:39:30.908Z] ✅ @next/swc-wasm-nodejs is already installed
+[2025-05-11T05:39:30.911Z] ℹ️ SWC WASM configuration already exists in .npmrc
+[2025-05-11T05:39:30.912Z] 📝 Checking and fixing next.config.js...
+[2025-05-11T05:39:30.914Z] ✅ No invalid options found in next.config.js
+[2025-05-11T05:39:30.915Z] ✅ SWC fixes completed
+[2025-05-11T05:39:30.916Z] 📦 Fixing vendor chunks...
+[2025-05-11T05:39:30.918Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\next.js already exists, not overwriting.
+[2025-05-11T05:39:30.918Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\next.js already exists, not overwriting.
+[2025-05-11T05:39:30.919Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\next.js already exists, not overwriting.
+[2025-05-11T05:39:30.920Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\react.js already exists, not overwriting.
+[2025-05-11T05:39:30.921Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\react.js already exists, not overwriting.
+[2025-05-11T05:39:30.922Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\react.js already exists, not overwriting.
+[2025-05-11T05:39:30.924Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\react-dom.js already exists, not overwriting.
+[2025-05-11T05:39:30.925Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\react-dom.js already exists, not overwriting.
+[2025-05-11T05:39:30.926Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\react-dom.js already exists, not overwriting.
+[2025-05-11T05:39:30.927Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\scheduler.js already exists, not overwriting.
+[2025-05-11T05:39:30.928Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\scheduler.js already exists, not overwriting.
+[2025-05-11T05:39:30.929Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\scheduler.js already exists, not overwriting.
+[2025-05-11T05:39:30.930Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\use-sync-external-store.js already exists, not overwriting.
+[2025-05-11T05:39:30.931Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\use-sync-external-store.js already exists, not overwriting.
+[2025-05-11T05:39:30.932Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\use-sync-external-store.js already exists, not overwriting.
+[2025-05-11T05:39:30.933Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\next-auth.js already exists, not overwriting.
+[2025-05-11T05:39:30.934Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\next-auth.js already exists, not overwriting.
+[2025-05-11T05:39:30.934Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\next-auth.js already exists, not overwriting.
+[2025-05-11T05:39:30.935Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\@swc.js already exists, not overwriting.
+[2025-05-11T05:39:30.936Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\@swc.js already exists, not overwriting.
+[2025-05-11T05:39:30.938Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\@swc.js already exists, not overwriting.
+[2025-05-11T05:39:30.939Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\styled-jsx.js already exists, not overwriting.
+[2025-05-11T05:39:30.942Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\styled-jsx.js already exists, not overwriting.
+[2025-05-11T05:39:30.943Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\styled-jsx.js already exists, not overwriting.
+[2025-05-11T05:39:30.944Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\client-only.js already exists, not overwriting.
+[2025-05-11T05:39:30.944Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\client-only.js already exists, not overwriting.
+[2025-05-11T05:39:30.945Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\client-only.js already exists, not overwriting.
+[2025-05-11T05:39:30.945Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\next-client-pages-loader.js already exists, not overwriting.
+[2025-05-11T05:39:30.946Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\next-client-pages-loader.js already exists, not overwriting.
+[2025-05-11T05:39:30.947Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\next-client-pages-loader.js already exists, not overwriting.
+[2025-05-11T05:39:30.948Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\react-server-dom-webpack.js already exists, not overwriting.
+[2025-05-11T05:39:30.949Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\react-server-dom-webpack.js already exists, not overwriting.
+[2025-05-11T05:39:30.950Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\react-server-dom-webpack.js already exists, not overwriting.
+[2025-05-11T05:39:30.951Z] ⚠️ File C:\VF\XLab_Web\.next\server\vendor-chunks\react-server-dom-webpack-client.js already exists, not overwriting.
+[2025-05-11T05:39:30.951Z] ⚠️ File C:\VF\XLab_Web\.next\server\pages\vendor-chunks\react-server-dom-webpack-client.js already exists, not overwriting.
+[2025-05-11T05:39:30.952Z] ⚠️ File C:\VF\XLab_Web\.next\server\chunks\react-server-dom-webpack-client.js already exists, not overwriting.
+[2025-05-11T05:39:30.953Z] ✅ Vendor chunks fixed
+[2025-05-11T05:39:30.954Z] 📄 Fixing manifest files...
+[2025-05-11T05:39:30.955Z] ⚠️ File C:\VF\XLab_Web\.next\server\app-paths-manifest.json already exists, not overwriting.
+[2025-05-11T05:39:30.957Z] ⚠️ File C:\VF\XLab_Web\.next\server\next-font-manifest.json already exists, not overwriting.
+[2025-05-11T05:39:30.958Z] ⚠️ File C:\VF\XLab_Web\.next\server\middleware-manifest.json already exists, not overwriting.
+[2025-05-11T05:39:30.959Z] ⚠️ File C:\VF\XLab_Web\.next\build-manifest.json already exists, not overwriting.
+[2025-05-11T05:39:30.959Z] ✅ Manifest files fixed
+[2025-05-11T05:39:30.960Z] 🖼️ Fixing static files...
+[2025-05-11T05:39:30.961Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\main-app.js already exists, not overwriting.
+[2025-05-11T05:39:30.962Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\app-pages-internals.js already exists, not overwriting.
+[2025-05-11T05:39:30.963Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\webpack\webpack.js already exists, not overwriting.
+[2025-05-11T05:39:30.964Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\app\not-found.js already exists, not overwriting.
+[2025-05-11T05:39:30.964Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\app\page.js already exists, not overwriting.
+[2025-05-11T05:39:30.965Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\app\loading.js already exists, not overwriting.
+[2025-05-11T05:39:30.966Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\app\products\page.js already exists, not overwriting.
+[2025-05-11T05:39:30.967Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app-layout.css already exists, not overwriting.
+[2025-05-11T05:39:30.968Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout.css already exists, not overwriting.
+[2025-05-11T05:39:30.969Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\webpack-skyxmj65.js already exists, not overwriting.
+[2025-05-11T05:39:30.970Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\framework-clswzlt5.js already exists, not overwriting.
+[2025-05-11T05:39:30.971Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\main-tglhr9nj.js already exists, not overwriting.
+[2025-05-11T05:39:30.972Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\app-mrp37g5j.js already exists, not overwriting.
+[2025-05-11T05:39:30.974Z] ⚠️ File C:\VF\XLab_Web\.next\static\chunks\polyfills-yvkh090p.js already exists, not overwriting.
+[2025-05-11T05:39:30.974Z] ✅ Static files fixed
+[2025-05-11T05:39:30.977Z] 📊 Fixing static files with specific hashes...
+[2025-05-11T05:39:30.979Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout.css already exists, not overwriting.
+[2025-05-11T05:39:30.980Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\not-found.7d3561764989b0ed.js already exists, not overwriting.
+[2025-05-11T05:39:30.981Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\layout.32d8c3be6202d9b3.js already exists, not overwriting.
+[2025-05-11T05:39:30.981Z] ⚠️ File C:\VF\XLab_Web\.next\static\app-pages-internals.196c41f732d2db3f.js already exists, not overwriting.
+[2025-05-11T05:39:30.982Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js already exists, not overwriting.
+[2025-05-11T05:39:30.982Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\loading.062c877ec63579d3.js already exists, not overwriting.
+[2025-05-11T05:39:30.983Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\admin\layout.bd8a9bfaca039569.js already exists, not overwriting.
+[2025-05-11T05:39:30.983Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\admin\page.20e1580ca904d554.js already exists, not overwriting.
+[2025-05-11T05:39:30.984Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout-1746857687478.css already exists, not overwriting.
+[2025-05-11T05:39:30.985Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app-1746857687478.js already exists, not overwriting.
+[2025-05-11T05:39:30.986Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout-1746857690764.css already exists, not overwriting.
+[2025-05-11T05:39:30.987Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app-1746857690764.js already exists, not overwriting.
+[2025-05-11T05:39:30.987Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout-1746857700000.css already exists, not overwriting.
+[2025-05-11T05:39:30.989Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app-1746857700000.js already exists, not overwriting.
+[2025-05-11T05:39:30.990Z] ✅ Hashed static files fixed
+[2025-05-11T05:39:30.991Z] 🕒 Fixing 404 errors for files with timestamp...
+[2025-05-11T05:39:30.993Z] ⚠️ File C:\VF\XLab_Web\public\timestamp-handler.js already exists, not overwriting.
+[2025-05-11T05:39:30.994Z] ⚠️ File C:\VF\XLab_Web\src\pages\_app.js already exists, not overwriting.
+[2025-05-11T05:39:30.994Z] 📊 Fixing static files with specific hashes...
+[2025-05-11T05:39:30.995Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout.css already exists, not overwriting.
+[2025-05-11T05:39:30.996Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\not-found.7d3561764989b0ed.js already exists, not overwriting.
+[2025-05-11T05:39:30.996Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\layout.32d8c3be6202d9b3.js already exists, not overwriting.
+[2025-05-11T05:39:30.997Z] ⚠️ File C:\VF\XLab_Web\.next\static\app-pages-internals.196c41f732d2db3f.js already exists, not overwriting.
+[2025-05-11T05:39:30.997Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js already exists, not overwriting.
+[2025-05-11T05:39:30.998Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\loading.062c877ec63579d3.js already exists, not overwriting.
+[2025-05-11T05:39:30.999Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\admin\layout.bd8a9bfaca039569.js already exists, not overwriting.
+[2025-05-11T05:39:30.999Z] ⚠️ File C:\VF\XLab_Web\.next\static\app\admin\page.20e1580ca904d554.js already exists, not overwriting.
+[2025-05-11T05:39:31.000Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout-1746857687478.css already exists, not overwriting.
+[2025-05-11T05:39:31.000Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app-1746857687478.js already exists, not overwriting.
+[2025-05-11T05:39:31.001Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout-1746857690764.css already exists, not overwriting.
+[2025-05-11T05:39:31.002Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app-1746857690764.js already exists, not overwriting.
+[2025-05-11T05:39:31.002Z] ⚠️ File C:\VF\XLab_Web\.next\static\css\app\layout-1746857700000.css already exists, not overwriting.
+[2025-05-11T05:39:31.003Z] ⚠️ File C:\VF\XLab_Web\.next\static\main-app-1746857700000.js already exists, not overwriting.
+[2025-05-11T05:39:31.003Z] ✅ Hashed static files fixed
+[2025-05-11T05:39:31.004Z] ✅ Timestamp files fixed
+[2025-05-11T05:39:31.004Z] 🛣️ Fixing app routes...
+[2025-05-11T05:39:31.006Z] ⚠️ File C:\VF\XLab_Web\.next\server\app\api\auth\[...nextauth]\route.js already exists, not overwriting.
+[2025-05-11T05:39:31.007Z] ✅ App routes fixed
+[2025-05-11T05:39:31.009Z] 🧹 Clearing cache...
+[2025-05-11T05:39:31.011Z] ✅ Removed cache: C:\VF\XLab_Web\.next\cache
+[2025-05-11T05:39:31.013Z] ✅ Removed cache: C:\VF\XLab_Web\.next\static\webpack
+[2025-05-11T05:39:31.014Z] ✅ Created directory: C:\VF\XLab_Web\.next\cache
+[2025-05-11T05:39:31.015Z] ✅ Created directory: C:\VF\XLab_Web\.next\static\webpack
+[2025-05-11T05:39:31.015Z] ✅ Cache cleared
+[2025-05-11T05:39:31.016Z] 📁 Creating .gitkeep files to preserve directory structure...
+[2025-05-11T05:39:31.017Z] ✅ Created file: C:\VF\XLab_Web\.next\cache\.gitkeep
+[2025-05-11T05:39:31.018Z] ✅ Created file: C:\VF\XLab_Web\.next\static\webpack\.gitkeep
+[2025-05-11T05:39:31.019Z] ✅ .gitkeep files created
+[2025-05-11T05:39:31.020Z] 📝 Updating .gitignore...
+[2025-05-11T05:39:31.020Z] ✅ All required patterns already in .gitignore
+[2025-05-11T05:39:31.021Z] ✅ All fixes completed successfully
+[2025-05-11T05:39:31.022Z] 🚀 Please restart your Next.js application to apply changes

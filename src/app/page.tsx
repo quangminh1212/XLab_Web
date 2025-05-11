@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
 import { products, categories } from '@/data/mockData';
@@ -12,9 +12,63 @@ function HomePage() {
 
   // Lọc sản phẩm mới nhất
   const newProducts = [...products]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    })
     .slice(0, 4);
-
+    
+  // State cho form đánh giá
+  const [reviewForm, setReviewForm] = useState({
+    name: '',
+    position: '',
+    comment: '',
+    rating: 0
+  });
+  
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  
+  // Xử lý khi người dùng thay đổi giá trị trong form
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setReviewForm(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+  
+  // Xử lý khi người dùng chọn số sao đánh giá
+  const handleRatingChange = (rating: number) => {
+    setReviewForm(prev => ({
+      ...prev,
+      rating
+    }));
+  };
+  
+  // Xử lý khi người dùng gửi form
+  const handleSubmitReview = () => {
+    // Kiểm tra form có đầy đủ thông tin chưa
+    if (reviewForm.name && reviewForm.comment && reviewForm.rating > 0) {
+      console.log('Đánh giá đã được gửi:', reviewForm);
+      // Reset form và hiển thị thông báo thành công
+      setFormSubmitted(true);
+      setReviewForm({
+        name: '',
+        position: '',
+        comment: '',
+        rating: 0
+      });
+      
+      // Sau 3 giây, ẩn thông báo thành công
+      setTimeout(() => {
+        setFormSubmitted(false);
+      }, 3000);
+    } else {
+      alert('Vui lòng điền đầy đủ thông tin: Họ tên, Đánh giá sao và Nội dung đánh giá');
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -196,6 +250,97 @@ function HomePage() {
                 </div>
               </div>
               
+              {/* Thêm form đánh giá */}
+              <div className="mt-6 bg-white rounded-lg p-4 border border-gray-100">
+                {formSubmitted ? (
+                  <div className="bg-green-50 p-4 rounded-md mb-3">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-green-800">Đánh giá thành công</h3>
+                        <div className="mt-2 text-sm text-green-700">
+                          <p>Cảm ơn bạn đã đánh giá sản phẩm của chúng tôi!</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h3 className="font-semibold text-gray-900 mb-3">Chia sẻ trải nghiệm của bạn</h3>
+                    <form className="space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
+                          <input
+                            type="text"
+                            id="name"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                            placeholder="Nhập họ và tên của bạn"
+                            value={reviewForm.name}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">Nghề nghiệp</label>
+                          <input
+                            type="text"
+                            id="position"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                            placeholder="Nghề nghiệp hoặc vị trí của bạn"
+                            value={reviewForm.position}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Đánh giá</label>
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              className="mr-1 focus:outline-none"
+                              onClick={() => handleRatingChange(star)}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`w-6 h-6 ${star <= reviewForm.rating ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 cursor-pointer`}>
+                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">Nội dung đánh giá</label>
+                        <textarea
+                          id="comment"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                          rows={3}
+                          placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm/dịch vụ của chúng tôi"
+                          value={reviewForm.comment}
+                          onChange={handleInputChange}
+                        ></textarea>
+                      </div>
+                      
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 text-sm font-medium transition-colors"
+                          onClick={handleSubmitReview}
+                        >
+                          Gửi đánh giá
+                        </button>
+                      </div>
+                    </form>
+                  </>
+                )}
+              </div>
+              
               <div className="mt-5 text-center">
                 <Link 
                   href="/testimonials"
@@ -237,7 +382,7 @@ function HomePage() {
                           name={product.name}
                           description={product.description}
                           price={product.price}
-                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          originalPrice={(product.salePrice !== undefined && product.salePrice < product.price) ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}
@@ -285,7 +430,7 @@ function HomePage() {
                           name={product.name}
                           description={product.description}
                           price={product.price}
-                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          originalPrice={(product.salePrice !== undefined && product.salePrice < product.price) ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}

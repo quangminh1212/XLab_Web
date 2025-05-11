@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 interface Testimonial {
@@ -132,7 +132,7 @@ export default function TestimonialsPage() {
           <svg
             key={i}
             xmlns="http://www.w3.org/2000/svg"
-            className={`h-5 w-5 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+            className={`h-4 w-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -148,22 +148,22 @@ export default function TestimonialsPage() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
+      <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-10">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Khách hàng nói gì về chúng tôi</h1>
-          <p className="text-xl max-w-3xl">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Khách hàng nói gì về chúng tôi</h1>
+          <p className="text-lg max-w-3xl">
             Khám phá những trải nghiệm và kết quả thực tế mà khách hàng đã đạt được khi sử dụng giải pháp của XLab
           </p>
         </div>
       </section>
 
       {/* Tabs */}
-      <section className="py-10 bg-gray-50">
+      <section className="py-4 bg-gray-50">
         <div className="container">
           <div className="max-w-3xl mx-auto">
             <div className="flex border-b border-gray-200">
               <button
-                className={`px-6 py-3 font-medium text-sm sm:text-base ${
+                className={`px-4 py-2 font-medium text-sm ${
                   activeTab === 'clients'
                     ? 'text-primary-600 border-b-2 border-primary-600'
                     : 'text-gray-500 hover:text-gray-700'
@@ -174,7 +174,7 @@ export default function TestimonialsPage() {
                 Đánh giá từ khách hàng
               </button>
               <button
-                className={`px-6 py-3 font-medium text-sm sm:text-base ${
+                className={`px-4 py-2 font-medium text-sm ${
                   activeTab === 'case-studies'
                     ? 'text-primary-600 border-b-2 border-primary-600'
                     : 'text-gray-500 hover:text-gray-700'
@@ -190,61 +190,83 @@ export default function TestimonialsPage() {
       </section>
 
       {/* Content */}
-      <section className="py-12">
+      <section className="py-6">
         <div className="container">
           {activeTab === 'clients' && (
             <div className="animate-fadeIn">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {testimonials.map((testimonial) => (
-                  <div
-                    key={testimonial.id}
-                    className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
-                  >
-                    <div className="flex items-center mb-4">
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 bg-gray-200 flex items-center justify-center">
-                        {!imageErrors[testimonial.id] ? (
-                          <Image
-                            src={testimonial.image}
-                            alt={testimonial.name}
-                            className="object-cover"
-                            fill
-                            sizes="56px"
-                            priority={false}
-                            onError={() => handleImageError(testimonial.id)}
-                          />
-                        ) : (
-                          <div className="text-lg font-bold text-primary-600">
-                            {testimonial.name.charAt(0)}
-                          </div>
-                        )}
+              <div className="max-w-2xl mx-auto h-[450px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-3">
+                  {testimonials.map((testimonial) => (
+                    <div
+                      key={testimonial.id}
+                      className="bg-white rounded-lg shadow-sm p-4 mb-3"
+                    >
+                      <div className="flex items-start mb-2">
+                        <div className="relative w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0 bg-gray-200 flex items-center justify-center">
+                          {!imageErrors[testimonial.id] ? (
+                            <Image
+                              src={testimonial.image}
+                              alt={testimonial.name}
+                              className="object-cover"
+                              fill
+                              sizes="48px"
+                              priority={false}
+                              onError={() => handleImageError(testimonial.id)}
+                            />
+                          ) : (
+                            <div className="text-lg font-bold text-primary-600">
+                              {testimonial.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-base mb-0">{testimonial.name}</h3>
+                          <p className="text-gray-600 text-xs">
+                            {testimonial.position}, {testimonial.company}
+                          </p>
+                          <div className="mt-1">{renderRatingStars(testimonial.rating)}</div>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">{testimonial.name}</h3>
-                        <p className="text-gray-600 text-sm">
-                          {testimonial.position}, {testimonial.company}
-                        </p>
-                        <div className="mt-1">{renderRatingStars(testimonial.rating)}</div>
-                      </div>
+                      <p className="text-gray-700 italic text-sm">&ldquo;{testimonial.quote}&rdquo;</p>
                     </div>
-                    <p className="text-gray-700 italic">&ldquo;{testimonial.quote}&rdquo;</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
 
+              <style jsx global>{`
+                .custom-scrollbar::-webkit-scrollbar {
+                  width: 6px;
+                }
+                
+                .custom-scrollbar::-webkit-scrollbar-track {
+                  background: #f1f1f1;
+                  border-radius: 6px;
+                }
+                
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                  background: #cdcdcd;
+                  border-radius: 6px;
+                }
+                
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                  background: #9ca3af;
+                }
+              `}</style>
+
               {/* Testimonial Video */}
-              <div className="mt-20">
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl font-bold mb-4">Video đánh giá từ khách hàng</h2>
-                  <p className="text-gray-600 max-w-3xl mx-auto">
+              <div className="mt-10">
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-bold mb-2">Video đánh giá từ khách hàng</h2>
+                  <p className="text-gray-600 text-sm max-w-3xl mx-auto">
                     Xem video chia sẻ từ khách hàng về trải nghiệm sử dụng sản phẩm và dịch vụ của XLab
                   </p>
                 </div>
 
-                <div className="relative aspect-video max-w-4xl mx-auto shadow-xl rounded-lg overflow-hidden">
+                <div className="relative aspect-video max-w-3xl mx-auto shadow-lg rounded-lg overflow-hidden">
                   <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-20 w-20 text-gray-400"
+                      className="h-16 w-16 text-gray-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -266,7 +288,7 @@ export default function TestimonialsPage() {
                   {/* Placeholder for video - in production, replace with actual video component */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <button 
-                      className="rounded-full bg-primary-600 bg-opacity-90 p-5 text-white hover:bg-opacity-100 transition-all"
+                      className="rounded-full bg-primary-600 bg-opacity-90 p-3 text-white hover:bg-opacity-100 transition-all"
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
@@ -275,7 +297,7 @@ export default function TestimonialsPage() {
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-12 w-12"
+                        className="h-8 w-8"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -295,14 +317,14 @@ export default function TestimonialsPage() {
           )}
 
           {activeTab === 'case-studies' && (
-            <div className="space-y-16 animate-fadeIn">
+            <div className="space-y-8 animate-fadeIn">
               {caseStudies.map((caseStudy) => (
                 <div
                   key={caseStudy.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                  className="bg-white rounded-lg shadow-sm overflow-hidden"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2">
-                    <div className="relative h-64 lg:h-auto bg-gray-200">
+                    <div className="relative h-48 lg:h-auto bg-gray-200">
                       {!imageErrors[`case-${caseStudy.id}`] ? (
                         <Image
                           src={caseStudy.image}
@@ -318,18 +340,18 @@ export default function TestimonialsPage() {
                         </div>
                       )}
                     </div>
-                    <div className="p-8">
-                      <span className="text-sm font-medium text-primary-600">{caseStudy.company}</span>
-                      <h3 className="text-2xl font-bold mt-2 mb-4">{caseStudy.title}</h3>
-                      <p className="text-gray-700 mb-6">{caseStudy.description}</p>
+                    <div className="p-4">
+                      <span className="text-xs font-medium text-primary-600">{caseStudy.company}</span>
+                      <h3 className="text-lg font-bold mt-1 mb-2">{caseStudy.title}</h3>
+                      <p className="text-gray-700 text-sm mb-3">{caseStudy.description}</p>
                       
-                      <h4 className="font-semibold text-lg mb-3">Kết quả đạt được:</h4>
-                      <ul className="space-y-2 mb-6">
+                      <h4 className="font-semibold text-sm mb-2">Kết quả đạt được:</h4>
+                      <ul className="space-y-1 mb-3">
                         {caseStudy.results.map((result, index) => (
                           <li key={index} className="flex items-start">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0"
+                              className="h-4 w-4 text-green-500 mr-1 mt-0.5 flex-shrink-0"
                               viewBox="0 0 20 20"
                               fill="currentColor"
                             >
@@ -339,13 +361,13 @@ export default function TestimonialsPage() {
                                 clipRule="evenodd"
                               />
                             </svg>
-                            <span>{result}</span>
+                            <span className="text-sm">{result}</span>
                           </li>
                         ))}
                       </ul>
                       
                       {caseStudy.testimonial && (
-                        <div className="italic text-gray-600 border-l-4 border-primary-500 pl-4 py-1">
+                        <div className="italic text-gray-600 text-xs border-l-2 border-primary-500 pl-2 py-1">
                           &ldquo;{caseStudy.testimonial}&rdquo;
                         </div>
                       )}
@@ -359,23 +381,23 @@ export default function TestimonialsPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary-600 text-white">
+      <section className="py-8 bg-primary-600 text-white">
         <div className="container">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-6">Sẵn sàng nâng tầm doanh nghiệp của bạn?</h2>
-            <p className="text-xl mb-8 max-w-3xl mx-auto">
+            <h2 className="text-xl font-bold mb-3">Sẵn sàng nâng tầm doanh nghiệp của bạn?</h2>
+            <p className="text-base mb-4 max-w-3xl mx-auto">
               Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn về giải pháp phù hợp nhất cho nhu cầu của bạn.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-3">
               <a
                 href="/contact"
-                className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-full font-medium transition-colors shadow-md"
+                className="bg-white text-primary-600 hover:bg-gray-100 px-6 py-2 rounded-full font-medium transition-colors shadow-md text-sm"
               >
                 Liên hệ tư vấn
               </a>
               <a
                 href="/services"
-                className="border border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-full font-medium transition-colors"
+                className="border border-white text-white hover:bg-white hover:text-primary-600 px-6 py-2 rounded-full font-medium transition-colors text-sm"
               >
                 Khám phá dịch vụ
               </a>
