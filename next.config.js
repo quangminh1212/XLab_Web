@@ -75,21 +75,9 @@ const nextConfig = {
     styledComponents: true,
   },
   experimental: {
-    swcTraceProfiling: false,
-    forceSwcTransforms: true,
-    incrementalCacheHandlerPath: false,
-    useWasmBinary: true,
-    
-    swcTraceProfiling: false,
-    forceSwcTransforms: true,
-    incrementalCacheHandlerPath: false,
-    
     largePageDataBytes: 12800000,
     forceSwcTransforms: true,
-    swcTraceProfiling: false,
-    incrementalCacheHandlerPath: false,
     appDocumentPreloading: false,
-    useWasmBinary: true,
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,

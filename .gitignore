@@ -77,10 +77,11 @@ next-env.d.ts
 # SWC related files
 node_modules/@next/swc-*/
 *.node.backup
+next.config.js.backup
 fix-swc-errors.js.backup
-fix-static-files.js.backup
-fix-404-errors.bat.backup
-fix-auth-component.js.backup
+
+# WASM related files
+.next/cache/wasm/
 
 # Added by update-gitignore.js
 # Next.js runtime files
