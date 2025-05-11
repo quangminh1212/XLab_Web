@@ -4,6 +4,8 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: true,
+  skipMiddlewareUrlNormalize: true,
+  skipTrailingSlashRedirect: true,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com'],
     remotePatterns: [
@@ -75,8 +77,6 @@ const nextConfig = {
   },
   experimental: {
     largePageDataBytes: 12800000,
-    forceSwcTransforms: false,
-    appDocumentPreloading: false,
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
@@ -158,30 +158,6 @@ const nextConfig = {
 
     // Enables hot module replacement
     config.optimization.runtimeChunk = 'single';
-    
-    // Thêm plugin để đảm bảo tệp static được tạo đúng cách
-    if (!isServer) {
-      try {
-        const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-        config.plugins.push(
-          new WebpackManifestPlugin({
-            fileName: 'asset-manifest.json',
-            publicPath: '/_next/',
-            generate: (seed, files) => {
-              const manifestFiles = files.reduce((manifest, file) => {
-                manifest[file.name] = file.path;
-                return manifest;
-              }, seed);
-              return {
-                files: manifestFiles,
-              };
-            },
-          })
-        );
-      } catch (error) {
-        console.warn('webpack-manifest-plugin not found. Skipping manifest generation.');
-      }
-    }
 
     return config;
   },
