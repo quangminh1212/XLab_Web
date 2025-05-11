@@ -187,7 +187,7 @@ const nextConfig = {
           })
         );
       } catch (error) {
-        console.warn('webpack-manifest-plugin not found. Skipping manifest generation.');
+        console.warn('webpack-manifest-plugin not found or failed to initialize. Skipping manifest generation.');
       }
     }
 
@@ -264,6 +264,10 @@ const nextConfig = {
         permanent: true,
       },
     ]
+  },
+  swcMinify: true,
+  swcLoader: {
+    implementation: require.resolve("@next/swc-wasm-nodejs"),
   },
 };
 

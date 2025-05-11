@@ -135,3 +135,49 @@ function reinstallDependencies() {
       }
     } else {
       console.log('✅ webpack-manifest-plugin is already installed');
+    }
+  } catch (error) {
+    console.error('❌ Error reinstalling dependencies:', error);
+  }
+}
+
+// Modify experimental settings
+function fixExperimentalSettings() {
+  console.log('🔧 Fixing experimental settings in next.config.js...');
+  
+  const nextConfigPath = path.join(__dirname, 'next.config.js');
+  
+  if (!fs.existsSync(nextConfigPath)) {
+    console.error('❌ next.config.js not found!');
+    return;
+  }
+  
+  let nextConfig = fs.readFileSync(nextConfigPath, 'utf8');
+  
+  // Check if experimental settings exist and remove swcMinify from them if it does
+  if (nextConfig.includes('experimental:')) {
+    // If swcMinify is in experimental, remove it
+    const experimentalRegex = /experimental:\s*{[^}]*?swcMinify:[^,}]*,?[^}]*?}/;
+    const experimentalMatch = nextConfig.match(experimentalRegex);
+    
+    if (experimentalMatch) {
+      const experimentalSection = experimentalMatch[0];
+      const updatedExperimental = experimentalSection.replace(/swcMinify:[^,}]*,?/, '');
+      nextConfig = nextConfig.replace(experimentalRegex, updatedExperimental);
+      fs.writeFileSync(nextConfigPath, nextConfig);
+      console.log('✅ Removed swcMinify from experimental settings');
+    } else {
+      console.log('✅ swcMinify not found in experimental settings');
+    }
+  } else {
+    console.log('✅ No experimental settings found');
+  }
+}
+
+// Run all fixes
+fixSwcWarning();
+fixWebpackManifestWarning();
+reinstallDependencies();
+fixExperimentalSettings();
+
+console.log('=== SWC and webpack-manifest-plugin fixes completed ===');

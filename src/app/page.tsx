@@ -12,7 +12,11 @@ function HomePage() {
 
   // Lọc sản phẩm mới nhất
   const newProducts = [...products]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    })
     .slice(0, 4);
 
   return (
@@ -21,9 +25,16 @@ function HomePage() {
       <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-8 sm:py-10 md:py-12">
         <div className="container mx-auto">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
-            </h1>
+            <div className="mb-4">
+              <Image 
+                src="/images/logo.png" 
+                alt="XLab Logo" 
+                width={200} 
+                height={80} 
+                className="h-auto"
+                priority
+              />
+            </div>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mb-8">
               Tối ưu hiệu quả, tối thiểu chi phí!
             </p>
@@ -237,7 +248,7 @@ function HomePage() {
                           name={product.name}
                           description={product.description}
                           price={product.price}
-                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          originalPrice={product.salePrice !== undefined && product.salePrice < product.price ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}
@@ -285,7 +296,7 @@ function HomePage() {
                           name={product.name}
                           description={product.description}
                           price={product.price}
-                          originalPrice={product.salePrice < product.price ? product.price : undefined}
+                          originalPrice={product.salePrice !== undefined && product.salePrice < product.price ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}
