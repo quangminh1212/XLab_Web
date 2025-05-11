@@ -122,7 +122,7 @@ function HomePage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="flex flex-col overflow-y-auto gap-4 pr-1 max-h-[450px]">
                 <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
                   <div className="flex items-center mb-3">
                     <div className="bg-primary-100 rounded-full p-2 mr-3">
@@ -194,18 +194,18 @@ function HomePage() {
                     "X Lab cung cấp các giải pháp công nghệ hiệu quả với giá cả phải chăng cho sinh viên. Tôi rất hài lòng với chất lượng sản phẩm và dịch vụ hỗ trợ khách hàng."
                   </p>
                 </div>
-              </div>
-              
-              <div className="mt-5 text-center">
-                <Link 
-                  href="/testimonials"
-                  className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm"
-                >
-                  Xem tất cả đánh giá
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </Link>
+                
+                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all">
+                  <Link 
+                    href="/testimonials"
+                    className="flex items-center justify-center text-primary-600 hover:text-primary-800 w-full h-full"
+                  >
+                    <span className="font-medium text-sm">Xem tất cả đánh giá</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L11.586 12H6a1 1 0 110-2h5.586l-2.293-2.293a1 1 0 111.414-1.414l4 4z" clipRule="evenodd" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
             </section>
           </div>
