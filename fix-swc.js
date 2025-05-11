@@ -77,7 +77,9 @@ try {
     `experimental: {
     largePageDataBytes: 12800000,
     forceSwcTransforms: false,
-    appDocumentPreloading: false
+    appDocumentPreloading: false,
+    disableOptimizedLoading: true,
+    disablePostcssPresetEnv: true
   }`
   );
   

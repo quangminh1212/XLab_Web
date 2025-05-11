@@ -56,6 +56,8 @@ next-env.d.ts
 /.next/server/
 /.next/static/
 /.next/trace
+/.next/trace-*
+/.next/.empty_trace
 /.next/*.json
 /.next/server/vendor-chunks/
 /.next/server/chunks/

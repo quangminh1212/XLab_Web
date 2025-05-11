@@ -476,14 +476,45 @@ function clearCache() {
   
   // Xóa file trace và các file liên quan nếu tồn tại để tránh lỗi EPERM
   try {
-    // Kiểm tra và xóa tất cả các file trace
+    // Tạo một dummy trace file để tránh lỗi EPERM
+    if (fs.existsSync(tracePath)) {
+      try {
+        // Thử thay đổi quyền truy cập trước khi xóa
+        fs.chmodSync(tracePath, 0o666);
+        fs.unlinkSync(tracePath);
+        log(`✅ Đã xóa file trace: ${tracePath}`);
+      } catch (traceErr) {
+        // Nếu không thể xóa, tạo một file .empty để đánh dấu
+        log(`⚠️ Không thể xóa file trace (sẽ bỏ qua): ${traceErr.message}`);
+        
+        try {
+          // Tạo file .empty_trace để tránh Next.js tạo file trace mới
+          const emptyTracePath = path.join(nextDir, '.empty_trace');
+          fs.writeFileSync(emptyTracePath, '# This file prevents Next.js from creating trace file');
+          log(`✅ Đã tạo file đánh dấu: ${emptyTracePath}`);
+        } catch (err) {
+          log(`⚠️ Không thể tạo file đánh dấu (không ảnh hưởng): ${err.message}`);
+        }
+      }
+    }
+    
+    // Xử lý tất cả các file liên quan đến trace
     if (fs.existsSync(nextDir)) {
       const files = fs.readdirSync(nextDir);
       files.forEach(file => {
         if (file === 'trace' || file.startsWith('trace-')) {
           try {
             const filePath = path.join(nextDir, file);
-            fs.chmodSync(filePath, 0o666); // Thay đổi quyền truy cập
+            
+            // Kiểm tra file có thể ghi không
+            try {
+              fs.accessSync(filePath, fs.constants.W_OK);
+            } catch (accessErr) {
+              // Thay đổi quyền truy cập nếu không thể ghi
+              fs.chmodSync(filePath, 0o666);
+            }
+            
+            // Xóa file
             fs.unlinkSync(filePath);
             log(`✅ Đã xóa file trace: ${filePath}`);
           } catch (err) {
@@ -494,6 +525,17 @@ function clearCache() {
     }
   } catch (error) {
     log(`⚠️ Lỗi khi xử lý file trace (không ảnh hưởng): ${error.message}`);
+  }
+  
+  // Tạo file .gitkeep để tránh lỗi EPERM khi Next.js cố gắng tạo file trace
+  try {
+    const nextGitkeepPath = path.join(nextDir, '.gitkeep');
+    fs.writeFileSync(nextGitkeepPath, '# This file exists to keep directory structure\n');
+    
+    // Set quyền truy cập đầy đủ
+    fs.chmodSync(nextGitkeepPath, 0o666);
+  } catch (gitkeepError) {
+    log(`⚠️ Lỗi khi tạo file .gitkeep: ${gitkeepError.message}`);
   }
   
   // Xóa và tạo lại thư mục cache
@@ -579,7 +621,9 @@ try {
     `experimental: {
     largePageDataBytes: 12800000,
     forceSwcTransforms: false,
-    appDocumentPreloading: false
+    appDocumentPreloading: false,
+    disableOptimizedLoading: true,
+    disablePostcssPresetEnv: true
   }`
   );
   
