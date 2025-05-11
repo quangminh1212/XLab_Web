@@ -88,3 +88,34 @@ fix-auth-component.js.backup
 /.next/app-paths-manifest.json
 /.next/next-font-manifest.json
 /.next/middleware-manifest.json
+
+# Added by fix-nextjs.js
+# Log files
+*.log
+fix-*.log
+fix-nextjs.log
+fix-all-errors.log
+fix-static-files.log
+fix-404-errors.log
+fix-swc-errors.log
+
+# Next.js runtime files
+/.next/build-manifest.json
+/.next/app-paths-manifest.json
+/.next/next-font-manifest.json
+/.next/middleware-manifest.json
+/.next/trace
+/.next/cache/
+/.next/server/
+/.next/static/
+**/*.hot-update.js
+**/*.hot-update.json
+/node_modules/.cache/
+/.swc/
+/.turbo/
+
+# Temporary files
+tmp/
+temp/
+.DS_Store
+Thumbs.db

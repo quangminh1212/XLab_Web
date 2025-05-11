@@ -23,18 +23,10 @@ if not exist .next\static mkdir .next\static
 
 REM Chay script sua loi tong hop
 echo Dang sua loi Next.js...
-if exist fix-all-errors.js (
-  node fix-all-errors.js
+if exist fix-nextjs.js (
+  node fix-nextjs.js
 ) else (
-  echo Khong tim thay file fix-all-errors.js, bo qua...
-)
-
-REM Cap nhat .gitignore neu can
-echo Dang cap nhat .gitignore...
-if exist update-gitignore.js (
-  node update-gitignore.js
-) else (
-  echo Khong tim thay file update-gitignore.js, bo qua...
+  echo Khong tim thay file fix-nextjs.js, vui long kiem tra lai!
 )
 
 echo.
