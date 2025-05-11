@@ -120,3 +120,22 @@ tmp/
 temp/
 .DS_Store
 Thumbs.db
+
+# Fix scripts related
+fix-warnings.bat
+fix-node-modules.js
+fix-all-warnings.bat
+start-clean.bat
+fix-next-warnings.js
+
+# Fix scripts
+fix-warnings.bat
+fix-all-warnings.bat
+fix-swc-complete.js
+fix-next-warnings.js
+fix-node-modules.js
+start-without-warnings.bat
+
+# Babel, SWC related
+.babelrc
+babel.config.js
