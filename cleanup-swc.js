@@ -55,22 +55,4 @@ function cleanSwcFiles() {
     console.log('ℹ️ node_modules cache not found or already cleared');
   }
 }
-
-// Clear npm cache
-function clearNpmCache() {
-  console.log('🧼 Clearing npm cache...');
-  
-  try {
-    execSync('npm cache clean --force', { stdio: 'inherit' });
-    console.log('✅ Cleared npm cache');
-  } catch (error) {
-    console.error('❌ Error clearing npm cache:', error.message);
-  }
-}
-
-// Run cleaning operations
-cleanSwcFiles();
-clearNpmCache();
-
-console.log('=== SWC cleanup completed ===');
-console.log('🚀 Please restart your Next.js application'); 
+ 
