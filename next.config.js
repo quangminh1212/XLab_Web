@@ -76,7 +76,6 @@ const nextConfig = {
   },
   experimental: {
     largePageDataBytes: 12800000,
-    forceSwcTransforms: true,
     appDocumentPreloading: false
   },
   onDemandEntries: {
@@ -261,3 +260,5 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
+
