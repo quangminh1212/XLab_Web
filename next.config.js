@@ -4,7 +4,6 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: true,
-  // swcMinify removed,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com'],
     remotePatterns: [
@@ -76,7 +75,8 @@ const nextConfig = {
   },
   experimental: {
     largePageDataBytes: 12800000,
-    appDocumentPreloading: false
+    forceSwcTransforms: true,
+    appDocumentPreloading: false,
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
@@ -260,5 +260,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-
-

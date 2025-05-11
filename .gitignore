@@ -26,8 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 error.log
 fix-all-errors.log
-fix-static-files.log
-fix-404-errors.log
 
 # local env files
 .env*.local
@@ -74,69 +72,9 @@ next-env.d.ts
 **/*.hot-update.json
 /node_modules/.cache/
 
-# SWC related files
-node_modules/@next/swc-*/
-*.node.backup
-next.config.js.backup
-fix-swc-errors.js.backup
-
-# WASM related files
-.next/cache/wasm/
-
 # Added by update-gitignore.js
 # Next.js runtime files
 /.next/build-manifest.json
 /.next/app-paths-manifest.json
 /.next/next-font-manifest.json
 /.next/middleware-manifest.json
-
-# Added by fix-nextjs.js
-# Log files
-*.log
-fix-*.log
-fix-nextjs.log
-fix-all-errors.log
-fix-static-files.log
-fix-404-errors.log
-fix-swc-errors.log
-
-# Next.js runtime files
-/.next/build-manifest.json
-/.next/app-paths-manifest.json
-/.next/next-font-manifest.json
-/.next/middleware-manifest.json
-/.next/trace
-/.next/cache/
-/.next/server/
-/.next/static/
-**/*.hot-update.js
-**/*.hot-update.json
-/node_modules/.cache/
-/.swc/
-/.turbo/
-
-# Temporary files
-tmp/
-temp/
-.DS_Store
-Thumbs.db
-
-# Fix scripts related
-fix-warnings.bat
-fix-node-modules.js
-fix-all-warnings.bat
-start-clean.bat
-fix-next-warnings.js
-
-# Fix scripts
-fix-warnings.bat
-fix-all-warnings.bat
-fix-swc-complete.js
-fix-next-warnings.js
-fix-node-modules.js
-start-without-warnings.bat
-
-# Babel, SWC related
-.babelrc
-.babelrc.backup
-babel.config.js
