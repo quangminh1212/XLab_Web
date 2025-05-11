@@ -4,7 +4,7 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: true,
-  swcMinify: false,
+  // swcMinify removed,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com'],
     remotePatterns: [
@@ -75,21 +75,9 @@ const nextConfig = {
     styledComponents: true,
   },
   experimental: {
-    swcTraceProfiling: false,
-    forceSwcTransforms: true,
-    incrementalCacheHandlerPath: false,
-    useWasmBinary: true,
-    
-    swcTraceProfiling: false,
-    forceSwcTransforms: true,
-    incrementalCacheHandlerPath: false,
-    
     largePageDataBytes: 12800000,
     forceSwcTransforms: true,
-    swcTraceProfiling: false,
-    incrementalCacheHandlerPath: false,
-    appDocumentPreloading: false,
-    useWasmBinary: true,
+    appDocumentPreloading: false
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
