@@ -1,0 +1,6 @@
+@echo off
+echo === XLab Web Application Starter ===
+echo Dang sua loi cho ung dung...
+node fix-all-errors.js
+echo Starting development server...
+npm run dev 

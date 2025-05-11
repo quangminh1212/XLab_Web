@@ -26,6 +26,8 @@ yarn-debug.log*
 yarn-error.log*
 error.log
 fix-all-errors.log
+fix-static-files.log
+fix-404-errors.log
 
 # local env files
 .env*.local
@@ -71,6 +73,14 @@ next-env.d.ts
 **/*.hot-update.js
 **/*.hot-update.json
 /node_modules/.cache/
+
+# SWC related files
+node_modules/@next/swc-*/
+*.node.backup
+fix-swc-errors.js.backup
+fix-static-files.js.backup
+fix-404-errors.bat.backup
+fix-auth-component.js.backup
 
 # Added by update-gitignore.js
 # Next.js runtime files
