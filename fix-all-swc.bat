@@ -1,0 +1,6 @@
+@echo off
+echo Dang xu ly triet de loi SWC...
+powershell -ExecutionPolicy Bypass -File fix-swc-complete.ps1
+echo.
+echo Da xu ly xong, khoi dong lai ung dung...
+npm run dev 
