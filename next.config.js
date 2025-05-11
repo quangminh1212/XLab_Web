@@ -77,7 +77,6 @@ const nextConfig = {
     largePageDataBytes: 12800000,
     forceSwcTransforms: true,
     appDocumentPreloading: false,
-    swcMinify: true,
     swcTraceProfiling: false,
   },
 
