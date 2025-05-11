@@ -194,39 +194,41 @@ export default function TestimonialsPage() {
         <div className="container">
           {activeTab === 'clients' && (
             <div className="animate-fadeIn">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="flex flex-col space-y-6">
                 {testimonials.map((testimonial) => (
                   <div
                     key={testimonial.id}
                     className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
                   >
-                    <div className="flex items-center mb-4">
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 bg-gray-200 flex items-center justify-center">
-                        {!imageErrors[testimonial.id] ? (
-                          <Image
-                            src={testimonial.image}
-                            alt={testimonial.name}
-                            className="object-cover"
-                            fill
-                            sizes="56px"
-                            priority={false}
-                            onError={() => handleImageError(testimonial.id)}
-                          />
-                        ) : (
-                          <div className="text-lg font-bold text-primary-600">
-                            {testimonial.name.charAt(0)}
-                          </div>
-                        )}
+                    <div className="flex flex-wrap md:flex-nowrap items-start">
+                      <div className="flex items-center mb-4 md:mb-0 w-full md:w-auto md:mr-6">
+                        <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 bg-gray-200 flex items-center justify-center">
+                          {!imageErrors[testimonial.id] ? (
+                            <Image
+                              src={testimonial.image}
+                              alt={testimonial.name}
+                              className="object-cover"
+                              fill
+                              sizes="56px"
+                              priority={false}
+                              onError={() => handleImageError(testimonial.id)}
+                            />
+                          ) : (
+                            <div className="text-lg font-bold text-primary-600">
+                              {testimonial.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-lg">{testimonial.name}</h3>
+                          <p className="text-gray-600 text-sm">
+                            {testimonial.position}, {testimonial.company}
+                          </p>
+                          <div className="mt-1">{renderRatingStars(testimonial.rating)}</div>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">{testimonial.name}</h3>
-                        <p className="text-gray-600 text-sm">
-                          {testimonial.position}, {testimonial.company}
-                        </p>
-                        <div className="mt-1">{renderRatingStars(testimonial.rating)}</div>
-                      </div>
+                      <p className="text-gray-700 italic flex-1">&ldquo;{testimonial.quote}&rdquo;</p>
                     </div>
-                    <p className="text-gray-700 italic">&ldquo;{testimonial.quote}&rdquo;</p>
                   </div>
                 ))}
               </div>
