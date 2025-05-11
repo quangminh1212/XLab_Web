@@ -26,6 +26,9 @@ yarn-debug.log*
 yarn-error.log*
 error.log
 fix-all-errors.log
+next-start.log
+next-start-check.log
+run.log
 
 # local env files
 .env*.local

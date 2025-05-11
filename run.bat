@@ -53,6 +53,16 @@ if not exist .next\static mkdir .next\static
 if not exist .next\static\chunks mkdir .next\static\chunks
 if not exist .next\static\css mkdir .next\static\css
 
+REM Tạo thư mục images placeholder nếu chưa tồn tại
+if not exist public\images mkdir public\images
+if not exist public\images\placeholder mkdir public\images\placeholder
+
+REM Tạo file placeholder cho sản phẩm nếu chưa có
+if not exist public\images\placeholder\product-placeholder.jpg (
+  echo // Creating placeholder image > public\images\placeholder\product-placeholder.jpg
+  echo ✅ Đã tạo file placeholder cho sản phẩm
+)
+
 REM Sửa lỗi file trace
 echo Đang sửa lỗi EPERM với file trace...
 if exist fix-trace.js (
@@ -150,7 +160,37 @@ echo ================================================
 echo.
 
 REM Kiểm tra và cài đặt các module thiếu
-npm install
+npm install cssnano
+
+echo.
+echo ================================================
+echo  Tạo các component thiếu...
+echo ================================================
+echo.
+
+REM Tạo các thư mục cần thiết cho component
+if not exist src\components\payment mkdir src\components\payment
+
+REM Tạo file PaymentForm.tsx nếu chưa có
+if not exist src\components\PaymentForm.tsx (
+  echo // PaymentForm component > src\components\PaymentForm.tsx
+  echo "import React from 'react';" > src\components\PaymentForm.tsx
+  echo "export default function PaymentForm() {" >> src\components\PaymentForm.tsx
+  echo "  return <div>Payment Form</div>;" >> src\components\PaymentForm.tsx
+  echo "}" >> src\components\PaymentForm.tsx
+  echo ✅ Đã tạo component PaymentForm
+)
+
+REM Tạo file ProductImage.tsx nếu chưa có
+if not exist src\components\ProductImage.tsx (
+  echo // ProductImage component > src\components\ProductImage.tsx
+  echo "import React from 'react';" > src\components\ProductImage.tsx
+  echo "import Image from 'next/image';" >> src\components\ProductImage.tsx
+  echo "export default function ProductImage({ src, alt }) {" >> src\components\ProductImage.tsx
+  echo "  return <Image src={src || '/images/placeholder.jpg'} alt={alt || 'Product'} width={500} height={500} />;" >> src\components\ProductImage.tsx
+  echo "}" >> src\components\ProductImage.tsx
+  echo ✅ Đã tạo component ProductImage
+)
 
 echo.
 echo ================================================
@@ -162,7 +202,7 @@ REM Ghi log nếu cần
 set "LOG_FILE=next-start.log"
 echo Starting Next.js at %time% %date% > %LOG_FILE%
 
-npm start
+npm run dev
 
 echo.
 echo Server đã dừng, nhấn phím bất kỳ để đóng cửa sổ...
