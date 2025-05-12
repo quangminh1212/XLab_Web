@@ -7,6 +7,7 @@ import { siteConfig } from '@/config/siteConfig'
 import { SessionProvider } from '@/components/auth'
 import { CartProvider } from '@/components/cart'
 import { NotificationProvider } from '@/contexts/NotificationContext'
+import { RecentlyViewedProvider } from '@/contexts/RecentlyViewedContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -96,13 +97,15 @@ export default function RootLayout({
         <SessionProvider>
           <NotificationProvider>
             <CartProvider>
-              <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow">{children}</main>
-                <Footer />
-              </div>
-              <Analytics />
-              <CompileIndicator />
+              <RecentlyViewedProvider>
+                <div className="flex flex-col min-h-screen">
+                  <Header />
+                  <main className="flex-grow">{children}</main>
+                  <Footer />
+                </div>
+                <Analytics />
+                <CompileIndicator />
+              </RecentlyViewedProvider>
             </CartProvider>
           </NotificationProvider>
         </SessionProvider>

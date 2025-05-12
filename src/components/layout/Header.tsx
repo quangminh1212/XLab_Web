@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { useCart } from '@/components/cart';
 
 const Header = React.memo(() => {
   const pathname = usePathname();
@@ -241,9 +242,12 @@ const Header = React.memo(() => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute -top-1.5 -right-1.5 bg-primary-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                0
-              </span>
+              {/* Sử dụng useCart để hiển thị số lượng sản phẩm trong giỏ hàng */}
+              {useCart && (
+                <span className="absolute -top-1.5 -right-1.5 bg-primary-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                  {useCart().itemCount || 0}
+                </span>
+              )}
             </Link>
 
             {/* User Profile */}

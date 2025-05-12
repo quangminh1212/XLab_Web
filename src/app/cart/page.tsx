@@ -6,6 +6,7 @@ import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
 import { useState } from 'react'
 import { products } from '@/data/mockData'
+import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext'
 
 // Kết hợp interface CartItem từ CartContext và utils
 interface CartItemWithVersion {
@@ -20,6 +21,7 @@ interface CartItemWithVersion {
 export default function CartPage() {
   const { items: cartItems, removeItem: removeItemFromCart, updateQuantity: updateItemQuantity, clearCart, addItem: addItemToCart } = useCart();
   const [couponCode, setCouponCode] = useState('');
+  const { recentProducts } = useRecentlyViewed();
   
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map(item => ({
@@ -38,6 +40,18 @@ export default function CartPage() {
     if (newQuantity >= 1) {
       updateItemQuantity(itemId, newQuantity);
     }
+  };
+
+  // Hàm thêm sản phẩm vào giỏ hàng
+  const handleAddToCart = (product: any) => {
+    addItemToCart({
+      id: product.id,
+      name: product.name,
+      price: product.salePrice || product.price,
+      quantity: 1,
+      image: product.imageUrl
+    });
+    alert('Đã thêm sản phẩm vào giỏ hàng!');
   };
 
   // Biểu tượng giỏ hàng trống
@@ -134,7 +148,7 @@ export default function CartPage() {
 
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Link
-                    href="/accounts"
+                    href="/products"
                     className="border border-gray-300 bg-white text-gray-700 px-3 py-2 rounded text-sm text-center"
                   >
                     Tiếp tục mua sắm
@@ -206,103 +220,100 @@ export default function CartPage() {
               </div>
             </div>
           ) : (
-            /* Thiết kế mới cho giỏ hàng trống */
-            <div className="max-w-2xl mx-auto">
-              <div className="bg-white rounded-lg shadow-md p-6 md:p-8 mb-6 text-center">
-                <EmptyCartIcon />
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Giỏ hàng của bạn đang trống</h2>
-                <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá các sản phẩm của chúng tôi và bắt đầu mua sắm ngay.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link 
-                    href="/accounts"
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-md text-base font-medium transition-colors shadow-sm"
-                  >
-                    Xem danh sách sản phẩm
-                  </Link>
-                  <Link 
-                    href="/categories"
-                    className="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 px-6 py-3 rounded-md text-base font-medium transition-colors"
-                  >
-                    Xem danh mục
-                  </Link>
-                </div>
-              </div>
+            <div className="bg-white rounded-lg shadow-md p-6 md:p-8 text-center">
+              <EmptyCartIcon />
+              <h2 className="text-xl font-bold mb-2">Giỏ hàng trống</h2>
+              <p className="text-gray-600 mb-4">Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
+              <Link
+                href="/products"
+                className="bg-primary-600 text-white px-6 py-2 rounded-md text-sm md:text-base font-medium inline-block"
+              >
+                Tiếp tục mua sắm
+              </Link>
             </div>
           )}
         </div>
       </section>
 
-      {/* Sản phẩm đề xuất - Hiển thị cho cả giỏ hàng trống hoặc có sản phẩm */}
-      <section className="py-6 md:py-10 bg-gray-50">
+      {/* Recently Viewed Products */}
+      {recentProducts.length > 0 && (
+        <section className="py-6 md:py-8 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <h2 className="text-xl font-bold mb-4">Sản phẩm đã xem gần đây</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {recentProducts.slice(0, 4).map((product) => (
+                <div key={product.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                  <Link href={`/products/${product.id}`} className="block">
+                    <div className="aspect-square relative">
+                      <Image 
+                        src={product.imageUrl || '/images/product-placeholder.svg'} 
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        className="object-contain p-4"
+                      />
+                    </div>
+                  </Link>
+                  <div className="p-4 border-t">
+                    <Link href={`/products/${product.id}`}>
+                      <h3 className="font-medium mb-1 line-clamp-2 min-h-[2.5rem]">{product.name}</h3>
+                    </Link>
+                    <div className="flex justify-between items-center mt-2">
+                      <div className="text-lg font-bold text-primary-600">
+                        {formatCurrency(product.salePrice || product.price)}
+                      </div>
+                      <button 
+                        onClick={() => handleAddToCart(product)}
+                        className="bg-primary-600 text-white p-1.5 rounded-full hover:bg-primary-700"
+                        aria-label="Thêm vào giỏ hàng"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Featured Products */}
+      <section className="py-6 md:py-8 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
-            {cart.length > 0 ? 'Bạn có thể quan tâm' : 'Sản phẩm đề xuất cho bạn'}
-          </h2>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <h2 className="text-xl font-bold mb-4">Sản phẩm đề xuất</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {featuredProducts.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
-                <div className="h-40 md:h-52 bg-gradient-to-r from-gray-50 to-gray-100 relative overflow-hidden">
-                  {/* Hình ảnh sản phẩm */}
-                  <div className="w-full h-full flex items-center justify-center p-4">
-                    <Image
-                      src={product.imageUrl || '/images/product-placeholder.svg'}
+              <div key={product.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <Link href={`/products/${product.id}`} className="block">
+                  <div className="aspect-square relative">
+                    <Image 
+                      src={product.imageUrl || '/images/product-placeholder.svg'} 
                       alt={product.name}
-                      width={180}
-                      height={180}
-                      className="max-h-full max-w-full object-contain transition-transform hover:scale-105"
-                      unoptimized={true}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                      className="object-contain p-4"
                     />
                   </div>
-                  {product.isNew && (
-                    <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                      Mới
-                    </div>
-                  )}
-                  {product.salePrice && product.salePrice < product.price && (
-                    <div className="absolute top-2 right-2 bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded">
-                      -{Math.round(((product.price - product.salePrice) / product.price) * 100)}%
-                    </div>
-                  )}
-                </div>
-                
-                <div className="p-4 md:p-5">
+                </Link>
+                <div className="p-4 border-t">
                   <Link href={`/products/${product.id}`}>
-                    <h3 className="text-lg font-bold mb-2 text-gray-900 hover:text-primary-600 transition-colors">{product.name}</h3>
+                    <h3 className="font-medium mb-1 line-clamp-2 min-h-[2.5rem]">{product.name}</h3>
                   </Link>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                    {product.description}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      {product.salePrice && product.salePrice < product.price ? (
-                        <>
-                          <span className="text-lg font-bold text-primary-600 block">
-                            {formatCurrency(product.salePrice)}
-                          </span>
-                          <span className="text-sm text-gray-500 line-through">
-                            {formatCurrency(product.price)}
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-lg font-bold text-primary-600">
-                          {formatCurrency(product.price)}
-                        </span>
-                      )}
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="text-lg font-bold text-primary-600">
+                      {formatCurrency(product.salePrice || product.price)}
                     </div>
                     <button 
-                      className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded text-sm transition-colors"
-                      onClick={() => addItemToCart({
-                        id: product.id.toString(),
-                        name: product.name,
-                        price: product.salePrice || product.price,
-                        quantity: 1,
-                        image: product.imageUrl || '/images/product-placeholder.svg'
-                      })}
+                      onClick={() => handleAddToCart(product)}
+                      className="bg-primary-600 text-white p-1.5 rounded-full hover:bg-primary-700"
+                      aria-label="Thêm vào giỏ hàng"
                     >
-                      Thêm vào giỏ
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
                     </button>
                   </div>
                 </div>
@@ -312,5 +323,5 @@ export default function CartPage() {
         </div>
       </section>
     </div>
-  )
+  );
 } 
