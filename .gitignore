@@ -64,8 +64,6 @@ dev.ps1
 powershell-dev.ps1
 start-dev.bat
 no-trace.bat
-run-fixed.bat
-run.bat
 temp-config.js
 next-fix-all.js
 next-fix-all.log
