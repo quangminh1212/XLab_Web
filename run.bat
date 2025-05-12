@@ -56,8 +56,11 @@ echo  Dang chay script sua loi...
 echo ================================================
 echo.
 
-REM Chạy script tổng hợp sửa lỗi
-node next-fix-all.js
+REM Chạy script tổng hợp sửa lỗi nếu tồn tại
+if exist fix-all-errors.js (
+  echo Chay script sua loi tong the...
+  node fix-all-errors.js
+)
 
 echo.
 echo ================================================

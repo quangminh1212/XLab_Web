@@ -347,7 +347,14 @@ function fixTraceError() {
   
   // Tạo file .traceignore
   const traceIgnorePath = path.join(__dirname, '.traceignore');
-  fs.writeFileSync(traceIgnorePath, '**/*', 'utf8');
+  fs.writeFileSync(traceIgnorePath, `
+# Ignore all files in node_modules
+**/node_modules/**
+# Ignore all files in .next
+**/.next/**
+# Ignore all dot files
+**/.*
+  `.trim(), { encoding: 'utf8' });
   log('✅ Đã tạo file .traceignore');
   
   log('✅ Đã hoàn tất việc xử lý lỗi file trace');

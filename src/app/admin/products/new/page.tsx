@@ -1,19 +1,9 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
-
-// Import Quill dynamically to avoid SSR issues
-const ReactQuill = dynamic(() => import('react-quill'), {
-  ssr: false,
-  loading: () => <p>Đang tải trình soạn thảo...</p>
-});
-
-// Import Quill styles
-import 'react-quill/dist/quill.snow.css';
 
 function NewProductPage() {
   const router = useRouter();
@@ -35,37 +25,6 @@ function NewProductPage() {
     salePrice: 0,
     categoryId: 'office-software'
   });
-
-  // Quill editor modules configuration
-  const quillModules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'align': [] }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
-  
-  // Quill editor formats
-  const quillFormats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'color', 'background',
-    'list', 'bullet',
-    'align',
-    'link', 'image'
-  ];
-  
-  // Handle Quill content change
-  const handleEditorChange = (content: string) => {
-    setFormData({
-      ...formData,
-      description: content
-    });
-  };
 
   // Xử lý thêm hình ảnh từ URL
   const handleAddImageUrl = () => {
@@ -173,19 +132,10 @@ function NewProductPage() {
   
   // Xử lý chèn hình ảnh vào mô tả
   const handleInsertImageToDescription = (imageUrl: string) => {
-    // Get current content
-    const currentContent = formData.description;
-    
-    // Create a new image tag to insert
-    const imageHtml = `<img src="${imageUrl}" alt="Mô tả sản phẩm" style="max-width:100%; height:auto; margin:10px 0;" />`;
-    
-    // Update the content with the new image
-    const newContent = currentContent ? currentContent + imageHtml : imageHtml;
-    
-    // Update form data
+    const imageTag = `<img src="${imageUrl}" alt="Mô tả sản phẩm" style="max-width:100%; height:auto; margin:10px 0;" />`;
     setFormData({
       ...formData,
-      description: newContent
+      description: formData.description + '\n' + imageTag
     });
   };
 
@@ -467,16 +417,13 @@ function NewProductPage() {
               <label className="block text-gray-700 font-medium mb-2">
                 Mô tả đầy đủ
               </label>
-              <div className="border border-gray-300 rounded">
-                <ReactQuill
-                  value={formData.description}
-                  onChange={handleEditorChange}
-                  modules={quillModules}
-                  formats={quillFormats}
-                  theme="snow"
-                  className="h-64"
-                />
-              </div>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                rows={6}
+              />
               <p className="text-sm text-gray-500 mt-1">Mô tả chi tiết về sản phẩm (hiển thị ở trang chi tiết)</p>
             </div>
             
