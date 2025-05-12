@@ -8,7 +8,6 @@ const nextConfig = {
   skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   trailingSlash: false,
-  swcMinify: true,
   // Di chuyển outputFileTracingRoot từ experimental lên cấp cao nhất
   outputFileTracingRoot: path.join(__dirname, "../"),
   // Di chuyển serverComponentsExternalPackages từ experimental thành serverExternalPackages
@@ -18,11 +17,8 @@ const nextConfig = {
     largePageDataBytes: 12800000,
     disableOptimizedLoading: true,
     swcTraceProfiling: false,
-    outputFileTracingIgnores: ["**/*"],
     optimizeCss: true,
   },
-  // Disable telemetry
-  telemetry: { disabled: true },
   productionBrowserSourceMaps: false,
   // Không tạo file trace
   generateEtags: false,
