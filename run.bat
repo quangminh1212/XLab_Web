@@ -20,7 +20,12 @@ if not exist "node_modules\" (
     echo Node modules da duoc cai dat.
 )
 
-REM ===== SUA LOI BANG SCRIPT FIXALL.JS =====echo ======================================echo       Sua loi tu dongecho ======================================echo.node fixall.js
+REM ===== SUA LOI BANG SCRIPT FIXALL.JS =====
+echo ======================================
+echo       Sua loi tu dong
+echo ======================================
+echo.
+node fixall.js
 
 echo.
 echo ======================================
