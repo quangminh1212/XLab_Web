@@ -12,6 +12,7 @@
     "dev:clean": "node fix-all-errors.js && next dev",
     "dev:export": "cross-env NEXT_PUBLIC_EXPORT=true next dev",
     "dev:safe": "cross-env NODE_OPTIONS='--no-warnings' next dev --turbo=false",
+    "dev:no-trace": "cross-env NODE_OPTIONS='--no-warnings' next dev --no-trace",
     "prebuild": "node fix-all-errors.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",

@@ -1,6 +1,1 @@
-# Ignore all files in node_modules
-**/node_modules/**
-# Ignore all files in .next
-**/.next/**
-# Ignore all dot files
-**/.*
+**/* 

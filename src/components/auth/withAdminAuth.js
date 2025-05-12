@@ -1,4 +1,6 @@
-import { useRouter } from 'next/router';
+"use client"
+
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import React, { useEffect } from 'react';
 
@@ -16,7 +18,7 @@ export default function withAdminAuth(WrappedComponent) {
     useEffect(() => {
       // Nếu người dùng chưa đăng nhập hoặc không phải admin, chuyển hướng đến trang đăng nhập
       if (!loading && (!session || session.user.role !== 'admin')) {
-        router.replace('/login?callbackUrl=' + encodeURIComponent(router.asPath));
+        router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
       }
     }, [session, loading, router]);
     

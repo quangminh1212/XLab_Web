@@ -10,66 +10,68 @@ REM Đặt các biến môi trường cho NextJS
 set NODE_OPTIONS=--no-warnings --max-old-space-size=4096
 set NEXT_TELEMETRY_DISABLED=1
 set NEXT_DISABLE_TRACE=1
+set NEXT_TRACING_MODE=0
 set NEXT_DISABLE_SWC_NATIVE=1
 set NEXT_USE_SWC_WASM=1
 
-REM Xử lý file trace ngay từ đầu
-if exist .next\trace (
-  echo Dang xu ly file trace...
-  attrib -R .next\trace 2>nul
-  del /F /Q .next\trace 2>nul
-  if exist .next\trace (
-    echo Khong the xoa file trace, dang doi ten...
-    ren .next\trace trace.old.%random% 2>nul
-  )
-)
+REM Tạo file .traceignore để ngăn Next.js tạo file trace
+echo Tao file .traceignore...
+echo **/* > .traceignore
+
+REM Tạo file cấu hình tạm thời để disable trace
+echo Tao file cau hinh tam thoi...
+if not exist .next (mkdir .next)
+echo {"disableTrace":true} > .next\no-trace.json
+
+REM Xóa thư mục .next để bắt đầu với trạng thái sạch
+echo Xoa thu muc .next de bat dau moi...
+rmdir /s /q .next 2>nul
+
+REM Tạo cấu trúc thư mục .next cần thiết
+echo Tao cau truc thu muc .next...
+mkdir .next 2>nul
+mkdir .next\cache 2>nul
+mkdir .next\cache\webpack 2>nul
+mkdir .next\server 2>nul
+mkdir .next\static 2>nul
 
 REM Tạo thư mục .swc-disabled nếu chưa tồn tại
 if not exist .swc-disabled (
   mkdir .swc-disabled
-  echo Đã tạo thư mục .swc-disabled để vô hiệu hóa SWC native
+  echo Da tao thu muc .swc-disabled de vo hieu hoa SWC native
+)
+
+REM Đảm bảo quyền truy cập đầy đủ cho thư mục .next
+echo Dat quyen truy cap day du cho thu muc .next...
+attrib -R .next /S /D
+
+REM Tạo file dummy trace rỗng và đặt quyền chỉ đọc
+echo Tao file trace rong de ngan Next.js tao file moi...
+copy NUL .next\trace >nul 2>&1
+attrib +R .next\trace
+
+echo.
+echo ================================================
+echo  Dang chay script sua loi...
+echo ================================================
+echo.
+
+REM Chạy script tổng hợp sửa lỗi nếu tồn tại
+if exist fix-all-errors.js (
+  echo Chay script sua loi tong the...
+  node fix-all-errors.js
 )
 
 echo.
 echo ================================================
-echo  Đang cấu hình và sửa lỗi Next.js...
+echo  Khoi dong may chu phat trien...
 echo ================================================
 echo.
 
-REM Chạy script tổng hợp sửa lỗi
-if exist next-fix-all.js (
-  node next-fix-all.js
-) else (
-  echo Không tìm thấy file next-fix-all.js, vui lòng tạo file trước khi chạy script này.
-  goto :end
-)
-
-REM Kiểm tra file trace lần cuối trước khi khởi động
-if exist .next\trace (
-  echo Xoa file trace lan cuoi...
-  attrib -R .next\trace 2>nul
-  del /F /Q .next\trace 2>nul
-  if exist .next\trace (
-    echo Khong the xoa file trace, bo qua...
-  )
-)
+REM Khởi động Next.js thông thường
+echo Khoi dong Next.js...
+npx next dev
 
 echo.
-echo ================================================
-echo  Khởi động máy chủ phát triển...
-echo ================================================
-echo.
-
-REM Kiểm tra phiên bản PowerShell và chạy lệnh phù hợp
-if exist "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" (
-  echo Sử dụng PowerShell để chạy lệnh...
-  powershell -Command "npm run dev:wasm"
-) else (
-  echo Sử dụng lệnh npm trực tiếp...
-  call npm run dev:wasm
-)
-
-:end
-echo.
-echo Server đã dừng, nhấn phím bất kỳ để đóng cửa sổ...
+echo Server da dung, nhan phim bat ky de dong cua so...
 pause
