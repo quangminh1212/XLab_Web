@@ -11,6 +11,60 @@ function log(message) {
   console.log(`[fix-trace] ${message}`);
 }
 
+function deleteFileWithRetry(filePath, maxRetries = 5) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      // Nếu file tồn tại, thử xóa
+      if (fs.existsSync(filePath)) {
+        // Đầu tiên đổi quyền file
+        try {
+          fs.chmodSync(filePath, 0o666);
+        } catch (err) {
+          // Bỏ qua lỗi đổi quyền
+        }
+
+        // Sau đó xóa file
+        fs.unlinkSync(filePath);
+        log(`Đã xóa file ${path.basename(filePath)} thành công`);
+        return true;
+      } else {
+        log(`File ${path.basename(filePath)} không tồn tại`);
+        return true;
+      }
+    } catch (err) {
+      log(`Lần thử ${i+1}/${maxRetries}: Không thể xóa file ${path.basename(filePath)}: ${err.message}`);
+      
+      // Thử đổi tên file nếu không xóa được
+      try {
+        const newPath = `${filePath}.old_${Date.now()}`;
+        fs.renameSync(filePath, newPath);
+        log(`Đã đổi tên file ${path.basename(filePath)} thành ${path.basename(newPath)}`);
+        return true;
+      } catch (renameErr) {
+        // Thử kill các tiến trình đang sử dụng file
+        if (process.platform === 'win32') {
+          try {
+            // Chỉ áp dụng trên Windows
+            execSync(`taskkill /F /IM node.exe`, { stdio: 'ignore' });
+            log('Đã kill các tiến trình node.exe đang chạy');
+          } catch (killErr) {
+            // Bỏ qua lỗi kill tiến trình
+          }
+        }
+      }
+      
+      // Đợi 1 giây trước khi thử lại
+      if (i < maxRetries - 1) {
+        log('Đợi 1 giây trước khi thử lại...');
+        execSync('timeout /t 1', { stdio: 'ignore' });
+      }
+    }
+  }
+  
+  log(`Không thể xóa file ${path.basename(filePath)} sau ${maxRetries} lần thử`);
+  return false;
+}
+
 try {
   const nextDir = path.join(__dirname, '.next');
   const tracePath = path.join(nextDir, 'trace');
@@ -26,39 +80,45 @@ try {
     try {
       const files = fs.readdirSync(nextDir);
       
-      // Tắt các lỗi không cần thiết
-      const noTraceFiles = files.filter(file => file.startsWith('trace') || file === 'trace');
-      if (noTraceFiles.length === 0) {
+      // Lọc các file trace
+      const traceFiles = files.filter(file => file.startsWith('trace') || file === 'trace');
+      
+      if (traceFiles.length === 0) {
         log('Không tìm thấy file trace nào, tạo file mới...');
         // Tạo file trace trống để Next.js có thể ghi vào
-        fs.writeFileSync(tracePath, '', { mode: 0o666 });
-        log('Đã tạo file trace trống');
+        try {
+          fs.writeFileSync(tracePath, '', { mode: 0o666 });
+          log('Đã tạo file trace trống');
+        } catch (writeErr) {
+          log(`Không thể tạo file trace: ${writeErr.message}`);
+        }
       } else {
-        log(`Tìm thấy ${noTraceFiles.length} file trace, đang xử lý...`);
+        log(`Tìm thấy ${traceFiles.length} file trace, đang xử lý...`);
         
         // Xử lý từng file
-        for (const file of noTraceFiles) {
+        for (const file of traceFiles) {
           const filePath = path.join(nextDir, file);
           
-          try {
-            // Thử đổi quyền thành 666 (đọc/ghi cho tất cả)
-            fs.chmodSync(filePath, 0o666);
-            log(`Đã đổi quyền cho file ${file}`);
-            
-            // Empty the content
-            fs.truncateSync(filePath, 0);
-            log(`Đã xóa nội dung file ${file}`);
-          } catch (err) {
-            log(`Không thể xử lý file ${file}: ${err.message}`);
-            
+          // Xóa file với cơ chế thử lại
+          const deleted = deleteFileWithRetry(filePath);
+          
+          if (deleted) {
+            // Nếu xóa thành công, tạo file mới
             try {
-              // Nếu không xóa được, cố gắng tạo file .gitkeep để giữ thư mục
-              fs.writeFileSync(path.join(nextDir, '.gitkeep'), '');
-            } catch (e) {
-              // Bỏ qua lỗi
+              fs.writeFileSync(filePath, '', { mode: 0o666 });
+              log(`Đã tạo lại file ${file} trống`);
+            } catch (writeErr) {
+              log(`Không thể tạo lại file ${file}: ${writeErr.message}`);
             }
           }
         }
+      }
+      
+      // Tạo file .gitkeep để giữ thư mục
+      try {
+        fs.writeFileSync(path.join(nextDir, '.gitkeep'), '');
+      } catch (e) {
+        // Bỏ qua lỗi
       }
     } catch (err) {
       log(`Lỗi khi đọc thư mục .next: ${err.message}`);
@@ -77,8 +137,38 @@ try {
   `, { encoding: 'utf8' });
   log('Đã tạo file .traceignore');
   
-  // 4. Thêm cài đặt NODE_OPTIONS để tắt file tracing
+  // 4. Cập nhật cài đặt .env.local để tắt tracing
+  const envPath = path.join(__dirname, '.env.local');
+  let envContent = '';
+  
+  if (fs.existsSync(envPath)) {
+    envContent = fs.readFileSync(envPath, 'utf8');
+  }
+  
+  // Thêm các biến môi trường cần thiết
+  if (!envContent.includes('NEXT_TELEMETRY_DISABLED=1')) {
+    envContent += '\nNEXT_TELEMETRY_DISABLED=1';
+  }
+  
+  if (!envContent.includes('NODE_OPTIONS=')) {
+    envContent += '\nNODE_OPTIONS="--no-warnings"';
+  } else if (!envContent.includes('--no-warnings')) {
+    // Thêm --no-warnings vào NODE_OPTIONS nếu chưa có
+    envContent = envContent.replace(/NODE_OPTIONS="([^"]*)"/, 'NODE_OPTIONS="$1 --no-warnings"');
+  }
+  
+  // Thêm biến để vô hiệu hóa trace
+  if (!envContent.includes('NEXT_DISABLE_TRACE=1')) {
+    envContent += '\nNEXT_DISABLE_TRACE=1';
+  }
+  
+  fs.writeFileSync(envPath, envContent, 'utf8');
+  log('Đã cập nhật file .env.local');
+  
+  // 5. Thêm cài đặt vào quy trình hiện tại
   process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ''} --no-warnings`;
+  process.env.NEXT_TELEMETRY_DISABLED = '1';
+  process.env.NEXT_DISABLE_TRACE = '1';
   
   log('Xử lý file trace hoàn tất');
 } catch (error) {

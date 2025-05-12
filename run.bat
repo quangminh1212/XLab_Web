@@ -6,9 +6,45 @@ echo  XLab Web - Development Server
 echo ================================================
 echo.
 
-echo Đang chuẩn bị môi trường NextJS...
+REM Đặt các biến môi trường cho NextJS
 set NODE_OPTIONS=--no-warnings --max-old-space-size=4096
 set NEXT_TELEMETRY_DISABLED=1
+set NEXT_DISABLE_TRACE=1
+set NEXT_DISABLE_SWC_NATIVE=1
+set NEXT_USE_SWC_WASM=1
+
+REM Xử lý file trace ngay từ đầu
+if exist .next\trace (
+  echo Dang xu ly file trace...
+  attrib -R .next\trace 2>nul
+  del /F /Q .next\trace 2>nul
+  if exist .next\trace (
+    echo Khong the xoa file trace, dang doi ten...
+    ren .next\trace trace.old.%random% 2>nul
+  )
+)
+
+REM Tạo thư mục .swc-disabled nếu chưa tồn tại
+if not exist .swc-disabled (
+  mkdir .swc-disabled
+  echo Đã tạo thư mục .swc-disabled để vô hiệu hóa SWC native
+)
+
+echo Ẩn cảnh báo Next.js...
+if exist hide-warnings.js (
+  node hide-warnings.js
+) else (
+  echo Không tìm thấy file hide-warnings.js, bỏ qua...
+)
+
+echo Sửa lỗi file trace...
+if exist fix-trace-error.js (
+  node fix-trace-error.js
+) else (
+  echo Không tìm thấy file fix-trace-error.js, bỏ qua...
+)
+
+echo Đang chuẩn bị môi trường NextJS...
 
 REM Kiểm tra và xóa các thư mục tạm thời
 echo Đang xóa các file tạm thời...
@@ -95,6 +131,15 @@ echo   All 404 errors fixed!
 echo ================================================
 echo.
 
+REM Cập nhật .env.local
+echo Updating .env.local...
+echo NEXT_TELEMETRY_DISABLED=1> .env.local
+echo NODE_OPTIONS="--no-warnings">> .env.local
+echo NEXT_DISABLE_TRACE=1>> .env.local
+echo NEXT_DISABLE_SWC_NATIVE=1>> .env.local
+echo NEXT_USE_SWC_WASM=1>> .env.local
+echo Updated .env.local successfully.
+
 REM Cập nhật .gitignore nếu cần
 echo Đang cập nhật .gitignore...
 if exist update-gitignore.js (
@@ -103,13 +148,23 @@ if exist update-gitignore.js (
   echo Không tìm thấy file update-gitignore.js, bỏ qua...
 )
 
+REM Kiểm tra file trace lần cuối trước khi khởi động
+if exist .next\trace (
+  echo Xoa file trace lan cuoi...
+  attrib -R .next\trace 2>nul
+  del /F /Q .next\trace 2>nul
+  if exist .next\trace (
+    echo Khong the xoa file trace, bo qua...
+  )
+)
+
 echo.
 echo ================================================
 echo  Khởi động máy chủ phát triển...
 echo ================================================
 echo.
 
-npm run dev
+call npm run dev:wasm
 
 echo.
 echo Server đã dừng, nhấn phím bất kỳ để đóng cửa sổ...

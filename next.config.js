@@ -4,7 +4,7 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: true,
-  // swcMinify: false, // Removed - not supported in Next.js 15+
+  //  không còn là tùy chọn hợp lệ trong Next.js 15+
   skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   images: {
@@ -62,6 +62,10 @@ const nextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'same-origin'
+          },
+          {
+            key: 'Next-SWC-Version',
+            value: 'wasm'
           }
         ]
       }
