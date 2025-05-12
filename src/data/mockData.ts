@@ -8,7 +8,7 @@ export const categories: Category[] = [
     slug: 'phan-mem-doanh-nghiep',
     description: 'Các phần mềm phục vụ cho doanh nghiệp như ERP, CRM, thanh toán...',
     imageUrl: '/images/categories/productivity.png',
-    productCount: 1
+    productCount: 0
   },
   {
     id: 'cat-2',
@@ -24,7 +24,7 @@ export const categories: Category[] = [
     slug: 'phan-mem-do-hoa',
     description: 'Các phần mềm thiết kế, chỉnh sửa ảnh, video và đồ họa...',
     imageUrl: '/images/categories/design.png',
-    productCount: 2
+    productCount: 0
   },
   {
     id: 'cat-4',
@@ -32,7 +32,7 @@ export const categories: Category[] = [
     slug: 'bao-mat-antivirus',
     description: 'Các phần mềm bảo mật, diệt virus, mã hóa dữ liệu...',
     imageUrl: '/images/categories/security.png',
-    productCount: 1
+    productCount: 0
   },
   {
     id: 'cat-5',
@@ -40,7 +40,7 @@ export const categories: Category[] = [
     slug: 'ung-dung-giao-duc',
     description: 'Các ứng dụng học ngoại ngữ, lập trình, toán học...',
     imageUrl: '/images/categories/education.png',
-    productCount: 1
+    productCount: 0
   },
   {
     id: 'cat-6',
@@ -48,7 +48,7 @@ export const categories: Category[] = [
     slug: 'tai-khoan-hoc-tap',
     description: 'Các tài khoản premium cho các nền tảng học trực tuyến phổ biến.',
     imageUrl: '/images/categories/accounts.svg',
-    productCount: 2
+    productCount: 0
   }
 ];
 
