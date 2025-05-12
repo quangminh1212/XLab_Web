@@ -177,3 +177,13 @@ fix-trace-error.js
 hide-warnings.js
 update-gitignore.js
 next-setup.js
+
+# Tệm thời
+.temp/
+temp-*
+*.tmp
+*.temp
+
+# Thêm mục mới được tạo ra
+next-fix-all.log
+temp-config.js
