@@ -20,7 +20,8 @@
     "start:export": "serve out -p 3000",
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "fix-errors": "node fix-all-errors.js"
+    "fix-errors": "node fix-all-errors.js",
+    "fix-lfs-issues": "node scripts/fix-git-lfs-issues.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
