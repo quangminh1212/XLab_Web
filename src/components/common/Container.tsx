@@ -17,11 +17,4 @@ export const Container: React.FC<ContainerProps> = ({
   )
 }
 
-export default Container   return ( 
-    <div className={cn('container mx-auto px-4 md:px-6 max-w-7xl', className)}> 
-      {children} 
-    </div> 
-  ) 
-} 
- 
-export default Container 
+export default Container
