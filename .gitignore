@@ -211,3 +211,13 @@ desktop.ini
 /tmp
 *.temp
 temp.txt
+
+# Next.js static files và font manifest
+/_next/static/css/app/layout*.css
+/_next/static/app/not-found.*.js
+/_next/static/app-pages-internals.*.js
+/_next/static/main-app.*.js
+/_next/static/app/loading.*.js
+/_next/static/*-manifest.json
+.next/server/next-font-manifest.json
+.next/server/vendor-chunks/

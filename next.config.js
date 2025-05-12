@@ -131,6 +131,39 @@ const nextConfig = {
       };
     }
 
+    // Thêm plugin để tạo file font-manifest trống nếu không tồn tại
+    if (isServer) {
+      const { existsSync, writeFileSync, mkdirSync } = require('fs');
+      const { join, dirname } = require('path');
+      
+      const originalEntryPoint = config.entry;
+      config.entry = async () => {
+        const entries = await originalEntryPoint();
+        
+        // Tạo font-manifest.json khi build
+        const nextFontManifestPath = join(__dirname, '.next/server/next-font-manifest.json');
+        try {
+          const dir = dirname(nextFontManifestPath);
+          if (!existsSync(dir)) {
+            mkdirSync(dir, { recursive: true });
+          }
+          if (!existsSync(nextFontManifestPath)) {
+            writeFileSync(nextFontManifestPath, JSON.stringify({
+              pages: {},
+              app: {},
+              appUsingSizeAdjust: false,
+              pagesUsingSizeAdjust: false
+            }));
+            console.log('Created empty next-font-manifest.json');
+          }
+        } catch (err) {
+          console.error('Error creating next-font-manifest.json:', err);
+        }
+        
+        return entries;
+      };
+    }
+
     config.infrastructureLogging = {
       level: 'error',
     };
@@ -192,67 +225,45 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Redirect timestamp versioned CSS files to base files
+      // Redirect cho tất cả các file static có timestamp trong query parameter
       {
-        source: '/_next/static/css/app/layout.css',
+        source: '/_next/static/:path*',
         has: [
           {
             type: 'query',
             key: 'v',
           },
         ],
+        destination: '/_next/static/:path*',
+        permanent: true,
+      },
+      // Fallback redirects cho các file static cụ thể
+      {
+        source: '/_next/static/css/app/layout.css',
         destination: '/_next/static/css/app/layout.css',
         permanent: true,
       },
-      // Redirect timestamp versioned JS files to base files
       {
-        source: '/_next/static/main-app.aef085aefcb8f66f.js',
-        has: [
-          {
-            type: 'query',
-            key: 'v',
-          },
-        ],
-        destination: '/_next/static/main-app.aef085aefcb8f66f.js',
+        source: '/_next/static/app/not-found.:hash.js',
+        destination: '/_next/static/app/not-found.js',
         permanent: true,
       },
-      // Redirect for admin layout files
       {
-        source: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
-        destination: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
+        source: '/_next/static/app-pages-internals.:hash.js',
+        destination: '/_next/static/app-pages-internals.js',
         permanent: true,
       },
-      // Redirect for admin page files
       {
-        source: '/_next/static/app/admin/page.20e1580ca904d554.js',
-        destination: '/_next/static/app/admin/page.20e1580ca904d554.js',
+        source: '/_next/static/main-app.:hash.js',
+        destination: '/_next/static/main-app.js',
         permanent: true,
       },
-      // Redirect for not-found files
       {
-        source: '/_next/static/app/not-found.7d3561764989b0ed.js',
-        destination: '/_next/static/app/not-found.7d3561764989b0ed.js',
+        source: '/_next/static/app/loading.:hash.js',
+        destination: '/_next/static/app/loading.js',
         permanent: true,
       },
-      // Redirect for layout files
-      {
-        source: '/_next/static/app/layout.32d8c3be6202d9b3.js',
-        destination: '/_next/static/app/layout.32d8c3be6202d9b3.js',
-        permanent: true,
-      },
-      // Redirect for app-pages-internals files
-      {
-        source: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
-        destination: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
-        permanent: true,
-      },
-      // Redirect for loading files
-      {
-        source: '/_next/static/app/loading.062c877ec63579d3.js',
-        destination: '/_next/static/app/loading.062c877ec63579d3.js',
-        permanent: true,
-      },
-    ]
+    ];
   },
 };
 

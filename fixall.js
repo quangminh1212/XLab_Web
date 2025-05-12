@@ -269,32 +269,11 @@ function fixAccountsPage() {
 
   const accountsPagePath = path.join(__dirname, 'src', 'app', 'accounts', 'page.tsx');
 
-  // Nội dung đúng không có ký tự đặc biệt
-  const cleanContent = `'use client'
-
-import Link from 'next/link'
-import { Container } from '@/components/common'
+  // Nội dung mới - sử dụng server-side redirect
+  const newContent = `import { redirect } from 'next/navigation'
 
 export default function AccountsPage() {
-  return (
-    <Container>
-      <div className="flex flex-col items-center justify-center min-h-[50vh] py-20 px-4 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Trang đang được bảo trì</h1>
-        <p className="text-lg text-gray-600 max-w-2xl mb-8">
-          Chức năng tài khoản đang được nâng cấp và bảo trì. Chúng tôi sẽ sớm quay trở lại với trải nghiệm tốt hơn.
-        </p>
-        <p className="text-gray-500 mb-8">
-          Vui lòng quay lại sau hoặc liên hệ với chúng tôi nếu bạn cần hỗ trợ.
-        </p>
-        <Link
-          href="/"
-          className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300"
-        >
-          Quay lại trang chủ
-        </Link>
-      </div>
-    </Container>
-  )
+  redirect('/account')
 }`;
 
   try {
@@ -305,12 +284,47 @@ export default function AccountsPage() {
       console.log('Đã tạo thư mục accounts');
     }
 
-    // Luôn ghi nội dung sạch, bất kể trạng thái hiện tại
-    fs.writeFileSync(accountsPagePath, cleanContent, { encoding: 'utf8' });
-    console.log('Đã ghi nội dung sạch vào accounts/page.tsx');
+    // Luôn ghi nội dung mới, bất kể trạng thái hiện tại
+    fs.writeFileSync(accountsPagePath, newContent, { encoding: 'utf8' });
+    console.log('Đã ghi nội dung chuyển hướng vào accounts/page.tsx');
     
   } catch (err) {
     console.error('Lỗi khi ghi accounts/page.tsx:', err.message);
+  }
+}
+
+/**
+ * Tạo file font-manifest.json nếu không tồn tại
+ */
+function createFontManifest() {
+  console.log('Đang tạo file font-manifest.json...');
+
+  const fontManifestPath = path.join(__dirname, '.next', 'server', 'next-font-manifest.json');
+  const fontManifestDir = path.dirname(fontManifestPath);
+
+  try {
+    // Đảm bảo thư mục tồn tại
+    if (!fs.existsSync(fontManifestDir)) {
+      fs.mkdirSync(fontManifestDir, { recursive: true });
+      console.log(`Đã tạo thư mục: ${fontManifestDir}`);
+    }
+
+    // Tạo file font-manifest.json nếu không tồn tại
+    if (!fs.existsSync(fontManifestPath)) {
+      const emptyFontManifest = {
+        pages: {},
+        app: {},
+        appUsingSizeAdjust: false,
+        pagesUsingSizeAdjust: false
+      };
+
+      fs.writeFileSync(fontManifestPath, JSON.stringify(emptyFontManifest, null, 2), 'utf8');
+      console.log(`Đã tạo file font-manifest.json tại ${fontManifestPath}`);
+    } else {
+      console.log('File font-manifest.json đã tồn tại.');
+    }
+  } catch (err) {
+    console.error(`Lỗi khi tạo file font-manifest.json: ${err.message}`);
   }
 }
 
@@ -399,6 +413,9 @@ function cleanNextCache() {
   } catch (err) {
     console.error('Không thể tạo file trace:', err.message);
   }
+
+  // Thêm vào cuối hàm, trước dòng log cuối
+  createFontManifest();
 
   console.log('Quá trình xóa cache Next.js đã hoàn tất!');
 } 

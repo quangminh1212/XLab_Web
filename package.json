@@ -3,17 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node fix-trace-error.js && node fix-all-errors.js && echo Preparing development environment...",
+    "predev": "node fixall.js && echo Preparing development environment...",
     "dev": "next dev",
     "dev:silent": "node hide-warnings.js && cross-env NEXT_IGNORE_WARNINGS=NEXT_PACKAGE_WARNING,ESLINT_WARNING,API_ROUTE_IMPORT_WARNING NODE_OPTIONS=--no-warnings next dev",
     "dev:win": "node hide-warnings.js && set NODE_OPTIONS=--no-warnings && next dev",
     "dev:wasm": "cross-env NEXT_DISABLE_SWC_NATIVE=1 NEXT_USE_SWC_WASM=1 NODE_OPTIONS=--no-warnings next dev",
     "dev:no-hot": "cross-env NODE_OPTIONS='--no-warnings' next dev --no-hot",
-    "dev:clean": "node fix-all-errors.js && next dev",
+    "dev:clean": "node fixall.js && next dev",
     "dev:export": "cross-env NEXT_PUBLIC_EXPORT=true next dev",
     "dev:safe": "cross-env NODE_OPTIONS='--no-warnings' next dev --turbo=false",
     "dev:no-trace": "cross-env NODE_OPTIONS='--no-warnings' next dev --no-trace",
-    "prebuild": "node fix-all-errors.js && rimraf .next && echo Preparing build environment...",
+    "prebuild": "node fixall.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
     "analyze": "cross-env ANALYZE=true next build",
@@ -21,7 +21,7 @@
     "start:export": "serve out -p 3000",
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "fix-errors": "node fix-all-errors.js"
+    "fix-errors": "node fixall.js"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^15.2.4",
