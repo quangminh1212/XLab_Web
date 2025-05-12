@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 
-const Header = () => {
+const Header = React.memo(() => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -17,27 +17,72 @@ const Header = () => {
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
-  const isActive = (path: string) => {
+  const isActive = useCallback((path: string) => {
     return pathname === path ? 'text-primary-600 font-medium' : 'text-gray-700 hover:text-primary-600';
-  };
+  }, [pathname]);
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     setIsOpen(!isOpen);
     if (isProfileOpen) setIsProfileOpen(false);
     if (isNotificationOpen) setIsNotificationOpen(false);
-  };
+  }, [isOpen, isProfileOpen, isNotificationOpen]);
 
-  const toggleProfile = () => {
+  const toggleProfile = useCallback(() => {
     setIsProfileOpen(!isProfileOpen);
     if (isOpen) setIsOpen(false);
     if (isNotificationOpen) setIsNotificationOpen(false);
-  };
+  }, [isOpen, isProfileOpen, isNotificationOpen]);
 
-  const toggleNotification = () => {
+  const toggleNotification = useCallback(() => {
     setIsNotificationOpen(!isNotificationOpen);
     if (isOpen) setIsOpen(false);
     if (isProfileOpen) setIsProfileOpen(false);
-  };
+  }, [isOpen, isProfileOpen, isNotificationOpen]);
+
+  // Memoize navbar links to prevent re-renders
+  const navbarLinks = useMemo(() => (
+    <nav className="hidden md:flex space-x-3 lg:space-x-4 xl:space-x-6">
+      <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium`}>
+        Trang chủ
+      </Link>
+      <Link
+        href="/products"
+        className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+      >
+        Sản phẩm
+      </Link>
+      <Link
+        href="/services"
+        className={`${isActive('/services')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+      >
+        Dịch vụ
+      </Link>
+      <Link
+        href="/testimonials"
+        className={`${isActive('/testimonials')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+      >
+        Đánh giá
+      </Link>
+      <Link
+        href="/about"
+        className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+      >
+        Giới thiệu
+      </Link>
+      <Link
+        href="/contact"
+        className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+      >
+        Liên hệ
+      </Link>
+      <Link
+        href="/bao-hanh"
+        className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+      >
+        Bảo hành
+      </Link>
+    </nav>
+  ), [isActive]);
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -52,52 +97,13 @@ const Header = () => {
                 width={100}
                 height={60}
                 className="w-auto h-9 md:h-10"
+                priority
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-3 lg:space-x-4 xl:space-x-6">
-            <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium`}>
-              Trang chủ
-            </Link>
-            <Link
-              href="/products"
-              className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-            >
-              Sản phẩm
-            </Link>
-            <Link
-              href="/services"
-              className={`${isActive('/services')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-            >
-              Dịch vụ
-            </Link>
-            <Link
-              href="/testimonials"
-              className={`${isActive('/testimonials')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-            >
-              Đánh giá
-            </Link>
-            <Link
-              href="/about"
-              className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-            >
-              Giới thiệu
-            </Link>
-            <Link
-              href="/contact"
-              className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-            >
-              Liên hệ
-            </Link>
-            <Link
-              href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-            >
-              Bảo hành
-            </Link>
-          </nav>
+          {navbarLinks}
 
           {/* Right Side - Auth + Cart */}
           <div className="flex items-center space-x-2 md:space-x-3">
@@ -375,6 +381,8 @@ const Header = () => {
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = 'Header';
 
 export default Header; 
