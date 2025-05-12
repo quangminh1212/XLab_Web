@@ -7,49 +7,31 @@ const withBundleAnalyzer = process.env.ANALYZE === 'true'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: true,
-  //  không còn là tùy chọn hợp lệ trong Next.js 15+
+  images: {
+    domains: [''],
+    unoptimized: true,
+  },
+  experimental: {
+    optimizeCss: true,
+    largePageDataBytes: 128 * 1000 * 100,
+    disableOptimizedLoading: true,
+  },
+  eslint: {
+    dirs: ['src'],
+    ignoreDuringBuilds: true,
+  },
+  output: process.env.NEXT_OUTPUT_MODE,
+  pageExtensions: process.env.NEXT_OUTPUT_MODE === 'export' 
+    ? ['page.tsx', 'page.jsx', 'page.js', 'page.ts'] 
+    : ['page.tsx', 'page.jsx', 'page.js', 'page.ts', 'api.ts', 'api.js', 'api.tsx', 'api.jsx'],
   skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   trailingSlash: false,
-  // Di chuyển outputFileTracingRoot từ experimental lên cấp cao nhất
   outputFileTracingRoot: path.join(__dirname, "../"),
-  // Di chuyển serverComponentsExternalPackages từ experimental thành serverExternalPackages
   serverExternalPackages: ['@swc/helpers'],
-  // Tắt tính năng trace ghi lỗi
-  experimental: {
-    largePageDataBytes: 12800000,
-    disableOptimizedLoading: true,
-    swcTraceProfiling: false,
-    optimizeCss: true,
-  },
   productionBrowserSourceMaps: false,
-  // Không tạo file trace
   generateEtags: false,
-  images: {
-    domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-      {
-        protocol: 'http',
-        hostname: '**',
-      }
-    ],
-    loader: 'default',
-    path: '',
-    disableStaticImages: false,
-    unoptimized: process.env.NODE_ENV === 'development',
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60,
-    dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
-  },
   async headers() {
     return [
       {
@@ -91,9 +73,6 @@ const nextConfig = {
       }
     ];
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -108,7 +87,6 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
-  // Vô hiệu hóa cảnh báo cho CSS tùy chỉnh (Tailwind CSS)
   modularizeImports: {
     'tailwindcss/utilities': {
       transform: 'tailwindcss/utilities/{{member}}',
@@ -123,7 +101,6 @@ const nextConfig = {
         ignored: /node_modules/
       };
 
-      // Sửa lỗi hot update 404
       config.output = {
         ...config.output,
         hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
@@ -131,37 +108,46 @@ const nextConfig = {
       };
     }
 
-    // Thêm plugin để tạo file font-manifest trống nếu không tồn tại
-    if (isServer) {
-      const { existsSync, writeFileSync, mkdirSync } = require('fs');
-      const { join, dirname } = require('path');
-      
-      const originalEntryPoint = config.entry;
-      config.entry = async () => {
-        const entries = await originalEntryPoint();
-        
-        // Tạo font-manifest.json khi build
-        const nextFontManifestPath = join(__dirname, '.next/server/next-font-manifest.json');
-        try {
-          const dir = dirname(nextFontManifestPath);
-          if (!existsSync(dir)) {
-            mkdirSync(dir, { recursive: true });
-          }
-          if (!existsSync(nextFontManifestPath)) {
-            writeFileSync(nextFontManifestPath, JSON.stringify({
-              pages: {},
-              app: {},
-              appUsingSizeAdjust: false,
-              pagesUsingSizeAdjust: false
-            }));
-            console.log('Created empty next-font-manifest.json');
-          }
-        } catch (err) {
-          console.error('Error creating next-font-manifest.json:', err);
-        }
-        
-        return entries;
-      };
+    config.plugins.push({
+      apply: (compiler) => {
+        compiler.hooks.afterEmit.tap('CreateEmptyVendorChunks', () => {
+          const fs = require('fs');
+          const path = require('path');
+          
+          const vendorDir = path.join(__dirname, '.next', 'server', 'vendor-chunks');
+          const serverVendorDir = path.join(__dirname, '.next', 'server', 'server', 'vendor-chunks');
+          
+          [vendorDir, serverVendorDir].forEach(dir => {
+            if (!fs.existsSync(dir)) {
+              try {
+                fs.mkdirSync(dir, { recursive: true });
+              } catch (err) {
+                // Xử lý lỗi nếu không thể tạo thư mục
+              }
+            }
+          });
+          
+          const vendorFile = path.join(vendorDir, 'tailwind-merge.js');
+          const serverVendorFile = path.join(serverVendorDir, 'tailwind-merge.js');
+          
+          [vendorFile, serverVendorFile].forEach(file => {
+            if (!fs.existsSync(file)) {
+              try {
+                fs.writeFileSync(file, 'module.exports = {};', 'utf8');
+              } catch (err) {
+                // Xử lý lỗi nếu không thể tạo file
+              }
+            }
+          });
+        });
+      }
+    });
+
+    if (process.env.NEXT_OUTPUT_MODE === 'export' && config.module) {
+      config.module.rules?.push({
+        test: /\/app\/api\/|\/middleware\.(js|ts)$/,
+        loader: 'ignore-loader',
+      });
     }
 
     config.infrastructureLogging = {
@@ -180,7 +166,6 @@ const nextConfig = {
       hints: false,
     };
 
-    // Đảm bảo publicPath luôn được đặt đúng để tránh lỗi 404
     config.output = {
       ...config.output,
       publicPath: '/_next/',
@@ -193,16 +178,13 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Ngăn chặn lỗi ENOENT
     config.cache = false;
 
-    // Loại bỏ cảnh báo Critical dependency
     config.module = {
       ...config.module,
       exprContextCritical: false,
       rules: [
         ...config.module.rules,
-        // Loại bỏ quy tắc CSS để sử dụng hỗ trợ CSS built-in của Next.js
         {
           test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
           type: 'asset/resource',
@@ -210,7 +192,6 @@ const nextConfig = {
       ],
     };
 
-    // Enables hot module replacement
     config.optimization.runtimeChunk = 'single';
 
     return config;
@@ -219,13 +200,11 @@ const nextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now();
   },
-  // Cấu hình sass nằm trong mục tùy chọn hợp lệ
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
   async redirects() {
     return [
-      // Redirect cho tất cả các file static có timestamp trong query parameter
       {
         source: '/_next/static/:path*',
         has: [
@@ -237,7 +216,6 @@ const nextConfig = {
         destination: '/_next/static/:path*',
         permanent: true,
       },
-      // Fallback redirects cho các file static cụ thể
       {
         source: '/_next/static/css/app/layout.css',
         destination: '/_next/static/css/app/layout.css',
@@ -254,13 +232,13 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/_next/static/main-app.:hash.js',
-        destination: '/_next/static/main-app.js',
+        source: '/_next/static/app/loading.:hash.js',
+        destination: '/_next/static/app/loading.js',
         permanent: true,
       },
       {
-        source: '/_next/static/app/loading.:hash.js',
-        destination: '/_next/static/app/loading.js',
+        source: '/_next/static/main-app.:hash.js',
+        destination: '/_next/static/main-app.js',
         permanent: true,
       },
     ];

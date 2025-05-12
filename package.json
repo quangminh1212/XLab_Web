@@ -5,14 +5,15 @@
   "scripts": {
     "predev": "node fixall.js && echo Preparing development environment...",
     "dev": "next dev",
-    "dev:silent": "node hide-warnings.js && cross-env NEXT_IGNORE_WARNINGS=NEXT_PACKAGE_WARNING,ESLINT_WARNING,API_ROUTE_IMPORT_WARNING NODE_OPTIONS=--no-warnings next dev",
-    "dev:win": "node hide-warnings.js && set NODE_OPTIONS=--no-warnings && next dev",
+    "dev:silent": "node fixall.js && cross-env NEXT_IGNORE_WARNINGS=NEXT_PACKAGE_WARNING,ESLINT_WARNING,API_ROUTE_IMPORT_WARNING NODE_OPTIONS=--no-warnings next dev",
+    "dev:win": "node fixall.js && set NODE_OPTIONS=--no-warnings && next dev",
     "dev:wasm": "cross-env NEXT_DISABLE_SWC_NATIVE=1 NEXT_USE_SWC_WASM=1 NODE_OPTIONS=--no-warnings next dev",
     "dev:no-hot": "cross-env NODE_OPTIONS='--no-warnings' next dev --no-hot",
     "dev:clean": "node fixall.js && next dev",
     "dev:export": "cross-env NEXT_PUBLIC_EXPORT=true next dev",
-    "dev:safe": "cross-env NODE_OPTIONS='--no-warnings' next dev --turbo=false",
+    "dev:safe": "cross-env NODE_OPTIONS='--no-warnings --max-old-space-size=4096' next dev",
     "dev:no-trace": "cross-env NODE_OPTIONS='--no-warnings' next dev --no-trace",
+    "dev:fullfix": "node fixall.js && cross-env NEXT_DISABLE_FILE_SYSTEM_TRACE=1 NODE_OPTIONS='--no-warnings' next dev",
     "prebuild": "node fixall.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
@@ -20,8 +21,8 @@
     "start": "next start",
     "start:export": "serve out -p 3000",
     "lint": "next lint",
-    "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "fix-errors": "node fixall.js"
+    "fix-all": "node fixall.js",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^15.2.4",
