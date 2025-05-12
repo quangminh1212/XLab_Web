@@ -4,6 +4,7 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: true,
+  // swcMinify: false, // Removed - not supported in Next.js 15+
   skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   images: {

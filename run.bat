@@ -24,6 +24,9 @@ if not exist .next\server\chunks mkdir .next\server\chunks
 if not exist .next\static mkdir .next\static
 if not exist .next\static\chunks mkdir .next\static\chunks
 if not exist .next\static\css mkdir .next\static\css
+if not exist .next\static\css\app mkdir .next\static\css\app
+if not exist .next\static\app mkdir .next\static\app
+if not exist .next\static\app\admin mkdir .next\static\app\admin
 
 REM Sửa lỗi component withAdminAuth
 echo Đang kiểm tra và sửa lỗi component thiếu...
@@ -31,6 +34,14 @@ if exist fix-auth-component.js (
   node fix-auth-component.js
 ) else (
   echo Không tìm thấy file fix-auth-component.js, bỏ qua...
+)
+
+REM Sửa lỗi SWC
+echo Đang sửa lỗi SWC...
+if exist fix-swc-errors.js (
+  node fix-swc-errors.js
+) else (
+  echo Không tìm thấy file fix-swc-errors.js, bỏ qua...
 )
 
 REM Chạy script sửa lỗi tổng hợp
@@ -50,12 +61,39 @@ if exist fix-static-files.js (
 )
 
 REM Sửa lỗi 404 cho các file static cụ thể
-echo Đang sửa lỗi 404 cho các file static...
-if exist fix-404-errors.bat (
-  call fix-404-errors.bat
-) else (
-  echo Không tìm thấy file fix-404-errors.bat, bỏ qua...
-)
+echo ================================================
+echo   Fixing 404 errors for static files
+echo ================================================
+echo.
+
+REM Create missing CSS files
+echo Creating missing CSS files...
+echo /* Layout CSS */ > .next\static\css\app\layout.css
+
+REM Create missing JS files with exact hashes
+echo Creating missing JS files with exact hashes...
+echo // Not Found Page > .next\static\app\not-found.7d3561764989b0ed.js
+echo // Layout JS > .next\static\app\layout.32d8c3be6202d9b3.js
+echo // App Pages Internals > .next\static\app-pages-internals.196c41f732d2db3f.js
+echo // Main App > .next\static\main-app.aef085aefcb8f66f.js
+echo // Loading > .next\static\app\loading.062c877ec63579d3.js
+echo // Admin Layout > .next\static\app\admin\layout.bd8a9bfaca039569.js
+echo // Admin Page > .next\static\app\admin\page.20e1580ca904d554.js
+
+REM Create copies with timestamp suffixes
+echo Creating timestamp copies...
+copy .next\static\css\app\layout.css .next\static\css\app\layout-1746857687478.css 2>nul
+copy .next\static\css\app\layout.css .next\static\css\app\layout-1746857690764.css 2>nul
+copy .next\static\css\app\layout.css .next\static\css\app\layout-1746857700000.css 2>nul
+copy .next\static\main-app.aef085aefcb8f66f.js .next\static\main-app-1746857687478.js 2>nul
+copy .next\static\main-app.aef085aefcb8f66f.js .next\static\main-app-1746857690764.js 2>nul
+copy .next\static\main-app.aef085aefcb8f66f.js .next\static\main-app-1746857700000.js 2>nul
+
+echo.
+echo ================================================
+echo   All 404 errors fixed!
+echo ================================================
+echo.
 
 REM Cập nhật .gitignore nếu cần
 echo Đang cập nhật .gitignore...

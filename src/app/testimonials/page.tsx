@@ -132,7 +132,7 @@ export default function TestimonialsPage() {
           <svg
             key={i}
             xmlns="http://www.w3.org/2000/svg"
-            className={`h-5 w-5 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+            className={`h-5 w-5 ${i < rating ? 'text-amber-400' : 'text-gray-300'}`}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -146,27 +146,29 @@ export default function TestimonialsPage() {
   }
 
   return (
-    <div>
+    <div className="bg-gradient-to-b from-gray-50 to-white">
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
-        <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Khách hàng nói gì về chúng tôi</h1>
-          <p className="text-xl max-w-3xl">
-            Khám phá những trải nghiệm và kết quả thực tế mà khách hàng đã đạt được khi sử dụng giải pháp của XLab
-          </p>
+      <section className="bg-gradient-to-r from-primary-700 to-primary-500 text-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">Khách hàng nói gì về chúng tôi</h1>
+            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+              Khám phá những trải nghiệm và kết quả thực tế mà khách hàng đã đạt được khi sử dụng giải pháp của XLab
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Tabs */}
-      <section className="py-10 bg-gray-50">
-        <div className="container">
+      <section className="py-8 border-b border-gray-200 sticky top-0 bg-white z-10 shadow-sm">
+        <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
-            <div className="flex border-b border-gray-200">
+            <div className="flex justify-center">
               <button
-                className={`px-6 py-3 font-medium text-sm sm:text-base ${
+                className={`px-8 py-4 font-medium text-sm sm:text-base rounded-t-lg transition-all duration-300 ${
                   activeTab === 'clients'
-                    ? 'text-primary-600 border-b-2 border-primary-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                    : 'text-gray-500 hover:text-primary-500 hover:bg-gray-50'
                 }`}
                 onClick={() => setActiveTab('clients')}
                 type="button"
@@ -174,10 +176,10 @@ export default function TestimonialsPage() {
                 Đánh giá từ khách hàng
               </button>
               <button
-                className={`px-6 py-3 font-medium text-sm sm:text-base ${
+                className={`px-8 py-4 font-medium text-sm sm:text-base rounded-t-lg transition-all duration-300 ${
                   activeTab === 'case-studies'
-                    ? 'text-primary-600 border-b-2 border-primary-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                    : 'text-gray-500 hover:text-primary-500 hover:bg-gray-50'
                 }`}
                 onClick={() => setActiveTab('case-studies')}
                 type="button"
@@ -190,51 +192,58 @@ export default function TestimonialsPage() {
       </section>
 
       {/* Content */}
-      <section className="py-12">
-        <div className="container">
+      <section className="py-16">
+        <div className="container mx-auto px-4">
           {activeTab === 'clients' && (
             <div className="animate-fadeIn">
-              <div className="flex flex-col space-y-6">
+              <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
                 {testimonials.map((testimonial) => (
                   <div
                     key={testimonial.id}
-                    className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                    className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden transform hover:-translate-y-1 border border-gray-100"
                   >
-                    <div className="flex flex-wrap md:flex-nowrap items-start">
-                      <div className="flex items-center mb-4 md:mb-0 w-full md:w-auto md:mr-6">
-                        <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 bg-gray-200 flex items-center justify-center">
-                          {!imageErrors[testimonial.id] ? (
-                            <Image
-                              src={testimonial.image}
-                              alt={testimonial.name}
-                              className="object-cover"
-                              fill
-                              sizes="56px"
-                              priority={false}
-                              onError={() => handleImageError(testimonial.id)}
-                            />
-                          ) : (
-                            <div className="text-lg font-bold text-primary-600">
-                              {testimonial.name.charAt(0)}
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-lg">{testimonial.name}</h3>
-                          <p className="text-gray-600 text-sm">
-                            {testimonial.position}, {testimonial.company}
-                          </p>
-                          <div className="mt-1">{renderRatingStars(testimonial.rating)}</div>
+                    <div className="p-8">
+                      <div className="mb-6">
+                        <div className="flex items-center">
+                          <div className="relative w-16 h-16 rounded-full overflow-hidden mr-4 bg-gray-200 flex items-center justify-center ring-4 ring-primary-50">
+                            {!imageErrors[testimonial.id] ? (
+                              <Image
+                                src={testimonial.image}
+                                alt={testimonial.name}
+                                className="object-cover"
+                                fill
+                                sizes="64px"
+                                priority={false}
+                                onError={() => handleImageError(testimonial.id)}
+                              />
+                            ) : (
+                              <div className="text-2xl font-bold text-primary-600">
+                                {testimonial.name.charAt(0)}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-xl text-gray-900">{testimonial.name}</h3>
+                            <p className="text-gray-600 text-sm">
+                              {testimonial.position}, {testimonial.company}
+                            </p>
+                            <div className="mt-2">{renderRatingStars(testimonial.rating)}</div>
+                          </div>
                         </div>
                       </div>
-                      <p className="text-gray-700 italic flex-1">&ldquo;{testimonial.quote}&rdquo;</p>
+                      <div className="relative">
+                        <svg className="absolute top-0 left-0 w-10 h-10 text-primary-100 transform -translate-x-6 -translate-y-6 opacity-50" fill="currentColor" viewBox="0 0 32 32">
+                          <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
+                        </svg>
+                        <p className="text-gray-700 text-base md:text-lg leading-relaxed">{testimonial.quote}</p>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Testimonial Video */}
-              <div className="mt-20">
+              <div className="mt-24">
                 <div className="text-center mb-12">
                   <h2 className="text-3xl font-bold mb-4">Video đánh giá từ khách hàng</h2>
                   <p className="text-gray-600 max-w-3xl mx-auto">
@@ -242,11 +251,11 @@ export default function TestimonialsPage() {
                   </p>
                 </div>
 
-                <div className="relative aspect-video max-w-4xl mx-auto shadow-xl rounded-lg overflow-hidden">
-                  <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+                <div className="relative aspect-video max-w-4xl mx-auto shadow-xl rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-900/60 to-gray-900/40 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-20 w-20 text-gray-400"
+                      className="h-20 w-20 text-white opacity-80"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -268,7 +277,7 @@ export default function TestimonialsPage() {
                   {/* Placeholder for video - in production, replace with actual video component */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <button 
-                      className="rounded-full bg-primary-600 bg-opacity-90 p-5 text-white hover:bg-opacity-100 transition-all"
+                      className="rounded-full bg-primary-600 bg-opacity-90 p-5 text-white hover:bg-opacity-100 transition-all transform hover:scale-110"
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
@@ -297,41 +306,48 @@ export default function TestimonialsPage() {
           )}
 
           {activeTab === 'case-studies' && (
-            <div className="space-y-16 animate-fadeIn">
-              {caseStudies.map((caseStudy) => (
+            <div className="space-y-20 animate-fadeIn">
+              {caseStudies.map((caseStudy, index) => (
                 <div
                   key={caseStudy.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                  className={`bg-white rounded-xl shadow-lg overflow-hidden transform transition-all hover:shadow-xl ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2">
-                    <div className="relative h-64 lg:h-auto bg-gray-200">
+                    <div className="relative h-80 lg:h-auto bg-gradient-to-br from-primary-50 to-primary-100 p-6 flex items-center justify-center">
                       {!imageErrors[`case-${caseStudy.id}`] ? (
-                        <Image
-                          src={caseStudy.image}
-                          alt={caseStudy.title}
-                          className="object-contain"
-                          fill
-                          sizes="(max-width: 1024px) 100vw, 50vw"
-                          onError={() => handleImageError(`case-${caseStudy.id}`)}
-                        />
+                        <div className="relative w-full h-full max-w-md mx-auto">
+                          <Image
+                            src={caseStudy.image}
+                            alt={caseStudy.title}
+                            className="object-contain"
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            onError={() => handleImageError(`case-${caseStudy.id}`)}
+                          />
+                        </div>
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-lg font-bold text-primary-600">
+                        <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-primary-600">
                           {caseStudy.company}
                         </div>
                       )}
                     </div>
-                    <div className="p-8">
-                      <span className="text-sm font-medium text-primary-600">{caseStudy.company}</span>
-                      <h3 className="text-2xl font-bold mt-2 mb-4">{caseStudy.title}</h3>
-                      <p className="text-gray-700 mb-6">{caseStudy.description}</p>
+                    <div className="p-10">
+                      <span className="text-sm font-semibold text-primary-600 bg-primary-50 px-3 py-1 rounded-full">{caseStudy.company}</span>
+                      <h3 className="text-2xl font-bold mt-4 mb-4 text-gray-900">{caseStudy.title}</h3>
+                      <p className="text-gray-700 mb-8 leading-relaxed">{caseStudy.description}</p>
                       
-                      <h4 className="font-semibold text-lg mb-3">Kết quả đạt được:</h4>
-                      <ul className="space-y-2 mb-6">
+                      <h4 className="font-semibold text-lg mb-4 flex items-center text-gray-900">
+                        <svg className="w-5 h-5 mr-2 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        Kết quả đạt được:
+                      </h4>
+                      <ul className="space-y-3 mb-8">
                         {caseStudy.results.map((result, index) => (
                           <li key={index} className="flex items-start">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5 text-green-500 mr-2 mt-0.5 flex-shrink-0"
+                              className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0"
                               viewBox="0 0 20 20"
                               fill="currentColor"
                             >
@@ -341,13 +357,13 @@ export default function TestimonialsPage() {
                                 clipRule="evenodd"
                               />
                             </svg>
-                            <span>{result}</span>
+                            <span className="text-gray-700">{result}</span>
                           </li>
                         ))}
                       </ul>
                       
                       {caseStudy.testimonial && (
-                        <div className="italic text-gray-600 border-l-4 border-primary-500 pl-4 py-1">
+                        <div className="italic text-gray-700 border-l-4 border-primary-500 pl-4 py-3 bg-primary-50 rounded-r-lg">
                           &ldquo;{caseStudy.testimonial}&rdquo;
                         </div>
                       )}
@@ -361,23 +377,23 @@ export default function TestimonialsPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary-600 text-white">
-        <div className="container">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold mb-6">Sẵn sàng nâng tầm doanh nghiệp của bạn?</h2>
-            <p className="text-xl mb-8 max-w-3xl mx-auto">
+      <section className="py-20 bg-gradient-to-br from-primary-700 to-primary-600 text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Sẵn sàng nâng tầm doanh nghiệp của bạn?</h2>
+            <p className="text-xl mb-10 max-w-3xl mx-auto opacity-90">
               Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn về giải pháp phù hợp nhất cho nhu cầu của bạn.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a
                 href="/contact"
-                className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 rounded-full font-medium transition-colors shadow-md"
+                className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
               >
                 Liên hệ tư vấn
               </a>
               <a
                 href="/services"
-                className="border border-white text-white hover:bg-white hover:text-primary-600 px-8 py-3 rounded-full font-medium transition-colors"
+                className="border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-4 rounded-full font-semibold transition-all transform hover:-translate-y-1"
               >
                 Khám phá dịch vụ
               </a>
