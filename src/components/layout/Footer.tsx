@@ -62,9 +62,6 @@ export default function Footer() {
                 <Link href="/services" className="hover:text-white text-sm transition-colors">Dịch vụ</Link>
               </li>
               <li>
-                <Link href="/faqs" className="hover:text-white text-sm transition-colors">FAQs</Link>
-              </li>
-              <li>
                 <Link href="/about" className="hover:text-white text-sm transition-colors">Giới thiệu</Link>
               </li>
               <li>

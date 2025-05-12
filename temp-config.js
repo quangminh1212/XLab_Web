@@ -4,24 +4,24 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
   reactStrictMode: true,
-  //  không còn là tùy chọn hợp lệ trong Next.js 15+
   skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   trailingSlash: false,
-  // Di chuyển outputFileTracingRoot từ experimental lên cấp cao nhất
+  
+  // Di chuyển từ experimental lên cấp cao nhất
   outputFileTracingRoot: path.join(__dirname, "../"),
-  // Di chuyển serverComponentsExternalPackages từ experimental thành serverExternalPackages
   serverExternalPackages: ['@swc/helpers'],
-  // Tắt tính năng trace ghi lỗi
+  
+  // Chỉ giữ lại các tùy chọn experimental được hỗ trợ
   experimental: {
     largePageDataBytes: 12800000,
     disableOptimizedLoading: true,
-    swcTraceProfiling: false,
     optimizeCss: true,
   },
+  
   productionBrowserSourceMaps: false,
-  // Không tạo file trace
   generateEtags: false,
+  
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com'],
     remotePatterns: [
@@ -45,6 +45,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
+  
   async headers() {
     return [
       {
@@ -86,29 +87,35 @@ const nextConfig = {
       }
     ];
   },
+  
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
   typescript: {
     ignoreBuildErrors: true,
   },
+  
   compiler: {
     styledComponents: true,
   },
+  
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
     pagesBufferLength: 5,
   },
+  
   staticPageGenerationTimeout: 180,
   poweredByHeader: false,
   compress: true,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : undefined,
-  // Vô hiệu hóa cảnh báo cho CSS tùy chỉnh (Tailwind CSS)
+  
   modularizeImports: {
     'tailwindcss/utilities': {
       transform: 'tailwindcss/utilities/{{member}}',
     },
   },
+  
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
@@ -118,7 +125,6 @@ const nextConfig = {
         ignored: /node_modules/
       };
 
-      // Sửa lỗi hot update 404
       config.output = {
         ...config.output,
         hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
@@ -142,7 +148,6 @@ const nextConfig = {
       hints: false,
     };
 
-    // Đảm bảo publicPath luôn được đặt đúng để tránh lỗi 404
     config.output = {
       ...config.output,
       publicPath: '/_next/',
@@ -155,16 +160,13 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Ngăn chặn lỗi ENOENT
     config.cache = false;
 
-    // Loại bỏ cảnh báo Critical dependency
     config.module = {
       ...config.module,
       exprContextCritical: false,
       rules: [
         ...config.module.rules,
-        // Loại bỏ quy tắc CSS để sử dụng hỗ trợ CSS built-in của Next.js
         {
           test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
           type: 'asset/resource',
@@ -172,22 +174,23 @@ const nextConfig = {
       ],
     };
 
-    // Enables hot module replacement
     config.optimization.runtimeChunk = 'single';
 
     return config;
   },
+  
   distDir: '.next',
+  
   generateBuildId: async () => {
     return 'build-' + Date.now();
   },
-  // Cấu hình sass nằm trong mục tùy chọn hợp lệ
+  
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  
   async redirects() {
     return [
-      // Redirect timestamp versioned CSS files to base files
       {
         source: '/_next/static/css/app/layout.css',
         has: [
@@ -199,7 +202,6 @@ const nextConfig = {
         destination: '/_next/static/css/app/layout.css',
         permanent: true,
       },
-      // Redirect timestamp versioned JS files to base files
       {
         source: '/_next/static/main-app.aef085aefcb8f66f.js',
         has: [
@@ -211,37 +213,31 @@ const nextConfig = {
         destination: '/_next/static/main-app.aef085aefcb8f66f.js',
         permanent: true,
       },
-      // Redirect for admin layout files
       {
         source: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
         destination: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
         permanent: true,
       },
-      // Redirect for admin page files
       {
         source: '/_next/static/app/admin/page.20e1580ca904d554.js',
         destination: '/_next/static/app/admin/page.20e1580ca904d554.js',
         permanent: true,
       },
-      // Redirect for not-found files
       {
         source: '/_next/static/app/not-found.7d3561764989b0ed.js',
         destination: '/_next/static/app/not-found.7d3561764989b0ed.js',
         permanent: true,
       },
-      // Redirect for layout files
       {
         source: '/_next/static/app/layout.32d8c3be6202d9b3.js',
         destination: '/_next/static/app/layout.32d8c3be6202d9b3.js',
         permanent: true,
       },
-      // Redirect for app-pages-internals files
       {
         source: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
         destination: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
         permanent: true,
       },
-      // Redirect for loading files
       {
         source: '/_next/static/app/loading.062c877ec63579d3.js',
         destination: '/_next/static/app/loading.062c877ec63579d3.js',
@@ -251,4 +247,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = nextConfig; 

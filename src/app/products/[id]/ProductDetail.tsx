@@ -7,7 +7,6 @@ import { formatCurrency } from '@/lib/utils';
 import { Product } from '@/types';
 import { products } from '@/data/mockData';
 import { useCart } from '@/components/cart/CartContext';
-import { useRecentlyViewed } from '@/contexts/RecentlyViewedContext';
 import dynamic from 'next/dynamic';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
@@ -169,9 +168,6 @@ export default function ProductDetail({ product }: { product: Product }) {
   // Hook cart context
   const { addItem } = useCart();
   
-  // Hook recently viewed context
-  const { addToRecentlyViewed } = useRecentlyViewed();
-  
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
     const selectedProduct = products.find(p => p.id === product.id);
@@ -184,9 +180,6 @@ export default function ProductDetail({ product }: { product: Product }) {
         image: selectedProduct.imageUrl,
         options: selectedOption ? [selectedOption] : undefined
       });
-      
-      // Hiển thị thông báo thành công
-      alert('Đã thêm sản phẩm vào giỏ hàng!');
       return true;
     }
     return false;
@@ -197,12 +190,9 @@ export default function ProductDetail({ product }: { product: Product }) {
     // Tăng số lượt xem khi component được mount
     setViewCount(prev => prev + 1);
     
-    // Thêm sản phẩm vào danh sách đã xem gần đây
-    addToRecentlyViewed(product);
-    
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
     console.log(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
-  }, [product.id, product]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
   const isAccount = product.isAccount || product.type === 'account';

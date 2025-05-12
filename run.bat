@@ -1,100 +1,77 @@
 @echo off
-setlocal enabledelayedexpansion
+title XLab Web - Development Server
 
-echo ======================================
-echo       XLab_Web - Khoi chay du an
-echo ======================================
+echo ================================================
+echo  XLab Web - Development Server
+echo ================================================
 echo.
 
-REM Kiem tra xem node_modules co ton tai khong
-if not exist "node_modules\" (
-    echo Cai dat cac goi npm...
-    npm install
-    if %ERRORLEVEL% neq 0 (
-        echo Loi: Khong the cai dat cac goi npm. Kiem tra ket noi mang hoac package.json.
-        pause
-        exit /b 1
-    )
-    echo Cai dat hoan tat!
-) else (
-    echo Node modules da duoc cai dat.
+REM Đặt các biến môi trường cho NextJS
+set NODE_OPTIONS=--no-warnings --max-old-space-size=4096
+set NEXT_TELEMETRY_DISABLED=1
+set NEXT_DISABLE_TRACE=1
+set NEXT_TRACING_MODE=0
+set NEXT_DISABLE_SWC_NATIVE=1
+set NEXT_USE_SWC_WASM=1
+
+REM Tạo file .traceignore để ngăn Next.js tạo file trace
+echo Tao file .traceignore...
+echo **/* > .traceignore
+
+REM Tạo file cấu hình tạm thời để disable trace
+echo Tao file cau hinh tam thoi...
+if not exist .next (mkdir .next)
+echo {"disableTrace":true} > .next\no-trace.json
+
+REM Xóa thư mục .next để bắt đầu với trạng thái sạch
+echo Xoa thu muc .next de bat dau moi...
+rmdir /s /q .next 2>nul
+
+REM Tạo cấu trúc thư mục .next cần thiết
+echo Tao cau truc thu muc .next...
+mkdir .next 2>nul
+mkdir .next\cache 2>nul
+mkdir .next\cache\webpack 2>nul
+mkdir .next\server 2>nul
+mkdir .next\static 2>nul
+
+REM Tạo thư mục .swc-disabled nếu chưa tồn tại
+if not exist .swc-disabled (
+  mkdir .swc-disabled
+  echo Da tao thu muc .swc-disabled de vo hieu hoa SWC native
 )
 
-REM Đặt chế độ đầu ra mặc định là standalone (nếu không có đối số khác)
-set NEXT_OUTPUT_MODE=standalone
+REM Đảm bảo quyền truy cập đầy đủ cho thư mục .next
+echo Dat quyen truy cap day du cho thu muc .next...
+attrib -R .next /S /D
 
-REM Xử lý tham số dòng lệnh
-if "%1"=="export" (
-    set NEXT_OUTPUT_MODE=export
-    echo Chế độ xuất tĩnh được kích hoạt (NEXT_OUTPUT_MODE=export)
-) else (
-    echo Chế độ standalone được kích hoạt (NEXT_OUTPUT_MODE=standalone)
-)
+REM Tạo file dummy trace rỗng và đặt quyền chỉ đọc
+echo Tao file trace rong de ngan Next.js tao file moi...
+copy NUL .next\trace >nul 2>&1
+attrib +R .next\trace
 
-REM Xoa thu muc .next cache
-if exist ".next\cache\" (
-    echo Dang xoa next cache...
-    rmdir /s /q ".next\cache\"
-)
-
-REM Sao luu file trace nếu tồn tại
-if exist ".next\trace" (
-    echo Sao luu file trace...
-    ren ".next\trace" "trace.old.bak"
-) 
-
-REM Chi dinh PowerShell để mở rộng quyền hạn (nếu cần)
-powershell -Command "Start-Process cmd -ArgumentList '/c echo Dang cap quyen full control cho thu muc .next && icacls .next /grant Everyone:(OI)(CI)F /T' -Verb RunAs" 2>nul
-
-REM ===== SUA LOI BANG SCRIPT FIXALL.JS =====
-echo ======================================
-echo       Sua loi tu dong
-echo ======================================
 echo.
-node fixall.js
+echo ================================================
+echo  Dang chay script sua loi...
+echo ================================================
+echo.
 
-REM === TAO THU MUC VENDOR-CHUNKS ===
-echo Dang tao cac thu muc can thiet...
-if not exist ".next\server\vendor-chunks\" mkdir ".next\server\vendor-chunks\"
-if not exist ".next\server\server\vendor-chunks\" mkdir ".next\server\server\vendor-chunks\"
-if not exist ".next\static\css\app\" mkdir ".next\static\css\app\"
-if not exist ".next\static\app\" mkdir ".next\static\app\"
-
-REM === TAO FILE CAN THIET ===
-if not exist ".next\server\vendor-chunks\tailwind-merge.js" (
-    echo module.exports = {}; > ".next\server\vendor-chunks\tailwind-merge.js"
-)
-if not exist ".next\server\server\vendor-chunks\tailwind-merge.js" (
-    echo module.exports = {}; > ".next\server\server\vendor-chunks\tailwind-merge.js"
-)
-if not exist ".next\static\css\app\layout.css" (
-    echo /* Layout CSS */ > ".next\static\css\app\layout.css"
-)
-if not exist ".next\static\app\not-found.js" (
-    echo module.exports = { notFound: function() { return { notFound: true }; } }; > ".next\static\app\not-found.js"
-)
-if not exist ".next\static\app\loading.js" (
-    echo module.exports = { loading: function() { return { loading: true }; } }; > ".next\static\app\loading.js"
-)
-if not exist ".next\static\app-pages-internals.js" (
-    echo module.exports = {}; > ".next\static\app-pages-internals.js"
-)
-if not exist ".next\static\main-app.js" (
-    echo module.exports = {}; > ".next\static\main-app.js"
+REM Chạy script tổng hợp sửa lỗi nếu tồn tại
+if exist fix-all-errors.js (
+  echo Chay script sua loi tong the...
+  node fix-all-errors.js
 )
 
 echo.
-echo ======================================
-echo         Dang khoi chay du an...
-echo ======================================
-echo Ctrl+C de huy qua trinh chay
+echo ================================================
+echo  Khoi dong may chu phat trien...
+echo ================================================
 echo.
 
-REM Them bien moi truong de bo qua loi trace
-set NEXT_DISABLE_FILE_SYSTEM_TRACE=1
+REM Khởi động Next.js thông thường
+echo Khoi dong Next.js...
+npx next dev
 
-REM Khoi chay Next.js binh thuong
-echo Khoi chay Next.js binh thuong...
-npm run dev
-
-echo ===== XLab_Web - Server stopped ===== 
+echo.
+echo Server da dung, nhan phim bat ky de dong cua so...
+pause

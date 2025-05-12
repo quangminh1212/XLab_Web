@@ -1,29 +1,23 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
 import { products, categories } from '@/data/mockData';
 import Image from 'next/image';
 
 function HomePage() {
-  // Lọc sản phẩm nổi bật với useMemo
-  const featuredProducts = useMemo(() => 
-    products.filter(product => product.isFeatured).slice(0, 4),
-    [products]
-  );
+  // Lọc sản phẩm nổi bật
+  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
 
-  // Lọc sản phẩm mới nhất với useMemo
-  const newProducts = useMemo(() => 
-    [...products]
-      .sort((a, b) => {
-        const dateA = new Date(a.createdAt || 0);
-        const dateB = new Date(b.createdAt || 0);
-        return dateB.getTime() - dateA.getTime();
-      })
-      .slice(0, 4),
-    [products]
-  );
+  // Lọc sản phẩm mới nhất
+  const newProducts = [...products]
+    .sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
+      return dateB.getTime() - dateA.getTime();
+    })
+    .slice(0, 4);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -461,7 +455,7 @@ function HomePage() {
                 
                 <div className="text-center mt-6">
                   <Link 
-                    href="/faqs"
+                    href="/support"
                     className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm md:text-base"
                   >
                     Xem thêm câu hỏi
@@ -506,4 +500,4 @@ function HomePage() {
   );
 }
 
-export default React.memo(HomePage); 
+export default HomePage; 

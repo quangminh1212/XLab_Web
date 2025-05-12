@@ -74,8 +74,7 @@ const isStaticFile = (path: string) => {
 
 // Hàm debug để kiểm tra token và đường dẫn
 const debug = (request: NextRequest, token: any) => {
-  // Chỉ log khi ở môi trường development và là admin path
-  if (process.env.NODE_ENV === 'development' && isAdminPath(request.nextUrl.pathname)) {
+  if (process.env.NODE_ENV === 'development') {
     console.log('[Middleware Debug]:', {
       path: request.nextUrl.pathname,
       token: token ? `Found (${token.email})` : 'Not found',

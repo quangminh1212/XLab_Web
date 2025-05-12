@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect } from 'react';
 
 export default function AdminLayout({
     children,
@@ -14,9 +14,9 @@ export default function AdminLayout({
     const { data: session, status } = useSession();
     const router = useRouter();
 
-    const isActive = useCallback((path: string) => {
+    const isActive = (path: string) => {
         return pathname === path ? 'bg-primary-800' : '';
-    }, [pathname]);
+    };
     
     // Log cho mục đích debug
     useEffect(() => {
@@ -31,80 +31,27 @@ export default function AdminLayout({
     }, [session, status]);
     
     useEffect(() => {
-        // Không làm gì khi đang loading
         if (status === 'loading') return;
         
-        // Redirect to login if not authenticated
         if (!session) {
             router.push('/login');
             return;
         }
         
-        // Redirect to home if not admin
+        // Sử dụng isAdmin thay vì kiểm tra email trực tiếp
         if (!session.user?.isAdmin) {
             router.push('/');
             return;
         }
     }, [session, status, router]);
     
-    // Loading component memoized
-    const LoadingComponent = useMemo(() => (
-        <div className="flex justify-center items-center min-h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-        </div>
-    ), []);
-
-    // Sidebar navigation memoized
-    const SidebarNav = useMemo(() => (
-        <nav className="p-2">
-            <ul className="space-y-1">
-                <li>
-                    <Link
-                        href="/admin"
-                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin')}`}
-                    >
-                        Dashboard
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        href="/admin/products"
-                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/products')}`}
-                    >
-                        Quản lý sản phẩm
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        href="/admin/users"
-                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/users')}`}
-                    >
-                        Quản lý người dùng
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        href="/admin/orders"
-                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/orders')}`}
-                    >
-                        Quản lý đơn hàng
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        href="/admin/settings"
-                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/settings')}`}
-                    >
-                        Cài đặt hệ thống
-                    </Link>
-                </li>
-            </ul>
-        </nav>
-    ), [isActive]);
-    
     // Hiển thị loading khi đang kiểm tra session
     if (status === 'loading' || !session || !session.user?.isAdmin) {
-        return LoadingComponent;
+        return (
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+            </div>
+        );
     }
 
     return (
@@ -135,7 +82,50 @@ export default function AdminLayout({
                 <div className="w-full md:w-64 shrink-0">
                     <div className="bg-white rounded-lg shadow overflow-hidden">
                         <div className="p-4 bg-primary-600 text-white font-medium">Menu quản trị</div>
-                        {SidebarNav}
+                        <nav className="p-2">
+                            <ul className="space-y-1">
+                                <li>
+                                    <Link
+                                        href="/admin"
+                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin')}`}
+                                    >
+                                        Dashboard
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin/products"
+                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/products')}`}
+                                    >
+                                        Quản lý sản phẩm
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin/users"
+                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/users')}`}
+                                    >
+                                        Quản lý người dùng
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin/orders"
+                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/orders')}`}
+                                    >
+                                        Quản lý đơn hàng
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin/settings"
+                                        className={`block px-4 py-2 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/settings')}`}
+                                    >
+                                        Cài đặt hệ thống
+                                    </Link>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
 

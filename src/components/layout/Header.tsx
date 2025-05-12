@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
-import { useCart, CartItemCount } from '@/components/cart';
 
-const Header = React.memo(() => {
+const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -18,110 +17,27 @@ const Header = React.memo(() => {
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
-  const isActive = useCallback((path: string) => {
+  const isActive = (path: string) => {
     return pathname === path ? 'text-primary-600 font-medium' : 'text-gray-700 hover:text-primary-600';
-  }, [pathname]);
+  };
 
-  const toggleMenu = useCallback(() => {
-    setIsOpen(prevIsOpen => !prevIsOpen);
-    setIsProfileOpen(false);
-    setIsNotificationOpen(false);
-  }, []);
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+    if (isProfileOpen) setIsProfileOpen(false);
+    if (isNotificationOpen) setIsNotificationOpen(false);
+  };
 
-  const toggleProfile = useCallback(() => {
-    setIsProfileOpen(prevIsProfileOpen => !prevIsProfileOpen);
-    setIsOpen(false);
-    setIsNotificationOpen(false);
-  }, []);
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen);
+    if (isOpen) setIsOpen(false);
+    if (isNotificationOpen) setIsNotificationOpen(false);
+  };
 
-  const toggleNotification = useCallback(() => {
-    setIsNotificationOpen(prevIsNotificationOpen => !prevIsNotificationOpen);
-    setIsOpen(false);
-    setIsProfileOpen(false);
-  }, []);
-
-  // Add effect to close menus when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      
-      // Close profile menu when clicking outside
-      if (isProfileOpen && !target.closest('[data-profile-menu]')) {
-        setIsProfileOpen(false);
-      }
-      
-      // Close notification menu when clicking outside
-      if (isNotificationOpen && !target.closest('[data-notification-menu]')) {
-        setIsNotificationOpen(false);
-      }
-      
-      // Close mobile menu when clicking outside
-      if (isOpen && !target.closest('[data-mobile-menu]')) {
-        setIsOpen(false);
-      }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, isProfileOpen, isNotificationOpen]);
-
-  // Memoize mobile menu close handler
-  const handleNavLinkClick = useCallback(() => {
-    setIsOpen(false);
-  }, []);
-
-  // Memoize navbar links to prevent re-renders
-  const navbarLinks = useMemo(() => (
-    <nav className="hidden md:flex space-x-3 lg:space-x-4 xl:space-x-6">
-      <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium`}>
-        Trang chủ
-      </Link>
-      <Link
-        href="/products"
-        className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-      >
-        Sản phẩm
-      </Link>
-      <Link
-        href="/services"
-        className={`${isActive('/services')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-      >
-        Dịch vụ
-      </Link>
-      <Link
-        href="/testimonials"
-        className={`${isActive('/testimonials')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-      >
-        Đánh giá
-      </Link>
-      <Link
-        href="/faqs"
-        className={`${isActive('/faqs')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-      >
-        FAQs
-      </Link>
-      <Link
-        href="/about"
-        className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-      >
-        Giới thiệu
-      </Link>
-      <Link
-        href="/contact"
-        className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-      >
-        Liên hệ
-      </Link>
-      <Link
-        href="/bao-hanh"
-        className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-      >
-        Bảo hành
-      </Link>
-    </nav>
-  ), [isActive]);
+  const toggleNotification = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+    if (isOpen) setIsOpen(false);
+    if (isProfileOpen) setIsProfileOpen(false);
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -136,19 +52,58 @@ const Header = React.memo(() => {
                 width={100}
                 height={60}
                 className="w-auto h-9 md:h-10"
-                priority
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          {navbarLinks}
+          <nav className="hidden md:flex space-x-3 lg:space-x-4 xl:space-x-6">
+            <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium`}>
+              Trang chủ
+            </Link>
+            <Link
+              href="/products"
+              className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+            >
+              Sản phẩm
+            </Link>
+            <Link
+              href="/services"
+              className={`${isActive('/services')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+            >
+              Dịch vụ
+            </Link>
+            <Link
+              href="/testimonials"
+              className={`${isActive('/testimonials')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+            >
+              Đánh giá
+            </Link>
+            <Link
+              href="/about"
+              className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+            >
+              Giới thiệu
+            </Link>
+            <Link
+              href="/contact"
+              className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+            >
+              Liên hệ
+            </Link>
+            <Link
+              href="/bao-hanh"
+              className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+            >
+              Bảo hành
+            </Link>
+          </nav>
 
           {/* Right Side - Auth + Cart */}
           <div className="flex items-center space-x-2 md:space-x-3">
             {/* Notification Icon */}
             {session && (
-              <div className="relative" data-notification-menu>
+              <div className="relative">
                 <button
                   onClick={toggleNotification}
                   className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
@@ -242,12 +197,13 @@ const Header = React.memo(() => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              {/* Hiển thị số lượng sản phẩm trong giỏ hàng */}
-              <CartItemCount />
+              <span className="absolute -top-1.5 -right-1.5 bg-primary-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                0
+              </span>
             </Link>
 
             {/* User Profile */}
-            <div className="relative" data-profile-menu>
+            <div className="relative">
               {session ? (
                 <button
                   onClick={toggleProfile}
@@ -330,7 +286,6 @@ const Header = React.memo(() => {
             <button
               onClick={toggleMenu}
               className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none"
-              data-mobile-menu
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -352,60 +307,53 @@ const Header = React.memo(() => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="md:hidden mt-4 py-4 border-t border-gray-200" data-mobile-menu>
+          <nav className="md:hidden mt-4 py-4 border-t border-gray-200">
             <Link
               href="/"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
+              onClick={() => setIsOpen(false)}
             >
               Trang chủ
             </Link>
             <Link
               href="/products"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
+              onClick={() => setIsOpen(false)}
             >
               Sản phẩm
             </Link>
             <Link
               href="/services"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
+              onClick={() => setIsOpen(false)}
             >
               Dịch vụ
             </Link>
             <Link
               href="/testimonials"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
+              onClick={() => setIsOpen(false)}
             >
               Đánh giá
             </Link>
             <Link
-              href="/faqs"
-              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
-            >
-              FAQs
-            </Link>
-            <Link
               href="/about"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
+              onClick={() => setIsOpen(false)}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
+              onClick={() => setIsOpen(false)}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={handleNavLinkClick}
+              onClick={() => setIsOpen(false)}
             >
               Bảo hành
             </Link>
@@ -427,8 +375,6 @@ const Header = React.memo(() => {
       </div>
     </header>
   );
-});
-
-Header.displayName = 'Header';
+};
 
 export default Header; 

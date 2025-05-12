@@ -175,10 +175,8 @@ const downloadCountCache: Record<string, number> = {};
 
 // Initialize cache from mockData
 products.forEach(product => {
-  if (product.slug) {
-    viewCountCache[product.slug] = product.viewCount || 0;
-    downloadCountCache[product.slug] = product.downloadCount || 0;
-  }
+  viewCountCache[product.slug] = product.viewCount;
+  downloadCountCache[product.slug] = product.downloadCount;
 });
 
 /**
@@ -322,96 +320,10 @@ export const clearCart = (): CartItem[] => {
   return [];
 };
 
-export interface CartTotals {
-  subtotal: number;
-  tax: number;
-  shipping: number;
-  discount: number;
-  total: number;
-}
-
-export const calculateCartTotals = (cart: CartItem[], couponCode?: string): CartTotals => {
-  // Tính tổng giá trị sản phẩm
+export const calculateCartTotals = (cart: CartItem[]) => {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  
-  // Tính thuế (0% cho sản phẩm điện tử/phần mềm)
-  const tax = 0;
-  
-  // Phí vận chuyển (0 đồng cho sản phẩm kỹ thuật số)
-  const shipping = 0;
-  
-  // Tính giảm giá từ mã khuyến mãi (nếu có)
-  let discount = 0;
-  
-  if (couponCode) {
-    // Trong thực tế, cần kiểm tra tính hợp lệ của mã giảm giá từ API/database
-    // Ở đây chỉ mô phỏng một số mã giảm giá cố định
-    switch(couponCode.toUpperCase()) {
-      case 'WELCOME10':
-        discount = subtotal * 0.1; // Giảm 10%
-        break;
-      case 'NEWYEAR20':
-        discount = subtotal * 0.2; // Giảm 20%
-        break;
-      case 'FREESHIP':
-        // Miễn phí vận chuyển (đã mặc định là 0)
-        break;
-      case 'FIXED50K':
-        discount = 50000; // Giảm 50,000 VND
-        if (discount > subtotal) discount = subtotal; // Không giảm quá giá trị đơn hàng
-        break;
-      default:
-        // Mã không hợp lệ
-        discount = 0;
-    }
-  }
-  
-  // Tính tổng cộng
-  const total = subtotal + tax + shipping - discount;
-  
-  return { 
-    subtotal, 
-    tax, 
-    shipping, 
-    discount, 
-    total: Math.max(0, total) // Đảm bảo tổng không âm
-  };
-};
+  const tax = 0; // Không tính thuế
+  const total = subtotal; // Tổng cộng bằng tạm tính
 
-/**
- * Kiểm tra tính hợp lệ của mã giảm giá
- */
-export const validateCouponCode = (couponCode: string): { valid: boolean; discount?: number; message?: string } => {
-  // Một số mã giảm giá mẫu
-  const validCoupons: Record<string, { discount: number; type: string; message: string }> = {
-    'WELCOME10': { discount: 0.1, type: 'percent', message: 'Giảm 10% cho tổng đơn hàng' },
-    'NEWYEAR20': { discount: 0.2, type: 'percent', message: 'Giảm 20% cho tổng đơn hàng' },
-    'FREESHIP': { discount: 0, type: 'shipping', message: 'Miễn phí vận chuyển' },
-    'FIXED50K': { discount: 50000, type: 'fixed', message: 'Giảm 50.000đ cho đơn hàng' }
-  };
-  
-  if (!couponCode) {
-    return { valid: false, message: 'Vui lòng nhập mã giảm giá' };
-  }
-  
-  const coupon = validCoupons[couponCode.toUpperCase()];
-  
-  if (!coupon) {
-    return { valid: false, message: 'Mã giảm giá không hợp lệ hoặc đã hết hạn' };
-  }
-  
-  return { 
-    valid: true, 
-    discount: coupon.discount, 
-    message: coupon.message 
-  };
-};
-
-/**
- * Tạo mã đơn hàng ngẫu nhiên
- */
-export const generateOrderId = (): string => {
-  const timestamp = new Date().getTime().toString().slice(-6);
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-  return `ORD${timestamp}${random}`;
+  return { subtotal, tax, total };
 }; 

@@ -96,28 +96,69 @@ const ProductCard = ({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-lg bg-white hover:shadow-md transition-all h-full flex flex-col">
-      <Link href={`/products/${id}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-gray-100">
-          <Image
-            src={image || '/images/placeholder/product-placeholder.jpg'}
-            alt={name}
-            width={300}
-            height={300}
-            className="object-cover w-full h-full transition-transform hover:scale-105"
-            onError={(e) => {
-              // Fallback to placeholder if image fails to load
-              const target = e.target as HTMLImageElement;
-              target.src = '/images/placeholder/product-placeholder.jpg';
-            }}
-          />
-          {originalPrice && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
-              -{Math.round(((originalPrice - price) / originalPrice) * 100)}%
-            </div>
-          )}
+    <Link
+      href={`/products/${id}`}
+      className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleView}
+    >
+      <div className="relative pt-[100%] bg-gray-100">
+        {originalPrice && discountPercentage > 0 && (
+          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
+            -{discountPercentage}%
+          </div>
+        )}
+
+        <Image
+          src={image || '/images/placeholder/product-placeholder.jpg'}
+          alt={name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className={`object-cover transition-all duration-500 ${
+            isHovered ? 'scale-110' : 'scale-100'
+          } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setIsImageLoaded(true)}
+          priority={false}
+        />
+
+        {!isImageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <svg
+              className="w-10 h-10 text-gray-300 animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </div>
+        )}
+
+        <div
+          className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${
+            isHovered ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <button
+            onClick={handleAddToCart}
+            className="bg-white text-gray-800 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-full font-medium transition-colors"
+          >
+            Thêm vào giỏ
+          </button>
         </div>
-      </Link>
+      </div>
 
       <div className="p-4">
         <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{name}</h3>
@@ -136,7 +177,7 @@ const ProductCard = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
