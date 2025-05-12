@@ -97,4 +97,4 @@ REM Khoi chay Next.js binh thuong
 echo Khoi chay Next.js binh thuong...
 npm run dev
 
-pause 
+echo ===== XLab_Web - Server stopped ===== 

@@ -248,14 +248,11 @@ trace
 
 # Thêm các file cụ thể cho Next.js 15.2.4
 .next/static/css/app/layout.css
-.next/static/app/not-found.js
-.next/static/app-pages-internals.js
-.next/static/main-app.js
-.next/static/app/loading.js
-.next/server/server/next-font-manifest.json
-.next/server/server/app-paths-manifest.json
+.next/server/vendor-chunks/tailwind-merge.js
 .next/server/server/vendor-chunks/tailwind-merge.js
-.next/server/server/vendor-chunks/
-
-# Temp files
-fix-all-errors.js
+.next/server/server/webpack-runtime.js
+.next/server/app/_not-found/page.js
+.next/static/main.*.js
+.next/static/pages/_error.*.js
+.next/static/pages/_app.*.js
+.next/static/react-refresh.*.js
