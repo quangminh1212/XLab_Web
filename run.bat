@@ -60,7 +60,14 @@ echo  Khởi động máy chủ phát triển...
 echo ================================================
 echo.
 
-call npm run dev:wasm
+REM Kiểm tra phiên bản PowerShell và chạy lệnh phù hợp
+if exist "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" (
+  echo Sử dụng PowerShell để chạy lệnh...
+  powershell -Command "npm run dev:wasm"
+) else (
+  echo Sử dụng lệnh npm trực tiếp...
+  call npm run dev:wasm
+)
 
 :end
 echo.

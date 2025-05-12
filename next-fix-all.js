@@ -919,6 +919,49 @@ export default function withAdminAuth(WrappedComponent) {
   log('✅ Đã hoàn tất việc sửa lỗi withAdminAuth component');
 }
 
+// 13. Xóa các file dư thừa
+function cleanUpRedundantFiles() {
+  log('🧹 Xóa các file dư thừa...');
+  
+  // Danh sách các file dư thừa cần xóa
+  const filesToDelete = [
+    // Các file fix lỗi cũ
+    'check-env.js',
+    'fix-all-errors.js',
+    'fix-auth-component.js',
+    'fix-missing-files.js',
+    'fix-static-files.js',
+    'fix-swc-errors.js',
+    'fix-trace-error.js',
+    'hide-warnings.js',
+    'update-gitignore.js',
+    'next-setup.js',
+    
+    // Các file log
+    'fix-all-errors.log',
+    'fix-static-files.log',
+    
+    // Các file khác không cần thiết
+    'fix-everything.js',
+    'next-unified-fix.js'
+  ];
+  
+  // Xóa file nếu tồn tại
+  filesToDelete.forEach(filePath => {
+    const fullPath = path.join(__dirname, filePath);
+    if (fs.existsSync(fullPath)) {
+      try {
+        fs.unlinkSync(fullPath);
+        log(`✅ Đã xóa file dư thừa: ${filePath}`);
+      } catch (error) {
+        log(`⚠️ Không thể xóa file ${filePath}: ${error.message}`);
+      }
+    }
+  });
+  
+  log('✅ Đã hoàn thành việc xóa các file dư thừa');
+}
+
 // Hàm thực thi tất cả các chức năng sửa lỗi
 function runAllFixes() {
   log('🚀 Bắt đầu thực hiện tất cả các bước sửa lỗi...');
@@ -959,6 +1002,9 @@ function runAllFixes() {
     
     // 12. Sửa lỗi withAdminAuth component
     fixAuthComponent();
+    
+    // 13. Xóa các file dư thừa
+    cleanUpRedundantFiles();
     
     log('✅ Đã hoàn tất tất cả các bước sửa lỗi');
     log('🚀 Khởi động lại ứng dụng để áp dụng thay đổi');
