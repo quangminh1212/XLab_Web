@@ -65,6 +65,10 @@ powershell-dev.ps1
 start-dev.bat
 no-trace.bat
 run-fixed.bat
+run.bat
+temp-config.js
+next-fix-all.js
+next-fix-all.log
 
 # SWC related
 /.swc-disabled/
@@ -183,7 +187,3 @@ next-setup.js
 temp-*
 *.tmp
 *.temp
-
-# Thêm mục mới được tạo ra
-next-fix-all.log
-temp-config.js
