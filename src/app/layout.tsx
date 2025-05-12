@@ -57,15 +57,15 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
   icons: {
     icon: [
-      { url: '/images/topup.png' },
-      { url: '/images/topup.png', sizes: '16x16', type: 'image/png' },
-      { url: '/images/topup.png', sizes: '32x32', type: 'image/png' },
+      { url: '/topup.png' },
+      { url: '/topup.png', sizes: '16x16', type: 'image/png' },
+      { url: '/topup.png', sizes: '32x32', type: 'image/png' },
     ],
     apple: [
-      { url: '/images/topup.png', sizes: '180x180', type: 'image/png' },
+      { url: '/topup.png', sizes: '180x180', type: 'image/png' },
     ],
     other: [
-      { rel: 'mask-icon', url: '/images/topup.png', color: '#2563EB' },
+      { rel: 'mask-icon', url: '/topup.png', color: '#2563EB' },
     ],
   },
   other: {
@@ -91,6 +91,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link rel="icon" href="/topup.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/topup.png" />
+        <meta name="msapplication-TileImage" content="/topup.png" />
       </head>
       <body className="font-sans antialiased">
         <SessionProvider>
