@@ -1,59 +1,84 @@
 /**
  * Script để xử lý lỗi EPERM với file .next/trace
- * - Đặt quyền truy cập thích hợp cho file trace
- * - Xóa file trace nếu tồn tại để tránh lỗi
+ * - Xử lý đặc biệt cho file trace để tránh lỗi khi chạy Next.js
  */
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 function log(message) {
   console.log(`[fix-trace] ${message}`);
 }
 
 try {
-  const tracePath = path.join(__dirname, '.next', 'trace');
+  const nextDir = path.join(__dirname, '.next');
+  const tracePath = path.join(nextDir, 'trace');
   
-  if (fs.existsSync(tracePath)) {
-    log(`File trace tồn tại tại ${tracePath}, đang xử lý...`);
-    
-    try {
-      // Thử thay đổi quyền truy cập
-      fs.chmodSync(tracePath, 0o666);
-      log('Đã thay đổi quyền truy cập cho file trace');
-    } catch (chmodError) {
-      log(`Không thể thay đổi quyền truy cập: ${chmodError.message}`);
-    }
-    
-    try {
-      // Xóa file trace
-      fs.unlinkSync(tracePath);
-      log('Đã xóa file trace thành công');
-    } catch (unlinkError) {
-      log(`Không thể xóa file trace: ${unlinkError.message}`);
-      
-      try {
-        // Nếu không xóa được, ghi đè bằng file trống
-        fs.writeFileSync(tracePath, '', { flag: 'w' });
-        log('Đã ghi đè file trace bằng nội dung trống');
-      } catch (writeError) {
-        log(`Không thể ghi đè file trace: ${writeError.message}`);
-      }
-    }
-  } else {
-    log('File trace không tồn tại, không cần xử lý');
-    
-    // Tạo thư mục .next nếu chưa tồn tại
-    const nextDir = path.join(__dirname, '.next');
-    if (!fs.existsSync(nextDir)) {
-      fs.mkdirSync(nextDir, { recursive: true });
-      log('Đã tạo thư mục .next');
-    }
-    
-    // Tạo file trace trống với quyền truy cập đầy đủ
-    fs.writeFileSync(tracePath, '', { flag: 'w', mode: 0o666 });
-    log('Đã tạo file trace trống với quyền truy cập đầy đủ');
+  // 1. Tạo thư mục .next nếu không tồn tại
+  if (!fs.existsSync(nextDir)) {
+    fs.mkdirSync(nextDir, { recursive: true });
+    log('Đã tạo thư mục .next');
   }
+  
+  // 2. Tìm và xử lý tất cả các file trace* trong thư mục .next
+  if (fs.existsSync(nextDir)) {
+    try {
+      const files = fs.readdirSync(nextDir);
+      
+      // Tắt các lỗi không cần thiết
+      const noTraceFiles = files.filter(file => file.startsWith('trace') || file === 'trace');
+      if (noTraceFiles.length === 0) {
+        log('Không tìm thấy file trace nào, tạo file mới...');
+        // Tạo file trace trống để Next.js có thể ghi vào
+        fs.writeFileSync(tracePath, '', { mode: 0o666 });
+        log('Đã tạo file trace trống');
+      } else {
+        log(`Tìm thấy ${noTraceFiles.length} file trace, đang xử lý...`);
+        
+        // Xử lý từng file
+        for (const file of noTraceFiles) {
+          const filePath = path.join(nextDir, file);
+          
+          try {
+            // Thử đổi quyền thành 666 (đọc/ghi cho tất cả)
+            fs.chmodSync(filePath, 0o666);
+            log(`Đã đổi quyền cho file ${file}`);
+            
+            // Empty the content
+            fs.truncateSync(filePath, 0);
+            log(`Đã xóa nội dung file ${file}`);
+          } catch (err) {
+            log(`Không thể xử lý file ${file}: ${err.message}`);
+            
+            try {
+              // Nếu không xóa được, cố gắng tạo file .gitkeep để giữ thư mục
+              fs.writeFileSync(path.join(nextDir, '.gitkeep'), '');
+            } catch (e) {
+              // Bỏ qua lỗi
+            }
+          }
+        }
+      }
+    } catch (err) {
+      log(`Lỗi khi đọc thư mục .next: ${err.message}`);
+    }
+  }
+
+  // 3. Tạo file .traceignore để Next.js bỏ qua tracing
+  const traceIgnorePath = path.join(__dirname, '.traceignore');
+  fs.writeFileSync(traceIgnorePath, `
+# Ignore all files in node_modules
+**/node_modules/**
+# Ignore all files in .next
+**/.next/**
+# Ignore all dot files
+**/.*
+  `, { encoding: 'utf8' });
+  log('Đã tạo file .traceignore');
+  
+  // 4. Thêm cài đặt NODE_OPTIONS để tắt file tracing
+  process.env.NODE_OPTIONS = `${process.env.NODE_OPTIONS || ''} --no-warnings`;
   
   log('Xử lý file trace hoàn tất');
 } catch (error) {

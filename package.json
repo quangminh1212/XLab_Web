@@ -5,6 +5,7 @@
   "scripts": {
     "predev": "node fix-trace-error.js && node fix-all-errors.js && echo Preparing development environment...",
     "dev": "next dev",
+    "dev:silent": "node hide-warnings.js && NEXT_IGNORE_WARNINGS=NEXT_PACKAGE_WARNING,ESLINT_WARNING,API_ROUTE_IMPORT_WARNING NODE_OPTIONS=--no-warnings next dev",
     "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot",
     "dev:clean": "node fix-all-errors.js && next dev",
     "dev:export": "NEXT_PUBLIC_EXPORT=true next dev",
