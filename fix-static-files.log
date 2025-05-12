@@ -1,34 +1,34 @@
-[2025-05-11T17:30:57.363Z] === Bắt đầu sửa lỗi các file static ===
-[2025-05-11T17:30:57.379Z] 📁 Đang tạo các thư mục cần thiết...
-[2025-05-11T17:30:57.380Z] ✅ Đã tạo thư mục: C:\VF\XLab_Web\.next\static\app\products
-[2025-05-11T17:30:57.380Z] ✅ Đã tạo thư mục: C:\VF\XLab_Web\.next\static\app\auth
-[2025-05-11T17:30:57.381Z] ✅ Đã tạo thư mục: C:\VF\XLab_Web\.next\static\app\cart
-[2025-05-11T17:30:57.381Z] 📄 Đang tạo các file static còn thiếu...
-[2025-05-11T17:30:57.382Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css
-[2025-05-11T17:30:57.383Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\not-found.7d3561764989b0ed.js
-[2025-05-11T17:30:57.384Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\layout.32d8c3be6202d9b3.js
-[2025-05-11T17:30:57.384Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app-pages-internals.196c41f732d2db3f.js
-[2025-05-11T17:30:57.385Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js
-[2025-05-11T17:30:57.385Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\loading.062c877ec63579d3.js
-[2025-05-11T17:30:57.386Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\admin\layout.bd8a9bfaca039569.js
-[2025-05-11T17:30:57.387Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\admin\page.20e1580ca904d554.js
-[2025-05-11T17:30:57.387Z] 🕒 Đang tạo các file với timestamp...
-[2025-05-11T17:30:57.388Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css.timestamp
-[2025-05-11T17:30:57.389Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js.timestamp
-[2025-05-11T17:30:57.390Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css.timestamp
-[2025-05-11T17:30:57.391Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js.timestamp
-[2025-05-11T17:30:57.391Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css.timestamp
-[2025-05-11T17:30:57.392Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js.timestamp
-[2025-05-11T17:30:57.392Z] 🔗 Đang cố gắng tạo symlink hoặc hard copies cho file với timestamp...
-[2025-05-11T17:30:57.393Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout-1746857687478.css
-[2025-05-11T17:30:57.394Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout-1746857690764.css
-[2025-05-11T17:30:57.394Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout-1746857700000.css
-[2025-05-11T17:30:57.395Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app-1746857687478.js
-[2025-05-11T17:30:57.396Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app-1746857690764.js
-[2025-05-11T17:30:57.396Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app-1746857700000.js
-[2025-05-11T17:30:57.397Z] 📝 Đang tạo các file .gitkeep...
-[2025-05-11T17:30:57.397Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\.gitkeep
-[2025-05-11T17:30:57.398Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\admin\.gitkeep
-[2025-05-11T17:30:57.399Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\.gitkeep
-[2025-05-11T17:30:57.399Z] ✅ Đã hoàn tất việc tạo các file static còn thiếu
-[2025-05-11T17:30:57.399Z] 🚀 Khởi động lại ứng dụng để áp dụng thay đổi
+[2025-05-12T00:30:29.997Z] === Bắt đầu sửa lỗi các file static ===
+[2025-05-12T00:30:30.043Z] 📁 Đang tạo các thư mục cần thiết...
+[2025-05-12T00:30:30.048Z] ✅ Đã tạo thư mục: C:\VF\XLab_Web\.next\static\app\products
+[2025-05-12T00:30:30.049Z] ✅ Đã tạo thư mục: C:\VF\XLab_Web\.next\static\app\auth
+[2025-05-12T00:30:30.053Z] ✅ Đã tạo thư mục: C:\VF\XLab_Web\.next\static\app\cart
+[2025-05-12T00:30:30.054Z] 📄 Đang tạo các file static còn thiếu...
+[2025-05-12T00:30:30.056Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css
+[2025-05-12T00:30:30.058Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\not-found.7d3561764989b0ed.js
+[2025-05-12T00:30:30.059Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\layout.32d8c3be6202d9b3.js
+[2025-05-12T00:30:30.066Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app-pages-internals.196c41f732d2db3f.js
+[2025-05-12T00:30:30.070Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js
+[2025-05-12T00:30:30.075Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\loading.062c877ec63579d3.js
+[2025-05-12T00:30:30.077Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\admin\layout.bd8a9bfaca039569.js
+[2025-05-12T00:30:30.080Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\admin\page.20e1580ca904d554.js
+[2025-05-12T00:30:30.081Z] 🕒 Đang tạo các file với timestamp...
+[2025-05-12T00:30:30.082Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css.timestamp
+[2025-05-12T00:30:30.083Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js.timestamp
+[2025-05-12T00:30:30.084Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css.timestamp
+[2025-05-12T00:30:30.086Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js.timestamp
+[2025-05-12T00:30:30.087Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout.css.timestamp
+[2025-05-12T00:30:30.089Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app.aef085aefcb8f66f.js.timestamp
+[2025-05-12T00:30:30.089Z] 🔗 Đang cố gắng tạo symlink hoặc hard copies cho file với timestamp...
+[2025-05-12T00:30:30.091Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout-1746857687478.css
+[2025-05-12T00:30:30.092Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout-1746857690764.css
+[2025-05-12T00:30:30.096Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\layout-1746857700000.css
+[2025-05-12T00:30:30.100Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app-1746857687478.js
+[2025-05-12T00:30:30.105Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app-1746857690764.js
+[2025-05-12T00:30:30.107Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\main-app-1746857700000.js
+[2025-05-12T00:30:30.108Z] 📝 Đang tạo các file .gitkeep...
+[2025-05-12T00:30:30.114Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\.gitkeep
+[2025-05-12T00:30:30.115Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\app\admin\.gitkeep
+[2025-05-12T00:30:30.118Z] ✅ Đã tạo file: C:\VF\XLab_Web\.next\static\css\app\.gitkeep
+[2025-05-12T00:30:30.119Z] ✅ Đã hoàn tất việc tạo các file static còn thiếu
+[2025-05-12T00:30:30.120Z] 🚀 Khởi động lại ứng dụng để áp dụng thay đổi
