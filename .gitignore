@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -11,7 +12,6 @@
 # next.js
 /.next/
 /out/
-next-env.d.ts
 
 # production
 /build
@@ -19,13 +19,11 @@ next-env.d.ts
 # misc
 .DS_Store
 *.pem
-Thumbs.db
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
 # local env files
 .env*.local
@@ -38,6 +36,16 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+next-env.d.ts
+
+# Custom build files
+/.next/static/main-app*.js
+/.next/static/app-pages-internals*.js
+/.next/static/runtime*.js
+/.next/static/css/app/layout-*.css
+/.next/static/main-app-*.js
+/.next/trace*
+/.next/trace
 
 # Logs
 logs
@@ -75,3 +83,21 @@ fix-static-files.log
 # backups
 /public/images/backup-categories/
 /public/images/products-backup/
+node_modules/@next/swc-*
+
+# Added by update-gitignore.js
+# Next.js runtime files
+/.next/static/development/
+/.next/static/css/
+/.next/server/pages/
+/.next/server/chunks/
+/.next/server/*.json
+/.next/build-manifest.json
+/.next/app-paths-manifest.json
+/.next/next-font-manifest.json
+/.next/middleware-manifest.json
+**/*.hot-update.js
+**/*.hot-update.json
+/node_modules/.cache/
+/.swc/
+/.turbo/

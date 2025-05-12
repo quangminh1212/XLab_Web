@@ -470,57 +470,78 @@ function fixAppRoutes() {
 function clearCache() {
   log('🧹 Xóa cache...');
   
-  const nextDir = path.join(__dirname, '.next');
-  const cachePath = path.join(nextDir, 'cache');
-  const tracePath = path.join(nextDir, 'trace');
-  
-  // Xóa file trace và các file liên quan nếu tồn tại để tránh lỗi EPERM
   try {
-    // Kiểm tra và xóa tất cả các file trace
-    if (fs.existsSync(nextDir)) {
-      const files = fs.readdirSync(nextDir);
-      files.forEach(file => {
-        if (file === 'trace' || file.startsWith('trace-')) {
-          try {
-            const filePath = path.join(nextDir, file);
-            fs.chmodSync(filePath, 0o666); // Thay đổi quyền truy cập
-            fs.unlinkSync(filePath);
-            log(`✅ Đã xóa file trace: ${filePath}`);
-          } catch (err) {
-            log(`⚠️ Không thể xóa file ${file} (không ảnh hưởng): ${err.message}`);
+    // Danh sách các file và thư mục cần bỏ qua
+    const ignoreList = [
+      '.next/trace',
+      '.next/server/.gitkeep',
+      '.next/trace-*'
+    ];
+    
+    // Hàm kiểm tra có nên bỏ qua file/thư mục này không
+    const shouldIgnore = (filePath) => {
+      const relativePath = path.relative(__dirname, filePath);
+      return ignoreList.some(pattern => {
+        if (pattern.endsWith('*')) {
+          const prefix = pattern.slice(0, -1);
+          return relativePath.startsWith(prefix);
+        }
+        return relativePath === pattern;
+      });
+    };
+    
+    // Xóa cache Next.js
+    const cacheDir = path.join(__dirname, '.next', 'cache');
+    if (fs.existsSync(cacheDir)) {
+      try {
+        // Không xóa thư mục gốc mà chỉ xóa nội dung bên trong
+        const entries = fs.readdirSync(cacheDir);
+        for (const entry of entries) {
+          const entryPath = path.join(cacheDir, entry);
+          if (!shouldIgnore(entryPath)) {
+            if (fs.lstatSync(entryPath).isDirectory()) {
+              fs.rmdirSync(entryPath, { recursive: true });
+            } else {
+              fs.unlinkSync(entryPath);
+            }
           }
         }
-      });
+        log(`✅ Đã xóa cache: ${cacheDir}`);
+      } catch (err) {
+        log(`⚠️ Không thể xóa cache (không ảnh hưởng): ${err.message}`);
+      }
     }
+    
+    // Xóa webpack cache
+    const webpackCacheDir = path.join(__dirname, '.next', 'static', 'webpack');
+    if (fs.existsSync(webpackCacheDir)) {
+      try {
+        // Không xóa thư mục gốc mà chỉ xóa nội dung bên trong
+        const entries = fs.readdirSync(webpackCacheDir);
+        for (const entry of entries) {
+          const entryPath = path.join(webpackCacheDir, entry);
+          if (!shouldIgnore(entryPath)) {
+            if (fs.lstatSync(entryPath).isDirectory()) {
+              fs.rmdirSync(entryPath, { recursive: true });
+            } else {
+              fs.unlinkSync(entryPath);
+            }
+          }
+        }
+        log(`✅ Đã xóa cache: ${webpackCacheDir}`);
+      } catch (err) {
+        log(`⚠️ Không thể xóa webpack cache (không ảnh hưởng): ${err.message}`);
+      }
+    }
+    
+    // Tạo lại thư mục cache
+    ensureDirectoryExists(cacheDir);
+    ensureDirectoryExists(path.join(cacheDir, 'webpack'));
+    
+    log('✅ Đã xong quá trình xóa cache');
   } catch (error) {
-    log(`⚠️ Lỗi khi xử lý file trace (không ảnh hưởng): ${error.message}`);
+    log(`⚠️ Không thể xóa cache (không ảnh hưởng): ${error.message}`);
   }
-  
-  // Xóa và tạo lại thư mục cache
-  if (fs.existsSync(cachePath)) {
-    try {
-      fs.rmSync(cachePath, { recursive: true, force: true });
-      log(`✅ Đã xóa cache: ${cachePath}`);
-    } catch (error) {
-      log(`⚠️ Lỗi khi xóa cache: ${error.message}`);
-    }
-  }
-  
-  const webpackCachePath = path.join(nextDir, 'static', 'webpack');
-  if (fs.existsSync(webpackCachePath)) {
-    try {
-      fs.rmSync(webpackCachePath, { recursive: true, force: true });
-      log(`✅ Đã xóa cache: ${webpackCachePath}`);
-    } catch (error) {
-      log(`⚠️ Lỗi khi xóa webpack cache: ${error.message}`);
-    }
-  }
-  
-  // Tạo lại thư mục cache
-  ensureDirectoryExists(cachePath);
-  ensureDirectoryExists(path.join(cachePath, 'webpack'));
-  
-  log('✅ Đã xong quá trình xóa cache');
 }
 
 // Tạo file .gitkeep trong các thư mục quan trọng để giữ cấu trúc thư mục

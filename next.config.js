@@ -7,6 +7,8 @@ const nextConfig = {
   // swcMinify: false, // Removed - not supported in Next.js 15+
   skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
+  traceIgnore: ['**/.next/**', '**/node_modules/**'],
+  outputFileTracing: false,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com'],
     remotePatterns: [

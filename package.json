@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "predev": "node fix-all-errors.js && echo Preparing development environment...",
+    "predev": "node fix-trace-error.js && node fix-all-errors.js && echo Preparing development environment...",
     "dev": "next dev",
     "dev:no-hot": "NODE_OPTIONS='--no-warnings' next dev --no-hot",
     "dev:clean": "node fix-all-errors.js && next dev",

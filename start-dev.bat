@@ -1,0 +1,6 @@
+@echo off
+echo === Start development server ===
+echo Fixing trace file...
+node fix-trace-error.js
+echo Running development server...
+call npm run dev 
