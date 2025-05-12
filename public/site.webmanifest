@@ -1,20 +1,20 @@
 {
-  "name": "XLab",
+  "name": "XLab - Phần mềm và Dịch vụ",
   "short_name": "XLab",
   "description": "Giải pháp phần mềm và dịch vụ công nghệ chuyên nghiệp",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#00A19A",
+  "theme_color": "#0070F3",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/topup.png",
+      "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/topup.png",
+      "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
