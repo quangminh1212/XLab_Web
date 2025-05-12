@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 
 export interface Notification {
   id: number;
@@ -63,26 +63,29 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   ]);
 
   // Tính toán số thông báo chưa đọc
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const unreadCount = useMemo(() => 
+    notifications.filter(n => !n.isRead).length, 
+    [notifications]
+  );
 
   // Hàm đánh dấu một thông báo đã đọc
-  const markAsRead = (id: number) => {
+  const markAsRead = useCallback((id: number) => {
     setNotifications(prev => 
       prev.map(notification => 
         notification.id === id ? { ...notification, isRead: true } : notification
       )
     );
-  };
+  }, []);
 
   // Hàm đánh dấu tất cả thông báo đã đọc
-  const markAllAsRead = () => {
+  const markAllAsRead = useCallback(() => {
     setNotifications(prev =>
       prev.map(notification => ({ ...notification, isRead: true }))
     );
-  };
+  }, []);
 
   // Hàm thêm thông báo mới
-  const addNotification = (notification: Omit<Notification, 'id' | 'isRead' | 'time'>) => {
+  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'isRead' | 'time'>) => {
     const newNotification: Notification = {
       ...notification,
       id: Date.now(),
@@ -91,7 +94,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
     
     setNotifications(prev => [newNotification, ...prev]);
-  };
+  }, []);
 
   // Lưu thông báo vào localStorage khi có thay đổi
   useEffect(() => {
@@ -114,13 +117,14 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, []);
 
-  const value = {
+  // Memoize context value để tránh re-renders không cần thiết
+  const value = useMemo(() => ({
     notifications,
     unreadCount,
     markAsRead,
     markAllAsRead,
     addNotification
-  };
+  }), [notifications, unreadCount, markAsRead, markAllAsRead, addNotification]);
 
   return (
     <NotificationContext.Provider value={value}>

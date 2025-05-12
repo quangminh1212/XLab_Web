@@ -16,6 +16,7 @@
     "prebuild": "node fix-all-errors.js && rimraf .next && echo Preparing build environment...",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
+    "analyze": "cross-env ANALYZE=true next build",
     "start": "next start",
     "start:export": "serve out -p 3000",
     "lint": "next lint",
@@ -23,6 +24,7 @@
     "fix-errors": "node fix-all-errors.js"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^15.2.4",
     "@next/swc-wasm-nodejs": "15.3.2",
     "@radix-ui/react-slot": "1.1.2",
     "@types/uuid": "10.0.0",

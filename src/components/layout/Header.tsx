@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -22,22 +22,54 @@ const Header = React.memo(() => {
   }, [pathname]);
 
   const toggleMenu = useCallback(() => {
-    setIsOpen(!isOpen);
-    if (isProfileOpen) setIsProfileOpen(false);
-    if (isNotificationOpen) setIsNotificationOpen(false);
-  }, [isOpen, isProfileOpen, isNotificationOpen]);
+    setIsOpen(prevIsOpen => !prevIsOpen);
+    setIsProfileOpen(false);
+    setIsNotificationOpen(false);
+  }, []);
 
   const toggleProfile = useCallback(() => {
-    setIsProfileOpen(!isProfileOpen);
-    if (isOpen) setIsOpen(false);
-    if (isNotificationOpen) setIsNotificationOpen(false);
-  }, [isOpen, isProfileOpen, isNotificationOpen]);
+    setIsProfileOpen(prevIsProfileOpen => !prevIsProfileOpen);
+    setIsOpen(false);
+    setIsNotificationOpen(false);
+  }, []);
 
   const toggleNotification = useCallback(() => {
-    setIsNotificationOpen(!isNotificationOpen);
-    if (isOpen) setIsOpen(false);
-    if (isProfileOpen) setIsProfileOpen(false);
+    setIsNotificationOpen(prevIsNotificationOpen => !prevIsNotificationOpen);
+    setIsOpen(false);
+    setIsProfileOpen(false);
+  }, []);
+
+  // Add effect to close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      
+      // Close profile menu when clicking outside
+      if (isProfileOpen && !target.closest('[data-profile-menu]')) {
+        setIsProfileOpen(false);
+      }
+      
+      // Close notification menu when clicking outside
+      if (isNotificationOpen && !target.closest('[data-notification-menu]')) {
+        setIsNotificationOpen(false);
+      }
+      
+      // Close mobile menu when clicking outside
+      if (isOpen && !target.closest('[data-mobile-menu]')) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [isOpen, isProfileOpen, isNotificationOpen]);
+
+  // Memoize mobile menu close handler
+  const handleNavLinkClick = useCallback(() => {
+    setIsOpen(false);
+  }, []);
 
   // Memoize navbar links to prevent re-renders
   const navbarLinks = useMemo(() => (
@@ -62,6 +94,12 @@ const Header = React.memo(() => {
         className={`${isActive('/testimonials')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
       >
         Đánh giá
+      </Link>
+      <Link
+        href="/faqs"
+        className={`${isActive('/faqs')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+      >
+        FAQs
       </Link>
       <Link
         href="/about"
@@ -109,7 +147,7 @@ const Header = React.memo(() => {
           <div className="flex items-center space-x-2 md:space-x-3">
             {/* Notification Icon */}
             {session && (
-              <div className="relative">
+              <div className="relative" data-notification-menu>
                 <button
                   onClick={toggleNotification}
                   className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
@@ -209,7 +247,7 @@ const Header = React.memo(() => {
             </Link>
 
             {/* User Profile */}
-            <div className="relative">
+            <div className="relative" data-profile-menu>
               {session ? (
                 <button
                   onClick={toggleProfile}
@@ -292,6 +330,7 @@ const Header = React.memo(() => {
             <button
               onClick={toggleMenu}
               className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none"
+              data-mobile-menu
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -313,53 +352,60 @@ const Header = React.memo(() => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="md:hidden mt-4 py-4 border-t border-gray-200">
+          <nav className="md:hidden mt-4 py-4 border-t border-gray-200" data-mobile-menu>
             <Link
               href="/"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavLinkClick}
             >
               Trang chủ
             </Link>
             <Link
               href="/products"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavLinkClick}
             >
               Sản phẩm
             </Link>
             <Link
               href="/services"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavLinkClick}
             >
               Dịch vụ
             </Link>
             <Link
               href="/testimonials"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavLinkClick}
             >
               Đánh giá
             </Link>
             <Link
+              href="/faqs"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={handleNavLinkClick}
+            >
+              FAQs
+            </Link>
+            <Link
               href="/about"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavLinkClick}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavLinkClick}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
               className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
+              onClick={handleNavLinkClick}
             >
               Bảo hành
             </Link>

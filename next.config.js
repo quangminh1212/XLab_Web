@@ -1,5 +1,10 @@
 const path = require('path');
 
+// Import next bundle analyzer
+const withBundleAnalyzer = process.env.ANALYZE === 'true'
+  ? require('@next/bundle-analyzer')({ enabled: true })
+  : (config) => config;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
@@ -251,4 +256,5 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+// Export config with bundle analyzer wrapper
+module.exports = withBundleAnalyzer(nextConfig);

@@ -31,14 +31,16 @@ export default function AdminLayout({
     }, [session, status]);
     
     useEffect(() => {
+        // Không làm gì khi đang loading
         if (status === 'loading') return;
         
+        // Redirect to login if not authenticated
         if (!session) {
             router.push('/login');
             return;
         }
         
-        // Sử dụng isAdmin thay vì kiểm tra email trực tiếp
+        // Redirect to home if not admin
         if (!session.user?.isAdmin) {
             router.push('/');
             return;

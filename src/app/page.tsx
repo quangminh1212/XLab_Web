@@ -10,7 +10,7 @@ function HomePage() {
   // Lọc sản phẩm nổi bật với useMemo
   const featuredProducts = useMemo(() => 
     products.filter(product => product.isFeatured).slice(0, 4),
-    []
+    [products]
   );
 
   // Lọc sản phẩm mới nhất với useMemo
@@ -22,7 +22,7 @@ function HomePage() {
         return dateB.getTime() - dateA.getTime();
       })
       .slice(0, 4),
-    []
+    [products]
   );
 
   return (
@@ -461,7 +461,7 @@ function HomePage() {
                 
                 <div className="text-center mt-6">
                   <Link 
-                    href="/support"
+                    href="/faqs"
                     className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm md:text-base"
                   >
                     Xem thêm câu hỏi
