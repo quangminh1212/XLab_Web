@@ -11,6 +11,8 @@
 
 # next.js
 /.next/
+.next
+.next/
 /out/
 
 # production
@@ -25,7 +27,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Logs
+*.log
+logs
+next-setup.log
+
 # local env files
+.env
 .env*.local
 .env.development
 .env.test
@@ -38,6 +46,27 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Files to be deleted after migration
+fix-all-errors.js
+fix-all-errors.log
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-static-files.log
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+
+# SWC related
+/.swc-disabled/
+.next/trace
+.next/trace.*
+
 # Custom build files
 /.next/static/main-app*.js
 /.next/static/app-pages-internals*.js
@@ -47,14 +76,6 @@ next-env.d.ts
 /.next/trace*
 /.next/trace
 /.next/trace.old*
-
-# Logs
-logs
-*.log
-fix-all-errors.log
-fix-static-files.log
-*-errors.log
-*-files.log
 
 # IDE
 .idea
@@ -115,3 +136,40 @@ dev.cmd
 dev.ps1
 powershell-dev.ps1
 start-dev.bat
+
+# Next.js build artifacts
+.next/trace
+.next/trace.*
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào next-fix-all.js
+check-env.js
+fix-all-errors.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
