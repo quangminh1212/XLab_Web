@@ -14,7 +14,7 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 
-# Binary - không sử dụng LFS, chỉ đánh dấu là binary
+# Binary
 *.png binary
 *.jpg binary
 *.jpeg binary
@@ -24,31 +24,18 @@
 *.woff2 binary
 *.ttf binary
 *.eot binary
-*.mp4 binary
-*.zip binary
-*.pdf binary
-*.psd binary
-*.dll binary
-*.exe binary
-*.node binary
 
-# Đánh dấu file swc cho Next.js
-node_modules/@next/swc-win32-x64-msvc/next-swc.win32-x64-msvc.node binary
-
-# Xóa các định nghĩa LFS vì nó gây ra vấn đề khi tải zip
-# *.png binary
-# *.jpg binary
-# *.jpeg binary
-# *.gif binary
-# *.mp4 binary
-# *.zip binary
-# *.pdf binary
-# *.psd binary
-# *.woff binary
-# *.woff binary
-# *.dll binary
-# *.exe binary
-# *.node binary
-
-# Git LFS đã bị vô hiệu hóa để tránh lỗi định dạng ảnh khi tải ZIP
-# Nếu bạn muốn bật lại Git LFS, hãy xóa file này và khôi phục từ .gitattributes.bak
+node_modules/@next/swc-win32-x64-msvc/next-swc.win32-x64-msvc.node filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.woff filter=lfs diff=lfs merge=lfs -text
+*.woff2 filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.exe filter=lfs diff=lfs merge=lfs -text
+*.node filter=lfs diff=lfs merge=lfs -text

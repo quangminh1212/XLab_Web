@@ -70,7 +70,6 @@ run-fixed.bat
 /.swc-disabled/
 .next/trace
 .next/trace.*
-.swc/
 
 # Custom build files
 /.next/static/main-app*.js
@@ -178,9 +177,3 @@ fix-trace-error.js
 hide-warnings.js
 update-gitignore.js
 next-setup.js
-
-# Git LFS related
-.git/lfs
-.git/hooks/pre-push
-.gitattributes.bak
-.lfsconfig

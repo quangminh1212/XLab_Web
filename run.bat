@@ -16,13 +16,6 @@ set NEXT_USE_SWC_WASM=1
 
 REM Tạo file .traceignore để ngăn Next.js tạo file trace
 echo Tao file .traceignore...
-
-REM Sửa lỗi định dạng ảnh
-echo Dang sua loi dinh dang anh...
-if exist scripts\fix-git-lfs-issues.js (
-  node scripts\fix-git-lfs-issues.js
-)
-
 echo **/* > .traceignore
 
 REM Tạo file cấu hình tạm thời để disable trace
