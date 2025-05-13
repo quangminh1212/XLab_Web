@@ -1,11 +1,7 @@
 @echo off
-title XLab Web - Development Server
-
 echo ================================================
 echo  XLab Web - Development Server
 echo ================================================
-echo.
-
 REM Đặt các biến môi trường cho NextJS
 set NODE_OPTIONS=--no-warnings --max-old-space-size=4096
 set NEXT_TELEMETRY_DISABLED=1
@@ -13,6 +9,20 @@ set NEXT_DISABLE_TRACE=1
 set NEXT_TRACING_MODE=0
 set NEXT_DISABLE_SWC_NATIVE=1
 set NEXT_USE_SWC_WASM=1
+
+REM Chạy scripts để sửa lỗi
+echo Dang chay scripts sua loi...
+node fix-all-errors.js
+
+REM Tạo thư mục .swc-disabled nếu chưa tồn tại
+if not exist .swc-disabled (
+  mkdir .swc-disabled
+  echo Da tao thu muc .swc-disabled de vo hieu hoa SWC native
+)
+
+REM Đảm bảo quyền truy cập đầy đủ cho thư mục .next
+echo Dat quyen truy cap day du cho thu muc .next...
+attrib -R .next /S /D
 
 REM Tạo file .traceignore để ngăn Next.js tạo file trace
 echo Tao file .traceignore...
@@ -35,32 +45,10 @@ mkdir .next\cache\webpack 2>nul
 mkdir .next\server 2>nul
 mkdir .next\static 2>nul
 
-REM Tạo thư mục .swc-disabled nếu chưa tồn tại
-if not exist .swc-disabled (
-  mkdir .swc-disabled
-  echo Da tao thu muc .swc-disabled de vo hieu hoa SWC native
-)
-
-REM Đảm bảo quyền truy cập đầy đủ cho thư mục .next
-echo Dat quyen truy cap day du cho thu muc .next...
-attrib -R .next /S /D
-
 REM Tạo file dummy trace rỗng và đặt quyền chỉ đọc
 echo Tao file trace rong de ngan Next.js tao file moi...
 copy NUL .next\trace >nul 2>&1
 attrib +R .next\trace
-
-echo.
-echo ================================================
-echo  Dang chay script sua loi...
-echo ================================================
-echo.
-
-REM Chạy script tổng hợp sửa lỗi nếu tồn tại
-if exist fix-all-errors.js (
-  echo Chay script sua loi tong the...
-  node fix-all-errors.js
-)
 
 echo.
 echo ================================================

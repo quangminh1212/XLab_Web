@@ -49,15 +49,15 @@ next-setup.log
 next-env.d.ts
 
 # Files to be deleted after migration
-fix-all-errors.js
-fix-all-errors.log
-fix-auth-component.js
-fix-missing-files.js
-fix-static-files.js
-fix-static-files.log
-fix-swc-errors.js
-fix-trace-error.js
-hide-warnings.js
+# fix-all-errors.js
+# fix-all-errors.log
+# fix-auth-component.js
+# fix-missing-files.js
+# fix-static-files.js
+# fix-static-files.log
+# fix-swc-errors.js
+# fix-trace-error.js
+# hide-warnings.js
 update-gitignore.js
 dev.cmd
 dev.ps1
@@ -168,12 +168,23 @@ start-dev.bat
 
 # Các file fix lỗi cũ - đã tích hợp vào next-fix-all.js
 check-env.js
-fix-all-errors.js
-fix-auth-component.js
-fix-missing-files.js
-fix-static-files.js
-fix-swc-errors.js
-fix-trace-error.js
-hide-warnings.js
+# fix-all-errors.js
+# fix-auth-component.js
+# fix-missing-files.js
+# fix-static-files.js
+# fix-swc-errors.js
+# fix-trace-error.js
+# hide-warnings.js
 update-gitignore.js
 next-setup.js
+
+# swc cache
+/.swc-disabled/
+
+# trace files
+.traceignore
+
+# Missing script files (mentioned but not exist)
+# fix-trace-error.js
+# fix-all-errors.js
+# hide-warnings.js
