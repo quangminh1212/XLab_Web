@@ -183,6 +183,26 @@ function NewProductPage() {
     }));
   };
 
+  // Cập nhật phiên bản hiện tại
+  const handleUpdateSelectedVersion = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const value = e.target.value;
+    const numValue = parseFloat(value);
+    
+    // Tìm và cập nhật phiên bản đang chọn
+    const updatedVersions = productVersions.map(version => {
+      if (version.id === selectedVersionId) {
+        return {
+          ...version,
+          [field]: field === 'price' || field === 'originalPrice' ? 
+            (isNaN(numValue) ? 0 : numValue) : value
+        };
+      }
+      return version;
+    });
+    
+    setProductVersions(updatedVersions);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -338,12 +358,49 @@ function NewProductPage() {
                 )}
               </div>
             ) : (
-              <div className="font-bold text-green-600 text-2xl">
-                {selectedVersion.price.toLocaleString('vi-VN')} đ
+              <div className="font-bold text-green-600 text-2xl flex items-center space-x-3">
+                <input 
+                  type="number" 
+                  value={selectedVersion.price || 0}
+                  onChange={(e) => handleUpdateSelectedVersion(e, 'price')}
+                  className="w-32 p-1 bg-transparent border-b border-green-500 focus:outline-none text-2xl font-bold text-green-600"
+                  min="0"
+                  step="1000"
+                />
+                <span>đ</span>
                 {selectedVersion.originalPrice > selectedVersion.price && (
-                  <span className="text-lg line-through text-gray-500 ml-2">
-                    {selectedVersion.originalPrice.toLocaleString('vi-VN')} đ
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <input 
+                      type="number" 
+                      value={selectedVersion.originalPrice || 0}
+                      onChange={(e) => handleUpdateSelectedVersion(e, 'originalPrice')}
+                      className="w-32 p-1 bg-transparent border-b border-gray-300 focus:outline-none text-lg line-through text-gray-500"
+                      min="0"
+                      step="1000"
+                    />
+                    <span className="text-lg line-through text-gray-500">đ</span>
+                  </div>
+                )}
+                {!(selectedVersion.originalPrice > selectedVersion.price) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Thêm giá gốc bằng cách nhân giá hiện tại với 1.2 (tăng 20%)
+                      const updatedVersions = productVersions.map(version => {
+                        if (version.id === selectedVersionId) {
+                          return {
+                            ...version,
+                            originalPrice: Math.ceil(version.price * 1.2 / 1000) * 1000 // Làm tròn lên đến 1000đ
+                          };
+                        }
+                        return version;
+                      });
+                      setProductVersions(updatedVersions);
+                    }}
+                    className="text-sm text-blue-500 hover:text-blue-700"
+                  >
+                    + Thêm giá gốc
+                  </button>
                 )}
               </div>
             )}
@@ -352,7 +409,7 @@ function NewProductPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phần hình ảnh và upload */}
             <div>
-              <div className="border rounded-lg overflow-hidden bg-gray-100 h-80 flex items-center justify-center mb-3 relative">
+              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square flex items-center justify-center mb-3 relative">
                 {featuredImage ? (
                   <>
                     <img 
@@ -688,13 +745,23 @@ function NewProductPage() {
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Mô tả chi tiết</h2>
-              <button 
-                type="button" 
-                onClick={() => setIsEditingDescription(!isEditingDescription)}
-                className="text-blue-500 hover:text-blue-700"
-              >
-                {isEditingDescription ? 'Xem trước' : 'Chỉnh sửa'}
-              </button>
+              {isEditingDescription ? (
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditingDescription(false)}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  Xem trước
+                </button>
+              ) : (
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditingDescription(true)}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  Chỉnh sửa
+                </button>
+              )}
             </div>
             
             {isEditingDescription ? (
@@ -707,7 +774,10 @@ function NewProductPage() {
             ) : (
               <div className="prose max-w-none border p-4 rounded min-h-[200px]" dangerouslySetInnerHTML={{ __html: formData.description || '<p>Chưa có mô tả chi tiết</p>' }} />
             )}
-            <p className="text-sm text-gray-500 mt-1">Mô tả chi tiết về sản phẩm (hiển thị ở trang chi tiết). Dán hình ảnh trực tiếp (Ctrl+V) vào ô soạn thảo.</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Mô tả chi tiết về sản phẩm (hiển thị ở trang chi tiết). Dán hình ảnh trực tiếp (Ctrl+V) vào ô soạn thảo. 
+              Bạn có thể chỉnh kích cỡ, độ đậm của chữ và căn giữa các ảnh bằng thanh công cụ phía trên khi đang chỉnh sửa.
+            </p>
           </div>
         )}
         
