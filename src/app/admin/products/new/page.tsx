@@ -13,7 +13,7 @@ function NewProductPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   
   // Hình ảnh và dữ liệu
@@ -30,6 +30,12 @@ function NewProductPage() {
   // Thêm thông tin bảo hành
   const [warranty, setWarranty] = useState('');
   const [isEditingWarranty, setIsEditingWarranty] = useState(false);
+  
+  // Thêm state cho mô tả kỹ thuật
+  const [specifications, setSpecifications] = useState<{key: string, value: string}[]>([]);
+  const [newSpecKey, setNewSpecKey] = useState('');
+  const [newSpecValue, setNewSpecValue] = useState('');
+  const [isEditingSpecs, setIsEditingSpecs] = useState(false);
   
   // Thêm quản lý các phiên bản sản phẩm
   const [productVersions, setProductVersions] = useState([
@@ -157,6 +163,25 @@ function NewProductPage() {
     setFeatures(newFeatures);
   };
   
+  // Xử lý thêm thông số kỹ thuật
+  const handleAddSpecification = () => {
+    if (newSpecKey.trim() && newSpecValue.trim()) {
+      setSpecifications([...specifications, {
+        key: newSpecKey.trim(),
+        value: newSpecValue.trim()
+      }]);
+      setNewSpecKey('');
+      setNewSpecValue('');
+    }
+  };
+
+  // Xử lý xóa thông số kỹ thuật
+  const handleRemoveSpecification = (index: number) => {
+    const newSpecs = [...specifications];
+    newSpecs.splice(index, 1);
+    setSpecifications(newSpecs);
+  };
+  
   // Xử lý thêm phiên bản sản phẩm
   const handleAddVersion = () => {
     if (currentVersion.name && currentVersion.price > 0) {
@@ -232,6 +257,7 @@ function NewProductPage() {
         images: featuredImage ? [featuredImage] : [],
         descriptionImages: descriptionImages,
         features: features,
+        specifications: specifications,
         warranty: warranty,
         requirements: [],
         versions: productVersions,
@@ -785,6 +811,110 @@ function NewProductPage() {
             <p className="text-sm text-gray-500 mt-1">
               Mô tả chi tiết về sản phẩm (hiển thị ở trang chi tiết). Dán hình ảnh trực tiếp (Ctrl+V) vào ô soạn thảo. 
               Bạn có thể chỉnh kích cỡ, độ đậm của chữ và căn giữa các ảnh bằng thanh công cụ phía trên khi đang chỉnh sửa.
+            </p>
+          </div>
+        )}
+        
+        {/* Thông số kỹ thuật */}
+        {showAdvancedOptions && (
+          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
+              <button 
+                type="button" 
+                onClick={() => setIsEditingSpecs(!isEditingSpecs)}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                {isEditingSpecs ? 'Xong' : 'Chỉnh sửa'}
+              </button>
+            </div>
+            
+            {isEditingSpecs ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <input
+                      type="text"
+                      value={newSpecKey}
+                      onChange={(e) => setNewSpecKey(e.target.value)}
+                      placeholder="Tên thông số (VD: CPU, RAM, HDD)"
+                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  <div className="flex">
+                    <input
+                      type="text"
+                      value={newSpecValue}
+                      onChange={(e) => setNewSpecValue(e.target.value)}
+                      placeholder="Giá trị thông số"
+                      className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddSpecification}
+                      className="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600 transition-colors"
+                    >
+                      Thêm
+                    </button>
+                  </div>
+                </div>
+                
+                {specifications.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="font-medium mb-2">Thông số đã thêm</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="border-b border-gray-300">
+                            <th className="py-2 text-left">Tên thông số</th>
+                            <th className="py-2 text-left">Giá trị</th>
+                            <th className="py-2 w-20"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {specifications.map((spec, index) => (
+                            <tr key={index} className="border-b border-gray-200">
+                              <td className="py-2 font-medium">{spec.key}</td>
+                              <td className="py-2">{spec.value}</td>
+                              <td className="py-2 text-right">
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveSpecification(index)}
+                                  className="text-red-500 hover:text-red-700"
+                                >
+                                  ×
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              specifications.length > 0 ? (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <table className="w-full border-collapse">
+                    <tbody>
+                      {specifications.map((spec, index) => (
+                        <tr key={index} className="border-b border-gray-200">
+                          <td className="py-2 font-medium w-1/3">{spec.key}</td>
+                          <td className="py-2">{spec.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="bg-gray-50 p-4 rounded-lg text-gray-500 text-center">
+                  Chưa có thông số kỹ thuật nào. Nhấn "Chỉnh sửa" để thêm.
+                </div>
+              )
+            )}
+            <p className="text-sm text-gray-500 mt-4">
+              Thêm các thông số kỹ thuật chi tiết của sản phẩm để giúp người dùng hiểu rõ hơn về sản phẩm (VD: Cấu hình, Yêu cầu hệ thống, Tính năng đặc biệt).
             </p>
           </div>
         )}

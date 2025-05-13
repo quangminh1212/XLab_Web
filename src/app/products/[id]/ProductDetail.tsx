@@ -126,6 +126,43 @@ const ProductDescription = ({ description }: { description: string }) => {
   );
 };
 
+// Component hiển thị thông số kỹ thuật
+const ProductSpecifications = ({ 
+  specifications 
+}: { 
+  specifications?: { key: string, value: string }[] | { [key: string]: string } 
+}) => {
+  if (!specifications) return null;
+  
+  // Convert specifications từ object sang array nếu cần
+  const specsArray = Array.isArray(specifications) 
+    ? specifications 
+    : Object.entries(specifications).map(([key, value]) => ({ key, value }));
+  
+  if (specsArray.length === 0) return null;
+  
+  return (
+    <div className="mt-10">
+      <h2 className="text-2xl font-semibold mb-6">Thông số kỹ thuật</h2>
+      <div className="bg-white p-6 rounded-lg shadow-sm">
+        <table className="w-full border-collapse">
+          <tbody>
+            {specsArray.map((spec, index) => (
+              <tr 
+                key={index} 
+                className={`${index < specsArray.length - 1 ? 'border-b' : ''} border-gray-200`}
+              >
+                <td className="py-3 w-1/3 font-medium text-gray-700">{spec.key}</td>
+                <td className="py-3 text-gray-800">{spec.value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
 export default function ProductDetail({ product }: { product: Product }) {
   // Update document title khi component được render
   useEffect(() => {
@@ -343,6 +380,9 @@ export default function ProductDetail({ product }: { product: Product }) {
         
         {/* Chi tiết sản phẩm */}
         <ProductDescription description={product.longDescription} />
+        
+        {/* Thông số kỹ thuật */}
+        <ProductSpecifications specifications={product.specifications} />
         
         {/* Demo VoiceTyping nếu sản phẩm là VoiceTyping */}
         {isVoiceTyping && <VoiceTypingDemo />}

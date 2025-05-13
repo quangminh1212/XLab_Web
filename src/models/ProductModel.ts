@@ -15,6 +15,11 @@ export interface ProductRequirement {
     description: string;
 }
 
+export interface ProductSpecification {
+    key: string;
+    value: string;
+}
+
 export interface ProductVersion {
     name: string;
     description?: string;
@@ -38,6 +43,7 @@ export interface Product {
     images: ProductImage[] | string[];
     descriptionImages?: string[];
     features: ProductFeature[];
+    specifications?: ProductSpecification[];
     requirements: ProductRequirement[];
     versions: ProductVersion[];
     categories: ProductCategory[];
@@ -55,6 +61,7 @@ export interface ProductFormData {
     images: ProductImage[] | string[];
     descriptionImages?: string[];
     features: ProductFeature[];
+    specifications?: ProductSpecification[];
     requirements: ProductRequirement[];
     versions: ProductVersion[];
     categories: string[]; // Chỉ lưu ID của categories
