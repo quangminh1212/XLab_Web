@@ -9,8 +9,6 @@ const path = require('path');
 
 // Đường dẫn đến thư mục .next
 const nextDir = path.join(__dirname, '.next');
-const traceFile = path.join(nextDir, 'trace');
-const traceDir = path.join(nextDir, 'trace');
 
 console.log('[fix-trace-error] Bắt đầu sửa lỗi file trace...');
 
@@ -24,30 +22,65 @@ if (!fs.existsSync(nextDir)) {
   }
 }
 
-// Nếu file trace tồn tại, xóa nó và tạo thư mục trace
-try {
-  if (fs.existsSync(traceFile)) {
-    // Kiểm tra xem trace là file hay thư mục
-    const stats = fs.statSync(traceFile);
-    if (stats.isFile()) {
-      // Nếu là file, xóa nó
-      fs.unlinkSync(traceFile);
-      console.log('[fix-trace-error] Đã xóa file trace');
-      
-      // Tạo thư mục trace
-      fs.mkdirSync(traceDir, { recursive: true });
-      console.log('[fix-trace-error] Đã tạo thư mục trace');
-    } else if (stats.isDirectory()) {
-      // Nếu đã là thư mục, chỉ cần thông báo
-      console.log('[fix-trace-error] Đã có sẵn thư mục trace');
+// Tạo .env.local nếu chưa tồn tại để tắt trace
+const envLocalPath = path.join(__dirname, '.env.local');
+if (!fs.existsSync(envLocalPath)) {
+  try {
+    const envContent = `# Tự động tạo bởi fix-trace-error.js
+NEXT_TELEMETRY_DISABLED=1
+NEXT_DISABLE_SOURCEMAPS=1
+NODE_OPTIONS=--no-warnings
+`;
+    fs.writeFileSync(envLocalPath, envContent);
+    console.log('[fix-trace-error] Đã tạo file .env.local để tắt telemetry và sourcemaps');
+  } catch (err) {
+    console.log(`[fix-trace-error] Không thể tạo file .env.local: ${err.message}`);
+  }
+} else {
+  try {
+    // Kiểm tra và bổ sung cấu hình nếu chưa có
+    let envContent = fs.readFileSync(envLocalPath, 'utf8');
+    let needsUpdate = false;
+    
+    if (!envContent.includes('NEXT_TELEMETRY_DISABLED=1')) {
+      envContent += '\nNEXT_TELEMETRY_DISABLED=1';
+      needsUpdate = true;
     }
-  } else {
-    // Nếu không tồn tại, tạo thư mục trace
-    fs.mkdirSync(traceDir, { recursive: true });
-    console.log('[fix-trace-error] Đã tạo thư mục trace');
+    
+    if (!envContent.includes('NEXT_DISABLE_SOURCEMAPS=1')) {
+      envContent += '\nNEXT_DISABLE_SOURCEMAPS=1';
+      needsUpdate = true;
+    }
+    
+    if (needsUpdate) {
+      fs.writeFileSync(envLocalPath, envContent);
+      console.log('[fix-trace-error] Đã cập nhật file .env.local');
+    }
+  } catch (err) {
+    console.log(`[fix-trace-error] Không thể cập nhật file .env.local: ${err.message}`);
+  }
+}
+
+// Thêm cấu hình tắt trace vào package.json
+try {
+  const packageJsonPath = path.join(__dirname, 'package.json');
+  if (fs.existsSync(packageJsonPath)) {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    let modified = false;
+    
+    // Đảm bảo scripts dev có tùy chọn --no-trace
+    if (packageJson.scripts && packageJson.scripts.dev && !packageJson.scripts.dev.includes('--no-trace')) {
+      packageJson.scripts.dev = 'next dev --no-trace';
+      modified = true;
+    }
+    
+    if (modified) {
+      fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+      console.log('[fix-trace-error] Đã cập nhật package.json để thêm flag --no-trace');
+    }
   }
 } catch (err) {
-  console.log(`[fix-trace-error] Lỗi khi xử lý trace: ${err.message}`);
+  console.log(`[fix-trace-error] Không thể cập nhật package.json: ${err.message}`);
 }
 
 // Tạo các file cấu hình JSON cần thiết

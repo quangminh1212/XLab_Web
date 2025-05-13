@@ -12,15 +12,13 @@ const nextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../"),
   // Di chuyển serverComponentsExternalPackages từ experimental thành serverExternalPackages
   serverExternalPackages: ['@swc/helpers'],
-  // Tắt tính năng trace ghi lỗi
+  // Cấu hình experimental
   experimental: {
     largePageDataBytes: 12800000,
     disableOptimizedLoading: true,
     swcTraceProfiling: false,
     optimizeCss: true,
-    tracing: {
-      ignoreRootSpan: true,
-    },
+    // Xóa bỏ cấu hình tracing không hợp lệ
   },
   productionBrowserSourceMaps: false,
   // Không tạo file trace
