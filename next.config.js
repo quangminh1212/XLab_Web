@@ -2,7 +2,7 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   reactStrictMode: true,
   //  không còn là tùy chọn hợp lệ trong Next.js 15+
   skipMiddlewareUrlNormalize: true,
@@ -179,7 +179,7 @@ const nextConfig = {
   },
   distDir: '.next',
   generateBuildId: async () => {
-    return 'build-' + Date.now();
+    return 'build-id'
   },
   // Cấu hình sass nằm trong mục tùy chọn hợp lệ
   sassOptions: {
@@ -248,6 +248,9 @@ const nextConfig = {
         permanent: true,
       },
     ]
+  },
+  tracing: {
+    ignoreRootSpan: true,
   },
 };
 

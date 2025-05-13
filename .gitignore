@@ -8,17 +8,23 @@
 
 # testing
 /coverage
+/coverage-temp
+/.nyc_output
+cypress/videos
+cypress/screenshots
+/__tests__/output
 
 # next.js
 /.next/
 .next
 .next/
-/out/
+out/
 .next/trace
 .next/trace.*
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -28,6 +34,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log
+local-debug.log
 
 # Logs
 *.log
@@ -43,6 +51,7 @@ next-setup.log
 
 # vercel
 .vercel
+.turbo
 
 # typescript
 *.tsbuildinfo
