@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "node fix-trace-error.js && node fix-all-errors.js && echo Preparing development environment...",
     "dev": "next dev",
     "dev:silent": "node hide-warnings.js && cross-env NEXT_IGNORE_WARNINGS=NEXT_PACKAGE_WARNING,ESLINT_WARNING,API_ROUTE_IMPORT_WARNING NODE_OPTIONS=--no-warnings next dev",
     "dev:win": "node hide-warnings.js && set NODE_OPTIONS=--no-warnings && next dev",
@@ -27,7 +28,6 @@
     "@types/uuid": "10.0.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "critters": "0.0.23",
     "next": "15.2.4",
     "next-auth": "4.24.10",
     "react": "18.2.0",
@@ -43,6 +43,7 @@
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
     "autoprefixer": "10.4.16",
+    "critters": "0.0.23",
     "cross-env": "7.0.3",
     "eslint": "9.0.0",
     "eslint-config-next": "15.2.4",

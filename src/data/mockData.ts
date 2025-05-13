@@ -131,7 +131,7 @@ export const products: Product[] = [
     price: 990000,
     salePrice: 990000,
     categoryId: 'cat-2', // Ứng dụng văn phòng
-    imageUrl: '/images/products/speech-text.svg',
+    imageUrl: '/images/speech-text.svg',
     isFeatured: true,
     isNew: true,
     downloadCount: 150,
