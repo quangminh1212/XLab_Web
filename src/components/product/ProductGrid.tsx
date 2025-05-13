@@ -10,6 +10,7 @@ interface Product {
   category?: string;
   rating?: number;
   reviewCount?: number;
+  slug?: string;
 }
 
 interface ProductGridProps {
@@ -69,6 +70,7 @@ const ProductGrid = ({
             reviewCount={product.reviewCount}
             onAddToCart={onAddToCart}
             onView={onProductView}
+            slug={product.slug}
           />
         ))}
       </div>

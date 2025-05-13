@@ -200,6 +200,7 @@ export default function ProductsPage() {
                   image={product.imageUrl}
                   category={categories.find(c => c.id === product.categoryId)?.name}
                   rating={product.rating}
+                  slug={product.slug}
                 />
               ))}
             </div>
@@ -239,7 +240,7 @@ export default function ProductsPage() {
               <div className="space-y-2">
                 {softwareProducts.filter(p => p.isFeatured).slice(0, 3).map(product => (
                   <Link 
-                    href={`/products/${product.id}`}
+                    href={`/products/${product.slug || product.id}`}
                     key={product.id}
                     className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
                   >
