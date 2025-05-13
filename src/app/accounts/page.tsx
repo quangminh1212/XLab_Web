@@ -18,6 +18,9 @@ interface AccountProduct extends Product {
 }
 
 export default function AccountsPage() {
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeSort, setActiveSort] = useState<string>('newest');
+
   // Tạo danh sách tài khoản mẫu trực tiếp
   const accounts: AccountProduct[] = [
     {
@@ -266,7 +269,25 @@ export default function AccountsPage() {
     }
   ];
 
-  const [sortOrder, setSortOrder] = useState('newest');
+  // Lọc tài khoản theo danh mục
+  const filteredAccounts = accounts.filter(account => {
+    if (activeCategory === 'all') return true;
+    return account.categoryId === activeCategory;
+  });
+
+  // Sắp xếp tài khoản
+  const sortedAccounts = [...filteredAccounts].sort((a, b) => {
+    if (activeSort === 'newest') {
+      return new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime();
+    } else if (activeSort === 'price-low') {
+      return (a.salePrice || a.price || 0) - (b.salePrice || b.price || 0);
+    } else if (activeSort === 'price-high') {
+      return (b.salePrice || b.price || 0) - (a.salePrice || a.price || 0);
+    } else if (activeSort === 'popular') {
+      return (b.downloadCount || 0) - (a.downloadCount || 0);
+    }
+    return 0;
+  });
 
   // Danh mục sản phẩm
   const categories = [
@@ -282,7 +303,7 @@ export default function AccountsPage() {
     <div className="py-4 bg-gray-50">
       <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
         <div className="mb-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Tài khoản dịch vụ</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Tài khoản dịch vụ</h1>
           <p className="text-sm md:text-base text-gray-600">
             Danh sách các tài khoản dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
           </p>
@@ -319,16 +340,16 @@ export default function AccountsPage() {
           <div className="w-full md:w-[85%]">
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
-              <div className="text-sm md:text-base text-gray-600">
+              <div className="text-sm text-gray-600">
                 Hiển thị {accounts.length} kết quả
               </div>
               <div className="flex items-center space-x-2">
-                <label htmlFor="sort" className="text-sm md:text-base text-gray-700">Sắp xếp:</label>
+                <label htmlFor="sort" className="text-sm text-gray-700">Sắp xếp:</label>
                 <select 
                   id="sort"
-                  className="text-sm md:text-base border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="text-sm border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  value={activeSort}
+                  onChange={(e) => setActiveSort(e.target.value)}
                 >
                   <option value="newest">Mới nhất</option>
                   <option value="price-low">Giá thấp đến cao</option>
@@ -338,17 +359,18 @@ export default function AccountsPage() {
               </div>
             </div>
             
-            {/* Product grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {accounts.map((account) => (
-                <ProductCard
+            {/* Account grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {sortedAccounts.map((account) => (
+                <ProductCard 
                   key={account.id}
                   id={account.id.toString()}
                   name={account.name}
                   description={account.description}
                   price={account.salePrice || account.price}
-                  originalPrice={account.salePrice ? account.price : undefined}
+                  originalPrice={account.salePrice && account.salePrice < account.price ? account.price : undefined}
                   image={account.imageUrl}
+                  category=""
                   rating={account.rating}
                 />
               ))}
@@ -359,18 +381,22 @@ export default function AccountsPage() {
           <div className="w-full md:w-[15%]">
             {/* Categories */}
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
-              <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Danh Mục Sản Phẩm</h3>
+              <h3 className="font-medium text-gray-900 mb-2 text-sm">Danh Mục</h3>
               <ul className="space-y-1">
                 {categories.map(category => (
                   <li key={category.id}>
                     <a 
-                      href={`#${category.id}`}
-                      className={`flex justify-between items-center text-sm md:text-base py-1 px-2 rounded-md hover:bg-gray-50 ${
-                        category.id === 'all' ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveCategory(category.id);
+                      }}
+                      className={`flex justify-between items-center text-sm py-1 px-2 rounded-md hover:bg-gray-50 ${
+                        activeCategory === category.id ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
                       }`}
                     >
                       <span>{category.name}</span>
-                      <span className="bg-gray-100 text-gray-600 text-xs md:text-sm px-2 py-0.5 rounded-full">
+                      <span className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">
                         {category.count}
                       </span>
                     </a>
@@ -379,46 +405,30 @@ export default function AccountsPage() {
               </ul>
             </div>
             
-            {/* Featured product */}
+            {/* Featured Accounts */}
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
-              <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
+              <h3 className="font-medium text-gray-900 mb-2 text-sm">Nổi Bật</h3>
               <div className="space-y-2">
-                {accounts.slice(0, 3).map(account => (
+                {accounts.filter(a => a.isFeatured).slice(0, 3).map(account => (
                   <Link 
-                    href={`/accounts/${account.id}`}
+                    href={`/products/${account.id}`}
                     key={account.id}
                     className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
                   >
-                    <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
                       <img 
                         src={account.imageUrl} 
                         alt={account.name}
-                        className="w-8 h-8 object-contain"
+                        className="w-7 h-7 object-contain"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <h4 className="font-medium text-gray-900 text-sm">{account.name}</h4>
-                      <div className="text-xs md:text-sm text-primary-600 font-medium">
-                        {account.salePrice ? formatCurrency(account.salePrice) : formatCurrency(account.price)}
-                      </div>
+                      <h4 className="font-medium text-gray-900 text-xs">{account.name}</h4>
+                      <p className="text-xs text-gray-500">{formatCurrency(account.salePrice || account.price)}</p>
                     </div>
                   </Link>
                 ))}
               </div>
-            </div>
-            
-            {/* Help box */}
-            <div className="bg-primary-50 rounded-lg p-3">
-              <h3 className="font-medium text-primary-700 mb-2 text-sm md:text-base">Cần trợ giúp?</h3>
-              <p className="text-xs md:text-sm text-primary-600 mb-2">
-                Liên hệ với chúng tôi nếu bạn cần hỗ trợ hoặc tư vấn thêm về các tài khoản dịch vụ.
-              </p>
-              <a
-                href="/contact"
-                className="w-full flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-xs md:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
-              >
-                Liên Hệ Ngay
-              </a>
             </div>
           </div>
         </div>
