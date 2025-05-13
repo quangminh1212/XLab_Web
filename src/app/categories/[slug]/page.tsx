@@ -60,10 +60,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                                 id={product.id.toString()}
                                 name={product.name}
                                 description={product.description}
-                                price={product.price}
-                                originalPrice={product.salePrice < product.price ? product.price : undefined}
+                                price={product.salePrice || product.price}
+                                originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
                                 image={product.imageUrl}
                                 rating={product.rating}
+                                isAccount={product.isAccount || product.type === 'account'}
                             />
                         ))}
                     </div>

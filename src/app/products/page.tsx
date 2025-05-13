@@ -195,11 +195,12 @@ export default function ProductsPage() {
                   id={product.id.toString()}
                   name={product.name}
                   description={product.description}
-                  price={product.price}
-                  originalPrice={product.salePrice < product.price ? product.price : undefined}
+                  price={product.salePrice || product.price}
+                  originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
                   image={product.imageUrl}
                   category={categories.find(c => c.id === product.categoryId)?.name}
                   rating={product.rating}
+                  reviewCount={product.reviewCount}
                 />
               ))}
             </div>

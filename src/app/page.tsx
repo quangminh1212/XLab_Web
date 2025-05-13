@@ -327,11 +327,12 @@ function HomePage() {
                           id={product.id.toString()}
                           name={product.name}
                           description={product.description}
-                          price={product.price}
+                          price={product.salePrice || product.price}
                           originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}
+                          isAccount={false}
                         />
                       ))}
                   </div>
@@ -375,11 +376,12 @@ function HomePage() {
                           id={product.id.toString()}
                           name={product.name}
                           description={product.description}
-                          price={product.price}
+                          price={product.salePrice || product.price}
                           originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
                           image={product.imageUrl}
                           category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}
+                          isAccount={true}
                         />
                       ))}
                   </div>

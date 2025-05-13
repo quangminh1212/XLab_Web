@@ -178,6 +178,7 @@ export default function AccountsPage() {
                   originalPrice={account.salePrice ? account.price : undefined}
                   image={account.imageUrl}
                   rating={account.rating}
+                  isAccount={true}
                 />
               ))}
             </div>

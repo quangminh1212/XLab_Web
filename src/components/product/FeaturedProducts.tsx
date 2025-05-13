@@ -11,6 +11,7 @@ interface Product {
   category?: string;
   rating?: number;
   reviewCount?: number;
+  isAccount?: boolean;
 }
 
 interface FeaturedProductsProps {

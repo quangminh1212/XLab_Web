@@ -14,6 +14,7 @@ interface ProductCardProps {
   category?: string
   rating?: number
   reviewCount?: number
+  isAccount?: boolean
   onAddToCart?: (id: string) => void
   onView?: (id: string) => void
 }
@@ -28,12 +29,13 @@ const ProductCard = ({
   category,
   rating = 0,
   reviewCount = 0,
+  isAccount = false,
   onAddToCart,
   onView,
 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const discountPercentage = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0
+  const discountPercentage = originalPrice && price < originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0
 
   // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
   const formatCurrency = (amount: number) => {
@@ -97,7 +99,7 @@ const ProductCard = ({
 
   return (
     <Link
-      href={`/products/${id}`}
+      href={isAccount ? `/accounts/${id}` : `/products/${id}`}
       className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
