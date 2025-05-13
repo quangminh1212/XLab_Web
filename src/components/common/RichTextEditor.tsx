@@ -17,6 +17,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pasteListenerAttached = useRef<boolean>(false);
   const [showToolbar, setShowToolbar] = useState(false);
   
   // Đồng bộ giá trị từ props vào editor
@@ -37,10 +38,16 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       // Xử lý dán ảnh từ clipboard
       if (e.clipboardData && e.clipboardData.items) {
         const items = e.clipboardData.items;
+        let imageFound = false;
         
         for (let i = 0; i < items.length; i++) {
           if (items[i].type.indexOf('image') !== -1) {
+            // Prevent default paste behavior to avoid duplicate insertions
             e.preventDefault();
+            
+            // Only process the first image found to prevent duplication
+            if (imageFound) continue;
+            imageFound = true;
             
             const file = items[i].getAsFile();
             if (!file) continue;
@@ -76,12 +83,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
     };
     
-    // Thêm sự kiện paste để xử lý dán ảnh
-    editorRef.current?.addEventListener('paste', handlePaste);
+    // Chỉ đính kèm paste listener nếu chưa đính kèm
+    if (editorRef.current && !pasteListenerAttached.current) {
+      editorRef.current.addEventListener('paste', handlePaste);
+      pasteListenerAttached.current = true;
+    }
+    
     document.addEventListener('click', handleImageClick);
     
     return () => {
-      editorRef.current?.removeEventListener('paste', handlePaste);
+      if (editorRef.current) {
+        editorRef.current.removeEventListener('paste', handlePaste);
+        pasteListenerAttached.current = false;
+      }
       document.removeEventListener('click', handleImageClick);
     };
   }, []);
@@ -404,6 +418,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         onInput={handleInput}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        onPaste={(e) => {
+          // Check for images in the clipboard and handle them
+          // This helps ensure only one paste handler processes images
+          const items = e.clipboardData?.items;
+          if (items) {
+            for (let i = 0; i < items.length; i++) {
+              if (items[i].type.indexOf('image') !== -1) {
+                e.preventDefault();
+                return; // Exit early, let the main paste handler handle it
+              }
+            }
+          }
+        }}
         className={`content-editable w-full min-h-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${value === '' ? 'empty' : ''}`}
         data-placeholder={placeholder}
       />
