@@ -18,6 +18,9 @@ const nextConfig = {
     disableOptimizedLoading: true,
     swcTraceProfiling: false,
     optimizeCss: true,
+    tracing: {
+      ignoreRootSpan: true,
+    },
   },
   productionBrowserSourceMaps: false,
   // Không tạo file trace
@@ -248,9 +251,6 @@ const nextConfig = {
         permanent: true,
       },
     ]
-  },
-  tracing: {
-    ignoreRootSpan: true,
   },
 };
 
