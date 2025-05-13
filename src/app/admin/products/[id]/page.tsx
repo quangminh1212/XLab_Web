@@ -308,6 +308,32 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     }
   };
 
+  // Xử lý thay đổi giá
+  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const price = parseFloat(value);
+    
+    setFormData(prev => ({
+      ...prev, 
+      price: isNaN(price) ? 0 : price,
+      // Nếu giá gốc chưa được đặt hoặc bằng giá cũ, tự động cập nhật giá gốc
+      salePrice: (prev.salePrice === 0 || prev.salePrice === prev.price) 
+        ? (isNaN(price) ? 0 : price) 
+        : prev.salePrice
+    }));
+  };
+
+  // Xử lý thay đổi giá gốc
+  const handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const salePrice = parseFloat(value);
+    
+    setFormData(prev => ({
+      ...prev, 
+      salePrice: isNaN(salePrice) ? 0 : salePrice
+    }));
+  };
+
   if (loading) {
     return (
       <div className="container flex justify-center items-center h-64">
@@ -386,32 +412,33 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </div>
             </div>
             
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Giá bán (VNĐ)
+            <div className="mb-4">
+              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+                Giá sản phẩm (VNĐ)
               </label>
               <input
                 type="number"
+                id="price"
                 name="price"
                 value={formData.price}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                onChange={handlePriceChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
                 min="0"
                 step="1000"
-                required
               />
             </div>
             
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
+            <div className="mb-4">
+              <label htmlFor="salePrice" className="block text-sm font-medium text-gray-700 mb-1">
                 Giá gốc (VNĐ)
               </label>
               <input
                 type="number"
+                id="salePrice"
                 name="salePrice"
                 value={formData.salePrice}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                onChange={handleSalePriceChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
                 min="0"
                 step="1000"
               />
@@ -420,6 +447,21 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 <div className="mt-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded inline-block">
                   Giảm giá: {Math.round((1 - formData.price / formData.salePrice) * 100)}%
                 </div>
+              )}
+              {formData.salePrice === 0 && formData.price > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Thêm giá gốc bằng cách nhân giá hiện tại với 1.2 (tăng 20%)
+                    setFormData(prev => ({
+                      ...prev,
+                      salePrice: Math.ceil(prev.price * 1.2 / 1000) * 1000 // Làm tròn lên đến 1000đ
+                    }));
+                  }}
+                  className="mt-2 text-sm text-blue-500 hover:text-blue-700 block"
+                >
+                  + Thêm giá gốc
+                </button>
               )}
             </div>
           </div>

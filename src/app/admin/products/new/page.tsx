@@ -224,11 +224,19 @@ function NewProductPage() {
     // Tìm và cập nhật phiên bản đang chọn
     const updatedVersions = productVersions.map(version => {
       if (version.id === selectedVersionId) {
-        return {
+        // Nếu đang cập nhật giá, cũng cập nhật giá gốc nếu giá gốc bằng 0 hoặc bằng giá cũ
+        const updates = {
           ...version,
           [field]: field === 'price' || field === 'originalPrice' ? 
             (isNaN(numValue) ? 0 : numValue) : value
         };
+        
+        // Nếu cập nhật giá và chưa có giá gốc thì cập nhật giá gốc
+        if (field === 'price' && (version.originalPrice === 0 || version.originalPrice === version.price)) {
+          updates.originalPrice = isNaN(numValue) ? 0 : numValue;
+        }
+        
+        return updates;
       }
       return version;
     });
@@ -402,27 +410,25 @@ function NewProductPage() {
                   step="1000"
                 />
                 <span>đ</span>
-                {selectedVersion.originalPrice > selectedVersion.price && (
-                  <div className="flex items-center space-x-2">
-                    <input 
-                      type="number" 
-                      value={selectedVersion.originalPrice || 0}
-                      onChange={(e) => handleUpdateSelectedVersion(e, 'originalPrice')}
-                      className="w-32 p-1 bg-transparent border-b border-gray-300 focus:outline-none text-lg line-through text-gray-500"
-                      min="0"
-                      step="1000"
-                    />
-                    <span className="text-lg line-through text-gray-500">đ</span>
-                    
-                    {/* Hiển thị phần trăm giảm giá */}
-                    {selectedVersion.originalPrice > 0 && selectedVersion.price > 0 && (
-                      <span className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
-                        -{Math.round((1 - selectedVersion.price / selectedVersion.originalPrice) * 100)}%
-                      </span>
-                    )}
-                  </div>
-                )}
-                {!(selectedVersion.originalPrice > selectedVersion.price) && (
+                <div className="flex items-center space-x-2">
+                  <input 
+                    type="number" 
+                    value={selectedVersion.originalPrice || 0}
+                    onChange={(e) => handleUpdateSelectedVersion(e, 'originalPrice')}
+                    className="w-32 p-1 bg-transparent border-b border-gray-300 focus:outline-none text-lg line-through text-gray-500"
+                    min="0"
+                    step="1000"
+                  />
+                  <span className="text-lg line-through text-gray-500">đ</span>
+                  
+                  {/* Hiển thị phần trăm giảm giá - luôn hiển thị */}
+                  {selectedVersion.originalPrice > 0 && selectedVersion.price > 0 && (
+                    <span className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
+                      -{Math.round((1 - selectedVersion.price / selectedVersion.originalPrice) * 100)}%
+                    </span>
+                  )}
+                </div>
+                {selectedVersion.originalPrice === 0 && (
                   <button
                     type="button"
                     onClick={() => {
