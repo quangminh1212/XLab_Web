@@ -177,3 +177,6 @@ fix-trace-error.js
 hide-warnings.js
 update-gitignore.js
 next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
