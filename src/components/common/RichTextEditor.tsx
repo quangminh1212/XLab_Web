@@ -116,6 +116,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     img.className = 'editor-image';
     // Đặt kích thước mặc định nhỏ hơn cho ảnh (50%)
     img.style.width = '50%';
+    // Tự động căn giữa ảnh
+    img.style.display = 'block';
+    img.style.margin = '0 auto';
     
     // Thêm toolbar điều chỉnh ảnh
     const imageToolbar = document.createElement('div');
@@ -481,9 +484,10 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         .image-wrapper {
           position: relative;
           display: inline-block;
-          margin: 8px 0;
+          margin: 8px auto;
           max-width: 100%;
           width: 100%;
+          text-align: center;
         }
         
         .image-toolbar {
@@ -533,6 +537,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           display: block;
           max-width: 100%;
           margin: 0 auto;
+          text-align: center;
         }
         
         .image-caption {
