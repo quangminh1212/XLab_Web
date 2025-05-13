@@ -372,21 +372,18 @@ export default function ContactPage() {
       <section className="bg-gray-100 py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6 text-center">Vị trí của chúng tôi</h2>
-          <div className="bg-gray-300 rounded-lg overflow-hidden h-96 max-w-5xl mx-auto">
-            {/* Đây là nơi có thể thêm Google Maps hoặc bản đồ tích hợp khác */}
-            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              <div className="text-center">
-                <p className="text-gray-600 mb-2">Địa chỉ: {siteConfig.contact.address}</p>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.contact.address)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-teal-600 hover:underline"
-                >
-                  Xem trên Google Maps
-                </a>
-              </div>
-            </div>
+          <div className="rounded-lg overflow-hidden h-96 max-w-5xl mx-auto">
+            <iframe
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(siteConfig.contact.address)}`}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Vị trí của XLab"
+              className="rounded-lg"
+              allowFullScreen
+            ></iframe>
           </div>
         </div>
       </section>

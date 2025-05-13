@@ -196,10 +196,18 @@ export default function CartPage() {
                   <div className="text-center text-xs text-gray-600">
                     <p className="mb-2">Chúng tôi chấp nhận các phương thức thanh toán sau</p>
                     <div className="flex justify-center space-x-2 mt-2">
-                      <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                      <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                      <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                      <div className="w-8 h-5 bg-gray-200 rounded"></div>
+                      <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+                        <Image src="/images/payment/visa.svg" alt="Visa" width={20} height={12} />
+                      </div>
+                      <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+                        <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={20} height={12} />
+                      </div>
+                      <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+                        <Image src="/images/payment/momo.svg" alt="MoMo" width={18} height={12} />
+                      </div>
+                      <div className="w-8 h-5 bg-gray-200 rounded flex items-center justify-center">
+                        <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={20} height={12} />
+                      </div>
                     </div>
                   </div>
                 </div>
