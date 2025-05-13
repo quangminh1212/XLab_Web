@@ -413,6 +413,13 @@ function NewProductPage() {
                       step="1000"
                     />
                     <span className="text-lg line-through text-gray-500">đ</span>
+                    
+                    {/* Hiển thị phần trăm giảm giá */}
+                    {selectedVersion.originalPrice > 0 && selectedVersion.price > 0 && (
+                      <span className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
+                        -{Math.round((1 - selectedVersion.price / selectedVersion.originalPrice) * 100)}%
+                      </span>
+                    )}
                   </div>
                 )}
                 {!(selectedVersion.originalPrice > selectedVersion.price) && (
