@@ -100,6 +100,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     img.id = imageId;
     img.src = imageSrc;
     img.className = 'editor-image';
+    // Đặt kích thước mặc định nhỏ hơn cho ảnh (50%)
+    img.style.width = '50%';
     
     // Thêm toolbar điều chỉnh ảnh
     const imageToolbar = document.createElement('div');
@@ -146,6 +148,68 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       img.style.width = '50%';
     };
     
+    // Nút resize ảnh về 25%
+    const quarterBtn = document.createElement('button');
+    quarterBtn.innerHTML = '25%';
+    quarterBtn.title = 'Kích thước 25%';
+    quarterBtn.className = 'image-tool-btn';
+    quarterBtn.onclick = (e) => {
+      e.preventDefault();
+      img.style.width = '25%';
+    };
+    
+    // Nút thêm chú thích cho ảnh
+    const captionBtn = document.createElement('button');
+    captionBtn.innerHTML = 'Abc';
+    captionBtn.title = 'Thêm chú thích';
+    captionBtn.className = 'image-tool-btn';
+    captionBtn.onclick = (e) => {
+      e.preventDefault();
+      
+      // Kiểm tra xem đã có caption chưa
+      let caption = imageWrapper.querySelector('.image-caption');
+      
+      if (!caption) {
+        // Tạo mới caption nếu chưa có
+        caption = document.createElement('div');
+        caption.className = 'image-caption';
+        (caption as HTMLDivElement).contentEditable = 'true';
+        caption.innerHTML = 'Nhập chú thích...';
+        imageWrapper.appendChild(caption);
+        
+        // Focus vào caption để người dùng nhập
+        setTimeout(() => {
+          (caption as HTMLDivElement)?.focus();
+          
+          // Chọn toàn bộ văn bản mặc định
+          const selection = window.getSelection();
+          const range = document.createRange();
+          if (selection && caption) {
+            range.selectNodeContents(caption);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        }, 0);
+        
+        // Xử lý sự kiện blur để cập nhật nội dung
+        caption.addEventListener('blur', () => {
+          if (caption instanceof HTMLElement && caption.innerHTML.trim() === 'Nhập chú thích...') {
+            caption.remove();
+          }
+          handleInput();
+        });
+        
+        // Ngăn sự kiện click truyền ra ngoài
+        caption.addEventListener('click', (e) => {
+          e.stopPropagation();
+        });
+      } else {
+        // Nếu đã có caption thì xóa đi
+        caption.remove();
+        handleInput();
+      }
+    };
+    
     // Nút xóa ảnh
     const deleteBtn = document.createElement('button');
     deleteBtn.innerHTML = '✕';
@@ -162,6 +226,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     imageToolbar.appendChild(fullWidthBtn);
     imageToolbar.appendChild(threeQuarterBtn);
     imageToolbar.appendChild(halfBtn);
+    imageToolbar.appendChild(quarterBtn);
+    imageToolbar.appendChild(captionBtn);
     imageToolbar.appendChild(deleteBtn);
     
     // Thêm ảnh và toolbar vào wrapper
@@ -440,6 +506,18 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           display: block;
           max-width: 100%;
           margin: 0 auto;
+        }
+        
+        .image-caption {
+          width: 100%;
+          text-align: center;
+          padding: 5px;
+          margin-top: 5px;
+          border: 1px dashed #ccc;
+          background: #f8f8f8;
+          font-style: italic;
+          font-size: 0.9em;
+          color: #666;
         }
 
         /* Định dạng cho thanh công cụ văn bản */

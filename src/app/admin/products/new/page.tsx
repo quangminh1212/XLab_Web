@@ -134,6 +134,14 @@ function NewProductPage() {
     }));
   };
   
+  // Xử lý thay đổi nội dung mô tả ngắn rich text
+  const handleShortDescRichTextChange = (content: string) => {
+    setFormData(prev => ({
+      ...prev,
+      shortDescription: content
+    }));
+  };
+  
   // Xử lý thêm đặc điểm nổi bật
   const handleAddFeature = () => {
     if (newFeature.trim()) {
@@ -488,15 +496,15 @@ function NewProductPage() {
                 <label className="block text-gray-700 font-medium mb-2">
                   Mô tả ngắn <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  name="shortDescription"
+                <RichTextEditor
                   value={formData.shortDescription}
-                  onChange={handleInputChange}
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  rows={3}
+                  onChange={handleShortDescRichTextChange}
                   placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                  required
+                  className="mb-1"
                 />
+                <p className="text-sm text-gray-500 mt-1">
+                  Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)
+                </p>
               </div>
               
               {/* Đặc điểm nổi bật */}
