@@ -53,7 +53,7 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
         {relatedProducts.map((product) => (
           <Link 
             key={product.id} 
-            href={`/products/${product.slug || product.id}`}
+            href={`/products/${product.id}`}
             className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <div className="flex items-center space-x-3">

@@ -4,7 +4,6 @@ import Link from 'next/link'
 import ProductCard from '@/components/product/ProductCard'
 import { Product } from '@/types'
 import { useState } from 'react'
-import Image from 'next/image'
 
 // Mở rộng kiểu Product để thêm thuộc tính plans
 interface AccountProduct extends Product {
@@ -336,150 +335,13 @@ export default function AccountsPage() {
           </div>
         </div>
         
-        {/* Giới thiệu tổng quan về tài khoản */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-2/3">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Tài khoản Claude AI – Anthropic</h2>
-              <div className="prose max-w-none">
-                <p className="mb-3">
-                  <strong>Tài khoản Claude AI</strong> chất lượng tại XLab, nâng cấp tài khoản chính chủ và chính sách bảo hành uy tín. <strong>Claude AI</strong> là một chatbot trí tuệ nhân tạo (AI) được phát triển bởi công ty Anthropic, một startup AI có trụ sở tại San Francisco, Mỹ. Claude AI được ra mắt lần đầu tiên vào tháng 7 năm 2022 và nhanh chóng thu hút sự chú ý của cộng đồng công nghệ nhờ khả năng trả lời tự nhiên, chính xác và an toàn.
-                </p>
-              </div>
-            </div>
-            <div className="md:w-1/3 flex justify-center">
-              <div className="w-full max-w-[250px]">
-                <img 
-                  src="/images/products/chatgpt-logo.png"
-                  alt="Claude AI"
-                  className="w-full h-auto object-contain"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Bảng giá */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Bảng giá Tài khoản Claude AI tại XLab</h2>
-          <div className="mb-4">
-            <ul className="list-disc list-inside space-y-2 ml-2 text-gray-600">
-              <li>Tài khoản chính hãng, đầy đủ tính năng Plus</li>
-              <li>Bảo hành trọn thời gian sử dụng</li>
-            </ul>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-6 mt-4">
-            <div className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
-              <h3 className="text-xl font-bold text-primary-600 mb-2">Gói dùng chung</h3>
-              <p className="text-2xl font-bold text-gray-900 mb-2">179.000đ<span className="text-sm font-normal text-gray-500"> / 1 tháng</span></p>
-              <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600 mb-4">
-                <li>Tài khoản cấp dùng chung</li>
-                <li>Đăng nhập 1-2 thiết bị cố định</li>
-                <li>Không đổi mật khẩu</li>
-              </ul>
-              <button className="w-full py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
-                Thêm vào giỏ hàng
-              </button>
-            </div>
-            
-            <div className="border border-primary-100 rounded-lg p-5 bg-primary-50 hover:shadow-md transition-shadow">
-              <h3 className="text-xl font-bold text-primary-600 mb-2">Gói dùng riêng / nâng cấp</h3>
-              <p className="text-2xl font-bold text-gray-900 mb-2">499.000đ<span className="text-sm font-normal text-gray-500"> / 1 tháng</span></p>
-              <ul className="list-disc list-inside space-y-1 ml-2 text-gray-600 mb-4">
-                <li>Nhận tài khoản tạo sẵn hoặc Nâng cấp tài khoản chính chủ, dùng riêng 100%</li>
-                <li>Dùng nhiều thiết bị</li>
-                <li>Được đổi mật khẩu</li>
-              </ul>
-              <button className="w-full py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
-                Thêm vào giỏ hàng
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        {/* Giới thiệu về Claude AI */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Giới thiệu chung về CLAUDE AI</h2>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-2/3">
-              <div className="prose max-w-none text-gray-600">
-                <p>Claude AI là một chatbot trí tuệ nhân tạo (AI) được phát triển bởi công ty Anthropic, một startup AI có trụ sở tại San Francisco, Mỹ. Claude AI được ra mắt lần đầu tiên vào tháng 7 năm 2022 và nhanh chóng thu hút sự chú ý của cộng đồng công nghệ nhờ khả năng trả lời tự nhiên, chính xác và an toàn.</p>
-                <p className="mt-3"><strong>Tài khoản Claude AI</strong> được huấn luyện bằng công nghệ AI tiên tiến nhất hiện nay là mô hình ngôn ngữ lớn (LLM – Large Language Model) và học tăng cường. Nhờ đó, Claude AI có thể hiểu và trả lời các câu hỏi phức tạp về nhiều chủ đề khác nhau bằng ngôn ngữ tự nhiên.</p>
-                <p className="mt-3">Công ty Anthropic được thành lập bởi các cựu kỹ sư của OpenAI, tổ chức phát triển ChatGPT. Vì vậy, Claude AI được xem là đối thủ cạnh tranh trực tiếp với ChatGPT.</p>
-              </div>
-            </div>
-            <div className="md:w-1/3 flex justify-center">
-              <div className="w-full">
-                <img 
-                  src="/images/products/chatgpt-logo.png" 
-                  alt="Claude AI"
-                  className="w-full h-auto object-contain rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Tính năng nổi bật */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Tính năng nổi bật của CLAUDE AI</h2>
-          <p className="text-gray-600 mb-4">So với các chatbot AI khác, Tài khoản Claude AI có một số tính năng nổi bật:</p>
-          <ul className="list-disc list-inside space-y-2 ml-2 text-gray-600">
-            <li><strong>Trả lời chính xác và nhất quán:</strong> Claude AI được huấn luyện để đưa ra câu trả lời chính xác và nhất quán về một chủ đề, thay vì đưa ra nhiều câu trả lời ngẫu nhiên khác nhau.</li>
-            <li><strong>An toàn và đáng tin cậy:</strong> Claude AI có các cơ chế giám sát và kiểm soát chặt chẽ để đảm bảo an toàn, tránh đưa ra thông tin sai lệch hoặc có hại.</li>
-            <li><strong>Tốc độ xử lý nhanh:</strong> Claude AI có thể trả lời các câu hỏi phức tạp chỉ trong vài giây, nhanh hơn nhiều so với các chatbot trước đây.</li>
-            <li><strong>Giao tiếp tự nhiên:</strong> <strong>Tài khoản Claude AI</strong> có thể duy trì cuộc đối thoại tự nhiên, thể hiện sự nhạy cảm về mặt cảm xúc và ngữ cảnh.</li>
-            <li><strong>Khả năng giải thích:</strong> Claude AI có thể giải thích lý do và cách thức đưa ra câu trả lời của mình khi được yêu cầu.</li>
-          </ul>
-        </div>
-        
-        {/* So sánh Claude AI và ChatGPT */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">So sánh Claude AI và ChatGPT</h2>
-          <p className="text-gray-600 mb-4">So với ChatGPT, Claude AI có một số điểm mạnh:</p>
-          <ul className="list-disc list-inside space-y-2 ml-2 text-gray-600">
-            <li><strong>Chính xác hơn:</strong> Claude AI được đánh giá có độ chính xác cao hơn ChatGPT, ít bị sai sót và đưa ra thông tin không chính xác.</li>
-            <li><strong>Nhất quán hơn:</strong> Câu trả lời của Claude AI nhất quán hơn về cùng một chủ đề khi được hỏi nhiều lần.</li>
-            <li><strong>An toàn hơn:</strong> <strong>Tài khoản Claude AI</strong> có nhiều cơ chế giám sát và kiểm soát hơn để đảm bảo an toàn thông tin.</li>
-            <li><strong>Ít lặp lại hơn:</strong> Claude AI ít bị lặp lại nội dung giống nhau khi trả lời các câu hỏi khác nhau.</li>
-            <li><strong>Tốc độ nhanh hơn:</strong> Thời gian phản hồi của Claude AI được cải thiện đáng kể.</li>
-          </ul>
-          <p className="text-gray-600 mt-4">Tuy nhiên, ChatGPT vẫn có một số ưu điểm như giao diện thân thiện, dễ sử dụng hơn và miễn phí cho người dùng.</p>
-        </div>
-        
-        {/* Cách đăng ký */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Cách đăng ký CLAUDE AI</h2>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-1/3 flex justify-center order-2 md:order-1">
-              <div className="w-full">
-                <img 
-                  src="/images/products/chatgpt-logo.png" 
-                  alt="Claude AI – Anthropic"
-                  className="w-full h-auto object-contain rounded-lg"
-                />
-              </div>
-            </div>
-            <div className="md:w-2/3 order-1 md:order-2">
-              <div className="prose max-w-none text-gray-600">
-                <p>Hiện tại, Claude AI vẫn đang trong giai đoạn thử nghiệm beta. Để trải nghiệm, bạn cần đăng ký <strong>Tài khoản Claude AI</strong> thử nghiệm thông qua trang web của Anthropic.</p>
-                <p className="mt-3">Khi được cấp quyền truy cập, bạn có thể sử dụng Claude AI thông qua website hoặc ứng dụng di động. Hiện Claude AI chưa được cung cấp rộng rãi cho công chúng.</p>
-                <p className="mt-3">Với dịch vụ từ XLab, bạn có thể trải nghiệm ngay <strong>Tài khoản Claude AI</strong> thế hệ mới nhất, với vô số tính năng mạnh mẽ, tốc độ vượt trội hơn cả ChatGPT và Google Bard.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Danh sách sản phẩm */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Danh sách tài khoản</h2>
         <div className="flex flex-col md:flex-row gap-4">
           {/* Main content */}
           <div className="w-full md:w-[85%]">
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm text-gray-600">
-                Hiển thị {filteredAccounts.length} kết quả
+                Hiển thị {accounts.length} kết quả
               </div>
               <div className="flex items-center space-x-2">
                 <label htmlFor="sort" className="text-sm text-gray-700">Sắp xếp:</label>
