@@ -141,9 +141,9 @@ export default function ProductsPage() {
         <div className="border-b border-gray-200 mb-4">
           <div className="flex space-x-4">
             <Link href="/products">
-              <div className="py-2 px-2 border-b-2 border-primary-600 text-primary-600 font-medium text-sm md:text-base">
+              <div className="py-2 px-2 border-b-2 border-primary-600 text-primary-600 font-medium text-sm">
                 <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 Phần mềm
@@ -151,9 +151,9 @@ export default function ProductsPage() {
               </div>
             </Link>
             <Link href="/accounts">
-              <div className="py-2 px-2 text-gray-500 hover:text-gray-700 font-medium text-sm md:text-base">
+              <div className="py-2 px-2 text-gray-500 hover:text-gray-700 font-medium text-sm">
                 <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   Tài khoản
@@ -169,7 +169,7 @@ export default function ProductsPage() {
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm text-gray-600">
-                Hiển thị {filteredProducts.length} kết quả
+                Hiển thị {softwareProducts.length} kết quả
               </div>
               <div className="flex items-center space-x-2">
                 <label htmlFor="sort" className="text-sm text-gray-700">Sắp xếp:</label>
@@ -189,18 +189,17 @@ export default function ProductsPage() {
             
             {/* Product grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              {sortedProducts.map((product) => (
+              {softwareProducts.map((product) => (
                 <ProductCard 
                   key={product.id}
                   id={product.id.toString()}
                   name={product.name}
                   description={product.description}
-                  price={product.salePrice || product.price}
-                  originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
+                  price={product.price}
+                  originalPrice={product.salePrice < product.price ? product.price : undefined}
                   image={product.imageUrl}
                   category={categories.find(c => c.id === product.categoryId)?.name}
                   rating={product.rating}
-                  slug={product.slug}
                 />
               ))}
             </div>
@@ -215,13 +214,9 @@ export default function ProductsPage() {
                 {productCategories.map(category => (
                   <li key={category.id}>
                     <a 
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setFilter(category.id);
-                      }}
+                      href={`#${category.id}`}
                       className={`flex justify-between items-center text-sm py-1 px-2 rounded-md hover:bg-gray-50 ${
-                        category.id === filter ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
+                        category.id === 'all' ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
                       }`}
                     >
                       <span>{category.name}</span>
@@ -240,7 +235,7 @@ export default function ProductsPage() {
               <div className="space-y-2">
                 {softwareProducts.filter(p => p.isFeatured).slice(0, 3).map(product => (
                   <Link 
-                    href={`/products/${product.slug || product.id}`}
+                    href={`/products/${product.id}`}
                     key={product.id}
                     className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
                   >
@@ -253,7 +248,9 @@ export default function ProductsPage() {
                     </div>
                     <div className="flex flex-col">
                       <h4 className="font-medium text-gray-900 text-xs">{product.name}</h4>
-                      <p className="text-xs text-gray-500">{formatCurrency(product.salePrice || product.price)}</p>
+                      <div className="text-xs text-primary-600 font-medium">
+                        {product.salePrice ? formatCurrency(product.salePrice) : formatCurrency(product.price)}
+                      </div>
                     </div>
                   </Link>
                 ))}

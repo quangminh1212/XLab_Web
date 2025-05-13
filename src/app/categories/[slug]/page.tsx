@@ -18,42 +18,39 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     const category = categories.find((cat) => cat.slug === params.slug);
 
     if (!category) {
-        return notFound();
+        notFound();
     }
 
     const categoryProducts = products.filter((product) => product.categoryId === category.id);
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="grid md:grid-cols-4 gap-6">
-                <div className="md:col-span-1">
-                    <nav className="bg-white p-4 rounded-lg shadow-sm">
-                        <h2 className="text-lg font-medium text-gray-900 mb-4">Danh Mục</h2>
-                        <ul className="space-y-2">
-                            {categories.map((cat) => (
-                                <li key={cat.id}>
-                                    <Link href={`/categories/${cat.slug}`}>
-                                        <div className={`flex items-center py-2 px-3 rounded-md ${
-                                            cat.id === category.id 
-                                            ? 'bg-primary-50 text-primary-600 font-medium' 
-                                            : 'text-gray-700 hover:bg-gray-50'
-                                        }`}>
-                                            <span>{cat.name}</span>
-                                        </div>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
-                </div>
+        <div className="min-h-screen bg-gray-50 py-12">
+            <div className="container max-w-7xl mx-auto px-4">
+                <div className="mb-8">
+                    <Link href="/categories" className="text-teal-600 flex items-center mb-4 text-sm">
+                        <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Quay lại danh mục
+                    </Link>
 
-                <div className="md:col-span-3">
-                    <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">{category.name}</h1>
-                        <p className="text-gray-600">
-                            Hiển thị {categoryProducts.length} sản phẩm thuộc danh mục {category.name}
-                        </p>
+                    <div className="flex items-center mb-6">
+                        <div className="w-16 h-16 bg-teal-50 rounded-lg flex items-center justify-center mr-4">
+                            <Image
+                                src={category.imageUrl || '/images/placeholder.svg'}
+                                alt={category.name}
+                                width={48}
+                                height={48}
+                                className="object-contain"
+                                unoptimized={true}
+                            />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
+                            <p className="text-gray-600 mt-1">{category.description}</p>
+                        </div>
                     </div>
+                </div>
 
                 {categoryProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -64,34 +61,29 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                                 name={product.name}
                                 description={product.description}
                                 price={product.price}
-                                originalPrice={(product.salePrice && product.salePrice < product.price) ? product.price : undefined}
+                                originalPrice={product.salePrice < product.price ? product.price : undefined}
                                 image={product.imageUrl}
                                 rating={product.rating}
-                                slug={product.slug}
                             />
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-white p-8 rounded-lg shadow-sm text-center">
-                        <Image
-                            src="/images/empty-box.svg"
-                            alt="Không có sản phẩm"
-                            width={120}
-                            height={120}
-                            className="mx-auto mb-4"
-                        />
-                        <h2 className="text-xl font-medium text-gray-900 mb-2">Không có sản phẩm</h2>
-                        <p className="text-gray-600 mb-4">
-                            Hiện tại chưa có sản phẩm nào thuộc danh mục này. Vui lòng quay lại sau.
+                    <div className="text-center py-16 bg-white rounded-xl border border-gray-100 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        <h3 className="text-xl font-medium text-gray-700 mb-2">Chưa có sản phẩm</h3>
+                        <p className="text-gray-500 max-w-lg mx-auto mb-6">
+                            Chúng tôi đang cập nhật thêm các sản phẩm cho danh mục này
                         </p>
-                        <Link href="/products">
-                            <div className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700">
-                                Xem tất cả sản phẩm
-                            </div>
+                        <Link
+                            href="/categories"
+                            className="text-white bg-teal-600 hover:bg-teal-700 rounded-full px-6 py-2 transition-colors font-medium shadow-sm inline-block"
+                        >
+                            Xem các danh mục khác
                         </Link>
                     </div>
                 )}
-                </div>
             </div>
         </div>
     );

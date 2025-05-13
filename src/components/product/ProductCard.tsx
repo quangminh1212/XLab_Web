@@ -16,7 +16,6 @@ interface ProductCardProps {
   reviewCount?: number
   onAddToCart?: (id: string) => void
   onView?: (id: string) => void
-  slug?: string
 }
 
 const ProductCard = ({
@@ -31,7 +30,6 @@ const ProductCard = ({
   reviewCount = 0,
   onAddToCart,
   onView,
-  slug,
 }: ProductCardProps) => {
   const [isHovered, setIsHovered] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
@@ -99,7 +97,7 @@ const ProductCard = ({
 
   return (
     <Link
-      href={`/products/${slug || id}`}
+      href={`/products/${id}`}
       className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
