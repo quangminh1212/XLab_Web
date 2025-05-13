@@ -319,7 +319,11 @@ export default function AccountsPage() {
           <div className="w-full md:w-[85%]">
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
+<<<<<<< HEAD
               <div className="text-sm md:text-base text-gray-600">
+=======
+              <div className="text-sm text-gray-600">
+>>>>>>> 78ef8f1b39b19aabca0a4db11852e7e223f50d65
                 Hiển thị {accounts.length} kết quả
               </div>
               <div className="flex items-center space-x-2">
