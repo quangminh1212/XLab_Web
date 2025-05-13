@@ -429,12 +429,12 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             {featuredImage && (
               <div className="mt-4">
                 <h4 className="font-medium mb-2">Ảnh đại diện đã chọn</h4>
-                <div className="relative border border-gray-200 rounded p-2 max-w-xs">
-                  <div className="relative h-40 w-full overflow-hidden rounded">
+                <div className="relative border border-gray-200 rounded p-2 max-w-sm mx-auto">
+                  <div className="relative aspect-square w-full overflow-hidden rounded">
                     <img 
                       src={featuredImage} 
                       alt="Ảnh đại diện sản phẩm" 
-                      className="object-contain w-full h-full"
+                      className="object-contain max-w-full max-h-full" 
                     />
                   </div>
                   <div className="mt-2 flex justify-end">
@@ -524,28 +524,28 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 {descriptionImages.length > 0 && (
                   <div className="mt-4">
                     <h4 className="font-medium mb-2">Hình ảnh đã thêm</h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                       {descriptionImages.map((imageUrl, index) => (
                         <div key={index} className="relative border border-gray-200 rounded p-2 group">
-                          <div className="relative h-40 w-full overflow-hidden rounded">
+                          <div className="relative aspect-square w-full overflow-hidden rounded">
                             <img 
                               src={imageUrl} 
                               alt={`Hình ảnh ${index + 1}`} 
-                              className="object-contain w-full h-full"
+                              className="object-contain max-w-full max-h-full" 
                             />
                           </div>
-                          <div className="mt-2 flex justify-between">
+                          <div className="mt-2 flex justify-between text-xs">
                             <button
                               type="button"
                               onClick={() => handleInsertImageToDescription(imageUrl)}
-                              className="text-sm bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors"
+                              className="text-xs bg-green-500 text-white px-2 py-0.5 rounded hover:bg-green-600 transition-colors"
                             >
-                              Sao chép URL ảnh
+                              Sao chép URL
                             </button>
                             <button
                               type="button"
                               onClick={() => handleRemoveImage(index)}
-                              className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors"
+                              className="text-xs bg-red-500 text-white px-2 py-0.5 rounded hover:bg-red-600 transition-colors"
                             >
                               Xóa
                             </button>

@@ -417,26 +417,26 @@ function NewProductPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phần hình ảnh và upload */}
             <div>
-              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square flex items-center justify-center mb-3 relative">
+              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square max-w-sm mx-auto flex items-center justify-center mb-3 relative">
                 {featuredImage ? (
                   <>
                     <img 
                       src={featuredImage} 
                       alt={formData.name} 
-                      className="object-contain max-h-full max-w-full" 
+                      className="object-contain max-w-full max-h-full" 
                     />
                     <button
                       type="button"
                       onClick={handleRemoveFeaturedImage}
-                      className="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                      className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                     >
                       ×
                     </button>
                   </>
                 ) : (
                   <div className="text-gray-400 text-center p-4">
-                    <span className="block text-4xl mb-2">🖼️</span>
-                    <span>Chưa có ảnh sản phẩm</span>
+                    <span className="block text-3xl mb-2">🖼️</span>
+                    <span className="text-sm">Chưa có ảnh sản phẩm</span>
                   </div>
                 )}
               </div>

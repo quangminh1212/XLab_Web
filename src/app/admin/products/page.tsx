@@ -151,7 +151,7 @@ function AdminProductsPage() {
                 {filteredProducts.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="relative h-12 w-12">
+                      <div className="relative h-12 w-12 border rounded-md overflow-hidden">
                         <Image
                           src={Array.isArray(product.images) && product.images.length > 0 
                               ? (typeof product.images[0] === 'string' 
@@ -160,7 +160,7 @@ function AdminProductsPage() {
                               : '/images/placeholder/product.png'}
                           alt={product.name}
                           fill
-                          className="object-cover rounded"
+                          className="object-contain p-1"
                         />
                       </div>
                     </td>
