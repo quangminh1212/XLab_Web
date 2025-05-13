@@ -443,9 +443,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 step="1000"
               />
               {/* Hiển thị phần trăm giảm giá */}
-              {formData.salePrice > formData.price && formData.salePrice > 0 && formData.price > 0 && (
+              {formData.salePrice > 0 && (
                 <div className="mt-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded inline-block">
-                  Giảm giá: {Math.round((1 - formData.price / formData.salePrice) * 100)}%
+                  Giảm giá: {formData.salePrice > formData.price ? 
+                    Math.round((1 - formData.price / formData.salePrice) * 100) : 0}%
                 </div>
               )}
               {formData.salePrice === 0 && formData.price > 0 && (

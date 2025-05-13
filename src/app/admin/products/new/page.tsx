@@ -422,9 +422,11 @@ function NewProductPage() {
                   <span className="text-lg line-through text-gray-500">đ</span>
                   
                   {/* Hiển thị phần trăm giảm giá - luôn hiển thị */}
-                  {selectedVersion.originalPrice > 0 && selectedVersion.price > 0 && (
+                  {selectedVersion.originalPrice > 0 && (
                     <span className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
-                      -{Math.round((1 - selectedVersion.price / selectedVersion.originalPrice) * 100)}%
+                      {selectedVersion.originalPrice > selectedVersion.price ? 
+                        `-${Math.round((1 - selectedVersion.price / selectedVersion.originalPrice) * 100)}%` : 
+                        '0%'}
                     </span>
                   )}
                 </div>

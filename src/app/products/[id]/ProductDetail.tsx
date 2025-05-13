@@ -303,9 +303,11 @@ export default function ProductDetail({ product }: { product: Product }) {
                 )}
                 
                 {/* Hiển thị phần trăm giảm giá */}
-                {product.price > calculatePrice() && (
+                {product.price > 0 && (
                   <span className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
-                    -{Math.round((1 - calculatePrice() / product.price) * 100)}%
+                    {product.price > calculatePrice() ? 
+                      `-${Math.round((1 - calculatePrice() / product.price) * 100)}%` : 
+                      '0%'}
                   </span>
                 )}
               </div>
