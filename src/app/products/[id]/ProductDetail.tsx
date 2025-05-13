@@ -8,6 +8,7 @@ import { Product } from '@/types';
 import { products } from '@/data/mockData';
 import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
+import RichTextContent from '@/components/common/RichTextContent';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -81,58 +82,45 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
   );
 };
 
-// Component xử lý hiển thị mô tả sản phẩm bao gồm text và hình ảnh
+// Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
-  // Hàm để tách các đường dẫn ảnh từ văn bản mô tả
-  const processContent = () => {
-    if (!description) return { html: '', images: [] };
-    
-    // Tìm tất cả các img tag trong mô tả
-    const imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
-    const images: string[] = [];
-    let match;
-    
-    // Thu thập tất cả các src của img
-    while ((match = imgRegex.exec(description)) !== null) {
-      images.push(match[1]);
-    }
-    
-    // Tách văn bản thành các phần, loại bỏ các thẻ img
-    const html = description.replace(imgRegex, 'IMAGE_PLACEHOLDER');
-    const parts = html.split('IMAGE_PLACEHOLDER');
-    
-    return { parts, images };
-  };
-  
-  const { parts, images } = processContent();
-  
   return (
     <div className="mt-10">
-      <div className="prose max-w-none">
-        {parts && parts.length > 0 ? (
-          <>
-            {parts.map((part, index) => (
-              <div key={index}>
-                {part && <div dangerouslySetInnerHTML={{ __html: part }} />}
-                {images[index] && (
-                  <div className="my-6">
-                    <div className="relative w-full h-auto rounded-lg overflow-hidden shadow-md">
-                      <Image
-                        src={images[index]}
-                        alt={`Mô tả hình ảnh ${index + 1}`}
-                        width={800}
-                        height={500}
-                        className="object-contain w-full"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </>
-        ) : (
-          <div dangerouslySetInnerHTML={{ __html: description }} />
-        )}
+      <h2 className="text-2xl font-semibold mb-6">Thông tin chi tiết</h2>
+      <div className="bg-white p-6 rounded-lg shadow-sm">
+        <div className="prose prose-sm sm:prose lg:prose-lg max-w-none">
+          <RichTextContent content={description} className="product-description" />
+        </div>
+        
+        <style jsx global>{`
+          .product-description img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+          }
+          
+          .product-description h2, 
+          .product-description h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+          }
+          
+          .product-description p {
+            margin-bottom: 1rem;
+          }
+          
+          .product-description ul,
+          .product-description ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+          }
+          
+          .product-description li {
+            margin-bottom: 0.5rem;
+          }
+        `}</style>
       </div>
     </div>
   );

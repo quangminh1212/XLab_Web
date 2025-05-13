@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Product } from '@/models/ProductModel';
 import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
+import RichTextEditor from '@/components/common/RichTextEditor';
 
 interface AdminEditProductPageProps {
   params: {
@@ -182,10 +183,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   
   // Xử lý chèn hình ảnh vào mô tả
   const handleInsertImageToDescription = (imageUrl: string) => {
-    const imageTag = `<img src="${imageUrl}" alt="Mô tả sản phẩm" style="max-width:100%; height:auto; margin:10px 0;" />`;
-    setFormData({
-      ...formData,
-      description: formData.description + '\n' + imageTag
+    // Không cần chèn thủ công, vì rich text editor có chức năng chèn ảnh
+    // Nhưng chúng ta có thể sao chép URL để dễ dàng dán vào editor
+    navigator.clipboard.writeText(imageUrl).then(() => {
+      setSuccessMessage("Đã sao chép URL hình ảnh vào clipboard, bạn có thể dán vào editor");
+      setTimeout(() => setSuccessMessage(null), 3000);
     });
   };
 
@@ -199,6 +201,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         : name === 'price' || name === 'salePrice' 
           ? parseFloat(value) 
           : value
+    }));
+  };
+  
+  // Xử lý thay đổi nội dung rich text
+  const handleRichTextChange = (content: string) => {
+    setFormData(prev => ({
+      ...prev,
+      description: content
     }));
   };
 
@@ -455,12 +465,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               <label className="block text-gray-700 font-medium mb-2">
                 Mô tả đầy đủ
               </label>
-              <textarea
-                name="description"
+              <RichTextEditor
                 value={formData.description}
-                onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                rows={6}
+                onChange={handleRichTextChange}
+                placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                className="mb-1"
               />
             </div>
             
@@ -521,7 +530,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                               onClick={() => handleInsertImageToDescription(imageUrl)}
                               className="text-sm bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 transition-colors"
                             >
-                              Chèn vào mô tả
+                              Sao chép URL ảnh
                             </button>
                             <button
                               type="button"
