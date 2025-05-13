@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface RichTextEditorProps {
   value: string;
@@ -16,6 +16,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   className = '',
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
+  const [showToolbar, setShowToolbar] = useState(false);
   
   // Đồng bộ giá trị từ props vào editor
   useEffect(() => {
@@ -193,6 +194,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     if (editorRef.current && editorRef.current.innerHTML === '') {
       editorRef.current.classList.remove('empty');
     }
+    setShowToolbar(true);
   };
   
   const handleBlur = () => {
@@ -201,8 +203,92 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   };
 
+  // Xử lý định dạng văn bản
+  const execCommand = (command: string, value: string = '') => {
+    document.execCommand(command, false, value);
+    if (editorRef.current) {
+      editorRef.current.focus();
+      handleInput();
+    }
+  };
+
   return (
     <div className={`simple-editor ${className}`}>
+      <div 
+        className={`text-toolbar ${showToolbar ? 'visible' : ''}`}
+      >
+        <div className="toolbar-group">
+          <button 
+            type="button"
+            title="Đậm"
+            className="toolbar-btn"
+            onClick={() => execCommand('bold')}
+          >
+            <strong>B</strong>
+          </button>
+          <button 
+            type="button"
+            title="Nghiêng"
+            className="toolbar-btn"
+            onClick={() => execCommand('italic')}
+          >
+            <em>I</em>
+          </button>
+          <button 
+            type="button"
+            title="Gạch chân"
+            className="toolbar-btn"
+            onClick={() => execCommand('underline')}
+          >
+            <u>U</u>
+          </button>
+        </div>
+
+        <div className="toolbar-group">
+          <button 
+            type="button"
+            title="Căn trái"
+            className="toolbar-btn"
+            onClick={() => execCommand('justifyLeft')}
+          >
+            &#8592;
+          </button>
+          <button 
+            type="button"
+            title="Căn giữa"
+            className="toolbar-btn"
+            onClick={() => execCommand('justifyCenter')}
+          >
+            &#8596;
+          </button>
+          <button 
+            type="button"
+            title="Căn phải"
+            className="toolbar-btn"
+            onClick={() => execCommand('justifyRight')}
+          >
+            &#8594;
+          </button>
+        </div>
+
+        <div className="toolbar-group">
+          <select 
+            className="font-size-select"
+            onChange={(e) => execCommand('fontSize', e.target.value)}
+            title="Kích cỡ chữ"
+          >
+            <option value="">Cỡ chữ</option>
+            <option value="1">Rất nhỏ</option>
+            <option value="2">Nhỏ</option>
+            <option value="3">Bình thường</option>
+            <option value="4">Lớn</option>
+            <option value="5">Rất lớn</option>
+            <option value="6">Cực lớn</option>
+            <option value="7">Siêu lớn</option>
+          </select>
+        </div>
+      </div>
+
       <div
         ref={editorRef}
         contentEditable
@@ -292,6 +378,62 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         .editor-image {
           display: block;
           max-width: 100%;
+        }
+
+        /* Định dạng cho thanh công cụ văn bản */
+        .text-toolbar {
+          display: flex;
+          gap: 10px;
+          background: #f9f9f9;
+          border: 1px solid #e2e8f0;
+          border-bottom: none;
+          padding: 5px;
+          border-radius: 4px 4px 0 0;
+          flex-wrap: wrap;
+        }
+
+        .text-toolbar.visible {
+          display: flex;
+        }
+
+        .toolbar-group {
+          display: flex;
+          gap: 3px;
+          border-right: 1px solid #e2e8f0;
+          padding-right: 10px;
+          margin-right: 3px;
+        }
+
+        .toolbar-group:last-child {
+          border-right: none;
+          padding-right: 0;
+          margin-right: 0;
+        }
+
+        .toolbar-btn {
+          background: white;
+          border: 1px solid #d1d5db;
+          border-radius: 3px;
+          width: 28px;
+          height: 28px;
+          font-size: 14px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+        }
+
+        .toolbar-btn:hover {
+          background: #f3f4f6;
+        }
+
+        .font-size-select {
+          padding: 2px 5px;
+          border: 1px solid #d1d5db;
+          border-radius: 3px;
+          font-size: 14px;
+          height: 28px;
         }
       `}</style>
     </div>
