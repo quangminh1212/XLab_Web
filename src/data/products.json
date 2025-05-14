@@ -29,7 +29,7 @@
     ],
     "specs": "",
     "rating": "4.7",
-    "weeklyPurchases": 0
+    "weeklyPurchases": 68
   },
   {
     "id": "mao4mg4c-kfey7",
@@ -39,7 +39,7 @@
     "shortDescription": "rfdasfafs",
     "isPublished": true,
     "images": [
-      "/images/products\\chatgpt/579432a3-2cd4-45e1-9144-b7ab5b57b3f8.png"
+      "/images/products\\chatgpt/c1cdb91e-70f2-4419-9b17-26b2aa78186c.png"
     ],
     "descriptionImages": [],
     "features": [],
@@ -47,9 +47,15 @@
     "specifications": [],
     "categories": [
       {
-        "id": {},
-        "name": {},
-        "slug": {}
+        "id": {
+          "id": {}
+        },
+        "name": {
+          "id": {}
+        },
+        "slug": {
+          "id": {}
+        }
       }
     ],
     "versions": [
@@ -62,11 +68,11 @@
       }
     ],
     "createdAt": "2025-05-14T15:59:47.484Z",
-    "updatedAt": "2025-05-14T16:01:11.507Z",
+    "updatedAt": "2025-05-14T16:59:10.589Z",
     "price": 149000,
     "salePrice": 0,
     "rating": "4.7",
-    "weeklyPurchases": 0,
+    "weeklyPurchases": "50",
     "specs": ""
   }
 ]

@@ -227,6 +227,11 @@ export default function ProductCard({
           </div>
           
           <div className="flex flex-col items-end">
+            {weeklyPurchases > 0 && (
+              <div className="text-xs text-gray-500 mb-1">
+                <span className="text-green-600 font-medium">{weeklyPurchases}</span> lượt mua
+              </div>
+            )}
             {rating > 0 && (
               <div className="flex items-center">
                 <span className="text-xs text-gray-500 mr-1">{typeof rating === 'number' ? rating.toFixed(1) : Number(rating).toFixed(1)}</span>
@@ -240,11 +245,6 @@ export default function ProductCard({
                     d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
                   />
                 </svg>
-              </div>
-            )}
-            {weeklyPurchases > 0 && (
-              <div className="text-xs text-gray-500">
-                <span className="text-green-600 font-medium">{weeklyPurchases}</span> lượt tải
               </div>
             )}
           </div>

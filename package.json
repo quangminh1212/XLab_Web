@@ -20,7 +20,8 @@
     "start:export": "serve out -p 3000",
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "fix-errors": "node fix-trace-error.js"
+    "fix-errors": "node fix-trace-error.js",
+    "update-purchases": "node src/scripts/update-purchases.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
@@ -33,6 +34,7 @@
     "html-to-draftjs": "1.5.0",
     "next": "15.2.4",
     "next-auth": "4.24.10",
+    "node-fetch": "3.3.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-quill": "2.0.0",
