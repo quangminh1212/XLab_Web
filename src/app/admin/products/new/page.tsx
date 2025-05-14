@@ -62,12 +62,8 @@ function NewProductPage() {
     shortDescription: '',
     description: '',
     isPublished: false,
-    categoryId: 'office-software',
-    images: [] as string[],
-    descriptionImages: [] as string[]
+    categoryId: 'office-software'
   });
-
-  const [isUploading, setIsUploading] = useState(false);
 
   // Xử lý thêm ảnh đại diện từ URL
   const handleAddFeaturedImageUrl = () => {
@@ -150,43 +146,61 @@ function NewProductPage() {
   
   // Xử lý upload hình ảnh mô tả
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    
+    // Giới hạn kích thước file là 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Kích thước file không được vượt quá 5MB');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Chỉ cho phép các loại file ảnh
+    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+      setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
     try {
-      setIsUploading(true);
-      setError(null);
+      // Tạo form data để upload file
+      const formData = new FormData();
+      formData.append('file', file);
       
-      // Tạo form data và thêm thông tin tên sản phẩm
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
-      formDataUpload.append('productName', formData.name || 'new-product');
-      
-      // Gửi file lên server
+      // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formDataUpload,
+        body: formData
       });
       
       if (!response.ok) {
-        throw new Error('Upload failed');
+        throw new Error('Không thể tải lên hình ảnh');
       }
       
-      const { url } = await response.json();
+      const data = await response.json();
+      // Lấy URL thực từ server thay vì dùng blob URL
+      const imageUrl = data.url || data.filepath || data.fileUrl;
       
-      // Cập nhật state với URL mới
-      setFormData(prevState => ({
-        ...prevState,
-        images: Array.isArray(prevState.images) 
-          ? [...prevState.images, url] 
-          : [url]
-      }));
+      if (!imageUrl) {
+        throw new Error('URL hình ảnh không hợp lệ');
+      }
       
-      setIsUploading(false);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      setError('Failed to upload image');
-      setIsUploading(false);
+      setDescriptionImages([...descriptionImages, imageUrl]);
+    } catch (err) {
+      console.error('Lỗi khi upload hình ảnh:', err);
+      setError((err as Error).message || 'Không thể tải lên hình ảnh');
+      setTimeout(() => setError(null), 3000);
+      
+      // Fallback to blob URL if server upload fails
+      const imageUrl = URL.createObjectURL(file);
+      setDescriptionImages([...descriptionImages, imageUrl]);
+    }
+    
+    // Reset input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
   

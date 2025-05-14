@@ -2,15 +2,15 @@
   {
     "name": "Xlab",
     "shortDescription": "Hello world",
-    "description": "àdasdasdfdasfdfasfdsa",
+    "description": "",
     "isPublished": true,
     "price": 10000,
     "salePrice": 17000,
     "id": "6ded6686-f9d7-439e-a6a2-ae5d7117b821",
     "createdAt": "2025-05-14T05:46:34.252Z",
-    "updatedAt": "2025-05-14T13:47:39.931Z",
+    "updatedAt": "2025-05-14T11:57:28.099Z",
     "images": [
-      "/images/products/xlab/main.png"
+      "/images/products/4668f069-d754-4f81-bedc-29a21d7c9559.png"
     ],
     "slug": "xlab",
     "features": [],
@@ -27,7 +27,7 @@
         "features": []
       }
     ],
-    "specs": "ádfasfdfsdsadfsdfa",
+    "specs": "",
     "rating": "4.7",
     "weeklyPurchases": 0
   }

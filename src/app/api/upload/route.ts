@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
     // Parse the form data
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const productName = formData.get('productName') as string || 'unknown';
 
     if (!file) {
       console.error('Upload failed: No file provided');
@@ -37,31 +36,17 @@ export async function POST(request: NextRequest) {
     // Get file extension
     const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
     
-    // Chuyển đổi tên sản phẩm thành định dạng URL an toàn cho tên thư mục
-    const safeFolderName = productName.toLowerCase()
-      .replace(/[àáảãạăắằẳẵặâấầẩẫậ]/g, 'a')
-      .replace(/[èéẻẽẹêếềểễệ]/g, 'e')
-      .replace(/[ìíỉĩị]/g, 'i')
-      .replace(/[òóỏõọôốồổỗộơớờởỡợ]/g, 'o')
-      .replace(/[ùúủũụưứừửữự]/g, 'u')
-      .replace(/[ỳýỷỹỵ]/g, 'y')
-      .replace(/đ/g, 'd')
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '')
-      .replace(/-+/g, '-');
-    
-    // Create a unique file name (sử dụng UUID cho phần upload tạm thời)
+    // Create a unique file name
     const fileName = `${uuidv4()}.${fileExtension}`;
     
-    // Define the directory to save the uploaded image (sử dụng thư mục con theo tên sản phẩm)
-    const productDirPath = path.join(process.cwd(), 'public', 'images', 'products', safeFolderName);
-    const filePath = path.join(productDirPath, fileName);
-    const publicPath = `/images/products/${safeFolderName}/${fileName}`;
+    // Define the directory to save the uploaded image
+    const dirPath = path.join(process.cwd(), 'public', 'images', 'products');
+    const filePath = path.join(dirPath, fileName);
+    const publicPath = `/images/products/${fileName}`;
 
     // Create directory if it doesn't exist
-    if (!fs.existsSync(productDirPath)) {
-      fs.mkdirSync(productDirPath, { recursive: true });
-      console.log(`Created product directory: ${productDirPath}`);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
     }
 
     // Convert file to array buffer and save it
@@ -69,11 +54,19 @@ export async function POST(request: NextRequest) {
     // Use fs.promises.writeFile with a Uint8Array for correct typing
     await fsPromises.writeFile(filePath, new Uint8Array(bytes));
 
-    console.log(`File uploaded to: ${filePath}`);
-    
-    return NextResponse.json({ url: publicPath });
+    // Log success
+    console.log(`File uploaded successfully: ${publicPath}`);
+
+    // Return the public URL path
+    return NextResponse.json({
+      success: true,
+      url: publicPath,
+      fileName: fileName
+    });
   } catch (error) {
-    console.error('Upload failed:', error);
-    return NextResponse.json({ error: 'File upload failed' }, { status: 500 });
+    console.error('Error uploading file:', error);
+    return NextResponse.json({
+      error: 'Failed to upload file'
+    }, { status: 500 });
   }
 } 

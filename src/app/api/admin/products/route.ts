@@ -5,7 +5,6 @@ import { Product, ProductCategory } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { processProductImages } from '@/lib/imageUtils';
 
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
@@ -35,23 +34,6 @@ const saveProducts = (products: Product[]) => {
     } catch (error) {
         console.error('Error saving products data:', error);
     }
-};
-
-// Function to get category name
-const getCategoryName = (categoryId: string): string => {
-    // Map category IDs to names
-    const categoryMap: Record<string, string> = {
-        'phan-mem': 'Phần mềm',
-        'tai-khoan-hoc-tap': 'Tài khoản học tập',
-        'khoa-hoc-online': 'Khóa học online',
-        'windows': 'Windows',
-        'office': 'Office',
-        'design': 'Design',
-        'development': 'Development',
-        'other': 'Khác'
-    };
-    
-    return categoryMap[categoryId] || categoryId;
 };
 
 // GET - Lấy danh sách sản phẩm
@@ -97,17 +79,11 @@ export async function POST(request: NextRequest) {
             if (Array.isArray(productData.images) && productData.images.length > 0) {
                 // If the array contains strings (direct URLs), convert to the expected format
                 if (typeof productData.images[0] === 'string') {
-                    // Xử lý đường dẫn hình ảnh dựa trên tên sản phẩm
-                    productData.images = processProductImages(productData.name, productData.images);
+                    // Keep as is, we'll handle both formats in the frontend
                 }
             }
         } else {
             productData.images = [];
-        }
-        
-        // Xử lý đường dẫn hình ảnh mô tả dựa trên tên sản phẩm nếu có
-        if (productData.descriptionImages && Array.isArray(productData.descriptionImages)) {
-            productData.descriptionImages = processProductImages(productData.name, productData.descriptionImages);
         }
 
         // Thêm ID và ngày tạo
@@ -144,4 +120,17 @@ export async function POST(request: NextRequest) {
             { status: 500 }
         );
     }
+}
+
+// Hàm lấy tên danh mục từ ID
+function getCategoryName(categoryId: string): string {
+    const categories: Record<string, string> = {
+        'office-software': 'Phần mềm văn phòng',
+        'business-solutions': 'Giải pháp doanh nghiệp',
+        'security-software': 'Phần mềm bảo mật',
+        'data-protection': 'Bảo vệ dữ liệu',
+        'design-software': 'Phần mềm thiết kế'
+    };
+
+    return categories[categoryId] || categoryId;
 } 
