@@ -35,8 +35,16 @@ export default function AccountsPage() {
           throw new Error('Không thể tải sản phẩm');
         }
         
-        const data = await response.json();
-        setProducts(data);
+        const result = await response.json();
+        
+        // Đảm bảo dữ liệu được trả về đúng định dạng
+        if (result.success && Array.isArray(result.data)) {
+          setProducts(result.data);
+        } else {
+          setProducts([]);
+          setError('Định dạng dữ liệu không hợp lệ');
+        }
+        
         setLoading(false);
       } catch (err: any) {
         setError(err.message || 'Đã xảy ra lỗi');
@@ -47,27 +55,34 @@ export default function AccountsPage() {
     fetchProducts();
   }, []);
 
-  // Lọc tài khoản từ danh sách sản phẩm
-  const accounts = products.filter(product => product.isAccount === true);
+  // Lọc tài khoản từ danh sách sản phẩm - đảm bảo products là mảng
+  const accounts = Array.isArray(products) 
+    ? products.filter(product => product.isAccount === true)
+    : [];
 
-  // Sắp xếp tài khoản
-  const sortedAccounts = [...accounts].sort((a, b) => {
-    if (sortOrder === 'newest') {
-      return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
-    } else if (sortOrder === 'price-low') {
-      return (a.salePrice || a.price) - (b.salePrice || b.price);
-    } else if (sortOrder === 'price-high') {
-      return (b.salePrice || b.price) - (a.salePrice || a.price);
-    } else if (sortOrder === 'popular') {
-      return (b.downloadCount || 0) - (a.downloadCount || 0);
-    }
-    return 0;
-  });
+  // Sắp xếp tài khoản - đảm bảo accounts là mảng
+  const sortedAccounts = Array.isArray(accounts) 
+    ? [...accounts].sort((a, b) => {
+        if (sortOrder === 'newest') {
+          return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
+        } else if (sortOrder === 'price-low') {
+          return (a.salePrice || a.price) - (b.salePrice || b.price);
+        } else if (sortOrder === 'price-high') {
+          return (b.salePrice || b.price) - (a.salePrice || a.price);
+        } else if (sortOrder === 'popular') {
+          return (b.downloadCount || 0) - (a.downloadCount || 0);
+        }
+        return 0;
+      })
+    : [];
 
   // Danh mục sản phẩm
   const categories = [
     { id: 'all', name: 'Tất cả', count: accounts.length },
-    { id: 'accounts', name: 'Tài khoản', count: accounts.filter(a => a.categoryId === 'accounts').length }
+    { id: 'accounts', name: 'Tài khoản', count: Array.isArray(accounts) 
+        ? accounts.filter(a => a.categoryId === 'accounts').length
+        : 0 
+    }
   ];
 
   // Hiển thị loading
@@ -232,27 +247,33 @@ export default function AccountsPage() {
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
               <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
               <div className="space-y-2">
-                {accounts.filter(a => a.isFeatured).slice(0, 3).map(account => (
-                  <Link 
-                    href={`/accounts/${account.id}`}
-                    key={account.id}
-                    className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
-                  >
-                    <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                      <img 
-                        src={account.imageUrl} 
-                        alt={account.name}
-                        className="w-8 h-8 object-contain"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <h4 className="font-medium text-gray-900 text-sm">{account.name}</h4>
-                      <div className="text-xs md:text-sm text-primary-600 font-medium">
-                        {account.salePrice ? formatCurrency(account.salePrice) : formatCurrency(account.price)}
+                {Array.isArray(accounts) && accounts.length > 0 ? 
+                  accounts.filter(a => a.isFeatured).slice(0, 3).map(account => (
+                    <Link 
+                      href={`/accounts/${account.id}`}
+                      key={account.id}
+                      className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
+                    >
+                      <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                        <img 
+                          src={account.imageUrl || '/images/placeholder/product-placeholder.jpg'} 
+                          alt={account.name}
+                          className="w-8 h-8 object-contain"
+                        />
                       </div>
+                      <div className="flex flex-col">
+                        <h4 className="font-medium text-gray-900 text-sm">{account.name}</h4>
+                        <div className="text-xs md:text-sm text-primary-600 font-medium">
+                          {formatCurrency(account.salePrice || account.price)}
+                        </div>
+                      </div>
+                    </Link>
+                  )) : (
+                    <div className="text-center py-2">
+                      <p className="text-gray-500 text-sm">Không có sản phẩm nổi bật</p>
                     </div>
-                  </Link>
-                ))}
+                  )
+                }
               </div>
             </div>
             

@@ -1,36 +1,31 @@
 [
   {
-    "id": "6ded6686-f9d7-439e-a6a2-ae5d7117b821",
     "name": "fdcf",
     "shortDescription": "",
     "description": "",
-    "isPublished": false,
-    "slug": "fdcf",
+    "isPublished": true,
+    "price": 10000,
+    "salePrice": 17000,
+    "id": "6ded6686-f9d7-439e-a6a2-ae5d7117b821",
+    "createdAt": "2025-05-14T05:46:34.252Z",
+    "updatedAt": "2025-05-14T09:25:07.443Z",
     "images": [
-      "blob:http://localhost:3000/33966d5d-4441-491e-a2fa-0073137c3795"
+      "blob:http://localhost:3000/7d4a0826-2932-4db9-b508-2f565d17dda4"
     ],
-    "descriptionImages": [],
+    "slug": "fdcf",
     "features": [],
-    "specifications": [],
-    "warranty": "",
     "requirements": [],
+    "descriptionImages": [],
+    "specifications": [],
+    "categories": [],
     "versions": [
       {
-        "id": 1,
         "name": "Standard",
         "description": "Phiên bản tiêu chuẩn",
-        "price": 0,
-        "originalPrice": 0
+        "price": 10000,
+        "originalPrice": 17000,
+        "features": []
       }
-    ],
-    "categories": [
-      {
-        "id": "office-software",
-        "name": "Phần mềm văn phòng",
-        "slug": "office-software"
-      }
-    ],
-    "createdAt": "2025-05-14T05:46:34.252Z",
-    "updatedAt": "2025-05-14T05:46:34.252Z"
+    ]
   }
 ]

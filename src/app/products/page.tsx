@@ -26,8 +26,14 @@ export default function ProductsPage() {
           throw new Error('Không thể tải sản phẩm');
         }
         
-        const data = await response.json();
-        setProducts(data);
+        const result = await response.json();
+        // Use the data property from the API response
+        if (result.success && Array.isArray(result.data)) {
+          setProducts(result.data);
+        } else {
+          setProducts([]);
+          setError('Định dạng dữ liệu không hợp lệ');
+        }
         setLoading(false);
       } catch (err: any) {
         setError(err.message || 'Đã xảy ra lỗi');
@@ -44,61 +50,77 @@ export default function ProductsPage() {
   }, []);
 
   // Lọc sản phẩm theo loại: chỉ lấy phần mềm
-  const softwareProducts = products.filter(product =>
-    !product.isAccount && (product.type === 'software' || !product.type)
-  );
+  const softwareProducts = Array.isArray(products) 
+    ? products.filter(product =>
+        !product.isAccount && (product.type === 'software' || !product.type)
+      )
+    : [];
 
   // Lọc theo danh mục và tìm kiếm
-  const filteredProducts = softwareProducts.filter(product => {
-    // Lọc theo danh mục
-    if (filter !== 'all' && product.categoryId !== filter) {
-      return false;
-    }
+  const filteredProducts = Array.isArray(softwareProducts) 
+    ? softwareProducts.filter(product => {
+        // Lọc theo danh mục
+        if (filter !== 'all' && product.categoryId !== filter) {
+          return false;
+        }
 
-    // Lọc theo tìm kiếm
-    if (searchTerm.trim() !== '') {
-      const search = searchTerm.toLowerCase();
-      return (
-        product.name.toLowerCase().includes(search) ||
-        product.description.toLowerCase().includes(search)
-      );
-    }
+        // Lọc theo tìm kiếm
+        if (searchTerm.trim() !== '') {
+          const search = searchTerm.toLowerCase();
+          return (
+            product.name.toLowerCase().includes(search) ||
+            (product.description && product.description.toLowerCase().includes(search))
+          );
+        }
 
-    return true;
-  });
+        return true;
+      })
+    : [];
 
   // Sắp xếp sản phẩm
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sort === 'newest') {
-      return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
-    } else if (sort === 'price-low') {
-      return (a.salePrice || a.price) - (b.salePrice || b.price);
-    } else if (sort === 'price-high') {
-      return (b.salePrice || b.price) - (a.salePrice || a.price);
-    } else if (sort === 'popular') {
-      return (b.downloadCount || 0) - (a.downloadCount || 0);
-    } else if (sort === 'rating') {
-      return (b.rating || 0) - (a.rating || 0);
-    }
-    return 0;
-  });
+  const sortedProducts = Array.isArray(filteredProducts) 
+    ? [...filteredProducts].sort((a, b) => {
+        if (sort === 'newest') {
+          return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
+        } else if (sort === 'price-low') {
+          return (a.salePrice || a.price || 0) - (b.salePrice || b.price || 0);
+        } else if (sort === 'price-high') {
+          return (b.salePrice || b.price || 0) - (a.salePrice || a.price || 0);
+        } else if (sort === 'popular') {
+          return (b.downloadCount || 0) - (a.downloadCount || 0);
+        } else if (sort === 'rating') {
+          return (b.rating || 0) - (a.rating || 0);
+        }
+        return 0;
+      })
+    : [];
 
   // Lọc các loại sản phẩm đặc biệt cho phần mềm
-  const featuredProducts = softwareProducts.filter(product => product.isFeatured);
-  const newProducts = softwareProducts.slice().sort((a, b) =>
-    new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime()
-  ).slice(0, 6);
-  const popularProducts = softwareProducts.slice().sort((a, b) =>
-    (b.downloadCount || 0) - (a.downloadCount || 0)
-  ).slice(0, 6);
+  const featuredProducts = Array.isArray(softwareProducts) 
+    ? softwareProducts.filter(product => product.isFeatured)
+    : [];
+    
+  const newProducts = Array.isArray(softwareProducts) 
+    ? softwareProducts.slice().sort((a, b) =>
+        new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime()
+      ).slice(0, 6)
+    : [];
+    
+  const popularProducts = Array.isArray(softwareProducts) 
+    ? softwareProducts.slice().sort((a, b) =>
+        (b.downloadCount || 0) - (a.downloadCount || 0)
+      ).slice(0, 6)
+    : [];
 
   // Danh mục sản phẩm
   const productCategories = [
-    { id: 'all', name: 'Tất cả', count: softwareProducts.length },
+    { id: 'all', name: 'Tất cả', count: Array.isArray(softwareProducts) ? softwareProducts.length : 0 },
     ...categories.map(cat => ({
       id: cat.id,
       name: cat.name,
-      count: softwareProducts.filter(p => p.categoryId === cat.id).length
+      count: Array.isArray(softwareProducts) 
+        ? softwareProducts.filter(p => p.categoryId === cat.id).length
+        : 0
     }))
   ];
 
@@ -212,20 +234,39 @@ export default function ProductsPage() {
             
             {/* Product grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {sortedProducts.map((product) => (
-                <ProductCard 
-                  key={product.id}
-                  id={product.id.toString()}
-                  name={product.name}
-                  description={product.description}
-                  price={product.salePrice || product.price}
-                  originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
-                  image={product.imageUrl}
-                  category={categories.find(c => c.id === product.categoryId)?.name}
-                  rating={product.rating}
-                  reviewCount={product.reviewCount}
-                />
-              ))}
+              {sortedProducts.map((product) => {
+                // Xác định giá hiển thị - kiểm tra versions trước
+                const displayPrice = product.versions && product.versions.length > 0
+                  ? product.versions[0].price || 0
+                  : product.price || 0;
+                
+                // Xác định giá gốc - kiểm tra versions trước
+                const originalPrice = product.versions && product.versions.length > 0
+                  ? product.versions[0].originalPrice || 0
+                  : product.salePrice || 0;
+                  
+                // Lấy ảnh sản phẩm (không dùng blob URLs)
+                const imageUrl = product.images && product.images.length > 0
+                  ? (typeof product.images[0] === 'string' && !product.images[0].startsWith('blob:') 
+                      ? product.images[0] 
+                      : null)
+                  : null;
+                  
+                return (
+                  <ProductCard 
+                    key={product.id}
+                    id={product.id.toString()}
+                    name={product.name}
+                    description={product.description || product.shortDescription || ''}
+                    price={displayPrice}
+                    originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
+                    image={imageUrl || '/images/placeholder/product-placeholder.jpg'}
+                    category={categories.find(c => c.id === product.categoryId)?.name}
+                    rating={product.rating}
+                    reviewCount={product.reviewCount}
+                  />
+                );
+              })}
             </div>
           </div>
           

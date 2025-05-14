@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface ProductCardProps {
   id: string
@@ -19,7 +20,7 @@ interface ProductCardProps {
   onView?: (id: string) => void
 }
 
-const ProductCard = ({
+export default function ProductCard({
   id,
   name,
   description,
@@ -30,12 +31,32 @@ const ProductCard = ({
   rating = 0,
   reviewCount = 0,
   isAccount = false,
-  onAddToCart,
-  onView,
-}: ProductCardProps) => {
+  onAddToCart = () => {},
+  onView = () => {}
+}: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const discountPercentage = originalPrice && price < originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0
+  const router = useRouter()
+  
+  // Provide fallback image if missing
+  const imageUrl = image || '/images/placeholder/product-placeholder.jpg'
+  
+  // Fix blob URLs - convert blob URLs to placeholder
+  const cleanImageUrl = imageUrl.startsWith('blob:') 
+    ? '/images/placeholder/product-placeholder.jpg'
+    : imageUrl
+  
+  // Truncate description if needed
+  const shortDescription = description 
+    ? description.length > 100 
+      ? description.substring(0, 100) + '...' 
+      : description
+    : 'Không có mô tả'
+      
+  // Calculate discount only if originalPrice is higher than price
+  const discountPercentage = originalPrice && originalPrice > price 
+    ? Math.round(((originalPrice - price) / originalPrice) * 100) 
+    : 0
 
   // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
   const formatCurrency = (amount: number) => {
@@ -113,7 +134,7 @@ const ProductCard = ({
         )}
 
         <Image
-          src={image || '/images/placeholder/product-placeholder.jpg'}
+          src={cleanImageUrl}
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -164,7 +185,7 @@ const ProductCard = ({
 
       <div className="p-4">
         <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{name}</h3>
-        <p className="text-gray-600 text-sm mb-2 line-clamp-2">{description}</p>
+        <p className="text-gray-600 text-sm mb-2 line-clamp-2">{shortDescription}</p>
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-1">
@@ -181,6 +202,4 @@ const ProductCard = ({
       </div>
     </Link>
   )
-}
-
-export default ProductCard 
+} 

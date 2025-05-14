@@ -115,10 +115,23 @@ export async function PUT(
     // Process request data
     const productData = await request.json();
     
-    // Process images
-    if (!productData.images) {
-      productData.images = [];
+    // Ensure all required fields are present
+    const requiredFields = ['id', 'name', 'slug', 'description', 'shortDescription'] as const;
+    for (const field of requiredFields) {
+      if (!productData[field]) {
+        // Type-safe field access
+        productData[field] = productData[field] || products[productIndex][field as keyof Product] || '';
+      }
     }
+    
+    // Ensure arrays exist
+    productData.images = Array.isArray(productData.images) ? productData.images : (products[productIndex].images || []);
+    productData.descriptionImages = Array.isArray(productData.descriptionImages) ? productData.descriptionImages : (products[productIndex].descriptionImages || []);
+    productData.features = Array.isArray(productData.features) ? productData.features : (products[productIndex].features || []);
+    productData.specifications = Array.isArray(productData.specifications) ? productData.specifications : (products[productIndex].specifications || []);
+    productData.requirements = Array.isArray(productData.requirements) ? productData.requirements : (products[productIndex].requirements || []);
+    productData.categories = Array.isArray(productData.categories) ? productData.categories : (products[productIndex].categories || []);
+    productData.versions = Array.isArray(productData.versions) ? productData.versions : (products[productIndex].versions || []);
     
     // Process categories
     if (productData.categories && Array.isArray(productData.categories)) {
@@ -133,8 +146,8 @@ export async function PUT(
     
     // Create updated product
     const updatedProduct = {
+      ...products[productIndex],
       ...productData,
-      id,
       updatedAt: new Date().toISOString()
     };
     

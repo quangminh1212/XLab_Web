@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
-import { Product } from '@/types';
-import { products } from '@/data/mockData';
+import { Product as ProductType } from '@/models/ProductModel';
 import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
 import RichTextContent from '@/components/common/RichTextContent';
+import { Product as UIProduct } from '@/types';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -39,11 +39,52 @@ const ProductBenefits = () => (
 );
 
 // Component hiển thị sản phẩm liên quan
-const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: string | number, categoryId: string | number }) => {
-  // Lọc sản phẩm cùng danh mục nhưng không phải sản phẩm hiện tại
-  const relatedProducts = products
-    .filter(p => p.categoryId === categoryId && p.id !== currentProductId)
-    .slice(0, 3); // Chỉ lấy tối đa 3 sản phẩm
+const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: string | number, categoryId?: string | number }) => {
+  // Trong trường hợp này chúng ta sẽ lấy dữ liệu từ API
+  const [relatedProducts, setRelatedProducts] = useState<UIProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  useEffect(() => {
+    // Tải sản phẩm liên quan từ API
+    const fetchRelatedProducts = async () => {
+      try {
+        setIsLoading(true);
+        
+        // If no categoryId, try to get some random products instead
+        const url = categoryId 
+          ? `/api/products?categoryId=${categoryId}&exclude=${currentProductId}&limit=3`
+          : `/api/products?exclude=${currentProductId}&limit=3`;
+          
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.success && Array.isArray(data.data)) {
+          setRelatedProducts(data.data);
+        }
+      } catch (err) {
+        console.error('Error fetching related products:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchRelatedProducts();
+  }, [currentProductId, categoryId]);
+
+  if (isLoading) {
+    return (
+      <div className="mt-8 pt-6 border-t border-gray-100">
+        <h2 className="text-xl font-semibold mb-4">Sản phẩm liên quan</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse">
+              <div className="h-16 bg-gray-200 rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (relatedProducts.length === 0) return null;
 
@@ -60,7 +101,7 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
             <div className="flex items-center space-x-3">
               <div className="w-16 h-16 bg-white rounded-md overflow-hidden flex items-center justify-center">
                 <Image
-                  src={product.imageUrl || '/images/product-placeholder.svg'}
+                  src={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
                   alt={product.name}
                   width={64}
                   height={64}
@@ -71,7 +112,7 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
                 <h3 className="text-sm font-medium text-gray-900 line-clamp-1">{product.name}</h3>
                 <p className="text-xs text-gray-500 line-clamp-1 mt-1">{product.description}</p>
                 <span className="text-xs font-medium text-primary-600 mt-1 block">
-                  {product.price === 0 ? 'Miễn phí' : formatCurrency(product.salePrice || product.price)}
+                  {product.salePrice === 0 ? 'Miễn phí' : formatCurrency(product.salePrice || product.price)}
                 </span>
               </div>
             </div>
@@ -163,31 +204,65 @@ const ProductSpecifications = ({
   );
 };
 
-export default function ProductDetail({ product }: { product: Product }) {
+export default function ProductDetail({ product }: { product: ProductType }) {
   // Update document title khi component được render
   useEffect(() => {
     document.title = `${product.name} | XLab - Phần mềm và Dịch vụ`;
   }, [product.name]);
 
   // State để theo dõi số lượt xem
-  const [viewCount, setViewCount] = useState(product.viewCount || 0);
+  const [viewCount, setViewCount] = useState(0);
   
   // State lưu số lượng sản phẩm
   const [quantity, setQuantity] = useState(1);
   
-  // State để lưu loại sản phẩm được chọn
-  const [selectedOption, setSelectedOption] = useState(
-    product.options && product.options.length > 0 ? product.options[0].name : ''
+  // State để lưu phiên bản sản phẩm được chọn
+  const [selectedVersion, setSelectedVersion] = useState(
+    product.versions && product.versions.length > 0 ? product.versions[0].name : ''
   );
   
-  // Tính toán giá dựa trên option được chọn
+  // Lấy ảnh sản phẩm
+  const getProductImage = () => {
+    if (product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
+      // Không sử dụng blob URLs
+      if (typeof firstImage === 'string' && firstImage.startsWith('blob:')) {
+        return '/images/placeholder/product-placeholder.jpg';
+      }
+      return typeof firstImage === 'string' ? firstImage : firstImage.url;
+    }
+    return '/images/placeholder/product-placeholder.jpg';
+  };
+  
+  // Tính toán giá dựa trên phiên bản được chọn
   const calculatePrice = () => {
-    if (!product.options || product.options.length === 0) {
-      return product.salePrice || product.price;
+    if (!product.versions || product.versions.length === 0) {
+      return 0; // Không có price trực tiếp trong ProductModel
     }
     
-    const option = product.options.find(opt => opt.name === selectedOption);
-    return option ? option.price : (product.salePrice || product.price);
+    const version = product.versions.find(v => v.name === selectedVersion);
+    return version ? version.price : (product.versions[0]?.price || 0);
+  };
+  
+  // Tính toán giá gốc nếu có
+  const calculateOriginalPrice = () => {
+    if (!product.versions || product.versions.length === 0) {
+      return 0; // Không có salePrice trực tiếp trong ProductModel
+    }
+    
+    const version = product.versions.find(v => v.name === selectedVersion);
+    return version ? version.originalPrice : (product.versions[0]?.originalPrice || 0);
+  };
+  
+  // Tính phần trăm giảm giá
+  const calculateDiscountPercentage = () => {
+    const originalPrice = calculateOriginalPrice();
+    const price = calculatePrice();
+    
+    if (originalPrice > price) {
+      return Math.round(((originalPrice - price) / originalPrice) * 100);
+    }
+    return 0;
   };
   
   // Hook cart context
@@ -195,19 +270,17 @@ export default function ProductDetail({ product }: { product: Product }) {
   
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
-    const selectedProduct = products.find(p => p.id === product.id);
-    if (selectedProduct) {
-      addItem({
-        id: selectedProduct.id.toString(),
-        name: selectedProduct.name,
-        price: calculatePrice(),
-        quantity: quantity,
-        image: selectedProduct.imageUrl,
-        options: selectedOption ? [selectedOption] : undefined
-      });
-      return true;
-    }
-    return false;
+    addItem({
+      id: product.id.toString(),
+      name: product.name,
+      price: calculatePrice(),
+      quantity: quantity,
+      image: product.images && product.images.length > 0 ? 
+             typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url : 
+             '/images/placeholder/product-placeholder.jpg',
+      options: selectedVersion ? [selectedVersion] : undefined
+    });
+    return true;
   };
 
   // Tăng số lượt xem khi người dùng truy cập trang
@@ -220,7 +293,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
-  const isAccount = product.isAccount || product.type === 'account';
+  const isAccount = product.categories?.some(cat => cat.id === 'tai-khoan-hoc-tap');
   
   // Xử lý tăng số lượng
   const increaseQuantity = () => {
@@ -234,9 +307,6 @@ export default function ProductDetail({ product }: { product: Product }) {
     }
   };
 
-  // Kiểm tra xem sản phẩm có phải là VoiceTyping không
-  const isVoiceTyping = product.id === 'prod-vt' || product.slug === 'voicetyping';
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-5xl mx-auto">
@@ -247,162 +317,171 @@ export default function ProductDetail({ product }: { product: Product }) {
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <Link 
-            href={isAccount ? "/accounts" : "/products"} 
+            href={isAccount ? "/categories/tai-khoan-hoc-tap" : "/products"} 
             className="text-gray-500 hover:text-primary-600"
           >
-            {isAccount ? "Tài khoản" : "Sản phẩm"}
+            {isAccount ? "Tài khoản học tập" : "Sản phẩm"}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
-          <span className="text-gray-900 font-medium">{product.name}</span>
+          <span className="text-gray-800">{product.name}</span>
         </div>
         
-        {/* Tiêu đề sản phẩm (chỉ hiển thị trên mobile) */}
-        <h1 className="text-2xl md:text-3xl font-bold mb-6 md:hidden">{product.name}</h1>
-          
-        {/* Grid layout cho sản phẩm */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Phần hình ảnh bên trái */}
-          <div className="bg-white rounded-lg overflow-hidden">
-            <div className="relative aspect-square">
-              <Image
-                src={product.imageUrl || '/images/product-placeholder.svg'}
-                alt={product.name}
-                fill
-                sizes="(max-width: 768px) 100vw, 500px"
-                className="object-contain p-4"
-                priority
-              />
-              <div className="absolute top-2 right-2">
-                <button className="bg-white rounded-full p-2 shadow-sm">
-                  <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
+        {/* Product benefits banner */}
+        <ProductBenefits />
+        
+        {/* Product main info */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* Product image */}
+            <div className="flex flex-col">
+              <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                <Image
+                  src={getProductImage()}
+                  alt={product.name}
+                  fill
+                  className="object-contain"
+                  priority
+                />
               </div>
+              
+              {/* Additional images */}
+              {product.descriptionImages && product.descriptionImages.length > 0 && (
+                <div className="grid grid-cols-4 gap-2 mt-4">
+                  {product.descriptionImages.slice(0, 4).map((img, index) => (
+                    <div key={index} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                      <Image
+                        src={img}
+                        alt={`${product.name} - Hình ${index + 1}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-          
-          {/* Thông tin sản phẩm bên phải */}
-          <div>
-            {/* Tiêu đề sản phẩm (ẩn trên mobile) */}
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 hidden md:block">{product.name}</h1>
             
-            {/* Giá sản phẩm */}
-            <div className="mb-4">
-              <div className="flex items-baseline">
-                <span className="text-2xl font-bold text-green-600 mr-2">
-                  {formatCurrency(calculatePrice())}
-                </span>
-                <span className="text-xl font-bold text-green-600">
-                  đ
-                </span>
-                {product.price > calculatePrice() && (
-                  <span className="ml-3 text-gray-500 line-through text-lg">
-                    {formatCurrency(product.price)} đ
-                  </span>
-                )}
+            {/* Product info */}
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{product.name}</h1>
+              
+              <div className="mt-4 flex items-center">
+                <div className="text-2xl font-bold text-primary-600">
+                  {calculatePrice() === 0 ? 'Miễn phí' : formatCurrency(calculatePrice())}
+                </div>
                 
-                {/* Hiển thị phần trăm giảm giá */}
-                {product.price > 0 && (
-                  <span className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
-                    {product.price > calculatePrice() ? 
-                      `-${Math.round((1 - calculatePrice() / product.price) * 100)}%` : 
-                      '0%'}
-                  </span>
+                {calculateOriginalPrice() > calculatePrice() && (
+                  <>
+                    <div className="ml-3 text-lg text-gray-500 line-through">
+                      {formatCurrency(calculateOriginalPrice())}
+                    </div>
+                    <div className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
+                      -{calculateDiscountPercentage()}%
+                    </div>
+                  </>
                 )}
               </div>
-            </div>
-            
-            {/* Thông tin sản phẩm trong hộp xanh */}
-            <div className="bg-green-50 p-4 rounded-lg mb-6">
-              <div className="space-y-2">
-                {product.features && product.features.slice(0, 4).map((feature, index) => (
-                  <div key={index} className="flex items-start">
-                    <span className="mr-2 text-gray-700">– </span>
-                    <span className="text-gray-700">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Dropdown chọn loại tài khoản nếu là tài khoản */}
-            {isAccount && product.options && product.options.length > 0 && (
-              <div className="mb-6">
-                <div className="flex items-center mb-2">
-                  <span className="inline-block w-24 text-gray-700 font-medium">Tài khoản</span>
-                  <div className="flex-1">
-                    <select
-                      id="account-type"
-                      value={selectedOption}
-                      onChange={(e) => setSelectedOption(e.target.value)}
-                      className="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500"
-                    >
-                      {product.options.map((option, index) => (
-                        <option key={index} value={option.name}>
-                          {option.name}
-                        </option>
-                      ))}
-                    </select>
+              
+              <p className="mt-4 text-gray-600">{product.description || product.shortDescription}</p>
+              
+              {/* Product options/versions */}
+              {product.versions && product.versions.length > 1 && (
+                <div className="mt-6">
+                  <h3 className="font-medium text-gray-900 mb-2">Chọn phiên bản:</h3>
+                  <div className="grid grid-cols-1 gap-3">
+                    {product.versions.map((version) => (
+                      <div 
+                        key={version.name}
+                        className={`
+                          border rounded-lg p-3 cursor-pointer transition
+                          ${selectedVersion === version.name 
+                            ? 'border-primary-500 bg-primary-50' 
+                            : 'border-gray-200 hover:border-gray-300'}
+                        `}
+                        onClick={() => setSelectedVersion(version.name)}
+                      >
+                        <div className="flex justify-between">
+                          <span className="font-medium text-gray-900">{version.name}</span>
+                          <span className="font-medium text-primary-600">
+                            {formatCurrency(version.price)}
+                          </span>
+                        </div>
+                        {version.description && (
+                          <p className="mt-1 text-sm text-gray-500">{version.description}</p>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-            )}
-            
-            {/* Số lượng */}
-            <div className="mb-6">
-              <div className="flex items-center">
-                <span className="inline-block w-24 text-gray-700 font-medium">Số lượng</span>
-                <div className="flex border border-gray-300 rounded-md">
+              )}
+              
+              {/* Quantity selector */}
+              <div className="mt-6">
+                <h3 className="font-medium text-gray-900 mb-2">Số lượng:</h3>
+                <div className="flex items-center">
                   <button 
                     onClick={decreaseQuantity}
-                    className="px-3 py-1 border-r border-gray-300 bg-gray-100 hover:bg-gray-200"
+                    className="w-10 h-10 rounded-l-lg bg-gray-100 flex items-center justify-center border border-gray-300"
                   >
-                    -
+                    <span className="text-xl">-</span>
                   </button>
-                  <input
-                    type="text"
-                    value={quantity}
+                  <input 
+                    type="number" 
+                    value={quantity} 
                     readOnly
-                    className="w-12 text-center py-1 focus:outline-none"
+                    className="w-14 h-10 text-center border-t border-b border-gray-300"
                   />
                   <button 
                     onClick={increaseQuantity}
-                    className="px-3 py-1 border-l border-gray-300 bg-gray-100 hover:bg-gray-200"
+                    className="w-10 h-10 rounded-r-lg bg-gray-100 flex items-center justify-center border border-gray-300"
                   >
-                    +
+                    <span className="text-xl">+</span>
                   </button>
                 </div>
               </div>
-            </div>
-            
-            {/* Nút thêm vào giỏ hàng */}
-            <div className="mb-6">
-              <button
-                onClick={handleAddToCart}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium"
-              >
-                Thêm vào giỏ hàng
-              </button>
+              
+              {/* Action buttons */}
+              <div className="mt-8 grid grid-cols-2 gap-4">
+                <button 
+                  onClick={handleAddToCart}
+                  className="px-4 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  Thêm vào giỏ hàng
+                </button>
+                <Link 
+                  href="/cart" 
+                  onClick={handleAddToCart}
+                  className="px-4 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center"
+                >
+                  Mua ngay
+                </Link>
+              </div>
+              
+              {/* Features list */}
+              {product.features && product.features.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="font-medium text-gray-900 mb-2">Tính năng nổi bật:</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {product.features.map((feature, index) => (
+                      <li key={index} className="text-gray-600">
+                        {typeof feature === 'string' ? feature : feature.title}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
         
-        {/* Chi tiết sản phẩm */}
-        <ProductDescription description={product.longDescription} />
+        {/* Product description */}
+        <ProductDescription description={product.description} />
         
-        {/* Thông số kỹ thuật */}
-        <ProductSpecifications specifications={product.specifications} />
-        
-        {/* Demo VoiceTyping nếu sản phẩm là VoiceTyping */}
-        {isVoiceTyping && <VoiceTypingDemo />}
-        
-        {/* Lợi ích sản phẩm */}
-        <ProductBenefits />
-        
-        {/* Sản phẩm liên quan */}
-        <div className="mt-12">
-          <RelatedProducts currentProductId={product.id} categoryId={product.categoryId} />
-        </div>
+        {/* Related products */}
+        <RelatedProducts 
+          currentProductId={product.id} 
+          categoryId={product.categories && product.categories.length > 0 ? product.categories[0].id : undefined} 
+        />
       </div>
     </div>
   );

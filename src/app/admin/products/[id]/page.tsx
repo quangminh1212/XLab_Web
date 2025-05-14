@@ -7,6 +7,8 @@ import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { FormEvent } from 'react';
 
 interface AdminEditProductPageProps {
   params: {
@@ -48,6 +50,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [newSpecValue, setNewSpecValue] = useState('');
   const [isEditingSpecs, setIsEditingSpecs] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -264,29 +267,43 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setError(null);
+
     try {
-      setLoading(true);
-      
-      // Update product with form data
-      const updatedProduct = {
-        ...product,
-        name: formData.name,
-        shortDescription: formData.shortDescription,
-        description: formData.description,
-        isPublished: formData.isPublished,
-        images: featuredImage ? [featuredImage] : [],
-        descriptionImages: descriptionImages, // Thêm danh sách hình ảnh mô tả
-        specifications: specifications, // Thêm thông số kỹ thuật
-        versions: product?.versions?.map((version, index) => {
-          if (index === 0) {
-            return {
-              ...version,
-              price: formData.price,
-              originalPrice: formData.salePrice
-            };
+      // Prepare product data for submission
+      const productData: Product = {
+        ...product, // Keep all existing product data
+        ...formData,  // Override with form data
+        isPublished: true, // Set isPublished to true by default when saving
+        id: productId || uuidv4(),
+        slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+        features: product?.features || [],
+        requirements: product?.requirements || [],
+        images: featuredImage ? [featuredImage] : product?.images || [],
+        descriptionImages: descriptionImages || product?.descriptionImages || [],
+        specifications: specifications || product?.specifications || [],
+        categories: formData.categories ? formData.categories.map(id => {
+          const existingCategory = product?.categories?.find(c => c.id === id);
+          if (existingCategory) return existingCategory;
+          return {
+            id,
+            name: getCategoryName(id),
+            slug: id
+          };
+        }) : (product?.categories || []),
+        versions: [
+          {
+            name: "Standard",
+            description: "Phiên bản tiêu chuẩn",
+            price: Number(formData.price) || 0,
+            originalPrice: Number(formData.salePrice) || 0,
+            features: []
           }
-          return version;
-        }) || []
+        ],
+        createdAt: product?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
       
       if (!productId) {
@@ -299,7 +316,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(updatedProduct)
+        body: JSON.stringify(productData)
       });
       
       if (!response.ok) {
@@ -319,7 +336,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       setError((err as Error).message);
       console.error('Error updating product:', err);
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
