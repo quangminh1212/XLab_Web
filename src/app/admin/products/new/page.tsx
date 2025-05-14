@@ -464,8 +464,6 @@ function NewProductPage() {
     }
   };
 
-
-
   // Xử lý thêm sản phẩm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -797,70 +795,13 @@ function NewProductPage() {
                 </p>
               </div>
               
-              {/* Thêm hình ảnh mô tả */}
-              {isEditingDescription && (
+              {/* Xem trước mô tả khi không chỉnh sửa */}
+              {!isEditingDescription && (
                 <div className="mt-4">
                   <label className="block text-gray-700 font-medium mb-2">
-                    Hình ảnh mô tả
+                    Xem trước mô tả đầy đủ
                   </label>
-                  <div className="space-y-3">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      onChange={handleImageUpload}
-                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    />
-                    
-                    <div 
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors"
-                      onPaste={handlePasteDescriptionImage}
-                      tabIndex={0}
-                      style={{ outline: 'none' }}
-                    >
-                      <p className="text-gray-500">Dán ảnh (Ctrl+V) trực tiếp vào đây</p>
-                    </div>
-
-                    {/* Hiển thị danh sách hình ảnh đã thêm */}
-                    {descriptionImages.length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="font-medium mb-2">Hình ảnh đã thêm</h4>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                          {descriptionImages.map((imageUrl, index) => (
-                            <div key={index} className="relative border border-gray-200 rounded p-2 group">
-                              <div className="relative aspect-square w-full overflow-hidden rounded">
-                                <img 
-                                  src={imageUrl} 
-                                  alt={`Hình ảnh ${index + 1}`} 
-                                  className="object-contain max-w-full max-h-full" 
-                                />
-                              </div>
-                              <div className="mt-2 flex justify-between text-xs">
-                                <button
-                                  type="button"
-                                  onClick={() => navigator.clipboard.writeText(imageUrl)}
-                                  className="text-xs bg-green-500 text-white px-2 py-0.5 rounded hover:bg-green-600 transition-colors"
-                                >
-                                  Sao chép URL
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newImages = [...descriptionImages];
-                                    newImages.splice(index, 1);
-                                    setDescriptionImages(newImages);
-                                  }}
-                                  className="text-xs bg-red-500 text-white px-2 py-0.5 rounded hover:bg-red-600 transition-colors"
-                                >
-                                  Xóa
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <div className="prose max-w-none border p-4 rounded min-h-[200px]" dangerouslySetInnerHTML={{ __html: formData.description || '<p>Chưa có mô tả chi tiết</p>' }} />
                 </div>
               )}
               
