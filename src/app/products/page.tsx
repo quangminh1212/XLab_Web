@@ -294,7 +294,6 @@ export default function ProductsPage() {
                     category={categories.find(c => c.id === product.categoryId)?.name}
                     rating={product.rating}
                     reviewCount={product.reviewCount}
-                    weeklyPurchases={product.weeklyPurchases}
                   />
                 );
               })}

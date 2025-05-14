@@ -41,9 +41,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     price: 0,
     salePrice: 0,
     categories: [] as string[],
-    specs: '',
-    rating: 5,
-    weeklyPurchases: 0
+    specs: ''
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
@@ -78,9 +76,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           price: productData.versions?.[0]?.price || 0,
           salePrice: productData.versions?.[0]?.originalPrice || 0,
           categories: productData.categories ? productData.categories.map((c: any) => c.id) : [],
-          specs: productData.specifications ? productData.specifications.map((spec: {key: string, value: string}) => spec.key + ': ' + spec.value).join('\n') : '',
-          rating: productData.rating !== undefined ? productData.rating : 5,
-          weeklyPurchases: productData.weeklyPurchases || 0
+          specs: productData.specifications ? productData.specifications.map((spec: {key: string, value: string}) => spec.key + ': ' + spec.value).join('\n') : ''
         });
         
         // Set description images if available
@@ -380,8 +376,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         isPublished: formData.isPublished,
         specifications: specifications,
         specs: formData.specs,
-        rating: formData.rating,
-        weeklyPurchases: formData.weeklyPurchases,
         versions: [
           {
             name: 'Default',
@@ -595,44 +589,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   + Thêm giá gốc
                 </button>
               )}
-            </div>
-          </div>
-          
-          {/* Thông tin đánh giá và số lượng mua */}
-          <div className="flex flex-wrap gap-6 mb-6">
-            {/* Đánh giá sao */}
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-700">Đánh giá sao</label>
-              <div className="flex items-center">
-                <input 
-                  type="number" 
-                  name="rating"
-                  value={formData.rating}
-                  onChange={handleInputChange}
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  className="w-20 p-2 border border-gray-300 rounded mr-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <div className="flex text-yellow-400 text-xl">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span key={star} className={star <= formData.rating ? "text-yellow-400" : "text-gray-300"}>★</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            {/* Số lượng mua trong tuần */}
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-700">Số lượng mua trong tuần</label>
-              <input 
-                type="number" 
-                name="weeklyPurchases"
-                value={formData.weeklyPurchases}
-                onChange={handleInputChange}
-                min="0"
-                className="w-32 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
             </div>
           </div>
           

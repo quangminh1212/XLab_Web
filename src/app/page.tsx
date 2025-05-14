@@ -6,29 +6,6 @@ import ProductCard from '@/components/product/ProductCard';
 import { products, categories } from '@/data/mockData';
 import Image from 'next/image';
 
-// Helper function to lấy URL ảnh hợp lệ
-const getValidImageUrl = (product: any): string => {
-  if (!product) return '/images/placeholder/product-placeholder.jpg';
-  
-  // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
-  if (product.images && product.images.length > 0) {
-    const imageUrl = product.images[0];
-    // Kiểm tra xem đây là string hay object
-    if (typeof imageUrl === 'string') {
-      return imageUrl;
-    } else if (imageUrl.url) {
-      return imageUrl.url;
-    }
-  }
-  
-  // Kiểm tra nếu có thuộc tính imageUrl
-  if (product.imageUrl) {
-    return product.imageUrl;
-  }
-  
-  return '/images/placeholder/product-placeholder.jpg';
-};
-
 function HomePage() {
   // Lọc sản phẩm nổi bật
   const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
@@ -341,20 +318,23 @@ function HomePage() {
 
                 {products.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
-                    {featuredProducts.map((product) => (
-                      <ProductCard 
-                        key={product.id}
-                        id={product.id.toString()}
-                        name={product.name}
-                        description={product.description || ''}
-                        price={product.salePrice || product.price}
-                        originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
-                        image={getValidImageUrl(product)}
-                        rating={product.rating}
-                        reviewCount={product.reviewCount || 0}
-                        weeklyPurchases={product.weeklyPurchases || 0}
-                      />
-                    ))}
+                    {featuredProducts
+                      .filter(product => !product.isAccount && product.type !== 'account')
+                      .slice(0, 6)
+                      .map((product) => (
+                        <ProductCard 
+                          key={product.id}
+                          id={product.id.toString()}
+                          name={product.name}
+                          description={product.description}
+                          price={product.salePrice || product.price}
+                          originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
+                          image={product.imageUrl}
+                          category={products.find(p => p.categoryId === product.categoryId)?.name}
+                          rating={product.rating}
+                          isAccount={false}
+                        />
+                      ))}
                   </div>
                 ) : (
                   <div className="flex items-center justify-center">
@@ -395,13 +375,13 @@ function HomePage() {
                           key={product.id}
                           id={product.id.toString()}
                           name={product.name}
-                          description={product.shortDescription || ''}
+                          description={product.description}
                           price={product.salePrice || product.price}
                           originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
-                          image={getValidImageUrl(product)}
+                          image={product.imageUrl}
+                          category={products.find(p => p.categoryId === product.categoryId)?.name}
                           rating={product.rating}
-                          reviewCount={product.reviewCount}
-                          weeklyPurchases={product.weeklyPurchases}
+                          isAccount={true}
                         />
                       ))}
                   </div>
