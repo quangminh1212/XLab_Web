@@ -287,7 +287,7 @@ export default function ProductsPage() {
                     key={product.id}
                     id={product.id.toString()}
                     name={product.name}
-                    description={product.description || product.shortDescription || ''}
+                    description={product.shortDescription || ''}
                     price={displayPrice}
                     originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
                     image={imageUrl}

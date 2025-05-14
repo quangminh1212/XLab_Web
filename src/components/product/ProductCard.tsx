@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 interface ProductCardProps {
   id: string
   name: string
-  description: string
+  description: string  // Thực tế là shortDescription
   price: number
   originalPrice?: number
   image: string
@@ -58,12 +58,8 @@ export default function ProductCard({
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image)
   
-  // Truncate description if needed
-  const shortDescription = description 
-    ? description.length > 100 
-      ? description.substring(0, 100) + '...' 
-      : description
-    : 'Không có mô tả'
+  // Sử dụng mô tả ngắn thay vì cắt mô tả dài
+  const shortDescription = description
       
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage = originalPrice && originalPrice > price 
