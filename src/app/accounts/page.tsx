@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import ProductCard from '@/components/product/ProductCard'
 import { Product } from '@/types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // Mở rộng kiểu Product để thêm thuộc tính plans
 interface AccountProduct extends Product {
@@ -18,93 +18,106 @@ interface AccountProduct extends Product {
 }
 
 export default function AccountsPage() {
-  // Tạo danh sách tài khoản mẫu trực tiếp
-  const accounts: AccountProduct[] = [
-    {
-      id: 'capcut-pro',
-      slug: 'capcut-pro',
-      name: 'CapCut',
-      description: 'Tài khoản CapCut với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Nhiều gói thời gian để lựa chọn.',
-      longDescription: 'Tài khoản CapCut chính hãng với đầy đủ tính năng chỉnh sửa video chuyên nghiệp.',
-      imageUrl: '/images/products/capcut-logo.png',
-      price: 290000,
-      salePrice: 199000,
-      categoryId: 'accounts',
-      rating: 4.8,
-      downloadCount: 280,
-      viewCount: 500,
-      isAccount: true,
-      type: 'account',
-      isFeatured: true,
-      isNew: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      version: '1.0',
-      size: 'N/A',
-      licenseType: 'Premium',
-      storeId: '1',
-      plans: [
-        {
-          id: 'capcut-pro-7days',
-          name: '7 Ngày',
-          price: 99000,
-          salePrice: 69000,
-          description: 'Gói 7 ngày lý tưởng để thử nghiệm hoặc hoàn thành dự án ngắn hạn.',
-          features: [
-            'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
-            'Xuất video không giới hạn',
-            'Không có logo watermark',
-            'Thư viện hiệu ứng và âm thanh đầy đủ',
-            'Có thể sử dụng cho cả thiết bị di động và máy tính',
-            'Hỗ trợ kỹ thuật 24/7'
-          ]
-        },
-        {
-          id: 'capcut-pro-1month',
-          name: '1 Tháng',
-          price: 290000,
-          salePrice: 199000,
-          description: 'Gói 1 tháng phù hợp cho các nhà sáng tạo nội dung thường xuyên.',
-          features: [
-            'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
-            'Xuất video không giới hạn',
-            'Không có logo watermark',
-            'Thư viện hiệu ứng và âm thanh đầy đủ',
-            'Có thể sử dụng cho cả thiết bị di động và máy tính',
-            'Hỗ trợ kỹ thuật 24/7',
-            'Cập nhật tính năng mới ngay khi phát hành'
-          ]
-        },
-        {
-          id: 'capcut-pro-2years',
-          name: '2 Năm',
-          price: 1990000,
-          salePrice: 1290000,
-          description: 'Gói 2 năm tiết kiệm tối đa, phù hợp cho các studio và nhà sáng tạo nội dung chuyên nghiệp.',
-          features: [
-            'Tất cả các hiệu ứng và công cụ chỉnh sửa cao cấp',
-            'Xuất video không giới hạn với độ phân giải 4K',
-            'Không có logo watermark',
-            'Thư viện hiệu ứng và âm thanh đầy đủ và cập nhật thường xuyên',
-            'Có thể sử dụng cho cả thiết bị di động và máy tính',
-            'Hỗ trợ kỹ thuật ưu tiên 24/7',
-            'Cập nhật tính năng mới ngay khi phát hành',
-            'Đảm bảo hoàn tiền 30 ngày',
-            'Hỗ trợ đồng bộ đám mây không giới hạn',
-            'Tiết kiệm hơn 70% so với mua hàng tháng'
-          ]
-        }
-      ]
-    }
-  ];
-
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<string>('all');
   const [sortOrder, setSortOrder] = useState('newest');
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/products');
+        
+        if (!response.ok) {
+          throw new Error('Không thể tải sản phẩm');
+        }
+        
+        const data = await response.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || 'Đã xảy ra lỗi');
+        setLoading(false);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+
+  // Lọc tài khoản từ danh sách sản phẩm
+  const accounts = products.filter(product => product.isAccount === true);
+
+  // Sắp xếp tài khoản
+  const sortedAccounts = [...accounts].sort((a, b) => {
+    if (sortOrder === 'newest') {
+      return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
+    } else if (sortOrder === 'price-low') {
+      return (a.salePrice || a.price) - (b.salePrice || b.price);
+    } else if (sortOrder === 'price-high') {
+      return (b.salePrice || b.price) - (a.salePrice || a.price);
+    } else if (sortOrder === 'popular') {
+      return (b.downloadCount || 0) - (a.downloadCount || 0);
+    }
+    return 0;
+  });
 
   // Danh mục sản phẩm
   const categories = [
     { id: 'all', name: 'Tất cả', count: accounts.length },
     { id: 'accounts', name: 'Tài khoản', count: accounts.filter(a => a.categoryId === 'accounts').length }
   ];
+
+  // Hiển thị loading
+  if (loading) {
+    return (
+      <div className="py-12 flex justify-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-600">Đang tải tài khoản...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Hiển thị lỗi
+  if (error) {
+    return (
+      <div className="py-12 flex justify-center">
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải tài khoản</h2>
+          <p className="text-gray-600 mb-6">
+            {error}
+          </p>
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Thử lại
+            </button>
+            <Link
+              href="/"
+              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7m-7-7v14" />
+              </svg>
+              Về trang chủ
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-4 bg-gray-50">
@@ -148,7 +161,7 @@ export default function AccountsPage() {
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm md:text-base text-gray-600">
-                Hiển thị {accounts.length} kết quả
+                Hiển thị {sortedAccounts.length} kết quả
               </div>
               <div className="flex items-center space-x-2">
                 <label htmlFor="sort" className="text-sm md:text-base text-gray-700">Sắp xếp:</label>
@@ -168,19 +181,25 @@ export default function AccountsPage() {
             
             {/* Product grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {accounts.map((account) => (
-                <ProductCard
-                  key={account.id}
-                  id={account.id.toString()}
-                  name={account.name}
-                  description={account.description}
-                  price={account.salePrice || account.price}
-                  originalPrice={account.salePrice ? account.price : undefined}
-                  image={account.imageUrl}
-                  rating={account.rating}
-                  isAccount={true}
-                />
-              ))}
+              {sortedAccounts.length > 0 ? (
+                sortedAccounts.map((account) => (
+                  <ProductCard
+                    key={account.id}
+                    id={account.id.toString()}
+                    name={account.name}
+                    description={account.description}
+                    price={account.salePrice || account.price}
+                    originalPrice={account.salePrice ? account.price : undefined}
+                    image={account.imageUrl}
+                    rating={account.rating}
+                    isAccount={true}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-10">
+                  <p className="text-gray-500">Không tìm thấy tài khoản nào.</p>
+                </div>
+              )}
             </div>
           </div>
           
@@ -193,9 +212,10 @@ export default function AccountsPage() {
                 {categories.map(category => (
                   <li key={category.id}>
                     <a 
-                      href={`#${category.id}`}
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); setFilter(category.id); }}
                       className={`flex justify-between items-center text-sm md:text-base py-1 px-2 rounded-md hover:bg-gray-50 ${
-                        category.id === 'all' ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
+                        filter === category.id ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
                       }`}
                     >
                       <span>{category.name}</span>
@@ -212,7 +232,7 @@ export default function AccountsPage() {
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
               <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
               <div className="space-y-2">
-                {accounts.slice(0, 3).map(account => (
+                {accounts.filter(a => a.isFeatured).slice(0, 3).map(account => (
                   <Link 
                     href={`/accounts/${account.id}`}
                     key={account.id}
