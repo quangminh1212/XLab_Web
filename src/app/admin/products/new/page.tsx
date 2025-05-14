@@ -74,6 +74,8 @@ function NewProductPage() {
     categoryId: '',
     rating: 5,
     weeklyPurchases: Math.floor(Math.random() * 10) + 1, // Random từ 1-10
+    type: 'software' as 'software' | 'account',
+    isAccount: false
   });
 
   // Kiểm tra URL hình ảnh có hợp lệ không
@@ -525,7 +527,9 @@ function NewProductPage() {
         categories: [formData.categoryId],
         isPublished: true,
         rating: "4.7",
-        weeklyPurchases: 0,
+        weeklyPurchases: formData.weeklyPurchases,
+        type: formData.type,
+        isAccount: formData.isAccount,
         versions: versionsData
       };
       
@@ -743,7 +747,7 @@ function NewProductPage() {
             
             {/* Số lượng mua trong tuần */}
             <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-700">Số lượng mua (tăng 1-10/ngày)</label>
+              <label className="mb-1 text-sm font-medium text-gray-700">Số lượng mua trong tuần</label>
               <input 
                 type="number" 
                 name="weeklyPurchases"
@@ -752,6 +756,47 @@ function NewProductPage() {
                 min="0"
                 className="w-32 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
+            </div>
+            
+            {/* Loại sản phẩm */}
+            <div className="flex flex-col">
+              <label className="mb-1 text-sm font-medium text-gray-700">Loại sản phẩm</label>
+              <div className="flex items-center space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="software"
+                    checked={formData.type === 'software'}
+                    onChange={(e) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        type: 'software',
+                        isAccount: false
+                      }));
+                    }}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-gray-700">Phần mềm</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="account"
+                    checked={formData.type === 'account'}
+                    onChange={(e) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        type: 'account',
+                        isAccount: true
+                      }));
+                    }}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-gray-700">Tài khoản</span>
+                </label>
+              </div>
             </div>
           </div>
           

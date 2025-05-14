@@ -52,6 +52,8 @@ export interface Product {
     isPublished: boolean;
     rating?: number;
     weeklyPurchases?: number;
+    type?: 'software' | 'account';
+    isAccount?: boolean;
 }
 
 export interface ProductFormData {
@@ -70,4 +72,6 @@ export interface ProductFormData {
     isPublished: boolean;
     rating?: number;
     weeklyPurchases?: number;
+    type?: 'software' | 'account';
+    isAccount?: boolean;
 } 

@@ -41,7 +41,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     categories: [] as string[],
     specs: '',
     rating: 5,
-    weeklyPurchases: 0
+    weeklyPurchases: 0,
+    type: 'software' as 'software' | 'account',
+    isAccount: false
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
@@ -78,7 +80,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           categories: productData.categories ? productData.categories.map((c: any) => c.id) : [],
           specs: productData.specifications ? productData.specifications.map((spec: {key: string, value: string}) => spec.key + ': ' + spec.value).join('\n') : '',
           rating: productData.rating !== undefined ? productData.rating : 5,
-          weeklyPurchases: productData.weeklyPurchases || 0
+          weeklyPurchases: productData.weeklyPurchases || 0,
+          type: productData.type || 'software',
+          isAccount: productData.isAccount || productData.type === 'account' || false
         });
         
         // Set description images if available
@@ -368,6 +372,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         specs: formData.specs,
         rating: formData.rating,
         weeklyPurchases: formData.weeklyPurchases,
+        type: formData.type,
+        isAccount: formData.isAccount,
         versions: [
           {
             name: 'Default',
@@ -737,6 +743,47 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 min="0"
                 className="w-32 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
+            </div>
+            
+            {/* Loại sản phẩm */}
+            <div className="flex flex-col">
+              <label className="mb-1 text-sm font-medium text-gray-700">Loại sản phẩm</label>
+              <div className="flex items-center space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="software"
+                    checked={formData.type === 'software'}
+                    onChange={(e) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        type: 'software',
+                        isAccount: false
+                      }));
+                    }}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-gray-700">Phần mềm</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="account"
+                    checked={formData.type === 'account'}
+                    onChange={(e) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        type: 'account',
+                        isAccount: true
+                      }));
+                    }}
+                    className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-gray-700">Tài khoản</span>
+                </label>
+              </div>
             </div>
           </div>
           
