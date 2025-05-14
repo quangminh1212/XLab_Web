@@ -50,6 +50,8 @@ export interface Product {
     createdAt: string;
     updatedAt: string;
     isPublished: boolean;
+    rating?: number;
+    weeklyPurchases?: number;
 }
 
 export interface ProductFormData {
@@ -64,6 +66,8 @@ export interface ProductFormData {
     specifications?: ProductSpecification[];
     requirements: ProductRequirement[];
     versions: ProductVersion[];
-    categories: string[]; // Chỉ lưu ID của categories
+    categories: string[];
     isPublished: boolean;
+    rating?: number;
+    weeklyPurchases?: number;
 } 
