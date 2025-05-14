@@ -357,6 +357,126 @@ function NewProductPage() {
     setProductVersions(updatedVersions);
   };
 
+  // Thêm hàm xử lý paste ảnh đại diện từ clipboard
+  const handlePasteImage = async (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    
+    // Tìm kiếm hình ảnh trong clipboard
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (!file) continue;
+        
+        // Giới hạn kích thước file là 5MB
+        if (file.size > 5 * 1024 * 1024) {
+          setError('Kích thước file không được vượt quá 5MB');
+          setTimeout(() => setError(null), 3000);
+          return;
+        }
+        
+        try {
+          // Tạo form data để upload file
+          const uploadFormData = new FormData();
+          uploadFormData.append('file', file);
+          
+          // Gửi thêm thông tin slug của sản phẩm
+          if (formData.name) {
+            const slug = slugify(formData.name);
+            uploadFormData.append('productSlug', slug);
+          }
+          
+          // Upload hình ảnh lên server
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: uploadFormData
+          });
+          
+          if (!response.ok) {
+            throw new Error('Không thể tải lên hình ảnh');
+          }
+          
+          const data = await response.json();
+          // Lấy URL thực từ server
+          const imageUrl = data.url || data.filepath || data.fileUrl;
+          
+          if (!imageUrl) {
+            throw new Error('URL hình ảnh không hợp lệ');
+          }
+          
+          setFeaturedImage(imageUrl);
+          setSuccessMessage('Đã dán ảnh từ clipboard thành công');
+          setTimeout(() => setSuccessMessage(null), 3000);
+        } catch (err) {
+          console.error('Lỗi khi upload hình ảnh từ clipboard:', err);
+          setError((err as Error).message || 'Không thể tải lên hình ảnh');
+          setTimeout(() => setError(null), 3000);
+        }
+        break;
+      }
+    }
+  };
+  
+  // Thêm hàm xử lý paste ảnh mô tả từ clipboard
+  const handlePasteDescriptionImage = async (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    
+    // Tìm kiếm hình ảnh trong clipboard
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (!file) continue;
+        
+        // Giới hạn kích thước file là 5MB
+        if (file.size > 5 * 1024 * 1024) {
+          setError('Kích thước file không được vượt quá 5MB');
+          setTimeout(() => setError(null), 3000);
+          return;
+        }
+        
+        try {
+          // Tạo form data để upload file
+          const uploadFormData = new FormData();
+          uploadFormData.append('file', file);
+          
+          // Gửi thêm thông tin slug của sản phẩm
+          if (formData.name) {
+            const slug = slugify(formData.name);
+            uploadFormData.append('productSlug', slug);
+          }
+          
+          // Upload hình ảnh lên server
+          const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: uploadFormData
+          });
+          
+          if (!response.ok) {
+            throw new Error('Không thể tải lên hình ảnh');
+          }
+          
+          const data = await response.json();
+          // Lấy URL thực từ server
+          const imageUrl = data.url || data.filepath || data.fileUrl;
+          
+          if (!imageUrl) {
+            throw new Error('URL hình ảnh không hợp lệ');
+          }
+          
+          setDescriptionImages([...descriptionImages, imageUrl]);
+          setSuccessMessage('Đã dán ảnh mô tả từ clipboard thành công');
+          setTimeout(() => setSuccessMessage(null), 3000);
+        } catch (err) {
+          console.error('Lỗi khi upload hình ảnh từ clipboard:', err);
+          setError((err as Error).message || 'Không thể tải lên hình ảnh');
+          setTimeout(() => setError(null), 3000);
+        }
+        break;
+      }
+    }
+  };
+
   // Xử lý thêm hình ảnh mô tả từ URL
   const handleAddImageUrl = () => {
     if (newImageUrl.trim() && isValidImageUrl(newImageUrl)) {
@@ -622,7 +742,11 @@ function NewProductPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phần hình ảnh và upload */}
             <div>
-              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square max-w-sm mx-auto flex items-center justify-center mb-3 relative">
+              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square max-w-sm mx-auto flex items-center justify-center mb-3 relative" 
+                onPaste={handlePasteImage} 
+                tabIndex={0} // Cho phép focus để nhận sự kiện paste
+                style={{ outline: 'none' }} // Ẩn đường viền khi focus
+              >
                 {featuredImage ? (
                   <>
                     <img 
@@ -642,6 +766,7 @@ function NewProductPage() {
                   <div className="text-gray-400 text-center p-4">
                     <span className="block text-3xl mb-2">🖼️</span>
                     <span className="text-sm">Chưa có ảnh sản phẩm</span>
+                    <p className="text-xs mt-2">Nhấn Ctrl+V để dán ảnh từ clipboard</p>
                   </div>
                 )}
               </div>
@@ -743,7 +868,16 @@ function NewProductPage() {
                       onChange={handleImageUpload}
                       className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
-                  
+                    
+                    <div 
+                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors"
+                      onPaste={handlePasteDescriptionImage}
+                      tabIndex={0}
+                      style={{ outline: 'none' }}
+                    >
+                      <p className="text-gray-500">Dán ảnh (Ctrl+V) trực tiếp vào đây</p>
+                    </div>
+
                     {/* Hiển thị danh sách hình ảnh đã thêm */}
                     {descriptionImages.length > 0 && (
                       <div className="mt-4">
