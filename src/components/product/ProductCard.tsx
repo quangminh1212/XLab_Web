@@ -211,10 +211,10 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="p-4 flex flex-col h-[160px]">
         <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{name}</h3>
-        <p className="text-gray-600 text-sm mb-2 line-clamp-2">{shortDescription}</p>
-        <div className="flex items-center justify-between">
+        <p className="text-gray-600 text-sm mb-2 line-clamp-2 h-10">{shortDescription}</p>
+        <div className="flex items-center justify-between mt-auto">
           <div>
             <div className="flex items-center gap-1">
               <span className="font-bold text-gray-800">{formatCurrency(price)}</span>
