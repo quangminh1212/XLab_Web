@@ -247,10 +247,12 @@ export default function ProductsPage() {
                   
                 // Lấy ảnh sản phẩm (không dùng blob URLs)
                 const imageUrl = product.images && product.images.length > 0
-                  ? (typeof product.images[0] === 'string' && !product.images[0].startsWith('blob:') 
-                      ? product.images[0] 
-                      : null)
-                  : null;
+                  ? (typeof product.images[0] === 'string' 
+                      ? (product.images[0].startsWith('blob:') 
+                          ? '/images/placeholder/product-placeholder.jpg' 
+                          : product.images[0])
+                      : ((product.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
+                  : '/images/placeholder/product-placeholder.jpg';
                   
                 return (
                   <ProductCard 
@@ -260,7 +262,7 @@ export default function ProductsPage() {
                     description={product.description || product.shortDescription || ''}
                     price={displayPrice}
                     originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
-                    image={imageUrl || '/images/placeholder/product-placeholder.jpg'}
+                    image={imageUrl}
                     category={categories.find(c => c.id === product.categoryId)?.name}
                     rating={product.rating}
                     reviewCount={product.reviewCount}
@@ -299,27 +301,38 @@ export default function ProductsPage() {
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
               <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
               <div className="space-y-2">
-                {featuredProducts.slice(0, 3).map(product => (
-                  <Link 
-                    href={`/products/${product.id}`}
-                    key={product.id}
-                    className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
-                  >
-                    <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                      <img 
-                        src={product.imageUrl} 
-                        alt={product.name}
-                        className="w-8 h-8 object-contain"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <h4 className="font-medium text-gray-900 text-sm">{product.name}</h4>
-                      <div className="text-xs md:text-sm text-primary-600 font-medium">
-                        {product.salePrice ? formatCurrency(product.salePrice) : formatCurrency(product.price)}
+                {featuredProducts.slice(0, 3).map(product => {
+                  // Lấy ảnh sản phẩm từ product.images nếu có, hoặc từ imageUrl (cho tương thích)
+                  const featuredImageUrl = product.images && product.images.length > 0
+                    ? (typeof product.images[0] === 'string' 
+                        ? (product.images[0].startsWith('blob:') 
+                            ? '/images/placeholder/product-placeholder.jpg' 
+                            : product.images[0])
+                        : ((product.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
+                    : (product.imageUrl || '/images/placeholder/product-placeholder.jpg');
+                  
+                  return (
+                    <Link 
+                      href={`/products/${product.id}`}
+                      key={product.id}
+                      className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
+                    >
+                      <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                        <img 
+                          src={featuredImageUrl} 
+                          alt={product.name}
+                          className="w-8 h-8 object-contain"
+                        />
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                      <div className="flex flex-col">
+                        <h4 className="font-medium text-gray-900 text-sm">{product.name}</h4>
+                        <div className="text-xs md:text-sm text-primary-600 font-medium">
+                          {product.salePrice ? formatCurrency(product.salePrice) : formatCurrency(product.price)}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
             

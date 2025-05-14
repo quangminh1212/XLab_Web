@@ -181,9 +181,39 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       return;
     }
     
-    // Tạo URL tạm thời cho hình ảnh
-    const imageUrl = URL.createObjectURL(file);
-    setFeaturedImage(imageUrl);
+    try {
+      // Tạo form data để upload file
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Upload hình ảnh lên server
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error('Không thể tải lên hình ảnh');
+      }
+      
+      const data = await response.json();
+      // Lấy URL thực từ server thay vì dùng blob URL
+      const imageUrl = data.url || data.filepath || data.fileUrl;
+      
+      if (!imageUrl) {
+        throw new Error('URL hình ảnh không hợp lệ');
+      }
+      
+      setFeaturedImage(imageUrl);
+    } catch (err) {
+      console.error('Lỗi khi upload hình ảnh:', err);
+      setError((err as Error).message || 'Không thể tải lên hình ảnh');
+      setTimeout(() => setError(null), 3000);
+      
+      // Fallback to blob URL if server upload fails
+      const imageUrl = URL.createObjectURL(file);
+      setFeaturedImage(imageUrl);
+    }
     
     // Reset input file
     if (featuredImageInputRef.current) {

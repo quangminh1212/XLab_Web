@@ -44,7 +44,9 @@ export default function ProductCard({
   // Fix blob URLs - convert blob URLs to placeholder
   const cleanImageUrl = imageUrl.startsWith('blob:') 
     ? '/images/placeholder/product-placeholder.jpg'
-    : imageUrl
+    : (imageUrl && imageUrl.trim() !== '' 
+        ? imageUrl 
+        : '/images/placeholder/product-placeholder.jpg')
   
   // Truncate description if needed
   const shortDescription = description 

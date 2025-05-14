@@ -197,3 +197,7 @@ next-setup.js
 
 # Logs and temporary files
 next-fix-all.log
+
+# Uploaded product images
+/public/images/products/*
+!/public/images/products/.gitkeep

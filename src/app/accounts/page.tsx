@@ -197,19 +197,30 @@ export default function AccountsPage() {
             {/* Product grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {sortedAccounts.length > 0 ? (
-                sortedAccounts.map((account) => (
-                  <ProductCard
-                    key={account.id}
-                    id={account.id.toString()}
-                    name={account.name}
-                    description={account.description}
-                    price={account.salePrice || account.price}
-                    originalPrice={account.salePrice ? account.price : undefined}
-                    image={account.imageUrl}
-                    rating={account.rating}
-                    isAccount={true}
-                  />
-                ))
+                sortedAccounts.map((account) => {
+                  // Lấy ảnh sản phẩm từ account.images nếu có, hoặc từ imageUrl (cho tương thích)
+                  const accountImageUrl = account.images && account.images.length > 0
+                    ? (typeof account.images[0] === 'string' 
+                        ? (account.images[0].startsWith('blob:') 
+                            ? '/images/placeholder/product-placeholder.jpg' 
+                            : account.images[0])
+                        : ((account.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
+                    : (account.imageUrl || '/images/placeholder/product-placeholder.jpg');
+                  
+                  return (
+                    <ProductCard
+                      key={account.id}
+                      id={account.id.toString()}
+                      name={account.name}
+                      description={account.description || ''}
+                      price={account.salePrice || account.price || 0}
+                      originalPrice={account.salePrice ? account.price : undefined}
+                      image={accountImageUrl}
+                      rating={account.rating || 0}
+                      isAccount={true}
+                    />
+                  );
+                })
               ) : (
                 <div className="col-span-full text-center py-10">
                   <p className="text-gray-500">Không tìm thấy tài khoản nào.</p>
@@ -248,32 +259,44 @@ export default function AccountsPage() {
               <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
               <div className="space-y-2">
                 {Array.isArray(accounts) && accounts.length > 0 ? 
-                  accounts.filter(a => a.isFeatured).slice(0, 3).map(account => (
-                    <Link 
-                      href={`/accounts/${account.id}`}
-                      key={account.id}
-                      className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
-                    >
-                      <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                        <img 
-                          src={account.imageUrl || '/images/placeholder/product-placeholder.jpg'} 
-                          alt={account.name}
-                          className="w-8 h-8 object-contain"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <h4 className="font-medium text-gray-900 text-sm">{account.name}</h4>
-                        <div className="text-xs md:text-sm text-primary-600 font-medium">
-                          {formatCurrency(account.salePrice || account.price)}
+                  accounts.filter(a => a.isFeatured).slice(0, 3).map(account => {
+                    // Xử lý ảnh cho sản phẩm nổi bật 
+                    const featuredImageUrl = account.images && account.images.length > 0
+                      ? (typeof account.images[0] === 'string' 
+                          ? (account.images[0].startsWith('blob:') 
+                              ? '/images/placeholder/product-placeholder.jpg' 
+                              : account.images[0])
+                          : ((account.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
+                      : (account.imageUrl || '/images/placeholder/product-placeholder.jpg');
+                    
+                    return (
+                      <Link 
+                        href={`/accounts/${account.id}`}
+                        key={account.id}
+                        className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
+                      >
+                        <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                          <img 
+                            src={featuredImageUrl} 
+                            alt={account.name}
+                            className="w-8 h-8 object-contain"
+                          />
                         </div>
-                      </div>
-                    </Link>
-                  )) : (
-                    <div className="text-center py-2">
-                      <p className="text-gray-500 text-sm">Không có sản phẩm nổi bật</p>
-                    </div>
-                  )
-                }
+                        <div className="flex flex-col">
+                          <h4 className="font-medium text-gray-900 text-sm">{account.name}</h4>
+                          <div className="text-xs md:text-sm text-primary-600 font-medium">
+                            {formatCurrency(account.salePrice || account.price || 0)}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })
+                : (
+                  <div className="text-center py-2">
+                    <p className="text-gray-500 text-sm">Không có sản phẩm nổi bật</p>
+                  </div>
+                )
+              }
               </div>
             </div>
             
