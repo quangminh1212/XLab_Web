@@ -654,6 +654,19 @@ function NewProductPage() {
             </div>
           </div>
           
+          {/* Mô tả ngắn */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mô tả ngắn
+            </label>
+            <RichTextEditor
+              value={formData.shortDescription}
+              onChange={handleShortDescRichTextChange}
+              placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
+              className="mb-1"
+            />
+          </div>
+          
           {/* Giá sản phẩm */}
           <div className="text-xl mb-6">
             {productVersions.length > 1 ? (
@@ -864,20 +877,8 @@ function NewProductPage() {
                 </select>
               </div>
               
-              {/* Mô tả ngắn */}
+              {/* Phần trống */}
               <div>
-                <label className="block text-gray-700 font-medium mb-2">
-                  Mô tả ngắn <span className="text-red-500">*</span>
-                </label>
-                <RichTextEditor
-                  value={formData.shortDescription}
-                  onChange={handleShortDescRichTextChange}
-                  placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                  className="mb-1"
-                />
-                <p className="text-sm text-gray-500 mt-1">
-                  Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)
-                </p>
               </div>
               
               {/* Xem trước mô tả khi không chỉnh sửa */}
