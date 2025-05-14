@@ -8,7 +8,7 @@
     "salePrice": 17000,
     "id": "6ded6686-f9d7-439e-a6a2-ae5d7117b821",
     "createdAt": "2025-05-14T05:46:34.252Z",
-    "updatedAt": "2025-05-14T11:57:28.099Z",
+    "updatedAt": "2025-05-14T11:13:55.510Z",
     "images": [
       "/images/products/4668f069-d754-4f81-bedc-29a21d7c9559.png"
     ],
@@ -20,15 +20,12 @@
     "categories": [],
     "versions": [
       {
-        "name": "Default",
-        "description": "Phiên bản mặc định",
+        "name": "Standard",
+        "description": "Phiên bản tiêu chuẩn",
         "price": 10000,
         "originalPrice": 17000,
         "features": []
       }
-    ],
-    "specs": "",
-    "rating": "4.7",
-    "weeklyPurchases": 0
+    ]
   }
 ]
