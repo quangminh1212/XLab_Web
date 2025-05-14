@@ -58,7 +58,10 @@ function extractIdFromUrl(url: string): string {
 export const dynamic = 'force-dynamic';
 
 // GET product handler
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -66,8 +69,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get ID from URL
-    const id = extractIdFromUrl(request.url);
+    const { id } = params;
     
     // Find product
     const products = getProducts();
@@ -85,7 +87,10 @@ export async function GET(request: NextRequest) {
 }
 
 // UPDATE product handler
-export async function PUT(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -93,8 +98,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get ID from URL
-    const id = extractIdFromUrl(request.url);
+    const { id } = params;
     
     // Find product
     const products = getProducts();
@@ -142,7 +146,10 @@ export async function PUT(request: NextRequest) {
 }
 
 // DELETE product handler
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -150,8 +157,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get ID from URL
-    const id = extractIdFromUrl(request.url);
+    const { id } = params;
     
     // Remove product
     const products = getProducts();
