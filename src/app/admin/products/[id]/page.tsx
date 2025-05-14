@@ -40,14 +40,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     salePrice: 0
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
   
   // Thêm state cho mô tả kỹ thuật
   const [specifications, setSpecifications] = useState<{key: string, value: string}[]>([]);
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
   const [isEditingSpecs, setIsEditingSpecs] = useState(false);
-  
-  // Remove the params.id access useEffect since we're now using React.use()
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -374,96 +374,103 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   }
 
   return (
-    <div className="container">
-      <h1 className="text-2xl font-bold mb-6">Chỉnh sửa sản phẩm</h1>
-      
-      <div className="mb-6">
-        <button
-          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-          onClick={() => router.push('/admin/products')}
-        >
-          &larr; Quay lại danh sách
-        </button>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Chỉnh sửa sản phẩm</h1>
+        <div className="flex space-x-3">
+          <button
+            type="button"
+            onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+            className="bg-blue-100 py-2 px-4 rounded-lg text-blue-700 hover:bg-blue-200 transition-colors text-sm"
+          >
+            {showAdvancedOptions ? 'Ẩn tùy chọn nâng cao' : 'Tùy chọn nâng cao'}
+          </button>
+          <button
+            onClick={() => router.push('/admin/products')}
+            className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
+          >
+            ← Quay lại danh sách
+          </button>
+        </div>
       </div>
-
+      
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+          {error}
+        </div>
+      )}
+      
       {successMessage && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
           {successMessage}
         </div>
       )}
-
-      <form onSubmit={handleSaveProduct} className="space-y-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Thông tin cơ bản</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Tên sản phẩm
-              </label>
+      
+      <form onSubmit={handleSaveProduct}>
+        {/* Giao diện chính giống giao diện sản phẩm trong hình */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          <div className="flex justify-between items-start mb-4">
+            {/* Tiêu đề sản phẩm */}
+            <div className="flex-1">
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                placeholder="Tên sản phẩm"
+                className="text-2xl font-bold w-full p-2 border border-transparent hover:border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                 required
               />
             </div>
             
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Trạng thái
-              </label>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="isPublished"
-                  checked={formData.isPublished}
-                  onChange={handleInputChange}
-                  className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <span className="ml-2 text-gray-700">Công khai</span>
-              </div>
-            </div>
-            
-            <div className="mb-4">
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                Giá sản phẩm (VNĐ)
-              </label>
+            {/* Công khai sản phẩm */}
+            <div className="flex items-center ml-4">
               <input
-                type="number"
-                id="price"
-                name="price"
-                value={formData.price}
+                type="checkbox"
+                id="isPublished"
+                name="isPublished"
+                checked={formData.isPublished}
+                onChange={handleInputChange}
+                className="h-5 w-5 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+              />
+              <label htmlFor="isPublished" className="ml-2 text-sm text-gray-700">
+                Công khai ngay
+              </label>
+            </div>
+          </div>
+          
+          {/* Giá sản phẩm */}
+          <div className="text-xl mb-6">
+            <div className="font-bold text-green-600 text-2xl flex items-center space-x-3">
+              <input 
+                type="number" 
+                value={formData.price || 0}
                 onChange={handlePriceChange}
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-32 p-1 bg-transparent border-b border-green-500 focus:outline-none text-2xl font-bold text-green-600"
                 min="0"
                 step="1000"
               />
-            </div>
-            
-            <div className="mb-4">
-              <label htmlFor="salePrice" className="block text-sm font-medium text-gray-700 mb-1">
-                Giá gốc (VNĐ)
-              </label>
-              <input
-                type="number"
-                id="salePrice"
-                name="salePrice"
-                value={formData.salePrice}
-                onChange={handleSalePriceChange}
-                className="w-full p-2 border border-gray-300 rounded-md"
-                min="0"
-                step="1000"
-              />
-              {/* Hiển thị phần trăm giảm giá */}
-              {formData.salePrice > 0 && (
-                <div className="mt-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded inline-block">
-                  Giảm giá: {formData.salePrice > formData.price ? 
-                    Math.round((1 - formData.price / formData.salePrice) * 100) : 0}%
-                </div>
-              )}
+              <span>đ</span>
+              <div className="flex items-center space-x-2">
+                <input 
+                  type="number" 
+                  value={formData.salePrice || 0}
+                  onChange={handleSalePriceChange}
+                  className="w-32 p-1 bg-transparent border-b border-gray-300 focus:outline-none text-lg line-through text-gray-500"
+                  min="0"
+                  step="1000"
+                />
+                <span className="text-lg line-through text-gray-500">đ</span>
+                
+                {/* Hiển thị phần trăm giảm giá - luôn hiển thị */}
+                {formData.salePrice > 0 && (
+                  <span className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
+                    {formData.salePrice > formData.price ? 
+                      `-${Math.round((1 - formData.price / formData.salePrice) * 100)}%` : 
+                      '0%'}
+                  </span>
+                )}
+              </div>
               {formData.salePrice === 0 && formData.price > 0 && (
                 <button
                   type="button"
@@ -474,288 +481,288 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                       salePrice: Math.ceil(prev.price * 1.2 / 1000) * 1000 // Làm tròn lên đến 1000đ
                     }));
                   }}
-                  className="mt-2 text-sm text-blue-500 hover:text-blue-700 block"
+                  className="text-sm text-blue-500 hover:text-blue-700"
                 >
                   + Thêm giá gốc
                 </button>
               )}
             </div>
           </div>
-        </div>
-        
-        {/* Phần thêm ảnh đại diện sản phẩm */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Ảnh đại diện sản phẩm</h2>
           
-          <div className="space-y-4">
-            {/* Thêm ảnh đại diện từ URL */}
-            <div className="flex">
-              <input
-                type="text"
-                value={featuredImageUrl}
-                onChange={(e) => setFeaturedImageUrl(e.target.value)}
-                placeholder="Nhập URL ảnh đại diện"
-                className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-              <button
-                type="button"
-                onClick={handleAddFeaturedImageUrl}
-                className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
-              >
-                Thêm URL
-              </button>
-            </div>
-            
-            {/* Thêm ảnh đại diện từ máy tính */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Phần hình ảnh và upload */}
             <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Hoặc tải lên từ máy tính
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                ref={featuredImageInputRef}
-                onChange={handleFeaturedImageUpload}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-            
-            {/* Hiển thị ảnh đại diện đã chọn */}
-            {featuredImage && (
-              <div className="mt-4">
-                <h4 className="font-medium mb-2">Ảnh đại diện đã chọn</h4>
-                <div className="relative border border-gray-200 rounded p-2 max-w-sm mx-auto">
-                  <div className="relative aspect-square w-full overflow-hidden rounded">
+              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square max-w-sm mx-auto flex items-center justify-center mb-3 relative">
+                {featuredImage ? (
+                  <>
                     <img 
                       src={featuredImage} 
-                      alt="Ảnh đại diện sản phẩm" 
+                      alt={formData.name} 
                       className="object-contain max-w-full max-h-full" 
                     />
-                  </div>
-                  <div className="mt-2 flex justify-end">
                     <button
                       type="button"
                       onClick={handleRemoveFeaturedImage}
-                      className="text-sm bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors"
+                      className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                     >
-                      Xóa
+                      ×
                     </button>
+                  </>
+                ) : (
+                  <div className="text-gray-400 text-center p-4">
+                    <span className="block text-3xl mb-2">🖼️</span>
+                    <span className="text-sm">Chưa có ảnh sản phẩm</span>
                   </div>
-                </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-        
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Mô tả sản phẩm</h2>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Mô tả ngắn
-              </label>
-              <RichTextEditor
-                value={formData.shortDescription}
-                onChange={handleShortDescRichTextChange}
-                placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                className="mb-1"
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)
-              </p>
-            </div>
-            
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">
-                Mô tả đầy đủ
-              </label>
-              <RichTextEditor
-                value={formData.description}
-                onChange={handleRichTextChange}
-                placeholder="Nhập mô tả chi tiết về sản phẩm..."
-                className="mb-4"
-              />
-            </div>
-            
-            {/* Phần thêm hình ảnh cho mô tả */}
-            <div className="mt-6">
-              <h3 className="text-lg font-medium mb-4">Thêm hình ảnh vào mô tả</h3>
               
-              <div className="space-y-4">
-                {/* Thêm hình ảnh từ URL */}
+              <div className="space-y-2">
                 <div className="flex">
                   <input
                     type="text"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
-                    placeholder="Nhập URL hình ảnh"
+                    value={featuredImageUrl}
+                    onChange={(e) => setFeaturedImageUrl(e.target.value)}
+                    placeholder="Nhập URL ảnh"
                     className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                   <button
                     type="button"
-                    onClick={handleAddImageUrl}
+                    onClick={handleAddFeaturedImageUrl}
                     className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
                   >
                     Thêm URL
                   </button>
                 </div>
-                
-                {/* Thêm hình ảnh từ máy tính */}
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Hoặc tải lên từ máy tính
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                </div>
-                
-                {/* Hiển thị danh sách hình ảnh đã thêm */}
-                {descriptionImages.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="font-medium mb-2">Hình ảnh đã thêm</h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                      {descriptionImages.map((imageUrl, index) => (
-                        <div key={index} className="relative border border-gray-200 rounded p-2 group">
-                          <div className="relative aspect-square w-full overflow-hidden rounded">
-                            <img 
-                              src={imageUrl} 
-                              alt={`Hình ảnh ${index + 1}`} 
-                              className="object-contain max-w-full max-h-full" 
-                            />
-                          </div>
-                          <div className="mt-2 flex justify-between text-xs">
-                            <button
-                              type="button"
-                              onClick={() => handleInsertImageToDescription(imageUrl)}
-                              className="text-xs bg-green-500 text-white px-2 py-0.5 rounded hover:bg-green-600 transition-colors"
-                            >
-                              Sao chép URL
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveImage(index)}
-                              className="text-xs bg-red-500 text-white px-2 py-0.5 rounded hover:bg-red-600 transition-colors"
-                            >
-                              Xóa
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={featuredImageInputRef}
+                  onChange={handleFeaturedImageUpload}
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+            </div>
+            
+            {/* Phần mô tả ngắn */}
+            <div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Mô tả ngắn
+                </label>
+                <RichTextEditor
+                  value={formData.shortDescription}
+                  onChange={handleShortDescRichTextChange}
+                  placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
+                  className="mb-1"
+                />
               </div>
             </div>
           </div>
         </div>
         
-        {/* Thông số kỹ thuật */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
-            <button 
-              type="button" 
-              onClick={() => setIsEditingSpecs(!isEditingSpecs)}
-              className="text-blue-500 hover:text-blue-700"
-            >
-              {isEditingSpecs ? 'Xong' : 'Chỉnh sửa'}
-            </button>
-          </div>
-          
-          {isEditingSpecs ? (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <input
-                    type="text"
-                    value={newSpecKey}
-                    onChange={(e) => setNewSpecKey(e.target.value)}
-                    placeholder="Tên thông số (VD: CPU, RAM, HDD)"
-                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                </div>
-                <div className="flex">
-                  <input
-                    type="text"
-                    value={newSpecValue}
-                    onChange={(e) => setNewSpecValue(e.target.value)}
-                    placeholder="Giá trị thông số"
-                    className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddSpecification}
-                    className="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600 transition-colors"
-                  >
-                    Thêm
-                  </button>
-                </div>
+        {showAdvancedOptions && (
+          <>
+            {/* Mô tả đầy đủ */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Mô tả đầy đủ</h2>
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditingDescription(!isEditingDescription)}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  {isEditingDescription ? 'Xong' : 'Chỉnh sửa'}
+                </button>
               </div>
               
-              {specifications.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="font-medium mb-2">Thông số đã thêm</h4>
+              {isEditingDescription && (
+                <RichTextEditor
+                  value={formData.description}
+                  onChange={handleRichTextChange}
+                  placeholder="Nhập mô tả chi tiết về sản phẩm..."
+                  className="mb-4"
+                />
+              )}
+              
+              {/* Phần thêm hình ảnh cho mô tả */}
+              <div className="mt-6">
+                <h3 className="text-lg font-medium mb-4">Thêm hình ảnh vào mô tả</h3>
+                
+                <div className="space-y-4">
+                  {/* Thêm hình ảnh từ URL */}
+                  <div className="flex">
+                    <input
+                      type="text"
+                      value={newImageUrl}
+                      onChange={(e) => setNewImageUrl(e.target.value)}
+                      placeholder="Nhập URL hình ảnh"
+                      className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddImageUrl}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
+                    >
+                      Thêm URL
+                    </button>
+                  </div>
+                  
+                  {/* Thêm hình ảnh từ máy tính */}
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Hoặc tải lên từ máy tính
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  
+                  {/* Hiển thị danh sách hình ảnh đã thêm */}
+                  {descriptionImages.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="font-medium mb-2">Hình ảnh đã thêm</h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        {descriptionImages.map((imageUrl, index) => (
+                          <div key={index} className="relative border border-gray-200 rounded p-2 group">
+                            <div className="relative aspect-square w-full overflow-hidden rounded">
+                              <img 
+                                src={imageUrl} 
+                                alt={`Hình ảnh ${index + 1}`} 
+                                className="object-contain max-w-full max-h-full" 
+                              />
+                            </div>
+                            <div className="mt-2 flex justify-between text-xs">
+                              <button
+                                type="button"
+                                onClick={() => handleInsertImageToDescription(imageUrl)}
+                                className="text-xs bg-green-500 text-white px-2 py-0.5 rounded hover:bg-green-600 transition-colors"
+                              >
+                                Sao chép URL
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImage(index)}
+                                className="text-xs bg-red-500 text-white px-2 py-0.5 rounded hover:bg-red-600 transition-colors"
+                              >
+                                Xóa
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Thông số kỹ thuật */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditingSpecs(!isEditingSpecs)}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  {isEditingSpecs ? 'Xong' : 'Chỉnh sửa'}
+                </button>
+              </div>
+              
+              {isEditingSpecs ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <input
+                        type="text"
+                        value={newSpecKey}
+                        onChange={(e) => setNewSpecKey(e.target.value)}
+                        placeholder="Tên thông số (VD: CPU, RAM, HDD)"
+                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div className="flex">
+                      <input
+                        type="text"
+                        value={newSpecValue}
+                        onChange={(e) => setNewSpecValue(e.target.value)}
+                        placeholder="Giá trị thông số"
+                        className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddSpecification}
+                        className="bg-green-500 text-white px-4 py-2 rounded-r hover:bg-green-600 transition-colors"
+                      >
+                        Thêm
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {specifications.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="font-medium mb-2">Thông số đã thêm</h4>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <table className="w-full border-collapse">
+                          <thead>
+                            <tr className="border-b border-gray-300">
+                              <th className="py-2 text-left">Tên thông số</th>
+                              <th className="py-2 text-left">Giá trị</th>
+                              <th className="py-2 w-20"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {specifications.map((spec, index) => (
+                              <tr key={index} className="border-b border-gray-200">
+                                <td className="py-2 font-medium">{spec.key}</td>
+                                <td className="py-2">{spec.value}</td>
+                                <td className="py-2 text-right">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveSpecification(index)}
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    ×
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                specifications.length > 0 ? (
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="border-b border-gray-300">
-                          <th className="py-2 text-left">Tên thông số</th>
-                          <th className="py-2 text-left">Giá trị</th>
-                          <th className="py-2 w-20"></th>
-                        </tr>
-                      </thead>
                       <tbody>
                         {specifications.map((spec, index) => (
                           <tr key={index} className="border-b border-gray-200">
-                            <td className="py-2 font-medium">{spec.key}</td>
+                            <td className="py-2 font-medium w-1/3">{spec.key}</td>
                             <td className="py-2">{spec.value}</td>
-                            <td className="py-2 text-right">
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveSpecification(index)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                ×
-                              </button>
-                            </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                </div>
+                ) : (
+                  <div className="bg-gray-50 p-4 rounded-lg text-gray-500 text-center">
+                    Chưa có thông số kỹ thuật nào. Nhấn "Chỉnh sửa" để thêm.
+                  </div>
+                )
               )}
+              <p className="text-sm text-gray-500 mt-4">
+                Thêm các thông số kỹ thuật chi tiết của sản phẩm để giúp người dùng hiểu rõ hơn về sản phẩm (VD: Cấu hình, Yêu cầu hệ thống, Tính năng đặc biệt).
+              </p>
             </div>
-          ) : (
-            specifications.length > 0 ? (
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <table className="w-full border-collapse">
-                  <tbody>
-                    {specifications.map((spec, index) => (
-                      <tr key={index} className="border-b border-gray-200">
-                        <td className="py-2 font-medium w-1/3">{spec.key}</td>
-                        <td className="py-2">{spec.value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="bg-gray-50 p-4 rounded-lg text-gray-500 text-center">
-                Chưa có thông số kỹ thuật nào. Nhấn "Chỉnh sửa" để thêm.
-              </div>
-            )
-          )}
-          <p className="text-sm text-gray-500 mt-4">
-            Thêm các thông số kỹ thuật chi tiết của sản phẩm để giúp người dùng hiểu rõ hơn về sản phẩm (VD: Cấu hình, Yêu cầu hệ thống, Tính năng đặc biệt).
-          </p>
-        </div>
+          </>
+        )}
         
         <div className="flex justify-end space-x-4">
           <button
