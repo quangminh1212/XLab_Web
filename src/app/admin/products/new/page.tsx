@@ -1,10 +1,21 @@
 'use client'
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
+import { slugify } from '@/utils/slugify';
+
+// Định nghĩa hàm slugify
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 function NewProductPage() {
   const router = useRouter();
@@ -59,10 +70,11 @@ function NewProductPage() {
   
   const [formData, setFormData] = useState({
     name: '',
+    slug: '',
     shortDescription: '',
     description: '',
-    isPublished: false,
-    categoryId: 'office-software'
+    isPublished: true,
+    categoryId: '',
   });
 
   // Xử lý thêm ảnh đại diện từ URL
@@ -346,43 +358,73 @@ function NewProductPage() {
     }
   };
 
+  // Xử lý thêm sản phẩm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Xác thực dữ liệu đầu vào
+    const errors = [];
+    
+    if (!formData.name.trim()) errors.push('Tên sản phẩm là bắt buộc');
+    if (!formData.description.trim()) errors.push('Mô tả sản phẩm là bắt buộc');
+    
+    // Đảm bảo có ít nhất một phiên bản
+    if (productVersions.length === 0) {
+      errors.push('Sản phẩm phải có ít nhất một phiên bản');
+    }
+    
+    // Đảm bảo có hình đại diện
+    if (!featuredImage) {
+      errors.push('Sản phẩm phải có hình đại diện');
+    }
+
+    if (errors.length > 0) {
+      setError(errors.join('\n'));
+      setTimeout(() => setError(null), 5000);
+      return;
+    }
+    
+    setLoading(true);
+    
     try {
-      setLoading(true);
-      setError(null);
+      // Tạo danh sách hình ảnh, với featuredImage là hình đầu tiên
+      const productImages = featuredImage ? [featuredImage] : [];
       
-      if (productVersions.length === 0) {
-        throw new Error('Cần thêm ít nhất một phiên bản sản phẩm');
-      }
+      // Lưu đúng đường dẫn cho descriptionImages
+      const sanitizedDescriptionImages = descriptionImages.map(imgUrl => {
+        if (imgUrl.startsWith('/')) return imgUrl;
+        return `/${imgUrl}`;
+      });
       
-      // Filter out any blob URLs from images
-      const cleanedFeaturedImage = featuredImage && featuredImage.startsWith('blob:') 
-        ? null 
-        : featuredImage;
-        
-      const cleanedDescriptionImages = descriptionImages.filter(img => !img.startsWith('blob:'));
-      
-      // Prepare the product data
+      const versionsData = productVersions.map(version => ({
+        name: version.name,
+        description: version.description,
+        price: version.price,
+        originalPrice: version.originalPrice || version.price,
+        features: []
+      }));
+
+      // Chuẩn bị dữ liệu sản phẩm để gửi lên server
       const productData = {
         name: formData.name,
-        shortDescription: formData.shortDescription,
+        slug: formData.slug || slugify(formData.name),
         description: formData.description,
-        isPublished: formData.isPublished,
-        slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
-        images: cleanedFeaturedImage ? [cleanedFeaturedImage] : [],
-        descriptionImages: cleanedDescriptionImages,
+        shortDescription: formData.shortDescription,
+        images: productImages,
+        descriptionImages: sanitizedDescriptionImages,
         features: features,
         specifications: specifications,
-        warranty: warranty,
-        requirements: [],
-        versions: productVersions,
-        categories: [formData.categoryId]
+        categories: [formData.categoryId],
+        isPublished: true,
+        rating: "4.7",
+        weeklyPurchases: 0,
+        versions: versionsData
       };
       
-      // Send the create request
-      const response = await fetch('/api/admin/products', {
+      console.log('Dữ liệu sản phẩm gửi lên:', productData);
+      
+      // Gửi dữ liệu lên server
+      const response = await fetch('/api/products/new', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -390,21 +432,24 @@ function NewProductPage() {
         body: JSON.stringify(productData)
       });
       
+      const result = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Không thể tạo sản phẩm mới');
+        throw new Error(result.error || 'Đã xảy ra lỗi khi tạo sản phẩm');
       }
       
-      const result = await response.json();
+      // Hiển thị thông báo thành công
       setSuccessMessage('Sản phẩm đã được tạo thành công!');
       
-      // Redirect to the product edit page after 1 second
+      // Chuyển hướng đến trang danh sách sản phẩm sau 2 giây
       setTimeout(() => {
-        router.push(`/admin/products/${result.id}`);
-      }, 1000);
+        router.push('/admin/products');
+      }, 2000);
       
     } catch (err) {
-      setError((err as Error).message);
-      console.error('Error creating product:', err);
+      console.error('Lỗi khi tạo sản phẩm:', err);
+      setError((err as Error).message || 'Đã xảy ra lỗi khi tạo sản phẩm');
+      setTimeout(() => setError(null), 5000);
     } finally {
       setLoading(false);
     }

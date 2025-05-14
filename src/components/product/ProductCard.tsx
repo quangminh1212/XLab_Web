@@ -40,6 +40,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const router = useRouter()
   
   // Log the image URL for debugging
@@ -129,8 +130,20 @@ export default function ProductCard({
     if (onView) onView(id)
   }
 
+  // Handle image error and use placeholder
+  const handleImageError = () => {
+    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`)
+    setImageError(true)
+    setIsImageLoaded(true) // Mark as loaded to hide spinner
+  }
+
   // Tạo slug từ tên nếu không có slug được truyền vào
   const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+  // The actual image to display (with fallback)
+  const displayImageUrl = imageError 
+    ? '/images/placeholder/product-placeholder.jpg' 
+    : cleanImageUrl;
 
   return (
     <Link
@@ -148,7 +161,7 @@ export default function ProductCard({
         )}
 
         <Image
-          src={cleanImageUrl}
+          src={displayImageUrl}
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -157,10 +170,7 @@ export default function ProductCard({
           } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
           priority={false}
-          onError={() => {
-            console.log(`Image error for ${name}, using placeholder`)
-            // Image failed to load - this will trigger our fallback in the component
-          }}
+          onError={handleImageError}
         />
 
         {!isImageLoaded && (

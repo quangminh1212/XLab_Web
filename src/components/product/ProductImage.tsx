@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 interface ProductImageProps {
@@ -10,19 +10,44 @@ interface ProductImageProps {
 }
 
 const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProps) => {
-  const [mainImage, setMainImage] = useState(images?.[0] || '/images/placeholder/product-placeholder.jpg')
+  // Validate image URLs
+  const validateImageUrl = (url: string): string => {
+    if (!url) return '/images/placeholder/product-placeholder.jpg'
+    if (url.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg'
+    if (url.includes('undefined')) return '/images/placeholder/product-placeholder.jpg'
+    if (url.trim() === '') return '/images/placeholder/product-placeholder.jpg'
+    
+    return url;
+  }
+  
+  // Process the image array
+  const processedImages = images?.map(validateImageUrl) || ['/images/placeholder/product-placeholder.jpg'];
+  
+  const [mainImage, setMainImage] = useState(processedImages[0])
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [isZoomed, setIsZoomed] = useState(false)
   const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 })
+  const [imageFailed, setImageFailed] = useState(false)
+
+  // Update main image when images prop changes
+  useEffect(() => {
+    if (processedImages.length > 0) {
+      setMainImage(processedImages[0]);
+      setSelectedIndex(0);
+      setIsLoading(true);
+      setImageFailed(false);
+    }
+  }, [images]);
 
   // Fallback array if images is undefined
-  const imageArray = images?.length ? images : ['/images/placeholder/product-placeholder.jpg']
+  const imageArray = processedImages.length ? processedImages : ['/images/placeholder/product-placeholder.jpg']
 
   const handleThumbnailClick = (image: string, index: number) => {
     setMainImage(image)
     setSelectedIndex(index)
     setIsLoading(true)
+    setImageFailed(false)
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -43,6 +68,13 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
     setIsZoomed(false)
   }
 
+  // Handle image error
+  const handleImageError = () => {
+    console.error(`Không thể tải hình ảnh: ${mainImage}`);
+    setImageFailed(true);
+    setIsLoading(false);
+  }
+
   // Pick aspect ratio classes based on the prop
   const getAspectRatioClass = () => {
     switch (aspectRatio) {
@@ -59,6 +91,9 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
     }
   }
 
+  // Determine which image to show
+  const displayImage = imageFailed ? '/images/placeholder/product-placeholder.jpg' : mainImage;
+
   return (
     <div className="w-full">
       {/* Main Image */}
@@ -70,13 +105,14 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
       >
         <div className="absolute inset-0">
           <Image
-            src={mainImage}
+            src={displayImage}
             alt={name}
             fill
             className={`object-contain transition-opacity duration-300 ${
               isLoading ? 'opacity-0' : 'opacity-100'
             }`}
             onLoad={() => setIsLoading(false)}
+            onError={handleImageError}
             style={{
               transform: isZoomed ? 'scale(1.5)' : 'scale(1)',
               transformOrigin: isZoomed ? `${zoomPosition.x}% ${zoomPosition.y}%` : 'center',
@@ -118,6 +154,11 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
                 fill
                 className="object-cover"
                 sizes="64px"
+                onError={(e) => {
+                  console.error(`Không thể tải thumbnail: ${image}`);
+                  // Replace with placeholder image
+                  (e.target as HTMLImageElement).src = '/images/placeholder/product-placeholder.jpg';
+                }}
               />
             </button>
           ))}
