@@ -69,7 +69,9 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
     // Find product
     const products = getProducts();
@@ -98,7 +100,9 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
     // Find product
     const products = getProducts();
@@ -157,7 +161,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id } = params;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
     // Remove product
     const products = getProducts();
