@@ -3,8 +3,10 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
-  longDescription: string;
-  imageUrl: string;
+  shortDescription?: string;
+  longDescription?: string;
+  imageUrl?: string;
+  images?: string[] | { url: string; alt: string; }[];
   descriptionImages?: string[];
   price: number;
   salePrice?: number;
@@ -24,6 +26,7 @@ export interface Product {
   downloadCount?: number;
   viewCount?: number;
   rating?: number;
+  weeklyPurchases?: number;
   version?: string;
   size?: string;
   licenseType?: string;
@@ -32,6 +35,7 @@ export interface Product {
   isAccount?: boolean;
   type?: string;
   options?: { name: string; price: number }[];
+  versions?: { name: string; description?: string; price: number; originalPrice: number; features: string[] }[];
 }
 
 export interface Category {
