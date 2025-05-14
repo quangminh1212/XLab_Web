@@ -1,18 +1,18 @@
 [
   {
-    "name": "fdcf",
-    "shortDescription": "",
+    "name": "Xlab",
+    "shortDescription": "Hello world",
     "description": "",
     "isPublished": true,
     "price": 10000,
     "salePrice": 17000,
     "id": "6ded6686-f9d7-439e-a6a2-ae5d7117b821",
     "createdAt": "2025-05-14T05:46:34.252Z",
-    "updatedAt": "2025-05-14T09:25:07.443Z",
+    "updatedAt": "2025-05-14T11:13:55.510Z",
     "images": [
-      "/images/placeholder/product-placeholder.jpg"
+      "/images/products/4668f069-d754-4f81-bedc-29a21d7c9559.png"
     ],
-    "slug": "fdcf",
+    "slug": "xlab",
     "features": [],
     "requirements": [],
     "descriptionImages": [],

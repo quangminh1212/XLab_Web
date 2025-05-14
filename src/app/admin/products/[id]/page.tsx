@@ -40,7 +40,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     isPublished: false,
     price: 0,
     salePrice: 0,
-    categories: [] as string[]
+    categories: [] as string[],
+    specs: ''
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
@@ -74,7 +75,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           isPublished: productData.isPublished || false,
           price: productData.versions?.[0]?.price || 0,
           salePrice: productData.versions?.[0]?.originalPrice || 0,
-          categories: productData.categories ? productData.categories.map((c: any) => c.id) : []
+          categories: productData.categories ? productData.categories.map((c: any) => c.id) : [],
+          specs: productData.specifications ? productData.specifications.map((spec: {key: string, value: string}) => spec.key + ': ' + spec.value).join('\n') : ''
         });
         
         // Set description images if available
@@ -354,52 +356,38 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     e.preventDefault();
     
     if (isSubmitting) return;
-    setIsSubmitting(true);
-    setError(null);
-
+    
+    if (!formData.name.trim()) {
+      setError('Vui lòng nhập tên sản phẩm');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
     try {
-      // Filter out any blob URLs from images
-      const cleanedFeaturedImage = featuredImage && featuredImage.startsWith('blob:') 
-        ? null 
-        : featuredImage;
-        
-      const cleanedDescriptionImages = descriptionImages.filter(img => !img.startsWith('blob:'));
-      
-      console.log("Saving product with image:", cleanedFeaturedImage);
-      console.log("Description images:", cleanedDescriptionImages);
-      
-      // Prepare product data for submission
-      const productData: Product = {
-        ...product, // Keep all existing product data
-        ...formData,  // Override with form data
-        isPublished: true, // Set isPublished to true by default when saving
-        id: productId || uuidv4(),
-        slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-        features: product?.features || [],
-        requirements: product?.requirements || [],
-        images: cleanedFeaturedImage ? [cleanedFeaturedImage] : product?.images || [],
-        descriptionImages: cleanedDescriptionImages.length > 0 ? cleanedDescriptionImages : product?.descriptionImages || [],
-        specifications: specifications || product?.specifications || [],
-        categories: formData.categories ? formData.categories.map(id => {
-          const existingCategory = product?.categories?.find(c => c.id === id);
-          if (existingCategory) return existingCategory;
-          return {
-            id,
-            name: getCategoryName(id),
-            slug: id
-          };
-        }) : (product?.categories || []),
+      setIsSubmitting(true);
+      setError(null);
+
+      // Prepare product data to send to API
+      const productData = {
+        id: productId,
+        name: formData.name,
+        shortDescription: formData.shortDescription,
+        description: formData.description,
+        isPublished: formData.isPublished,
+        specifications: specifications,
+        specs: formData.specs,
         versions: [
           {
-            name: "Standard",
-            description: "Phiên bản tiêu chuẩn",
-            price: Number(formData.price) || 0,
-            originalPrice: Number(formData.salePrice) || 0,
+            name: 'Default',
+            description: 'Phiên bản mặc định',
+            price: formData.price,
+            originalPrice: formData.salePrice,
             features: []
           }
         ],
-        createdAt: product?.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        categories: formData.categories.map(id => ({ id })),
+        descriptionImages: descriptionImages,
+        images: featuredImage ? [featuredImage] : []
       };
       
       console.log("Saving product data:", JSON.stringify(productData, null, 2));
@@ -790,6 +778,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               
               {isEditingSpecs ? (
                 <div className="space-y-4">
+                  <RichTextEditor
+                    value={formData.specs}
+                    onChange={(content) => setFormData(prev => ({ ...prev, specs: content }))}
+                    placeholder="Nhập thông số kỹ thuật chi tiết..."
+                    className="mb-4"
+                  />
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <input
