@@ -29,8 +29,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [newImageUrl, setNewImageUrl] = useState('');
-  const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [featuredImage, setFeaturedImage] = useState<string | null>(null);
   const [descriptionImages, setDescriptionImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
@@ -109,28 +107,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       fetchProduct();
     }
   }, [productId]);
-
-  // Xử lý thêm hình ảnh từ URL
-  const handleAddImageUrl = () => {
-    if (newImageUrl.trim() && isValidImageUrl(newImageUrl)) {
-      setDescriptionImages([...descriptionImages, newImageUrl]);
-      setNewImageUrl('');
-    } else {
-      setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
-      setTimeout(() => setError(null), 3000);
-    }
-  };
-
-  // Xử lý thêm ảnh đại diện từ URL
-  const handleAddFeaturedImageUrl = () => {
-    if (featuredImageUrl.trim() && isValidImageUrl(featuredImageUrl)) {
-      setFeaturedImage(featuredImageUrl);
-      setFeaturedImageUrl('');
-    } else {
-      setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
-      setTimeout(() => setError(null), 3000);
-    }
-  };
 
   // Kiểm tra URL hình ảnh có hợp lệ không
   const isValidImageUrl = (url: string) => {
@@ -797,22 +773,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </div>
               
               <div className="space-y-2">
-                <div className="flex">
-                  <input
-                    type="text"
-                    value={featuredImageUrl}
-                    onChange={(e) => setFeaturedImageUrl(e.target.value)}
-                    placeholder="Nhập URL ảnh"
-                    className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddFeaturedImageUrl}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
-                  >
-                    Thêm URL
-                  </button>
-                </div>
                 <input
                   type="file"
                   accept="image/*"
@@ -870,24 +830,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 
                 <div className="space-y-4">
                   {/* Thêm hình ảnh từ URL */}
-                  <div className="flex">
-                    <input
-                      type="text"
-                      value={newImageUrl}
-                      onChange={(e) => setNewImageUrl(e.target.value)}
-                      placeholder="Nhập URL hình ảnh"
-                      className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddImageUrl}
-                      className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
-                    >
-                      Thêm URL
-                    </button>
-                  </div>
-                  
-                  {/* Thêm hình ảnh từ máy tính */}
                   <div>
                     <label className="block text-gray-700 font-medium mb-2">
                       Hoặc tải lên từ máy tính

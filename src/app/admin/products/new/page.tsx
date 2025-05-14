@@ -28,9 +28,7 @@ function NewProductPage() {
   
   // Hình ảnh và dữ liệu
   const [featuredImage, setFeaturedImage] = useState<string | null>(null);
-  const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [descriptionImages, setDescriptionImages] = useState<string[]>([]);
-  const [newImageUrl, setNewImageUrl] = useState('');
   
   // Thêm phần features (Đặc điểm nổi bật)
   const [newFeature, setNewFeature] = useState('');
@@ -75,17 +73,6 @@ function NewProductPage() {
     isPublished: true,
     categoryId: '',
   });
-
-  // Xử lý thêm ảnh đại diện từ URL
-  const handleAddFeaturedImageUrl = () => {
-    if (featuredImageUrl.trim() && isValidImageUrl(featuredImageUrl)) {
-      setFeaturedImage(featuredImageUrl);
-      setFeaturedImageUrl('');
-    } else {
-      setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
-      setTimeout(() => setError(null), 3000);
-    }
-  };
 
   // Kiểm tra URL hình ảnh có hợp lệ không
   const isValidImageUrl = (url: string) => {
@@ -477,16 +464,7 @@ function NewProductPage() {
     }
   };
 
-  // Xử lý thêm hình ảnh mô tả từ URL
-  const handleAddImageUrl = () => {
-    if (newImageUrl.trim() && isValidImageUrl(newImageUrl)) {
-      setDescriptionImages([...descriptionImages, newImageUrl]);
-      setNewImageUrl('');
-    } else {
-      setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
-      setTimeout(() => setError(null), 3000);
-    }
-  };
+
 
   // Xử lý thêm sản phẩm
   const handleSubmit = async (e: React.FormEvent) => {
@@ -772,24 +750,6 @@ function NewProductPage() {
               </div>
               
               <div className="space-y-2">
-                <div className="flex">
-                  <input
-                    type="text"
-                    value={featuredImageUrl}
-                    onChange={(e) => setFeaturedImageUrl(e.target.value)}
-                    placeholder="Nhập URL ảnh"
-                    className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddFeaturedImageUrl}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
-                  >
-                    Thêm
-                  </button>
-                </div>
-                
-                <label className="block text-gray-600 text-sm">Hoặc tải lên từ máy tính:</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -844,23 +804,6 @@ function NewProductPage() {
                     Hình ảnh mô tả
                   </label>
                   <div className="space-y-3">
-                    <div className="flex">
-                      <input
-                        type="text"
-                        value={newImageUrl}
-                        onChange={(e) => setNewImageUrl(e.target.value)}
-                        placeholder="Nhập URL hình ảnh"
-                        className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddImageUrl}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
-                      >
-                        Thêm URL
-                      </button>
-                    </div>
-                    
                     <input
                       type="file"
                       accept="image/*"
