@@ -295,6 +295,7 @@ export default function ProductsPage() {
                     rating={product.rating}
                     reviewCount={product.reviewCount}
                     weeklyPurchases={product.weeklyPurchases}
+                    slug={product.slug}
                   />
                 );
               })}
@@ -334,9 +335,12 @@ export default function ProductsPage() {
                   // Use the helper function for featured products as well
                   const featuredImageUrl = getValidImageUrl(product);
                   
+                  // Sử dụng slug nếu có, nếu không thì dùng id
+                  const productPath = product.slug || product.id;
+                  
                   return (
                     <Link 
-                      href={`/products/${product.id}`}
+                      href={`/products/${productPath}`}
                       key={product.id}
                       className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
                     >

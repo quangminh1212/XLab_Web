@@ -17,6 +17,7 @@ interface ProductCardProps {
   reviewCount?: number
   isAccount?: boolean
   weeklyPurchases?: number
+  slug?: string
   onAddToCart?: (id: string) => void
   onView?: (id: string) => void
 }
@@ -33,6 +34,7 @@ export default function ProductCard({
   reviewCount = 0,
   isAccount = false,
   weeklyPurchases = 0,
+  slug = '',
   onAddToCart = () => {},
   onView = () => {}
 }: ProductCardProps) {
@@ -127,9 +129,12 @@ export default function ProductCard({
     if (onView) onView(id)
   }
 
+  // Tạo slug từ tên nếu không có slug được truyền vào
+  const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
   return (
     <Link
-      href={isAccount ? `/accounts/${id}` : `/products/${id}`}
+      href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
       className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -214,7 +219,7 @@ export default function ProductCard({
           <div className="flex flex-col items-end">
             {rating > 0 && (
               <div className="flex items-center">
-                <span className="text-xs text-gray-500 mr-1">{rating.toFixed(1)}</span>
+                <span className="text-xs text-gray-500 mr-1">{typeof rating === 'number' ? rating.toFixed(1) : Number(rating).toFixed(1)}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 text-yellow-400"

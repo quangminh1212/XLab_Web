@@ -353,6 +353,7 @@ function HomePage() {
                         rating={product.rating}
                         reviewCount={product.reviewCount || 0}
                         weeklyPurchases={product.weeklyPurchases || 0}
+                        slug={product.slug}
                       />
                     ))}
                   </div>
@@ -400,8 +401,10 @@ function HomePage() {
                           originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
                           image={getValidImageUrl(product)}
                           rating={product.rating}
-                          reviewCount={product.reviewCount}
-                          weeklyPurchases={product.weeklyPurchases}
+                          reviewCount={product.reviewCount || 0}
+                          weeklyPurchases={product.weeklyPurchases || 0}
+                          slug={product.slug}
+                          isAccount={true}
                         />
                       ))}
                   </div>
