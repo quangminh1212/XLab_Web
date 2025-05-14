@@ -38,15 +38,20 @@ export default function ProductCard({
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const router = useRouter()
   
-  // Provide fallback image if missing
-  const imageUrl = image || '/images/placeholder/product-placeholder.jpg'
+  // Log the image URL for debugging
+  console.log(`ProductCard image URL for ${name}:`, image)
   
-  // Fix blob URLs - convert blob URLs to placeholder
-  const cleanImageUrl = imageUrl.startsWith('blob:') 
-    ? '/images/placeholder/product-placeholder.jpg'
-    : (imageUrl && imageUrl.trim() !== '' 
-        ? imageUrl 
-        : '/images/placeholder/product-placeholder.jpg')
+  // Determine the image URL with thorough validation
+  const getValidImageUrl = (imgUrl: string | null | undefined): string => {
+    if (!imgUrl) return '/images/placeholder/product-placeholder.jpg'
+    if (imgUrl.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg'
+    if (imgUrl.includes('undefined')) return '/images/placeholder/product-placeholder.jpg'
+    if (imgUrl.trim() === '') return '/images/placeholder/product-placeholder.jpg'
+    return imgUrl
+  }
+  
+  // Get the final image URL
+  const cleanImageUrl = getValidImageUrl(image)
   
   // Truncate description if needed
   const shortDescription = description 
@@ -145,6 +150,10 @@ export default function ProductCard({
           } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
           priority={false}
+          onError={() => {
+            console.log(`Image error for ${name}, using placeholder`)
+            // Image failed to load - this will trigger our fallback in the component
+          }}
         />
 
         {!isImageLoaded && (

@@ -39,7 +39,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     description: '',
     isPublished: false,
     price: 0,
-    salePrice: 0
+    salePrice: 0,
+    categories: [] as string[]
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
@@ -72,7 +73,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           description: productData.description || '',
           isPublished: productData.isPublished || false,
           price: productData.versions?.[0]?.price || 0,
-          salePrice: productData.versions?.[0]?.originalPrice || 0
+          salePrice: productData.versions?.[0]?.originalPrice || 0,
+          categories: productData.categories ? productData.categories.map((c: any) => c.id) : []
         });
         
         // Set description images if available
@@ -128,41 +130,27 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const isValidImageUrl = (url: string) => {
     return url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null || 
            url.startsWith('https://') || 
-           url.startsWith('http://');
+           url.startsWith('http://') ||
+           url.startsWith('/images/');
+  };
+
+  // Hàm lấy tên danh mục từ ID
+  const getCategoryName = (id: string): string => {
+    const categories = [
+      { id: 'office-software', name: 'Phần mềm văn phòng' },
+      { id: 'business-solutions', name: 'Giải pháp doanh nghiệp' },
+      { id: 'security-software', name: 'Phần mềm bảo mật' },
+      { id: 'data-protection', name: 'Bảo vệ dữ liệu' },
+      { id: 'design-software', name: 'Phần mềm thiết kế' },
+      { id: 'ai-tools', name: 'Công cụ AI' },
+    ];
+    
+    const category = categories.find(c => c.id === id);
+    return category ? category.name : id;
   };
 
   // Xử lý upload hình ảnh
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    
-    const file = e.target.files[0];
-    
-    // Giới hạn kích thước file là 5MB
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Kích thước file không được vượt quá 5MB');
-      setTimeout(() => setError(null), 3000);
-      return;
-    }
-    
-    // Chỉ cho phép các loại file ảnh
-    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
-      setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
-      setTimeout(() => setError(null), 3000);
-      return;
-    }
-    
-    // Tạo URL tạm thời cho hình ảnh
-    const imageUrl = URL.createObjectURL(file);
-    setDescriptionImages([...descriptionImages, imageUrl]);
-    
-    // Reset input file
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-  
-  // Xử lý upload ảnh đại diện
-  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     
     const file = e.target.files[0];
@@ -204,6 +192,73 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         throw new Error('URL hình ảnh không hợp lệ');
       }
       
+      setDescriptionImages([...descriptionImages, imageUrl]);
+    } catch (err) {
+      console.error('Lỗi khi upload hình ảnh:', err);
+      setError((err as Error).message || 'Không thể tải lên hình ảnh');
+      setTimeout(() => setError(null), 3000);
+      
+      // Fallback to blob URL if server upload fails
+      const imageUrl = URL.createObjectURL(file);
+      setDescriptionImages([...descriptionImages, imageUrl]);
+    }
+    
+    // Reset input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  
+  // Xử lý upload ảnh đại diện
+  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    console.log("Uploading featured image:", file.name);
+    
+    // Giới hạn kích thước file là 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Kích thước file không được vượt quá 5MB');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Chỉ cho phép các loại file ảnh
+    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+      setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    try {
+      // Tạo form data để upload file
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Upload hình ảnh lên server
+      console.log("Sending upload request to /api/upload");
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Upload error:", errorData);
+        throw new Error('Không thể tải lên hình ảnh: ' + (errorData.error || response.statusText));
+      }
+      
+      const data = await response.json();
+      console.log("Upload response data:", data);
+      
+      // Lấy URL thực từ server thay vì dùng blob URL
+      const imageUrl = data.url || data.filepath || data.fileUrl;
+      
+      if (!imageUrl) {
+        throw new Error('URL hình ảnh không hợp lệ');
+      }
+      
+      console.log("Setting featured image to:", imageUrl);
       setFeaturedImage(imageUrl);
     } catch (err) {
       console.error('Lỗi khi upload hình ảnh:', err);
@@ -212,6 +267,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       
       // Fallback to blob URL if server upload fails
       const imageUrl = URL.createObjectURL(file);
+      console.log("Using fallback blob URL:", imageUrl);
       setFeaturedImage(imageUrl);
     }
     
@@ -302,6 +358,16 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     setError(null);
 
     try {
+      // Filter out any blob URLs from images
+      const cleanedFeaturedImage = featuredImage && featuredImage.startsWith('blob:') 
+        ? null 
+        : featuredImage;
+        
+      const cleanedDescriptionImages = descriptionImages.filter(img => !img.startsWith('blob:'));
+      
+      console.log("Saving product with image:", cleanedFeaturedImage);
+      console.log("Description images:", cleanedDescriptionImages);
+      
       // Prepare product data for submission
       const productData: Product = {
         ...product, // Keep all existing product data
@@ -311,8 +377,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
         features: product?.features || [],
         requirements: product?.requirements || [],
-        images: featuredImage ? [featuredImage] : product?.images || [],
-        descriptionImages: descriptionImages || product?.descriptionImages || [],
+        images: cleanedFeaturedImage ? [cleanedFeaturedImage] : product?.images || [],
+        descriptionImages: cleanedDescriptionImages.length > 0 ? cleanedDescriptionImages : product?.descriptionImages || [],
         specifications: specifications || product?.specifications || [],
         categories: formData.categories ? formData.categories.map(id => {
           const existingCategory = product?.categories?.find(c => c.id === id);
@@ -335,6 +401,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         createdAt: product?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
+      
+      console.log("Saving product data:", JSON.stringify(productData, null, 2));
       
       if (!productId) {
         throw new Error('Không tìm thấy ID sản phẩm');

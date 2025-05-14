@@ -115,6 +115,12 @@ export async function PUT(
     // Process request data
     const productData = await request.json();
     
+    console.log("PUT API received product data:", {
+      id: productData.id,
+      name: productData.name,
+      images: productData.images
+    });
+    
     // Ensure all required fields are present
     const requiredFields = ['id', 'name', 'slug', 'description', 'shortDescription'] as const;
     for (const field of requiredFields) {
@@ -150,6 +156,8 @@ export async function PUT(
       ...productData,
       updatedAt: new Date().toISOString()
     };
+    
+    console.log("Saving product with images:", updatedProduct.images);
     
     // Save product
     products[productIndex] = updatedProduct;

@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
     // Verify authentication
     const session = await getServerSession(authOptions);
     if (!session) {
+      console.error('Upload failed: Unauthorized');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -19,12 +20,14 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File;
 
     if (!file) {
+      console.error('Upload failed: No file provided');
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     // Verify file type
     const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
+      console.error(`Upload failed: Invalid file type ${file.type}`);
       return NextResponse.json({
         error: 'Invalid file type. Only JPEG, PNG, GIF, and WEBP are supported.'
       }, { status: 400 });
@@ -50,6 +53,9 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     // Use fs.promises.writeFile with a Uint8Array for correct typing
     await fsPromises.writeFile(filePath, new Uint8Array(bytes));
+
+    // Log success
+    console.log(`File uploaded successfully: ${publicPath}`);
 
     // Return the public URL path
     return NextResponse.json({

@@ -124,6 +124,35 @@ export default function ProductsPage() {
     }))
   ];
 
+  // Helper to safely get a valid image URL
+  const getValidImageUrl = (product: any): string => {
+    if (!product.images || !product.images.length) {
+      return '/images/placeholder/product-placeholder.jpg';
+    }
+    
+    const firstImage = product.images[0];
+    
+    // Handle different image formats
+    if (typeof firstImage === 'string') {
+      if (firstImage.startsWith('blob:')) {
+        return '/images/placeholder/product-placeholder.jpg';
+      }
+      if (firstImage.includes('undefined') || firstImage.trim() === '') {
+        return '/images/placeholder/product-placeholder.jpg';
+      }
+      return firstImage;
+    } else if (typeof firstImage === 'object' && firstImage !== null) {
+      if (firstImage.url) {
+        if (firstImage.url.startsWith('blob:')) {
+          return '/images/placeholder/product-placeholder.jpg';
+        }
+        return firstImage.url;
+      }
+    }
+    
+    return '/images/placeholder/product-placeholder.jpg';
+  };
+
   // Only show loading for a maximum of 1 second
   if (loading) {
     return (
@@ -235,6 +264,9 @@ export default function ProductsPage() {
             {/* Product grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {sortedProducts.map((product) => {
+                // Log the product data for debugging
+                console.log(`Product ${product.id} image data:`, product.images);
+                
                 // Xác định giá hiển thị - kiểm tra versions trước
                 const displayPrice = product.versions && product.versions.length > 0
                   ? product.versions[0].price || 0
@@ -245,15 +277,11 @@ export default function ProductsPage() {
                   ? product.versions[0].originalPrice || 0
                   : product.salePrice || 0;
                   
-                // Lấy ảnh sản phẩm (không dùng blob URLs)
-                const imageUrl = product.images && product.images.length > 0
-                  ? (typeof product.images[0] === 'string' 
-                      ? (product.images[0].startsWith('blob:') 
-                          ? '/images/placeholder/product-placeholder.jpg' 
-                          : product.images[0])
-                      : ((product.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
-                  : '/images/placeholder/product-placeholder.jpg';
-                  
+                // Lấy ảnh sản phẩm (sử dụng helper function)
+                const imageUrl = getValidImageUrl(product);
+                
+                console.log(`Processed image URL for ${product.name}:`, imageUrl);
+                
                 return (
                   <ProductCard 
                     key={product.id}
@@ -302,14 +330,8 @@ export default function ProductsPage() {
               <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
               <div className="space-y-2">
                 {featuredProducts.slice(0, 3).map(product => {
-                  // Lấy ảnh sản phẩm từ product.images nếu có, hoặc từ imageUrl (cho tương thích)
-                  const featuredImageUrl = product.images && product.images.length > 0
-                    ? (typeof product.images[0] === 'string' 
-                        ? (product.images[0].startsWith('blob:') 
-                            ? '/images/placeholder/product-placeholder.jpg' 
-                            : product.images[0])
-                        : ((product.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
-                    : (product.imageUrl || '/images/placeholder/product-placeholder.jpg');
+                  // Use the helper function for featured products as well
+                  const featuredImageUrl = getValidImageUrl(product);
                   
                   return (
                     <Link 

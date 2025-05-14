@@ -65,8 +65,8 @@ function NewProductPage() {
     categoryId: 'office-software'
   });
 
-  // Xử lý thêm hình ảnh từ URL
-  const handleAddImageUrl = () => {
+  // Xử lý thêm ảnh đại diện từ URL
+  const handleAddFeaturedImageUrl = () => {
     if (featuredImageUrl.trim() && isValidImageUrl(featuredImageUrl)) {
       setFeaturedImage(featuredImageUrl);
       setFeaturedImageUrl('');
@@ -80,7 +80,8 @@ function NewProductPage() {
   const isValidImageUrl = (url: string) => {
     return url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null || 
            url.startsWith('https://') || 
-           url.startsWith('http://');
+           url.startsWith('http://') ||
+           url.startsWith('/images/');
   };
 
   // Xử lý upload ảnh đại diện
@@ -140,6 +141,66 @@ function NewProductPage() {
     // Reset input file
     if (featuredImageInputRef.current) {
       featuredImageInputRef.current.value = '';
+    }
+  };
+  
+  // Xử lý upload hình ảnh mô tả
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    
+    // Giới hạn kích thước file là 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Kích thước file không được vượt quá 5MB');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    // Chỉ cho phép các loại file ảnh
+    if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
+      setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    
+    try {
+      // Tạo form data để upload file
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Upload hình ảnh lên server
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error('Không thể tải lên hình ảnh');
+      }
+      
+      const data = await response.json();
+      // Lấy URL thực từ server thay vì dùng blob URL
+      const imageUrl = data.url || data.filepath || data.fileUrl;
+      
+      if (!imageUrl) {
+        throw new Error('URL hình ảnh không hợp lệ');
+      }
+      
+      setDescriptionImages([...descriptionImages, imageUrl]);
+    } catch (err) {
+      console.error('Lỗi khi upload hình ảnh:', err);
+      setError((err as Error).message || 'Không thể tải lên hình ảnh');
+      setTimeout(() => setError(null), 3000);
+      
+      // Fallback to blob URL if server upload fails
+      const imageUrl = URL.createObjectURL(file);
+      setDescriptionImages([...descriptionImages, imageUrl]);
+    }
+    
+    // Reset input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
   
@@ -274,6 +335,17 @@ function NewProductPage() {
     setProductVersions(updatedVersions);
   };
 
+  // Xử lý thêm hình ảnh mô tả từ URL
+  const handleAddImageUrl = () => {
+    if (newImageUrl.trim() && isValidImageUrl(newImageUrl)) {
+      setDescriptionImages([...descriptionImages, newImageUrl]);
+      setNewImageUrl('');
+    } else {
+      setError('URL hình ảnh không hợp lệ. Vui lòng kiểm tra lại.');
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -285,6 +357,13 @@ function NewProductPage() {
         throw new Error('Cần thêm ít nhất một phiên bản sản phẩm');
       }
       
+      // Filter out any blob URLs from images
+      const cleanedFeaturedImage = featuredImage && featuredImage.startsWith('blob:') 
+        ? null 
+        : featuredImage;
+        
+      const cleanedDescriptionImages = descriptionImages.filter(img => !img.startsWith('blob:'));
+      
       // Prepare the product data
       const productData = {
         name: formData.name,
@@ -292,8 +371,8 @@ function NewProductPage() {
         description: formData.description,
         isPublished: formData.isPublished,
         slug: formData.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
-        images: featuredImage ? [featuredImage] : [],
-        descriptionImages: descriptionImages,
+        images: cleanedFeaturedImage ? [cleanedFeaturedImage] : [],
+        descriptionImages: cleanedDescriptionImages,
         features: features,
         specifications: specifications,
         warranty: warranty,
@@ -523,7 +602,7 @@ function NewProductPage() {
                   />
                   <button
                     type="button"
-                    onClick={handleAddImageUrl}
+                    onClick={handleAddFeaturedImageUrl}
                     className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
                   >
                     Thêm
@@ -577,6 +656,81 @@ function NewProductPage() {
                   Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)
                 </p>
               </div>
+              
+              {/* Thêm hình ảnh mô tả */}
+              {isEditingDescription && (
+                <div className="mt-4">
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Hình ảnh mô tả
+                  </label>
+                  <div className="space-y-3">
+                    <div className="flex">
+                      <input
+                        type="text"
+                        value={newImageUrl}
+                        onChange={(e) => setNewImageUrl(e.target.value)}
+                        placeholder="Nhập URL hình ảnh"
+                        className="flex-1 p-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddImageUrl}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 transition-colors"
+                      >
+                        Thêm URL
+                      </button>
+                    </div>
+                    
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  
+                    {/* Hiển thị danh sách hình ảnh đã thêm */}
+                    {descriptionImages.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="font-medium mb-2">Hình ảnh đã thêm</h4>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                          {descriptionImages.map((imageUrl, index) => (
+                            <div key={index} className="relative border border-gray-200 rounded p-2 group">
+                              <div className="relative aspect-square w-full overflow-hidden rounded">
+                                <img 
+                                  src={imageUrl} 
+                                  alt={`Hình ảnh ${index + 1}`} 
+                                  className="object-contain max-w-full max-h-full" 
+                                />
+                              </div>
+                              <div className="mt-2 flex justify-between text-xs">
+                                <button
+                                  type="button"
+                                  onClick={() => navigator.clipboard.writeText(imageUrl)}
+                                  className="text-xs bg-green-500 text-white px-2 py-0.5 rounded hover:bg-green-600 transition-colors"
+                                >
+                                  Sao chép URL
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newImages = [...descriptionImages];
+                                    newImages.splice(index, 1);
+                                    setDescriptionImages(newImages);
+                                  }}
+                                  className="text-xs bg-red-500 text-white px-2 py-0.5 rounded hover:bg-red-600 transition-colors"
+                                >
+                                  Xóa
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               
               {/* Đặc điểm nổi bật */}
               <div>
