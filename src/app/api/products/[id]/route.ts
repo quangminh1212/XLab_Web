@@ -7,7 +7,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
     if (!id) {
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });
@@ -33,7 +35,10 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
+    
     const body = await request.json();
     
     if (!id) {
@@ -74,7 +79,9 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
     if (!id) {
       return NextResponse.json({ error: 'ID sản phẩm là bắt buộc' }, { status: 400 });
