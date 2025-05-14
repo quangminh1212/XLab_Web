@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
 import { Product, ProductCategory } from '@/models/ProductModel';
+import { processProductImages } from '@/lib/imageUtils';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -148,6 +149,16 @@ export async function PUT(
           slug: categoryId
         })
       ) as ProductCategory[];
+    }
+    
+    // Xử lý đường dẫn hình ảnh dựa trên tên sản phẩm
+    if (productData.images) {
+      productData.images = processProductImages(productData.name, productData.images);
+    }
+    
+    // Xử lý đường dẫn hình ảnh mô tả dựa trên tên sản phẩm
+    if (productData.descriptionImages) {
+      productData.descriptionImages = processProductImages(productData.name, productData.descriptionImages);
     }
     
     // Create updated product

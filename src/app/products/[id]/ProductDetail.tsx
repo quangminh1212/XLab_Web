@@ -9,6 +9,9 @@ import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
 import RichTextContent from '@/components/common/RichTextContent';
 import { Product as UIProduct } from '@/types';
+import { getImageNameFromProduct, handleImageError } from '@/lib/imageUtils';
+
+
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -101,11 +104,15 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
             <div className="flex items-center space-x-3">
               <div className="w-16 h-16 bg-white rounded-md overflow-hidden flex items-center justify-center">
                 <Image
-                  src={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
+                  src={getImageNameFromProduct(product.name, product.imageUrl)}
                   alt={product.name}
                   width={64}
                   height={64}
                   className="object-contain"
+                  onError={(e) => {
+                    const imgElement = e.target as HTMLImageElement;
+                    imgElement.src = '/images/placeholder/product-placeholder.jpg';
+                  }}
                 />
               </div>
               <div className="flex-1">
@@ -225,13 +232,26 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const getProductImage = () => {
     if (product.images && product.images.length > 0) {
       const firstImage = product.images[0];
-      // Không sử dụng blob URLs
-      if (typeof firstImage === 'string' && firstImage.startsWith('blob:')) {
-        return '/images/placeholder/product-placeholder.jpg';
-      }
-      return typeof firstImage === 'string' ? firstImage : firstImage.url;
+      // Chuyển đổi sang định dạng tên sản phẩm
+      return getImageNameFromProduct(product.name, 
+        typeof firstImage === 'string' ? firstImage : (firstImage as any).url);
     }
-    return '/images/placeholder/product-placeholder.jpg';
+    return getImageNameFromProduct(product.name, null);
+  };
+  
+  // Xử lý lỗi khi không tải được hình ảnh
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = '/images/placeholder/product-placeholder.jpg';
+  };
+  
+  // Xử lý hình ảnh mô tả
+  const getDescriptionImages = () => {
+    if (product.descriptionImages && product.descriptionImages.length > 0) {
+      return product.descriptionImages.map(img => 
+        getImageNameFromProduct(product.name, typeof img === 'string' ? img : (img as any).url));
+    }
+    return [];
   };
   
   // Tính toán giá dựa trên phiên bản được chọn
@@ -270,14 +290,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
+    const productImage = getProductImage();
+    
     addItem({
       id: product.id.toString(),
       name: product.name,
       price: calculatePrice(),
       quantity: quantity,
-      image: product.images && product.images.length > 0 ? 
-             typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url : 
-             '/images/placeholder/product-placeholder.jpg',
+      image: productImage,
       options: selectedVersion ? [selectedVersion] : undefined
     });
     return true;
@@ -341,19 +361,21 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   fill
                   className="object-contain"
                   priority
+                  onError={handleImageError}
                 />
               </div>
               
               {/* Additional images */}
-              {product.descriptionImages && product.descriptionImages.length > 0 && (
+              {getDescriptionImages().length > 0 && (
                 <div className="grid grid-cols-4 gap-2 mt-4">
-                  {product.descriptionImages.slice(0, 4).map((img, index) => (
+                  {getDescriptionImages().map((img, index) => (
                     <div key={index} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
                       <Image
                         src={img}
                         alt={`${product.name} - Hình ${index + 1}`}
                         fill
                         className="object-cover"
+                        onError={handleImageError}
                       />
                     </div>
                   ))}

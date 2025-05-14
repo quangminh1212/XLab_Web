@@ -4,6 +4,9 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { getImageNameFromProduct, handleImageError } from '@/lib/imageUtils'
+import { calculateDiscountPercentage } from '@/lib/utils'
+import { formatCurrency } from '@/lib/utils'
 
 interface ProductCardProps {
   id: string
@@ -42,9 +45,6 @@ export default function ProductCard({
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const router = useRouter()
   
-  // Log the image URL for debugging
-  console.log(`ProductCard image URL for ${name}:`, image)
-  
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
     if (!imgUrl) return '/images/placeholder/product-placeholder.jpg'
@@ -55,7 +55,8 @@ export default function ProductCard({
   }
   
   // Get the final image URL
-  const cleanImageUrl = getValidImageUrl(image)
+  const imageByName = getImageNameFromProduct(name, image);
+  const cleanImageUrl = getValidImageUrl(imageByName);
   
   // Truncate description if needed
   const shortDescription = description 
@@ -68,15 +69,6 @@ export default function ProductCard({
   const discountPercentage = originalPrice && originalPrice > price 
     ? Math.round(((originalPrice - price) / originalPrice) * 100) 
     : 0
-
-  // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    }).format(amount)
-  }
 
   const renderRatingStars = (rating: number) => {
     const fullStars = Math.floor(rating)
@@ -157,10 +149,7 @@ export default function ProductCard({
           } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
           priority={false}
-          onError={() => {
-            console.log(`Image error for ${name}, using placeholder`)
-            // Image failed to load - this will trigger our fallback in the component
-          }}
+          onError={handleImageError}
         />
 
         {!isImageLoaded && (

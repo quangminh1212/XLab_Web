@@ -201,3 +201,51 @@ next-fix-all.log
 # Uploaded product images
 /public/images/products/*
 !/public/images/products/.gitkeep
+
+# Bỏ qua các ảnh sản phẩm được tạo tự động
+public/images/products/*.png
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Local files
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary files
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vercel
+.swc-disabled
+
+# Trace files
+*.trace
+*.trace.json
+*.jfr
+*.ctf
+*.etl
+*.etl.zip
+*.etl#*
+
+# Debug files
+fix-trace-error.js
+next-fix-all.js
+temp-config.js
