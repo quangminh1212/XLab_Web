@@ -6,6 +6,7 @@ import { Product } from '@/models/ProductModel';
 import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
+import React from 'react';
 
 interface AdminEditProductPageProps {
   params: {
@@ -15,6 +16,12 @@ interface AdminEditProductPageProps {
 
 function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const router = useRouter();
+  
+  // Use React.use to unwrap params object properly at the component level
+  // Type assertion to inform TypeScript about the expected type
+  const safeParams = React.use(params as any) as { id: string };
+  const productId = safeParams.id;
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const featuredImageInputRef = useRef<HTMLInputElement>(null);
   const [product, setProduct] = useState<Product | null>(null);
@@ -39,12 +46,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
   const [isEditingSpecs, setIsEditingSpecs] = useState(false);
+  
+  // Remove the params.id access useEffect since we're now using React.use()
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/admin/products/${params.id}`);
+        const response = await fetch(`/api/admin/products/${productId}`);
         
         if (!response.ok) {
           throw new Error('Không thể tải thông tin sản phẩm');
@@ -85,8 +94,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       }
     };
 
-    fetchProduct();
-  }, [params.id]);
+    if (productId) {
+      fetchProduct();
+    }
+  }, [productId]);
 
   // Xử lý thêm hình ảnh từ URL
   const handleAddImageUrl = () => {
@@ -278,8 +289,12 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         }) || []
       };
       
+      if (!productId) {
+        throw new Error('Không tìm thấy ID sản phẩm');
+      }
+      
       // Send the update request
-      const response = await fetch(`/api/admin/products/${params.id}`, {
+      const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

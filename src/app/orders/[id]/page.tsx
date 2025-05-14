@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 
 // Khai báo kiểu dữ liệu
 interface OrderItem {
@@ -82,7 +83,10 @@ interface OrderDetailPageProps {
 }
 
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
-  const orderId = params.id;
+  // Use React.use to properly unwrap the params object
+  const safeParams = React.use(params as any) as { id: string };
+  const orderId = safeParams.id;
+  
   const router = useRouter();
   const { data: session, status } = useSession();
   const [order, setOrder] = useState<Order | null>(null);
