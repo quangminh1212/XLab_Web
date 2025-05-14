@@ -1,5 +1,38 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/data/mockData';
+import fs from 'fs';
+import path from 'path';
+import { Product } from '@/models/ProductModel';
+
+// Data file path
+const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
+
+// Read product data
+function getProducts(): Product[] {
+  try {
+    if (!fs.existsSync(dataFilePath)) {
+      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
+      return [];
+    }
+    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error('Error reading products data:', error);
+    return [];
+  }
+}
+
+// Save product data
+function saveProducts(products: Product[]): void {
+  try {
+    const dirPath = path.dirname(dataFilePath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    fs.writeFileSync(dataFilePath, JSON.stringify(products, null, 2), 'utf8');
+  } catch (error) {
+    console.error('Error saving products data:', error);
+  }
+}
 
 // GET: Lấy thông tin sản phẩm theo ID
 export async function GET(
@@ -16,6 +49,7 @@ export async function GET(
     }
     
     // Tìm sản phẩm theo ID hoặc slug
+    const products = getProducts();
     const product = products.find(p => p.id === id || p.slug === id);
     
     if (!product) {
@@ -46,14 +80,14 @@ export async function PUT(
     }
     
     // Tìm index của sản phẩm
+    const products = getProducts();
     const productIndex = products.findIndex(p => p.id === id || p.slug === id);
     
     if (productIndex === -1) {
       return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
     }
     
-    // Trong môi trường thực tế, chúng ta sẽ cập nhật sản phẩm trong cơ sở dữ liệu
-    // Ở đây, chúng ta chỉ cập nhật trong mảng products
+    // Cập nhật sản phẩm
     const updatedProduct = {
       ...products[productIndex],
       ...body,
@@ -61,6 +95,7 @@ export async function PUT(
     };
     
     products[productIndex] = updatedProduct;
+    saveProducts(products);
     
     return NextResponse.json({ 
       success: true, 
@@ -88,16 +123,17 @@ export async function DELETE(
     }
     
     // Tìm index của sản phẩm
+    const products = getProducts();
     const productIndex = products.findIndex(p => p.id === id || p.slug === id);
     
     if (productIndex === -1) {
       return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
     }
     
-    // Trong môi trường thực tế, chúng ta sẽ xóa sản phẩm từ cơ sở dữ liệu
-    // Ở đây, chúng ta chỉ xóa từ mảng products
+    // Xóa sản phẩm
     const deletedProduct = products[productIndex];
-    products.splice(productIndex, 1);
+    const newProducts = products.filter((_, index) => index !== productIndex);
+    saveProducts(newProducts);
     
     return NextResponse.json({ 
       success: true, 

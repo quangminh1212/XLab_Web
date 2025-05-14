@@ -1,6 +1,6 @@
 'use client'
 
-import { products as mockProducts, categories } from '@/data/mockData'
+import { categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import ProductImage from '@/components/product/ProductImage'
@@ -8,12 +8,35 @@ import ProductCard from '@/components/product/ProductCard'
 import { Button } from '@/components/common/button'
 
 export default function ProductsPage() {
-  const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState<any[]>(mockProducts || []);
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/products');
+        
+        if (!response.ok) {
+          throw new Error('Không thể tải sản phẩm');
+        }
+        
+        const data = await response.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || 'Đã xảy ra lỗi');
+        setLoading(false);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
 
   // Update title when component is rendered
   useEffect(() => {
@@ -47,7 +70,7 @@ export default function ProductsPage() {
   // Sắp xếp sản phẩm
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sort === 'newest') {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
     } else if (sort === 'price-low') {
       return (a.salePrice || a.price) - (b.salePrice || b.price);
     } else if (sort === 'price-high') {
@@ -63,7 +86,7 @@ export default function ProductsPage() {
   // Lọc các loại sản phẩm đặc biệt cho phần mềm
   const featuredProducts = softwareProducts.filter(product => product.isFeatured);
   const newProducts = softwareProducts.slice().sort((a, b) =>
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime()
   ).slice(0, 6);
   const popularProducts = softwareProducts.slice().sort((a, b) =>
     (b.downloadCount || 0) - (a.downloadCount || 0)
@@ -169,7 +192,7 @@ export default function ProductsPage() {
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm md:text-base text-gray-600">
-                Hiển thị {softwareProducts.length} kết quả
+                Hiển thị {sortedProducts.length} kết quả
               </div>
               <div className="flex items-center space-x-2">
                 <label htmlFor="sort" className="text-sm md:text-base text-gray-700">Sắp xếp:</label>
@@ -189,7 +212,7 @@ export default function ProductsPage() {
             
             {/* Product grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {softwareProducts.map((product) => (
+              {sortedProducts.map((product) => (
                 <ProductCard 
                   key={product.id}
                   id={product.id.toString()}
@@ -215,9 +238,10 @@ export default function ProductsPage() {
                 {productCategories.map(category => (
                   <li key={category.id}>
                     <a 
-                      href={`#${category.id}`}
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); setFilter(category.id); }}
                       className={`flex justify-between items-center text-sm md:text-base py-1 px-2 rounded-md hover:bg-gray-50 ${
-                        category.id === 'all' ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
+                        filter === category.id ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
                       }`}
                     >
                       <span>{category.name}</span>
@@ -234,7 +258,7 @@ export default function ProductsPage() {
             <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
               <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
               <div className="space-y-2">
-                {softwareProducts.filter(p => p.isFeatured).slice(0, 3).map(product => (
+                {featuredProducts.slice(0, 3).map(product => (
                   <Link 
                     href={`/products/${product.id}`}
                     key={product.id}
