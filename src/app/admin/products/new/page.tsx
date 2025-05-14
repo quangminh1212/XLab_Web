@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
-import { slugify } from '@/utils/slugify';
 
 // Định nghĩa hàm slugify
 function slugify(text: string): string {
@@ -118,13 +117,18 @@ function NewProductPage() {
     
     try {
       // Tạo form data để upload file
-      const formData = new FormData();
-      formData.append('file', file);
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      // Gửi thêm thông tin slug của sản phẩm
+      if (formData.name) {
+        const slug = slugify(formData.name);
+        uploadFormData.append('productSlug', slug);
+      }
       
       // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData
+        body: uploadFormData
       });
       
       if (!response.ok) {
@@ -178,13 +182,19 @@ function NewProductPage() {
     
     try {
       // Tạo form data để upload file
-      const formData = new FormData();
-      formData.append('file', file);
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      
+      // Gửi thêm thông tin slug của sản phẩm
+      if (formData.name) {
+        const slug = slugify(formData.name);
+        uploadFormData.append('productSlug', slug);
+      }
       
       // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData
+        body: uploadFormData
       });
       
       if (!response.ok) {

@@ -177,13 +177,18 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     
     try {
       // Tạo form data để upload file
-      const formData = new FormData();
-      formData.append('file', file);
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      
+      // Nếu có thông tin sản phẩm, thêm slug vào form data
+      if (product && product.slug) {
+        uploadFormData.append('productSlug', product.slug);
+      }
       
       // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData
+        body: uploadFormData
       });
       
       if (!response.ok) {
@@ -238,14 +243,19 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     
     try {
       // Tạo form data để upload file
-      const formData = new FormData();
-      formData.append('file', file);
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      
+      // Nếu có thông tin sản phẩm, thêm slug vào form data
+      if (product && product.slug) {
+        uploadFormData.append('productSlug', product.slug);
+      }
       
       // Upload hình ảnh lên server
       console.log("Sending upload request to /api/upload");
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData
+        body: uploadFormData
       });
       
       if (!response.ok) {

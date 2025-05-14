@@ -18,6 +18,8 @@ export async function POST(request: NextRequest) {
     // Parse the form data
     const formData = await request.formData();
     const file = formData.get('file') as File;
+    // Lấy thông tin sản phẩm từ formData
+    const productSlug = formData.get('productSlug') as string;
 
     if (!file) {
       console.error('Upload failed: No file provided');
@@ -40,9 +42,16 @@ export async function POST(request: NextRequest) {
     const fileName = `${uuidv4()}.${fileExtension}`;
     
     // Define the directory to save the uploaded image
-    const dirPath = path.join(process.cwd(), 'public', 'images', 'products');
+    let targetDir = 'products';
+    
+    // Nếu có slug sản phẩm, lưu vào thư mục tương ứng
+    if (productSlug) {
+      targetDir = path.join('products', productSlug);
+    }
+    
+    const dirPath = path.join(process.cwd(), 'public', 'images', targetDir);
     const filePath = path.join(dirPath, fileName);
-    const publicPath = `/images/products/${fileName}`;
+    const publicPath = `/images/${targetDir}/${fileName}`;
 
     // Create directory if it doesn't exist
     if (!fs.existsSync(dirPath)) {
