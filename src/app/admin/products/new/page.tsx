@@ -16,6 +16,28 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+// Thêm component hiển thị lợi ích của sản phẩm
+const ProductBenefits = () => (
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mt-6">
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Giao hàng<br/>nhanh chóng</h3>
+      <p className="text-xs text-gray-600 text-center">Giao tài khoản ngay trong vòng 5h sau khi nhận được thanh toán.</p>
+    </div>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Rẻ nhất<br/>thị trường</h3>
+      <p className="text-xs text-gray-600 text-center">Cam kết giá rẻ nhất thị trường, tiết kiệm lên đến 90% so với giá gốc.</p>
+    </div>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Bảo hành<br/>1 đổi 1</h3>
+      <p className="text-xs text-gray-600 text-center">Đổi tài khoản mới ngay trong 24h nếu tài khoản phát sinh lỗi.</p>
+    </div>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Hỗ trợ<br/>nhanh chóng</h3>
+      <p className="text-xs text-gray-600 text-center">Chúng tôi sẵn sàng hỗ trợ mọi khó khăn trong quá trình sử dụng tài khoản.</p>
+    </div>
+  </div>
+);
+
 function NewProductPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1276,6 +1298,13 @@ function NewProductPage() {
             </p>
           </div>
         )}
+        
+        {/* Hiển thị lợi ích sản phẩm */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+          <h2 className="text-xl font-bold mb-4">Lợi ích sản phẩm (Hiển thị trên trang chi tiết)</h2>
+          <ProductBenefits />
+          <p className="text-sm text-gray-500 mt-2">Lưu ý: Đây là phần hiển thị cố định cho tất cả sản phẩm trên trang web.</p>
+        </div>
         
         {/* Nút bấm tạo sản phẩm */}
         <div className="flex justify-end space-x-4">
