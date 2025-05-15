@@ -201,3 +201,7 @@ next-fix-all.log
 # Uploaded product images
 /public/images/products/*
 !/public/images/products/.gitkeep
+
+# Dynamic data files
+/src/data/products.json
+check-products.ps1

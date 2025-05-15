@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { products } from '@/data/mockData';
-import { Product } from '@/types';
+import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
 
@@ -19,8 +19,28 @@ export async function POST(request: Request) {
       }
     }
 
+    // Đọc dữ liệu hiện tại từ file
+    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
+    let currentProducts: Product[] = [];
+    
+    try {
+      if (fs.existsSync(dataFilePath)) {
+        const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+        try {
+          currentProducts = JSON.parse(fileContent);
+        } catch (parseError) {
+          console.error('Error parsing products.json:', parseError);
+          currentProducts = [];
+        }
+      }
+    } catch (fileError) {
+      console.error('Error reading products.json:', fileError);
+      // Tạo file mới nếu không tồn tại
+      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
+    }
+
     // Kiểm tra slug đã tồn tại chưa
-    const slugExists = products.some(p => p.slug === body.slug);
+    const slugExists = currentProducts.some((p: Product) => p.slug === body.slug);
     if (slugExists) {
       return NextResponse.json({ 
         error: 'Slug đã tồn tại. Vui lòng chọn slug khác.' 
@@ -49,9 +69,20 @@ export async function POST(request: Request) {
     // Tạo ID mới (trong trường hợp thực tế, ID sẽ được tạo bởi cơ sở dữ liệu)
     const newId = `${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`;
 
+    // Đảm bảo có ít nhất một phiên bản nếu không có
+    const versions = body.versions && body.versions.length > 0 
+      ? body.versions 
+      : [{
+          name: 'Default',
+          description: 'Phiên bản mặc định',
+          price: body.price || 0,
+          originalPrice: body.price || 0,
+          features: []
+        }];
+
     // Tạo sản phẩm mới
     const now = new Date().toISOString();
-    const newProduct = {
+    const newProduct: Product = {
       id: newId,
       name: body.name,
       slug: body.slug,
@@ -64,38 +95,42 @@ export async function POST(request: Request) {
       requirements: body.requirements || [],
       specifications: body.specifications || [],
       categories: body.categories || [],
-      versions: body.versions || [],
+      versions: versions,
       createdAt: now,
       updatedAt: now,
-      price: body.price || (body.versions && body.versions.length > 0 ? body.versions[0].price : 0),
-      salePrice: body.salePrice || 0,
-      rating: body.rating || "0",
-      weeklyPurchases: body.weeklyPurchases || 0
+      rating: body.rating ? Number(body.rating) : undefined,
+      weeklyPurchases: body.weeklyPurchases ? Number(body.weeklyPurchases) : undefined,
+      type: body.type || 'software',
+      isAccount: body.isAccount || false
     };
 
     // Lưu sản phẩm vào file data/products.json
     try {
-      const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-      let currentProducts = [];
-      
-      if (fs.existsSync(dataFilePath)) {
-        const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-        try {
-          currentProducts = JSON.parse(fileContent);
-        } catch (parseError) {
-          console.error('Error parsing products.json:', parseError);
-          currentProducts = [];
-        }
-      }
-      
       // Thêm sản phẩm mới vào danh sách
       currentProducts.push(newProduct);
       
       // Ghi lại vào file
       fs.writeFileSync(dataFilePath, JSON.stringify(currentProducts, null, 2), 'utf8');
       console.log(`Product saved to ${dataFilePath}`);
+      
+      // Xác minh rằng sản phẩm đã được lưu bằng cách đọc lại file
+      const verifyContent = fs.readFileSync(dataFilePath, 'utf8');
+      const verifyProducts: Product[] = JSON.parse(verifyContent);
+      const productSaved = verifyProducts.some((p: Product) => p.id === newId);
+      
+      if (!productSaved) {
+        console.error('Product was not saved properly!');
+        return NextResponse.json({ 
+          error: 'Lỗi khi lưu sản phẩm. Vui lòng thử lại.' 
+        }, { status: 500 });
+      }
+      
+      console.log(`Product verified in ${dataFilePath}`);
     } catch (fileError) {
       console.error('Error saving product to file:', fileError);
+      return NextResponse.json({ 
+        error: 'Lỗi khi lưu sản phẩm vào file. Vui lòng thử lại.' 
+      }, { status: 500 });
     }
 
     // Thêm sản phẩm vào danh sách products (in-memory)

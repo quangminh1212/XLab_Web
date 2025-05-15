@@ -21,7 +21,9 @@
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "fix-errors": "node fix-trace-error.js",
-    "update-purchases": "node src/scripts/update-purchases.js"
+    "update-purchases": "node src/scripts/update-purchases.js",
+    "verify-products": "node src/scripts/verify-products.js",
+    "check-products": "powershell -ExecutionPolicy Bypass -File check-products.ps1"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
