@@ -66,14 +66,12 @@ next-setup.log
 *.tsbuildinfo
 
 # Files to be deleted after migration
-fix-all-errors.js
 fix-all-errors.log
 fix-auth-component.js
 fix-missing-files.js
 fix-static-files.js
 fix-static-files.log
 fix-swc-errors.js
-fix-trace-error.js
 hide-warnings.js
 update-gitignore.js
 dev.cmd
@@ -183,12 +181,14 @@ powershell-dev.ps1
 start-dev.bat
 *.log
 
-# Các file fix lỗi cũ - đã tích hợp vào next-fix-all.js
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
 check-env.js
-fix-all-errors.js
 fix-auth-component.js
 fix-missing-files.js
 fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
 fix-swc-errors.js
 fix-trace-error.js
 hide-warnings.js
@@ -202,3 +202,8 @@ next-fix-all.log
 
 
 
+
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

@@ -1,12 +1,19 @@
 /**
- * NEXT.JS TRACE ERROR FIXER
- * Script sửa lỗi file trace và chuẩn bị môi trường chạy Next.js
+ * XLab Web - Fix All Errors
+ * 
+ * Script tổng hợp sửa tất cả các lỗi cho Next.js
+ * Kết hợp các chức năng từ:
+ * - fix-chunks-final.js
+ * - fix-next-chunks.js
+ * - fix-products-json.js
+ * - fix-trace-error.js
  */
 
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔧 Bắt đầu sửa lỗi trace và chuẩn bị môi trường Next.js...');
+console.log('=== Bắt đầu công cụ XLab Web Utility Toolkit ===');
+console.log('🚀 Bắt đầu quá trình sửa lỗi toàn diện...');
 
 // Đường dẫn các thư mục quan trọng
 const rootDir = process.cwd();
@@ -14,13 +21,14 @@ const nextDir = path.join(rootDir, '.next');
 const serverDir = path.join(nextDir, 'server');
 const staticDir = path.join(nextDir, 'static');
 const cacheDir = path.join(nextDir, 'cache');
+const productsJsonPath = path.join(rootDir, 'src/data/products.json');
+const productsIdChunksDir = path.join(staticDir, 'chunks', 'app', 'products', '[id]');
 
 // Hàm tạo thư mục nếu chưa tồn tại
 function ensureDirectoryExists(dirPath) {
   try {
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
-      console.log(`✅ Đã tạo thư mục: ${dirPath}`);
     }
   } catch (error) {
     console.error(`❌ Lỗi khi tạo thư mục ${dirPath}: ${error.message}`);
@@ -31,7 +39,6 @@ function ensureDirectoryExists(dirPath) {
 function createFileWithContent(filePath, content) {
   try {
     fs.writeFileSync(filePath, content);
-    console.log(`✅ Đã tạo file: ${filePath}`);
     return true;
   } catch (error) {
     console.error(`❌ Lỗi khi tạo file ${filePath}: ${error.message}`);
@@ -44,7 +51,6 @@ function deleteFileIfExists(filePath) {
   try {
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
-      console.log(`✅ Đã xóa file: ${filePath}`);
       return true;
     }
   } catch (error) {
@@ -53,15 +59,114 @@ function deleteFileIfExists(filePath) {
   return false;
 }
 
-// 1. Xử lý file trace
+// 1. Sửa lỗi file products.json
+function fixProductsJson() {
+  console.log('🔧 Bắt đầu sửa lỗi file products.json...');
+  
+  if (!fs.existsSync(productsJsonPath)) {
+    console.log('⚠️ File products.json không tồn tại, bỏ qua bước này');
+    return;
+  }
+  
+  try {
+    // Đọc file products.json
+    const rawData = fs.readFileSync(productsJsonPath, 'utf8');
+    console.log(`📂 Đã đọc file products.json, dung lượng: ${rawData.length} bytes`);
+    
+    // Kiểm tra và sửa lỗi cú pháp JSON
+    let fixedData = rawData;
+    try {
+      JSON.parse(rawData);
+      console.log('✅ Không phát hiện lỗi cú pháp JSON');
+    } catch (parseError) {
+      console.error('⚠️ Lỗi cú pháp JSON:', parseError.message);
+      
+      // Sửa lỗi cú pháp phổ biến
+      fixedData = fixedData.replace(/}\s*"/g, '},"');
+      fixedData = fixedData.replace(/,\s*}/g, '}');
+      fixedData = fixedData.replace(/,\s*]/g, ']');
+      
+      try {
+        JSON.parse(fixedData);
+        console.log('✅ Đã sửa lỗi cú pháp JSON thành công');
+      } catch (newError) {
+        console.error('❌ Không thể tự động sửa JSON:', newError.message);
+        return;
+      }
+    }
+    
+    // Phân tích JSON
+    const products = JSON.parse(fixedData);
+    console.log(`📊 Đã tải ${products.length} sản phẩm`);
+    
+    // Kiểm tra và chuẩn hóa ID sản phẩm
+    const idRegex = /^[a-z0-9-]+$/;
+    let needsUpdate = false;
+    
+    products.forEach(product => {
+      if (!product.id || !idRegex.test(product.id)) {
+        needsUpdate = true;
+      }
+    });
+    
+    if (needsUpdate) {
+      // Cập nhật ID sản phẩm nếu cần
+      const updatedProducts = products.map(product => {
+        if (!product.id || !idRegex.test(product.id)) {
+          const newId = generateIdFromName(product.name);
+          return { ...product, id: newId };
+        }
+        return product;
+      });
+      
+      // Lưu lại file đã cập nhật
+      fs.writeFileSync(productsJsonPath, JSON.stringify(updatedProducts, null, 2), 'utf8');
+      console.log('✅ Đã cập nhật file products.json với ID mới');
+    } else {
+      console.log('✅ Tất cả ID sản phẩm đã ở đúng định dạng');
+    }
+    
+  } catch (error) {
+    console.error('❌ Lỗi xử lý file products.json:', error);
+  }
+}
+
+// Hàm tạo ID từ tên sản phẩm
+function generateIdFromName(name) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')  // Xóa ký tự đặc biệt
+    .replace(/[\s_-]+/g, '-')   // Thay khoảng trắng và gạch dưới bằng gạch ngang
+    .replace(/^-+|-+$/g, '');   // Xóa gạch ngang ở đầu/cuối
+}
+
+// 2. Sửa lỗi trace và chuẩn bị môi trường Next.js
+function fixTraceAndPrepareNextEnvironment() {
+  console.log('🔧 Bắt đầu sửa lỗi trace và chuẩn bị môi trường Next.js...');
+  
+  // Xử lý file trace
+  fixTraceFile();
+  
+  // Tạo middleware-manifest.json
+  createMiddlewareManifest();
+  
+  // Tạo các thư mục cần thiết
+  createRequiredDirectories();
+  
+  // Tạo các file cần thiết
+  createRequiredFiles();
+}
+
+// 2.1 Xử lý file trace
 function fixTraceFile() {
   console.log('🔍 Xử lý file trace...');
-  const tracePath = path.join(nextDir, 'trace');
   
   // Tạo thư mục .next nếu không tồn tại
   ensureDirectoryExists(nextDir);
   
   // Xóa file trace nếu tồn tại
+  const tracePath = path.join(nextDir, 'trace');
   deleteFileIfExists(tracePath);
   
   // Tạo file .traceignore
@@ -79,7 +184,7 @@ function fixTraceFile() {
   console.log('✅ Đã hoàn tất xử lý file trace');
 }
 
-// 2. Tạo middleware-manifest.json
+// 2.2 Tạo middleware-manifest.json
 function createMiddlewareManifest() {
   console.log('📄 Tạo middleware-manifest.json...');
   
@@ -100,15 +205,12 @@ function createMiddlewareManifest() {
     version: 2
   }, null, 2);
   
-  // Xóa file cũ nếu tồn tại
-  deleteFileIfExists(manifestPath);
-  
   // Tạo file mới
   createFileWithContent(manifestPath, manifestContent);
   console.log('✅ Đã hoàn tất tạo middleware-manifest.json');
 }
 
-// 3. Tạo các thư mục cần thiết
+// 2.3 Tạo các thư mục cần thiết
 function createRequiredDirectories() {
   console.log('📁 Tạo các thư mục cần thiết...');
   
@@ -122,7 +224,7 @@ function createRequiredDirectories() {
   ensureDirectoryExists(path.join(staticDir, 'chunks'));
   ensureDirectoryExists(path.join(staticDir, 'chunks', 'app'));
   ensureDirectoryExists(path.join(staticDir, 'chunks', 'app', 'products'));
-  ensureDirectoryExists(path.join(staticDir, 'chunks', 'app', 'products', '[id]'));
+  ensureDirectoryExists(productsIdChunksDir);
   ensureDirectoryExists(path.join(staticDir, 'css'));
   ensureDirectoryExists(path.join(staticDir, 'webpack'));
   
@@ -132,7 +234,7 @@ function createRequiredDirectories() {
   console.log('✅ Đã hoàn tất tạo các thư mục cần thiết');
 }
 
-// 4. Tạo các file cần thiết
+// 2.4 Tạo các file cần thiết
 function createRequiredFiles() {
   console.log('📝 Tạo các file cần thiết...');
   
@@ -167,21 +269,16 @@ console.log("Main app chunk loaded successfully");`;
   console.log('✅ Đã hoàn tất tạo các file cần thiết');
 }
 
-// 5. Gọi các hàm để sửa lỗi
-fixTraceFile();
-createMiddlewareManifest();
-createRequiredDirectories();
-createRequiredFiles();
-
-// 6. Sửa lỗi ChunkLoadError cho trang products/[id]
-console.log('🚀 Sửa lỗi ChunkLoadError cho trang products/[id]...');
-
-// Đường dẫn thư mục
-const productChunksDir = path.join(staticDir, 'chunks', 'app', 'products', '[id]');
-
-// Nội dung chunk cơ bản
-const productChunkContents = {
-  'page.js': `// Page Chunk for products/[id]
+// 3. Sửa lỗi ChunkLoadError cho trang sản phẩm chi tiết
+function fixChunkLoadError() {
+  console.log('🚀 Sửa lỗi ChunkLoadError cho trang products/[id]...');
+  
+  // Đảm bảo thư mục tồn tại
+  ensureDirectoryExists(productsIdChunksDir);
+  
+  // Nội dung file chunk
+  const chunkContents = {
+    'page.js': `// Page Chunk for products/[id]
 (self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[8857],{60767:function(e,n,r){Promise.resolve().then(r.bind(r,92862));},92862:function(e,n,r){"use strict";
 r.r(n),r.d(n,{default:function(){return ProductDetailPage}});
 var t=r(24033);var o=r(12221);var i=r(70616);var u=r(86960);
@@ -212,7 +309,7 @@ function ProductDetail({product}){
 
 }});`,
 
-  'loading.js': `// Loading Chunk for products/[id]
+    'loading.js': `// Loading Chunk for products/[id]
 (self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[8862],{60795:function(n,e,r){"use strict";
 r.r(e),r.d(e,{default:function(){return Loading}});
 var t=r(24033);
@@ -236,7 +333,7 @@ function Loading(){
 }
 }});`,
 
-  'not-found.js': `// Not Found Chunk for products/[id]
+    'not-found.js': `// Not Found Chunk for products/[id]
 (self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[8861],{60799:function(n,t,e){"use strict";
 e.r(t),e.d(t,{default:function(){return NotFound}});
 var r=e(24033);
@@ -248,23 +345,90 @@ function NotFound(){
     (0,r.jsx)("p",{className:"text-lg text-gray-600 mb-8",children:"The product you're looking for doesn't exist or has been removed."}),
     (0,r.jsx)("a",{href:"/products",className:"inline-block bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors",children:"Browse Products"})
   ]});
+}`
+  };
+  
+  // Tạo các file chunk
+  for (const [fileName, content] of Object.entries(chunkContents)) {
+    createFileWithContent(path.join(productsIdChunksDir, fileName), content);
+  }
+  
+  // Tạo các file chunk có hash (đảm bảo Next.js có thể tải)
+  // Sử dụng timestamp để tạo hash giả định
+  const timestamp = Date.now().toString(16).slice(-12);
+  for (const [fileName, content] of Object.entries(chunkContents)) {
+    const baseName = fileName.replace('.js', '');
+    const hashedFileName = `${baseName}-${timestamp}.js`;
+    createFileWithContent(path.join(productsIdChunksDir, hashedFileName), content);
+  }
+  
+  // Tạo các file với tên undefined.js để đảm bảo Next.js có thể tìm thấy
+  for (const [fileName, content] of Object.entries(chunkContents)) {
+    const baseName = fileName.replace('.js', '');
+    const undefinedFileName = `${baseName}.undefined.js`;
+    createFileWithContent(path.join(productsIdChunksDir, undefinedFileName), content);
+  }
+  
+  console.log('✅ Đã hoàn tất sửa lỗi ChunkLoadError cho trang sản phẩm chi tiết');
 }
-}});`
-};
 
-// Tạo các file chunk
-for (const [fileName, content] of Object.entries(productChunkContents)) {
-  createFileWithContent(path.join(productChunksDir, fileName), content);
+// 4. Cập nhật .gitignore
+function updateGitignore() {
+  console.log('📝 Đang cập nhật file .gitignore...');
+  
+  const gitignorePath = path.join(rootDir, '.gitignore');
+  
+  // Các mục cần thêm vào .gitignore
+  const entriesToAdd = [
+    '.next/',
+    'node_modules/',
+    '.env.local',
+    '.env.development.local',
+    '.env.test.local',
+    '.env.production.local',
+    'npm-debug.log*',
+    'yarn-debug.log*',
+    'yarn-error.log*',
+    '.DS_Store',
+    '*.log'
+  ];
+  
+  try {
+    // Đọc nội dung hiện tại của .gitignore nếu tồn tại
+    let currentContent = '';
+    if (fs.existsSync(gitignorePath)) {
+      currentContent = fs.readFileSync(gitignorePath, 'utf8');
+    }
+    
+    // Kiểm tra xem các mục đã có trong .gitignore chưa
+    let needsUpdate = false;
+    const missingEntries = [];
+    
+    for (const entry of entriesToAdd) {
+      if (!currentContent.includes(entry)) {
+        missingEntries.push(entry);
+        needsUpdate = true;
+      }
+    }
+    
+    // Cập nhật .gitignore nếu cần
+    if (needsUpdate) {
+      const updatedContent = currentContent + '\n' + missingEntries.join('\n') + '\n';
+      fs.writeFileSync(gitignorePath, updatedContent);
+      console.log(`✅ Đã thêm ${missingEntries.length} mục vào .gitignore`);
+    } else {
+      console.log('✅ File .gitignore đã có đầy đủ các mục cần thiết');
+    }
+    
+  } catch (error) {
+    console.error('❌ Lỗi khi cập nhật .gitignore:', error);
+  }
 }
 
-// Tạo các file chunk có hash
-const timestamp = Date.now().toString(16).slice(-12);
-for (const [fileName, content] of Object.entries(productChunkContents)) {
-  const baseName = fileName.replace('.js', '');
-  const hashedFileName = `${baseName}-${timestamp}.js`;
-  createFileWithContent(path.join(productChunksDir, hashedFileName), content);
-}
+// Thực thi các hàm sửa lỗi
+fixProductsJson();
+fixTraceAndPrepareNextEnvironment();
+fixChunkLoadError();
+updateGitignore();
 
-console.log('✅ Đã hoàn tất sửa lỗi ChunkLoadError cho trang sản phẩm chi tiết');
-console.log('✨ Đã hoàn tất việc sửa lỗi và chuẩn bị môi trường Next.js');
-console.log('🚀 Bạn có thể chạy "npm run dev" để khởi động ứng dụng'); 
+console.log('✅ Đã hoàn tất quá trình sửa lỗi'); 
