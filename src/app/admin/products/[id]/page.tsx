@@ -116,14 +116,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         if (productData.productOptions && Array.isArray(productData.productOptions)) {
           setProductOptions(productData.productOptions);
         } else {
-          // Giá trị mặc định nếu không có
+          // Giá trị mặc định nếu không có - chỉ hiển thị 2 tùy chọn ban đầu
           setProductOptions([
-            '11 khóa Google',
             'Full - Dùng riêng - 6 Tháng',
-            'Full - Dùng riêng - 1 Năm',
-            'Full - Nâng cấp - 6 Tháng',
-            'Full - Nâng cấp - 1 Năm',
-            'Full - Nâng cấp - 3 Tháng'
+            'Full - Dùng riêng - 1 Năm'
           ]);
         }
         

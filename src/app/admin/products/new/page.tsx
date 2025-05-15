@@ -612,14 +612,10 @@ function NewProductPage() {
     ? Math.max(...productVersions.map(v => v.price))
     : 0;
 
-  // Thêm state cho quản lý tùy chọn sản phẩm
+  // Thêm state cho quản lý tùy chọn sản phẩm - mặc định chỉ hiển thị 2 tùy chọn
   const [productOptions, setProductOptions] = useState<string[]>([
-    '11 khóa Google',
     'Full - Dùng riêng - 6 Tháng',
-    'Full - Dùng riêng - 1 Năm',
-    'Full - Nâng cấp - 6 Tháng',
-    'Full - Nâng cấp - 1 Năm',
-    'Full - Nâng cấp - 3 Tháng'
+    'Full - Dùng riêng - 1 Năm'
   ]);
   const [newProductOption, setNewProductOption] = useState('');
   const [defaultProductOption, setDefaultProductOption] = useState('Full - Dùng riêng - 6 Tháng');
