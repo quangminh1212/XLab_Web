@@ -377,4 +377,5 @@ const Header = () => {
   );
 };
 
-export default Header; 
+// Wrap trong React.memo để tránh re-renders không cần thiết
+export default React.memo(Header); 

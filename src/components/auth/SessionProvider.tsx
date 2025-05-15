@@ -5,7 +5,11 @@ import { PropsWithChildren } from "react"
 
 export default function SessionProvider({ children }: PropsWithChildren) {
   return (
-    <NextAuthSessionProvider refetchInterval={0} refetchOnWindowFocus={false}>
+    <NextAuthSessionProvider 
+      refetchInterval={5 * 60}
+      refetchOnWindowFocus={false}
+      refetchWhenOffline={false}
+    >
       {children}
     </NextAuthSessionProvider>
   )
