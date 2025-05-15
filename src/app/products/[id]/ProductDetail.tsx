@@ -342,9 +342,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
           <span className="text-gray-800">{product.name}</span>
         </div>
         
-        {/* Product benefits banner */}
-        <ProductBenefits />
-        
         {/* Product main info */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -489,6 +486,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
             </div>
           </div>
         </div>
+        
+        {/* Product benefits banner */}
+        <ProductBenefits />
         
         {/* Product description */}
         <ProductDescription description={product.description} />
