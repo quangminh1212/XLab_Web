@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
@@ -277,6 +278,30 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     product.versions && product.versions.length > 0 ? product.versions[0].name : ''
   );
   
+  // State quản lý tùy chọn mới
+  const [newOptionText, setNewOptionText] = useState('');
+  
+  // State danh sách tùy chọn
+  const [productOptions, setProductOptions] = useState(product.productOptions || []);
+  
+  // State hiển thị tùy chọn hiện có
+  const [showOptions, setShowOptions] = useState(false);
+  
+  // Xử lý thêm tùy chọn mới
+  const handleAddOption = () => {
+    if (newOptionText.trim()) {
+      setProductOptions([...productOptions, newOptionText.trim()]);
+      setNewOptionText('');
+    }
+  };
+  
+  // Xử lý xóa tùy chọn
+  const handleRemoveOption = (index: number) => {
+    const newOptions = [...productOptions];
+    newOptions.splice(index, 1);
+    setProductOptions(newOptions);
+  };
+  
   // Lấy ảnh sản phẩm
   const getProductImage = () => {
     if (product.images && product.images.length > 0) {
@@ -443,67 +468,111 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
               </div>
               
-              <p className="mt-4 text-gray-600">{product.shortDescription || ''}</p>
-              
-              {/* Product options/versions */}
-              {product.versions && product.versions.length > 1 && (
-                <div className="mt-6">
-                  <h3 className="font-medium text-gray-900 mb-2">Chọn phiên bản:</h3>
-                  <div className="grid grid-cols-1 gap-3">
-                    {product.versions.map((version) => (
-                      <div 
-                        key={version.name}
-                        className={`
-                          border rounded-lg p-3 cursor-pointer transition
-                          ${selectedVersion === version.name 
-                            ? 'border-primary-500 bg-primary-50' 
-                            : 'border-gray-200 hover:border-gray-300'}
-                        `}
-                        onClick={() => setSelectedVersion(version.name)}
-                      >
-                        <div className="flex justify-between">
-                          <span className="font-medium text-gray-900">{version.name}</span>
-                          <span className="font-medium text-primary-600">
+              {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
+              <div className="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h3 className="font-semibold text-gray-900 mb-3 text-lg">Tùy chọn loại sản phẩm</h3>
+                
+                {/* Product options/versions */}
+                {product.versions && product.versions.length > 1 && (
+                  <div className="mb-4">
+                    <div className="grid grid-cols-1 gap-2">
+                      {product.versions.map((version) => (
+                        <div 
+                          key={version.name}
+                          className={`
+                            border rounded-lg p-3 cursor-pointer transition flex items-center
+                            ${selectedVersion === version.name 
+                              ? 'border-primary-500 bg-primary-50' 
+                              : 'border-gray-200 bg-white hover:border-gray-300'}
+                          `}
+                          onClick={() => setSelectedVersion(version.name)}
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center">
+                              <div className={`w-4 h-4 rounded-full border flex-shrink-0 mr-3 ${selectedVersion === version.name ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}>
+                                {selectedVersion === version.name && (
+                                  <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
+                                )}
+                              </div>
+                              <span className="font-medium text-gray-900">{version.name}</span>
+                            </div>
+                            {version.description && (
+                              <p className="mt-1 text-sm text-gray-500 ml-7">{version.description}</p>
+                            )}
+                          </div>
+                          <span className="font-medium text-primary-600 ml-2">
                             {formatCurrency(version.price)}
                           </span>
                         </div>
-                        {version.description && (
-                          <p className="mt-1 text-sm text-gray-500">{version.description}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Loại sản phẩm */}
-              {product.productOptions && product.productOptions.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="font-medium text-gray-900 mb-2">Loại:</h3>
-                  <div className="relative border border-gray-300 rounded-md">
-                    <select 
-                      className="block w-full bg-white border-0 px-4 py-3 pr-8 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      defaultValue={product.defaultProductOption || ""}
-                      onChange={(e) => {
-                        // Xử lý khi người dùng chọn loại sản phẩm
-                        console.log("Chọn loại sản phẩm:", e.target.value);
-                      }}
-                    >
-                      <option value="" disabled>Chọn một tùy chọn</option>
-                      {product.productOptions.map((option, index) => (
-                        <option key={index} value={option}>
-                          {option}
-                        </option>
                       ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                      </svg>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+                
+                {/* Loại sản phẩm */}
+                {product.productOptions && product.productOptions.length > 0 && (
+                  <div className="mb-2">
+                    <div className="mb-2 flex justify-between items-center">
+                      <h4 className="font-medium text-gray-700">Thêm tùy chọn</h4>
+                      {productOptions.length > 0 && (
+                        <button 
+                          className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                          onClick={() => setShowOptions(!showOptions)}
+                        >
+                          {showOptions ? 'Ẩn tùy chọn' : 'Tùy chọn hiện có'}
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex">
+                      <div className="relative flex-1">
+                        <input 
+                          type="text"
+                          placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
+                          className="block w-full bg-white border border-gray-300 px-4 py-2.5 rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                          value={newOptionText}
+                          onChange={(e) => setNewOptionText(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
+                        />
+                      </div>
+                      <button 
+                        className="bg-primary-600 text-white px-4 py-2.5 rounded-r-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        onClick={handleAddOption}
+                      >
+                        Thêm
+                      </button>
+                    </div>
+                    
+                    {showOptions && productOptions.length > 0 && (
+                      <div className="mt-4 space-y-2">
+                        {productOptions.map((option, index) => (
+                          <div key={index} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200">
+                            <div className="flex items-center">
+                              <div className="w-4 h-4 rounded-full border border-green-500 bg-green-500 flex-shrink-0 mr-3">
+                                <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M5 12l5 5L20 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                              </div>
+                              <span className="font-medium text-gray-800">{option}</span>
+                            </div>
+                            <button 
+                              className="text-red-500 hover:text-red-700"
+                              onClick={() => handleRemoveOption(index)}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <p className="text-xs text-gray-500 mt-2">Thiết lập các tùy chọn loại sản phẩm mà khách hàng có thể chọn khi mua hàng. Chọn tùy chọn mặc định bằng cách click vào nút radio bên phải.</p>
+                  </div>
+                )}
+              </div>
+              
+              <p className="mt-4 text-gray-600">{product.shortDescription || ''}</p>
               
               {/* Quantity selector */}
               <div className="mt-6">
