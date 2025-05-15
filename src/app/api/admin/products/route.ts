@@ -15,8 +15,37 @@ const getProducts = (): Product[] => {
             fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
             return [];
         }
+        
         const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-        return JSON.parse(fileContent);
+        
+        try {
+            // Thử phân tích trực tiếp
+            return JSON.parse(fileContent);
+        } catch (parseError) {
+            // Nếu có lỗi phân tích, thử sửa lỗi cú pháp JSON
+            console.error('JSON parse error:', parseError);
+            
+            // Hàm sửa lỗi cú pháp JSON phổ biến
+            const fixedContent = fileContent
+                .replace(/}\s*"/g, '},"')  // Thiếu dấu phẩy giữa các đối tượng
+                .replace(/,\s*}/g, '}')     // Dấu phẩy thừa trước dấu đóng ngoặc
+                .replace(/,\s*]/g, ']');    // Dấu phẩy thừa trước dấu đóng mảng
+            
+            try {
+                // Thử phân tích lại sau khi sửa
+                const parsedData = JSON.parse(fixedContent);
+                
+                // Nếu phân tích thành công, ghi lại file đã sửa
+                fs.writeFileSync(dataFilePath, JSON.stringify(parsedData, null, 2), 'utf8');
+                console.log('JSON syntax errors fixed and file updated');
+                
+                return parsedData;
+            } catch (secondError) {
+                // Nếu vẫn không sửa được, trả về mảng rỗng
+                console.error('Could not fix JSON syntax errors:', secondError);
+                return [];
+            }
+        }
     } catch (error) {
         console.error('Error reading products data:', error);
         return [];
@@ -86,9 +115,21 @@ export async function POST(request: NextRequest) {
             productData.images = [];
         }
 
+        // Tạo ID từ tên sản phẩm
+        const generateIdFromName = (name: string) => {
+            return name
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')  // Loại bỏ ký tự đặc biệt
+                .replace(/[\s_-]+/g, '-')   // Thay thế khoảng trắng và gạch dưới bằng gạch ngang
+                .replace(/^-+|-+$/g, '');   // Loại bỏ gạch ngang ở đầu/cuối
+        };
+
         // Thêm ID và ngày tạo
+        const productId = productData.name ? generateIdFromName(productData.name) : uuidv4();
+        
         const newProduct: Product = {
-            id: uuidv4(),
+            id: productId,
             ...productData,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()

@@ -8,6 +8,16 @@ import { Product, ProductCategory } from '@/models/ProductModel';
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
+// Function to generate ID from product name
+function generateIdFromName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')  // Remove special characters
+    .replace(/[\s_-]+/g, '-')   // Replace spaces with hyphens
+    .replace(/^-+|-+$/g, '');   // Remove leading/trailing hyphens
+}
+
 // Read product data
 function getProducts(): Product[] {
   try {
@@ -188,10 +198,34 @@ export async function PUT(
       ) as ProductCategory[];
     }
     
+    // Check if name changed and update ID accordingly
+    let newId = productData.id;
+    if (productData.name !== products[productIndex].name) {
+      // Generate new ID from name
+      newId = generateIdFromName(productData.name);
+      
+      // Check if this ID already exists
+      const idExists = products.some((p, idx) => idx !== productIndex && p.id === newId);
+      if (idExists) {
+        // Add a numeric suffix if needed
+        let counter = 1;
+        let updatedId = `${newId}-${counter}`;
+        while (products.some((p, idx) => idx !== productIndex && p.id === updatedId)) {
+          counter++;
+          updatedId = `${newId}-${counter}`;
+        }
+        console.log(`ID ${newId} đã tồn tại, sử dụng ID mới: ${updatedId}`);
+        newId = updatedId;
+      }
+      
+      console.log(`Product name changed from "${products[productIndex].name}" to "${productData.name}", updated ID from "${id}" to "${newId}"`);
+    }
+    
     // Create updated product
     const updatedProduct = {
       ...products[productIndex],
       ...productData,
+      id: newId, // Use new ID based on name
       updatedAt: new Date().toISOString()
     };
     

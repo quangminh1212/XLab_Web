@@ -4,6 +4,16 @@ import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
 
+// Hàm tạo ID từ tên sản phẩm
+function generateIdFromName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')  // Loại bỏ ký tự đặc biệt
+    .replace(/[\s_-]+/g, '-')   // Thay thế khoảng trắng và gạch dưới bằng gạch ngang
+    .replace(/^-+|-+$/g, '');   // Loại bỏ gạch ngang ở đầu/cuối
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -66,8 +76,22 @@ export async function POST(request: Request) {
       descriptionImages = descriptionImages.map(normalizeImagePath).filter(Boolean);
     }
 
-    // Tạo ID mới (trong trường hợp thực tế, ID sẽ được tạo bởi cơ sở dữ liệu)
-    const newId = `${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`;
+    // Tạo ID mới dựa trên tên sản phẩm
+    let newId = generateIdFromName(body.name);
+    
+    // Kiểm tra xem ID đã tồn tại chưa
+    const idExists = currentProducts.some((p: Product) => p.id === newId);
+    if (idExists) {
+      // Nếu ID đã tồn tại, thêm hậu tố số
+      let counter = 1;
+      let updatedId = `${newId}-${counter}`;
+      while (currentProducts.some((p: Product) => p.id === updatedId)) {
+        counter++;
+        updatedId = `${newId}-${counter}`;
+      }
+      console.log(`ID ${newId} đã tồn tại, đã sử dụng ID mới: ${updatedId}`);
+      newId = updatedId;
+    }
 
     // Đảm bảo có ít nhất một phiên bản nếu không có
     const versions = body.versions && body.versions.length > 0 
@@ -101,7 +125,9 @@ export async function POST(request: Request) {
       rating: body.rating ? Number(body.rating) : undefined,
       weeklyPurchases: body.weeklyPurchases ? Number(body.weeklyPurchases) : undefined,
       type: body.type || 'software',
-      isAccount: body.isAccount || false
+      isAccount: body.isAccount || false,
+      productOptions: body.productOptions || [],
+      defaultProductOption: body.defaultProductOption || ''
     };
 
     // Lưu sản phẩm vào file data/products.json
