@@ -128,15 +128,15 @@ const ProductDescription = ({ description }: { description: string }) => {
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">Thông tin chi tiết</h2>
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <div className="prose prose-sm sm:prose lg:prose-lg max-w-none mx-auto">
+      <div className="bg-white p-8 rounded-lg shadow-sm">
+        <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
           <RichTextContent content={description} className="product-description" />
         </div>
         
         <style jsx global>{`
           .product-description {
             width: 100%;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
           }
           
@@ -144,8 +144,9 @@ const ProductDescription = ({ description }: { description: string }) => {
             max-width: 100%;
             height: auto;
             border-radius: 0.5rem;
-            margin: 1.5rem auto;
+            margin: 2rem auto;
             display: block;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
           
           .product-description h2, 
@@ -161,15 +162,20 @@ const ProductDescription = ({ description }: { description: string }) => {
           
           .product-description ul,
           .product-description ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
             width: fit-content;
-            max-width: 90%;
-            margin: 0 auto 1rem auto;
+            max-width: 95%;
+            margin: 0 auto 1.5rem auto;
           }
           
           .product-description li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+          }
+          
+          .product-description p {
+            line-height: 1.7;
           }
         `}</style>
       </div>
@@ -530,7 +536,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         <ProductBenefits />
         
         {/* Product description */}
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <ProductDescription description={product.description} />
         </div>
         
