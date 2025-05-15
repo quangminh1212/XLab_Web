@@ -3,6 +3,7 @@ import { products } from '@/data/mockData';
 import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
+import { slugify } from '@/lib/utils';
 
 export async function POST(request: Request) {
   try {
@@ -39,11 +40,12 @@ export async function POST(request: Request) {
       fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
     }
 
-    // Kiểm tra slug đã tồn tại chưa
-    const slugExists = currentProducts.some((p: Product) => p.slug === body.slug);
+    // Tạo slug từ tên sản phẩm và kiểm tra trùng lặp
+    const idSlug = body.slug?.trim() || slugify(body.name);
+    const slugExists = currentProducts.some((p: Product) => p.slug === idSlug);
     if (slugExists) {
       return NextResponse.json({ 
-        error: 'Slug đã tồn tại. Vui lòng chọn slug khác.' 
+        error: 'Slug đã tồn tại. Vui lòng chọn tên sản phẩm khác.' 
       }, { status: 400 });
     }
 
@@ -66,9 +68,6 @@ export async function POST(request: Request) {
       descriptionImages = descriptionImages.map(normalizeImagePath).filter(Boolean);
     }
 
-    // Tạo ID mới (trong trường hợp thực tế, ID sẽ được tạo bởi cơ sở dữ liệu)
-    const newId = `${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`;
-
     // Đảm bảo có ít nhất một phiên bản nếu không có
     const versions = body.versions && body.versions.length > 0 
       ? body.versions 
@@ -83,9 +82,9 @@ export async function POST(request: Request) {
     // Tạo sản phẩm mới
     const now = new Date().toISOString();
     const newProduct: Product = {
-      id: newId,
+      id: idSlug,
       name: body.name,
-      slug: body.slug,
+      slug: idSlug,
       description: body.description,
       shortDescription: body.shortDescription || '',
       isPublished: body.isPublished !== undefined ? body.isPublished : true,
@@ -116,7 +115,7 @@ export async function POST(request: Request) {
       // Xác minh rằng sản phẩm đã được lưu bằng cách đọc lại file
       const verifyContent = fs.readFileSync(dataFilePath, 'utf8');
       const verifyProducts: Product[] = JSON.parse(verifyContent);
-      const productSaved = verifyProducts.some((p: Product) => p.id === newId);
+      const productSaved = verifyProducts.some((p: Product) => p.id === idSlug);
       
       if (!productSaved) {
         console.error('Product was not saved properly!');
