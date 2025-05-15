@@ -34,9 +34,9 @@ const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/f
   ssr: true
 });
 
-// Đảm bảo trang được render động với mỗi request
-export const dynamic = 'auto';
-export const dynamicParams = true;
+// Đảm bảo trang được render động với mỗi request nhưng có caching
+export const dynamic = 'force-static';
+export const revalidate = 3600; // Cache trong 1 giờ
 
 // Đọc dữ liệu sản phẩm từ file JSON
 function getProducts(): Product[] {
