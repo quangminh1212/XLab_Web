@@ -9,7 +9,6 @@ import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
 import RichTextContent from '@/components/common/RichTextContent';
 import { Product as UIProduct } from '@/types';
-import React from 'react';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -40,15 +39,15 @@ const ProductBenefits = () => (
 );
 
 // Component hiển thị sản phẩm liên quan
-const RelatedProducts = React.memo(({ currentProductId, categoryId }: { currentProductId: string | number, categoryId?: string | number }) => {
+const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: string | number, categoryId?: string | number }) => {
   // Trong trường hợp này chúng ta sẽ lấy dữ liệu từ API
   const [relatedProducts, setRelatedProducts] = useState<UIProduct[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
+  const [hasAttemptedFetch, setHasAttemptedFetch] = useState(false);
   
   useEffect(() => {
-    // Nếu đã fetch dữ liệu, không fetch lại
-    if (isDataFetched) return;
+    // Nếu đã fetch một lần và không có thay đổi về ID, không fetch lại
+    if (hasAttemptedFetch) return;
     
     // Kiểm tra định dạng của categoryId
     const validCategoryId = categoryId && typeof categoryId === 'string' ? categoryId : 
@@ -64,19 +63,15 @@ const RelatedProducts = React.memo(({ currentProductId, categoryId }: { currentP
           ? `/api/products?categoryId=${validCategoryId}&exclude=${currentProductId}&limit=3`
           : `/api/products?exclude=${currentProductId}&limit=3`;
           
-        const response = await fetch(url, {
-          // Sử dụng cache để tránh gọi API liên tục
-          cache: 'force-cache'
-        });
-        
+        const response = await fetch(url);
         const data = await response.json();
         
         if (data.success && Array.isArray(data.data)) {
           setRelatedProducts(data.data);
         }
         
-        // Đánh dấu đã fetch dữ liệu
-        setIsDataFetched(true);
+        // Đánh dấu đã fetch
+        setHasAttemptedFetch(true);
       } catch (err) {
         console.error('Error fetching related products:', err);
       } finally {
@@ -85,7 +80,7 @@ const RelatedProducts = React.memo(({ currentProductId, categoryId }: { currentP
     };
     
     fetchRelatedProducts();
-  }, [currentProductId, categoryId, isDataFetched]);
+  }, [currentProductId, categoryId, hasAttemptedFetch]);
 
   if (isLoading) {
     return (
@@ -137,7 +132,7 @@ const RelatedProducts = React.memo(({ currentProductId, categoryId }: { currentP
       </div>
     </div>
   );
-});
+};
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
@@ -221,6 +216,22 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
+  // Thêm class để đánh dấu khi component đã load xong
+  useEffect(() => {
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      mainElement.classList.add('product-detail-loaded');
+    }
+  }, []);
+
+  // Update document title khi component được render
+  useEffect(() => {
+    document.title = `${product.name} | XLab - Phần mềm và Dịch vụ`;
+  }, [product.name]);
+
+  // State để theo dõi số lượt xem
+  const [viewCount, setViewCount] = useState(0);
+  
   // State lưu số lượng sản phẩm
   const [quantity, setQuantity] = useState(1);
   
@@ -229,23 +240,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     product.versions && product.versions.length > 0 ? product.versions[0].name : ''
   );
   
-  // Thêm class để đánh dấu khi component đã load xong và cập nhật title - chỉ chạy một lần
-  useEffect(() => {
-    // Đánh dấu component đã load xong
-    const mainElement = document.querySelector('main');
-    if (mainElement) {
-      mainElement.classList.add('product-detail-loaded');
-    }
-    
-    // Thiết lập document title
-    document.title = `${product.name} | XLab - Phần mềm và Dịch vụ`;
-    
-    // Log thông tin sản phẩm đang xem - chỉ log một lần
-    console.log(`Đang xem sản phẩm: ${product.name}`);
-    
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Lấy ảnh sản phẩm
   const getProductImage = () => {
     if (product.images && product.images.length > 0) {
@@ -307,6 +301,18 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     });
     return true;
   };
+
+  // Tăng số lượt xem khi người dùng truy cập trang
+  useEffect(() => {
+    // Tăng số lượt xem khi component được mount
+    setViewCount(prev => prev + 1);
+    
+    // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
+    console.log(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
+    
+    // Chỉ chạy một lần khi component được mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Loại bỏ product.id khỏi dependencies để không gọi liên tục
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
   const isAccount = product.categories?.some(cat => cat.id === 'tai-khoan-hoc-tap');
