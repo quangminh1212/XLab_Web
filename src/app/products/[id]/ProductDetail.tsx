@@ -347,7 +347,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Product image */}
             <div className="flex flex-col">
-              <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+              <div className="relative aspect-square bg-white rounded-lg overflow-hidden border border-gray-100">
                 <Image
                   src={getProductImage()}
                   alt={product.name}
@@ -361,7 +361,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               {product.descriptionImages && product.descriptionImages.length > 0 && (
                 <div className="grid grid-cols-4 gap-2 mt-4">
                   {product.descriptionImages.slice(0, 4).map((img, index) => (
-                    <div key={index} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                    <div key={index} className="relative aspect-square bg-white rounded-lg overflow-hidden border border-gray-100">
                       <Image
                         src={img}
                         alt={`${product.name} - Hình ${index + 1}`}
