@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
-import { products, categories } from '@/data/mockData';
+import { categories } from '@/data/mockData';
 import Image from 'next/image';
 
 // Helper function to lấy URL ảnh hợp lệ
@@ -30,8 +30,33 @@ const getValidImageUrl = (product: any): string => {
 };
 
 function HomePage() {
-  // Lọc sản phẩm nổi bật
-  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 4);
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          setProducts(result.data);
+        } else {
+          console.error('Failed to fetch products:', result.error);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Lọc sản phẩm nổi bật (giả định tất cả sản phẩm đều là featured trong trường hợp này)
+  const featuredProducts = products.slice(0, 6);
 
   // Lọc sản phẩm mới nhất
   const newProducts = [...products]
@@ -339,7 +364,11 @@ function HomePage() {
                   </Link>
                 </div>
 
-                {products.length > 0 ? (
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                  </div>
+                ) : products.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
                     {featuredProducts.map((product) => (
                       <ProductCard 
@@ -347,8 +376,8 @@ function HomePage() {
                         id={product.id.toString()}
                         name={product.name}
                         description={product.shortDescription || ''}
-                        price={product.salePrice || product.price}
-                        originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
+                        price={product.price || 0}
+                        originalPrice={product.originalPrice}
                         image={getValidImageUrl(product)}
                         rating={product.rating}
                         reviewCount={product.reviewCount || 0}
@@ -386,9 +415,13 @@ function HomePage() {
                   </Link>
                 </div>
 
-                {products.length > 0 ? (
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                  </div>
+                ) : products.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
-                    {featuredProducts
+                    {products
                       .filter(product => product.isAccount || product.type === 'account')
                       .slice(0, 6)
                       .map((product) => (
@@ -397,8 +430,8 @@ function HomePage() {
                           id={product.id.toString()}
                           name={product.name}
                           description={product.shortDescription || ''}
-                          price={product.salePrice || product.price}
-                          originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
+                          price={product.price || 0}
+                          originalPrice={product.originalPrice}
                           image={getValidImageUrl(product)}
                           rating={product.rating}
                           reviewCount={product.reviewCount || 0}
