@@ -41,6 +41,7 @@ yarn-error.log*
 lerna-debug.log*
 next.config.log
 next-fix-all.log
+xlab-utils.log
 
 # misc
 .DS_Store
@@ -82,6 +83,13 @@ powershell-dev.ps1
 start-dev.bat
 no-trace.bat
 run-fixed.bat
+
+# Các file fix lỗi đã tích hợp
+fix-products-json.js
+fix-trace-error.js
+fix-chunks-final.js
+fix-next-chunks.js
+next-fix-all.js
 
 # SWC related
 /.swc-disabled/
@@ -183,7 +191,7 @@ powershell-dev.ps1
 start-dev.bat
 *.log
 
-# Các file fix lỗi cũ - đã tích hợp vào next-fix-all.js
+# Các file fix lỗi cũ - đã tích hợp vào xlab-utils.js
 check-env.js
 fix-all-errors.js
 fix-auth-component.js
@@ -194,6 +202,10 @@ fix-trace-error.js
 hide-warnings.js
 update-gitignore.js
 next-setup.js
+fix-products-json.js
+fix-chunks-final.js
+fix-next-chunks.js
+next-fix-all.js
 
 # Logs and temporary files
 next-fix-all.log
@@ -202,3 +214,8 @@ next-fix-all.log
 
 
 
+
+# Next.js generated files
+.next/static/chunks/app/products/[id]/
+.next/server/middleware-manifest.json
+.traceignore
