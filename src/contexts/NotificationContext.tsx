@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface Notification {
   id: number;
@@ -62,29 +62,27 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     },
   ]);
 
-  // Tính toán số thông báo chưa đọc - memoize để tránh tính toán lại
-  const unreadCount = React.useMemo(() => {
-    return notifications.filter(n => !n.isRead).length;
-  }, [notifications]);
+  // Tính toán số thông báo chưa đọc
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  // Hàm đánh dấu một thông báo đã đọc - sử dụng useCallback để tránh tạo lại hàm
-  const markAsRead = useCallback((id: number) => {
+  // Hàm đánh dấu một thông báo đã đọc
+  const markAsRead = (id: number) => {
     setNotifications(prev => 
       prev.map(notification => 
         notification.id === id ? { ...notification, isRead: true } : notification
       )
     );
-  }, []);
+  };
 
-  // Hàm đánh dấu tất cả thông báo đã đọc - sử dụng useCallback để tránh tạo lại hàm
-  const markAllAsRead = useCallback(() => {
+  // Hàm đánh dấu tất cả thông báo đã đọc
+  const markAllAsRead = () => {
     setNotifications(prev =>
       prev.map(notification => ({ ...notification, isRead: true }))
     );
-  }, []);
+  };
 
-  // Hàm thêm thông báo mới - sử dụng useCallback để tránh tạo lại hàm
-  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'isRead' | 'time'>) => {
+  // Hàm thêm thông báo mới
+  const addNotification = (notification: Omit<Notification, 'id' | 'isRead' | 'time'>) => {
     const newNotification: Notification = {
       ...notification,
       id: Date.now(),
@@ -93,45 +91,36 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
     
     setNotifications(prev => [newNotification, ...prev]);
-  }, []);
+  };
 
-  // Lưu thông báo vào localStorage khi có thay đổi - nhưng chỉ làm khi thực sự thay đổi
-  // Sử dụng useEffect với debounce để giảm tần suất ghi localStorage
+  // Lưu thông báo vào localStorage khi có thay đổi
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    const timeoutId = setTimeout(() => {
+    if (typeof window !== 'undefined') {
       localStorage.setItem('notifications', JSON.stringify(notifications));
-    }, 500); // Debounce 500ms
-    
-    return () => clearTimeout(timeoutId);
+    }
   }, [notifications]);
 
   // Khôi phục thông báo từ localStorage khi khởi tạo
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    try {
+    if (typeof window !== 'undefined') {
       const savedNotifications = localStorage.getItem('notifications');
       if (savedNotifications) {
-        const parsedNotifications = JSON.parse(savedNotifications);
-        if (Array.isArray(parsedNotifications) && parsedNotifications.length > 0) {
-          setNotifications(parsedNotifications);
+        try {
+          setNotifications(JSON.parse(savedNotifications));
+        } catch (error) {
+          console.error('Failed to parse notifications from localStorage:', error);
         }
       }
-    } catch (error) {
-      console.error('Failed to parse notifications from localStorage:', error);
     }
   }, []);
 
-  // Tạo và memoize giá trị context để tránh tạo lại object mới mỗi lần render
-  const value = React.useMemo(() => ({
+  const value = {
     notifications,
     unreadCount,
     markAsRead,
     markAllAsRead,
     addNotification
-  }), [notifications, unreadCount, markAsRead, markAllAsRead, addNotification]);
+  };
 
   return (
     <NotificationContext.Provider value={value}>
