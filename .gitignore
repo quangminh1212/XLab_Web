@@ -82,7 +82,6 @@ powershell-dev.ps1
 start-dev.bat
 no-trace.bat
 run-fixed.bat
-cleanup.bat
 
 # SWC related
 /.swc-disabled/
