@@ -298,7 +298,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
   
   // Xử lý tải lên ảnh từ máy tính
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     
     const file = e.target.files[0];
@@ -307,13 +307,44 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       return;
     }
     
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      if (event.target?.result) {
-        insertImageToEditor(event.target.result as string);
+    try {
+      // Tạo form data để upload file qua API
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      
+      // Upload hình ảnh lên server
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadFormData
+      });
+      
+      if (!response.ok) {
+        throw new Error('Không thể tải lên hình ảnh');
       }
-    };
-    reader.readAsDataURL(file);
+      
+      const data = await response.json();
+      // Lấy URL thực từ server
+      const imageUrl = data.url || data.filepath || data.fileUrl;
+      
+      if (!imageUrl) {
+        throw new Error('URL hình ảnh không hợp lệ');
+      }
+      
+      // Chèn ảnh vào editor
+      insertImageToEditor(imageUrl);
+    } catch (err) {
+      console.error('Lỗi khi upload hình ảnh:', err);
+      alert('Không thể tải lên hình ảnh: ' + (err as Error).message);
+      
+      // Fallback đến cách cũ nếu API lỗi
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          insertImageToEditor(event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
     
     // Reset input file
     if (fileInputRef.current) {

@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File;
     // Lấy thông tin sản phẩm từ formData
     const productSlug = formData.get('productSlug') as string;
+    const productName = formData.get('productName') as string;
 
     if (!file) {
       console.error('Upload failed: No file provided');
@@ -38,8 +39,11 @@ export async function POST(request: NextRequest) {
     // Get file extension
     const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
     
-    // Create a unique file name
-    const fileName = `${uuidv4()}.${fileExtension}`;
+    // Create a unique file name with product name if available
+    const sanitizedProductName = productName ? productName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() : '';
+    const fileName = sanitizedProductName 
+      ? `${sanitizedProductName}-${uuidv4()}.${fileExtension}`
+      : `${uuidv4()}.${fileExtension}`;
     
     // Define the directory to save the uploaded image
     let targetDir = 'products';

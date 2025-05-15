@@ -207,9 +207,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
       
-      // Nếu có thông tin sản phẩm, thêm slug vào form data
+      // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
       if (product && product.slug) {
         uploadFormData.append('productSlug', product.slug);
+        uploadFormData.append('productName', product.name || '');
       }
       
       // Upload hình ảnh lên server
@@ -273,9 +274,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
       
-      // Nếu có thông tin sản phẩm, thêm slug vào form data
+      // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
       if (product && product.slug) {
         uploadFormData.append('productSlug', product.slug);
+        uploadFormData.append('productName', product.name || '');
       }
       
       // Upload hình ảnh lên server
@@ -558,9 +560,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
           
-          // Nếu có thông tin sản phẩm, thêm slug vào form data
+          // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
           if (product && product.slug) {
             uploadFormData.append('productSlug', product.slug);
+            uploadFormData.append('productName', product.name || '');
           }
           
           // Upload hình ảnh lên server
@@ -617,9 +620,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
           
-          // Nếu có thông tin sản phẩm, thêm slug vào form data
+          // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
           if (product && product.slug) {
             uploadFormData.append('productSlug', product.slug);
+            uploadFormData.append('productName', product.name || '');
           }
           
           // Upload hình ảnh lên server

@@ -36,6 +36,40 @@ function saveProducts(products: Product[]): void {
   }
 }
 
+// Function to delete old images
+function deleteOldImages(oldImages: (string | { url: string })[], newImages: (string | { url: string })[]): void {
+  try {
+    // Chỉ xử lý xóa nếu có ảnh cũ và ảnh mới
+    if (!oldImages || !newImages || oldImages.length === 0 || newImages.length === 0) {
+      return;
+    }
+
+    // Chuyển đổi mảng để có được các URL dạng chuỗi
+    const oldImageUrls = oldImages.map(img => typeof img === 'string' ? img : img.url);
+    const newImageUrls = newImages.map(img => typeof img === 'string' ? img : img.url);
+
+    // Tìm các ảnh cũ không còn xuất hiện trong danh sách ảnh mới
+    const imagesToDelete = oldImageUrls.filter(oldImg => !newImageUrls.includes(oldImg));
+    
+    // Xóa từng ảnh
+    for (const imageUrl of imagesToDelete) {
+      // Chỉ xóa ảnh trong thư mục images
+      if (imageUrl && imageUrl.startsWith('/images/')) {
+        const imagePath = path.join(process.cwd(), 'public', imageUrl);
+        
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+          console.log(`Deleted old image: ${imagePath}`);
+        } else {
+          console.log(`Image not found for deletion: ${imagePath}`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error deleting old images:', error);
+  }
+}
+
 // Category lookup
 function getCategoryName(categoryId: string): string {
   const categories: Record<string, string> = {
@@ -121,6 +155,10 @@ export async function PUT(
       images: productData.images
     });
     
+    // Lưu lại ảnh cũ để xóa sau khi cập nhật
+    const oldImages = [...(products[productIndex].images || [])];
+    const oldDescriptionImages = [...(products[productIndex].descriptionImages || [])];
+    
     // Ensure all required fields are present
     const requiredFields = ['id', 'name', 'slug', 'description', 'shortDescription'] as const;
     for (const field of requiredFields) {
@@ -163,6 +201,10 @@ export async function PUT(
     products[productIndex] = updatedProduct;
     saveProducts(products);
     
+    // Xóa ảnh cũ sau khi đã cập nhật thành công
+    deleteOldImages(oldImages, updatedProduct.images || []);
+    deleteOldImages(oldDescriptionImages, updatedProduct.descriptionImages || []);
+    
     return NextResponse.json(updatedProduct);
   } catch (error) {
     console.error('Error updating product:', error);
@@ -186,15 +228,27 @@ export async function DELETE(
     const safeParams = await params;
     const id = safeParams.id;
     
-    // Remove product
+    // Find product to get images for deletion
     const products = getProducts();
-    const newProducts = products.filter(p => p.id !== id);
+    const productToDelete = products.find(p => p.id === id);
     
-    if (products.length === newProducts.length) {
+    if (!productToDelete) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
     
+    // Delete all product images
+    if (productToDelete.images && productToDelete.images.length > 0) {
+      deleteOldImages(productToDelete.images, []);
+    }
+    
+    if (productToDelete.descriptionImages && productToDelete.descriptionImages.length > 0) {
+      deleteOldImages(productToDelete.descriptionImages, []);
+    }
+    
+    // Remove product
+    const newProducts = products.filter(p => p.id !== id);
     saveProducts(newProducts);
+    
     return NextResponse.json({ message: 'Product deleted successfully' });
   } catch (error) {
     console.error('Error deleting product:', error);

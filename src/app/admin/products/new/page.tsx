@@ -132,10 +132,11 @@ function NewProductPage() {
       // Tạo form data để upload file
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
-      // Gửi thêm thông tin slug của sản phẩm
+      // Gửi thêm thông tin slug và tên của sản phẩm
       if (formData.name) {
         const slug = slugify(formData.name);
         uploadFormData.append('productSlug', slug);
+        uploadFormData.append('productName', formData.name);
       }
       
       // Upload hình ảnh lên server
@@ -198,10 +199,11 @@ function NewProductPage() {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
       
-      // Gửi thêm thông tin slug của sản phẩm
+      // Gửi thêm thông tin slug và tên của sản phẩm
       if (formData.name) {
         const slug = slugify(formData.name);
         uploadFormData.append('productSlug', slug);
+        uploadFormData.append('productName', formData.name);
       }
       
       // Upload hình ảnh lên server
@@ -393,10 +395,11 @@ function NewProductPage() {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
           
-          // Gửi thêm thông tin slug của sản phẩm
+          // Gửi thêm thông tin slug và tên của sản phẩm
           if (formData.name) {
             const slug = slugify(formData.name);
             uploadFormData.append('productSlug', slug);
+            uploadFormData.append('productName', formData.name);
           }
           
           // Upload hình ảnh lên server
@@ -453,10 +456,11 @@ function NewProductPage() {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
           
-          // Gửi thêm thông tin slug của sản phẩm
+          // Gửi thêm thông tin slug và tên của sản phẩm
           if (formData.name) {
             const slug = slugify(formData.name);
             uploadFormData.append('productSlug', slug);
+            uploadFormData.append('productName', formData.name);
           }
           
           // Upload hình ảnh lên server
