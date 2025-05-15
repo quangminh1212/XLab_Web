@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -149,7 +149,7 @@ export default function ProductCard({
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      <div className="relative pt-[100%] bg-gray-100">
+      <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
             -{discountPercentage}%
@@ -170,7 +170,7 @@ export default function ProductCard({
         />
 
         {!isImageLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-white">
             <svg
               className="w-10 h-10 text-gray-300 animate-spin"
               fill="none"

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 interface ProductImageProps {
@@ -98,7 +98,7 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
     <div className="w-full">
       {/* Main Image */}
       <div
-        className={`relative ${getAspectRatioClass()} mb-3 bg-gray-100 border border-gray-200 rounded-lg overflow-hidden`}
+        className={`relative ${getAspectRatioClass()} mb-3 bg-white border border-gray-200 rounded-lg overflow-hidden`}
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
