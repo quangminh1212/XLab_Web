@@ -205,6 +205,14 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
+  // Thêm class để đánh dấu khi component đã load xong
+  useEffect(() => {
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      mainElement.classList.add('product-detail-loaded');
+    }
+  }, []);
+
   // Update document title khi component được render
   useEffect(() => {
     document.title = `${product.name} | XLab - Phần mềm và Dịch vụ`;
@@ -307,8 +315,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     }
   };
 
+  if (!product) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <p>Đang tải thông tin sản phẩm...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 product-detail-loaded">
       <div className="max-w-5xl mx-auto">
         {/* Breadcrumbs */}
         <div className="flex items-center text-sm mb-4">
@@ -382,7 +398,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
               </div>
               
-              <p className="mt-4 text-gray-600">{product.description || product.shortDescription}</p>
+              <p className="mt-4 text-gray-600">{product.shortDescription || ''}</p>
               
               {/* Product options/versions */}
               {product.versions && product.versions.length > 1 && (
