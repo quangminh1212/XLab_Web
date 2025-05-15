@@ -428,6 +428,30 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 </div>
               )}
               
+              {/* Loại sản phẩm */}
+              <div className="mt-6">
+                <h3 className="font-medium text-gray-900 mb-2">Loại:</h3>
+                <div className="relative border border-gray-300 rounded-md">
+                  <select 
+                    className="block w-full bg-white border-0 px-4 py-3 pr-8 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Chọn một tùy chọn</option>
+                    <option value="11-khoa-google">11 khóa Google</option>
+                    <option value="full-dung-rieng-6-thang">Full - Dùng riêng - 6 Tháng</option>
+                    <option value="full-dung-rieng-1-nam">Full - Dùng riêng - 1 Năm</option>
+                    <option value="full-nang-cap-6-thang">Full - Nâng cấp - 6 Tháng</option>
+                    <option value="full-nang-cap-1-nam">Full - Nâng cấp - 1 Năm</option>
+                    <option value="full-nang-cap-3-thang">Full - Nâng cấp - 3 Tháng</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              
               {/* Quantity selector */}
               <div className="mt-6">
                 <h3 className="font-medium text-gray-900 mb-2">Số lượng:</h3>

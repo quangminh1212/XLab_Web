@@ -1154,6 +1154,76 @@ function NewProductPage() {
           )}
         </div>
         
+        {/* Tùy chọn loại sản phẩm */}
+        {showAdvancedOptions && (
+          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Tùy chọn loại sản phẩm</h2>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="mb-4">
+                <h3 className="text-md font-medium mb-2">Các tùy chọn khả dụng</h3>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span>11 khóa Google</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span>Full - Dùng riêng - 6 Tháng</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span>Full - Dùng riêng - 1 Năm</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span>Full - Nâng cấp - 6 Tháng</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span>Full - Nâng cấp - 1 Năm</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
+                      <span>Full - Nâng cấp - 3 Tháng</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <h3 className="text-md font-medium mb-2">Tùy chọn mặc định</h3>
+                <div className="relative border border-gray-300 rounded-md">
+                  <select 
+                    className="block w-full bg-white border-0 px-4 py-3 pr-8 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Chọn một tùy chọn mặc định</option>
+                    <option value="11-khoa-google">11 khóa Google</option>
+                    <option value="full-dung-rieng-6-thang">Full - Dùng riêng - 6 Tháng</option>
+                    <option value="full-dung-rieng-1-nam">Full - Dùng riêng - 1 Năm</option>
+                    <option value="full-nang-cap-6-thang">Full - Nâng cấp - 6 Tháng</option>
+                    <option value="full-nang-cap-1-nam">Full - Nâng cấp - 1 Năm</option>
+                    <option value="full-nang-cap-3-thang">Full - Nâng cấp - 3 Tháng</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-500 mt-2">
+              Thiết lập các tùy chọn loại sản phẩm mà khách hàng có thể chọn khi mua hàng.
+            </p>
+          </div>
+        )}
+        
         {/* Phần mô tả chi tiết */}
         {showAdvancedOptions && (
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
