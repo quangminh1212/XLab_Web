@@ -7,18 +7,19 @@ echo ================================================
 echo.
 
 REM Kiểm tra tham số dòng lệnh
-set CLEAN_MODE=1
-if "%1"=="no-clean" set CLEAN_MODE=0
-if "%1"=="--no-clean" set CLEAN_MODE=0
-if "%1"=="-n" set CLEAN_MODE=0
+set CLEAN_MODE=0
+if "%1"=="clean" set CLEAN_MODE=1
+if "%1"=="-c" set CLEAN_MODE=1
+if "%1"=="--clean" set CLEAN_MODE=1
 
-REM Thông báo chế độ hiện tại
-if %CLEAN_MODE%==1 (
-  echo Dang chay o CHE DO CLEAN (xoa cache va cai dat moi)
-) else (
-  echo Dang chay o che do binh thuong
-)
-echo.
+REM Hỏi người dùng nếu không có tham số
+if not "%1"=="" goto skip_prompt
+echo Chon che do khoi dong:
+echo 1. Binh thuong 
+echo 2. Xoa cache va cai dat moi (--clean)
+choice /C 12 /N /M "Lua chon cua ban (1-2): "
+if errorlevel 2 set CLEAN_MODE=1
+:skip_prompt
 
 REM Đặt các biến môi trường cho NextJS
 set NODE_OPTIONS=--no-warnings --max-old-space-size=4096
