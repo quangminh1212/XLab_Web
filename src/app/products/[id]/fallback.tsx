@@ -11,7 +11,11 @@ export default function ProductFallback() {
   // Reload trang sau 3 giây
   useEffect(() => {
     const timer = setTimeout(() => {
-      window.location.reload();
+      // Only reload if fallback container is visible
+      const container = document.getElementById('fallback-container');
+      if (container && container.style.display !== 'none') {
+        window.location.reload();
+      }
     }, 3000);
     
     return () => clearTimeout(timer);
