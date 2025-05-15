@@ -4,8 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Product, ProductCategory } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid'; // deprecated, replaced by slugify approach
-import { slugify } from '@/lib/utils';
+import { v4 as uuidv4 } from 'uuid';
 
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
@@ -87,12 +86,10 @@ export async function POST(request: NextRequest) {
             productData.images = [];
         }
 
-        // Tạo slug từ tên sản phẩm và thêm ngày tạo
-        const idSlug = productData.slug?.trim() || slugify(productData.name);
+        // Thêm ID và ngày tạo
         const newProduct: Product = {
+            id: uuidv4(),
             ...productData,
-            id: idSlug,
-            slug: idSlug,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
