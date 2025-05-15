@@ -19,21 +19,53 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 // Component hiển thị lợi ích của sản phẩm chỉ hiển thị trong trang chi tiết của website
 const ProductBenefits = () => (
   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mt-6">
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Giao hàng<br/>nhanh chóng</h3>
-      <p className="text-xs text-gray-600 text-center">Giao tài khoản ngay trong vòng 5h sau khi nhận được thanh toán.</p>
+    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
+      <div className="flex flex-col items-center">
+        <div className="w-16 h-16 bg-green-500 rounded-lg mb-3 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+          </svg>
+        </div>
+        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Giao hàng<br/>nhanh chóng</h3>
+        <p className="text-xs text-gray-600 text-center">Giao tài khoản ngay trong vòng 5h sau khi nhận được thanh toán.</p>
+      </div>
     </div>
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Rẻ nhất<br/>thị trường</h3>
-      <p className="text-xs text-gray-600 text-center">Cam kết giá rẻ nhất thị trường, tiết kiệm lên đến 90% so với giá gốc.</p>
+    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
+      <div className="flex flex-col items-center">
+        <div className="w-16 h-16 bg-orange-400 rounded-lg mb-3 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-7h-2c0-1-.5-1.5-1-2z"></path>
+            <path d="M2 9v1c0 1.1.9 2 2 2h1"></path>
+            <path d="M16 11a2 2 0 100-4 2 2 0 000 4z"></path>
+          </svg>
+        </div>
+        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Rẻ nhất<br/>thị trường</h3>
+        <p className="text-xs text-gray-600 text-center">Cam kết giá rẻ nhất thị trường, tiết kiệm lên đến 90% so với giá gốc.</p>
+      </div>
     </div>
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Bảo hành<br/>1 đổi 1</h3>
-      <p className="text-xs text-gray-600 text-center">Đổi tài khoản mới ngay trong 24h nếu tài khoản phát sinh lỗi.</p>
+    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
+      <div className="flex flex-col items-center">
+        <div className="w-16 h-16 bg-blue-500 rounded-lg mb-3 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+            <path d="M3.5 12.5l.5.5"></path>
+            <path d="M20 12.5l.5.5"></path>
+          </svg>
+        </div>
+        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Bảo hành<br/>1 đổi 1</h3>
+        <p className="text-xs text-gray-600 text-center">Đổi tài khoản mới ngay trong 24h nếu tài khoản phát sinh lỗi.</p>
+      </div>
     </div>
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-      <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Hỗ trợ<br/>nhanh chóng</h3>
-      <p className="text-xs text-gray-600 text-center">Chúng tôi sẵn sàng hỗ trợ mọi khó khăn trong quá trình sử dụng tài khoản.</p>
+    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
+      <div className="flex flex-col items-center">
+        <div className="w-16 h-16 bg-pink-500 rounded-lg mb-3 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
+          </svg>
+        </div>
+        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Hỗ trợ<br/>nhanh chóng</h3>
+        <p className="text-xs text-gray-600 text-center">Chúng tôi sẵn sàng hỗ trợ mọi khó khăn trong quá trình sử dụng tài khoản.</p>
+      </div>
     </div>
   </div>
 );
