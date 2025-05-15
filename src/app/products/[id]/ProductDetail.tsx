@@ -43,24 +43,16 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
   // Trong trường hợp này chúng ta sẽ lấy dữ liệu từ API
   const [relatedProducts, setRelatedProducts] = useState<UIProduct[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasAttemptedFetch, setHasAttemptedFetch] = useState(false);
   
   useEffect(() => {
-    // Nếu đã fetch một lần và không có thay đổi về ID, không fetch lại
-    if (hasAttemptedFetch) return;
-    
-    // Kiểm tra định dạng của categoryId
-    const validCategoryId = categoryId && typeof categoryId === 'string' ? categoryId : 
-                            categoryId && typeof categoryId === 'number' ? categoryId : null;
-    
     // Tải sản phẩm liên quan từ API
     const fetchRelatedProducts = async () => {
       try {
         setIsLoading(true);
         
-        // Nếu categoryId hợp lệ, sử dụng nó, ngược lại lấy sản phẩm ngẫu nhiên
-        const url = validCategoryId 
-          ? `/api/products?categoryId=${validCategoryId}&exclude=${currentProductId}&limit=3`
+        // If no categoryId, try to get some random products instead
+        const url = categoryId 
+          ? `/api/products?categoryId=${categoryId}&exclude=${currentProductId}&limit=3`
           : `/api/products?exclude=${currentProductId}&limit=3`;
           
         const response = await fetch(url);
@@ -69,9 +61,6 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
         if (data.success && Array.isArray(data.data)) {
           setRelatedProducts(data.data);
         }
-        
-        // Đánh dấu đã fetch
-        setHasAttemptedFetch(true);
       } catch (err) {
         console.error('Error fetching related products:', err);
       } finally {
@@ -80,7 +69,7 @@ const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: s
     };
     
     fetchRelatedProducts();
-  }, [currentProductId, categoryId, hasAttemptedFetch]);
+  }, [currentProductId, categoryId]);
 
   if (isLoading) {
     return (

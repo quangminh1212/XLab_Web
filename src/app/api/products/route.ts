@@ -45,16 +45,14 @@ export async function GET(request: Request) {
     productList = productList.filter(p => p.isPublished);
     console.log(`Found ${productList.length} published products`);
     
-    // Kiểm tra nếu categoryId là hợp lệ trước khi lọc
-    if (categoryId && categoryId !== '[object Object]') {
+    // Lọc theo categoryId nếu được cung cấp
+    if (categoryId) {
       productList = productList.filter(p => 
         p.categories && p.categories.some(cat => 
           typeof cat === 'string' ? cat === categoryId : cat.id === categoryId
         )
       );
       console.log(`Filtered to ${productList.length} products in category ${categoryId}`);
-    } else if (categoryId === '[object Object]') {
-      console.log('Bỏ qua categoryId không hợp lệ [object Object]');
     }
     
     // Loại trừ sản phẩm cụ thể nếu exclude được cung cấp
