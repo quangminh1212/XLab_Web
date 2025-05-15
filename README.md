@@ -249,27 +249,6 @@ run.bat -c
 
 Đồng thời, khi chạy không có tham số, script sẽ hỏi bạn muốn chạy bình thường hay cài đặt mới.
 
-### Công cụ sửa lỗi tích hợp
-
-Dự án được tích hợp sẵn công cụ `xlab-utils.js` để sửa lỗi và chuẩn bị môi trường. Công cụ này tích hợp tất cả các chức năng từ các script riêng lẻ trước đây.
-
-Sử dụng:
-```
-node xlab-utils.js [lệnh]
-```
-
-Các lệnh hỗ trợ:
-- `fix-all`: Chạy tất cả các sửa lỗi
-- `fix-products`: Sửa lỗi JSON sản phẩm và cập nhật ID
-- `fix-trace`: Sửa lỗi trace
-- `update-gitignore`: Cập nhật file .gitignore
-- `cleanup`: Dọn dẹp các file thừa
-
-Tùy chọn:
-- `--verbose`: Hiển thị thông tin chi tiết
-
-File `run.bat` sẽ tự động chạy công cụ này khi khởi động ứng dụng.
-
 ### Các lỗi thường gặp
 
 1. Lỗi "Cannot read properties of undefined (reading 'call')":
