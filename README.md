@@ -228,26 +228,25 @@ GOOGLE_CLIENT_SECRET=your_client_secret_here
 
 ### Cách chạy
 
-1. Chạy bình thường:
+1. Chạy bình thường với chế độ clean (mặc định):
 ```
 run.bat
 ```
 
-2. Cài đặt mới hoàn toàn (xóa cache và cài đặt lại):
+2. Chạy không xóa cache và không cài đặt lại:
 ```
-run.bat clean
-```
-
-hoặc
-```
-run.bat --clean
+run.bat no-clean
 ```
 hoặc
 ```
-run.bat -c
+run.bat --no-clean
+```
+hoặc
+```
+run.bat -n
 ```
 
-Đồng thời, khi chạy không có tham số, script sẽ hỏi bạn muốn chạy bình thường hay cài đặt mới.
+Lưu ý: run.bat mặc định sẽ chạy ở chế độ clean (xóa cache và cài đặt lại) để đảm bảo môi trường phát triển luôn sạch sẽ và không gặp lỗi liên quan đến cache.
 
 ### Công cụ sửa lỗi tích hợp
 
