@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
@@ -129,16 +129,23 @@ const ProductDescription = ({ description }: { description: string }) => {
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">Thông tin chi tiết</h2>
       <div className="bg-white p-6 rounded-lg shadow-sm">
-        <div className="prose prose-sm sm:prose lg:prose-lg max-w-none">
+        <div className="prose prose-sm sm:prose lg:prose-lg max-w-none mx-auto">
           <RichTextContent content={description} className="product-description" />
         </div>
         
         <style jsx global>{`
+          .product-description {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          
           .product-description img {
             max-width: 100%;
             height: auto;
             border-radius: 0.5rem;
-            margin: 1.5rem 0;
+            margin: 1.5rem auto;
+            display: block;
           }
           
           .product-description h2, 
@@ -156,6 +163,9 @@ const ProductDescription = ({ description }: { description: string }) => {
           .product-description ol {
             margin-left: 1.5rem;
             margin-bottom: 1rem;
+            width: fit-content;
+            max-width: 90%;
+            margin: 0 auto 1rem auto;
           }
           
           .product-description li {
@@ -520,7 +530,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         <ProductBenefits />
         
         {/* Product description */}
-        <ProductDescription description={product.description} />
+        <div className="max-w-4xl mx-auto">
+          <ProductDescription description={product.description} />
+        </div>
         
         {/* Related products */}
         <RelatedProducts 
