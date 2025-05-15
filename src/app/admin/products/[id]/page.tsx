@@ -78,6 +78,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Thêm state cho quản lý tùy chọn sản phẩm
+  const [productOptions, setProductOptions] = useState<string[]>([]);
+  const [newProductOption, setNewProductOption] = useState('');
+  const [defaultProductOption, setDefaultProductOption] = useState('');
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -106,6 +111,30 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           type: productData.type || 'software',
           isAccount: productData.isAccount || productData.type === 'account' || false
         });
+        
+        // Tải thông tin tùy chọn sản phẩm nếu có
+        if (productData.productOptions && Array.isArray(productData.productOptions)) {
+          setProductOptions(productData.productOptions);
+        } else {
+          // Giá trị mặc định nếu không có
+          setProductOptions([
+            '11 khóa Google',
+            'Full - Dùng riêng - 6 Tháng',
+            'Full - Dùng riêng - 1 Năm',
+            'Full - Nâng cấp - 6 Tháng',
+            'Full - Nâng cấp - 1 Năm',
+            'Full - Nâng cấp - 3 Tháng'
+          ]);
+        }
+        
+        // Tải tùy chọn mặc định
+        if (productData.defaultProductOption) {
+          setDefaultProductOption(productData.defaultProductOption);
+        } else if (productData.productOptions && productData.productOptions.length > 0) {
+          setDefaultProductOption(productData.productOptions[0]);
+        } else {
+          setDefaultProductOption('Full - Dùng riêng - 6 Tháng');
+        }
         
         // Set description images if available
         if (productData.descriptionImages && Array.isArray(productData.descriptionImages)) {
@@ -368,6 +397,41 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     }));
   };
 
+  // Xử lý thêm tùy chọn mới
+  const handleAddProductOption = () => {
+    if (newProductOption.trim()) {
+      setProductOptions([...productOptions, newProductOption.trim()]);
+      setNewProductOption('');
+      
+      // Nếu chưa có tùy chọn mặc định, đặt tùy chọn đầu tiên làm mặc định
+      if (!defaultProductOption && productOptions.length === 0) {
+        setDefaultProductOption(newProductOption.trim());
+      }
+    }
+  };
+  
+  // Xử lý xóa tùy chọn
+  const handleRemoveProductOption = (index: number) => {
+    const option = productOptions[index];
+    const newOptions = [...productOptions];
+    newOptions.splice(index, 1);
+    setProductOptions(newOptions);
+    
+    // Nếu xóa tùy chọn mặc định, chọn tùy chọn đầu tiên còn lại làm mặc định
+    if (option === defaultProductOption) {
+      if (newOptions.length > 0) {
+        setDefaultProductOption(newOptions[0]);
+      } else {
+        setDefaultProductOption('');
+      }
+    }
+  };
+  
+  // Xử lý đặt tùy chọn mặc định
+  const handleSetDefaultOption = (option: string) => {
+    setDefaultProductOption(option);
+  };
+
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -407,7 +471,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         ],
         categories: formData.categories.map(id => ({ id })),
         descriptionImages: descriptionImages,
-        images: featuredImage ? [featuredImage] : []
+        images: featuredImage ? [featuredImage] : [],
+        // Thêm dữ liệu tùy chọn sản phẩm
+        productOptions: productOptions,
+        defaultProductOption: defaultProductOption
       };
       
       console.log("Saving product data:", JSON.stringify(productData, null, 2));
@@ -1026,64 +1093,70 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </div>
               
               <div className="space-y-4">
+                {/* Thêm tùy chọn mới */}
                 <div className="mb-4">
-                  <h3 className="text-md font-medium mb-2">Các tùy chọn khả dụng</h3>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      <label className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
-                        <span>11 khóa Google</span>
-                      </label>
-                      <label className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
-                        <span>Full - Dùng riêng - 6 Tháng</span>
-                      </label>
-                      <label className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
-                        <span>Full - Dùng riêng - 1 Năm</span>
-                      </label>
-                      <label className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
-                        <span>Full - Nâng cấp - 6 Tháng</span>
-                      </label>
-                      <label className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
-                        <span>Full - Nâng cấp - 1 Năm</span>
-                      </label>
-                      <label className="flex items-center space-x-2">
-                        <input type="checkbox" className="rounded text-primary-600 focus:ring-primary-500" />
-                        <span>Full - Nâng cấp - 3 Tháng</span>
-                      </label>
-                    </div>
+                  <h3 className="text-md font-medium mb-2">Thêm tùy chọn</h3>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      value={newProductOption}
+                      onChange={(e) => setNewProductOption(e.target.value)}
+                      placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
+                      className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddProductOption}
+                      className="bg-green-500 text-white px-4 py-2 rounded-r-md hover:bg-green-600 transition-colors"
+                    >
+                      Thêm
+                    </button>
                   </div>
                 </div>
                 
+                {/* Danh sách tùy chọn */}
                 <div className="mb-4">
-                  <h3 className="text-md font-medium mb-2">Tùy chọn mặc định</h3>
-                  <div className="relative border border-gray-300 rounded-md">
-                    <select 
-                      className="block w-full bg-white border-0 px-4 py-3 pr-8 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      defaultValue=""
-                    >
-                      <option value="" disabled>Chọn một tùy chọn mặc định</option>
-                      <option value="11-khoa-google">11 khóa Google</option>
-                      <option value="full-dung-rieng-6-thang">Full - Dùng riêng - 6 Tháng</option>
-                      <option value="full-dung-rieng-1-nam">Full - Dùng riêng - 1 Năm</option>
-                      <option value="full-nang-cap-6-thang">Full - Nâng cấp - 6 Tháng</option>
-                      <option value="full-nang-cap-1-nam">Full - Nâng cấp - 1 Năm</option>
-                      <option value="full-nang-cap-3-thang">Full - Nâng cấp - 3 Tháng</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                      </svg>
+                  <h3 className="text-md font-medium mb-2">Tùy chọn hiện có</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
+                    <div className="space-y-2">
+                      {productOptions.map((option, index) => (
+                        <div key={index} className="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
+                          <span>{option}</span>
+                          <div className="flex items-center space-x-2">
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveProductOption(index)}
+                              className="text-red-500 hover:text-red-700"
+                              title="Xóa tùy chọn"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                            <input
+                              type="radio"
+                              name="defaultOption"
+                              checked={option === defaultProductOption}
+                              onChange={() => handleSetDefaultOption(option)}
+                              className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                              title="Đặt làm mặc định"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {productOptions.length === 0 && (
+                        <div className="text-gray-500 text-center p-4">
+                          Chưa có tùy chọn nào. Hãy thêm tùy chọn ở phía trên.
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
               
               <p className="text-sm text-gray-500 mt-2">
-                Thiết lập các tùy chọn loại sản phẩm mà khách hàng có thể chọn khi mua hàng.
+                Thiết lập các tùy chọn loại sản phẩm mà khách hàng có thể chọn khi mua hàng. Chọn tùy chọn mặc định bằng cách click vào nút radio bên phải.
               </p>
             </div>
           </>

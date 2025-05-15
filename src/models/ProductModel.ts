@@ -34,6 +34,9 @@ export interface ProductCategory {
     slug: string;
 }
 
+// Định nghĩa kiểu dữ liệu cho tùy chọn sản phẩm
+export type ProductOption = string;
+
 export interface Product {
     id: string;
     name: string;
@@ -54,6 +57,8 @@ export interface Product {
     weeklyPurchases?: number;
     type?: 'software' | 'account';
     isAccount?: boolean;
+    productOptions?: ProductOption[];
+    defaultProductOption?: ProductOption;
 }
 
 export interface ProductFormData {
@@ -74,4 +79,6 @@ export interface ProductFormData {
     weeklyPurchases?: number;
     type?: 'software' | 'account';
     isAccount?: boolean;
+    productOptions?: ProductOption[];
+    defaultProductOption?: ProductOption;
 } 
