@@ -1,14 +1,12 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product } from '@/models/ProductModel';
 import withAdminAuth from '@/components/withAdminAuth';
 import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
-import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { FormEvent } from 'react';
 
 interface AdminEditProductPageProps {
   params: {
@@ -116,11 +114,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         if (productData.productOptions && Array.isArray(productData.productOptions)) {
           setProductOptions(productData.productOptions);
         } else {
-          // Giá trị mặc định nếu không có - chỉ hiển thị 2 tùy chọn ban đầu
-          setProductOptions([
-            'Full - Dùng riêng - 6 Tháng',
-            'Full - Dùng riêng - 1 Năm'
-          ]);
+          // Không có tùy chọn ban đầu
+          setProductOptions([]);
         }
         
         // Tải tùy chọn mặc định
@@ -129,7 +124,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         } else if (productData.productOptions && productData.productOptions.length > 0) {
           setDefaultProductOption(productData.productOptions[0]);
         } else {
-          setDefaultProductOption('Full - Dùng riêng - 6 Tháng');
+          // Không có tùy chọn mặc định
+          setDefaultProductOption('');
         }
         
         // Set description images if available
