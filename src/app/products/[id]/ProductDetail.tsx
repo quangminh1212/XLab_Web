@@ -287,6 +287,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // State hiển thị tùy chọn hiện có
   const [showOptions, setShowOptions] = useState(false);
   
+  // State cho việc kéo thả
+  const [draggedItem, setDraggedItem] = useState<number | null>(null);
+  
   // Xử lý thêm tùy chọn mới
   const handleAddOption = () => {
     if (newOptionText.trim()) {
@@ -300,6 +303,32 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     const newOptions = [...productOptions];
     newOptions.splice(index, 1);
     setProductOptions(newOptions);
+  };
+
+  // Xử lý khi bắt đầu kéo
+  const handleDragStart = (index: number) => {
+    setDraggedItem(index);
+  };
+
+  // Xử lý khi kéo qua một phần tử khác
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedItem === null || draggedItem === index) return;
+    
+    // Sắp xếp lại mảng
+    const newOptions = [...productOptions];
+    const draggedOption = newOptions[draggedItem];
+    newOptions.splice(draggedItem, 1);
+    newOptions.splice(index, 0, draggedOption);
+    
+    // Cập nhật index của item đang được kéo
+    setDraggedItem(index);
+    setProductOptions(newOptions);
+  };
+
+  // Xử lý khi kết thúc kéo
+  const handleDragEnd = () => {
+    setDraggedItem(null);
   };
   
   // Lấy ảnh sản phẩm
@@ -545,14 +574,26 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     {showOptions && productOptions.length > 0 && (
                       <div className="space-y-1">
                         {productOptions.map((option, index) => (
-                          <div key={index} className="flex items-center justify-between bg-white p-2 rounded-md border border-gray-200 hover:border-gray-300 transition">
+                          <div 
+                            key={index} 
+                            className="flex items-center justify-between bg-white p-2 rounded-md border border-gray-200 hover:border-gray-300 transition cursor-move"
+                            draggable
+                            onDragStart={() => handleDragStart(index)}
+                            onDragOver={(e) => handleDragOver(e, index)}
+                            onDragEnd={handleDragEnd}
+                          >
                             <div className="flex items-center flex-1">
                               <div className="w-4 h-4 rounded-full border border-green-500 bg-green-500 flex-shrink-0 mr-2 flex items-center justify-center">
                                 <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M5 12l5 5L20 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                               </div>
-                              <span className="font-medium text-gray-800 text-sm">{option}</span>
+                              <div className="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-1 cursor-grab" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                                </svg>
+                                <span className="font-medium text-gray-800 text-sm">{option}</span>
+                              </div>
                             </div>
                             <button 
                               className="ml-1 text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition"
@@ -569,6 +610,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                             </button>
                           </div>
                         ))}
+                        <p className="text-xs text-gray-500 mt-1 italic">Kéo thả để sắp xếp lại thứ tự các tùy chọn.</p>
                       </div>
                     )}
                     
