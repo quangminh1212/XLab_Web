@@ -545,18 +545,23 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     {showOptions && productOptions.length > 0 && (
                       <div className="mt-4 space-y-2">
                         {productOptions.map((option, index) => (
-                          <div key={index} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200">
-                            <div className="flex items-center">
-                              <div className="w-4 h-4 rounded-full border border-green-500 bg-green-500 flex-shrink-0 mr-3">
-                                <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <div key={index} className="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition">
+                            <div className="flex items-center flex-1">
+                              <div className="w-5 h-5 rounded-full border border-green-500 bg-green-500 flex-shrink-0 mr-3 flex items-center justify-center">
+                                <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <path d="M5 12l5 5L20 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                               </div>
                               <span className="font-medium text-gray-800">{option}</span>
                             </div>
                             <button 
-                              className="text-red-500 hover:text-red-700"
-                              onClick={() => handleRemoveOption(index)}
+                              className="ml-2 text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition"
+                              onClick={() => {
+                                if (window.confirm(`Bạn có chắc muốn xóa tùy chọn "${option}"?`)) {
+                                  handleRemoveOption(index);
+                                }
+                              }}
+                              title="Xóa tùy chọn"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -567,7 +572,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                       </div>
                     )}
                     
-                    <p className="text-xs text-gray-500 mt-2">Thiết lập các tùy chọn loại sản phẩm mà khách hàng có thể chọn khi mua hàng. Chọn tùy chọn mặc định bằng cách click vào nút radio bên phải.</p>
+                    <p className="text-xs text-gray-500 mt-2">Thiết lập các tùy chọn loại sản phẩm mà khách hàng có thể chọn khi mua hàng.</p>
                   </div>
                 )}
               </div>

@@ -198,10 +198,17 @@ next-setup.js
 # Logs and temporary files
 next-fix-all.log
 
+# production
+/build
 
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
 
-
-
+# temporary files
+*.temp
+temp-config.js
 
 .env.local
 .env.development.local
