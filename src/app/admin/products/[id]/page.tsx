@@ -876,10 +876,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phần hình ảnh và upload */}
-            <div className="h-full">
-              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square w-full max-w-md mx-auto flex items-center justify-center mb-3 relative"
+            <div>
+              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square max-w-sm mx-auto flex items-center justify-center mb-3 relative"
                 onPaste={handlePasteImage} 
                 tabIndex={0} // Cho phép focus để nhận sự kiện paste
                 style={{ outline: 'none' }} // Ẩn đường viền khi focus
@@ -908,7 +908,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 )}
               </div>
               
-              <div className="space-y-2 max-w-md mx-auto">
+              <div className="space-y-2">
                 <input
                   type="file"
                   accept="image/*"
@@ -920,9 +920,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             </div>
             
             {/* Mô tả ngắn và Tùy chọn sản phẩm */}
-            <div className="h-full flex flex-col">
+            <div>
               {/* Tùy chọn loại sản phẩm */}
-              <div className="mb-3 h-full">
+              <div className="mb-3">
                 <h3 className="text-md font-medium mb-2">Tùy chọn sản phẩm</h3>
                 <div className="flex items-center space-x-2 mb-3">
                   <input
@@ -942,7 +942,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
                 
                 {/* Danh sách tùy chọn */}
-                <div className="bg-gray-50 p-3 rounded-lg max-h-[200px] overflow-y-auto flex-grow mb-3">
+                <div className="bg-gray-50 p-3 rounded-lg max-h-60 overflow-y-auto">
                   <div className="space-y-2">
                     {productOptions.map((option, index) => (
                       <div key={index} className="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
@@ -986,7 +986,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 value={formData.shortDescription}
                 onChange={handleShortDescRichTextChange}
                 placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                className="mb-3 min-h-[120px]"
+                className="mb-3 min-h-[200px]"
                 onPaste={handlePasteDescriptionImage}
               />
             </div>
