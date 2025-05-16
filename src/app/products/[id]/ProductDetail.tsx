@@ -273,7 +273,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // State lưu số lượng sản phẩm
   const [quantity, setQuantity] = useState(1);
   
-  // State để lưu phiên bản sản phẩm được chọn
+  // State lưu phiên bản sản phẩm được chọn
   const [selectedVersion, setSelectedVersion] = useState(
     product.versions && product.versions.length > 0 ? product.versions[0].name : ''
   );
@@ -283,6 +283,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   
   // State danh sách tùy chọn
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
+  
+  // State tùy chọn đang chọn
+  const [selectedOption, setSelectedOption] = useState(product.defaultProductOption || (product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : ''));
   
   // State hiển thị tùy chọn hiện có
   const [showOptions, setShowOptions] = useState(false);
@@ -344,30 +347,108 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     return '/images/placeholder/product-placeholder.jpg';
   };
   
-  // Tính toán giá dựa trên phiên bản được chọn
-  const calculatePrice = () => {
-    if (!product.versions || product.versions.length === 0) {
-      return 0; // Không có price trực tiếp trong ProductModel
+  // Tính toán giá dựa trên tùy chọn đã chọn
+  const calculateSelectedPrice = () => {
+    // Nếu có giá tùy chọn, ưu tiên sử dụng giá của tùy chọn
+    if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
+      return product.optionPrices[selectedOption].price;
     }
     
-    const version = product.versions.find(v => v.name === selectedVersion);
-    return version ? version.price : (product.versions[0]?.price || 0);
+    // Ngược lại sử dụng giá của version
+    if (selectedVersion && product.versions && product.versions.length > 0) {
+      const version = product.versions.find(v => v.name === selectedVersion);
+      return version ? version.price : (product.versions[0]?.price || 0);
+    }
+    
+    return calculateCheapestPrice();
   };
   
-  // Tính toán giá gốc nếu có
-  const calculateOriginalPrice = () => {
-    if (!product.versions || product.versions.length === 0) {
-      return 0; // Không có salePrice trực tiếp trong ProductModel
+  // Tính toán giá gốc của tùy chọn đã chọn
+  const calculateSelectedOriginalPrice = () => {
+    // Nếu có giá gốc tùy chọn, ưu tiên sử dụng giá gốc của tùy chọn
+    if (selectedOption && product.optionPrices && product.optionPrices[selectedOption]) {
+      return product.optionPrices[selectedOption].originalPrice;
     }
     
-    const version = product.versions.find(v => v.name === selectedVersion);
-    return version ? version.originalPrice : (product.versions[0]?.originalPrice || 0);
+    // Ngược lại sử dụng giá gốc của version
+    if (selectedVersion && product.versions && product.versions.length > 0) {
+      const version = product.versions.find(v => v.name === selectedVersion);
+      return version ? version.originalPrice : (product.versions[0]?.originalPrice || 0);
+    }
+    
+    return calculateOriginalPriceOfCheapest();
   };
   
   // Tính phần trăm giảm giá
   const calculateDiscountPercentage = () => {
-    const originalPrice = calculateOriginalPrice();
-    const price = calculatePrice();
+    const originalPrice = calculateSelectedOriginalPrice();
+    const price = calculateSelectedPrice();
+    
+    if (originalPrice > price) {
+      return Math.round(((originalPrice - price) / originalPrice) * 100);
+    }
+    return 0;
+  };
+  
+  // Tính toán giá rẻ nhất trong tất cả các tùy chọn
+  const calculateCheapestPrice = () => {
+    let cheapestPrice = Number.MAX_VALUE;
+    
+    // Kiểm tra giá trong tùy chọn
+    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+      for (const option in product.optionPrices) {
+        const price = product.optionPrices[option].price;
+        if (price < cheapestPrice) {
+          cheapestPrice = price;
+        }
+      }
+    }
+    
+    // Kiểm tra giá trong versions
+    if (product.versions && product.versions.length > 0) {
+      for (const version of product.versions) {
+        if (version.price < cheapestPrice) {
+          cheapestPrice = version.price;
+        }
+      }
+    }
+    
+    return cheapestPrice === Number.MAX_VALUE ? 0 : cheapestPrice;
+  };
+  
+  // Tính toán giá gốc của tùy chọn có giá rẻ nhất
+  const calculateOriginalPriceOfCheapest = () => {
+    let cheapestPrice = Number.MAX_VALUE;
+    let originalPrice = 0;
+    
+    // Kiểm tra giá trong tùy chọn
+    if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+      for (const option in product.optionPrices) {
+        const price = product.optionPrices[option].price;
+        if (price < cheapestPrice) {
+          cheapestPrice = price;
+          originalPrice = product.optionPrices[option].originalPrice;
+        }
+      }
+    }
+    
+    // Kiểm tra giá trong versions
+    if (product.versions && product.versions.length > 0) {
+      for (const version of product.versions) {
+        if (version.price < cheapestPrice) {
+          cheapestPrice = version.price;
+          originalPrice = version.originalPrice;
+        }
+      }
+    }
+    
+    return originalPrice;
+  };
+  
+  // Tính phần trăm giảm giá cho tùy chọn rẻ nhất
+  const calculateCheapestDiscountPercentage = () => {
+    const originalPrice = calculateOriginalPriceOfCheapest();
+    const price = calculateCheapestPrice();
     
     if (originalPrice > price) {
       return Math.round(((originalPrice - price) / originalPrice) * 100);
@@ -383,12 +464,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     addItem({
       id: product.id.toString(),
       name: product.name,
-      price: calculatePrice(),
+      price: calculateSelectedPrice(),
       quantity: quantity,
       image: product.images && product.images.length > 0 ? 
              typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url : 
              '/images/placeholder/product-placeholder.jpg',
-      options: selectedVersion ? [selectedVersion] : undefined
+      options: selectedOption ? [selectedOption] : (selectedVersion ? [selectedVersion] : undefined)
     });
     return true;
   };
@@ -482,16 +563,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               
               <div className="mt-4 flex items-center">
                 <div className="text-2xl font-bold text-primary-600">
-                  {calculatePrice() === 0 ? 'Miễn phí' : formatCurrency(calculatePrice())}
+                  {calculateCheapestPrice() === 0 ? 'Miễn phí' : formatCurrency(calculateCheapestPrice())}
                 </div>
                 
-                {calculateOriginalPrice() > calculatePrice() && (
+                {calculateOriginalPriceOfCheapest() > calculateCheapestPrice() && (
                   <>
                     <div className="ml-3 text-lg text-gray-500 line-through">
-                      {formatCurrency(calculateOriginalPrice())}
+                      {formatCurrency(calculateOriginalPriceOfCheapest())}
                     </div>
                     <div className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
-                      -{calculateDiscountPercentage()}%
+                      -{calculateCheapestDiscountPercentage()}%
                     </div>
                   </>
                 )}
@@ -576,45 +657,33 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         {productOptions.map((option, index) => (
                           <div 
                             key={index} 
-                            className="flex items-center justify-between bg-white p-2 rounded-md border border-gray-200 hover:border-gray-300 transition cursor-move"
-                            draggable
-                            onDragStart={() => handleDragStart(index)}
-                            onDragOver={(e) => handleDragOver(e, index)}
-                            onDragEnd={handleDragEnd}
+                            className={`flex items-center justify-between p-2 rounded-md border ${selectedOption === option ? 'bg-primary-50 border-primary-400' : 'bg-white border-gray-200 hover:border-gray-300'} transition cursor-pointer`}
+                            onClick={() => setSelectedOption(option)}
                           >
                             <div className="flex items-center flex-1">
-                              <div className="w-4 h-4 rounded-full border border-green-500 bg-green-500 flex-shrink-0 mr-2 flex items-center justify-center">
-                                <svg className="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M5 12l5 5L20 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
+                              <div className={`w-4 h-4 rounded-full border flex-shrink-0 mr-2 ${selectedOption === option ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}>
+                                {selectedOption === option && (
+                                  <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
+                                )}
                               </div>
-                              <div className="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-1 cursor-grab" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-                                </svg>
-                                <span className="font-medium text-gray-800 text-sm">{option}</span>
-                              </div>
+                              <span className="font-medium text-gray-800 text-sm">{option}</span>
                             </div>
-                            <button 
-                              className="ml-1 text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 transition"
-                              onClick={() => {
-                                if (window.confirm(`Bạn có chắc muốn xóa tùy chọn "${option}"?`)) {
-                                  handleRemoveOption(index);
-                                }
-                              }}
-                              title="Xóa tùy chọn"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                              </svg>
-                            </button>
+                            {product.optionPrices && product.optionPrices[option] && (
+                              <div className="flex items-center">
+                                <div className="text-sm font-medium text-primary-600">
+                                  {formatCurrency(product.optionPrices[option].price)}
+                                </div>
+                                {product.optionPrices[option].originalPrice > product.optionPrices[option].price && (
+                                  <div className="ml-2 text-xs text-gray-500 line-through">
+                                    {formatCurrency(product.optionPrices[option].originalPrice)}
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         ))}
-                        <p className="text-xs text-gray-500 mt-1 italic">Kéo thả để sắp xếp lại thứ tự các tùy chọn.</p>
                       </div>
                     )}
-                    
-                    <p className="text-xs text-gray-500 mt-1">Thiết lập các tùy chọn loại sản phẩm mà khách hàng có thể chọn khi mua hàng.</p>
                   </div>
                 )}
               </div>

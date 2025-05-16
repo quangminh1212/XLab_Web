@@ -127,7 +127,8 @@ export async function POST(request: Request) {
       type: body.type || 'software',
       isAccount: body.isAccount || false,
       productOptions: body.productOptions || [],
-      defaultProductOption: body.defaultProductOption || ''
+      defaultProductOption: body.defaultProductOption || '',
+      optionPrices: body.optionPrices || {}
     };
 
     // Lưu sản phẩm vào file data/products.json

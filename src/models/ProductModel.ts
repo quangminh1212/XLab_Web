@@ -37,6 +37,12 @@ export interface ProductCategory {
 // Định nghĩa kiểu dữ liệu cho tùy chọn sản phẩm
 export type ProductOption = string;
 
+// Định nghĩa kiểu dữ liệu cho giá tùy chọn
+export interface OptionPrice {
+    price: number;
+    originalPrice: number;
+}
+
 export interface Product {
     id: string;
     name: string;
@@ -59,6 +65,7 @@ export interface Product {
     isAccount?: boolean;
     productOptions?: ProductOption[];
     defaultProductOption?: ProductOption;
+    optionPrices?: {[key: string]: OptionPrice};
 }
 
 export interface ProductFormData {
@@ -81,4 +88,5 @@ export interface ProductFormData {
     isAccount?: boolean;
     productOptions?: ProductOption[];
     defaultProductOption?: ProductOption;
+    optionPrices?: {[key: string]: OptionPrice};
 } 
