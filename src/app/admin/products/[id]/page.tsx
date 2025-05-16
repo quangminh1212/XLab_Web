@@ -748,7 +748,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </div>
           
           {/* Giá sản phẩm */}
-          <div className="text-xl mb-6">
+          <div className="text-xl mb-2">
             <div className="font-bold text-green-600 text-2xl flex items-center space-x-3">
               <input 
                 type="number" 
@@ -798,7 +798,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </div>
           
           {/* Thông tin đánh giá và số lượng mua */}
-          <div className="flex flex-wrap gap-6 mb-6">
+          <div className="flex flex-wrap gap-6 mb-2">
             {/* Đánh giá sao */}
             <div className="flex flex-col">
               <label className="mb-1 text-sm font-medium text-gray-700">Đánh giá sao</label>
@@ -878,7 +878,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phần hình ảnh và upload */}
-            <div>
+            <div className="order-last">
               <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square max-w-sm mx-auto flex items-center justify-center mb-3 relative"
                 onPaste={handlePasteImage} 
                 tabIndex={0} // Cho phép focus để nhận sự kiện paste
@@ -920,7 +920,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             </div>
             
             {/* Mô tả ngắn và Tùy chọn sản phẩm */}
-            <div>
+            <div className="order-first">
               {/* Tùy chọn loại sản phẩm */}
               <div className="mb-3">
                 <h3 className="text-md font-medium mb-2">Tùy chọn sản phẩm</h3>
