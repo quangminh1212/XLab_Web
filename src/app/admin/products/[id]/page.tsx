@@ -919,21 +919,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </div>
             </div>
             
-            {/* Mô tả ngắn */}
+            {/* Mô tả ngắn và Tùy chọn sản phẩm */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Mô tả ngắn
-              </label>
-              <RichTextEditor
-                value={formData.shortDescription}
-                onChange={handleShortDescRichTextChange}
-                placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                className="mb-3 min-h-[120px]"
-                onPaste={handlePasteDescriptionImage}
-              />
-              
               {/* Tùy chọn loại sản phẩm */}
-              <div className="mt-3">
+              <div className="mb-3">
                 <h3 className="text-md font-medium mb-2">Tùy chọn sản phẩm</h3>
                 <div className="flex items-center space-x-2 mb-3">
                   <input
@@ -989,6 +978,17 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   </div>
                 </div>
               </div>
+              
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Mô tả ngắn
+              </label>
+              <RichTextEditor
+                value={formData.shortDescription}
+                onChange={handleShortDescRichTextChange}
+                placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
+                className="mb-3 min-h-[120px]"
+                onPaste={handlePasteDescriptionImage}
+              />
             </div>
           </div>
         </div>
