@@ -779,40 +779,112 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </div>
           
           {/* Thông tin đánh giá và số lượng mua */}
-          <div className="flex flex-wrap gap-6 mb-2">
+          <div className="flex flex-wrap gap-6 mb-6">
             {/* Đánh giá sao */}
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-700">Đánh giá sao</label>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Đánh giá sao</label>
               <div className="flex items-center">
-                <input 
-                  type="number" 
-                  name="rating"
-                  value={formData.rating}
-                  onChange={handleInputChange}
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  className="w-20 p-2 border border-gray-300 rounded mr-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <div className="flex text-yellow-400 text-xl">
+                <div className="relative w-full max-w-xs">
+                  <input 
+                    type="range" 
+                    name="rating"
+                    value={formData.rating}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      setFormData(prev => ({...prev, rating: value}));
+                    }}
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+                  />
+                  <div className="absolute -top-8 left-0 right-0 text-center">
+                    <span className="text-2xl font-bold text-primary-600">{Number(formData.rating).toFixed(1)}</span>
+                  </div>
+                </div>
+                <div className="ml-4 flex text-2xl">
                   {[1, 2, 3, 4, 5].map((star) => (
-                    <span key={star} className={star <= formData.rating ? "text-yellow-400" : "text-gray-300"}>★</span>
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setFormData(prev => ({...prev, rating: star}))}
+                      className={`focus:outline-none transition-colors duration-200 ${
+                        star <= Math.round(formData.rating) 
+                          ? "text-yellow-400 hover:text-yellow-500" 
+                          : "text-gray-300 hover:text-gray-400"
+                      }`}
+                    >
+                      ★
+                    </button>
                   ))}
                 </div>
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <span className="text-xs text-gray-500">Kém</span>
+                <span className="text-xs text-gray-500">Trung bình</span>
+                <span className="text-xs text-gray-500">Tuyệt vời</span>
               </div>
             </div>
             
             {/* Số lượng mua trong tuần */}
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-700">Số lượng mua trong tuần</label>
-              <input 
-                type="number" 
-                name="weeklyPurchases"
-                value={formData.weeklyPurchases}
-                onChange={handleInputChange}
-                min="0"
-                className="w-32 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Số lượng mua trong tuần</label>
+              <div className="flex items-center space-x-3">
+                <div className="flex-1 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                  </div>
+                  <input 
+                    type="number" 
+                    name="weeklyPurchases"
+                    value={formData.weeklyPurchases}
+                    onChange={handleInputChange}
+                    min="0"
+                    className="pl-10 block w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
+                <div className="flex rounded-lg overflow-hidden">
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      if (formData.weeklyPurchases > 0) {
+                        setFormData(prev => ({...prev, weeklyPurchases: prev.weeklyPurchases - 1}));
+                      }
+                    }}
+                    className="bg-gray-200 px-3 py-2 text-gray-600 hover:bg-gray-300 focus:outline-none"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                    </svg>
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setFormData(prev => ({...prev, weeklyPurchases: prev.weeklyPurchases + 1}));
+                    }}
+                    className="bg-primary-100 px-3 py-2 text-primary-600 hover:bg-primary-200 focus:outline-none"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div className="mt-2">
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                  <div 
+                    className="bg-primary-600 h-2.5 rounded-full transition-all duration-300" 
+                    style={{ width: `${Math.min(100, (formData.weeklyPurchases / 100) * 100)}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between mt-1 text-xs text-gray-500">
+                  <span>0</span>
+                  <span>50</span>
+                  <span>100+</span>
+                </div>
+              </div>
             </div>
             
             {/* Loại sản phẩm */}
