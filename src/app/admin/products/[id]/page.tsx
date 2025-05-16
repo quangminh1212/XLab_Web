@@ -942,7 +942,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
                 
                 {/* Danh sách tùy chọn */}
-                <div className="bg-gray-50 p-3 rounded-lg max-h-40 overflow-y-auto">
+                <div className="bg-gray-50 p-3 rounded-lg max-h-60 overflow-y-auto">
                   <div className="space-y-2">
                     {productOptions.map((option, index) => (
                       <div key={index} className="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
@@ -986,7 +986,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 value={formData.shortDescription}
                 onChange={handleShortDescRichTextChange}
                 placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                className="mb-3 min-h-[120px]"
+                className="mb-3 min-h-[200px]"
                 onPaste={handlePasteDescriptionImage}
               />
             </div>
