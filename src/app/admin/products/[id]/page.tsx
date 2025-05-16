@@ -43,6 +43,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   // Type assertion to inform TypeScript about the expected type
   const safeParams = React.use(params as any) as { id: string };
   const productId = safeParams.id;
+  const isNew = productId === 'new';
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const featuredImageInputRef = useRef<HTMLInputElement>(null);
@@ -150,10 +151,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       }
     };
 
-    if (productId) {
+    if (!isNew && productId) {
       fetchProduct();
+    } else {
+      // Skip fetch in creation mode
+      setLoading(false);
     }
-  }, [productId]);
+  }, [productId, isNew]);
 
   // Kiểm tra URL hình ảnh có hợp lệ không
   const isValidImageUrl = (url: string) => {
@@ -426,7 +430,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     setDefaultProductOption(option);
   };
 
-  const handleSaveProduct = async (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: FormEvent) => {
     e.preventDefault();
     
     if (isSubmitting) return;
@@ -473,13 +477,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       
       console.log("Saving product data:", JSON.stringify(productData, null, 2));
       
-      if (!productId) {
-        throw new Error('Không tìm thấy ID sản phẩm');
-      }
-      
-      // Send the update request
-      const response = await fetch(`/api/admin/products/${productId}`, {
-        method: 'PUT',
+      // Send the request for create or update
+      const url = isNew ? '/api/products/new' : `/api/admin/products/${productId}`;
+      const method = isNew ? 'POST' : 'PUT';
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -487,17 +489,21 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       });
       
       if (!response.ok) {
-        throw new Error('Không thể cập nhật sản phẩm');
+        throw new Error(isNew ? 'Không thể tạo sản phẩm' : 'Không thể cập nhật sản phẩm');
       }
       
       const result = await response.json();
-      setProduct(result);
-      setSuccessMessage('Sản phẩm đã được cập nhật thành công!');
-      
-      // Hide success message after 3 seconds
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 3000);
+      // For update, set product state; for create, skip
+      if (!isNew) {
+        setProduct(result);
+      }
+      setSuccessMessage(isNew ? 'Sản phẩm đã được tạo thành công!' : 'Sản phẩm đã được cập nhật thành công!');
+      // Redirect or hide message
+      if (isNew) {
+        setTimeout(() => router.push('/admin/products'), 2000);
+      } else {
+        setTimeout(() => setSuccessMessage(null), 3000);
+      }
       
     } catch (err) {
       setError((err as Error).message);
@@ -661,7 +667,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     );
   }
 
-  if (error || !product) {
+  if (error || (!product && !isNew)) {
     return (
       <div className="container">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
@@ -680,7 +686,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Chỉnh sửa sản phẩm</h1>
+        <h1 className="text-2xl font-bold">{isNew ? 'Tạo sản phẩm' : 'Chỉnh sửa sản phẩm'}</h1>
         <div className="flex space-x-3">
           <button
             type="button"
@@ -1153,7 +1159,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             disabled={loading}
             className="bg-primary-600 text-white px-6 py-2 rounded hover:bg-primary-700"
           >
-            {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
+            {loading ? 'Đang lưu...' : (isNew ? 'Tạo sản phẩm' : 'Lưu thay đổi')}
           </button>
         </div>
       </form>
