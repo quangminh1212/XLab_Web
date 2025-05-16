@@ -928,66 +928,66 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 value={formData.shortDescription}
                 onChange={handleShortDescRichTextChange}
                 placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                className="mb-1 min-h-[120px]"
+                className="mb-3 min-h-[120px]"
                 onPaste={handlePasteDescriptionImage}
               />
-            </div>
-          </div>
-          
-          {/* Tùy chọn loại sản phẩm */}
-          <div className="mt-4">
-            <h3 className="text-md font-medium mb-2">Tùy chọn sản phẩm</h3>
-            <div className="flex items-center space-x-2 mb-3">
-              <input
-                type="text"
-                value={newProductOption}
-                onChange={(e) => setNewProductOption(e.target.value)}
-                placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
-                className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-              <button
-                type="button"
-                onClick={handleAddProductOption}
-                className="bg-green-500 text-white px-4 py-2 rounded-r-md hover:bg-green-600 transition-colors"
-              >
-                Thêm
-              </button>
-            </div>
-            
-            {/* Danh sách tùy chọn */}
-            <div className="bg-gray-50 p-3 rounded-lg max-h-40 overflow-y-auto">
-              <div className="space-y-2">
-                {productOptions.map((option, index) => (
-                  <div key={index} className="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
-                    <span>{option}</span>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveProductOption(index)}
-                        className="text-red-500 hover:text-red-700"
-                        title="Xóa tùy chọn"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                      <input
-                        type="radio"
-                        name="defaultOption"
-                        checked={option === defaultProductOption}
-                        onChange={() => handleSetDefaultOption(option)}
-                        className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                        title="Đặt làm mặc định"
-                      />
-                    </div>
-                  </div>
-                ))}
+              
+              {/* Tùy chọn loại sản phẩm */}
+              <div className="mt-3">
+                <h3 className="text-md font-medium mb-2">Tùy chọn sản phẩm</h3>
+                <div className="flex items-center space-x-2 mb-3">
+                  <input
+                    type="text"
+                    value={newProductOption}
+                    onChange={(e) => setNewProductOption(e.target.value)}
+                    placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
+                    className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddProductOption}
+                    className="bg-green-500 text-white px-4 py-2 rounded-r-md hover:bg-green-600 transition-colors"
+                  >
+                    Thêm
+                  </button>
+                </div>
                 
-                {productOptions.length === 0 && (
-                  <div className="text-gray-500 text-center p-2">
-                    Chưa có tùy chọn nào. Hãy thêm tùy chọn ở phía trên.
+                {/* Danh sách tùy chọn */}
+                <div className="bg-gray-50 p-3 rounded-lg max-h-40 overflow-y-auto">
+                  <div className="space-y-2">
+                    {productOptions.map((option, index) => (
+                      <div key={index} className="flex items-center justify-between bg-white p-2 rounded border border-gray-200">
+                        <span>{option}</span>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveProductOption(index)}
+                            className="text-red-500 hover:text-red-700"
+                            title="Xóa tùy chọn"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                          <input
+                            type="radio"
+                            name="defaultOption"
+                            checked={option === defaultProductOption}
+                            onChange={() => handleSetDefaultOption(option)}
+                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                            title="Đặt làm mặc định"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {productOptions.length === 0 && (
+                      <div className="text-gray-500 text-center p-2">
+                        Chưa có tùy chọn nào. Hãy thêm tùy chọn ở phía trên.
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
