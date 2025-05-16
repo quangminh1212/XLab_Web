@@ -879,7 +879,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phần hình ảnh và upload */}
             <div className="order-last">
-              <div className="border rounded-lg overflow-hidden bg-gray-100 aspect-square max-w-sm mx-auto flex items-center justify-center mb-3 relative"
+              <div className="border rounded-lg overflow-hidden bg-white aspect-square max-w-md mx-auto flex items-center justify-center mb-3 relative"
                 onPaste={handlePasteImage} 
                 tabIndex={0} // Cho phép focus để nhận sự kiện paste
                 style={{ outline: 'none' }} // Ẩn đường viền khi focus
