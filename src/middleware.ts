@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { safeLog } from '@/lib/utils';
 
 // Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
 const protectedPaths = [
@@ -75,7 +76,7 @@ const isStaticFile = (path: string) => {
 // Hàm debug để kiểm tra token và đường dẫn
 const debug = (request: NextRequest, token: any) => {
   if (process.env.NODE_ENV === 'development') {
-    console.log('[Middleware Debug]:', {
+    safeLog.log('[Middleware Debug]:', {
       path: request.nextUrl.pathname,
       token: token ? `Found (${token.email})` : 'Not found',
     });

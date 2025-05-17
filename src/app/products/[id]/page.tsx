@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
 import { default as dynamicImport } from 'next/dynamic';
+import { safeLog } from '@/lib/utils';
 
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {
@@ -49,7 +50,7 @@ function getProducts(): Product[] {
     const fileContent = fs.readFileSync(dataFilePath, 'utf8');
     return JSON.parse(fileContent);
   } catch (error) {
-    console.error('Error reading products data:', error);
+    safeLog.error('Error reading products data:', error);
     return [];
   }
 }
@@ -60,7 +61,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
     // Await params trước khi sử dụng thuộc tính của nó
     const { id: productId } = await Promise.resolve(params);
     
-    console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
+    safeLog.info(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
     
     // Lấy dữ liệu sản phẩm từ file JSON
     const products = getProducts();
@@ -75,12 +76,12 @@ export default async function ProductPage({ params }: { params: { id: string } }
     
     // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
     if (!product) {
-      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
+      safeLog.warn(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
       notFound();
     }
     
     // Ghi log thông tin truy cập
-    console.log(`Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`);
+    safeLog.info(`Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`);
     
     // Truyền dữ liệu sản phẩm sang client component
     return (
@@ -103,7 +104,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
       </>
     );
   } catch (error) {
-    console.error('Error in ProductPage:', error);
+    safeLog.error('Error in ProductPage:', error);
     return <DynamicProductFallback />;
   }
 } 

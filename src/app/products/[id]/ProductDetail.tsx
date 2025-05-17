@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, safeLog } from '@/lib/utils';
 import { Product as ProductType } from '@/models/ProductModel';
 import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
@@ -108,6 +108,24 @@ const ProductSpecifications = ({
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+};
+
+// Tạo component RelatedProducts tạm thời để sửa lỗi
+const RelatedProducts = ({ 
+  currentProductId, 
+  categoryId 
+}: { 
+  currentProductId: string;
+  categoryId?: string;
+}) => {
+  return (
+    <div className="mt-10">
+      <h2 className="text-2xl font-semibold mb-6">Sản phẩm liên quan</h2>
+      <div className="text-center py-8">
+        <p className="text-gray-500">Đang tải sản phẩm liên quan...</p>
       </div>
     </div>
   );
@@ -340,7 +358,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     setViewCount(prev => prev + 1);
     
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
-    console.log(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
+    safeLog.info(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
   }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không

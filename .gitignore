@@ -223,3 +223,15 @@ temp-config.js
 # Temp files
 .swc/
 .swc-disabled/
+
+# Thêm các file được gen ra khi dự án đang chạy
+.next/**/*
+**/.next/**/*
+.next/cache
+.next/server
+.next/static
+.next/types
+.swc-disabled
+.traceignore
+.env.*
+node_modules/.cache

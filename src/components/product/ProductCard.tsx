@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { safeLog } from '@/lib/utils'
 
 interface ProductCardProps {
   id: string
@@ -42,9 +43,6 @@ export default function ProductCard({
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const router = useRouter()
-  
-  // Log the image URL for debugging
-  console.log(`ProductCard image URL for ${name}:`, image)
   
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
@@ -128,7 +126,7 @@ export default function ProductCard({
 
   // Handle image error and use placeholder
   const handleImageError = () => {
-    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`)
+    safeLog.warn(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`)
     setImageError(true)
     setIsImageLoaded(true) // Mark as loaded to hide spinner
   }
@@ -249,7 +247,7 @@ export default function ProductCard({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M12 4v16m8-8H4"
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
               />
             </svg>
           </button>
