@@ -64,6 +64,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                                 originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
                                 image={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
                                 rating={product.rating}
+                                weeklyPurchases={product.weeklyPurchases || product.totalSales || 0}
                                 isAccount={product.isAccount || product.type === 'account'}
                             />
                         ))}

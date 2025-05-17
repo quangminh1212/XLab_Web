@@ -217,6 +217,7 @@ export default function AccountsPage() {
                       originalPrice={account.salePrice ? account.price : undefined}
                       image={accountImageUrl}
                       rating={account.rating || 0}
+                      weeklyPurchases={account.weeklyPurchases || account.totalSales || account.downloadCount || 0}
                       isAccount={true}
                     />
                   );

@@ -381,7 +381,7 @@ function HomePage() {
                         image={getValidImageUrl(product)}
                         rating={product.rating}
                         reviewCount={product.reviewCount || 0}
-                        weeklyPurchases={product.weeklyPurchases || 0}
+                        weeklyPurchases={product.weeklyPurchases || product.totalSales || product.downloadCount || 0}
                         slug={product.slug}
                       />
                     ))}
@@ -435,7 +435,7 @@ function HomePage() {
                           image={getValidImageUrl(product)}
                           rating={product.rating}
                           reviewCount={product.reviewCount || 0}
-                          weeklyPurchases={product.weeklyPurchases || 0}
+                          weeklyPurchases={product.weeklyPurchases || product.totalSales || product.downloadCount || 0}
                           slug={product.slug}
                           isAccount={true}
                         />
