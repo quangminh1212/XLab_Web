@@ -24,10 +24,10 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     const categoryProducts = products.filter((product) => product.categoryId === category.id);
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12">
-            <div className="container max-w-7xl mx-auto px-4">
-                <div className="mb-8">
-                    <Link href="/categories" className="text-teal-600 flex items-center mb-4 text-sm">
+        <div className="min-h-screen bg-gray-50 py-6">
+            <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
+                <div className="mb-6">
+                    <Link href="/categories" className="text-primary-600 flex items-center mb-4 text-sm">
                         <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
@@ -35,7 +35,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     </Link>
 
                     <div className="flex items-center mb-6">
-                        <div className="w-16 h-16 bg-teal-50 rounded-lg flex items-center justify-center mr-4">
+                        <div className="w-16 h-16 bg-primary-50 rounded-lg flex items-center justify-center mr-4">
                             <Image
                                 src={category.imageUrl || '/images/placeholder.svg'}
                                 alt={category.name}
@@ -46,7 +46,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                             />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">{category.name}</h1>
+                            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{category.name}</h1>
                             <p className="text-gray-600 mt-1">{category.description}</p>
                         </div>
                     </div>
@@ -79,7 +79,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         </p>
                         <Link
                             href="/categories"
-                            className="text-white bg-teal-600 hover:bg-teal-700 rounded-full px-6 py-2 transition-colors font-medium shadow-sm inline-block"
+                            className="text-white bg-primary-600 hover:bg-primary-700 rounded-lg px-6 py-2 transition-colors font-medium shadow-sm inline-block"
                         >
                             Xem các danh mục khác
                         </Link>

@@ -147,7 +147,7 @@ export default function ProductCard({
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      <div className="relative pt-[100%] bg-white">
+      <div className="relative pt-[100%] bg-white w-full">
         {originalPrice && discountPercentage > 0 && (
           <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
             -{discountPercentage}%
@@ -159,7 +159,7 @@ export default function ProductCard({
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-cover transition-all duration-500 ${
+          className={`object-contain transition-all duration-500 ${
             isHovered ? 'scale-110' : 'scale-100'
           } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
@@ -209,10 +209,10 @@ export default function ProductCard({
         {category && (
           <div className="text-xs text-gray-500 mb-1">{category}</div>
         )}
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem] mb-1">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-2 flex-grow">
+        <p className="text-xs text-gray-500 line-clamp-2 mb-2 min-h-[2rem] flex-grow">
           {shortDescription}
         </p>
         <div className="flex items-center justify-between mt-auto">
@@ -233,7 +233,7 @@ export default function ProductCard({
           </div>
           <button
             onClick={handleAddToCart}
-            className="bg-primary-600 text-white p-1.5 rounded-full hover:bg-primary-700 transition-colors"
+            className="bg-primary-600 text-white p-1.5 rounded-full hover:bg-primary-700 transition-colors flex-shrink-0"
             aria-label="Add to cart"
           >
             <svg

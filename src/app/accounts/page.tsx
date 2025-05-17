@@ -195,7 +195,7 @@ export default function AccountsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {sortedAccounts.length > 0 ? (
                 sortedAccounts.map((account) => {
                   // Lấy ảnh sản phẩm từ account.images nếu có, hoặc từ imageUrl (cho tương thích)
