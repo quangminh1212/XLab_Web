@@ -243,11 +243,7 @@ function createRequiredFiles() {
   const appPathsManifestContent = JSON.stringify({
     "/": "app/page.js",
     "/products": "app/products/page.js",
-    "/products/[id]": "app/products/[id]/page.js",
-    "/api/auth/[...nextauth]": "app/api/auth/[...nextauth]/route.js",
-    "/api/products/[id]": "app/api/products/[id]/route.js",
-    "/api/cart/add": "app/api/cart/add/route.js",
-    "/api/orders/history": "app/api/orders/history/route.js"
+    "/products/[id]": "app/products/[id]/page.js"
   }, null, 2);
   createFileWithContent(appPathsManifestPath, appPathsManifestContent);
   
