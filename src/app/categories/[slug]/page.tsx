@@ -53,7 +53,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 </div>
 
                 {categoryProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                         {categoryProducts.map((product) => (
                             <ProductCard 
                                 key={product.id}
@@ -62,7 +62,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                                 description={product.description}
                                 price={product.salePrice || product.price}
                                 originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
-                                image={product.imageUrl}
+                                image={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
                                 rating={product.rating}
                                 isAccount={product.isAccount || product.type === 'account'}
                             />

@@ -142,7 +142,7 @@ export default function ProductCard({
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className="group bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
+      className="group bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md h-full flex flex-col"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
@@ -205,17 +205,17 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-3">
+      <div className="p-3 flex flex-col flex-grow">
         {category && (
           <div className="text-xs text-gray-500 mb-1">{category}</div>
         )}
         <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+        <p className="text-xs text-gray-500 line-clamp-2 mb-2 flex-grow">
           {shortDescription}
         </p>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-auto">
           <div>
             <div className="flex items-center">
               <span className="text-sm font-semibold text-gray-900">
