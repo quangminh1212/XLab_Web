@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
@@ -16,145 +16,6 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
   loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
   ssr: false // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
 });
-
-// Component hiển thị lợi ích của sản phẩm chỉ hiển thị trong trang chi tiết của website
-const ProductBenefits = () => (
-  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 mt-6">
-    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
-      <div className="flex flex-col items-center">
-        <div className="w-16 h-16 bg-green-500 rounded-lg mb-3 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-          </svg>
-        </div>
-        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Giao hàng<br/>nhanh chóng</h3>
-        <p className="text-xs text-gray-600 text-center">Giao tài khoản ngay trong vòng 5h sau khi nhận được thanh toán.</p>
-      </div>
-    </div>
-    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
-      <div className="flex flex-col items-center">
-        <div className="w-16 h-16 bg-orange-400 rounded-lg mb-3 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-7h-2c0-1-.5-1.5-1-2z"></path>
-            <path d="M2 9v1c0 1.1.9 2 2 2h1"></path>
-            <path d="M16 11a2 2 0 100-4 2 2 0 000 4z"></path>
-          </svg>
-        </div>
-        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Rẻ nhất<br/>thị trường</h3>
-        <p className="text-xs text-gray-600 text-center">Cam kết giá rẻ nhất thị trường, tiết kiệm lên đến 90% so với giá gốc.</p>
-      </div>
-    </div>
-    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
-      <div className="flex flex-col items-center">
-        <div className="w-16 h-16 bg-blue-500 rounded-lg mb-3 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
-            <path d="M3.5 12.5l.5.5"></path>
-            <path d="M20 12.5l.5.5"></path>
-          </svg>
-        </div>
-        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Bảo hành<br/>1 đổi 1</h3>
-        <p className="text-xs text-gray-600 text-center">Đổi tài khoản mới ngay trong 24h nếu tài khoản phát sinh lỗi.</p>
-      </div>
-    </div>
-    <div className="p-4 rounded-lg shadow-sm border border-gray-100 bg-white">
-      <div className="flex flex-col items-center">
-        <div className="w-16 h-16 bg-pink-500 rounded-lg mb-3 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-          </svg>
-        </div>
-        <h3 className="text-center font-semibold text-gray-900 mb-2 text-sm">Hỗ trợ<br/>nhanh chóng</h3>
-        <p className="text-xs text-gray-600 text-center">Chúng tôi sẵn sàng hỗ trợ mọi khó khăn trong quá trình sử dụng tài khoản.</p>
-      </div>
-    </div>
-  </div>
-);
-
-// Component hiển thị sản phẩm liên quan
-const RelatedProducts = ({ currentProductId, categoryId }: { currentProductId: string | number, categoryId?: string | number }) => {
-  // Trong trường hợp này chúng ta sẽ lấy dữ liệu từ API
-  const [relatedProducts, setRelatedProducts] = useState<UIProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  useEffect(() => {
-    // Tải sản phẩm liên quan từ API
-    const fetchRelatedProducts = async () => {
-      try {
-        setIsLoading(true);
-        
-        // If no categoryId, try to get some random products instead
-        const url = categoryId 
-          ? `/api/products?categoryId=${categoryId}&exclude=${currentProductId}&limit=3`
-          : `/api/products?exclude=${currentProductId}&limit=3`;
-          
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        if (data.success && Array.isArray(data.data)) {
-          setRelatedProducts(data.data);
-        }
-      } catch (err) {
-        console.error('Error fetching related products:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchRelatedProducts();
-  }, [currentProductId, categoryId]);
-
-  if (isLoading) {
-    return (
-      <div className="mt-8 pt-6 border-t border-gray-100">
-        <h2 className="text-xl font-semibold mb-4">Sản phẩm liên quan</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse">
-              <div className="h-16 bg-gray-200 rounded-lg"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (relatedProducts.length === 0) return null;
-
-  return (
-    <div className="mt-8 pt-6 border-t border-gray-100">
-      <h2 className="text-xl font-semibold mb-4">Sản phẩm liên quan</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {relatedProducts.map((product) => (
-          <Link 
-            key={product.id} 
-            href={`/products/${product.id}`}
-            className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-16 h-16 bg-white rounded-md overflow-hidden flex items-center justify-center">
-                <Image
-                  src={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
-                  alt={product.name}
-                  width={64}
-                  height={64}
-                  className="object-contain"
-                />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-gray-900 line-clamp-1">{product.name}</h3>
-                <p className="text-xs text-gray-500 line-clamp-1 mt-1">{product.description}</p>
-                <span className="text-xs font-medium text-primary-600 mt-1 block">
-                  {product.salePrice === 0 ? 'Miễn phí' : formatCurrency(product.salePrice || product.price)}
-                </span>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
@@ -748,9 +609,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
             </div>
           </div>
         </div>
-        
-        {/* Product benefits banner */}
-        <ProductBenefits />
         
         {/* Product description */}
         <div className="max-w-6xl mx-auto">
