@@ -4,8 +4,6 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   reactStrictMode: true,
-  //  không còn là tùy chọn hợp lệ trong Next.js 15+
-  skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   trailingSlash: false,
   // Di chuyển outputFileTracingRoot từ experimental lên cấp cao nhất
@@ -15,10 +13,7 @@ const nextConfig = {
   // Cấu hình experimental
   experimental: {
     largePageDataBytes: 12800000,
-    disableOptimizedLoading: true,
-    swcTraceProfiling: false,
     optimizeCss: true,
-    // Xóa các tùy chọn không hợp lệ
   },
   productionBrowserSourceMaps: false,
   // Không tạo file trace

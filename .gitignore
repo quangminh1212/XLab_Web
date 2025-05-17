@@ -209,6 +209,8 @@ xlab-utils.log
 # temporary files
 *.temp
 temp-config.js
+*timestamp*
+*.timestamp
 
 .env.local
 .env.development.local
