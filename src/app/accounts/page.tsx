@@ -172,7 +172,7 @@ export default function AccountsPage() {
         
         <div className="flex flex-col md:flex-row gap-4">
           {/* Main content */}
-          <div className="w-full md:w-[85%]">
+          <div className="w-full">
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm md:text-base text-gray-600">
@@ -195,7 +195,7 @@ export default function AccountsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {sortedAccounts.length > 0 ? (
                 sortedAccounts.map((account) => {
                   // Lấy ảnh sản phẩm từ account.images nếu có, hoặc từ imageUrl (cho tương thích)
@@ -226,92 +226,6 @@ export default function AccountsPage() {
                   <p className="text-gray-500">Không tìm thấy tài khoản nào.</p>
                 </div>
               )}
-            </div>
-          </div>
-          
-          {/* Sidebar */}
-          <div className="w-full md:w-[15%]">
-            {/* Categories */}
-            <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
-              <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Danh Mục Sản Phẩm</h3>
-              <ul className="space-y-1">
-                {categories.map(category => (
-                  <li key={category.id}>
-                    <a 
-                      href="#"
-                      onClick={(e) => { e.preventDefault(); setFilter(category.id); }}
-                      className={`flex justify-between items-center text-sm md:text-base py-1 px-2 rounded-md hover:bg-gray-50 ${
-                        filter === category.id ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
-                      }`}
-                    >
-                      <span>{category.name}</span>
-                      <span className="bg-gray-100 text-gray-600 text-xs md:text-sm px-2 py-0.5 rounded-full">
-                        {category.count}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Featured product */}
-            <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
-              <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
-              <div className="space-y-2">
-                {Array.isArray(accounts) && accounts.length > 0 ? 
-                  accounts.filter(a => a.isFeatured).slice(0, 3).map(account => {
-                    // Xử lý ảnh cho sản phẩm nổi bật 
-                    const featuredImageUrl = account.images && account.images.length > 0
-                      ? (typeof account.images[0] === 'string' 
-                          ? (account.images[0].startsWith('blob:') 
-                              ? '/images/placeholder/product-placeholder.jpg' 
-                              : account.images[0])
-                          : ((account.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
-                      : (account.imageUrl || '/images/placeholder/product-placeholder.jpg');
-                    
-                    return (
-                      <Link 
-                        href={`/accounts/${account.id}`}
-                        key={account.id}
-                        className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
-                      >
-                        <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                          <img 
-                            src={featuredImageUrl} 
-                            alt={account.name}
-                            className="w-8 h-8 object-contain"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <h4 className="font-medium text-gray-900 text-sm">{account.name}</h4>
-                          <div className="text-xs md:text-sm text-primary-600 font-medium">
-                            {formatCurrency(account.salePrice || account.price || 0)}
-                          </div>
-                        </div>
-                      </Link>
-                    );
-                  })
-                : (
-                  <div className="text-center py-2">
-                    <p className="text-gray-500 text-sm">Không có sản phẩm nổi bật</p>
-                  </div>
-                )
-              }
-              </div>
-            </div>
-            
-            {/* Help box */}
-            <div className="bg-primary-50 rounded-lg p-3">
-              <h3 className="font-medium text-primary-700 mb-2 text-sm md:text-base">Cần trợ giúp?</h3>
-              <p className="text-xs md:text-sm text-primary-600 mb-2">
-                Liên hệ với chúng tôi nếu bạn cần hỗ trợ hoặc tư vấn thêm về các tài khoản dịch vụ.
-              </p>
-              <a
-                href="/contact"
-                className="w-full flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-xs md:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
-              >
-                Liên Hệ Ngay
-              </a>
             </div>
           </div>
         </div>

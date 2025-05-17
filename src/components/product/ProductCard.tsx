@@ -144,7 +144,7 @@ export default function ProductCard({
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className="group bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
+      className="group bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
@@ -207,43 +207,52 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-4 flex flex-col h-[160px]">
-        <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{name}</h3>
-        <p className="text-gray-600 text-sm mb-2 line-clamp-2 h-10">{shortDescription}</p>
-        <div className="flex items-center justify-between mt-auto">
+      <div className="p-3">
+        {category && (
+          <div className="text-xs text-gray-500 mb-1">{category}</div>
+        )}
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
+          {name}
+        </h3>
+        <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+          {shortDescription}
+        </p>
+        <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-1">
-              <span className="font-bold text-gray-800">{formatCurrency(price)}</span>
-              {originalPrice && originalPrice > price && (
-                <span className="text-sm text-gray-500 line-through">
+            <div className="flex items-center">
+              <span className="text-sm font-semibold text-gray-900">
+                {formatCurrency(price)}
+              </span>
+              {originalPrice && discountPercentage > 0 && (
+                <span className="ml-2 text-xs text-gray-500 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
             </div>
-          </div>
-          
-          <div className="flex flex-col items-end">
-            {weeklyPurchases > 0 && (
-              <div className="text-xs text-gray-500 mb-1">
-                <span className="text-green-600 font-medium">{weeklyPurchases}</span> lượt mua
-              </div>
-            )}
-            {rating > 0 && (
-              <div className="flex items-center">
-                <span className="text-xs text-gray-500 mr-1">{typeof rating === 'number' ? rating.toFixed(1) : Number(rating).toFixed(1)}</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-yellow-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-              </div>
+            {!isAccount && rating > 0 && (
+              <div className="mt-1">{renderRatingStars(rating)}</div>
             )}
           </div>
+          <button
+            onClick={handleAddToCart}
+            className="bg-primary-600 text-white p-1.5 rounded-full hover:bg-primary-700 transition-colors"
+            aria-label="Add to cart"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </Link>

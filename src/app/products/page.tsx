@@ -239,7 +239,7 @@ export default function ProductsPage() {
         
         <div className="flex flex-col md:flex-row gap-4">
           {/* Main content */}
-          <div className="w-full md:w-[85%]">
+          <div className="w-full">
             {/* Filters bar */}
             <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
               <div className="text-sm md:text-base text-gray-600">
@@ -262,7 +262,7 @@ export default function ProductsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {sortedProducts.map((product) => {
                 // Log the product data for debugging
                 console.log(`Product ${product.id} image data:`, product.images);
@@ -299,82 +299,6 @@ export default function ProductsPage() {
                   />
                 );
               })}
-            </div>
-          </div>
-          
-          {/* Sidebar */}
-          <div className="w-full md:w-[15%]">
-            {/* Categories */}
-            <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
-              <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Danh Mục Sản Phẩm</h3>
-              <ul className="space-y-1">
-                {productCategories.map(category => (
-                  <li key={category.id}>
-                    <a 
-                      href="#"
-                      onClick={(e) => { e.preventDefault(); setFilter(category.id); }}
-                      className={`flex justify-between items-center text-sm md:text-base py-1 px-2 rounded-md hover:bg-gray-50 ${
-                        filter === category.id ? 'bg-primary-50 text-primary-600 font-medium' : 'text-gray-700'
-                      }`}
-                    >
-                      <span>{category.name}</span>
-                      <span className="bg-gray-100 text-gray-600 text-xs md:text-sm px-2 py-0.5 rounded-full">
-                        {category.count}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Featured product */}
-            <div className="bg-white rounded-lg shadow-sm p-3 mb-3">
-              <h3 className="font-medium text-gray-900 mb-2 text-sm md:text-base">Nổi Bật</h3>
-              <div className="space-y-2">
-                {featuredProducts.slice(0, 3).map(product => {
-                  // Use the helper function for featured products as well
-                  const featuredImageUrl = getValidImageUrl(product);
-                  
-                  // Sử dụng slug nếu có, nếu không thì dùng id
-                  const productPath = product.slug || product.id;
-                  
-                  return (
-                    <Link 
-                      href={`/products/${productPath}`}
-                      key={product.id}
-                      className="flex space-x-2 p-1.5 hover:bg-gray-50 rounded-md"
-                    >
-                      <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                        <img 
-                          src={featuredImageUrl} 
-                          alt={product.name}
-                          className="w-8 h-8 object-contain"
-                        />
-                      </div>
-                      <div className="flex flex-col">
-                        <h4 className="font-medium text-gray-900 text-sm">{product.name}</h4>
-                        <div className="text-xs md:text-sm text-primary-600 font-medium">
-                          {product.salePrice ? formatCurrency(product.salePrice) : formatCurrency(product.price)}
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-            
-            {/* Help box */}
-            <div className="bg-primary-50 rounded-lg p-3">
-              <h3 className="font-medium text-primary-700 mb-2 text-sm md:text-base">Cần trợ giúp?</h3>
-              <p className="text-xs md:text-sm text-primary-600 mb-2">
-                Liên hệ với chúng tôi nếu bạn cần hỗ trợ hoặc tư vấn thêm về các phần mềm máy tính.
-              </p>
-              <a
-                href="/contact"
-                className="w-full flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-xs md:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
-              >
-                Liên Hệ Ngay
-              </a>
             </div>
           </div>
         </div>
