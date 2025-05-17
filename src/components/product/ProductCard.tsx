@@ -75,9 +75,22 @@ export default function ProductCard({
     }).format(amount)
   }
 
+  // Hàm định dạng rating an toàn
+  const formatRating = (rating: any): string => {
+    // Đảm bảo rating là số
+    const numericRating = typeof rating === 'number' ? rating : parseFloat(rating)
+    // Kiểm tra nếu là số hợp lệ
+    return !isNaN(numericRating) ? numericRating.toFixed(1) : '0.0'
+  }
+
   const renderRatingStars = (rating: number) => {
-    const fullStars = Math.floor(rating)
-    const hasHalfStar = rating % 1 >= 0.5
+    // Đảm bảo rating là số
+    const numericRating = typeof rating === 'number' ? rating : parseFloat(rating)
+    // Nếu không phải số hợp lệ, hiển thị 0 sao
+    if (isNaN(numericRating)) return null
+    
+    const fullStars = Math.floor(numericRating)
+    const hasHalfStar = numericRating % 1 >= 0.5
 
     return (
       <div className="flex items-center">
@@ -243,7 +256,7 @@ export default function ProductCard({
             </div>
             {!isAccount && rating > 0 && (
               <div className="mt-1 flex items-center">
-                <span className="bg-yellow-50 text-xs font-medium text-yellow-600 px-1.5 py-0.5 rounded mr-1">{rating.toFixed(1)}</span>
+                <span className="bg-yellow-50 text-xs font-medium text-yellow-600 px-1.5 py-0.5 rounded mr-1">{formatRating(rating)}</span>
                 {renderRatingStars(rating)}
               </div>
             )}
@@ -256,7 +269,7 @@ export default function ProductCard({
             )}
             {rating > 0 && isAccount && (
               <div className="flex items-center mt-1">
-                <span className="bg-yellow-50 text-xs font-medium text-yellow-600 px-1.5 py-0.5 rounded mr-1">{rating.toFixed(1)}</span>
+                <span className="bg-yellow-50 text-xs font-medium text-yellow-600 px-1.5 py-0.5 rounded mr-1">{formatRating(rating)}</span>
                 {renderRatingStars(rating)}
               </div>
             )}
