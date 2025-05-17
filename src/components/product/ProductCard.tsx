@@ -239,39 +239,42 @@ export default function ProductCard({
         <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem] mb-1">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-2 min-h-[2rem] flex-grow">
+        <p className="text-xs text-gray-500 line-clamp-2 mb-3 min-h-[2rem] flex-grow">
           {shortDescription}
         </p>
-        <div className="flex items-center justify-between mt-auto">
-          <div>
-            <div className="flex items-center">
-              <span className="text-sm font-semibold text-gray-900">
-                {formatCurrency(price)}
-              </span>
-              {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-xs text-gray-500 line-through">
-                  {formatCurrency(originalPrice)}
-                </span>
-              )}
-            </div>
-            {!isAccount && rating > 0 && (
-              <div className="mt-1 flex items-center">
+        
+        {/* Phần đánh giá */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center">
+            {weeklyPurchases > 0 && (
+              <div className="text-xs text-gray-500 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
+                </svg>
+                Đã bán: {weeklyPurchases}
+              </div>
+            )}
+          </div>
+          <div className="flex items-center">
+            {rating > 0 && (
+              <div className="flex items-center">
                 <span className="bg-yellow-50 text-xs font-medium text-yellow-600 px-1.5 py-0.5 rounded mr-1">{formatRating(rating)}</span>
                 {renderRatingStars(rating)}
               </div>
             )}
           </div>
-          <div className="flex flex-col items-end">
-            {weeklyPurchases > 0 && (
-              <div className="text-xs text-gray-500">
-                Đã bán: {weeklyPurchases}
-              </div>
-            )}
-            {rating > 0 && isAccount && (
-              <div className="flex items-center mt-1">
-                <span className="bg-yellow-50 text-xs font-medium text-yellow-600 px-1.5 py-0.5 rounded mr-1">{formatRating(rating)}</span>
-                {renderRatingStars(rating)}
-              </div>
+        </div>
+
+        {/* Phần giá */}
+        <div className="mt-auto">
+          <div className="flex items-center">
+            <span className="text-base font-semibold text-primary-600">
+              {formatCurrency(price)}
+            </span>
+            {originalPrice && discountPercentage > 0 && (
+              <span className="ml-2 text-xs text-gray-500 line-through">
+                {formatCurrency(originalPrice)}
+              </span>
             )}
           </div>
         </div>
