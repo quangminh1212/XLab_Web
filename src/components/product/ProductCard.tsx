@@ -245,7 +245,19 @@ export default function ProductCard({
         
         {/* Phần đánh giá */}
         <div className="flex items-center justify-between mb-1">
-          <div></div>
+          <div>
+            {/* Phần giá */}
+            <div className="flex items-center">
+              <span className="text-base font-semibold text-primary-600">
+                {formatCurrency(price)}
+              </span>
+              {originalPrice && discountPercentage > 0 && (
+                <span className="ml-2 text-xs text-gray-500 line-through">
+                  {formatCurrency(originalPrice)}
+                </span>
+              )}
+            </div>
+          </div>
           <div className="flex items-center">
             {rating > 0 && (
               <div className="flex items-center">
@@ -267,20 +279,6 @@ export default function ProductCard({
             </div>
           </div>
         )}
-
-        {/* Phần giá */}
-        <div className="mt-auto">
-          <div className="flex items-center">
-            <span className="text-base font-semibold text-primary-600">
-              {formatCurrency(price)}
-            </span>
-            {originalPrice && discountPercentage > 0 && (
-              <span className="ml-2 text-xs text-gray-500 line-through">
-                {formatCurrency(originalPrice)}
-              </span>
-            )}
-          </div>
-        </div>
       </div>
     </Link>
   )
