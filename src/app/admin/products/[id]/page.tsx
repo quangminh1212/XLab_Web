@@ -929,53 +929,53 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             </div>
           </div>
           
-
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Phần hình ảnh và upload */}
-            <div className="order-last">
-              <div className="border rounded-lg overflow-hidden bg-white aspect-square max-w-md mx-auto flex items-center justify-center mb-3 relative"
-                onPaste={handlePasteImage} 
-                tabIndex={0} // Cho phép focus để nhận sự kiện paste
-                style={{ outline: 'none' }} // Ẩn đường viền khi focus
-              >
-                {featuredImage ? (
-                  <>
-                    <img 
-                      src={featuredImage} 
-                      alt={formData.name} 
-                      className="object-contain max-w-full max-h-full" 
-                    />
-                    <button
-                      type="button"
-                      onClick={handleRemoveFeaturedImage}
-                      className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                    >
-                      ×
-                    </button>
-                  </>
-                ) : (
-                  <div className="text-gray-400 text-center p-4">
-                    <span className="block text-3xl mb-2">🖼️</span>
-                    <span className="text-sm">Chưa có ảnh sản phẩm</span>
-                    <p className="text-xs mt-2">Nhấn Ctrl+V để dán ảnh từ clipboard</p>
-                  </div>
-                )}
-              </div>
-              
-              <div className="space-y-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={featuredImageInputRef}
-                  onChange={handleFeaturedImageUpload}
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
+            <div className="order-last flex justify-center">
+              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center space-y-4 w-full">
+                <div className="border rounded-lg overflow-hidden bg-white aspect-square max-w-md mx-auto flex items-center justify-center mb-3 relative"
+                  onPaste={handlePasteImage} 
+                  tabIndex={0} // Cho phép focus để nhận sự kiện paste
+                  style={{ outline: 'none' }} // Ẩn đường viền khi focus
+                >
+                  {featuredImage ? (
+                    <>
+                      <img 
+                        src={featuredImage} 
+                        alt={formData.name} 
+                        className="object-contain max-w-full max-h-full" 
+                      />
+                      <button
+                        type="button"
+                        onClick={handleRemoveFeaturedImage}
+                        className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </>
+                  ) : (
+                    <div className="text-gray-400 text-center p-4">
+                      <span className="block text-3xl mb-2">🖼️</span>
+                      <span className="text-sm">Chưa có ảnh sản phẩm</span>
+                      <p className="text-xs mt-2">Nhấn Ctrl+V để dán ảnh từ clipboard</p>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={featuredImageInputRef}
+                    onChange={handleFeaturedImageUpload}
+                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
               </div>
             </div>
             
             {/* Mô tả ngắn và Tùy chọn sản phẩm */}
-            <div className="order-first">
+            <div className="order-first space-y-4 bg-white p-4 rounded-lg shadow-sm">
               {/* Tùy chọn loại sản phẩm */}
               <div className="mb-3">
                 <h3 className="text-md font-medium mb-2">Tùy chọn sản phẩm</h3>
