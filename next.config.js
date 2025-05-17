@@ -18,7 +18,7 @@ const nextConfig = {
     disableOptimizedLoading: true,
     swcTraceProfiling: false,
     optimizeCss: true,
-    // Xóa bỏ cấu hình tracing không hợp lệ
+    // Xóa các tùy chọn không hợp lệ
   },
   productionBrowserSourceMaps: false,
   // Không tạo file trace
