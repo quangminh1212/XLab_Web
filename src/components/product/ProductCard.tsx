@@ -247,12 +247,12 @@ export default function ProductCard({
         <div className="flex items-center justify-between mb-1">
           <div>
             {/* Phần giá */}
-            <div className="flex items-center">
+            <div className="flex flex-col">
               <span className="text-base font-semibold text-primary-600">
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-xs text-gray-500 line-through">
+                <span className="text-xs text-gray-500 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
