@@ -43,12 +43,10 @@ export async function GET() {
     const completed = orders.filter(o => o.status === 'completed').length;
     const cancelled = orders.filter(o => o.status === 'cancelled').length;
     const refunded = orders.filter(o => o.status === 'refunded').length;
-    // Revenue considers only completed orders
-    const revenue = orders
-      .filter(o => o.status === 'completed')
-      .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
-    // Average order value based on completed orders
-    const averageOrderValue = completed > 0 ? Math.round(revenue / completed) : 0;
+    // Revenue is sum of all orders
+    const revenue = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+    // Average order value based on all orders
+    const averageOrderValue = total > 0 ? Math.round(revenue / total) : 0;
     const stats: OrderStats = { total, pending, processing, completed, cancelled, refunded, revenue, averageOrderValue };
 
     return NextResponse.json({ 
