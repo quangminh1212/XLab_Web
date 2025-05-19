@@ -236,7 +236,7 @@ export default function ProductCard({
         {category && (
           <div className="text-xs text-gray-500">{category}</div>
         )}
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
+        <h3 className="text-base font-medium text-gray-900 line-clamp-2">
           {name}
         </h3>
         <p className="text-xs text-gray-500 line-clamp-2">
