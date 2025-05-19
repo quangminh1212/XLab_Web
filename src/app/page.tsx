@@ -124,7 +124,7 @@ function HomePage() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-2 gap-2 p-2">
+              <div className="grid grid-cols-1 gap-3 p-2">
                 <div className="bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
                   <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
