@@ -232,14 +232,14 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex flex-col gap-2">
+      <div className="p-2 flex flex-col gap-1">
         {category && (
           <div className="text-xs text-gray-500">{category}</div>
         )}
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem]">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 min-h-[2rem]">
+        <p className="text-xs text-gray-500 line-clamp-2">
           {shortDescription}
         </p>
         
