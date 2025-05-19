@@ -232,19 +232,19 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex flex-col">
+      <div className="p-3 flex flex-col gap-2">
         {category && (
-          <div className="text-xs text-gray-500 mb-1">{category}</div>
+          <div className="text-xs text-gray-500">{category}</div>
         )}
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem] mb-1">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem]">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-3 min-h-[2rem] flex-grow">
+        <p className="text-xs text-gray-500 line-clamp-2 min-h-[2rem]">
           {shortDescription}
         </p>
         
         {/* Phần đánh giá */}
-        <div className="flex items-center justify-end mb-1">
+        <div className="flex items-center justify-end">
           <div className="flex items-center">
             {rating > 0 && (
               <div className="flex items-center">
@@ -256,7 +256,7 @@ export default function ProductCard({
         </div>
         
         {/* Phần giá và đã bán */}
-        <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center justify-between">
           {/* Phần giá */}
           <div className="flex flex-col">
             <span className="text-base font-semibold text-primary-600">
