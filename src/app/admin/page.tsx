@@ -12,9 +12,9 @@ function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     products: 0,
-    users: 5,
-    orders: 5,
-    revenue: 6020000
+    users: 0,
+    orders: 0,
+    revenue: 0
   });
 
   // Chuyển đổi số thành định dạng tiền tệ
@@ -41,6 +41,26 @@ function AdminDashboard() {
     };
 
     fetchData();
+  }, []);
+
+  // Fetch order statistics for dashboard
+  useEffect(() => {
+    const fetchOrderStats = async () => {
+      try {
+        const res = await fetch('/api/admin/orders');
+        if (res.ok) {
+          const data = await res.json();
+          setStats(prev => ({
+            ...prev,
+            orders: data.stats?.total || 0,
+            revenue: data.stats?.revenue || 0
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching order stats:', error);
+      }
+    };
+    fetchOrderStats();
   }, []);
 
   return (
