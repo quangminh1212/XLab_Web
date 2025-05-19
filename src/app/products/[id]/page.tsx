@@ -2,8 +2,12 @@ import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
-import { default as dynamicImport } from 'next/dynamic';
+import dynamic from 'next/dynamic';
 import { safeLog } from '@/lib/utils';
+
+// Đảm bảo trang được render động với mỗi request
+export const dynamicRendering = 'auto';
+export const dynamicParams = true;
 
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {
@@ -26,18 +30,14 @@ function ProductFallbackLoading() {
 }
 
 // Import các component với cơ chế lazy load
-const DynamicProductDetail = dynamicImport(() => import('@/app/products/[id]/ProductDetail'), {
+const DynamicProductDetail = dynamic(() => import('@/app/products/[id]/ProductDetail'), {
   loading: () => <ProductFallbackLoading />,
   ssr: true
 });
 
-const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/fallback'), {
+const DynamicProductFallback = dynamic(() => import('@/app/products/[id]/fallback'), {
   ssr: true
 });
-
-// Đảm bảo trang được render động với mỗi request
-export const dynamic = 'auto';
-export const dynamicParams = true;
 
 // Đọc dữ liệu sản phẩm từ file JSON
 function getProducts(): Product[] {
