@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth/next';
 import { Order, OrderStats } from '@/models/OrderModel';
+import fs from 'fs';
+import path from 'path';
 
 export async function GET() {
   try {
@@ -17,25 +19,19 @@ export async function GET() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Sample mock orders; replace with real DB query in production
-    const mockOrders: Order[] = [
-      {
-        id: 'ORD-001', userId: '1', userName: 'Nguyễn Văn A', userEmail: 'nguyenvana@example.com',
-        items: [{ productId: 'prod-vt', productName: 'VoiceTyping', quantity: 1, price: 990000 }],
-        totalAmount: 990000, status: 'completed', paymentMethod: 'bank_transfer', paymentStatus: 'paid',
-        createdAt: '2023-05-20T15:30:00Z', updatedAt: '2023-05-20T15:30:00Z'
-      },
-      {
-        id: 'ORD-002', userId: '2', userName: 'Trần Thị B', userEmail: 'tranthib@example.com',
-        items: [
-          { productId: 'prod-office', productName: 'Office Suite', quantity: 1, price: 1200000 },
-          { productId: 'prod-backup', productName: 'Backup Pro', quantity: 1, price: 500000 }
-        ],
-        totalAmount: 1700000, status: 'processing', paymentMethod: 'momo', paymentStatus: 'paid',
-        createdAt: '2023-05-28T21:20:00Z', updatedAt: '2023-05-28T21:20:00Z'
+    // Đọc dữ liệu đơn hàng từ file
+    const dataFilePath = path.join(process.cwd(), 'src/data/orders.json');
+    let orders: Order[] = [];
+    try {
+      if (fs.existsSync(dataFilePath)) {
+        const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+        orders = JSON.parse(fileContent);
       }
-    ];
-    const orders = mockOrders;
+    } catch (fileError) {
+      console.error('Error reading orders data:', fileError);
+      orders = [];
+    }
+
     // Compute statistics
     const total = orders.length;
     const pending = orders.filter(o => o.status === 'pending').length;
