@@ -248,12 +248,7 @@ const nextConfig = {
         destination: '/_next/static/app/loading.062c877ec63579d3.js',
         permanent: true,
       },
-      // Redirect cho product dynamic route
-      {
-        source: '/products/:id',
-        destination: '/products/:id',
-        permanent: true,
-      },
+      // Các redirect khác nếu cần
     ]
   },
 };
