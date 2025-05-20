@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatCurrency, safeLog } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import { Product as ProductType } from '@/models/ProductModel';
 import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
@@ -113,24 +113,6 @@ const ProductSpecifications = ({
   );
 };
 
-// Tạo component RelatedProducts tạm thời để sửa lỗi
-const RelatedProducts = ({ 
-  currentProductId, 
-  categoryId 
-}: { 
-  currentProductId: string;
-  categoryId?: string;
-}) => {
-  return (
-    <div className="mt-10">
-      <h2 className="text-2xl font-semibold mb-6">Sản phẩm liên quan</h2>
-      <div className="text-center py-8">
-        <p className="text-gray-500">Đang tải sản phẩm liên quan...</p>
-      </div>
-    </div>
-  );
-};
-
 export default function ProductDetail({ product }: { product: ProductType }) {
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
@@ -156,40 +138,60 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     product.versions && product.versions.length > 0 ? product.versions[0].name : ''
   );
   
+  // State quản lý tùy chọn mới
+  const [newOptionText, setNewOptionText] = useState('');
+  
   // State danh sách tùy chọn
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
   
   // State tùy chọn đang chọn
   const [selectedOption, setSelectedOption] = useState(product.defaultProductOption || (product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : ''));
   
-  // State cho dropdown select
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  // State hiển thị tùy chọn hiện có
+  const [showOptions, setShowOptions] = useState(false);
   
-  // Toggle dropdown
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  // State cho việc kéo thả
+  const [draggedItem, setDraggedItem] = useState<number | null>(null);
+  
+  // Xử lý thêm tùy chọn mới
+  const handleAddOption = () => {
+    if (newOptionText.trim()) {
+      setProductOptions([...productOptions, newOptionText.trim()]);
+      setNewOptionText('');
+    }
   };
   
-  // Đóng dropdown khi click ra ngoài
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    }
+  // Xử lý xóa tùy chọn
+  const handleRemoveOption = (index: number) => {
+    const newOptions = [...productOptions];
+    newOptions.splice(index, 1);
+    setProductOptions(newOptions);
+  };
+
+  // Xử lý khi bắt đầu kéo
+  const handleDragStart = (index: number) => {
+    setDraggedItem(index);
+  };
+
+  // Xử lý khi kéo qua một phần tử khác
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedItem === null || draggedItem === index) return;
     
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-  
-  // Handle option selection from dropdown
-  const handleOptionSelect = (option: string) => {
-    setSelectedOption(option);
-    setIsDropdownOpen(false);
+    // Sắp xếp lại mảng
+    const newOptions = [...productOptions];
+    const draggedOption = newOptions[draggedItem];
+    newOptions.splice(draggedItem, 1);
+    newOptions.splice(index, 0, draggedOption);
+    
+    // Cập nhật index của item đang được kéo
+    setDraggedItem(index);
+    setProductOptions(newOptions);
+  };
+
+  // Xử lý khi kết thúc kéo
+  const handleDragEnd = () => {
+    setDraggedItem(null);
   };
   
   // Lấy ảnh sản phẩm
@@ -338,7 +340,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     setViewCount(prev => prev + 1);
     
     // Trong ứng dụng thực tế, đây là nơi bạn sẽ gọi API để cập nhật số lượt xem
-    safeLog.info(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
+    console.log(`Đang xem sản phẩm: ${product.name}, Lượt xem: ${viewCount + 1}`);
   }, [product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kiểm tra xem có phải là sản phẩm tài khoản hay không
@@ -437,10 +439,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
               
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
-              <div className="mt-4">
-                <h3 className="font-semibold text-gray-900 mb-2 text-lg">
-                  Tùy chọn loại sản phẩm
-                </h3>
+              <div className="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <h3 className="font-semibold text-gray-900 mb-2 text-lg">Tùy chọn loại sản phẩm</h3>
                 
                 {/* Product options/versions */}
                 {product.versions && product.versions.length > 1 && (
@@ -464,17 +464,15 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                                   <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
                                 )}
                               </div>
-                              <span className="font-medium text-gray-900">
-                                {version.name}
-                                <span className="ml-2 text-primary-600">
-                                  {formatCurrency(version.price)}
-                                </span>
-                              </span>
+                              <span className="font-medium text-gray-900">{version.name}</span>
                             </div>
                             {version.description && (
                               <p className="mt-0.5 text-xs text-gray-500 ml-6">{version.description}</p>
                             )}
                           </div>
+                          <span className="font-medium text-primary-600 ml-2 text-sm">
+                            {formatCurrency(version.price)}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -482,66 +480,70 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
                 
                 {/* Loại sản phẩm */}
-                {/* Hiển thị nếu có bất kỳ tùy chọn nào */}
-                {productOptions.length > 0 && (
+                {product.productOptions && product.productOptions.length > 0 && (
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
-                      <h4 className="font-medium text-gray-700 text-sm">Loại</h4>
+                      <h4 className="font-medium text-gray-700 text-sm">Thêm tùy chọn</h4>
+                      {productOptions.length > 0 && (
+                        <button 
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                          onClick={() => setShowOptions(!showOptions)}
+                        >
+                          {showOptions ? 'Ẩn tùy chọn' : 'Tùy chọn hiện có'}
+                        </button>
+                      )}
+                    </div>
+                    <div className="flex mb-2">
+                      <div className="relative flex-1">
+                        <input 
+                          type="text"
+                          placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
+                          className="block w-full bg-white border border-gray-300 px-3 py-2 text-sm rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                          value={newOptionText}
+                          onChange={(e) => setNewOptionText(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
+                        />
+                      </div>
+                      <button 
+                        className="bg-primary-600 text-white px-3 py-2 text-sm rounded-r-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        onClick={handleAddOption}
+                      >
+                        Thêm
+                      </button>
                     </div>
                     
-                    {/* Dropdown select implementation */}
-                    <div className="relative mb-3" ref={dropdownRef}>
-                      <div 
-                        className="flex justify-between items-center w-full p-2.5 border border-gray-300 rounded-md bg-white cursor-pointer"
-                        onClick={toggleDropdown}
-                      >
-                        <span>
-                          {selectedOption || 'Chọn một tùy chọn'}
-                          {selectedOption && product.optionPrices && product.optionPrices[selectedOption] && (
-                            <span className="ml-2 text-primary-600 font-medium">
-                              {formatCurrency(product.optionPrices[selectedOption].price)}
-                            </span>
-                          )}
-                        </span>
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke="currentColor"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                      
-                      {isDropdownOpen && (
-                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                          {productOptions.map((option, index) => (
-                            <div 
-                              key={index}
-                              className={`p-2.5 hover:bg-gray-100 cursor-pointer ${selectedOption === option ? 'bg-primary-50 text-primary-600' : ''}`}
-                              onClick={() => handleOptionSelect(option)}
-                            >
-                              <div className="flex justify-between items-center">
-                                <span>{option}</span>
-                                {product.optionPrices && product.optionPrices[option] && (
-                                  <div className="flex items-center">
-                                    <span className="font-medium text-primary-600">
-                                      {formatCurrency(product.optionPrices[option].price)}
-                                    </span>
-                                    {product.optionPrices[option].originalPrice > product.optionPrices[option].price && (
-                                      <span className="ml-2 text-xs text-gray-500 line-through">
-                                        {formatCurrency(product.optionPrices[option].originalPrice)}
-                                      </span>
-                                    )}
+                    {showOptions && productOptions.length > 0 && (
+                      <div className="space-y-1">
+                        {productOptions.map((option, index) => (
+                          <div 
+                            key={index} 
+                            className={`flex items-center justify-between p-2 rounded-md border ${selectedOption === option ? 'bg-primary-50 border-primary-400' : 'bg-white border-gray-200 hover:border-gray-300'} transition cursor-pointer`}
+                            onClick={() => setSelectedOption(option)}
+                          >
+                            <div className="flex items-center flex-1">
+                              <div className={`w-4 h-4 rounded-full border flex-shrink-0 mr-2 ${selectedOption === option ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}>
+                                {selectedOption === option && (
+                                  <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
+                                )}
+                              </div>
+                              <span className="font-medium text-gray-800 text-sm">{option}</span>
+                            </div>
+                            {product.optionPrices && product.optionPrices[option] && (
+                              <div className="flex items-center">
+                                <div className="text-sm font-medium text-primary-600">
+                                  {formatCurrency(product.optionPrices[option].price)}
+                                </div>
+                                {product.optionPrices[option].originalPrice > product.optionPrices[option].price && (
+                                  <div className="ml-2 text-xs text-gray-500 line-through">
+                                    {formatCurrency(product.optionPrices[option].originalPrice)}
                                   </div>
                                 )}
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

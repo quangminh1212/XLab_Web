@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 export default function AdminLayout({
     children,
@@ -13,8 +13,6 @@ export default function AdminLayout({
     const pathname = usePathname();
     const { data: session, status } = useSession();
     const router = useRouter();
-    const [isAuthorized, setIsAuthorized] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
 
     const isActive = (path: string) => {
         return pathname === path ? 'bg-primary-800' : '';
@@ -33,49 +31,27 @@ export default function AdminLayout({
     }, [session, status]);
     
     useEffect(() => {
-        // Đang tải thông tin session
-        if (status === 'loading') {
-            setIsLoading(true);
-            return;
-        }
+        if (status === 'loading') return;
         
-        // Chưa đăng nhập
         if (!session) {
-            setIsLoading(false);
-            console.log('User not logged in, redirecting to login');
             router.push('/login');
             return;
         }
         
-        // Kiểm tra quyền admin
-        const isXLabEmail = session.user?.email === 'xlab.rnd@gmail.com';
-        const hasAdminFlag = session.user?.isAdmin === true;
-        
-        if (!hasAdminFlag && !isXLabEmail) {
-            setIsLoading(false);
-            console.log('User is not an admin, redirecting to home');
+        // Sử dụng isAdmin thay vì kiểm tra email trực tiếp
+        if (!session.user?.isAdmin) {
             router.push('/');
             return;
         }
-        
-        // Người dùng có quyền admin
-        setIsAuthorized(true);
-        setIsLoading(false);
     }, [session, status, router]);
     
     // Hiển thị loading khi đang kiểm tra session
-    if (isLoading) {
+    if (status === 'loading' || !session || !session.user?.isAdmin) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-                <div className="ml-3 text-primary-600">Đang tải...</div>
             </div>
         );
-    }
-    
-    // Không hiển thị gì nếu người dùng không có quyền admin (để tránh flash trước khi chuyển hướng)
-    if (!isAuthorized) {
-        return null;
     }
 
     return (

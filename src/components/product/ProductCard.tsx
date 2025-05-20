@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { safeLog } from '@/lib/utils'
 
 interface ProductCardProps {
   id: string
@@ -18,8 +17,6 @@ interface ProductCardProps {
   reviewCount?: number
   isAccount?: boolean
   weeklyPurchases?: number
-  totalSales?: number
-  downloadCount?: number
   slug?: string
   onAddToCart?: (id: string) => void
   onView?: (id: string) => void
@@ -45,6 +42,9 @@ export default function ProductCard({
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
   const router = useRouter()
+  
+  // Log the image URL for debugging
+  console.log(`ProductCard image URL for ${name}:`, image)
   
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
@@ -75,22 +75,9 @@ export default function ProductCard({
     }).format(amount)
   }
 
-  // Hàm định dạng rating an toàn
-  const formatRating = (rating: any): string => {
-    // Đảm bảo rating là số
-    const numericRating = typeof rating === 'number' ? rating : parseFloat(rating)
-    // Kiểm tra nếu là số hợp lệ
-    return !isNaN(numericRating) ? numericRating.toFixed(1) : '0.0'
-  }
-
   const renderRatingStars = (rating: number) => {
-    // Đảm bảo rating là số
-    const numericRating = typeof rating === 'number' ? rating : parseFloat(rating)
-    // Nếu không phải số hợp lệ, hiển thị 0 sao
-    if (isNaN(numericRating)) return null
-    
-    const fullStars = Math.floor(numericRating)
-    const hasHalfStar = numericRating % 1 >= 0.5
+    const fullStars = Math.floor(rating)
+    const hasHalfStar = rating % 1 >= 0.5
 
     return (
       <div className="flex items-center">
@@ -98,7 +85,7 @@ export default function ProductCard({
           <svg
             key={i}
             xmlns="http://www.w3.org/2000/svg"
-            className={`h-3 w-3 ${
+            className={`h-4 w-4 ${
               i < fullStars
                 ? 'text-yellow-400'
                 : i === fullStars && hasHalfStar
@@ -141,7 +128,7 @@ export default function ProductCard({
 
   // Handle image error and use placeholder
   const handleImageError = () => {
-    safeLog.warn(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`)
+    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`)
     setImageError(true)
     setIsImageLoaded(true) // Mark as loaded to hide spinner
   }
@@ -157,12 +144,12 @@ export default function ProductCard({
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className="group relative bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md flex flex-col"
+      className="group bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      <div className="relative pt-[100%] bg-white w-full">
+      <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
             -{discountPercentage}%
@@ -174,7 +161,7 @@ export default function ProductCard({
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-contain transition-all duration-500 ${
+          className={`object-cover transition-all duration-500 ${
             isHovered ? 'scale-110' : 'scale-100'
           } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
@@ -211,70 +198,61 @@ export default function ProductCard({
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="flex flex-col gap-2">
-            <button
-              onClick={handleAddToCart}
-              className="bg-white text-gray-800 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-full font-medium transition-colors"
-            >
-              Thêm vào giỏ
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                router.push(isAccount ? `/accounts/${id}` : `/products/${productSlug}`);
-              }}
-              className="bg-primary-600 text-white hover:bg-primary-700 px-4 py-2 rounded-full font-medium transition-colors"
-            >
-              Xem chi tiết
-            </button>
-          </div>
+          <button
+            onClick={handleAddToCart}
+            className="bg-white text-gray-800 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-full font-medium transition-colors"
+          >
+            Thêm vào giỏ
+          </button>
         </div>
       </div>
 
-      <div className="p-2 flex flex-col gap-1">
+      <div className="p-3">
         {category && (
-          <div className="text-xs text-gray-500">{category}</div>
+          <div className="text-xs text-gray-500 mb-1">{category}</div>
         )}
-        <h3 className="text-base font-medium text-gray-900 line-clamp-2">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2">
+        <p className="text-xs text-gray-500 line-clamp-2 mb-2">
           {shortDescription}
         </p>
-        
-        {(rating > 0 || weeklyPurchases > 0) && (
-          <div className="absolute bottom-1 right-1 flex flex-col items-end gap-1">
-            {rating > 0 && (
-              <div className="flex items-center">
-                <span className="bg-yellow-50 text-xs font-medium text-yellow-600 px-1.5 py-0.5 rounded mr-1">{formatRating(rating)}</span>
-                {renderRatingStars(rating)}
-              </div>
-            )}
-            {weeklyPurchases > 0 && (
-              <div className="text-xs text-gray-500 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
-                </svg>
-                Đã bán: {weeklyPurchases}
-              </div>
-            )}
-          </div>
-        )}
-        
-        {/* Phần giá và đã bán */}
         <div className="flex items-center justify-between">
-          {/* Phần giá */}
-          <div className="flex flex-col">
-            <span className="text-base font-semibold text-primary-600">
-              {formatCurrency(price)}
-            </span>
-            {originalPrice && discountPercentage > 0 && (
-              <span className="text-xs text-gray-500 line-through">
-                {formatCurrency(originalPrice)}
+          <div>
+            <div className="flex items-center">
+              <span className="text-sm font-semibold text-gray-900">
+                {formatCurrency(price)}
               </span>
+              {originalPrice && discountPercentage > 0 && (
+                <span className="ml-2 text-xs text-gray-500 line-through">
+                  {formatCurrency(originalPrice)}
+                </span>
+              )}
+            </div>
+            {!isAccount && rating > 0 && (
+              <div className="mt-1">{renderRatingStars(rating)}</div>
             )}
           </div>
+          <button
+            onClick={handleAddToCart}
+            className="bg-primary-600 text-white p-1.5 rounded-full hover:bg-primary-700 transition-colors"
+            aria-label="Add to cart"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </Link>

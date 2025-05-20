@@ -6,34 +6,17 @@ import { useEffect, useState } from "react";
 
 export default function PaymentSuccessPage() {
   const searchParams = useSearchParams();
-  const productName = searchParams?.get("product") || "Sản phẩm XLab";
-  const amountString = searchParams?.get("amount") || "0";
+  const productName = searchParams.get("product") || "Sản phẩm XLab";
+  const amountString = searchParams.get("amount") || "0";
   const amount = parseInt(amountString, 10);
   
   const [orderNumber, setOrderNumber] = useState("");
   
   // Tạo mã đơn hàng giả lập
   useEffect(() => {
+    // Tạo mã đơn hàng ngẫu nhiên với định dạng XL-xxxxxx
     const randomOrderNumber = "XL-" + Math.floor(100000 + Math.random() * 900000);
     setOrderNumber(randomOrderNumber);
-    // Gửi đơn hàng mới lên API
-    fetch('/api/orders/new', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: randomOrderNumber,
-        userId: '',
-        userName: '',
-        userEmail: '',
-        items: [{ productId: '', productName, quantity: 1, price: amount }],
-        totalAmount: amount,
-        status: 'completed',
-        paymentMethod: '',
-        paymentStatus: 'paid',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      })
-    }).catch(console.error);
   }, []);
   
   return (

@@ -207,7 +207,7 @@ export function incrementViewCount(slug: string): number {
     
     return product.viewCount;
   } catch (error) {
-    safeLog.error(`Lỗi khi tăng lượt xem cho ${slug}:`, error);
+    console.error(`Lỗi khi tăng lượt xem cho ${slug}:`, error);
     return viewCountCache[slug] || 0;
   }
 }
@@ -232,7 +232,7 @@ export function incrementDownloadCount(slug: string): number {
     
     return product.downloadCount;
   } catch (error) {
-    safeLog.error(`Lỗi khi tăng lượt tải cho ${slug}:`, error);
+    console.error(`Lỗi khi tăng lượt tải cho ${slug}:`, error);
     return downloadCountCache[slug] || 0;
   }
 }
@@ -271,7 +271,7 @@ export const getCartFromLocalStorage = (): CartItem[] => {
     const cartData = localStorage.getItem('cart');
     return cartData ? JSON.parse(cartData) : [];
   } catch (error) {
-    safeLog.error('Error getting cart from localStorage:', error);
+    console.error('Error getting cart from localStorage:', error);
     return [];
   }
 };
@@ -282,7 +282,7 @@ export const saveCartToLocalStorage = (cart: CartItem[]): void => {
   try {
     localStorage.setItem('cart', JSON.stringify(cart));
   } catch (error) {
-    safeLog.error('Error saving cart to localStorage:', error);
+    console.error('Error saving cart to localStorage:', error);
   }
 };
 
@@ -326,36 +326,4 @@ export const calculateCartTotals = (cart: CartItem[]) => {
   const total = subtotal; // Tổng cộng bằng tạm tính
 
   return { subtotal, tax, total };
-};
-
-/**
- * Hàm logger an toàn - không ghi log trong production
- */
-export const safeLog = {
-  log: (...args: unknown[]) => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(...args);
-    }
-  },
-  error: (...args: unknown[]) => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.error(...args);
-    } else {
-      // Trong production vẫn log lỗi nhưng loại bỏ thông tin nhạy cảm
-      const sanitizedArgs = args.map(arg => 
-        typeof arg === 'object' ? '[Object removed in production]' : arg
-      );
-      console.error(...sanitizedArgs);
-    }
-  },
-  warn: (...args: unknown[]) => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(...args);
-    }
-  },
-  info: (...args: unknown[]) => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.info(...args);
-    }
-  }
 }; 

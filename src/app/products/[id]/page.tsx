@@ -2,12 +2,7 @@ import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
-import dynamic from 'next/dynamic';
-import { safeLog } from '@/lib/utils';
-
-// Đảm bảo trang được render động với mỗi request
-export const dynamicRendering = 'auto';
-export const dynamicParams = true;
+import { default as dynamicImport } from 'next/dynamic';
 
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {
@@ -30,14 +25,18 @@ function ProductFallbackLoading() {
 }
 
 // Import các component với cơ chế lazy load
-const DynamicProductDetail = dynamic(() => import('@/app/products/[id]/ProductDetail'), {
+const DynamicProductDetail = dynamicImport(() => import('@/app/products/[id]/ProductDetail'), {
   loading: () => <ProductFallbackLoading />,
   ssr: true
 });
 
-const DynamicProductFallback = dynamic(() => import('@/app/products/[id]/fallback'), {
+const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/fallback'), {
   ssr: true
 });
+
+// Đảm bảo trang được render động với mỗi request
+export const dynamic = 'auto';
+export const dynamicParams = true;
 
 // Đọc dữ liệu sản phẩm từ file JSON
 function getProducts(): Product[] {
@@ -50,7 +49,7 @@ function getProducts(): Product[] {
     const fileContent = fs.readFileSync(dataFilePath, 'utf8');
     return JSON.parse(fileContent);
   } catch (error) {
-    safeLog.error('Error reading products data:', error);
+    console.error('Error reading products data:', error);
     return [];
   }
 }
@@ -61,7 +60,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
     // Await params trước khi sử dụng thuộc tính của nó
     const { id: productId } = await Promise.resolve(params);
     
-    safeLog.info(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
+    console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
     
     // Lấy dữ liệu sản phẩm từ file JSON
     const products = getProducts();
@@ -76,12 +75,12 @@ export default async function ProductPage({ params }: { params: { id: string } }
     
     // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
     if (!product) {
-      safeLog.warn(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
+      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
       notFound();
     }
     
     // Ghi log thông tin truy cập
-    safeLog.info(`Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`);
+    console.log(`Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`);
     
     // Truyền dữ liệu sản phẩm sang client component
     return (
@@ -104,7 +103,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
       </>
     );
   } catch (error) {
-    safeLog.error('Error in ProductPage:', error);
+    console.error('Error in ProductPage:', error);
     return <DynamicProductFallback />;
   }
 } 

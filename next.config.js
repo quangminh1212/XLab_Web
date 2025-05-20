@@ -18,9 +18,7 @@ const nextConfig = {
     disableOptimizedLoading: true,
     swcTraceProfiling: false,
     optimizeCss: true,
-    // Thêm cấu hình để giảm lỗi
-    webpackBuildWorker: false,
-    forceSwcTransforms: true,
+    // Xóa các tùy chọn không hợp lệ
   },
   productionBrowserSourceMaps: false,
   // Không tạo file trace
@@ -132,30 +130,6 @@ const nextConfig = {
     config.infrastructureLogging = {
       level: 'error',
     };
-    
-    // Sửa lỗi vendor chunks
-    if (isServer) {
-      // Tạo thư mục vendor-chunks nếu chưa tồn tại
-      const fs = require('fs');
-      const vendorChunksDir = path.join(__dirname, '.next/server/server/vendor-chunks');
-      if (!fs.existsSync(vendorChunksDir)) {
-        fs.mkdirSync(vendorChunksDir, { recursive: true });
-      }
-      
-      // Tạo framework.js nếu chưa tồn tại
-      const frameworkPath = path.join(__dirname, '.next/server/server/framework.js');
-      if (!fs.existsSync(frameworkPath)) {
-        fs.writeFileSync(frameworkPath, 'exports = module.exports = {};\n');
-      }
-      
-      // Tạo các vendor chunks cơ bản nếu chưa tồn tại
-      ['next.js', '@babel.js', 'react.js', 'react-dom.js'].forEach(file => {
-        const filePath = path.join(vendorChunksDir, file);
-        if (!fs.existsSync(filePath)) {
-          fs.writeFileSync(filePath, 'exports = module.exports = {};\n');
-        }
-      });
-    }
 
     config.resolve.fallback = {
       ...config.resolve.fallback,
@@ -182,49 +156,10 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Ngăn chặn lỗi ENOENT - Hoàn toàn vô hiệu hóa cache
+    // Ngăn chặn lỗi ENOENT
     config.cache = false;
 
-    // Thêm để đảm bảo các vendor chunks được tạo đúng cách
-    if (!isServer) {
-      config.optimization = {
-        ...config.optimization,
-        moduleIds: 'deterministic',
-        splitChunks: {
-          chunks: 'all',
-          // Sửa lỗi "minSize bigger than maxSize"
-          minSize: 20000,
-          maxSize: 200000, // Đặt maxSize lớn hơn minSize
-          minChunks: 1,
-          maxAsyncRequests: 30,
-          maxInitialRequests: 30,
-          automaticNameDelimiter: '~',
-          enforceSizeThreshold: 50000,
-          cacheGroups: {
-            defaultVendors: {
-              test: /[\\/]node_modules[\\/]/,
-              priority: -10,
-              reuseExistingChunk: true,
-            },
-            default: {
-              minChunks: 2,
-              priority: -20,
-              reuseExistingChunk: true,
-            },
-            // Tạo vendor chunk riêng biệt để tránh lỗi
-            framework: {
-              name: 'framework',
-              test: /[\\/]node_modules[\\/](react|react-dom|next|@next)[\\/]/,
-              priority: 40,
-              // Buộc luôn tạo chunk này
-              enforce: true,
-            },
-          },
-        },
-      };
-    }
-
-    // Fix cho lỗi "exports is not defined"
+    // Loại bỏ cảnh báo Critical dependency
     config.module = {
       ...config.module,
       exprContextCritical: false,
@@ -235,30 +170,7 @@ const nextConfig = {
           test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
           type: 'asset/resource',
         },
-        // Fix cho lỗi "exports is not defined"
-        {
-          test: /\.m?js$/,
-          resolve: {
-            fullySpecified: false,
-          },
-        },
       ],
-    };
-
-    // Fix cho lỗi ESM/CommonJS compatibility
-    config.resolve = {
-      ...config.resolve,
-      extensionAlias: {
-        '.js': ['.js', '.ts', '.tsx'],
-        '.mjs': ['.mjs', '.mts'],
-        '.cjs': ['.cjs', '.cts'],
-      },
-      fallback: {
-        ...config.resolve.fallback,
-        fs: false,
-        path: false,
-        os: false,
-      },
     };
 
     // Enables hot module replacement

@@ -4,12 +4,9 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
 import { Product, ProductCategory } from '@/models/ProductModel';
-import fsPromises from 'fs/promises';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-// Image directory
-const imagesDir = path.join(process.cwd(), 'public/images/products');
 
 // Function to generate ID from product name
 function generateIdFromName(name: string): string {
@@ -101,34 +98,28 @@ function extractIdFromUrl(url: string): string {
   return segments[segments.length - 1];
 }
 
-// Kiểm tra quyền admin
-async function checkAdminPermission() {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return false;
-  }
-  
-  // Kiểm tra email có phải admin không
-  return session.user?.email === 'xlab.rnd@gmail.com' || session.user?.isAdmin === true;
-}
-
-// GET product handler
+// Handler setup
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+// GET product handler
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    // Kiểm tra quyền admin
-    const isAdmin = await checkAdminPermission();
-    if (!isAdmin) {
+    // Check admin authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
-    // Đọc tệp JSON sản phẩm
-    const fileData = await fsPromises.readFile(dataFilePath, 'utf-8');
-    const products = JSON.parse(fileData);
-    
-    // Tìm sản phẩm với ID tương ứng
-    const product = products.find((p: any) => p.id.toString() === params.id);
+    // Find product
+    const products = getProducts();
+    const product = products.find(p => p.id === id);
     
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
@@ -136,96 +127,165 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     
     return NextResponse.json(product);
   } catch (error) {
-    console.error('Lỗi khi lấy dữ liệu sản phẩm:', error);
-    return NextResponse.json({ error: 'Failed to load product' }, { status: 500 });
+    console.error('Error fetching product:', error);
+    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
   }
 }
 
 // UPDATE product handler
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    // Kiểm tra quyền admin
-    const isAdmin = await checkAdminPermission();
-    if (!isAdmin) {
+    // Check admin authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
-    // Lấy dữ liệu từ request
-    const productData = await request.json();
-    
-    // Đọc tệp JSON sản phẩm
-    const fileData = await fsPromises.readFile(dataFilePath, 'utf-8');
-    let products = JSON.parse(fileData);
-    
-    // Tìm index của sản phẩm cần cập nhật
-    const productIndex = products.findIndex((p: any) => p.id.toString() === params.id);
+    // Find product
+    const products = getProducts();
+    const productIndex = products.findIndex(p => p.id === id);
     
     if (productIndex === -1) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
     
-    // Cập nhật sản phẩm
-    products[productIndex] = { ...products[productIndex], ...productData };
+    // Process request data
+    const productData = await request.json();
     
-    // Lưu lại tệp JSON
-    await fsPromises.writeFile(dataFilePath, JSON.stringify(products, null, 2));
+    console.log("PUT API received product data:", {
+      id: productData.id,
+      name: productData.name,
+      images: productData.images
+    });
     
-    return NextResponse.json({ success: true, product: products[productIndex] });
+    // Lưu lại ảnh cũ để xóa sau khi cập nhật
+    const oldImages = [...(products[productIndex].images || [])];
+    const oldDescriptionImages = [...(products[productIndex].descriptionImages || [])];
+    
+    // Ensure all required fields are present
+    const requiredFields = ['id', 'name', 'slug', 'description', 'shortDescription'] as const;
+    for (const field of requiredFields) {
+      if (!productData[field]) {
+        // Type-safe field access
+        productData[field] = productData[field] || products[productIndex][field as keyof Product] || '';
+      }
+    }
+    
+    // Ensure arrays exist
+    productData.images = Array.isArray(productData.images) ? productData.images : (products[productIndex].images || []);
+    productData.descriptionImages = Array.isArray(productData.descriptionImages) ? productData.descriptionImages : (products[productIndex].descriptionImages || []);
+    productData.features = Array.isArray(productData.features) ? productData.features : (products[productIndex].features || []);
+    productData.specifications = Array.isArray(productData.specifications) ? productData.specifications : (products[productIndex].specifications || []);
+    productData.requirements = Array.isArray(productData.requirements) ? productData.requirements : (products[productIndex].requirements || []);
+    productData.categories = Array.isArray(productData.categories) ? productData.categories : (products[productIndex].categories || []);
+    productData.versions = Array.isArray(productData.versions) ? productData.versions : (products[productIndex].versions || []);
+    
+    // Process categories
+    if (productData.categories && Array.isArray(productData.categories)) {
+      productData.categories = (productData.categories as unknown as string[]).map(
+        (categoryId: string) => ({
+          id: categoryId,
+          name: getCategoryName(categoryId),
+          slug: categoryId
+        })
+      ) as ProductCategory[];
+    }
+    
+    // Check if name changed and update ID accordingly
+    let newId = productData.id;
+    if (productData.name !== products[productIndex].name) {
+      // Generate new ID from name
+      newId = generateIdFromName(productData.name);
+      
+      // Check if this ID already exists
+      const idExists = products.some((p, idx) => idx !== productIndex && p.id === newId);
+      if (idExists) {
+        // Add a numeric suffix if needed
+        let counter = 1;
+        let updatedId = `${newId}-${counter}`;
+        while (products.some((p, idx) => idx !== productIndex && p.id === updatedId)) {
+          counter++;
+          updatedId = `${newId}-${counter}`;
+        }
+        console.log(`ID ${newId} đã tồn tại, sử dụng ID mới: ${updatedId}`);
+        newId = updatedId;
+      }
+      
+      console.log(`Product name changed from "${products[productIndex].name}" to "${productData.name}", updated ID from "${id}" to "${newId}"`);
+    }
+    
+    // Create updated product
+    const updatedProduct = {
+      ...products[productIndex],
+      ...productData,
+      id: newId, // Use new ID based on name
+      updatedAt: new Date().toISOString()
+    };
+    
+    console.log("Saving product with images:", updatedProduct.images);
+    
+    // Save product
+    products[productIndex] = updatedProduct;
+    saveProducts(products);
+    
+    // Xóa ảnh cũ sau khi đã cập nhật thành công
+    deleteOldImages(oldImages, updatedProduct.images || []);
+    deleteOldImages(oldDescriptionImages, updatedProduct.descriptionImages || []);
+    
+    return NextResponse.json(updatedProduct);
   } catch (error) {
-    console.error('Lỗi khi cập nhật sản phẩm:', error);
+    console.error('Error updating product:', error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
   }
 }
 
 // DELETE product handler
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    // Kiểm tra quyền admin
-    const isAdmin = await checkAdminPermission();
-    if (!isAdmin) {
+    // Check admin authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Await params before accessing its properties
+    const safeParams = await params;
+    const id = safeParams.id;
     
-    // Đọc tệp JSON sản phẩm
-    const fileData = await fsPromises.readFile(dataFilePath, 'utf-8');
-    let products = JSON.parse(fileData);
+    // Find product to get images for deletion
+    const products = getProducts();
+    const productToDelete = products.find(p => p.id === id);
     
-    // Tìm sản phẩm cần xóa
-    const productIndex = products.findIndex((p: any) => p.id.toString() === params.id);
-    
-    if (productIndex === -1) {
+    if (!productToDelete) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
     
-    // Lấy thông tin sản phẩm trước khi xóa
-    const productToDelete = products[productIndex];
-    
-    // Xóa sản phẩm khỏi mảng
-    products.splice(productIndex, 1);
-    
-    // Lưu lại tệp JSON
-    await fsPromises.writeFile(dataFilePath, JSON.stringify(products, null, 2));
-    
-    // Xóa các hình ảnh của sản phẩm (nếu có)
-    if (productToDelete.images && Array.isArray(productToDelete.images)) {
-      for (const image of productToDelete.images) {
-        const imagePath = typeof image === 'string' 
-          ? path.join(imagesDir, image.replace('/images/products/', ''))
-          : path.join(imagesDir, image.url.replace('/images/products/', ''));
-        
-        try {
-          await fsPromises.access(imagePath);
-          await fsPromises.unlink(imagePath);
-        } catch (err) {
-          // Bỏ qua lỗi nếu file không tồn tại
-          console.warn(`Không thể xóa ảnh ${imagePath}:`, err);
-        }
-      }
+    // Delete all product images
+    if (productToDelete.images && productToDelete.images.length > 0) {
+      deleteOldImages(productToDelete.images, []);
     }
     
-    return NextResponse.json({ success: true, deletedProduct: productToDelete });
+    if (productToDelete.descriptionImages && productToDelete.descriptionImages.length > 0) {
+      deleteOldImages(productToDelete.descriptionImages, []);
+    }
+    
+    // Remove product
+    const newProducts = products.filter(p => p.id !== id);
+    saveProducts(newProducts);
+    
+    return NextResponse.json({ message: 'Product deleted successfully' });
   } catch (error) {
-    console.error('Lỗi khi xóa sản phẩm:', error);
+    console.error('Error deleting product:', error);
     return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 });
   }
 } 

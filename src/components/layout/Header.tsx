@@ -74,6 +74,12 @@ const Header = () => {
               Dịch vụ
             </Link>
             <Link
+              href="/testimonials"
+              className={`${isActive('/testimonials')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+            >
+              Đánh giá
+            </Link>
+            <Link
               href="/about"
               className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
             >
@@ -322,6 +328,13 @@ const Header = () => {
               onClick={() => setIsOpen(false)}
             >
               Dịch vụ
+            </Link>
+            <Link
+              href="/testimonials"
+              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              Đánh giá
             </Link>
             <Link
               href="/about"
