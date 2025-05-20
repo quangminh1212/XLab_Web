@@ -483,35 +483,22 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 
                 {/* Loại sản phẩm */}
                 {product.productOptions && product.productOptions.length > 0 && (
-                  <div className="mb-2">
-                    <div className="mb-2 flex justify-between items-center">
-                      <h4 className="font-medium text-gray-700 text-lg">Loại</h4>
-                    </div>
-                    <div className="mb-4">
-                      <div className="relative">
-                        <select
-                          className="form-select block w-full bg-white border border-gray-300 rounded-lg pl-4 pr-10 py-2.5 text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all cursor-pointer"
-                          value={selectedOption || (productOptions.length > 0 ? productOptions[0] : '')}
-                          onChange={(e) => setSelectedOption(e.target.value)}
+                  <div className="mb-6">
+                    <h4 className="font-medium text-gray-700 text-lg mb-4">Loại</h4>
+                    <div className="flex flex-wrap gap-4">
+                      {productOptions.map((option, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setSelectedOption(option)}
+                          className={`border rounded-lg p-4 flex flex-col items-center justify-between cursor-pointer transition-shadow hover:shadow-lg
+                            ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
                         >
-                          {productOptions.map((option, index) => (
-                            <option key={index} value={option} className="text-gray-900">
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 text-gray-600"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
+                          <p className="text-gray-900 font-medium text-sm whitespace-nowrap mb-2 text-center">{option}</p>
+                          {product.optionPrices && product.optionPrices[option] && (
+                            <p className="text-primary-600 font-medium text-sm whitespace-nowrap text-center">{formatCurrency(product.optionPrices[option].price)}</p>
+                          )}
                         </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 )}
