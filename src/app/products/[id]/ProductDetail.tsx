@@ -156,20 +156,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     product.versions && product.versions.length > 0 ? product.versions[0].name : ''
   );
   
-  // State quản lý tùy chọn mới
-  const [newOptionText, setNewOptionText] = useState('');
-  
   // State danh sách tùy chọn
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
   
   // State tùy chọn đang chọn
   const [selectedOption, setSelectedOption] = useState(product.defaultProductOption || (product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : ''));
-  
-  // State hiển thị tùy chọn hiện có (mặc định true nếu đã có tùy chọn)
-  const [showOptions, setShowOptions] = useState(productOptions.length > 0);
-  
-  // State cho việc kéo thả
-  const [draggedItem, setDraggedItem] = useState<number | null>(null);
   
   // State cho dropdown select
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -199,47 +190,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const handleOptionSelect = (option: string) => {
     setSelectedOption(option);
     setIsDropdownOpen(false);
-  };
-  
-  // Xử lý thêm tùy chọn mới
-  const handleAddOption = () => {
-    if (newOptionText.trim()) {
-      setProductOptions([...productOptions, newOptionText.trim()]);
-      setNewOptionText('');
-    }
-  };
-  
-  // Xử lý xóa tùy chọn
-  const handleRemoveOption = (index: number) => {
-    const newOptions = [...productOptions];
-    newOptions.splice(index, 1);
-    setProductOptions(newOptions);
-  };
-
-  // Xử lý khi bắt đầu kéo
-  const handleDragStart = (index: number) => {
-    setDraggedItem(index);
-  };
-
-  // Xử lý khi kéo qua một phần tử khác
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    if (draggedItem === null || draggedItem === index) return;
-    
-    // Sắp xếp lại mảng
-    const newOptions = [...productOptions];
-    const draggedOption = newOptions[draggedItem];
-    newOptions.splice(draggedItem, 1);
-    newOptions.splice(index, 0, draggedOption);
-    
-    // Cập nhật index của item đang được kéo
-    setDraggedItem(index);
-    setProductOptions(newOptions);
-  };
-
-  // Xử lý khi kết thúc kéo
-  const handleDragEnd = () => {
-    setDraggedItem(null);
   };
   
   // Lấy ảnh sản phẩm
@@ -487,7 +437,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
               
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
-              <div className="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="mt-4">
                 <h3 className="font-semibold text-gray-900 mb-2 text-lg">Tùy chọn loại sản phẩm</h3>
                 
                 {/* Product options/versions */}
@@ -512,15 +462,17 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                                   <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
                                 )}
                               </div>
-                              <span className="font-medium text-gray-900">{version.name}</span>
+                              <span className="font-medium text-gray-900">
+                                {version.name}
+                                <span className="ml-2 text-primary-600">
+                                  {formatCurrency(version.price)}
+                                </span>
+                              </span>
                             </div>
                             {version.description && (
                               <p className="mt-0.5 text-xs text-gray-500 ml-6">{version.description}</p>
                             )}
                           </div>
-                          <span className="font-medium text-primary-600 ml-2 text-sm">
-                            {formatCurrency(version.price)}
-                          </span>
                         </div>
                       ))}
                     </div>
@@ -533,14 +485,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
                       <h4 className="font-medium text-gray-700 text-sm">Loại</h4>
-                      {productOptions.length > 0 && (
-                        <button 
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                          onClick={() => setShowOptions(!showOptions)}
-                        >
-                          {showOptions ? 'Ẩn tùy chọn' : 'Tùy chọn hiện có'}
-                        </button>
-                      )}
                     </div>
                     
                     {/* Dropdown select implementation */}
@@ -549,7 +493,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         className="flex justify-between items-center w-full p-2.5 border border-gray-300 rounded-md bg-white cursor-pointer"
                         onClick={toggleDropdown}
                       >
-                        <span>{selectedOption || 'Chọn một tùy chọn'}</span>
+                        <span>
+                          {selectedOption || 'Chọn một tùy chọn'}
+                          {selectedOption && product.optionPrices && product.optionPrices[selectedOption] && (
+                            <span className="ml-2 text-primary-600 font-medium">
+                              {formatCurrency(product.optionPrices[selectedOption].price)}
+                            </span>
+                          )}
+                        </span>
                         <svg 
                           xmlns="http://www.w3.org/2000/svg" 
                           className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
@@ -589,59 +540,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         </div>
                       )}
                     </div>
-                    
-                    {/* Optional button for adding a new option */}
-                    <div className="flex mb-2">
-                      <div className="relative flex-1">
-                        <input 
-                          type="text"
-                          placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
-                          className="block w-full bg-white border border-gray-300 px-3 py-2 text-sm rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                          value={newOptionText}
-                          onChange={(e) => setNewOptionText(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
-                        />
-                      </div>
-                      <button 
-                        className="bg-primary-600 text-white px-3 py-2 text-sm rounded-r-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        onClick={handleAddOption}
-                      >
-                        Thêm
-                      </button>
-                    </div>
-                    
-                    {showOptions && productOptions.length > 0 && (
-                      <div className="space-y-1">
-                        {productOptions.map((option, index) => (
-                          <div 
-                            key={index} 
-                            className={`flex items-center justify-between p-2 rounded-md border ${selectedOption === option ? 'bg-primary-50 border-primary-400' : 'bg-white border-gray-200 hover:border-gray-300'} transition cursor-pointer`}
-                            onClick={() => setSelectedOption(option)}
-                          >
-                            <div className="flex items-center flex-1">
-                              <div className={`w-4 h-4 rounded-full border flex-shrink-0 mr-2 ${selectedOption === option ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}>
-                                {selectedOption === option && (
-                                  <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
-                                )}
-                              </div>
-                              <span className="font-medium text-gray-800 text-sm">{option}</span>
-                            </div>
-                            {product.optionPrices && product.optionPrices[option] && (
-                              <div className="flex items-center">
-                                <div className="text-sm font-medium text-primary-600">
-                                  {formatCurrency(product.optionPrices[option].price)}
-                                </div>
-                                {product.optionPrices[option].originalPrice > product.optionPrices[option].price && (
-                                  <div className="ml-2 text-xs text-gray-500 line-through">
-                                    {formatCurrency(product.optionPrices[option].originalPrice)}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
