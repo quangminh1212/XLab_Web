@@ -425,16 +425,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{product.name}</h1>
               
               <div className="mt-4 flex items-center">
-                <div className="text-2xl font-bold text-primary-600">
+                <div className="text-3xl font-bold text-primary-600">
                   {calculateCheapestPrice() === 0 ? 'Miễn phí' : formatCurrency(calculateCheapestPrice())}
                 </div>
                 
                 {calculateOriginalPriceOfCheapest() > calculateCheapestPrice() && (
                   <>
-                    <div className="ml-3 text-lg text-gray-500 line-through">
+                    <div className="ml-4 text-xl text-gray-500 line-through">
                       {formatCurrency(calculateOriginalPriceOfCheapest())}
                     </div>
-                    <div className="ml-2 bg-red-100 text-red-700 text-sm px-2 py-1 rounded">
+                    <div className="ml-3 bg-red-100 text-red-700 text-lg px-3 py-1 rounded">
                       -{calculateCheapestDiscountPercentage()}%
                     </div>
                   </>
@@ -442,7 +442,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
               
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
-              <div className="mt-4 p-4 rounded-lg">
+              <div className="mt-6 p-4 rounded-lg">
                 
                 {/* Product options/versions */}
                 {product.versions && product.versions.length > 1 && (
@@ -485,12 +485,12 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 {product.productOptions && product.productOptions.length > 0 && (
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
-                      <h4 className="font-medium text-gray-700 text-sm">Loại</h4>
+                      <h4 className="font-medium text-gray-700 text-lg">Loại</h4>
                     </div>
                     <div className="mb-4">
                       <div className="relative">
                         <select
-                          className="block w-full bg-white border-0 px-3 py-2 text-sm rounded-md focus:outline-none focus:ring-primary-500 appearance-none"
+                          className="block w-full bg-white border-0 px-4 py-3 text-base rounded-md focus:outline-none focus:ring-primary-500 appearance-none"
                           value={selectedOption || (productOptions.length > 0 ? productOptions[0] : '')}
                           onChange={(e) => setSelectedOption(e.target.value)}
                         >
@@ -500,9 +500,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                             </option>
                           ))}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+                          <svg className="fill-current h-6 w-6 text-primary-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                           </svg>
                         </div>
                       </div>
@@ -511,7 +511,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
               </div>
               
-              <p className="mt-4 text-gray-600">{product.shortDescription || ''}</p>
+              <p className="mt-4 text-gray-600 text-lg">{product.shortDescription || ''}</p>
               
               {/* Quantity selector */}
               <div className="mt-6">

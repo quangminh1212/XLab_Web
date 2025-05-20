@@ -15,10 +15,10 @@ const nextConfig = {
   // Cấu hình experimental
   experimental: {
     largePageDataBytes: 12800000,
-    disableOptimizedLoading: true,
+    disableOptimizedLoading: false,
     swcTraceProfiling: false,
-    optimizeCss: true,
-    // Xóa các tùy chọn không hợp lệ
+    // Tắt optimizeCss để tránh lỗi critters
+    optimizeCss: false,
   },
   productionBrowserSourceMaps: false,
   // Không tạo file trace
@@ -156,8 +156,13 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Ngăn chặn lỗi ENOENT
-    config.cache = false;
+    // Bật caching để cải thiện hiệu suất
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+    };
 
     // Loại bỏ cảnh báo Critical dependency
     config.module = {

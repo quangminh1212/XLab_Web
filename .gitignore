@@ -223,3 +223,15 @@ temp-config.js
 # Temp files
 .swc/
 .swc-disabled/
+
+# Additional ignore patterns for Next.js 15+
+/.next/server/middleware*
+/.next/server/edge-chunks/
+/.next/server/app/
+/.next/server/app-paths-manifest.json
+/.next/server/server-reference-manifest.json
+/.next/server/flight-server-css-manifest.json
+/.next/types/
+/.next/server/vendor-chunks/
+/.next/server/server/
+/.next/server/vendor-chunks/next.js
