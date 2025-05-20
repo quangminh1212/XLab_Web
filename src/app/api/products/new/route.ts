@@ -17,10 +17,13 @@ function generateIdFromName(name: string): string {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log('Received product data:', body);
+    // Auto-generate slug from name if not provided
+    if (!body.slug && body.name) {
+      body.slug = generateIdFromName(body.name);
+    }
 
     // Kiểm tra dữ liệu đầu vào
-    const requiredFields = ['name', 'slug', 'description'];
+    const requiredFields = ['name', 'description'];
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json({ 
