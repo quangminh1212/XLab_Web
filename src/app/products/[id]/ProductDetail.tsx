@@ -442,7 +442,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               </div>
               
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
-              <div className="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="mt-4 p-4 rounded-lg">
                 <h3 className="font-semibold text-gray-900 mb-2 text-lg">Tùy chọn loại sản phẩm</h3>
                 
                 {/* Product options/versions */}
@@ -486,7 +486,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 {product.productOptions && product.productOptions.length > 0 && (
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
-                      <h4 className="font-medium text-gray-700 text-sm">Thêm tùy chọn</h4>
+                      <h4 className="font-medium text-gray-700 text-sm">Loại</h4>
                       {productOptions.length > 0 && (
                         <button 
                           className="text-xs text-primary-600 hover:text-primary-700 font-medium"
@@ -496,57 +496,27 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         </button>
                       )}
                     </div>
-                    <div className="flex mb-2">
-                      <div className="relative flex-1">
-                        <input 
-                          type="text"
-                          placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
-                          className="block w-full bg-white border border-gray-300 px-3 py-2 text-sm rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                          value={newOptionText}
-                          onChange={(e) => setNewOptionText(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
-                        />
+                    <div className="mb-4">
+                      <div className="relative">
+                        <select
+                          className="block w-full bg-white border-0 px-3 py-2 text-sm rounded-md focus:outline-none focus:ring-primary-500 appearance-none"
+                          value={selectedOption}
+                          onChange={(e) => setSelectedOption(e.target.value)}
+                        >
+                          <option value="">Chọn một tùy chọn</option>
+                          {productOptions.map((option, index) => (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                          </svg>
+                        </div>
                       </div>
-                      <button 
-                        className="bg-primary-600 text-white px-3 py-2 text-sm rounded-r-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        onClick={handleAddOption}
-                      >
-                        Thêm
-                      </button>
                     </div>
-                    
-                    {showOptions && productOptions.length > 0 && (
-                      <div className="space-y-1">
-                        {productOptions.map((option, index) => (
-                          <div 
-                            key={index} 
-                            className={`flex items-center justify-between p-2 rounded-md border ${selectedOption === option ? 'bg-primary-50 border-primary-400' : 'bg-white border-gray-200 hover:border-gray-300'} transition cursor-pointer`}
-                            onClick={() => setSelectedOption(option)}
-                          >
-                            <div className="flex items-center flex-1">
-                              <div className={`w-4 h-4 rounded-full border flex-shrink-0 mr-2 ${selectedOption === option ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}>
-                                {selectedOption === option && (
-                                  <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
-                                )}
-                              </div>
-                              <span className="font-medium text-gray-800 text-sm">{option}</span>
-                            </div>
-                            {product.optionPrices && product.optionPrices[option] && (
-                              <div className="flex items-center">
-                                <div className="text-sm font-medium text-primary-600">
-                                  {formatCurrency(product.optionPrices[option].price)}
-                                </div>
-                                {product.optionPrices[option].originalPrice > product.optionPrices[option].price && (
-                                  <div className="ml-2 text-xs text-gray-500 line-through">
-                                    {formatCurrency(product.optionPrices[option].originalPrice)}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
