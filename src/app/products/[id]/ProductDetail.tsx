@@ -443,7 +443,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
               <div className="mt-4 p-4 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-2 text-lg">Tùy chọn loại sản phẩm</h3>
                 
                 {/* Product options/versions */}
                 {product.versions && product.versions.length > 1 && (
@@ -487,23 +486,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
                       <h4 className="font-medium text-gray-700 text-sm">Loại</h4>
-                      {productOptions.length > 0 && (
-                        <button 
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                          onClick={() => setShowOptions(!showOptions)}
-                        >
-                          {showOptions ? 'Ẩn tùy chọn' : 'Tùy chọn hiện có'}
-                        </button>
-                      )}
                     </div>
                     <div className="mb-4">
                       <div className="relative">
                         <select
                           className="block w-full bg-white border-0 px-3 py-2 text-sm rounded-md focus:outline-none focus:ring-primary-500 appearance-none"
-                          value={selectedOption}
+                          value={selectedOption || (productOptions.length > 0 ? productOptions[0] : '')}
                           onChange={(e) => setSelectedOption(e.target.value)}
                         >
-                          <option value="">Chọn một tùy chọn</option>
                           {productOptions.map((option, index) => (
                             <option key={index} value={option}>
                               {option}
