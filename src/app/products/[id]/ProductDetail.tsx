@@ -9,7 +9,6 @@ import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
 import RichTextContent from '@/components/common/RichTextContent';
 import { Product as UIProduct } from '@/types';
-import { useSession } from 'next-auth/react';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -133,9 +132,6 @@ const RelatedProducts = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
-  const { data: session, status } = useSession();
-  const isAdmin = session?.user?.isAdmin === true;
-
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
     const mainElement = document.querySelector('main');
@@ -501,17 +497,20 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   </div>
                 )}
                 
-                {/* Admin-only: Loại sản phẩm editor */}
-                {isAdmin && productOptions.length > 0 && (
+                {/* Loại sản phẩm */}
+                {/* Hiển thị nếu có bất kỳ tùy chọn nào */}
+                {productOptions.length > 0 && (
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
                       <h4 className="font-medium text-gray-700 text-sm">Thêm tùy chọn</h4>
-                      <button 
-                        className="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                        onClick={() => setShowOptions(!showOptions)}
-                      >
-                        {showOptions ? 'Ẩn tùy chọn' : 'Tùy chọn hiện có'}
-                      </button>
+                      {productOptions.length > 0 && (
+                        <button 
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                          onClick={() => setShowOptions(!showOptions)}
+                        >
+                          {showOptions ? 'Ẩn tùy chọn' : 'Tùy chọn hiện có'}
+                        </button>
+                      )}
                     </div>
                     <div className="flex mb-2">
                       <div className="relative flex-1">
@@ -531,25 +530,24 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         Thêm
                       </button>
                     </div>
-                    {showOptions && (
+                    
+                    {showOptions && productOptions.length > 0 && (
                       <div className="space-y-1">
                         {productOptions.map((option, index) => (
                           <div 
                             key={index} 
                             className={`flex items-center justify-between p-2 rounded-md border ${selectedOption === option ? 'bg-primary-50 border-primary-400' : 'bg-white border-gray-200 hover:border-gray-300'} transition cursor-pointer`}
                             onClick={() => setSelectedOption(option)}
-                            draggable
-                            onDragStart={() => handleDragStart(index)}
-                            onDragOver={(e) => handleDragOver(e, index)}
-                            onDragEnd={handleDragEnd}
                           >
                             <div className="flex items-center flex-1">
                               <div className={`w-4 h-4 rounded-full border flex-shrink-0 mr-2 ${selectedOption === option ? 'border-primary-500 bg-primary-500' : 'border-gray-300'}`}>
-                                {selectedOption === option && <div className="w-2 h-2 bg-white rounded-full m-auto" />}
+                                {selectedOption === option && (
+                                  <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
+                                )}
                               </div>
                               <span className="font-medium text-gray-800 text-sm">{option}</span>
                             </div>
-                            {product.optionPrices?.[option] && (
+                            {product.optionPrices && product.optionPrices[option] && (
                               <div className="flex items-center">
                                 <div className="text-sm font-medium text-primary-600">
                                   {formatCurrency(product.optionPrices[option].price)}
@@ -565,22 +563,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         ))}
                       </div>
                     )}
-                  </div>
-                )}
-                {/* Buyer-only: Loại sản phẩm dropdown */}
-                {!isAdmin && productOptions.length > 0 && (
-                  <div className="mb-4">
-                    <label className="block mb-1 font-medium text-gray-700 text-sm">Loại</label>
-                    <select
-                      value={selectedOption}
-                      onChange={(e) => setSelectedOption(e.target.value)}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    >
-                      <option value="">Chọn một tùy chọn</option>
-                      {productOptions.map((option, index) => (
-                        <option key={index} value={option}>{option}</option>
-                      ))}
-                    </select>
                   </div>
                 )}
               </div>
