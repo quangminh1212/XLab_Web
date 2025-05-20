@@ -490,12 +490,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         <div
                           key={index}
                           onClick={() => setSelectedOption(option)}
-                          className={`border rounded-lg p-4 flex flex-col items-center justify-between cursor-pointer transition-shadow hover:shadow-lg
-                            ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
+                          className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
                         >
-                          <p className="text-gray-900 font-medium text-sm whitespace-nowrap mb-2 text-center">{option}</p>
+                          <span className="text-gray-900 font-medium text-sm mr-2">{option}</span>
                           {product.optionPrices && product.optionPrices[option] && (
-                            <p className="text-primary-600 font-medium text-sm whitespace-nowrap text-center">{formatCurrency(product.optionPrices[option].price)}</p>
+                            <span className="text-primary-600 font-medium text-sm">{formatCurrency(product.optionPrices[option].price)}</span>
                           )}
                         </div>
                       ))}
