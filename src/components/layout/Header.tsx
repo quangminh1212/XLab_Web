@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -13,9 +13,64 @@ const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+  
+  // Tạo ref để tham chiếu đến phần tử dropdown profile
+  const profileRef = useRef<HTMLDivElement>(null);
+  const profileButtonRef = useRef<HTMLButtonElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
 
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+
+  // Xử lý đóng dropdown khi click bên ngoài
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    // Đóng profile dropdown khi click ra ngoài
+    if (
+      isProfileOpen && 
+      profileRef.current && 
+      profileButtonRef.current &&
+      !profileRef.current.contains(event.target as Node) && 
+      !profileButtonRef.current.contains(event.target as Node)
+    ) {
+      setIsProfileOpen(false);
+    }
+    
+    // Đóng notification dropdown khi click ra ngoài
+    if (
+      isNotificationOpen && 
+      notificationRef.current && 
+      !notificationRef.current.contains(event.target as Node)
+    ) {
+      setIsNotificationOpen(false);
+    }
+  }, [isProfileOpen, isNotificationOpen]);
+
+  // Thêm event listener khi component được mount
+  useEffect(() => {
+    // Thêm event listener cho document để bắt sự kiện click bên ngoài
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Dọn dẹp event listener khi component bị unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
+  // Thêm effect để đóng dropdown khi người dùng nhấn Escape
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (isProfileOpen) setIsProfileOpen(false);
+        if (isNotificationOpen) setIsNotificationOpen(false);
+        if (isOpen) setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('keydown', handleEscKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [isProfileOpen, isNotificationOpen, isOpen]);
 
   const isActive = (path: string) => {
     return pathname === path ? 'text-primary-600 font-medium' : 'text-gray-700 hover:text-primary-600';
@@ -103,11 +158,13 @@ const Header = () => {
           <div className="flex items-center space-x-2 md:space-x-3">
             {/* Notification Icon */}
             {session && (
-              <div className="relative">
+              <div className="relative" ref={notificationRef}>
                 <button
                   onClick={toggleNotification}
                   className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
                   aria-label="Thông báo"
+                  aria-expanded={isNotificationOpen}
+                  aria-haspopup="true"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -132,12 +189,20 @@ const Header = () => {
 
                 {/* Notification Dropdown */}
                 {isNotificationOpen && (
-                  <div className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10">
+                  <div 
+                    className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10" 
+                    tabIndex={0}
+                    role="menu"
+                    aria-orientation="vertical"
+                  >
                     <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
                       <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
                       {unreadCount > 0 && (
                         <button 
-                          onClick={markAllAsRead}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markAllAsRead();
+                          }}
                           className="text-xs sm:text-sm text-primary-600 hover:text-primary-800"
                         >
                           Đánh dấu tất cả đã đọc
@@ -152,6 +217,7 @@ const Header = () => {
                             key={notification.id} 
                             className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
                             onClick={() => markAsRead(notification.id)}
+                            role="menuitem"
                           >
                             <div className="flex justify-between items-start">
                               <h4 className="text-xs sm:text-sm font-medium text-gray-900">{notification.title}</h4>
@@ -172,6 +238,7 @@ const Header = () => {
                         href="/notifications"
                         className="text-xs sm:text-sm text-primary-600 hover:text-primary-800"
                         onClick={() => setIsNotificationOpen(false)}
+                        role="menuitem"
                       >
                         Xem tất cả thông báo
                       </Link>
@@ -203,11 +270,14 @@ const Header = () => {
             </Link>
 
             {/* User Profile */}
-            <div className="relative">
+            <div className="relative" ref={profileRef}>
               {session ? (
                 <button
+                  ref={profileButtonRef}
                   onClick={toggleProfile}
                   className="flex items-center text-gray-700 hover:text-primary-600 focus:outline-none"
+                  aria-expanded={isProfileOpen}
+                  aria-haspopup="true"
                 >
                   <Image
                     src={session.user?.image || "/images/profiles/default-avatar.png"}
@@ -236,7 +306,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-3 py-1 md:px-4 md:py-1.5 rounded-lg text-xs md:text-sm tracking-wide font-medium transition-colors"
+                  className="bg-primary-600 hover:bg-primary-700 text-white py-1.5 px-3 rounded-md text-sm transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -244,7 +314,13 @@ const Header = () => {
 
               {/* Profile Dropdown */}
               {isProfileOpen && session && (
-                <div className="absolute right-0 mt-2 w-48 md:w-52 bg-white rounded-lg shadow-xl py-2 z-10">
+                <div 
+                  className="absolute right-0 mt-2 w-48 md:w-52 bg-white rounded-lg shadow-xl py-2 z-10"
+                  tabIndex={0}
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu"
+                >
                   <div className="px-4 py-2 border-b border-gray-100">
                     <p className="text-sm md:text-base font-semibold">{session.user?.name}</p>
                     <p className="text-xs md:text-sm text-gray-500 truncate">
@@ -254,12 +330,16 @@ const Header = () => {
                   <Link
                     href="/account"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                    role="menuitem"
+                    onClick={() => setIsProfileOpen(false)}
                   >
                     Tài khoản của tôi
                   </Link>
                   <Link
                     href="/orders/history"
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                    role="menuitem"
+                    onClick={() => setIsProfileOpen(false)}
                   >
                     Đơn hàng của tôi
                   </Link>
@@ -268,13 +348,19 @@ const Header = () => {
                     <Link
                       href="/admin"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                      role="menuitem"
+                      onClick={() => setIsProfileOpen(false)}
                     >
                       Quản trị viên
                     </Link>
                   )}
                   <button
-                    onClick={() => signOut()}
+                    onClick={() => {
+                      signOut();
+                      setIsProfileOpen(false);
+                    }}
                     className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                    role="menuitem"
                   >
                     Đăng xuất
                   </button>
