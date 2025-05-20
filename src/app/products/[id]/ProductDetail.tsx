@@ -490,7 +490,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     <div className="mb-4">
                       <div className="relative">
                         <select
-                          className="block w-full bg-white border-0 px-4 py-3 text-base rounded-md focus:outline-none focus:ring-primary-500 appearance-none"
+                          className="block w-full bg-white border border-gray-300 px-4 py-3 text-base rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                           value={selectedOption || (productOptions.length > 0 ? productOptions[0] : '')}
                           onChange={(e) => setSelectedOption(e.target.value)}
                         >
@@ -500,11 +500,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                             </option>
                           ))}
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
-                          <svg className="fill-current h-6 w-6 text-primary-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                          </svg>
-                        </div>
                       </div>
                     </div>
                   </div>

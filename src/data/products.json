@@ -20,7 +20,9 @@
             "id": {
               "id": {
                 "id": {
-                  "id": {}
+                  "id": {
+                    "id": {}
+                  }
                 }
               }
             }
@@ -31,7 +33,9 @@
             "id": {
               "id": {
                 "id": {
-                  "id": {}
+                  "id": {
+                    "id": {}
+                  }
                 }
               }
             }
@@ -42,7 +46,9 @@
             "id": {
               "id": {
                 "id": {
-                  "id": {}
+                  "id": {
+                    "id": {}
+                  }
                 }
               }
             }
@@ -60,14 +66,14 @@
       }
     ],
     "createdAt": "2025-05-14T15:59:47.484Z",
-    "updatedAt": "2025-05-17T05:35:01.020Z",
+    "updatedAt": "2025-05-20T15:48:01.740Z",
     "price": 149000,
     "salePrice": 0,
     "rating": "4.7",
     "weeklyPurchases": "50",
     "specs": "",
-    "type": "software",
-    "isAccount": false,
+    "type": "account",
+    "isAccount": true,
     "productOptions": [
       "Full - Dùng riêng - 1 Tháng"
     ],
