@@ -165,8 +165,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // State tùy chọn đang chọn
   const [selectedOption, setSelectedOption] = useState(product.defaultProductOption || (product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : ''));
   
-  // State hiển thị tùy chọn hiện có
-  const [showOptions, setShowOptions] = useState(false);
+  // State hiển thị tùy chọn hiện có (mặc định true nếu đã có tùy chọn)
+  const [showOptions, setShowOptions] = useState(productOptions.length > 0);
   
   // State cho việc kéo thả
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
@@ -498,7 +498,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
                 
                 {/* Loại sản phẩm */}
-                {product.productOptions && product.productOptions.length > 0 && (
+                {/* Hiển thị nếu có bất kỳ tùy chọn nào */}
+                {productOptions.length > 0 && (
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
                       <h4 className="font-medium text-gray-700 text-sm">Thêm tùy chọn</h4>
