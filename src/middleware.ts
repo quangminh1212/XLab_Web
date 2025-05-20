@@ -29,6 +29,7 @@ const publicPaths = [
   '/support',
   '/contact',
   '/api/auth',
+  '/',
 ];
 
 // Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
@@ -89,15 +90,15 @@ export async function middleware(request: NextRequest) {
   // Bỏ qua các file static và api routes không cần kiểm tra
   if (
     isStaticFile(pathname) ||
-    pathname.includes('/api/auth')
+    pathname.startsWith('/api/auth/')
   ) {
     return NextResponse.next();
   }
   
-  // Lấy token từ cookie với secret cố định
+  // Lấy token từ cookie
   const token = await getToken({
     req: request,
-    secret: "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
+    secret: process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
   });
   
   // Log thông tin debug
@@ -108,7 +109,7 @@ export async function middleware(request: NextRequest) {
     // Nếu chưa đăng nhập, chuyển đến login
     if (!token) {
       const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', pathname);
+      url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
       return NextResponse.redirect(url);
     }
     
@@ -117,12 +118,15 @@ export async function middleware(request: NextRequest) {
       const url = new URL('/', request.url);
       return NextResponse.redirect(url);
     }
+
+    // Cho phép admin truy cập
+    return NextResponse.next();
   }
   
   // Nếu là đường dẫn được bảo vệ và chưa đăng nhập, chuyển hướng đến trang đăng nhập
   if (isProtectedPath(pathname) && !token) {
     const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', pathname);
+    url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
     return NextResponse.redirect(url);
   }
   
@@ -132,9 +136,24 @@ export async function middleware(request: NextRequest) {
 export const config = {
   // Chỉ áp dụng cho các đường dẫn cần kiểm tra
   matcher: [
+    /*
+     * Chỉ match các route sau:
+     * - /admin (truy cập trang admin)
+     * - /admin/:path* (các trang admin)
+     * - /account (trang tài khoản người dùng)
+     * - /account/:path* (các trang con của account)
+     * - /checkout (trang thanh toán)
+     * - /checkout/:path* (các trang con của checkout)
+     * - /api/protected (các API bảo vệ)
+     * - /api/protected/:path* (các API con bảo vệ)
+     */
+    '/admin',
     '/admin/:path*',
+    '/account',
     '/account/:path*',
+    '/checkout',
     '/checkout/:path*',
+    '/api/protected',
     '/api/protected/:path*'
   ],
 }; 
