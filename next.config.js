@@ -156,13 +156,8 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Bật caching để cải thiện hiệu suất
-    config.cache = {
-      type: 'filesystem',
-      buildDependencies: {
-        config: [__filename],
-      },
-    };
+    // Sửa lỗi cache
+    config.cache = false;
 
     // Loại bỏ cảnh báo Critical dependency
     config.module = {
@@ -177,9 +172,6 @@ const nextConfig = {
         },
       ],
     };
-
-    // Enables hot module replacement
-    config.optimization.runtimeChunk = 'single';
 
     return config;
   },
