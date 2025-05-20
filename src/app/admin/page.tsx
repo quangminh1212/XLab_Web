@@ -12,9 +12,9 @@ function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     products: 0,
-    users: 5,
-    orders: 5,
-    revenue: 6020000
+    users: 0,
+    orders: 0,
+    revenue: 0
   });
 
   // Chuyển đổi số thành định dạng tiền tệ
@@ -27,14 +27,35 @@ function AdminDashboard() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/api/admin/products');
-        if (response.ok) {
-          const products = await response.json();
+        // Fetch products, users, and orders stats in parallel
+        const [productsRes, usersRes, ordersRes] = await Promise.all([
+          fetch('/api/admin/products'),
+          fetch('/api/admin/users'),
+          fetch('/api/admin/orders')
+        ]);
+
+        if (productsRes.ok) {
+          const products = await productsRes.json();
           setProducts(products);
           setStats(prev => ({ ...prev, products: products.length }));
         }
+
+        if (usersRes.ok) {
+          const usersData = await usersRes.json();
+          setStats(prev => ({ ...prev, users: usersData.users.length }));
+        }
+
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json();
+          setStats(prev => ({
+            ...prev,
+            orders: ordersData.stats.total,
+            revenue: ordersData.stats.revenue
+          }));
+        }
+
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching admin stats:', error);
       } finally {
         setIsLoading(false);
       }
