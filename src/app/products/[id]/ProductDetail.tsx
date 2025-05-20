@@ -438,7 +438,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               
               {/* Tùy chọn loại sản phẩm - đưa lên đầu */}
               <div className="mt-4">
-                <h3 className="font-semibold text-gray-900 mb-2 text-lg">Tùy chọn loại sản phẩm</h3>
+                <h3 className="font-semibold text-gray-900 mb-2 text-lg">
+                  Tùy chọn loại sản phẩm
+                </h3>
                 
                 {/* Product options/versions */}
                 {product.versions && product.versions.length > 1 && (
