@@ -156,8 +156,37 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Ngăn chặn lỗi ENOENT
+    // Ngăn chặn lỗi ENOENT - Hoàn toàn vô hiệu hóa cache
     config.cache = false;
+
+    // Thêm để đảm bảo các vendor chunks được tạo đúng cách
+    if (isServer) {
+      config.optimization = {
+        ...config.optimization,
+        moduleIds: 'deterministic',
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            // Đảm bảo thư viện vendor được tách riêng
+            vendor: {
+              name: 'vendor',
+              test: /[\\/]node_modules[\\/]/,
+              chunks: 'all',
+              priority: 10
+            },
+            // Tách riêng các thư viện lớn
+            framework: {
+              name: 'framework',
+              test: /[\\/]node_modules[\\/](react|react-dom|next|@next)[\\/]/,
+              chunks: 'all',
+              priority: 20
+            }
+          }
+        }
+      };
+    }
 
     // Loại bỏ cảnh báo Critical dependency
     config.module = {

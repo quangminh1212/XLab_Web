@@ -15,19 +15,17 @@ cypress/screenshots
 /__tests__/output
 
 # next.js
+/.next/
 .next/
-.next/*
-next-env.d.ts
-.next/cache/
-.next/server/
-.next/static/
-.next/trace
-.next/trace.*
-.next/*.json
-.next/BUILD_ID
+.next
 out/
 .vercel/
 dist/
+
+# Cache directories
+.swc/
+.turbo/
+node_modules/.cache/
 
 # Cấu hình Next.js
 .env*.local
@@ -83,8 +81,15 @@ run-fixed.bat
 
 # SWC related
 /.swc-disabled/
-.next/trace
-.next/trace.*
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Temporary files
+*.temp
+temp-config.js
+
+# Build artifacts
+.vercel
 
 # Custom build files
 /.next/static/main-app*.js

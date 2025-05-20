@@ -171,6 +171,36 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // State cho việc kéo thả
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   
+  // State cho dropdown select
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
+  // Toggle dropdown
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+  
+  // Đóng dropdown khi click ra ngoài
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
+  // Handle option selection from dropdown
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption(option);
+    setIsDropdownOpen(false);
+  };
+  
   // Xử lý thêm tùy chọn mới
   const handleAddOption = () => {
     if (newOptionText.trim()) {
@@ -502,7 +532,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 {productOptions.length > 0 && (
                   <div className="mb-2">
                     <div className="mb-2 flex justify-between items-center">
-                      <h4 className="font-medium text-gray-700 text-sm">Thêm tùy chọn</h4>
+                      <h4 className="font-medium text-gray-700 text-sm">Loại</h4>
                       {productOptions.length > 0 && (
                         <button 
                           className="text-xs text-primary-600 hover:text-primary-700 font-medium"
@@ -512,6 +542,55 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                         </button>
                       )}
                     </div>
+                    
+                    {/* Dropdown select implementation */}
+                    <div className="relative mb-3" ref={dropdownRef}>
+                      <div 
+                        className="flex justify-between items-center w-full p-2.5 border border-gray-300 rounded-md bg-white cursor-pointer"
+                        onClick={toggleDropdown}
+                      >
+                        <span>{selectedOption || 'Chọn một tùy chọn'}</span>
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                      
+                      {isDropdownOpen && (
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                          {productOptions.map((option, index) => (
+                            <div 
+                              key={index}
+                              className={`p-2.5 hover:bg-gray-100 cursor-pointer ${selectedOption === option ? 'bg-primary-50 text-primary-600' : ''}`}
+                              onClick={() => handleOptionSelect(option)}
+                            >
+                              <div className="flex justify-between items-center">
+                                <span>{option}</span>
+                                {product.optionPrices && product.optionPrices[option] && (
+                                  <div className="flex items-center">
+                                    <span className="font-medium text-primary-600">
+                                      {formatCurrency(product.optionPrices[option].price)}
+                                    </span>
+                                    {product.optionPrices[option].originalPrice > product.optionPrices[option].price && (
+                                      <span className="ml-2 text-xs text-gray-500 line-through">
+                                        {formatCurrency(product.optionPrices[option].originalPrice)}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Optional button for adding a new option */}
                     <div className="flex mb-2">
                       <div className="relative flex-1">
                         <input 
