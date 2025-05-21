@@ -1,42 +1,7 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { Product } from '@/models/ProductModel';
-
-// Data file path
-const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-
-// Read product data
-function getProducts(): Product[] {
-  try {
-    if (!fs.existsSync(dataFilePath)) {
-      console.log('Products file not found, creating empty file');
-      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
-      return [];
-    }
-    // Read raw content and sanitize newlines for valid JSON
-    const fileContentRaw = fs.readFileSync(dataFilePath, 'utf8');
-    if (!fileContentRaw.trim()) {
-      console.log('Products file is empty, returning empty array');
-      return [];
-    }
-    // Sanitize raw JSON: collapse newlines
-    let fileContent = fileContentRaw.replace(/[\r\n]+/g, ' ');
-    // Remove trailing commas before } or ] to prevent parse errors
-    fileContent = fileContent.replace(/,(\s*[}\]])/g, '$1');
-    // Normalize Windows backslashes in paths to forward slashes
-    fileContent = fileContent.replace(/\\\\/g, '/');
-    try {
-      return JSON.parse(fileContent);
-    } catch (parseError) {
-      console.error('Error parsing products data:', parseError);
-      return [];
-    }
-  } catch (error) {
-    console.error('Error reading products data:', error);
-    return [];
-  }
-}
+import productsDataRaw from '@/data/products.json';
+const productsData: Product[] = (productsDataRaw as unknown) as Product[];
 
 export async function GET(request: Request) {
   try {
@@ -45,7 +10,7 @@ export async function GET(request: Request) {
     const exclude = searchParams.get('exclude');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : undefined;
     
-    let productList = getProducts();
+    let productList = productsData;
     console.log(`Retrieved ${productList.length} products from file`);
     
     // Chỉ lấy sản phẩm được xuất bản
