@@ -98,9 +98,9 @@ function HomePage() {
 
       <div className="container mx-auto py-6">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
-        <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-4">
           {/* Sidebar Column - Left */}
-          <div className="w-full md:w-[18%] flex flex-col h-full">
+          <div className="w-full flex flex-col h-full md:col-span-1">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
@@ -370,7 +370,7 @@ function HomePage() {
           </div>
           
           {/* Main Content Column - Right */}
-          <div className="w-full md:w-[82%]">
+          <div className="w-full md:col-span-4">
             {/* Phần mềm */}
             <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
               <div className="mb-4">
