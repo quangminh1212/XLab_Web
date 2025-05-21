@@ -162,6 +162,24 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Giá cả hợp lý</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Nhiều lựa chọn phù hợp mọi ngân sách</p>
                 </div>
+                <div className="bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+                  <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
+                      <path fillRule="evenodd" clipRule="evenodd" d="M11.3 1.046a.75.75 0 011.4.042l3.926 8.137h4.396a.75.75 0 01.578 1.268l-8.459 8.459a.75.75 0 01-1.268-.578v-4.396L2.41 11.7a.75.75 0 01.578-1.268h4.396L11.3 1.046z"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Tích hợp AI</h3>
+                  <p className="text-xs sm:text-sm text-gray-700">Công nghệ AI tiên tiến hỗ trợ bạn</p>
+                </div>
+                <div className="bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+                  <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-primary-600">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M5 10a8 8 0 0111.966-2.79M18.364 18.364A8 8 0 015 10"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Cập nhật liên tục</h3>
+                  <p className="text-xs sm:text-sm text-gray-700">Luôn được cập nhật tính năng mới</p>
+                </div>
               </div>
             </section>
 
