@@ -257,3 +257,36 @@ temp-config.js
 /.next/server/server/
 /.next/server/vendor-chunks/next.js
 # next.js static files
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Local .env files
+.env.local
+.env.*.local
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Build artifacts
+/build
+/dist
+
+# Cache folders
+.cache/
+.next/cache/
+
+# Other generated files
+*.tsbuildinfo
+next-env.d.ts
