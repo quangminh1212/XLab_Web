@@ -165,7 +165,8 @@ function HomePage() {
               </div>
             </section>
 
-            {/* Testimonials Section */}
+            {/* Testimonials Section removed */}
+            {false && (
             <section className="bg-gray-50 rounded-xl p-4">
               <div className="flex justify-between items-start mb-2">
                 <div>
@@ -347,6 +348,7 @@ function HomePage() {
                 `}</style>
               </div>
             </section>
+            )}
           </div>
           
           {/* Main Content Column - Right */}
