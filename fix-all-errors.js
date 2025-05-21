@@ -290,6 +290,10 @@ function createStaticFiles() {
         content: '/* Empty JS file to prevent 404 errors */'
       },
       {
+        path: '.next/static/app/page.js',
+        content: '/* Empty page.js file to prevent 404 errors */'
+      },
+      {
         path: '.next/static/app/not-found.js',
         content: '/* Empty JS file to prevent 404 errors */'
       },

@@ -223,9 +223,20 @@ const nextConfig = {
           source: '/_next/static/app/:path*',
           destination: '/_next/static/app/empty.js'
         },
+        // Xử lý page.js riêng biệt
+        {
+          source: '/_next/static/app/page.js',
+          destination: '/_next/static/app/page.js'
+        },
         // Xử lý main-app.js
         {
           source: '/_next/static/main-app.:hash*.js',
+          destination: '/_next/static/main-app.js'
+        },
+        // Xử lý main-app.js với query params
+        {
+          source: '/_next/static/main-app.:hash*.js',
+          has: [{ type: 'query', key: 'v' }],
           destination: '/_next/static/main-app.js'
         },
         // Xử lý app-pages-internals.js
