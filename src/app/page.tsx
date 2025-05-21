@@ -479,7 +479,7 @@ function HomePage() {
 
             {/* Câu hỏi thường gặp full-width */}
             <section className="hidden py-8 bg-gray-50">
-              <div className="px-4 sm:px-6 lg:px-8">
+              <div className="w-full md:w-[82%] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-6">
                   <h2 className="text-xl md:text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
                   <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
@@ -526,7 +526,7 @@ function HomePage() {
 
       {/* Câu hỏi thường gặp full-width */}
       <section className="py-8 bg-gray-50">
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="w-full md:w-[82%] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-6">
             <h2 className="text-xl md:text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
             <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
