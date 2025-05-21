@@ -478,7 +478,7 @@ function HomePage() {
             </div>
 
             {/* Câu hỏi thường gặp full-width */}
-            <section className="py-8 bg-gray-50">
+            <section className="hidden py-8 bg-gray-50">
               <div className="px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-6">
                   <h2 className="text-xl md:text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
