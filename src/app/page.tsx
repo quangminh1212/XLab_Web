@@ -219,190 +219,110 @@ function HomePage() {
               </div>
             </section>
 
-            {/* Testimonials Section removed */}
-            {false && (
-            <section className="bg-gray-50 rounded-xl p-4">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h2 className="text-lg font-bold text-gray-800 mb-0">Khách hàng nói gì về chúng tôi</h2>
-                  <p className="text-xs text-gray-600 mt-0.5">Đánh giá từ khách hàng đã sử dụng sản phẩm</p>
-                </div>
-                <div className="flex space-x-3">
-                  <Link 
-                    href="/testimonials"
-                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-xs"
-                  >
-                    Xem tất cả
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            {/* Đánh giá khách hàng - Phần mới */}
+            <section className="bg-white rounded-xl shadow-sm p-4 mb-3">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold text-gray-800">Đánh giá từ khách hàng</h2>
+                <div className="flex items-center text-yellow-500">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                      <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
                     </svg>
-                  </Link>
+                  ))}
+                  <span className="ml-1 text-sm font-medium text-gray-700">4.9/5</span>
                 </div>
               </div>
-
-              {/* Testimonial Slider */}
-              <div className="relative">
-                <div className="overflow-y-auto max-h-[320px] pb-2 hide-scrollbar">
-                  <div className="flex flex-col space-y-3">
-                    {/* Testimonial 1 */}
-                    <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-sm transition-all">
-                      <div className="flex items-center">
-                        <div className="bg-primary-100 rounded-full p-1.5 mr-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-primary-600">
-                            <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div className="flex items-center">
-                            <p className="font-medium text-gray-900 text-xs">Trần Minh Đức</p>
-                            <span className="mx-1.5 text-gray-300">•</span>
-                            <p className="text-xs text-gray-500">Giám đốc công nghệ</p>
-                          </div>
-                          <div className="flex mt-0.5">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400">
-                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                              </svg>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-700 mt-2 line-clamp-2">
-                        "X Lab giúp công ty chúng tôi tự động hóa nhiều quy trình, tiết kiệm thời gian và nguồn lực đáng kể."
-                      </p>
-                    </div>
-
-                    {/* Testimonial 2 */}
-                    <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-sm transition-all">
-                      <div className="flex items-center">
-                        <div className="bg-primary-100 rounded-full p-1.5 mr-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-primary-600">
-                            <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div className="flex items-center">
-                            <p className="font-medium text-gray-900 text-xs">Nguyễn Văn An</p>
-                            <span className="mx-1.5 text-gray-300">•</span>
-                            <p className="text-xs text-gray-500">Giám đốc điều hành</p>
-                          </div>
-                          <div className="flex mt-0.5">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400">
-                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                              </svg>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-700 mt-2 line-clamp-2">
-                        "Sản phẩm của XLab đã giúp công ty chúng tôi tăng hiệu suất làm việc lên 40%."
-                      </p>
-                    </div>
-
-                    {/* Testimonial 3 */}
-                    <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-sm transition-all">
-                      <div className="flex items-center">
-                        <div className="bg-primary-100 rounded-full p-1.5 mr-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-primary-600">
-                            <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div className="flex items-center">
-                            <p className="font-medium text-gray-900 text-xs">Trần Thị Bình</p>
-                            <span className="mx-1.5 text-gray-300">•</span>
-                            <p className="text-xs text-gray-500">Giám đốc kỹ thuật</p>
-                          </div>
-                          <div className="flex mt-0.5">
-                            {[1, 2, 3, 4].map((star) => (
-                              <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400">
-                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                              </svg>
-                            ))}
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-gray-300">
-                              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-700 mt-2 line-clamp-2">
-                        "Phần mềm quản lý khách hàng của XLab đã giúp chúng tôi nâng cao trải nghiệm người dùng."
-                      </p>
-                    </div>
-                    
-                    {/* Testimonial 4 */}
-                    <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-sm transition-all">
-                      <div className="flex items-center">
-                        <div className="bg-primary-100 rounded-full p-1.5 mr-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-primary-600">
-                            <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div className="flex items-center">
-                            <p className="font-medium text-gray-900 text-xs">Phạm Hoàng Dũng</p>
-                            <span className="mx-1.5 text-gray-300">•</span>
-                            <p className="text-xs text-gray-500">Giám đốc sản phẩm</p>
-                          </div>
-                          <div className="flex mt-0.5">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400">
-                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                              </svg>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-700 mt-2 line-clamp-2">
-                        "XLab đã hỗ trợ chúng tôi xây dựng nền tảng học trực tuyến với nhiều tính năng tiên tiến, giúp tăng số lượng đăng ký."
-                      </p>
-                    </div>
-                    
-                    {/* Testimonial 5 */}
-                    <div className="bg-white rounded-lg p-3 border border-gray-100 hover:shadow-sm transition-all">
-                      <div className="flex items-center">
-                        <div className="bg-primary-100 rounded-full p-1.5 mr-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-primary-600">
-                            <path fillRule="evenodd" d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <div className="flex items-center">
-                            <p className="font-medium text-gray-900 text-xs">Hoàng Thị Lan</p>
-                            <span className="mx-1.5 text-gray-300">•</span>
-                            <p className="text-xs text-gray-500">Giám đốc công nghệ</p>
-                          </div>
-                          <div className="flex mt-0.5">
-                            {[1, 2, 3, 4].map((star) => (
-                              <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-yellow-400">
-                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                              </svg>
-                            ))}
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-gray-300">
-                              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-xs text-gray-700 mt-2 line-clamp-2">
-                        "Giải pháp quản lý bệnh viện của XLab đã giúp chúng tôi tối ưu hóa quy trình làm việc và cải thiện chất lượng chăm sóc bệnh nhân."
-                      </p>
+              
+              <div className="space-y-3">
+                <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                  <p className="text-sm text-gray-700 italic mb-2">"Phần mềm AI của XLab giúp công ty tôi tăng 40% hiệu suất làm việc chỉ trong tháng đầu tiên."</p>
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center text-primary-700 font-bold text-sm">NT</div>
+                    <div className="ml-2">
+                      <p className="text-xs font-medium text-gray-900">Nguyễn Tuấn</p>
+                      <p className="text-xs text-gray-500">Giám đốc điều hành</p>
                     </div>
                   </div>
                 </div>
-                <style jsx>{`
-                  .hide-scrollbar::-webkit-scrollbar {
-                    display: none;
-                  }
-                  .hide-scrollbar {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                  }
-                `}</style>
+                
+                <Link href="/testimonials" className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center justify-center">
+                  Xem tất cả đánh giá
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </Link>
               </div>
             </section>
-            )}
+            
+            {/* Thống kê - Phần mới */}
+            <section className="bg-white rounded-xl shadow-sm p-4 mb-3">
+              <h2 className="text-lg font-bold text-gray-800 mb-4">Thành tựu của chúng tôi</h2>
+              
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <div className="bg-primary-100 rounded-lg p-3 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
+                      <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-bold text-xl text-gray-900">10,000+</div>
+                    <div className="text-xs text-gray-600">Khách hàng tin dùng</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="bg-green-100 rounded-lg p-3 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-green-600">
+                      <path fillRule="evenodd" d="M2.25 2.25a.75.75 0 000 1.5H3v10.5a3 3 0 003 3h1.21l-1.172 3.513a.75.75 0 001.424.474l.329-.987h8.418l.33.987a.75.75 0 001.422-.474l-1.17-3.513H18a3 3 0 003-3V3.75h.75a.75.75 0 000-1.5H2.25zm6.04 16.5l.5-1.5h6.42l.5 1.5H8.29zm7.46-12a.75.75 0 00-1.5 0v6a.75.75 0 001.5 0v-6zm-3 2.25a.75.75 0 00-1.5 0v3.75a.75.75 0 001.5 0V9zm-3 2.25a.75.75 0 00-1.5 0v1.5a.75.75 0 001.5 0v-1.5z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-bold text-xl text-gray-900">30+</div>
+                    <div className="text-xs text-gray-600">Giải pháp phần mềm</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="bg-blue-100 rounded-lg p-3 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-blue-600">
+                      <path fillRule="evenodd" d="M9.315 2.1c.663 0 1.32.087 1.946.254C14.5 1.817 17.52 2.119 19.388 3.036c1.05.517 1.173 1.146 1.087 1.486-.247.972-1.564 1.54-3.161 1.197a19.096 19.096 0 00-1.138-3.255c-.855.169-1.711.615-2.398 1.307a18.167 18.167 0 00-2.157-1.128c-.146.471-.4.824-.746 1.08-.072 1.249.383 2.289.841 3.483l.034.087c.894.471 1.561 1.123 1.946 1.89 1.231-.283 2.495-.038 3.366.704.301.255.513.621.513 1.029 0 1.117-.947 1.996-2.02 1.996-1.04 0-1.956-.809-2.03-1.882-1.031-.523-2.119-.92-2.95-1.133.512-.82.78-1.705.78-2.618 0-1.183-.512-2.339-1.384-3.098-.87-.76-2.072-1.146-3.29-1.073-.236.014-.468.024-.672.075a3.345 3.345 0 01-.707-.178z" clipRule="evenodd" />
+                      <path d="M4.326 6.955c-1.196.822-1.256 2.396-.933 3.158.4.964 1.752 1.527 3.305 1.007 1.133-.38 2.035-1.41 2.459-2.628.276-.798.39-1.775.224-2.58-.229.279-.489.506-.777.679-.88.053-.18.121-.28.173a4.129 4.129 0 01-2.768.302c-.343-.074-.668-.161-.952-.264zm2.457 10.047c1.172 0 2.013-.823 2.013-1.834 0-.905-.66-1.607-1.596-1.758l-.189.492c-.71-.001-1.4-.205-1.998-.602-.644-.44-1.058-1.046-1.244-1.743-.594.276-1.136.657-1.553 1.12a3.307 3.307 0 00-.728 3.041c.199.757.7 1.404 1.376 1.819.677.414 1.523.57 2.338.403.257-.053.509-.13.75-.229-.009.075-.004.149.002.222.072.935.88 1.675 1.913 1.769.506.046 1.02-.088 1.397-.404.473-.329.766-.863.766-1.444 0-1.02-.857-1.862-2.045-1.862-.285 0-.554.05-.783.14l-.315-.414c-.019-.025-.038-.05-.057-.075.184-.15.368-.292.558-.44l.179-.145.479.619c.233-.11.486-.19.755-.234v-.497c-.577.11-1.123.348-1.605.773zm.16 1.835a.816.816 0 01-.702.747.756.756 0 01-.594-.14.691.691 0 01-.26-.548c0-.381.238-.695.572-.825.285-.11.56-.067.66.014.1.082.147.223.147.4 0 .138.06.27.17.352z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-bold text-xl text-gray-900">5+</div>
+                    <div className="text-xs text-gray-600">Năm kinh nghiệm</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            
+            {/* Bản tin - Phần mới */}
+            <section className="bg-white rounded-xl shadow-sm p-4 mb-3">
+              <h2 className="text-lg font-bold text-gray-800 mb-4">Tin tức mới nhất</h2>
+              
+              <div className="space-y-3">
+                <div className="border-b border-gray-100 pb-3">
+                  <p className="text-sm font-medium text-gray-900 mb-1">Ra mắt phiên bản ChatGPT Premium mới</p>
+                  <p className="text-xs text-gray-600 mb-1">Trải nghiệm AI tiên tiến nhất với khả năng xử lý nâng cao</p>
+                  <p className="text-xs text-primary-600">15/08/2023</p>
+                </div>
+                
+                <div className="border-b border-gray-100 pb-3">
+                  <p className="text-sm font-medium text-gray-900 mb-1">XLab đạt chứng nhận bảo mật ISO 27001</p>
+                  <p className="text-xs text-gray-600 mb-1">Cam kết bảo vệ dữ liệu khách hàng theo tiêu chuẩn quốc tế</p>
+                  <p className="text-xs text-primary-600">02/07/2023</p>
+                </div>
+                
+                <Link href="/news" className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center justify-center mt-2">
+                  Xem tất cả tin tức
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </Link>
+              </div>
+            </section>
           </div>
           
           {/* Main Content Column - Right */}
@@ -593,7 +513,7 @@ function HomePage() {
                 <div className="text-center mt-8">
                   <Link href="/support" className="inline-flex items-center bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors">
                     Xem thêm câu hỏi
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                   </Link>
                 </div>
               </div>
