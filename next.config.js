@@ -146,19 +146,25 @@ const nextConfig = {
       ...config.output,
       publicPath: '/_next/',
       assetModuleFilename: 'static/[hash][ext]',
+      // Đặt tên file cố định thay vì sử dụng hash để tránh lỗi 404
       chunkFilename: isServer ? 
-        'server/chunks/[name].[contenthash].js' :
-        'static/chunks/[name].[contenthash].js',
+        'server/chunks/[name].js' :
+        'static/chunks/[name].js',
       filename: isServer ?
         'server/[name].js' :
-        'static/[name].[contenthash].js',
+        'static/[name].js',
     };
 
     // Vô hiệu hóa hoàn toàn việc tạo vendor chunks
     config.optimization = {
       ...config.optimization,
       minimize: false,
-      splitChunks: false,
+      splitChunks: {
+        cacheGroups: {
+          default: false,
+          vendors: false
+        }
+      },
       runtimeChunk: false
     };
 
@@ -191,71 +197,28 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Redirect timestamp versioned CSS files to base files
+      // Tạo các redirect cơ bản để xử lý các file CSS/JS không tìm thấy
       {
-        source: '/_next/static/css/app/layout.css',
-        has: [
-          {
-            type: 'query',
-            key: 'v',
-          },
-        ],
-        destination: '/_next/static/css/app/layout.css',
+        source: '/_next/static/:path*',
+        destination: '/_next/static/:path*',
         permanent: true,
-      },
-      // Redirect timestamp versioned JS files to base files
-      {
-        source: '/_next/static/main-app.aef085aefcb8f66f.js',
-        has: [
-          {
-            type: 'query',
-            key: 'v',
-          },
-        ],
-        destination: '/_next/static/main-app.aef085aefcb8f66f.js',
-        permanent: true,
-      },
-      // Redirect for admin layout files
-      {
-        source: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
-        destination: '/_next/static/app/admin/layout.bd8a9bfaca039569.js',
-        permanent: true,
-      },
-      // Redirect for admin page files
-      {
-        source: '/_next/static/app/admin/page.20e1580ca904d554.js',
-        destination: '/_next/static/app/admin/page.20e1580ca904d554.js',
-        permanent: true,
-      },
-      // Redirect for not-found files
-      {
-        source: '/_next/static/app/not-found.7d3561764989b0ed.js',
-        destination: '/_next/static/app/not-found.7d3561764989b0ed.js',
-        permanent: true,
-      },
-      // Redirect for layout files
-      {
-        source: '/_next/static/app/layout.32d8c3be6202d9b3.js',
-        destination: '/_next/static/app/layout.32d8c3be6202d9b3.js',
-        permanent: true,
-      },
-      // Redirect for app-pages-internals files
-      {
-        source: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
-        destination: '/_next/static/app-pages-internals.196c41f732d2db3f.js',
-        permanent: true,
-      },
-      // Redirect for loading files
-      {
-        source: '/_next/static/app/loading.062c877ec63579d3.js',
-        destination: '/_next/static/app/loading.062c877ec63579d3.js',
-        permanent: true,
-      },
-      // Các redirect khác nếu cần
+      }
     ]
   },
   async rewrites() {
     return {
+      beforeFiles: [
+        // Xử lý các file CSS không tìm thấy
+        {
+          source: '/_next/static/css/:path*',
+          destination: '/_next/static/css/app/layout.css'
+        },
+        // Xử lý các file JS không tìm thấy
+        {
+          source: '/_next/static/chunks/:path*',
+          destination: '/_next/static/chunks/main.js'
+        }
+      ],
       fallback: [
         {
           source: '/_next/static/:path*',
