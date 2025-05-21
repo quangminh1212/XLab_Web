@@ -100,7 +100,7 @@ function HomePage() {
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4">
           {/* Sidebar Column - Left */}
-          <div className="w-full md:w-[18%] space-y-3 overflow-y-auto">
+          <div className="w-full md:w-[18%] flex flex-col h-full">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
@@ -124,8 +124,8 @@ function HomePage() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 gap-2 p-2">
-                <div className="bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+              <div className="flex-1 overflow-y-auto p-2 space-y-3 snap-y snap-mandatory">
+                <div className="snap-start bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
                   <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
                       <path fillRule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -134,7 +134,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Sản phẩm trong nước</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Phát triển bởi đội ngũ kỹ sư Việt Nam</p>
                 </div>
-                <div className="bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+                <div className="snap-start bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
                   <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
                       <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
@@ -143,7 +143,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Hỗ trợ 24/7</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Đội ngũ hỗ trợ tận tâm</p>
                 </div>
-                <div className="bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+                <div className="snap-start bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
                   <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
                       <path fillRule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.75.75 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
@@ -152,7 +152,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Bảo mật cao</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Dữ liệu được mã hóa an toàn</p>
                 </div>
-                <div className="bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+                <div className="snap-start bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
                   <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
                       <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 01-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004zM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 01-.921.42z" />
@@ -162,7 +162,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Giá cả hợp lý</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Nhiều lựa chọn phù hợp mọi ngân sách</p>
                 </div>
-                <div className="bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+                <div className="snap-start bg-gradient-to-br from-primary-50 to-gray-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
                   <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-primary-600">
                       <path fillRule="evenodd" clipRule="evenodd" d="M11.3 1.046a.75.75 0 011.4.042l3.926 8.137h4.396a.75.75 0 01.578 1.268l-8.459 8.459a.75.75 0 01-1.268-.578v-4.396L2.41 11.7a.75.75 0 01.578-1.268h4.396L11.3 1.046z"/>
@@ -171,7 +171,7 @@ function HomePage() {
                   <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">Tích hợp AI</h3>
                   <p className="text-xs sm:text-sm text-gray-700">Công nghệ AI tiên tiến hỗ trợ bạn</p>
                 </div>
-                <div className="bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
+                <div className="snap-start bg-gradient-to-br from-gray-50 to-primary-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-all">
                   <div className="bg-white rounded-full w-10 h-10 flex items-center justify-center mb-3">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-primary-600">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M5 10a8 8 0 0111.966-2.79M18.364 18.364A8 8 0 015 10"/>
