@@ -114,8 +114,9 @@ const nextConfig = {
       // Sửa lỗi hot update 404
       config.output = {
         ...config.output,
-        hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].hot-update.js',
-        hotUpdateMainFilename: 'static/webpack/[fullhash].hot-update.json',
+        // Include [runtime] to ensure unique filenames per runtime
+        hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].[runtime].hot-update.js',
+        hotUpdateMainFilename: 'static/webpack/[fullhash].[runtime].hot-update.json',
       };
     }
 
