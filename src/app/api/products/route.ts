@@ -21,8 +21,8 @@ export async function GET(request: Request) {
     let fileContent = fileContentRaw.replace(/"categories"\s*:\s*\[[\s\S]*?\]/g, '"categories": []');
     // Remove trailing commas before } or ]
     fileContent = fileContent.replace(/,(\s*[}\]])/g, '$1');
-    // Collapse newlines and normalize backslashes
-    fileContent = fileContent.replace(/[\r\n]+/g, ' ').replace(/\\/g, '/');
+    // Collapse newlines
+    fileContent = fileContent.replace(/[\r\n]+/g, ' ');
     let productList: Product[];
     try {
       productList = JSON.parse(fileContent);
