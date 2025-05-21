@@ -4,19 +4,13 @@ const path = require('path');
 const nextConfig = {
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   reactStrictMode: true,
-  //  không còn là tùy chọn hợp lệ trong Next.js 15+
-  skipMiddlewareUrlNormalize: true,
-  skipTrailingSlashRedirect: true,
   trailingSlash: false,
   // Di chuyển serverComponentsExternalPackages từ experimental thành serverExternalPackages
   serverExternalPackages: ['@swc/helpers'],
-  // Cấu hình experimental
-  experimental: {
-    largePageDataBytes: 12800000,
-    disableOptimizedLoading: false,
-    swcTraceProfiling: false,
-    // Tắt optimizeCss để tránh lỗi critters
-    optimizeCss: false,
+  // Các tùy chọn tracing đã được di chuyển ra ngoài experimental
+  outputFileTracingRoot: path.join(__dirname, '../'),
+  outputFileTracingExcludes: {
+    '*': ['**/*.js', '**/*.css', '**/*.map', '**/*.json', '.next/**'],
   },
   productionBrowserSourceMaps: false,
   // Không tạo file trace
@@ -155,16 +149,13 @@ const nextConfig = {
         'static/[name].js',
     };
 
-    // Vô hiệu hóa hoàn toàn việc tạo vendor chunks
+    // Vô hiệu hóa hoàn toàn việc tạo vendor chunks - CÁCH MẠNH HƠN
     config.optimization = {
       ...config.optimization,
       minimize: false,
-      splitChunks: {
-        cacheGroups: {
-          default: false,
-          vendors: false
-        }
-      },
+      moduleIds: 'named',
+      chunkIds: 'named',
+      splitChunks: false,
       runtimeChunk: false
     };
 
@@ -293,6 +284,36 @@ const nextConfig = {
           source: '/_next/static/main-app.:hash*.js',
           has: [{ type: 'query', key: 'v' }],
           destination: '/_next/static/main-app.js'
+        },
+        // === XỬ LÝ CHUNK ERRORS ===
+        // Xử lý các chunk theo định dạng của Next.js
+        {
+          source: '/_next/static/chunks/webpack-:hash*.js',
+          destination: '/_next/static/chunks/empty.js'
+        },
+        {
+          source: '/_next/static/chunks/framework-:hash*.js',
+          destination: '/_next/static/chunks/empty.js'
+        },
+        {
+          source: '/_next/static/chunks/main-:hash*.js',
+          destination: '/_next/static/chunks/empty.js'
+        },
+        {
+          source: '/_next/static/chunks/pages/:path*',
+          destination: '/_next/static/chunks/empty.js'
+        },
+        {
+          source: '/_next/static/chunks/app/:path*',
+          destination: '/_next/static/chunks/empty.js'
+        },
+        {
+          source: '/_next/static/chunks/:id.js',
+          destination: '/_next/static/chunks/empty.js'
+        },
+        {
+          source: '/_next/static/chunks/:id.:hash*.js',
+          destination: '/_next/static/chunks/empty.js'
         },
         // Turbopack hmr
         {
