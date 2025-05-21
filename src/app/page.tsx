@@ -477,9 +477,9 @@ function HomePage() {
               </div>
             </div>
 
-            {/* Câu hỏi thường gặp */}
-            <section className="py-8 bg-gray-50">
-              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Câu hỏi thường gặp full-width */}
+            <section className="hidden py-8 bg-gray-50">
+              <div className="px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-6">
                   <h2 className="text-xl md:text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
                   <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
@@ -523,6 +523,50 @@ function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Câu hỏi thường gặp full-width */}
+      <section className="py-8 bg-gray-50">
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-6">
+            <h2 className="text-xl md:text-2xl font-bold mb-3">Câu hỏi thường gặp</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">
+              Giải đáp những thắc mắc phổ biến của khách hàng về sản phẩm và dịch vụ của XLab
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+              <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để tải xuống phần mềm?</h3>
+              <p className="text-gray-600 text-sm">Bạn có thể tải xuống phần mềm miễn phí tại trang sản phẩm tương ứng sau khi đăng nhập vào tài khoản của mình. Đối với sản phẩm trả phí, bạn cần hoàn tất thanh toán trước khi tải xuống.</p>
+            </div>
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+              <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để kích hoạt bản quyền?</h3>
+              <p className="text-gray-600 text-sm">Sau khi mua sản phẩm, bạn sẽ nhận được mã kích hoạt qua email. Mở ứng dụng, vào phần "Kích hoạt bản quyền" và nhập mã này để sử dụng đầy đủ tính năng.</p>
+            </div>
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+              <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Tôi có thể sử dụng trên mấy thiết bị?</h3>
+              <p className="text-gray-600 text-sm">Mỗi bản quyền cho phép bạn sử dụng trên tối đa 3 thiết bị cùng một lúc. Bạn có thể quản lý danh sách thiết bị trong phần "Tài khoản" trên website.</p>
+            </div>
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+              <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Chính sách hoàn tiền như thế nào?</h3>
+              <p className="text-gray-600 text-sm">Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được hướng dẫn.</p>
+            </div>
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+              <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để liên hệ hỗ trợ kỹ thuật?</h3>
+              <p className="text-gray-600 text-sm">Bạn có thể liên hệ với đội ngũ hỗ trợ kỹ thuật thông qua email support@xlab.vn, hotline 1900.xxxx, hoặc chat trực tiếp trên website. Chúng tôi phản hồi trong vòng 24 giờ làm việc.</p>
+            </div>
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
+              <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">XLab có cung cấp giải pháp cho doanh nghiệp?</h3>
+              <p className="text-gray-600 text-sm">Có, chúng tôi có các gói dịch vụ đặc biệt dành cho doanh nghiệp với nhiều ưu đãi về giá và hỗ trợ kỹ thuật chuyên biệt. Liên hệ với chúng tôi để được tư vấn phương án phù hợp nhất.</p>
+            </div>
+          </div>
+          <div className="text-center mt-6">
+            <Link href="/support" className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-sm md:text-base">
+              Xem thêm câu hỏi
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Software Categories */}
       <section className="py-8 sm:py-10 bg-gray-50">
