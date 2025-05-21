@@ -154,20 +154,13 @@ const nextConfig = {
         'static/[name].[contenthash].js',
     };
 
-    // Tăng cường tương thích với các vendor-chunks
-    if (isServer) {
-      // Tránh tách các package cụ thể thành vendor chunks để đảm bảo chúng được bundle cùng
-      config.optimization = {
-        ...config.optimization,
-        minimize: false,
-        splitChunks: {
-          cacheGroups: {
-            default: false,
-            vendors: false,
-          }
-        }
-      };
-    }
+    // Vô hiệu hóa hoàn toàn việc tạo vendor chunks
+    config.optimization = {
+      ...config.optimization,
+      minimize: false,
+      splitChunks: false,
+      runtimeChunk: false
+    };
 
     // Sửa lỗi cache
     config.cache = false;

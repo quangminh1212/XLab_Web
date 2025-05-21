@@ -249,16 +249,23 @@ function createStaticFiles() {
     
     // Tạo các file vendor-chunks quan trọng để tránh lỗi MODULE_NOT_FOUND
     const vendorFiles = [
-      '.next/server/vendor-chunks/next.js',
-      '.next/server/vendor-chunks/tailwind-merge.js'
+      {
+        path: '.next/server/vendor-chunks/next.js',
+        content: 'module.exports = require("next");'
+      },
+      {
+        path: '.next/server/vendor-chunks/tailwind-merge.js',
+        content: 'module.exports = require("tailwind-merge");'
+      }
     ];
     
     vendorFiles.forEach(file => {
-      const filePath = path.join(__dirname, file);
-      if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, '');
-        console.log(`Đã tạo file vendor-chunk: ${file}`);
+      const filePath = path.join(__dirname, file.path);
+      if (!fs.existsSync(path.dirname(filePath))) {
+        fs.mkdirSync(path.dirname(filePath), { recursive: true });
       }
+      fs.writeFileSync(filePath, file.content);
+      console.log(`Đã tạo file vendor-chunk: ${file.path}`);
     });
     
     // Tạo file app-paths-manifest.json trống để tránh lỗi ENOENT

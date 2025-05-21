@@ -200,21 +200,24 @@ function AdminProductsPage() {
                         {(() => {
                           // Tìm giá thấp nhất từ tất cả các nguồn
                           let minPrice = Infinity;
+                          let minPriceOption = '';
                           
                           // Kiểm tra giá cơ bản của phiên bản đầu tiên (nếu có)
                           if (product.versions && product.versions.length > 0) {
                             product.versions.forEach(version => {
                               if (version.price < minPrice) {
                                 minPrice = version.price;
+                                minPriceOption = version.name || 'Phiên bản mặc định';
                               }
                             });
                           }
                           
                           // Kiểm tra các tùy chọn sản phẩm
                           if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-                            Object.values(product.optionPrices).forEach(option => {
-                              if (option.price < minPrice) {
-                                minPrice = option.price;
+                            Object.entries(product.optionPrices).forEach(([option, priceData]) => {
+                              if (priceData.price < minPrice) {
+                                minPrice = priceData.price;
+                                minPriceOption = option;
                               }
                             });
                           }
@@ -225,12 +228,23 @@ function AdminProductsPage() {
                           }
                           
                           // Format giá tiền
-                          return new Intl.NumberFormat('vi-VN', { 
+                          const formattedPrice = new Intl.NumberFormat('vi-VN', { 
                             style: 'currency', 
                             currency: 'VND',
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 0
                           }).format(minPrice);
+                          
+                          return (
+                            <div>
+                              <div className="font-medium text-primary-600">{formattedPrice}</div>
+                              {minPriceOption && (
+                                <div className="text-xs text-gray-500 mt-1">
+                                  {minPriceOption}
+                                </div>
+                              )}
+                            </div>
+                          );
                         })()}
                       </div>
                     </td>
