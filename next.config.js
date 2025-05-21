@@ -175,7 +175,7 @@ const nextConfig = {
   },
   distDir: '.next',
   generateBuildId: async () => {
-    return 'build-id'
+    return 'build-id-' + Date.now();
   },
   // Cấu hình sass nằm trong mục tùy chọn hợp lệ
   sassOptions: {
@@ -245,6 +245,16 @@ const nextConfig = {
       },
       // Các redirect khác nếu cần
     ]
+  },
+  async rewrites() {
+    return {
+      fallback: [
+        {
+          source: '/_next/static/:path*',
+          destination: '/_next/static/:path*'
+        }
+      ]
+    };
   },
 };
 

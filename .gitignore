@@ -42,9 +42,19 @@ next-env.d.ts
 .next/static/app/admin/layout.*.js
 .next/static/app/admin/page.*.js
 .next/static/app/loading.*.js
+.next/static/app/layout.*.js
+.next/static/css/app/layout.css?v=*
+.next/static/main-app.*.js?v=*
 out/
 .vercel/
 dist/
+
+# Keep specific gitkeep files
+!.next/static/app/.gitkeep
+!.next/static/css/.gitkeep
+!.next/static/chunks/.gitkeep
+!.next/server/.gitkeep
+!.next/server/app/.gitkeep
 
 # Cấu hình Next.js
 .env*.local
@@ -252,3 +262,4 @@ temp-config.js
 /.next/server/vendor-chunks/
 /.next/server/server/
 /.next/server/vendor-chunks/next.js
+# next.js static files

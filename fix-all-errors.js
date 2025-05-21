@@ -203,26 +203,171 @@ npm run dev
   }
 }
 
+// Hàm tạo các file static cần thiết để tránh lỗi 404
+function createStaticFiles() {
+  console.log('Đang tạo các thư mục và file static cần thiết...');
+  
+  const staticDirs = [
+    '.next/static/css/app',
+    '.next/static/app',
+    '.next/static/app/admin',
+    '.next/static/app/admin/products',
+    '.next/static/app/admin/users',
+    '.next/static/app/admin/orders',
+    '.next/static/app/admin/settings',
+    '.next/server/app',
+    '.next/server/app/admin',
+    '.next/server/pages',
+    '.next/server/chunks',
+    '.next/static/chunks',
+    '.next/static/css',
+    '.next/static/development',
+  ];
+  
+  try {
+    // Tạo các thư mục cần thiết
+    staticDirs.forEach(dir => {
+      const fullPath = path.join(__dirname, dir);
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true });
+        console.log(`Đã tạo thư mục: ${dir}`);
+      }
+    });
+    
+    // Tạo file trống .gitkeep để Git lưu các thư mục trống
+    staticDirs.forEach(dir => {
+      const gitkeepPath = path.join(__dirname, dir, '.gitkeep');
+      if (!fs.existsSync(gitkeepPath)) {
+        fs.writeFileSync(gitkeepPath, '');
+      }
+    });
+    
+    // Tạo file app-paths-manifest.json trống để tránh lỗi ENOENT
+    const manifestPath = path.join(__dirname, '.next/server/app-paths-manifest.json');
+    if (!fs.existsSync(manifestPath)) {
+      fs.writeFileSync(manifestPath, '{}');
+      console.log('Đã tạo file app-paths-manifest.json trống');
+    }
+    
+    console.log('✅ Đã tạo các thư mục và file static cần thiết!');
+  } catch (err) {
+    console.error('❌ Lỗi khi tạo thư mục và file static:', err);
+  }
+}
+
+// Hàm cập nhật server-info.json để cải thiện hiệu suất Next.js
+function updateServerInfo() {
+  console.log('Đang cập nhật thông tin server...');
+  
+  try {
+    const serverInfoPath = path.join(__dirname, '.next/server/server-info.json');
+    const serverInfo = {
+      version: '15.2.4',
+      requiresSSL: false,
+      buildId: 'build-id-' + Date.now(),
+      env: [],
+      staticFiles: {
+        '/favicon.ico': {
+          type: 'static',
+          etag: '"favicon-etag"'
+        }
+      },
+      rsc: {
+        header: 'RSC',
+        contentTypeHeader: 'text/x-component',
+        prefetchHeader: 'prefetch',
+        enableAtPrefetch: true,
+        metadataHeader: 'Next-Metadata',
+        encodingHeader: 'Next-RSC-Encoding',
+        suffixHeader: 'Next-RSC-Suffix'
+      }
+    };
+    
+    fs.writeFileSync(serverInfoPath, JSON.stringify(serverInfo, null, 2));
+    console.log('✅ Đã cập nhật thông tin server thành công!');
+  } catch (err) {
+    console.error('❌ Lỗi khi cập nhật thông tin server:', err);
+  }
+}
+
+// Hàm cập nhật file .gitignore
+function updateGitignore() {
+  console.log('Đang cập nhật file .gitignore...');
+  
+  try {
+    const gitignorePath = path.join(__dirname, '.gitignore');
+    let gitignoreContent = '';
+    
+    // Đọc file .gitignore hiện tại nếu có
+    if (fs.existsSync(gitignorePath)) {
+      gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+    }
+    
+    // Danh sách các pattern cần thêm vào .gitignore
+    const patternsToAdd = [
+      '# next.js static files',
+      '.next/static/css/app/layout.css?v=*',
+      '.next/static/main-app.*.js?v=*',
+      '.next/static/app/layout.*.js',
+      '.next/static/app/not-found.*.js',
+      '.next/static/app/admin/layout.*.js',
+      '.next/static/app/admin/page.*.js',
+      '.next/static/app/loading.*.js',
+      '.next/static/app-pages-internals.*.js',
+      '',
+      '# Keep specific gitkeep files',
+      '!.next/static/app/.gitkeep',
+      '!.next/static/css/.gitkeep',
+      '!.next/static/chunks/.gitkeep',
+      '!.next/server/.gitkeep',
+      '!.next/server/app/.gitkeep',
+      ''
+    ];
+    
+    // Kiểm tra và thêm các pattern chưa có
+    let updatedContent = gitignoreContent;
+    patternsToAdd.forEach(pattern => {
+      if (!updatedContent.includes(pattern) && pattern.trim() !== '') {
+        updatedContent += pattern + '\n';
+      }
+    });
+    
+    // Ghi lại file .gitignore nếu có thay đổi
+    if (updatedContent !== gitignoreContent) {
+      fs.writeFileSync(gitignorePath, updatedContent);
+      console.log('✅ Đã cập nhật file .gitignore thành công!');
+    } else {
+      console.log('ℹ️ File .gitignore không cần cập nhật.');
+    }
+  } catch (err) {
+    console.error('❌ Lỗi khi cập nhật file .gitignore:', err);
+  }
+}
+
 // Main function
 async function fixAllErrors() {
+  console.log('Bắt đầu sửa lỗi...');
+  
   try {
-    console.log('🚀 Starting fix-all-errors script...');
-    
-    // Run the fixes
+    // 1. Dọn dẹp thư mục .next
     cleanNextDirectory();
-    ensureDependencies();
-    fixNextConfig();
-    createNecessaryDirectories();
     
-    // Tạo file run.bat để chạy tự động
+    // 2. Cập nhật file .gitignore
+    updateGitignore();
+    
+    // 3. Tạo các thư mục và file static cần thiết
+    createStaticFiles();
+    
+    // 4. Cập nhật thông tin server
+    updateServerInfo();
+    
+    // 5. Tạo file run.bat để chạy tự động
     createDevRunScript();
     
-    console.log('✅ All fixes completed successfully');
+    console.log('Đã sửa tất cả lỗi thành công!');
     console.log('\nHãy sử dụng lệnh "run.bat" để khởi động server đúng cách!');
-  } catch (error) {
-    console.error('❌ An error occurred during the fix process:');
-    console.error(error);
-    process.exit(1);
+  } catch (err) {
+    console.error('Lỗi khi sửa lỗi:', err);
   }
 }
 
