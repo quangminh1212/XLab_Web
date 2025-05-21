@@ -205,7 +205,8 @@ function AdminProductsPage() {
                           // Kiểm tra giá cơ bản của phiên bản đầu tiên (nếu có)
                           if (product.versions && product.versions.length > 0) {
                             product.versions.forEach(version => {
-                              if (version.price < minPrice) {
+                              // Bỏ qua giá 0
+                              if (version.price > 0 && version.price < minPrice) {
                                 minPrice = version.price;
                                 minPriceOption = version.name || 'Phiên bản mặc định';
                               }
@@ -215,16 +216,29 @@ function AdminProductsPage() {
                           // Kiểm tra các tùy chọn sản phẩm
                           if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
                             Object.entries(product.optionPrices).forEach(([option, priceData]) => {
-                              if (priceData.price < minPrice) {
+                              // Bỏ qua giá 0
+                              if (priceData.price > 0 && priceData.price < minPrice) {
                                 minPrice = priceData.price;
                                 minPriceOption = option;
                               }
                             });
                           }
                           
-                          // Nếu không có giá nào hoặc giá vẫn là Infinity, hiển thị 0
+                          // Kiểm tra salePrice trước (nếu có và hợp lệ)
+                          if (product.salePrice && product.salePrice > 0 && product.salePrice < minPrice) {
+                            minPrice = product.salePrice;
+                            minPriceOption = 'Giá khuyến mãi';
+                          }
+                          
+                          // Kiểm tra giá gốc của sản phẩm (nếu có)
+                          if (product.price && product.price > 0 && product.price < minPrice) {
+                            minPrice = product.price;
+                            minPriceOption = 'Giá gốc';
+                          }
+                          
+                          // Nếu không có giá nào hợp lệ (khác 0) hoặc giá vẫn là Infinity
                           if (minPrice === Infinity) {
-                            return '0đ';
+                            return 'Chưa có giá';
                           }
                           
                           // Format giá tiền

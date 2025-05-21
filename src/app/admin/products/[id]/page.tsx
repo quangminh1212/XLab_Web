@@ -444,18 +444,42 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const handleSaveProduct = async (e: FormEvent) => {
     e.preventDefault();
     
-    if (isSubmitting) return;
-    
-    if (!formData.name.trim()) {
-      setError('Vui lòng nhập tên sản phẩm');
-      setTimeout(() => setError(null), 3000);
-      return;
-    }
-    
     try {
       setIsSubmitting(true);
-      setError(null);
-
+      
+      // Basic validation
+      if (!formData.name.trim()) {
+        setError('Vui lòng nhập tên sản phẩm');
+        return;
+      }
+      
+      // Đảm bảo có ít nhất một giá hợp lệ (lớn hơn 0)
+      let hasValidPrice = false;
+      
+      // Kiểm tra giá trong các tùy chọn sản phẩm
+      if (Object.keys(optionPrices).length > 0) {
+        for (const option of Object.keys(optionPrices)) {
+          if (optionPrices[option].price > 0) {
+            hasValidPrice = true;
+            break;
+          }
+        }
+      }
+      
+      // Kiểm tra giá cơ bản nếu vẫn chưa có giá hợp lệ
+      if (!hasValidPrice && formData.price > 0) {
+        hasValidPrice = true;
+      }
+      
+      if (!hasValidPrice) {
+        setError('Sản phẩm cần có ít nhất một giá hợp lệ (lớn hơn 0)');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // Slug generation
+      const slug = generateSlug(formData.name);
+      
       // Prepare product data to send to API
       const productData = {
         id: productId,
