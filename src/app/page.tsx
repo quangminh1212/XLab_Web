@@ -469,7 +469,7 @@ function HomePage() {
                   </p>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4 max-w-none mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 max-w-none mx-auto">
                   <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm">
                     <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 md:mb-3">Làm thế nào để tải xuống phần mềm?</h3>
                     <p className="text-gray-600 text-sm">
