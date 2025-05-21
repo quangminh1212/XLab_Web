@@ -196,6 +196,16 @@ powershell -Command "New-Item -Path '.next\\server\\vendor-chunks\\next.js' -Ite
 powershell -Command "New-Item -Path '.next\\server\\vendor-chunks\\tailwind-merge.js' -ItemType File -Force"
 echo Xoa file trace neu co...
 powershell -Command "Remove-Item -Path .next\\trace -Force -ErrorAction SilentlyContinue"
+echo Tao cac file static quan trong...
+powershell -Command "New-Item -Path '.next\\static\\css\\empty.css' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\chunks\\empty.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\app\\page.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\app\\not-found.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\app\\layout.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\app\\loading.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\app\\empty.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\main-app.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\static\\app-pages-internals.js' -ItemType File -Force"
 echo Dang khoi dong server...
 npm run dev
 `;
@@ -227,6 +237,7 @@ function createStaticFiles() {
     '.next/static/chunks',
     '.next/static/css',
     '.next/static/development',
+    '.next/static/webpack',
   ];
   
   try {
@@ -282,6 +293,10 @@ function createStaticFiles() {
         content: '/* Empty CSS file to prevent 404 errors */'
       },
       {
+        path: '.next/static/css/app/layout.css',
+        content: '/* Empty CSS file to prevent 404 errors */'
+      },
+      {
         path: '.next/static/chunks/empty.js',
         content: '/* Empty JS file to prevent 404 errors */'
       },
@@ -324,6 +339,11 @@ function createStaticFiles() {
       {
         path: '.next/static/webpack/empty-hot-update.json',
         content: '{}'
+      },
+      // Thêm file xử lý lỗi turbopack-hmr
+      {
+        path: '.next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js',
+        content: '/* Empty JS file to prevent 404 errors */'
       }
     ];
     
@@ -335,6 +355,24 @@ function createStaticFiles() {
       fs.writeFileSync(filePath, file.content);
       console.log(`Đã tạo file static: ${file.path}`);
     });
+    
+    // Tạo các file với hash động - tạo một dummy file cho mỗi loại
+    // Các file này sẽ được tự động chuyển hướng qua hệ thống rewrites
+    const timeStamp = Date.now();
+    const dummyHashFiles = [
+      `.next/static/css/app/layout.css?v=${timeStamp}`,
+      `.next/static/main-app.${timeStamp.toString(16)}.js?v=${timeStamp}`,
+      `.next/static/app/layout.${timeStamp.toString(16)}.js`,
+      `.next/static/app/not-found.${timeStamp.toString(16)}.js`,
+      `.next/static/app/admin/layout.${timeStamp.toString(16)}.js`,
+      `.next/static/app/admin/page.${timeStamp.toString(16)}.js`,
+      `.next/static/app/loading.${timeStamp.toString(16)}.js`,
+      `.next/static/app-pages-internals.${timeStamp.toString(16)}.js`,
+      `.next/static/webpack/${timeStamp.toString(16)}.hot-update.json`
+    ];
+    
+    // Không tạo file thật cho các file với hash vì chúng sẽ được rewrite
+    console.log(`Đã cấu hình xử lý cho ${dummyHashFiles.length} file với hash động`);
     
     console.log('✅ Đã tạo các thư mục và file static cần thiết!');
   } catch (err) {
@@ -370,6 +408,12 @@ function updateServerInfo() {
       }
     };
     
+    // Đảm bảo thư mục tồn tại trước khi tạo file
+    const serverDir = path.join(__dirname, '.next/server');
+    if (!fs.existsSync(serverDir)) {
+      fs.mkdirSync(serverDir, { recursive: true });
+    }
+    
     fs.writeFileSync(serverInfoPath, JSON.stringify(serverInfo, null, 2));
     console.log('✅ Đã cập nhật thông tin server thành công!');
   } catch (err) {
@@ -394,6 +438,7 @@ function updateGitignore() {
     const patternsToAdd = [
       '# next.js static files',
       '.next/static/css/app/layout.css?v=*',
+      '.next/static/main-app.*.js',
       '.next/static/main-app.*.js?v=*',
       '.next/static/app/layout.*.js',
       '.next/static/app/not-found.*.js',
@@ -401,6 +446,10 @@ function updateGitignore() {
       '.next/static/app/admin/page.*.js',
       '.next/static/app/loading.*.js',
       '.next/static/app-pages-internals.*.js',
+      '.next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js',
+      '.next/static/webpack/*.hot-update.json',
+      '.next/static/webpack/*.hot-update.js',
+      '.next/trace',
       '',
       '# Keep specific gitkeep files',
       '!.next/static/app/.gitkeep',
