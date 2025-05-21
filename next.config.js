@@ -208,15 +208,40 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // Xử lý các file CSS không tìm thấy
+        // Xử lý các file CSS không tìm thấy (bao gồm cả query params)
         {
           source: '/_next/static/css/:path*',
-          destination: '/_next/static/css/app/layout.css'
+          destination: '/_next/static/css/empty.css'
         },
         // Xử lý các file JS không tìm thấy
         {
           source: '/_next/static/chunks/:path*',
-          destination: '/_next/static/chunks/main.js'
+          destination: '/_next/static/chunks/empty.js'
+        },
+        // Xử lý các file không tìm thấy của app
+        {
+          source: '/_next/static/app/:path*',
+          destination: '/_next/static/app/empty.js'
+        },
+        // Xử lý main-app.js
+        {
+          source: '/_next/static/main-app.:hash*.js',
+          destination: '/_next/static/main-app.js'
+        },
+        // Xử lý app-pages-internals.js
+        {
+          source: '/_next/static/app-pages-internals.:hash*.js',
+          destination: '/_next/static/app-pages-internals.js'
+        },
+        // Xử lý webpack hot-update
+        {
+          source: '/_next/static/webpack/:hash*.hot-update.json',
+          destination: '/_next/static/webpack/empty-hot-update.json'
+        },
+        // Xử lý các file turbopack-hmr
+        {
+          source: '/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js',
+          destination: '/_next/static/chunks/empty.js'
         }
       ],
       fallback: [

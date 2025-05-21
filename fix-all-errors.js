@@ -278,11 +278,15 @@ function createStaticFiles() {
     // Tạo các file CSS và JS cố định để tránh lỗi 404
     const staticFiles = [
       {
-        path: '.next/static/css/app/layout.css',
+        path: '.next/static/css/empty.css',
         content: '/* Empty CSS file to prevent 404 errors */'
       },
       {
-        path: '.next/static/chunks/main.js',
+        path: '.next/static/chunks/empty.js',
+        content: '/* Empty JS file to prevent 404 errors */'
+      },
+      {
+        path: '.next/static/app/empty.js',
         content: '/* Empty JS file to prevent 404 errors */'
       },
       {
@@ -312,6 +316,10 @@ function createStaticFiles() {
       {
         path: '.next/static/main-app.js',
         content: '/* Empty JS file to prevent 404 errors */'
+      },
+      {
+        path: '.next/static/webpack/empty-hot-update.json',
+        content: '{}'
       }
     ];
     
