@@ -23,7 +23,14 @@ function getProducts(): Product[] {
       return JSON.parse(fileContent);
     } catch (parseError) {
       console.error('Error parsing products data:', parseError);
-      return [];
+      // Attempt to sanitize unescaped newlines by removing them
+      const sanitized = fileContent.replace(/(\r\n|\n|\r)/g, ' ');
+      try {
+        return JSON.parse(sanitized);
+      } catch (sanitizedError) {
+        console.error('Error parsing products data after sanitization:', sanitizedError);
+        return [];
+      }
     }
   } catch (error) {
     console.error('Error reading products data:', error);
