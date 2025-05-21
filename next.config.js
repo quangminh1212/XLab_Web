@@ -208,35 +208,48 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // === CẢI TIẾN: Xử lý tất cả các file CSS không tìm thấy với tham số phiên bản ===
+        // === XỬ LÝ CSS ===
+        // Xử lý file CSS có timestamp trong query params
         {
           source: '/_next/static/css/app/layout.css',
           destination: '/_next/static/css/empty.css'
         },
+        // Xử lý file CSS có tham số v
         {
-          source: '/_next/static/css/app/layout.css:v(.*)',
+          source: '/_next/static/css/app/layout.css:params*',
           destination: '/_next/static/css/empty.css'
         },
-        // === CẢI TIẾN: Regex cụ thể hơn để bắt các query params ===
+        // Bắt mọi request CSS có query parameter
         {
           source: '/_next/static/css/:path*',
           has: [{ type: 'query', key: 'v' }],
           destination: '/_next/static/css/empty.css'
         },
+        // Bắt tất cả request CSS còn lại
         {
           source: '/_next/static/css/:path*',
           destination: '/_next/static/css/empty.css'
         },
-        // === CẢI TIẾN: Xử lý file main-app.js với và không có hash ===
+
+        // === XỬ LÝ JS ===
+        // Xử lý các file JS riêng lẻ
         {
-          source: '/_next/static/main-app.:hash*.js',
-          destination: '/_next/static/main-app.js'
+          source: '/_next/static/app/page.js',
+          destination: '/_next/static/app/page.js'
         },
         {
-          source: '/_next/static/main-app.js',
-          destination: '/_next/static/main-app.js'
+          source: '/_next/static/app/layout.js',
+          destination: '/_next/static/app/layout.js'
         },
-        // === CẢI TIẾN: Xử lý các file JS trong thư mục app ===
+        {
+          source: '/_next/static/app/not-found.js',
+          destination: '/_next/static/app/not-found.js'
+        },
+        {
+          source: '/_next/static/app/loading.js',
+          destination: '/_next/static/app/loading.js'
+        },
+        // Xử lý file JS có hash
         {
           source: '/_next/static/app/page.:hash*.js',
           destination: '/_next/static/app/page.js'
@@ -253,6 +266,7 @@ const nextConfig = {
           source: '/_next/static/app/loading.:hash*.js',
           destination: '/_next/static/app/loading.js'
         },
+        // Admin files
         {
           source: '/_next/static/app/admin/layout.:hash*.js',
           destination: '/_next/static/app/admin/layout.js'
@@ -261,33 +275,52 @@ const nextConfig = {
           source: '/_next/static/app/admin/page.:hash*.js',
           destination: '/_next/static/app/admin/page.js'
         },
-        // === CẢI TIẾN: Xử lý app-pages-internals.js ===
+        // Special files
         {
           source: '/_next/static/app-pages-internals.:hash*.js',
           destination: '/_next/static/app-pages-internals.js'
         },
-        // === CẢI TIẾN: Xử lý file turbopack-hmr ===
+        {
+          source: '/_next/static/main-app.:hash*.js',
+          destination: '/_next/static/main-app.js'
+        },
+        // Main-app với tham số v
+        {
+          source: '/_next/static/main-app.:hash*.js:params*',
+          destination: '/_next/static/main-app.js'
+        },
+        {
+          source: '/_next/static/main-app.:hash*.js',
+          has: [{ type: 'query', key: 'v' }],
+          destination: '/_next/static/main-app.js'
+        },
+        // Turbopack hmr
         {
           source: '/_next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js',
           destination: '/_next/static/chunks/empty.js'
         },
-        // Xử lý các file không tìm thấy của app
+        // Xử lý động các file không có cấu hình cụ thể trong app
         {
           source: '/_next/static/app/:path*',
           destination: '/_next/static/app/empty.js'
         },
-        // Xử lý các file JS không tìm thấy
+        // Xử lý các file chunks
         {
           source: '/_next/static/chunks/:path*',
           destination: '/_next/static/chunks/empty.js'
         },
-        // Xử lý webpack hot-update
+        // Xử lý webpack hot update
         {
           source: '/_next/static/webpack/:hash*.hot-update.json',
           destination: '/_next/static/webpack/empty-hot-update.json'
+        },
+        {
+          source: '/_next/static/webpack/:hash*.hot-update.js',
+          destination: '/_next/static/chunks/empty.js'
         }
       ],
       fallback: [
+        // Fallback để bắt mọi request còn lại
         {
           source: '/_next/static/:path*',
           destination: '/_next/static/:path*'
