@@ -20,7 +20,12 @@ function getProducts(): Product[] {
       console.log('Products file is empty, returning empty array');
       return [];
     }
-    const fileContent = fileContentRaw.replace(/[\r\n]+/g, ' ');
+    // Sanitize raw JSON: collapse newlines
+    let fileContent = fileContentRaw.replace(/[\r\n]+/g, ' ');
+    // Remove trailing commas before } or ] to prevent parse errors
+    fileContent = fileContent.replace(/,(\s*[}\]])/g, '$1');
+    // Normalize Windows backslashes in paths to forward slashes
+    fileContent = fileContent.replace(/\\\\/g, '/');
     try {
       return JSON.parse(fileContent);
     } catch (parseError) {
