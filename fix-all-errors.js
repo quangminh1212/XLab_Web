@@ -182,8 +182,29 @@ function createNecessaryDirectories() {
   console.log('✅ All necessary directories created');
 }
 
+// Hàm để tạo/cập nhật file run.bat để chạy tự động
+function createDevRunScript() {
+  console.log('Đang tạo file chạy tự động cho npm run dev...');
+  
+  try {
+    const runBatPath = path.join(__dirname, 'run.bat');
+    const runBatContent = `@echo off
+echo Dang chuan bi moi truong phat trien...
+echo Xoa file trace neu co...
+powershell -Command "Remove-Item -Path .next\\trace -Force -ErrorAction SilentlyContinue"
+echo Dang khoi dong server...
+npm run dev
+`;
+    
+    fs.writeFileSync(runBatPath, runBatContent, 'utf8');
+    console.log('✅ Đã tạo file run.bat thành công!');
+  } catch (err) {
+    console.error('❌ Không thể tạo file run.bat:', err);
+  }
+}
+
 // Main function
-function main() {
+async function fixAllErrors() {
   try {
     console.log('🚀 Starting fix-all-errors script...');
     
@@ -193,11 +214,11 @@ function main() {
     fixNextConfig();
     createNecessaryDirectories();
     
+    // Tạo file run.bat để chạy tự động
+    createDevRunScript();
+    
     console.log('✅ All fixes completed successfully');
-    console.log('\nNow you can run one of the following commands:');
-    console.log('- npm run dev         # Start development server');
-    console.log('- npm run build       # Build for production');
-    console.log('- npm run start       # Start production server');
+    console.log('\nHãy sử dụng lệnh "run.bat" để khởi động server đúng cách!');
   } catch (error) {
     console.error('❌ An error occurred during the fix process:');
     console.error(error);
@@ -206,4 +227,4 @@ function main() {
 }
 
 // Run the script
-main(); 
+fixAllErrors(); 

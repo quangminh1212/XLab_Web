@@ -8,12 +8,8 @@ const nextConfig = {
   skipMiddlewareUrlNormalize: true,
   skipTrailingSlashRedirect: true,
   trailingSlash: false,
-  // Di chuyển outputFileTracingRoot từ experimental lên cấp cao nhất
-  outputFileTracingRoot: path.join(__dirname, "../"),
   // Di chuyển serverComponentsExternalPackages từ experimental thành serverExternalPackages
   serverExternalPackages: ['@swc/helpers'],
-  // Tắt tạo trace file để tránh lỗi EPERM
-  outputFileTracing: false,
   // Cấu hình experimental
   experimental: {
     largePageDataBytes: 12800000,
