@@ -17,10 +17,8 @@ interface AdminEditProductPageProps {
 function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const router = useRouter();
   
-  // Use React.use to unwrap params object properly at the component level
-  // Type assertion to inform TypeScript about the expected type
-  const safeParams = React.use(params as any) as { id: string };
-  const productId = safeParams.id;
+  // Lấy ID sản phẩm từ params trực tiếp, không sử dụng React.use
+  const productId = params.id;
   const isNew = productId === 'new';
   
   const fileInputRef = useRef<HTMLInputElement>(null);

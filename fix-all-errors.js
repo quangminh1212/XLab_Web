@@ -190,6 +190,10 @@ function createDevRunScript() {
     const runBatPath = path.join(__dirname, 'run.bat');
     const runBatContent = `@echo off
 echo Dang chuan bi moi truong phat trien...
+echo Tao thu muc va file vendor-chunks can thiet...
+powershell -Command "New-Item -Path '.next\\server\\vendor-chunks' -ItemType Directory -Force"
+powershell -Command "New-Item -Path '.next\\server\\vendor-chunks\\next.js' -ItemType File -Force"
+powershell -Command "New-Item -Path '.next\\server\\vendor-chunks\\tailwind-merge.js' -ItemType File -Force"
 echo Xoa file trace neu co...
 powershell -Command "Remove-Item -Path .next\\trace -Force -ErrorAction SilentlyContinue"
 echo Dang khoi dong server...
@@ -219,6 +223,7 @@ function createStaticFiles() {
     '.next/server/app/admin',
     '.next/server/pages',
     '.next/server/chunks',
+    '.next/server/vendor-chunks',
     '.next/static/chunks',
     '.next/static/css',
     '.next/static/development',
@@ -239,6 +244,20 @@ function createStaticFiles() {
       const gitkeepPath = path.join(__dirname, dir, '.gitkeep');
       if (!fs.existsSync(gitkeepPath)) {
         fs.writeFileSync(gitkeepPath, '');
+      }
+    });
+    
+    // Tạo các file vendor-chunks quan trọng để tránh lỗi MODULE_NOT_FOUND
+    const vendorFiles = [
+      '.next/server/vendor-chunks/next.js',
+      '.next/server/vendor-chunks/tailwind-merge.js'
+    ];
+    
+    vendorFiles.forEach(file => {
+      const filePath = path.join(__dirname, file);
+      if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, '');
+        console.log(`Đã tạo file vendor-chunk: ${file}`);
       }
     });
     

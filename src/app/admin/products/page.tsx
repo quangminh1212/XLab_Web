@@ -73,44 +73,60 @@ function AdminProductsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Quản lý sản phẩm</h1>
-        <Link href="/admin" className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm">
-          ← Quay lại Dashboard
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Quản lý sản phẩm</h1>
+          <p className="text-gray-500 text-sm mt-1">Quản lý danh sách sản phẩm của cửa hàng</p>
+        </div>
+        <Link 
+          href="/admin" 
+          className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Quay lại Dashboard
         </Link>
       </div>
       
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div className="relative w-full md:w-96">
-            <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="relative w-full md:w-96">
+              <input
+                type="text"
+                placeholder="Tìm kiếm sản phẩm..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
+            
+            <Link 
+              href="/admin/products/new" 
+              className="bg-primary-600 text-white px-4 py-2.5 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center shadow-sm font-medium"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Thêm sản phẩm mới
+            </Link>
           </div>
-          
-          <Link 
-            href="/admin/products/new" 
-            className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700 inline-flex items-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Thêm sản phẩm mới
-          </Link>
         </div>
         
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            {error}
+          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 m-4 rounded">
+            <div className="flex">
+              <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>{error}</span>
+            </div>
           </div>
         )}
 
@@ -119,39 +135,43 @@ function AdminProductsPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="bg-gray-50 p-6 rounded text-center">
-            <p className="text-gray-500">Không có sản phẩm nào</p>
+          <div className="p-8 text-center bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </svg>
+            <p className="text-gray-500 text-lg">Không tìm thấy sản phẩm nào</p>
+            <p className="text-gray-400 mt-1">Hãy thêm sản phẩm mới hoặc thay đổi từ khóa tìm kiếm</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full divide-y divide-gray-200 table-fixed">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="w-16 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Hình ảnh
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="w-1/3 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tên sản phẩm
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="w-1/6 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     ID
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="w-1/6 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Giá
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="w-1/6 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Trạng thái
                   </th>
-                  <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="w-20 px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Tùy chọn
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="relative h-12 w-12 border rounded-md overflow-hidden">
+                  <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-3 py-4 whitespace-nowrap">
+                      <div className="relative h-12 w-12 border rounded-lg overflow-hidden bg-gray-50">
                         <Image
                           src={Array.isArray(product.images) && product.images.length > 0 
                               ? (typeof product.images[0] === 'string' 
@@ -164,20 +184,24 @@ function AdminProductsPage() {
                         />
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                      <div className="text-sm text-gray-500 truncate max-w-xs">{product.shortDescription}</div>
+                    <td className="px-3 py-4">
+                      <div className="text-sm font-medium text-gray-900 hover:text-primary-600 transition-colors cursor-pointer truncate" onClick={() => handleEdit(product.id)}>
+                        {product.name}
+                      </div>
+                      <div className="text-xs text-gray-500 truncate max-w-[250px]" 
+                        dangerouslySetInnerHTML={{ __html: product.shortDescription || '' }}>
+                      </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{product.id}</div>
+                    <td className="px-3 py-4 whitespace-nowrap">
+                      <div className="text-xs text-gray-500 font-mono truncate">{product.id}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                    <td className="px-3 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
                         {(() => {
                           // Tìm giá thấp nhất từ tất cả các nguồn
                           let minPrice = Infinity;
                           
-                          // Kiểm tra giá cơ bản của sản phẩm (nếu có)
+                          // Kiểm tra giá cơ bản của phiên bản đầu tiên (nếu có)
                           if (product.versions && product.versions.length > 0) {
                             product.versions.forEach(version => {
                               if (version.price < minPrice) {
@@ -196,34 +220,54 @@ function AdminProductsPage() {
                           }
                           
                           // Nếu không có giá nào hoặc giá vẫn là Infinity, hiển thị 0
-                          return minPrice === Infinity ? '0' : minPrice.toLocaleString('vi-VN');
-                        })()}₫
+                          if (minPrice === Infinity) {
+                            return '0đ';
+                          }
+                          
+                          // Format giá tiền
+                          return new Intl.NumberFormat('vi-VN', { 
+                            style: 'currency', 
+                            currency: 'VND',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
+                          }).format(minPrice);
+                        })()}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 py-4 whitespace-nowrap">
                       {product.isPublished ? (
-                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 inline-flex items-center">
+                          <span className="w-1.5 h-1.5 bg-green-600 rounded-full mr-1"></span>
                           Công khai
                         </span>
                       ) : (
-                        <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
+                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-800 inline-flex items-center">
+                          <span className="w-1.5 h-1.5 bg-gray-500 rounded-full mr-1"></span>
                           Nháp
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <button
-                        className="bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600"
-                        onClick={() => handleEdit(product.id)}
-                      >
-                        Sửa
-                      </button>
-                      <button
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                        onClick={() => handleDelete(product.id)}
-                      >
-                        Xóa
-                      </button>
+                    <td className="px-3 py-4 whitespace-nowrap text-center">
+                      <div className="flex justify-center space-x-1">
+                        <button
+                          className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors focus:outline-none p-1"
+                          onClick={() => handleEdit(product.id)}
+                          title="Sửa sản phẩm"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button
+                          className="inline-flex items-center text-red-600 hover:text-red-800 transition-colors focus:outline-none p-1"
+                          onClick={() => handleDelete(product.id)}
+                          title="Xóa sản phẩm"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -34,6 +34,9 @@ next-env.d.ts
 .next/server/flight-server-css-manifest.json
 .next/types/
 .next/server/vendor-chunks/
+.next/server/vendor-chunks/*.js
+.next/server/vendor-chunks/next.js
+.next/server/vendor-chunks/tailwind-merge.js
 .next/static/css/app/layout.css
 .next/static/css/app/layout-*.css
 .next/static/main-app.*.js
