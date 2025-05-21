@@ -14,30 +14,18 @@ function getProducts(): Product[] {
       fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
       return [];
     }
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-    if (!fileContent.trim()) {
+    // Read raw content and sanitize newlines for valid JSON
+    const fileContentRaw = fs.readFileSync(dataFilePath, 'utf8');
+    if (!fileContentRaw.trim()) {
       console.log('Products file is empty, returning empty array');
       return [];
     }
+    const fileContent = fileContentRaw.replace(/[\r\n]+/g, ' ');
     try {
       return JSON.parse(fileContent);
     } catch (parseError) {
       console.error('Error parsing products data:', parseError);
-      // Fallback 1: strip out description fields to avoid parse issues with HTML
-      const strippedContent = fileContent.replace(/"description":\s*"[\s\S]*?",/g, '"description": "",');
-      try {
-        return JSON.parse(strippedContent);
-      } catch (stripError) {
-        console.error('Error parsing products data after stripping description:', stripError);
-      }
-      // Fallback 2: sanitize unescaped newlines by removing them
-      const sanitized = fileContent.replace(/(\r\n|\n|\r)/g, ' ');
-      try {
-        return JSON.parse(sanitized);
-      } catch (sanitizedError) {
-        console.error('Error parsing products data after sanitization:', sanitizedError);
-        return [];
-      }
+      return [];
     }
   } catch (error) {
     console.error('Error reading products data:', error);
