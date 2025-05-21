@@ -2,33 +2,30 @@ import { NextResponse } from 'next/server';
 import { Product } from '@/models/ProductModel';
 import fs from 'fs';
 import path from 'path';
+import JSON5 from 'json5';
 
 export async function GET(request: Request) {
   try {
-    // Read and sanitize products JSON
     const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    let fileContentRaw: string;
+    let raw: string;
     try {
-      fileContentRaw = fs.readFileSync(dataFilePath, 'utf8');
+      raw = fs.readFileSync(dataFilePath, 'utf8');
     } catch (err) {
       console.error('Error reading products data file:', err);
       return NextResponse.json({ success: false, data: [], total: 0 }, { status: 500 });
     }
-    if (!fileContentRaw.trim()) {
-      return NextResponse.json({ success: true, data: [], total: 0 });
-    }
-    // Sanitize categories arrays to avoid nested invalid objects
-    let fileContent = fileContentRaw.replace(/"categories"\s*:\s*\[[\s\S]*?\]/g, '"categories": []');
-    // Remove trailing commas before } or ]
-    fileContent = fileContent.replace(/,(\s*[}\]])/g, '$1');
-    // Collapse newlines
-    fileContent = fileContent.replace(/[\r\n]+/g, ' ');
-    let productList: Product[];
-    try {
-      productList = JSON.parse(fileContent);
-    } catch (parseError) {
-      console.error('Error parsing products data after sanitization:', parseError);
-      productList = [];
+    let productList: Product[] = [];
+    if (raw.trim()) {
+      try {
+        productList = JSON.parse(raw);
+      } catch (jsonErr) {
+        try {
+          productList = JSON5.parse(raw);
+        } catch (json5Err) {
+          console.error('Error parsing products data with JSON and JSON5:', jsonErr, json5Err);
+          productList = [];
+        }
+      }
     }
     // Now proceed with filtering and processing
     const { searchParams } = new URL(request.url);
