@@ -135,19 +135,8 @@ const nextConfig = {
       hints: false,
     };
 
-    // Đảm bảo publicPath luôn được đặt đúng để tránh lỗi 404
-    config.output = {
-      ...config.output,
-      publicPath: '/_next/',
-      assetModuleFilename: 'static/[hash][ext]',
-      // Sử dụng tên file cố định không có hash
-      chunkFilename: isServer ? 
-        'server/chunks/[name].js' :
-        'static/chunks/[name].js',
-      filename: isServer ?
-        'server/[name].js' :
-        'static/[name].js',
-    };
+    // Remove custom output override to allow default Next.js static file serving
+    // config.output override removed to fix static asset 404 errors
 
     // Vô hiệu hóa hoàn toàn việc tạo vendor chunks - CÁCH MẠNH HƠN
     config.optimization = {

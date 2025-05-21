@@ -2,22 +2,32 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
+import { products as rawMockProducts } from '@/data/mockData';
+// Cast raw mock data to Product[] matching model
+const mockProducts: Product[] = rawMockProducts as unknown as Product[];
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
-// Read product data
+// Read product data with fallback to mock data
 function getProducts(): Product[] {
   try {
     if (!fs.existsSync(dataFilePath)) {
-      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
-      return [];
+      console.warn('Products file not found, initializing with mock data');
+      fs.writeFileSync(dataFilePath, JSON.stringify(mockProducts, null, 2), 'utf8');
+      return [...mockProducts];
     }
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-    return JSON.parse(fileContent);
+    const fileContentRaw = fs.readFileSync(dataFilePath, 'utf8');
+    try {
+      return JSON.parse(fileContentRaw);
+    } catch (parseError) {
+      console.error('Error parsing products data, falling back to mock data:', parseError);
+      fs.writeFileSync(dataFilePath, JSON.stringify(mockProducts, null, 2), 'utf8');
+      return [...mockProducts];
+    }
   } catch (error) {
-    console.error('Error reading products data:', error);
-    return [];
+    console.error('Error reading products data, falling back to mock data:', error);
+    return [...mockProducts];
   }
 }
 
