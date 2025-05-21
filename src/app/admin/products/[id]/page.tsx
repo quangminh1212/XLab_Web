@@ -17,8 +17,10 @@ interface AdminEditProductPageProps {
 function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const router = useRouter();
   
-  // Lấy ID sản phẩm từ params trực tiếp, không sử dụng React.use
-  const productId = params.id;
+  // Truy cập params.id an toàn, tương thích với React.use trong Next.js 15+
+  // Sử dụng biến tạm để tránh truy cập trực tiếp vào params.id
+  const { id } = params;
+  const productId = id;
   const isNew = productId === 'new';
   
   const fileInputRef = useRef<HTMLInputElement>(null);
