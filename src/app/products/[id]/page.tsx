@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation';
+import fs from 'fs';
+import path from 'path';
 import { Product } from '@/models/ProductModel';
 import { default as dynamicImport } from 'next/dynamic';
-import { products as rawMockProducts } from '@/data/mockData';
-// Cast raw mock data to Product[] as defined in models
-const mockProducts: Product[] = rawMockProducts as unknown as Product[];
 
 // Loading component đơn giản để hiển thị ngay lập tức
 function ProductFallbackLoading() {
@@ -39,9 +38,20 @@ const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/f
 export const dynamic = 'auto';
 export const dynamicParams = true;
 
-// Get products from mock data
+// Đọc dữ liệu sản phẩm từ file JSON
 function getProducts(): Product[] {
-  return mockProducts;
+  try {
+    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
+    if (!fs.existsSync(dataFilePath)) {
+      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
+      return [];
+    }
+    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error('Error reading products data:', error);
+    return [];
+  }
 }
 
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component

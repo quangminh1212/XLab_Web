@@ -2,39 +2,39 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
-import { products as rawMockProducts } from '@/data/mockData';
-// Cast raw mock data (from types) to Product model defined structure
-const mockProducts: Product[] = rawMockProducts as unknown as Product[];
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
 
-// Fetch product list, falling back to mock data on error
+// Read product data
 function getProducts(): Product[] {
   try {
     if (!fs.existsSync(dataFilePath)) {
-      console.warn('Products file not found, using mock data');
-      return [...mockProducts];
+      console.log('Products file not found, creating empty file');
+      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
+      return [];
     }
+    // Read raw content and sanitize newlines for valid JSON
     const fileContentRaw = fs.readFileSync(dataFilePath, 'utf8');
     if (!fileContentRaw.trim()) {
-      console.warn('Products file is empty, using mock data');
-      return [...mockProducts];
+      console.log('Products file is empty, returning empty array');
+      return [];
     }
-    // Sanitize raw JSON and parse
-    let fileContent = fileContentRaw.replace(/[\r\n]+/g, ' ')
-      .replace(/,(\s*[}\]])/g, '$1')
-      .replace(/\\\\/g, '/');
+    // Sanitize raw JSON: collapse newlines
+    let fileContent = fileContentRaw.replace(/[\r\n]+/g, ' ');
+    // Remove trailing commas before } or ] to prevent parse errors
+    fileContent = fileContent.replace(/,(\s*[}\]])/g, '$1');
+    // Normalize Windows backslashes in paths to forward slashes
+    fileContent = fileContent.replace(/\\\\/g, '/');
     try {
-      const parsed = JSON.parse(fileContent);
-      return parsed;
+      return JSON.parse(fileContent);
     } catch (parseError) {
-      console.error('Error parsing products data, falling back to mock data:', parseError);
-      return [...mockProducts];
+      console.error('Error parsing products data:', parseError);
+      return [];
     }
   } catch (error) {
-    console.error('Error reading products data, falling back to mock data:', error);
-    return [...mockProducts];
+    console.error('Error reading products data:', error);
+    return [];
   }
 }
 
