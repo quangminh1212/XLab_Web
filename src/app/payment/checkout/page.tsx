@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import PaymentForm from "@/components/PaymentForm";
+import PaymentForm from "@/components/payment/PaymentForm";
 import Link from "next/link";
 
 export default function CheckoutPage() {

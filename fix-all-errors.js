@@ -50,20 +50,82 @@ function ensureDependencies() {
 
 // Clean the .next directory
 function cleanNextDirectory() {
-  console.log('🧹 Cleaning .next directory...');
+  console.log('Đang dọn dẹp thư mục .next...');
   
-  const nextDir = path.join(process.cwd(), '.next');
-  if (fs.existsSync(nextDir)) {
-    console.log('Removing .next directory...');
+  const nextDir = path.join(__dirname, '.next');
+  
+  // Kiểm tra xem thư mục .next có tồn tại không
+  if (!fs.existsSync(nextDir)) {
+    console.log('Thư mục .next không tồn tại, bỏ qua bước này.');
+    return;
+  }
+  
+  try {
+    // Thử xóa file trace trực tiếp bằng PowerShell vì Windows có thể lock file này
     try {
-      execSync('rimraf .next', { stdio: 'inherit' });
-      console.log('✅ Successfully removed .next directory');
-    } catch (error) {
-      console.error('❌ Failed to remove .next directory');
-      console.error(error.message);
+      execSync('powershell -Command "Remove-Item -Path .next\\trace -Force -ErrorAction SilentlyContinue"', {
+        stdio: 'inherit'
+      });
+      console.log('Đã thử xóa file .next\\trace bằng PowerShell');
+    } catch (err) {
+      console.log('Lỗi khi dùng PowerShell xóa file trace:', err.message);
     }
-  } else {
-    console.log('✅ .next directory does not exist, no need to clean');
+    
+    // Xóa các file cụ thể gây lỗi trước
+    const problematicFiles = [
+      '.next/trace',
+      '.next/app-paths-manifest.json',
+      '.next/server/app-paths-manifest.json'
+    ];
+    
+    problematicFiles.forEach(filePath => {
+      const fullPath = path.join(__dirname, filePath);
+      if (fs.existsSync(fullPath)) {
+        try {
+          fs.unlinkSync(fullPath);
+          console.log(`Đã xóa file: ${filePath}`);
+        } catch (err) {
+          console.log(`Không thể xóa file ${filePath}: ${err.message}`);
+        }
+      }
+    });
+    
+    // Xóa các thư mục cache
+    const cacheDirs = [
+      '.next/cache',
+      '.next/server/vendor-chunks',
+      '.next/static/chunks',
+      '.next/static/css'
+    ];
+    
+    cacheDirs.forEach(dirPath => {
+      const fullPath = path.join(__dirname, dirPath);
+      if (fs.existsSync(fullPath)) {
+        try {
+          // Dùng rimraf bằng cách gọi Node
+          execSync(`node -e "require('fs').rmSync('${fullPath.replace(/\\/g, '\\\\')}', { recursive: true, force: true });"`, {
+            stdio: 'inherit'
+          });
+          console.log(`Đã xóa thư mục: ${dirPath}`);
+        } catch (err) {
+          console.log(`Không thể xóa thư mục ${dirPath}: ${err.message}`);
+          
+          // Thử xóa bằng PowerShell nếu Node không thành công
+          try {
+            execSync(`powershell -Command "Remove-Item -Path '${fullPath}' -Recurse -Force -ErrorAction SilentlyContinue"`, {
+              stdio: 'inherit'
+            });
+            console.log(`Đã thử xóa thư mục ${dirPath} bằng PowerShell`);
+          } catch (powershellErr) {
+            console.log(`Cũng không thể xóa bằng PowerShell: ${powershellErr.message}`);
+          }
+        }
+      }
+    });
+    
+    console.log('Đã dọn dẹp thư mục .next thành công!');
+  } catch (err) {
+    console.error('Lỗi khi dọn dẹp thư mục .next:', err);
   }
 }
 

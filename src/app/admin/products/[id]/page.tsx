@@ -170,6 +170,16 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     return category ? category.name : id;
   };
 
+  // Helper to generate slug from name
+  function generateSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
   // Xử lý upload hình ảnh
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -195,11 +205,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
       
-      // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
-      if (product && product.slug) {
-        uploadFormData.append('productSlug', product.slug);
-        uploadFormData.append('productName', product.name || '');
-      }
+      // Append productSlug and productName for uploads
+      const slug = product?.slug || generateSlug(formData.name);
+      uploadFormData.append('productSlug', slug);
+      uploadFormData.append('productName', formData.name);
       
       // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
@@ -262,11 +271,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
       
-      // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
-      if (product && product.slug) {
-        uploadFormData.append('productSlug', product.slug);
-        uploadFormData.append('productName', product.name || '');
-      }
+      // Append productSlug and productName for uploads
+      const slug = product?.slug || generateSlug(formData.name);
+      uploadFormData.append('productSlug', slug);
+      uploadFormData.append('productName', formData.name);
       
       // Upload hình ảnh lên server
       console.log("Sending upload request to /api/upload");
@@ -569,11 +577,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
           
-          // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
-          if (product && product.slug) {
-            uploadFormData.append('productSlug', product.slug);
-            uploadFormData.append('productName', product.name || '');
-          }
+          // Append productSlug and productName for uploads
+          const slug = product?.slug || generateSlug(formData.name);
+          uploadFormData.append('productSlug', slug);
+          uploadFormData.append('productName', formData.name);
           
           // Upload hình ảnh lên server
           const response = await fetch('/api/upload', {
@@ -629,11 +636,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
           
-          // Nếu có thông tin sản phẩm, thêm slug và tên sản phẩm vào form data
-          if (product && product.slug) {
-            uploadFormData.append('productSlug', product.slug);
-            uploadFormData.append('productName', product.name || '');
-          }
+          // Append productSlug and productName for uploads
+          const slug = product?.slug || generateSlug(formData.name);
+          uploadFormData.append('productSlug', slug);
+          uploadFormData.append('productName', formData.name);
           
           // Upload hình ảnh lên server
           const response = await fetch('/api/upload', {
@@ -1060,16 +1066,14 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
               </div>
               
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Mô tả ngắn
-              </label>
-              <RichTextEditor
-                value={formData.shortDescription}
-                onChange={handleShortDescRichTextChange}
-                placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                className="mb-3 min-h-[200px]"
-                onPaste={handlePasteDescriptionImage}
-              />
+              <div onPaste={handlePasteDescriptionImage} className="mb-3">
+                <RichTextEditor
+                  value={formData.shortDescription}
+                  onChange={handleShortDescRichTextChange}
+                  placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
+                  className="min-h-[200px]"
+                />
+              </div>
             </div>
           </div>
         </div>

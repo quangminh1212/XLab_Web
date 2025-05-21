@@ -7,6 +7,7 @@ interface RichTextEditorProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  onPaste?: (e: React.ClipboardEvent<HTMLDivElement>) => void;
 }
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({
@@ -14,6 +15,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   onChange,
   placeholder = 'Nhập nội dung chi tiết...',
   className = '',
+  onPaste,
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -673,16 +675,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         onPaste={(e) => {
-          // Check for images in the clipboard and handle them
-          // This helps ensure only one paste handler processes images
+          // Existing logic: prevent default for image items
           const items = e.clipboardData?.items;
           if (items) {
             for (let i = 0; i < items.length; i++) {
               if (items[i].type.indexOf('image') !== -1) {
                 e.preventDefault();
-                return; // Exit early, let the main paste handler handle it
+                break;
               }
             }
+          }
+          // Call external onPaste handler if provided
+          if (onPaste) {
+            onPaste(e as React.ClipboardEvent<HTMLDivElement>);
           }
         }}
         className={`content-editable w-full min-h-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${value === '' ? 'empty' : ''}`}

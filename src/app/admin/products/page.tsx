@@ -173,7 +173,31 @@ function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
-                        {product.versions?.[0]?.price.toLocaleString('vi-VN')}₫
+                        {(() => {
+                          // Tìm giá thấp nhất từ tất cả các nguồn
+                          let minPrice = Infinity;
+                          
+                          // Kiểm tra giá cơ bản của sản phẩm (nếu có)
+                          if (product.versions && product.versions.length > 0) {
+                            product.versions.forEach(version => {
+                              if (version.price < minPrice) {
+                                minPrice = version.price;
+                              }
+                            });
+                          }
+                          
+                          // Kiểm tra các tùy chọn sản phẩm
+                          if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+                            Object.values(product.optionPrices).forEach(option => {
+                              if (option.price < minPrice) {
+                                minPrice = option.price;
+                              }
+                            });
+                          }
+                          
+                          // Nếu không có giá nào hoặc giá vẫn là Infinity, hiển thị 0
+                          return minPrice === Infinity ? '0' : minPrice.toLocaleString('vi-VN');
+                        })()}₫
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

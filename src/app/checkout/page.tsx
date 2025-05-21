@@ -8,11 +8,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import PaymentForm from '@/components/payment/PaymentForm';
 
-export const metadata = {
-  title: 'Thanh toán | XLab - Phần mềm và Dịch vụ',
-  description: 'Thanh toán đơn hàng của bạn tại XLab - Phần mềm và Dịch vụ',
-}
-
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
   const router = useRouter();
