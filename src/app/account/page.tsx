@@ -428,11 +428,14 @@ export default function AccountPage() {
               <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
-                    <img
+                    <Image
                       src={session?.user?.image && !imageError ? session.user.image : '/images/avatar-placeholder.svg'}
                       alt={profile.name}
-                      className="rounded-full w-full h-full object-cover"
+                      width={96}
+                      height={96}
+                      className="rounded-full object-cover"
                       onError={() => setImageError(true)}
+                      unoptimized
                     />
                     <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
