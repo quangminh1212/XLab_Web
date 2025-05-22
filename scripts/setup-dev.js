@@ -48,8 +48,8 @@ if (fs.existsSync(tracePath)) {
 
 console.log('✅ Chuẩn bị hoàn tất! Đang khởi động server...');
 
-// Khởi động npm run dev
-const npmProcess = spawn('npm', ['run', 'dev'], {
+// Khởi động next dev trực tiếp để tránh vòng lặp
+const npmProcess = spawn('npx', ['next', 'dev'], {
   stdio: 'inherit',
   shell: true
 });
