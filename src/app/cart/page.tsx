@@ -17,6 +17,7 @@ interface CartItemWithVersion {
   quantity: number;
   image?: string;
   version?: string;
+  description?: string;
 }
 
 // Định nghĩa danh sách mã giảm giá
@@ -33,11 +34,15 @@ export default function CartPage() {
   const [couponError, setCouponError] = useState('');
   const [showCouponInfo, setShowCouponInfo] = useState(false);
   
-  // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
-  const cart = cartItems.map(item => ({
-    ...item,
-    image: item.image || '/images/placeholder/product-placeholder.svg'
-  }));
+  // Enrich cart items with image and description from product data
+  const cart = cartItems.map(item => {
+    const productDetail = products.find(p => p.id === item.id);
+    return {
+      ...item,
+      image: item.image || '/images/placeholder/product-placeholder.svg',
+      description: productDetail?.description || ''
+    };
+  });
   
   // Tính tổng giá trị giỏ hàng
   const { subtotal, tax } = calculateCartTotals(cart);
@@ -132,13 +137,13 @@ export default function CartPage() {
       <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white py-10 md:py-16">
         <div className="container mx-auto px-4">
           <motion.div
-            className="flex items-center space-x-4"
+            className="space-y-2"
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl md:text-4xl font-bold whitespace-nowrap">Giỏ hàng của bạn</h1>
-            <p className="text-base md:text-lg opacity-90 whitespace-nowrap">
+            <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
+            <p className="text-base md:text-lg max-w-3xl opacity-90">
               Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng tôi.
             </p>
           </motion.div>
@@ -199,6 +204,9 @@ export default function CartPage() {
                               </h3>
                               {item.version && (
                                 <span className="text-sm text-gray-500">Phiên bản: {item.version}</span>
+                              )}
+                              {item.description && (
+                                <p className="text-sm text-gray-600 mt-1">{item.description}</p>
                               )}
                             </div>
                             <p className="text-lg font-bold text-primary-600 mt-1 md:mt-0 md:ml-4 whitespace-nowrap">
