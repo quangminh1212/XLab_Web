@@ -77,6 +77,11 @@ export default function ProductCard({
     ? Math.round(((originalPrice - price) / originalPrice) * 100) 
     : 0
 
+  // The actual image to display (with fallback) - moved up for use in handleAddToCart
+  const displayImageUrl = imageError 
+    ? '/images/placeholder/product-placeholder.jpg' 
+    : cleanImageUrl;
+
   // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {

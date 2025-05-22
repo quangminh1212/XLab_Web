@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
 import { useState, useEffect } from 'react'
-import { products } from '@/data/mockData'
+// import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
 import { AiOutlineShoppingCart, AiOutlinePlus, AiOutlineMinus, AiOutlineDelete, AiOutlineTag, AiOutlineInfoCircle } from 'react-icons/ai'
 import { motion } from 'framer-motion'
 
@@ -33,14 +33,47 @@ export default function CartPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; name: string } | null>(null);
   const [couponError, setCouponError] = useState('');
   const [showCouponInfo, setShowCouponInfo] = useState(false);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch products from API when component loads
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          setProducts(result.data);
+        } else {
+          console.error('Failed to fetch products:', result.error);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   
   // Enrich cart items with image and description from product data
   const cart = cartItems.map(item => {
-    const productDetail = products.find(p => p.id === item.id);
+    const productDetail = products.find((p: any) => p.id === item.id);
+    
+    // Get image URL - priority: item.image, product.images[0], fallback
+    let imageUrl = item.image || '/images/placeholder/product-placeholder.svg';
+    if (productDetail?.images && Array.isArray(productDetail.images) && productDetail.images.length > 0) {
+      imageUrl = productDetail.images[0];
+    } else if (productDetail?.imageUrl) {
+      imageUrl = productDetail.imageUrl;
+    }
+    
     return {
       ...item,
-      image: item.image || '/images/placeholder/product-placeholder.svg',
-      description: productDetail?.description || ''
+      image: imageUrl,
+      description: productDetail?.shortDescription || productDetail?.description || ''
     };
   });
   
@@ -66,7 +99,7 @@ export default function CartPage() {
   const total = subtotal + tax - couponDiscount;
   
   // Lấy sản phẩm được đề xuất (đánh dấu là featured)
-  const featuredProducts = products.filter(product => product.isFeatured).slice(0, 3);
+  const featuredProducts = products.filter((product: any) => product.isFeatured).slice(0, 3);
   
   // Handle quantity change
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
@@ -131,6 +164,31 @@ export default function CartPage() {
     }
   };
   
+  // Show loading state when fetching products
+  if (loading) {
+    return (
+      <div className="bg-gray-50 min-h-screen">
+        <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white py-10 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
+              <p className="text-base md:text-lg max-w-3xl opacity-90">
+                Đang tải thông tin sản phẩm...
+              </p>
+            </div>
+          </div>
+        </section>
+        <section className="py-8 md:py-12">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-center">
+              <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Page Header */}
@@ -178,13 +236,13 @@ export default function CartPage() {
                         variants={itemVariants}
                         whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
                       >
-                        {/* Hình ảnh sản phẩm - Kích thước nhỏ hơn */}
-                        <div className="md:w-1/5 aspect-square bg-gray-50 rounded-lg flex items-center justify-center p-2 border border-gray-100">
+                        {/* Hình ảnh sản phẩm - Tăng kích thước */}
+                        <div className="md:w-1/4 aspect-square bg-gray-50 rounded-lg flex items-center justify-center p-3 border border-gray-100">
                           <Image
                             src={item.image || '/images/placeholder/product-placeholder.svg'}
                             alt={item.name}
-                            width={80}
-                            height={80}
+                            width={120}
+                            height={120}
                             className="w-full h-full object-contain transition-transform hover:scale-105"
                             onError={(e) => {
                               console.log('Lỗi tải ảnh:', item.image);
@@ -194,7 +252,7 @@ export default function CartPage() {
                             unoptimized={true}
                           />
                         </div>
-                        <div className="md:w-4/5 flex flex-col justify-between flex-grow">
+                        <div className="md:w-3/4 flex flex-col justify-between flex-grow">
                           <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                             <div>
                               <h3 className="text-lg font-bold text-gray-800 hover:text-primary-600 transition-colors">
@@ -206,7 +264,7 @@ export default function CartPage() {
                                 <span className="text-sm text-gray-500">Phiên bản: {item.version}</span>
                               )}
                               {item.description && (
-                                <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{item.description}</p>
                               )}
                             </div>
                             <p className="text-lg font-bold text-primary-600 mt-1 md:mt-0 md:ml-4 whitespace-nowrap">
@@ -451,7 +509,11 @@ export default function CartPage() {
                   {/* Hình ảnh sản phẩm */}
                   <div className="w-full h-full flex items-center justify-center p-4">
                     <Image
-                      src={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
+                      src={
+                        (product.images && Array.isArray(product.images) && product.images.length > 0) 
+                          ? product.images[0] 
+                          : product.imageUrl || '/images/placeholder/product-placeholder.jpg'
+                      }
                       alt={product.name}
                       width={160}
                       height={160}
@@ -480,29 +542,49 @@ export default function CartPage() {
                   </p>
                   <div className="flex justify-between items-center mt-auto">
                     <div>
-                      {product.salePrice && product.salePrice < product.price ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-base font-bold text-primary-600 whitespace-nowrap">
-                            {formatCurrency(product.salePrice)}
-                          </span>
-                          <span className="text-xs text-gray-500 line-through whitespace-nowrap">
-                            {formatCurrency(product.price)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-base font-bold text-primary-600 whitespace-nowrap">
-                          {formatCurrency(product.price)}
-                        </span>
-                      )}
+                      {(() => {
+                        // Xác định giá hiển thị từ versions hoặc fallback
+                        const displayPrice = (product.versions && product.versions.length > 0)
+                          ? product.versions[0].price 
+                          : product.salePrice || product.price;
+                        const originalPrice = (product.versions && product.versions.length > 0)
+                          ? product.versions[0].originalPrice 
+                          : product.price;
+                        
+                        if (originalPrice && originalPrice > displayPrice) {
+                          return (
+                            <div className="flex items-center gap-2">
+                              <span className="text-base font-bold text-primary-600 whitespace-nowrap">
+                                {formatCurrency(displayPrice)}
+                              </span>
+                              <span className="text-xs text-gray-500 line-through whitespace-nowrap">
+                                {formatCurrency(originalPrice)}
+                              </span>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <span className="text-base font-bold text-primary-600 whitespace-nowrap">
+                              {formatCurrency(displayPrice)}
+                            </span>
+                          );
+                        }
+                      })()}
                     </div>
                     <button 
                       className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs font-medium transition-colors border border-primary-200 flex items-center"
                       onClick={() => addItemToCart({
                         id: product.id.toString(),
                         name: product.name,
-                        price: product.salePrice || product.price,
+                        price: 
+                          (product.versions && product.versions.length > 0) 
+                            ? product.versions[0].price 
+                            : product.salePrice || product.price,
                         quantity: 1,
-                        image: product.imageUrl || '/images/product-placeholder.svg'
+                        image: 
+                          (product.images && Array.isArray(product.images) && product.images.length > 0) 
+                            ? product.images[0] 
+                            : product.imageUrl || '/images/placeholder/product-placeholder.svg'
                       })}
                     >
                       <AiOutlinePlus className="mr-1 w-3 h-3" />
