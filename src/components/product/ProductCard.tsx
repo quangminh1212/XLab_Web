@@ -171,11 +171,6 @@ export default function ProductCard({
   // Tạo slug từ tên nếu không có slug được truyền vào
   const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-  // The actual image to display (with fallback)
-  const displayImageUrl = imageError 
-    ? '/images/placeholder/product-placeholder.jpg' 
-    : cleanImageUrl;
-
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
