@@ -219,41 +219,6 @@ function HomePage() {
               </div>
             </section>
 
-            {/* Đánh giá khách hàng - Phần mới */}
-            <section className="bg-white rounded-xl shadow-sm p-4 mb-3">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-bold text-gray-800">Đánh giá từ khách hàng</h2>
-                <div className="flex items-center text-yellow-500">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                      <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                    </svg>
-                  ))}
-                  <span className="ml-1 text-sm font-medium text-gray-700">4.9/5</span>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                  <p className="text-sm text-gray-700 italic mb-2">"Phần mềm AI của XLab giúp công ty tôi tăng 40% hiệu suất làm việc chỉ trong tháng đầu tiên."</p>
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center text-primary-700 font-bold text-sm">NT</div>
-                    <div className="ml-2">
-                      <p className="text-xs font-medium text-gray-900">Nguyễn Tuấn</p>
-                      <p className="text-xs text-gray-500">Giám đốc điều hành</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <Link href="/testimonials" className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center justify-center">
-                  Xem tất cả đánh giá
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </Link>
-              </div>
-            </section>
-            
             {/* Thống kê - Phần mới */}
             <section className="bg-white rounded-xl shadow-sm p-4 mb-3">
               <h2 className="text-lg font-bold text-gray-800 mb-4">Thành tựu của chúng tôi</h2>
