@@ -46,14 +46,19 @@ next-env.d.ts
 
 # next.js static files
 .next/static/css/app/layout.css?v=*
+.next/static/css/app/layout.css
 .next/static/main-app.*.js
 .next/static/main-app.*.js?v=*
 .next/static/app/layout.*.js
 .next/static/app/not-found.*.js
+.next/static/app/not-found.js
 .next/static/app/admin/layout.*.js
 .next/static/app/admin/page.*.js
 .next/static/app/loading.*.js
+.next/static/app/loading.js
+.next/static/app/page.js
 .next/static/app-pages-internals.*.js
+.next/static/app-pages-internals.js
 .next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js
 .next/static/webpack/*.hot-update.json
 .next/static/webpack/*.hot-update.js
