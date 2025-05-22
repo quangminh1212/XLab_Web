@@ -239,12 +239,26 @@ export default function ProductCard({
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <button
-            onClick={handleAddToCart}
-            className="bg-white text-gray-800 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-full font-medium transition-colors active:scale-95"
-          >
-            Thêm vào giỏ
-          </button>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={handleAddToCart}
+              className="bg-white text-gray-800 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-full font-medium transition-colors active:scale-95"
+            >
+              Thêm vào giỏ
+            </button>
+            <Link
+              href="/checkout?skipInfo=true"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleAddToCart(e);
+                router.push('/checkout?skipInfo=true');
+              }}
+              className="bg-green-500 text-white hover:bg-green-600 px-4 py-2 rounded-full font-medium text-center transition-colors active:scale-95"
+            >
+              Mua ngay
+            </Link>
+          </div>
         </div>
       </div>
 

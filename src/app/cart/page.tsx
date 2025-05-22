@@ -365,7 +365,7 @@ export default function CartPage() {
                   </div>
                   
                   <Link
-                    href="/checkout"
+                    href="/checkout?skipInfo=true"
                     className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-4 block text-center py-3 rounded-md text-base font-medium transition-colors"
                   >
                     Tiến hành thanh toán

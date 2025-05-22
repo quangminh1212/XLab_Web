@@ -563,7 +563,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   Thêm vào giỏ hàng
                 </button>
                 <Link 
-                  href="/cart" 
+                  href="/checkout?skipInfo=true" 
                   onClick={handleAddToCart}
                   className="px-4 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center transition-transform active:scale-95"
                 >

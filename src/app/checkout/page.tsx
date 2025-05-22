@@ -4,14 +4,19 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import PaymentForm from '@/components/payment/PaymentForm';
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart();
   const router = useRouter();
-  const [step, setStep] = useState(1); // 1: shipping, 2: payment
+  const searchParams = useSearchParams();
+  const skipInfo = searchParams?.get('skipInfo') === 'true';
+  
+  // Mặc định là bước 1 (thông tin), nhưng nếu có tham số skipInfo=true thì chuyển thẳng bước 2 (thanh toán)
+  const [step, setStep] = useState(skipInfo ? 2 : 1);
+  
   const [shippingInfo, setShippingInfo] = useState({
     firstName: '',
     lastName: '',
@@ -31,6 +36,13 @@ export default function CheckoutPage() {
   
   // Calculate cart totals
   const { subtotal, tax, total } = calculateCartTotals(cart);
+
+  // Cập nhật step khi tham số URL thay đổi
+  useEffect(() => {
+    if (skipInfo) {
+      setStep(2);
+    }
+  }, [skipInfo]);
 
   const validateShippingInfo = () => {
     const newErrors: Record<string, string> = {};
@@ -105,24 +117,26 @@ export default function CheckoutPage() {
       {/* Checkout Process */}
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-4">
-          {/* Checkout Steps */}
-          <div className="mb-8">
-            <div className="flex items-center justify-center">
-              <div className={`flex flex-col items-center ${step === 1 ? 'text-primary-600' : 'text-gray-500'}`}>
-                <div className={`w-10 h-10 flex items-center justify-center rounded-full mb-2 ${step === 1 ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
-                  1
+          {/* Checkout Steps - Hiển thị chỉ khi không bỏ qua bước thông tin */}
+          {!skipInfo && (
+            <div className="mb-8">
+              <div className="flex items-center justify-center">
+                <div className={`flex flex-col items-center ${step === 1 ? 'text-primary-600' : 'text-gray-500'}`}>
+                  <div className={`w-10 h-10 flex items-center justify-center rounded-full mb-2 ${step === 1 ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
+                    1
+                  </div>
+                  <span className="text-sm">Thông tin</span>
                 </div>
-                <span className="text-sm">Thông tin</span>
-              </div>
-              <div className={`w-16 md:w-24 h-1 mx-2 ${step >= 2 ? 'bg-primary-600' : 'bg-gray-200'}`}></div>
-              <div className={`flex flex-col items-center ${step === 2 ? 'text-primary-600' : 'text-gray-500'}`}>
-                <div className={`w-10 h-10 flex items-center justify-center rounded-full mb-2 ${step === 2 ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
-                  2
+                <div className={`w-16 md:w-24 h-1 mx-2 ${step >= 2 ? 'bg-primary-600' : 'bg-gray-200'}`}></div>
+                <div className={`flex flex-col items-center ${step === 2 ? 'text-primary-600' : 'text-gray-500'}`}>
+                  <div className={`w-10 h-10 flex items-center justify-center rounded-full mb-2 ${step === 2 ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
+                    2
+                  </div>
+                  <span className="text-sm">Thanh toán</span>
                 </div>
-                <span className="text-sm">Thanh toán</span>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
             {/* Billing Information or Payment Form */}
