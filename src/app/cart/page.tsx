@@ -244,29 +244,29 @@ export default function CartPage() {
                 initial="hidden"
                 animate="visible"
               >
-                <div className="bg-white rounded-lg shadow-md p-5 md:p-6 mb-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl md:text-2xl font-bold">Sản phẩm trong giỏ</h2>
-                    <span className="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-sm font-medium">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 mb-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg md:text-xl font-semibold text-gray-800">Sản phẩm trong giỏ</h2>
+                    <span className="px-2.5 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-medium">
                       {cart.length} sản phẩm
                     </span>
                   </div>
                   
-                  <div className="space-y-5">
+                  <div className="space-y-3">
                     {cart.map((item) => (
                       <motion.div 
                         key={item.id} 
-                        className="flex flex-col md:flex-row gap-4 border-b border-gray-200 pb-5"
+                        className="flex items-start gap-3 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
                         variants={itemVariants}
-                        whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
+                        whileHover={{ scale: 1.005, transition: { duration: 0.2 } }}
                       >
-                        {/* Hình ảnh sản phẩm - Tăng kích thước */}
-                        <div className="md:w-1/4 aspect-square bg-gray-50 rounded-lg flex items-center justify-center p-3 border border-gray-100">
+                        {/* Hình ảnh sản phẩm - Compact */}
+                        <div className="w-20 h-20 md:w-24 md:h-24 bg-gray-50 rounded-lg flex items-center justify-center p-2 border border-gray-100 flex-shrink-0">
                           <Image
                             src={item.image || '/images/placeholder/product-placeholder.svg'}
                             alt={item.name}
-                            width={120}
-                            height={120}
+                            width={80}
+                            height={80}
                             className="w-full h-full object-contain transition-transform hover:scale-105"
                             onError={(e) => {
                               console.log('Lỗi tải ảnh:', item.image);
@@ -276,55 +276,62 @@ export default function CartPage() {
                             unoptimized={true}
                           />
                         </div>
-                        <div className="md:w-3/4 flex flex-col justify-between flex-grow">
-                          <div className="flex flex-col md:flex-row md:justify-between md:items-center">
-                            <div>
-                              <h3 className="text-lg font-bold text-gray-800 hover:text-primary-600 transition-colors">
+                        
+                        {/* Thông tin sản phẩm */}
+                        <div className="flex-1 min-w-0 px-3">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-base md:text-lg font-semibold text-gray-800 hover:text-primary-600 transition-colors truncate">
                                 <Link href={`/products/${item.id}`}>
                                   {item.name}
                                 </Link>
                               </h3>
                               {item.version && (
-                                <span className="text-sm text-gray-500">Phiên bản: {item.version}</span>
+                                <span className="text-xs text-gray-500 block mt-0.5">Phiên bản: {item.version}</span>
                               )}
                               {item.description && (
-                                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{item.description}</p>
+                                <p className="text-xs text-gray-600 mt-1 line-clamp-1 leading-relaxed">
+                                  {item.description.length > 80 ? item.description.substring(0, 80) + '...' : item.description}
+                                </p>
                               )}
                             </div>
-                            <p className="text-lg font-bold text-primary-600 mt-1 md:mt-0 md:ml-4 whitespace-nowrap">
-                              {formatCurrency(item.price)}
-                            </p>
-                          </div>
-                          <div className="flex items-center justify-between mt-3 md:mt-4">
-                            <div className="flex items-center border rounded-md border-gray-300 overflow-hidden">
-                              <button 
-                                className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
-                                onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                aria-label="Giảm số lượng"
-                              >
-                                <AiOutlineMinus className="w-4 h-4" />
-                              </button>
-                              <input
-                                type="text"
-                                value={item.quantity}
-                                readOnly
-                                className="w-12 h-8 text-center border-x border-gray-300 focus:outline-none"
-                              />
-                              <button 
-                                className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
-                                onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                aria-label="Tăng số lượng"
-                              >
-                                <AiOutlinePlus className="w-4 h-4" />
-                              </button>
+                            <div className="flex flex-col sm:items-end gap-2">
+                              <p className="text-base md:text-lg font-bold text-primary-600 whitespace-nowrap">
+                                {formatCurrency(item.price)}
+                              </p>
+                              {/* Quantity controls - Compact */}
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center border rounded border-gray-300 overflow-hidden">
+                                  <button 
+                                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
+                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                    aria-label="Giảm số lượng"
+                                  >
+                                    <AiOutlineMinus className="w-3 h-3" />
+                                  </button>
+                                  <input
+                                    type="text"
+                                    value={item.quantity}
+                                    readOnly
+                                    className="w-10 h-7 text-center text-sm border-x border-gray-300 focus:outline-none"
+                                  />
+                                  <button 
+                                    className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
+                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                    aria-label="Tăng số lượng"
+                                  >
+                                    <AiOutlinePlus className="w-3 h-3" />
+                                  </button>
+                                </div>
+                                <button 
+                                  className="text-red-500 hover:text-red-700 transition-colors p-1"
+                                  onClick={() => removeItemFromCart(item.id)}
+                                  aria-label="Xóa sản phẩm"
+                                >
+                                  <AiOutlineDelete className="w-4 h-4" />
+                                </button>
+                              </div>
                             </div>
-                            <button 
-                              className="flex items-center text-red-500 hover:text-red-700 transition-colors text-sm font-medium"
-                              onClick={() => removeItemFromCart(item.id)}
-                            >
-                              <AiOutlineDelete className="w-4 h-4 mr-1" />
-                              <span>Xóa</span>
-                            </button>
                           </div>
                         </div>
                       </motion.div>
@@ -332,18 +339,18 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <Link
                     href="/accounts"
-                    className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 px-5 py-2.5 rounded-md text-sm font-medium transition-colors text-center"
+                    className="border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 px-4 py-2 rounded text-xs font-medium transition-colors text-center"
                   >
                     Tiếp tục mua sắm
                   </Link>
                   <button 
-                    className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-5 py-2.5 rounded-md text-sm font-medium transition-colors flex items-center justify-center"
+                    className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-4 py-2 rounded text-xs font-medium transition-colors flex items-center justify-center"
                     onClick={() => clearCart()}
                   >
-                    <AiOutlineDelete className="w-4 h-4 mr-2" />
+                    <AiOutlineDelete className="w-3 h-3 mr-1" />
                     Xóa giỏ hàng
                   </button>
                 </div>
@@ -356,18 +363,18 @@ export default function CartPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
-                <div className="bg-white rounded-lg shadow-md p-5 md:p-6 sticky top-20">
-                  <h2 className="text-xl font-bold mb-5 pb-4 border-b border-gray-200">Tóm tắt đơn hàng</h2>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 sticky top-20">
+                  <h2 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-100 text-gray-800">Tóm tắt đơn hàng</h2>
                   
-                  <div className="space-y-4 mb-6">
+                  <div className="space-y-3 mb-5">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tạm tính ({cart.reduce((total, item) => total + item.quantity, 0)} sản phẩm)</span>
                       <span className="font-medium">{formatCurrency(subtotal)}</span>
                     </div>
                     
                     {/* Coupon code input */}
-                    <div className="pt-3 border-t border-gray-100">
-                      <div className="flex items-center justify-between mb-3">
+                    <div className="pt-2 border-t border-gray-50">
+                      <div className="flex items-center justify-between mb-2">
                         <label htmlFor="coupon" className="flex items-center text-sm font-medium">
                           <AiOutlineTag className="mr-2" />
                           Mã khuyến mãi
@@ -436,40 +443,40 @@ export default function CartPage() {
                     </div>
                   </div>
                   
-                  <div className="space-y-2 mb-6">
+                  <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Tạm tính</span>
-                      <span className="whitespace-nowrap">{formatCurrency(subtotal)}</span>
+                      <span className="text-gray-600 text-sm">Tạm tính</span>
+                      <span className="whitespace-nowrap text-sm">{formatCurrency(subtotal)}</span>
                     </div>
                     {appliedCoupon && (
                       <div className="flex justify-between items-center text-green-600">
-                        <span>Giảm giá</span>
-                        <span className="whitespace-nowrap">-{formatCurrency(couponDiscount)}</span>
+                        <span className="text-sm">Giảm giá</span>
+                        <span className="whitespace-nowrap text-sm">-{formatCurrency(couponDiscount)}</span>
                       </div>
                     )}
                   </div>
                   
-                  <div className="border-t border-b border-gray-200 py-4 mb-6">
+                  <div className="border-t border-b border-gray-100 py-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold">Tổng cộng</span>
-                      <span className="text-xl font-bold text-primary-600 whitespace-nowrap">{formatCurrency(total)}</span>
+                      <span className="text-base font-semibold">Tổng cộng</span>
+                      <span className="text-lg font-bold text-primary-600 whitespace-nowrap">{formatCurrency(total)}</span>
                     </div>
                   </div>
                   
                   <Link
                     href="/checkout?skipInfo=true"
-                    className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-4 block text-center py-3 rounded-md text-base font-medium transition-colors"
+                    className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-3 block text-center py-2.5 rounded text-sm font-medium transition-colors"
                   >
                     Tiến hành thanh toán
                   </Link>
                   
                   <div className="text-center">
-                    <p className="mb-2 text-sm text-gray-600">Chúng tôi chấp nhận</p>
-                    <div className="flex justify-center space-x-2">
-                      <Image src="/images/payment/visa.svg" alt="Visa" width={20} height={14} className="h-4" />
-                      <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={20} height={14} className="h-4" />
-                      <Image src="/images/payment/momo.svg" alt="MoMo" width={16} height={14} className="h-4" />
-                      <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={20} height={14} className="h-4" />
+                    <p className="mb-1.5 text-xs text-gray-500">Chúng tôi chấp nhận</p>
+                    <div className="flex justify-center space-x-1.5">
+                      <Image src="/images/payment/visa.svg" alt="Visa" width={18} height={12} className="h-3" />
+                      <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={18} height={12} className="h-3" />
+                      <Image src="/images/payment/momo.svg" alt="MoMo" width={14} height={12} className="h-3" />
+                      <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={18} height={12} className="h-3" />
                     </div>
                   </div>
                 </div>
@@ -478,27 +485,27 @@ export default function CartPage() {
           ) : (
             /* Thiết kế mới cho giỏ hàng trống */
             <motion.div 
-              className="max-w-2xl mx-auto"
+              className="max-w-xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <div className="bg-white rounded-lg shadow-lg p-8 md:p-10 mb-6 text-center">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 md:p-8 mb-4 text-center">
                 <EmptyCartIcon />
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">Giỏ hàng của bạn đang trống</h2>
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">
                   Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá các sản phẩm của chúng tôi và bắt đầu mua sắm ngay.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Link 
                     href="/accounts"
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-md text-base font-medium transition-colors shadow-sm"
+                    className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded text-sm font-medium transition-colors shadow-sm"
                   >
                     Xem danh sách sản phẩm
                   </Link>
                   <Link 
                     href="/categories"
-                    className="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 px-6 py-3 rounded-md text-base font-medium transition-colors"
+                    className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-5 py-2.5 rounded text-sm font-medium transition-colors"
                   >
                     Xem danh mục
                   </Link>
