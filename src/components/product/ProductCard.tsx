@@ -246,8 +246,7 @@ export default function ProductCard({
             >
               Thêm vào giỏ
             </button>
-            <Link
-              href="/checkout?skipInfo=true"
+            <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -257,7 +256,7 @@ export default function ProductCard({
               className="bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-full font-medium text-center transition-colors active:scale-95"
             >
               Mua ngay
-            </Link>
+            </button>
           </div>
         </div>
       </div>
