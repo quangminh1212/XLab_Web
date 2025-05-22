@@ -70,7 +70,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         updatedItems[existingItemIndex].quantity += newItem.quantity || 1
         
         // Đảm bảo giữ lại đường dẫn hình ảnh nếu đã tồn tại
-        if (newItem.image && (!updatedItems[existingItemIndex].image || updatedItems[existingItemIndex].image === '/images/product-placeholder.svg')) {
+        if (newItem.image && 
+            (!updatedItems[existingItemIndex].image || 
+             updatedItems[existingItemIndex].image === '/images/placeholder/product-placeholder.svg' ||
+             updatedItems[existingItemIndex].image === '/images/placeholder/product-placeholder.jpg' ||
+             updatedItems[existingItemIndex].image === '/images/product-placeholder.svg')) {
           updatedItems[existingItemIndex].image = newItem.image
         }
         
@@ -87,10 +91,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return updatedItems
       } else {
         // Nếu là item mới, thêm vào mảng và đảm bảo có đường dẫn hình ảnh
-        const itemImage = newItem.image || '/images/placeholder/product-placeholder.jpg'
+        const itemImage = newItem.image || '/images/placeholder/product-placeholder.svg'
+        // Kiểm tra đường dẫn hình ảnh
+        const finalImage = itemImage.includes('/images/product-placeholder.svg') || 
+                           itemImage.includes('/images/placeholder/product-placeholder.jpg') ? 
+                           '/images/placeholder/product-placeholder.svg' : itemImage
+        
         return [...prevItems, { 
           ...newItem, 
-          image: itemImage,
+          image: finalImage,
           quantity: newItem.quantity || 1,
           version: newItem.version || undefined,
           options: newItem.options || undefined

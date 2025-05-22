@@ -36,7 +36,7 @@ export default function CartPage() {
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map(item => ({
     ...item,
-    image: item.image || '/images/placeholder/product-placeholder.jpg'
+    image: item.image || '/images/placeholder/product-placeholder.svg'
   }));
   
   // Tính tổng giá trị giỏ hàng
@@ -175,14 +175,15 @@ export default function CartPage() {
                         {/* Hình ảnh sản phẩm - Kích thước nhỏ hơn */}
                         <div className="md:w-1/5 aspect-square bg-gray-50 rounded-lg flex items-center justify-center p-2 border border-gray-100">
                           <Image
-                            src={item.image || '/images/placeholder/product-placeholder.jpg'}
+                            src={item.image || '/images/placeholder/product-placeholder.svg'}
                             alt={item.name}
                             width={80}
                             height={80}
                             className="w-full h-full object-contain transition-transform hover:scale-105"
                             onError={(e) => {
+                              console.log('Lỗi tải ảnh:', item.image);
                               const target = e.target as HTMLImageElement;
-                              target.src = '/images/placeholder/product-placeholder.jpg';
+                              target.src = '/images/placeholder/product-placeholder.svg';
                             }}
                             unoptimized={true}
                           />

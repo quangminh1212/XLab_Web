@@ -32,6 +32,18 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'styles')],
   },
   assetPrefix: '',
+  trailingSlash: true,
+  generateStaticParams: async () => {
+    return [
+      '/',
+      '/cart'
+    ];
+  },
+  experimental: {
+    ppr: false,
+    serverActions: true,
+    appDir: true,
+  },
   webpack: (config, { dev, isServer }) => {
     config.cache = false;
     config.resolve.alias = {

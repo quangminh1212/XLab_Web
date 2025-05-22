@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "predev": "node check-critters.js && echo Preparing development environment... && node fix-all-errors.js",
-    "dev": "rimraf .next/cache && node fix-all-errors.js && next dev",
+    "dev": "node fix-all-errors.js && rimraf .next/cache && next dev",
     "dev:silent": "cross-env NEXT_IGNORE_WARNINGS=NEXT_PACKAGE_WARNING,ESLINT_WARNING,API_ROUTE_IMPORT_WARNING NODE_OPTIONS=--no-warnings next dev",
     "dev:win": "rimraf .next && set NODE_OPTIONS=--no-warnings && next dev",
     "dev:wasm": "cross-env NEXT_DISABLE_SWC_NATIVE=1 NEXT_USE_SWC_WASM=1 NODE_OPTIONS=--no-warnings next dev",

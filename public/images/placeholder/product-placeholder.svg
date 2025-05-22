@@ -1,6 +1,6 @@
-<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
   <rect width="200" height="200" fill="#F3F4F6"/>
-  <path d="M100 60C88.9543 60 80 68.9543 80 80C80 91.0457 88.9543 100 100 100C111.046 100 120 91.0457 120 80C120 68.9543 111.046 60 100 60Z" fill="#D1D5DB"/>
-  <path d="M63.3333 141.667C64.1667 130 81.6667 121.667 100 121.667C118.333 121.667 135.833 130 136.667 141.667" stroke="#9CA3AF" stroke-width="6" stroke-linecap="round"/>
-  <rect x="10" y="10" width="180" height="180" rx="5" stroke="#E5E7EB" stroke-width="2"/>
+  <rect x="70" y="80" width="60" height="60" rx="5" fill="#D1D5DB"/>
+  <rect x="80" y="60" width="40" height="40" rx="20" fill="#D1D5DB"/>
+  <path d="M70 120C70 109.954 80.9543 90 100 90C119.046 90 130 109.954 130 120V140H70V120Z" fill="#D1D5DB"/>
 </svg> 

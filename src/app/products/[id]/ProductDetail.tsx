@@ -205,11 +205,20 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       const firstImage = product.images[0];
       // Không sử dụng blob URLs
       if (typeof firstImage === 'string' && firstImage.startsWith('blob:')) {
-        return '/images/placeholder/product-placeholder.jpg';
+        return '/images/placeholder/product-placeholder.svg';
       }
-      return typeof firstImage === 'string' ? firstImage : firstImage.url;
+      
+      const imageUrl = typeof firstImage === 'string' ? firstImage : firstImage.url;
+      
+      // Kiểm tra xem ảnh có tồn tại không
+      if (imageUrl && imageUrl.includes('/images/products/')) {
+        // Sử dụng đường dẫn ảnh đã được tổ chức theo thư mục sản phẩm
+        return imageUrl;
+      }
+      
+      return '/images/placeholder/product-placeholder.svg';
     }
-    return '/images/placeholder/product-placeholder.jpg';
+    return '/images/placeholder/product-placeholder.svg';
   };
   
   // Tính toán giá dựa trên tùy chọn đã chọn
@@ -326,14 +335,25 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
+    let productImage = '/images/placeholder/product-placeholder.svg';
+    
+    if (product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
+      // Xử lý đường dẫn ảnh
+      if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
+        productImage = firstImage;
+      } else if (typeof firstImage !== 'string' && firstImage.url) {
+        productImage = firstImage.url;
+      }
+    }
+    
     addItem({
       id: product.id.toString(),
       name: product.name,
       price: calculateSelectedPrice(),
       quantity: quantity,
-      image: product.images && product.images.length > 0 ? 
-             typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url : 
-             '/images/placeholder/product-placeholder.jpg',
+      image: productImage,
+      version: selectedOption || selectedVersion,
       options: selectedOption ? [selectedOption] : (selectedVersion ? [selectedVersion] : undefined)
     });
     
