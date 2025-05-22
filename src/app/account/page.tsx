@@ -36,59 +36,6 @@ const userProfile = {
   phone: '',
 }
 
-// Khởi tạo lịch sử mua hàng rỗng
-const emptyPurchaseHistory: Order[] = [];
-
-// Dữ liệu mẫu để demo
-const samplePurchaseHistory: Order[] = [
-  {
-    id: 'ORD-12345',
-    date: '15/03/2023',
-    total: 4990000,
-    status: 'Hoàn thành',
-    items: [
-      {
-        id: 'business-suite',
-        name: 'XLab Business Suite',
-        version: 'Chuyên nghiệp',
-        price: 4990000,
-        originalPrice: 5990000,
-        licenseKey: 'XLAB-BS-PRO-1234-5678-90AB',
-        expiryDate: '15/03/2024',
-        updates: true,
-      }
-    ]
-  },
-  {
-    id: 'ORD-12346',
-    date: '20/04/2023',
-    total: 3980000,
-    status: 'Hoàn thành',
-    items: [
-      {
-        id: 'security-pro',
-        name: 'XLab Security Pro',
-        version: 'Cơ bản',
-        price: 1990000,
-        originalPrice: 2490000,
-        licenseKey: 'XLAB-SP-BAS-2345-6789-01CD',
-        expiryDate: '20/04/2024',
-        updates: true,
-      },
-      {
-        id: 'design-master',
-        name: 'XLab Design Master',
-        version: 'Tiêu chuẩn',
-        price: 1990000,
-        originalPrice: 2490000,
-        licenseKey: 'XLAB-DM-STD-3456-7890-12EF',
-        expiryDate: '20/04/2024',
-        updates: true,
-      }
-    ]
-  }
-]
-
 export default function AccountPage() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
@@ -96,9 +43,8 @@ export default function AccountPage() {
   const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [purchaseHistory, setPurchaseHistory] = useState<Order[]>([]); // Khởi tạo rỗng
+  const [purchaseHistory, setPurchaseHistory] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showDemoData, setShowDemoData] = useState(false); // State cho demo
   const [passwordMessage, setPasswordMessage] = useState('');
   const [showPasswordMessage, setShowPasswordMessage] = useState(false);
   const [supportProduct, setSupportProduct] = useState('');
@@ -190,35 +136,20 @@ export default function AccountPage() {
           }
         }
 
-        // Mô phỏng việc tải dữ liệu từ API
-        setTimeout(() => {
-          // Giả lập API call để lấy lịch sử mua hàng
-          // Kiểm tra xem có dữ liệu trên localStorage không, đây sẽ là vị trí gọi API thực tế
-          const savedPurchases = localStorage.getItem(`purchases_${session.user.email}`);
-          
-          if (savedPurchases) {
-            try {
-              const parsedPurchases = JSON.parse(savedPurchases);
-              setPurchaseHistory(parsedPurchases);
-            } catch (e) {
-              console.error('Lỗi khi parse dữ liệu mua hàng:', e);
-              setPurchaseHistory([]);
-            }
-          } else {
-            // Không có dữ liệu thực, kiểm tra nếu người dùng muốn xem dữ liệu mẫu
-            // Demo purpose: Lấy từ localStorage nếu đã lưu
-            const showDemo = localStorage.getItem('show_demo_data') === 'true';
-            setShowDemoData(showDemo);
-            
-            if (showDemo) {
-              setPurchaseHistory(samplePurchaseHistory);
-            } else {
-              setPurchaseHistory([]);
-            }
+        // Fetch real purchase history from API
+        (async () => {
+          try {
+            const res = await fetch('/api/orders/history', { cache: 'no-store' });
+            if (!res.ok) throw new Error('Failed to fetch orders');
+            const data = await res.json();
+            setPurchaseHistory(data.orders || []);
+          } catch (err) {
+            console.error('Error fetching purchase history:', err);
+            setPurchaseHistory([]);
+          } finally {
+            setIsLoading(false);
           }
-          
-          setIsLoading(false);
-        }, 1000);
+        })();
 
       } catch (error) {
         console.error('Lỗi khi đọc từ localStorage:', error);
@@ -325,19 +256,6 @@ export default function AccountPage() {
   const handleSignOut = async () => {
     await signOut({ redirect: false });
     router.push('/');
-  };
-
-  // Hàm bật/tắt chế độ demo
-  const toggleDemoMode = () => {
-    const newValue = !showDemoData;
-    setShowDemoData(newValue);
-    localStorage.setItem('show_demo_data', newValue.toString());
-    
-    if (newValue) {
-      setPurchaseHistory(samplePurchaseHistory);
-    } else {
-      setPurchaseHistory([]);
-    }
   };
 
   if (status === 'loading' || isLoading) {
@@ -528,28 +446,6 @@ export default function AccountPage() {
                     <span className="font-bold">{totalProducts}</span>
                   </div>
                 </div>
-
-                {/* Demo mode toggle - Chỉ hiển thị trong môi trường development */}
-                {process.env.NODE_ENV === 'development' && (
-                  <div className="mt-6 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-600 text-sm">Chế độ demo</span>
-                      <button
-                        onClick={toggleDemoMode}
-                        className={`px-3 py-1 text-xs rounded-full ${showDemoData 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-800'}`}
-                      >
-                        {showDemoData ? 'Đang bật' : 'Đang tắt'}
-                      </button>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {showDemoData 
-                        ? 'Hiển thị dữ liệu mẫu. Nhấn để tắt.' 
-                        : 'Hiển thị trạng thái rỗng. Nhấn để xem dữ liệu mẫu.'}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
 
