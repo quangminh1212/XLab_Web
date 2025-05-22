@@ -51,6 +51,13 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }: { session: Session; token: JWT }) {
       if (token && session.user) {
         session.user.id = token.sub;
+        // Đảm bảo lưu giữ thông tin hình ảnh từ Google
+        if (token.picture) {
+          session.user.image = token.picture as string;
+        }
+        // In ra console hình ảnh để kiểm tra
+        console.log("AUTH SESSION IMAGE:", session.user.image);
+        console.log("AUTH TOKEN PICTURE:", token.picture);
         // Kiểm tra email có trong danh sách admin không
         if (token.email && ADMIN_EMAILS.includes(token.email as string)) {
           session.user.isAdmin = true;
@@ -60,9 +67,14 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
+      }
+      // Lưu thông tin avatar từ Google vào token (token.picture đã được tự động thêm bởi NextAuth)
+      console.log("AUTH JWT TOKEN:", token);
+      if (account && account.provider === 'google' && account.id_token) {
+        console.log("AUTH GOOGLE ACCOUNT:", account);
       }
       return token;
     },

@@ -274,11 +274,12 @@ const Header = () => {
                   aria-haspopup="true"
                 >
                   <Image
-                    src={session.user?.image || "/images/profiles/default-avatar.png"}
+                    src={session.user?.image || "/images/avatar-placeholder.svg"}
                     alt={session.user?.name || "User"}
                     width={30}
                     height={30}
                     className="w-6 h-6 md:w-7 md:h-7 rounded-full"
+                    unoptimized={true}
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

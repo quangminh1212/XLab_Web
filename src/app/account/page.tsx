@@ -130,6 +130,7 @@ export default function AccountPage() {
     if (status === 'authenticated' && session?.user) {
       console.log('User is authenticated, loading profile data:', session.user);
       console.log('Session info: Name =', session.user.name, 'Email =', session.user.email, 'Image =', session.user.image);
+      console.log('Google avatar URL:', session?.user?.image);
       
       // Khởi tạo thông tin cơ bản từ session
       const updatedProfile = {
@@ -439,6 +440,7 @@ export default function AccountPage() {
                         console.log('Lỗi khi tải ảnh đại diện, sử dụng ảnh mặc định');
                       }}
                       priority
+                      unoptimized={true}
                     />
                     <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
