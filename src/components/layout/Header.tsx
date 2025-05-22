@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { useCart } from '@/components/cart/CartContext';
 
 const Header = () => {
   const pathname = usePathname();
@@ -13,6 +14,9 @@ const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+  
+  // Lấy thông tin giỏ hàng
+  const { itemCount } = useCart();
   
   // Tạo ref để tham chiếu đến phần tử dropdown profile
   const profileRef = useRef<HTMLDivElement>(null);
@@ -259,7 +263,7 @@ const Header = () => {
                 />
               </svg>
               <span className="absolute -top-1.5 -right-1.5 bg-primary-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                0
+                {itemCount}
               </span>
             </Link>
 

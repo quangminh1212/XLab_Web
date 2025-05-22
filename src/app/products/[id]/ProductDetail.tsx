@@ -131,15 +131,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   }, [product.name]);
 
   // State để theo dõi số lượt xem
-  const [viewCount, setViewCount] = useState(0);
+  const [viewCount, setViewCount] = useState<number>(0);
   
   // State lưu số lượng sản phẩm
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState<number>(1);
   
   // State lưu phiên bản sản phẩm được chọn
-  const [selectedVersion, setSelectedVersion] = useState(
-    product.versions && product.versions.length > 0 ? product.versions[0].name : ''
-  );
+  const [selectedVersion, setSelectedVersion] = useState<string>(product.versions && product.versions.length > 0 ? product.versions[0].name : '');
   
   // State quản lý tùy chọn mới
   const [newOptionText, setNewOptionText] = useState('');
@@ -148,13 +146,17 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [productOptions, setProductOptions] = useState(product.productOptions || []);
   
   // State tùy chọn đang chọn
-  const [selectedOption, setSelectedOption] = useState(product.defaultProductOption || (product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : ''));
+  const [selectedOption, setSelectedOption] = useState<string>(product.productOptions && product.productOptions.length > 0 ? product.productOptions[0] : '');
   
   // State hiển thị tùy chọn hiện có
   const [showOptions, setShowOptions] = useState(false);
   
   // State cho việc kéo thả
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
+  
+  // State để hiện thị hiệu ứng khi thêm vào giỏ
+  const [showAddToCartAnimation, setShowAddToCartAnimation] = useState<boolean>(false);
+  const [addedToCartMessage, setAddedToCartMessage] = useState<string>('');
   
   // Xử lý thêm tùy chọn mới
   const handleAddOption = () => {
@@ -334,6 +336,16 @@ export default function ProductDetail({ product }: { product: ProductType }) {
              '/images/placeholder/product-placeholder.jpg',
       options: selectedOption ? [selectedOption] : (selectedVersion ? [selectedVersion] : undefined)
     });
+    
+    // Hiển thị thông báo đã thêm vào giỏ
+    setAddedToCartMessage(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
+    setShowAddToCartAnimation(true);
+    
+    // Ẩn thông báo sau 3 giây
+    setTimeout(() => {
+      setShowAddToCartAnimation(false);
+    }, 3000);
+    
     return true;
   };
 
@@ -371,6 +383,18 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   return (
     <div className="container mx-auto px-4 py-8 product-detail-loaded">
+      {/* Thông báo thêm vào giỏ hàng thành công */}
+      {showAddToCartAnimation && (
+        <div className="fixed top-20 right-4 bg-green-600 text-white py-2 px-4 rounded-md shadow-lg z-50 animate-fadeInOut">
+          <div className="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>{addedToCartMessage}</span>
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-5xl mx-auto">
         {/* Breadcrumbs */}
         <div className="flex items-center text-sm mb-4">
@@ -534,14 +558,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               <div className="mt-8 grid grid-cols-2 gap-4">
                 <button 
                   onClick={handleAddToCart}
-                  className="px-4 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="px-4 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-transform active:scale-95"
                 >
                   Thêm vào giỏ hàng
                 </button>
                 <Link 
                   href="/cart" 
                   onClick={handleAddToCart}
-                  className="px-4 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center"
+                  className="px-4 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center transition-transform active:scale-95"
                 >
                   Mua ngay
                 </Link>

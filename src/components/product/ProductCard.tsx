@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useCart } from '@/components/cart/CartContext'
 
 interface ProductCardProps {
   id: string
@@ -41,7 +42,9 @@ export default function ProductCard({
   const [isHovered, setIsHovered] = useState(false)
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [showAddedEffect, setShowAddedEffect] = useState(false)
   const router = useRouter()
+  const { addItem } = useCart()
   
   // Log the image URL for debugging
   console.log(`ProductCard image URL for ${name}:`, image)
@@ -127,14 +130,24 @@ export default function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    
+    // Thêm sản phẩm vào giỏ hàng trực tiếp từ component
+    addItem({
+      id,
+      name,
+      price,
+      quantity: 1,
+      image: displayImageUrl
+    })
+    
+    // Hiển thị hiệu ứng đã thêm vào giỏ
+    setShowAddedEffect(true)
+    setTimeout(() => {
+      setShowAddedEffect(false)
+    }, 1000)
+    
+    // Gọi callback nếu được cung cấp
     if (onAddToCart) {
-      // Log sản phẩm được thêm vào giỏ hàng để debug
-      console.log('Thêm vào giỏ hàng:', {
-        id,
-        name,
-        price,
-        image: displayImageUrl, // Sử dụng URL hình ảnh đã được kiểm tra
-      })
       onAddToCart(id)
     }
   }
@@ -210,6 +223,17 @@ export default function ProductCard({
           </div>
         )}
 
+        {showAddedEffect && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 animate-fadeInOut">
+            <div className="bg-white text-green-600 font-bold px-4 py-2 rounded-full flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Đã thêm
+            </div>
+          </div>
+        )}
+
         <div
           className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
@@ -217,7 +241,7 @@ export default function ProductCard({
         >
           <button
             onClick={handleAddToCart}
-            className="bg-white text-gray-800 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-full font-medium transition-colors"
+            className="bg-white text-gray-800 hover:bg-blue-500 hover:text-white px-4 py-2 rounded-full font-medium transition-colors active:scale-95"
           >
             Thêm vào giỏ
           </button>
@@ -248,37 +272,31 @@ export default function ProductCard({
             </div>
             <div className="mt-1">
               {rating > 0 ? (
-                <div className="flex items-center">
-                  {renderRatingStars(rating)}
-                  <span className="text-xs font-medium text-gray-700 ml-1">
-                    {typeof rating === 'number' ? rating.toFixed(1) : Number(rating).toFixed(1)}
-                  </span>
-                </div>
+                renderRatingStars(rating)
               ) : (
-                <div className="h-4"></div> 
+                <div className="h-4"></div>
               )}
             </div>
           </div>
-          <button
-            onClick={handleAddToCart}
-            className="bg-primary-600 text-white p-1.5 rounded-full hover:bg-primary-700 transition-colors"
-            aria-label="Add to cart"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-          </button>
+          {weeklyPurchases > 0 && (
+            <div className="text-xs text-gray-500 flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3 w-3 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+              {weeklyPurchases}+
+            </div>
+          )}
         </div>
       </div>
     </Link>

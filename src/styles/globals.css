@@ -163,6 +163,13 @@
   }
 }
 
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.8s ease-out forwards;
 }
@@ -181,6 +188,10 @@
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-fadeInOut {
+  animation: fadeInOut 3s ease-in-out forwards;
 }
 
 .animation-delay-100 {
