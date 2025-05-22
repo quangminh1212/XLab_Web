@@ -286,6 +286,20 @@ function createStaticFiles() {
       console.log('Đã tạo file app-paths-manifest.json trống');
     }
     
+    // Tạo file middleware-manifest.json để tránh lỗi Cannot find module
+    const middlewareManifestPath = path.join(__dirname, '.next/server/middleware-manifest.json');
+    if (!fs.existsSync(middlewareManifestPath)) {
+      const middlewareManifest = {
+        version: 2,
+        middleware: {},
+        sortedMiddleware: [],
+        functions: {},
+        matchers: {}
+      };
+      fs.writeFileSync(middlewareManifestPath, JSON.stringify(middlewareManifest, null, 2));
+      console.log('Đã tạo file middleware-manifest.json');
+    }
+    
     // Tạo các file CSS và JS cố định để tránh lỗi 404
     const staticFiles = [
       {
