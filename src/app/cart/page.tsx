@@ -24,7 +24,7 @@ export default function CartPage() {
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map(item => ({
     ...item,
-    image: item.image || '/images/product-placeholder.svg'
+    image: item.image || '/images/placeholder/product-placeholder.jpg'
   }));
   
   // Calculate cart totals
@@ -78,14 +78,14 @@ export default function CartPage() {
                         {/* Hình ảnh sản phẩm */}
                         <div className="md:w-1/5 h-24 md:h-28 bg-gray-100 rounded-lg flex items-center justify-center">
                           <Image
-                            src={item.image}
+                            src={item.image || '/images/placeholder/product-placeholder.jpg'}
                             alt={item.name}
                             width={80}
                             height={80}
                             className="max-w-full h-auto object-contain"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.src = '/images/product-placeholder.svg';
+                              target.src = '/images/placeholder/product-placeholder.jpg';
                             }}
                           />
                         </div>

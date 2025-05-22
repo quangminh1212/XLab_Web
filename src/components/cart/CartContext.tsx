@@ -64,13 +64,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const existingItemIndex = prevItems.findIndex(item => item.id === newItem.id)
       
       if (existingItemIndex > -1) {
-        // Nếu item đã tồn tại, tăng số lượng
+        // Nếu item đã tồn tại, tăng số lượng nhưng giữ nguyên hình ảnh cũ nếu có
         const updatedItems = [...prevItems]
         updatedItems[existingItemIndex].quantity += newItem.quantity || 1
+        
+        // Đảm bảo giữ lại đường dẫn hình ảnh nếu đã tồn tại
+        if (newItem.image && (!updatedItems[existingItemIndex].image || updatedItems[existingItemIndex].image === '/images/product-placeholder.svg')) {
+          updatedItems[existingItemIndex].image = newItem.image
+        }
+        
         return updatedItems
       } else {
-        // Nếu là item mới, thêm vào mảng
-        return [...prevItems, { ...newItem, quantity: newItem.quantity || 1 }]
+        // Nếu là item mới, thêm vào mảng và đảm bảo có đường dẫn hình ảnh
+        const itemImage = newItem.image || '/images/placeholder/product-placeholder.jpg'
+        return [...prevItems, { ...newItem, image: itemImage, quantity: newItem.quantity || 1 }]
       }
     })
   }

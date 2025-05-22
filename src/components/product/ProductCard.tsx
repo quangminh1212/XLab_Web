@@ -52,7 +52,15 @@ export default function ProductCard({
     if (imgUrl.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg'
     if (imgUrl.includes('undefined')) return '/images/placeholder/product-placeholder.jpg'
     if (imgUrl.trim() === '') return '/images/placeholder/product-placeholder.jpg'
-    return imgUrl
+    
+    // Nếu đường dẫn không tồn tại hoặc không hợp lệ, sử dụng placeholder
+    try {
+      const url = new URL(imgUrl, window.location.origin);
+      return url.toString();
+    } catch (e) {
+      // Nếu không phải URL đầy đủ, giữ nguyên giá trị
+      return imgUrl;
+    }
   }
   
   // Get the final image URL
@@ -119,7 +127,16 @@ export default function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    if (onAddToCart) onAddToCart(id)
+    if (onAddToCart) {
+      // Log sản phẩm được thêm vào giỏ hàng để debug
+      console.log('Thêm vào giỏ hàng:', {
+        id,
+        name,
+        price,
+        image: displayImageUrl, // Sử dụng URL hình ảnh đã được kiểm tra
+      })
+      onAddToCart(id)
+    }
   }
 
   const handleView = () => {
