@@ -129,7 +129,7 @@ export default function CartPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-primary-700 to-primary-500 text-white py-10 md:py-16">
+      <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white py-10 md:py-16">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ y: -20, opacity: 0 }}

@@ -565,7 +565,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 <Link 
                   href="/checkout?skipInfo=true" 
                   onClick={handleAddToCart}
-                  className="px-4 py-3 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 text-center transition-transform active:scale-95"
+                  className="px-4 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 text-center transition-transform active:scale-95"
                 >
                   Mua ngay
                 </Link>
