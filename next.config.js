@@ -89,8 +89,8 @@ const nextConfig = {
     styledComponents: true,
   },
   onDemandEntries: {
-    maxInactiveAge: 60 * 1000,
-    pagesBufferLength: 5,
+    maxInactiveAge: 60 * 60 * 1000,
+    pagesBufferLength: 10,
   },
   staticPageGenerationTimeout: 180,
   poweredByHeader: false,
@@ -102,17 +102,9 @@ const nextConfig = {
       transform: 'tailwindcss/utilities/{{member}}',
     },
   },
-  // Cấu hình webpackDevMiddleware để giải quyết lỗi 404
-  webpackDevMiddleware: config => {
-    // Tối ưu hóa cấu hình middleware để giảm lỗi 404
-    config.watchOptions = {
-      ...config.watchOptions,
-      aggregateTimeout: 200,
-      poll: 1000,
-      ignored: /node_modules/,
-    };
-    config.writeToDisk = true;
-    return config;
+  // Cấu hình dev server để giải quyết lỗi 404
+  devIndicators: {
+    position: 'bottom-right',
   },
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
@@ -144,6 +136,13 @@ const nextConfig = {
             };
           }
         });
+      }
+      
+      // Thêm tùy chọn writeToDisk để ghi file vào ổ đĩa
+      if (config.devServer) {
+        config.devServer.writeToDisk = true;
+      } else {
+        config.devServer = { writeToDisk: true };
       }
     }
 
@@ -199,6 +198,11 @@ const nextConfig = {
         {
           test: /\.(png|jpg|jpeg|gif|ico|svg|webp)$/,
           type: 'asset/resource',
+        },
+        // Quy tắc cho các file hotupdate
+        {
+          test: /\.hot-update\.js$/,
+          loader: 'ignore-loader',
         },
       ],
     };
