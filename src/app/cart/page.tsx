@@ -6,7 +6,7 @@ import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
 import { useState, useEffect } from 'react'
 import { products } from '@/data/mockData'
-import { FiShoppingCart, FiPlus, FiMinus, FiTrash2, FiTag, FiTruck, FiInfo } from 'react-icons/fi'
+import { AiOutlineShoppingCart, AiOutlinePlus, AiOutlineMinus, AiOutlineDelete, AiOutlineTag, AiOutlineInfoCircle } from 'react-icons/ai'
 import { motion } from 'framer-motion'
 
 // Kết hợp interface CartItem từ CartContext và utils
@@ -31,7 +31,6 @@ export default function CartPage() {
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; name: string } | null>(null);
   const [couponError, setCouponError] = useState('');
-  const [shippingOption, setShippingOption] = useState<'standard' | 'express'>('standard');
   const [showCouponInfo, setShowCouponInfo] = useState(false);
   
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
@@ -42,9 +41,6 @@ export default function CartPage() {
   
   // Tính tổng giá trị giỏ hàng
   const { subtotal, tax } = calculateCartTotals(cart);
-  
-  // Tính phí vận chuyển
-  const shippingFee = shippingOption === 'standard' ? 30000 : 60000;
   
   // Tính giảm giá từ mã coupon
   const calculateCouponDiscount = () => {
@@ -62,7 +58,7 @@ export default function CartPage() {
   const couponDiscount = calculateCouponDiscount();
   
   // Tính tổng cộng (đã trừ giảm giá)
-  const total = subtotal + tax + shippingFee - couponDiscount;
+  const total = subtotal + tax - couponDiscount;
   
   // Lấy sản phẩm được đề xuất (đánh dấu là featured)
   const featuredProducts = products.filter(product => product.isFeatured).slice(0, 3);
@@ -98,14 +94,14 @@ export default function CartPage() {
   // Biểu tượng giỏ hàng trống
   const EmptyCartIcon = () => (
     <div className="relative w-32 h-32 mx-auto mb-6 text-gray-300">
-      <FiShoppingCart className="w-full h-full stroke-1" />
+      <AiOutlineShoppingCart className="w-full h-full stroke-1" />
       <motion.div 
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.3, duration: 0.5 }}
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500"
       >
-        <FiPlus className="w-8 h-8 rotate-45" />
+        <AiOutlinePlus className="w-8 h-8 rotate-45" />
       </motion.div>
     </div>
   );
@@ -176,14 +172,14 @@ export default function CartPage() {
                         variants={itemVariants}
                         whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
                       >
-                        {/* Hình ảnh sản phẩm */}
-                        <div className="md:w-1/4 h-28 md:h-32 bg-gray-50 rounded-lg flex items-center justify-center p-2 border border-gray-100">
+                        {/* Hình ảnh sản phẩm - Thay đổi thành hình vuông */}
+                        <div className="md:w-1/4 aspect-square bg-gray-50 rounded-lg flex items-center justify-center p-2 border border-gray-100">
                           <Image
                             src={item.image || '/images/placeholder/product-placeholder.jpg'}
                             alt={item.name}
-                            width={100}
-                            height={100}
-                            className="max-w-full h-auto object-contain transition-transform hover:scale-105"
+                            width={120}
+                            height={120}
+                            className="w-full h-full object-contain transition-transform hover:scale-105"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.src = '/images/placeholder/product-placeholder.jpg';
@@ -213,7 +209,7 @@ export default function CartPage() {
                                 onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                                 aria-label="Giảm số lượng"
                               >
-                                <FiMinus className="w-4 h-4" />
+                                <AiOutlineMinus className="w-4 h-4" />
                               </button>
                               <input
                                 type="text"
@@ -226,14 +222,14 @@ export default function CartPage() {
                                 onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                 aria-label="Tăng số lượng"
                               >
-                                <FiPlus className="w-4 h-4" />
+                                <AiOutlinePlus className="w-4 h-4" />
                               </button>
                             </div>
                             <button 
                               className="flex items-center text-red-500 hover:text-red-700 transition-colors text-sm font-medium"
                               onClick={() => removeItemFromCart(item.id)}
                             >
-                              <FiTrash2 className="w-4 h-4 mr-1" />
+                              <AiOutlineDelete className="w-4 h-4 mr-1" />
                               <span>Xóa</span>
                             </button>
                           </div>
@@ -254,7 +250,7 @@ export default function CartPage() {
                     className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-5 py-2.5 rounded-md text-sm font-medium transition-colors flex items-center justify-center"
                     onClick={() => clearCart()}
                   >
-                    <FiTrash2 className="w-4 h-4 mr-2" />
+                    <AiOutlineDelete className="w-4 h-4 mr-2" />
                     Xóa giỏ hàng
                   </button>
                 </div>
@@ -276,54 +272,18 @@ export default function CartPage() {
                       <span className="font-medium">{formatCurrency(subtotal)}</span>
                     </div>
                     
-                    {/* Phí vận chuyển */}
-                    <div className="pt-3 border-t border-gray-100">
-                      <h3 className="flex items-center text-sm font-medium mb-3">
-                        <FiTruck className="mr-2" />
-                        Phương thức vận chuyển
-                      </h3>
-                      <div className="space-y-2">
-                        <label className="flex items-center justify-between p-3 border rounded-md cursor-pointer hover:border-primary-200 hover:bg-primary-50 transition-colors">
-                          <div className="flex items-center">
-                            <input
-                              type="radio"
-                              name="shipping"
-                              checked={shippingOption === 'standard'}
-                              onChange={() => setShippingOption('standard')}
-                              className="mr-2 text-primary-600 focus:ring-primary-500"
-                            />
-                            <span>Giao hàng tiêu chuẩn (2-3 ngày)</span>
-                          </div>
-                          <span className="font-medium">{formatCurrency(30000)}</span>
-                        </label>
-                        <label className="flex items-center justify-between p-3 border rounded-md cursor-pointer hover:border-primary-200 hover:bg-primary-50 transition-colors">
-                          <div className="flex items-center">
-                            <input
-                              type="radio"
-                              name="shipping"
-                              checked={shippingOption === 'express'}
-                              onChange={() => setShippingOption('express')}
-                              className="mr-2 text-primary-600 focus:ring-primary-500"
-                            />
-                            <span>Giao hàng nhanh (1-2 ngày)</span>
-                          </div>
-                          <span className="font-medium">{formatCurrency(60000)}</span>
-                        </label>
-                      </div>
-                    </div>
-                    
                     {/* Coupon code input */}
                     <div className="pt-3 border-t border-gray-100">
                       <div className="flex items-center justify-between mb-3">
                         <label htmlFor="coupon" className="flex items-center text-sm font-medium">
-                          <FiTag className="mr-2" />
+                          <AiOutlineTag className="mr-2" />
                           Mã khuyến mãi
                         </label>
                         <button 
                           className="text-xs text-primary-600 hover:text-primary-700 flex items-center"
                           onClick={() => setShowCouponInfo(!showCouponInfo)}
                         >
-                          <FiInfo className="mr-1" />
+                          <AiOutlineInfoCircle className="mr-1" />
                           Mã khuyến mãi
                         </button>
                       </div>
@@ -387,10 +347,6 @@ export default function CartPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tạm tính</span>
                       <span>{formatCurrency(subtotal)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Phí vận chuyển</span>
-                      <span>{formatCurrency(shippingFee)}</span>
                     </div>
                     {appliedCoupon && (
                       <div className="flex justify-between text-green-600">
@@ -487,7 +443,8 @@ export default function CartPage() {
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
                 variants={itemVariants}
               >
-                <div className="h-44 md:h-56 bg-gradient-to-r from-gray-50 to-gray-100 relative overflow-hidden">
+                {/* Thay đổi thành hình vuông */}
+                <div className="aspect-square bg-gradient-to-r from-gray-50 to-gray-100 relative overflow-hidden">
                   {/* Hình ảnh sản phẩm */}
                   <div className="w-full h-full flex items-center justify-center p-4">
                     <Image
@@ -495,7 +452,7 @@ export default function CartPage() {
                       alt={product.name}
                       width={200}
                       height={200}
-                      className="max-h-full max-w-full object-contain transition-transform group-hover:scale-110"
+                      className="w-full h-full object-contain transition-transform group-hover:scale-110"
                       unoptimized={true}
                     />
                   </div>
@@ -545,7 +502,7 @@ export default function CartPage() {
                         image: product.imageUrl || '/images/product-placeholder.svg'
                       })}
                     >
-                      <FiPlus className="mr-1 w-4 h-4" />
+                      <AiOutlinePlus className="mr-1 w-4 h-4" />
                       Thêm vào giỏ
                     </button>
                   </div>
