@@ -198,6 +198,9 @@ start-dev.bat
 # Next.js build artifacts
 .next/trace
 .next/trace.*
+
+# Test files
+test-cart.html
 .next/cache/*
 !.next/cache/.gitkeep
 .next/static/chunks/webpack-*
