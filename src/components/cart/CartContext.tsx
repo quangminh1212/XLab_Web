@@ -9,6 +9,7 @@ interface CartItem {
   quantity: number
   image?: string
   options?: string[]
+  version?: string
 }
 
 interface CartContextType {
@@ -73,11 +74,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           updatedItems[existingItemIndex].image = newItem.image
         }
         
+        // Cập nhật version nếu có
+        if (newItem.version && (!updatedItems[existingItemIndex].version)) {
+          updatedItems[existingItemIndex].version = newItem.version
+        }
+        
+        // Cập nhật options nếu có
+        if (newItem.options && newItem.options.length > 0) {
+          updatedItems[existingItemIndex].options = newItem.options
+        }
+        
         return updatedItems
       } else {
         // Nếu là item mới, thêm vào mảng và đảm bảo có đường dẫn hình ảnh
         const itemImage = newItem.image || '/images/placeholder/product-placeholder.jpg'
-        return [...prevItems, { ...newItem, image: itemImage, quantity: newItem.quantity || 1 }]
+        return [...prevItems, { 
+          ...newItem, 
+          image: itemImage,
+          quantity: newItem.quantity || 1,
+          version: newItem.version || undefined,
+          options: newItem.options || undefined
+        }]
       }
     })
   }
