@@ -1,32 +1,62 @@
 # XLab Web - Hướng dẫn khởi động
 
-## 🚀 Cách khởi động nhanh
+## 🚀 Cách khởi động siêu đơn giản
 
-### Khởi động đơn giản (Khuyến nghị)
+### Chạy mặc định (option 2 - không cần chọn):
 ```batch
-.\run.bat
+run.bat
+```
+**→ Chạy thẳng Full Check + Start, không hiển thị menu**
+
+### Các mode khác:
+```batch
+run.bat quick    # Siêu nhanh (không check)
+run.bat dev      # An toàn có check
+run.bat auto     # Full check mode
+run.bat menu     # Hiển thị menu lựa chọn
 ```
 
-### Khởi động thủ công
-```bash
-# 1. Cài package thiếu
-npm install @radix-ui/react-slot
+## 📋 Chi tiết các mode
 
-# 2. Dọn cache (nếu cần)
-rmdir /s /q .next
+### run.bat (mặc định) - Full Check + Start
+- ✅ Dọn cache và temporary files
+- ✅ Kiểm tra Node.js/npm
+- ✅ Cài package thiếu
+- ✅ Khởi động development server
+- ✅ **KHÔNG hiển thị menu**
+- ✅ **KHÔNG pause giữa chừng**
+- ⭐ **Mode mặc định - khuyến nghị cho daily development**
 
-# 3. Khởi động server
-npm run dev:simple
-```
+### run.bat quick - Siêu nhanh
+- ✅ Dọn cache .next
+- ✅ Start server ngay lập tức
+- ❌ **KHÔNG check Node.js/npm**
+- ❌ **KHÔNG check dependencies**
+- ⚡ **Nhanh nhất, dành cho khi chắc chắn môi trường OK**
 
-## 📋 Các bước tự động
+### run.bat dev - An toàn có check  
+- ✅ Check Node.js/npm
+- ✅ Dọn cache
+- ✅ Cài dependencies thiếu
+- ✅ Start server
+- ✅ **KHÔNG hiển thị menu**
+- ✅ **KHÔNG pause giữa chừng**
 
-Khi chạy `.\run.bat`, script sẽ tự động thực hiện:
+### run.bat auto - Full check mode
+- ✅ Dọn cache và temporary files
+- ✅ Kiểm tra Node.js/npm
+- ✅ Cài package thiếu
+- ✅ Khởi động development server
+- ✅ **KHÔNG hiển thị menu**
+- ✅ **KHÔNG pause giữa chừng**
 
-1. ✅ **[1/4]** Kiểm tra Node.js installation
-2. ✅ **[2/4]** Kiểm tra npm installation  
-3. ✅ **[3/4]** Cài đặt dependencies thiếu (@radix-ui/react-slot)
-4. ✅ **[4/4]** Dọn cache và khởi động development server
+### run.bat menu - Menu lựa chọn
+Hiển thị menu với các options:
+- **[0] Auto Run** - Tương đương `run.bat auto`
+- **[1] Quick Start** - Khởi động nhanh có check
+- **[2] Full Check + Start** - Kiểm tra toàn diện + khởi động **[MẶC ĐỊNH]**
+- **[3] Optimize Only** - Chỉ tối ưu, không khởi động
+- **[4] Exit** - Thoát
 
 ## 🌐 Truy cập ứng dụng
 
@@ -36,22 +66,49 @@ Khi chạy `.\run.bat`, script sẽ tự động thực hiện:
 ## 🛠️ Xử lý sự cố
 
 ### Lỗi "Module not found"
-```bash
-npm install @radix-ui/react-slot
-```
+Chạy `run.bat dev` hoặc `run.bat auto` để tự động cài package
 
 ### Lỗi cache build
-```bash
-rmdir /s /q .next
-```
+Tất cả mode đều tự động dọn cache
 
 ### Port đã được sử dụng
 Next.js sẽ tự động chuyển sang port khác (3001, 3002, ...)
 
 ## 📁 Cấu trúc đơn giản
 
-- `run.bat` - Script khởi động duy nhất (tích hợp tất cả)
+- `run.bat` - **File duy nhất cho tất cả**
 - `package.json` - Dependencies và npm scripts
 - `STARTUP.md` - Hướng dẫn này
 
-## ⚡ Tính năng- 🔍 **Auto-detect**: Tự động kiểm tra môi trường- 📦 **Auto-install**: Tự động cài package thiếu- 🧹 **Auto-clean**: Tự động dọn cache build- 🎨 **User-friendly**: Giao diện rõ ràng với progress indicators- 🛡️ **Error handling**: Xử lý lỗi và hướng dẫn sửa## 🛠️ Scripts tối ưu### Kiểm tra và tối ưu toàn diện```bash.\optimize.bat```### Scripts npm có sẵn```bashnpm run check          # TypeScript + ESLint checknpm run fix           # Auto-fix ESLint issuesnpm run type-check    # TypeScript type checkingnpm run lint:check    # ESLint check only``` 
+## 💡 Khuyến nghị sử dụng
+
+- **Daily development**: `run.bat` (mặc định, option 2)
+- **Siêu nhanh**: `run.bat quick` 
+- **An toàn hơn**: `run.bat dev`
+- **Cần menu**: `run.bat menu`
+
+## 🎯 Workflow đơn giản nhất
+
+**99% thời gian chỉ cần:**
+```batch
+run.bat
+```
+**→ Chạy thẳng option 2, không cần chọn gì cả!**
+
+## 🛠️ Scripts npm bổ sung
+
+```bash
+npm run check          # TypeScript + ESLint check
+npm run fix           # Auto-fix ESLint issues
+npm run type-check    # TypeScript type checking
+npm run lint:check    # ESLint check only
+``` 
+
+## 🔧 Tính năng
+
+- 🎯 **Default to option 2**: Chạy `run.bat` = option 2 ngay lập tức
+- ⚡ **Multiple modes**: Quick/Dev/Auto/Menu modes
+- 🚀 **No-menu by default**: Mặc định không hiển thị menu
+- 📋 **Menu on demand**: `run.bat menu` khi cần
+- 🔧 **Smart detection**: Tự động check và cài đặt
+- 🧹 **Auto-clean**: Tự động dọn cache 

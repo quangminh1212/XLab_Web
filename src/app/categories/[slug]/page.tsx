@@ -62,7 +62,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                                 description={product.description}
                                 price={product.salePrice || product.price}
                                 originalPrice={product.salePrice && product.salePrice < product.price ? product.price : undefined}
-                                image={product.imageUrl}
+                                image={product.imageUrl || '/images/placeholder/product-placeholder.svg'}
                                 rating={product.rating}
                                 isAccount={product.isAccount || product.type === 'account'}
                             />

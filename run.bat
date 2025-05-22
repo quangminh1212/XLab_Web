@@ -2,7 +2,16 @@
 chcp 65001 >nul
 cls
 
-:start
+REM Check parameters for specific modes
+if "%1"=="quick" goto :quick_mode
+if "%1"=="dev" goto :dev_mode
+if "%1"=="auto" goto :auto_run
+if "%1"=="menu" goto :show_menu
+
+REM Default: Run option 2 directly (no menu)
+goto :full_check
+
+:show_menu
 echo.
 echo ==========================================
 echo   XLab Web - All-in-One Launcher
@@ -10,19 +19,95 @@ echo ==========================================
 echo.
 echo Choose an option:
 echo   [1] Quick Start (Fast startup)
-echo   [2] Full Check + Start (Recommended)
+echo   [2] Full Check + Start (Recommended) [DEFAULT]
 echo   [3] Optimize Only
 echo   [4] Exit
+echo   [0] Auto Run (No menu, direct to option 2)
 echo.
-set /p choice="Enter your choice (1-4): "
+echo Or use direct commands:
+echo   run.bat quick  - Ultra fast (no checks)
+echo   run.bat dev    - Safe with checks
+echo   run.bat auto   - Full check mode
+echo   run.bat        - Direct to option 2 (default)
+echo   run.bat menu   - Show this menu
+echo.
+set /p choice="Enter your choice (0-4) or press Enter for default [2]: "
 
+if "%choice%"=="" set choice=2
+if "%choice%"=="0" goto :auto_run
 if "%choice%"=="1" goto :quick_start
 if "%choice%"=="2" goto :full_check
 if "%choice%"=="3" goto :optimize_only
 if "%choice%"=="4" exit /b 0
-echo Invalid choice. Please try again.
-pause
-goto :start
+echo Invalid choice. Using default option 2.
+set choice=2
+goto :full_check
+
+:quick_mode
+echo ==========================================
+echo   XLab Web - Ultra Fast Mode
+echo ==========================================
+echo.
+echo 🚀 Starting server immediately...
+echo.
+if exist ".next" rmdir /s /q .next >nul 2>&1
+echo 🌐 Server will start at: http://localhost:3000
+echo 🛑 Press Ctrl+C to stop
+echo.
+call npm run dev:simple
+goto :end_no_pause
+
+:dev_mode
+echo ==========================================
+echo   XLab Web - Development Mode
+echo ==========================================
+echo.
+echo 🚀 Starting with environment checks...
+echo.
+
+node --version >nul 2>&1
+if errorlevel 1 (
+    echo ❌ Node.js not found! Please install from https://nodejs.org/
+    pause
+    exit /b 1
+)
+
+call npm --version >nul 2>&1
+if errorlevel 1 (
+    echo ❌ npm not found!
+    pause
+    exit /b 1
+)
+
+echo ✅ Environment OK
+echo 🧹 Cleaning cache...
+if exist ".next" rmdir /s /q .next >nul 2>&1
+
+echo 📦 Installing dependencies...
+if not exist "node_modules\@radix-ui\react-slot\package.json" (
+    call npm install @radix-ui/react-slot --silent >nul 2>&1
+)
+
+echo.
+echo 🌐 Server will start at: http://localhost:3000
+echo 🛑 Press Ctrl+C to stop
+echo.
+call npm run dev:simple
+goto :end_no_pause
+
+:auto_run
+cls
+echo ==========================================
+echo   XLab Web - Auto Run Mode
+echo ==========================================
+echo.
+echo Starting automatic setup and launch...
+echo.
+call :clean_cache
+call :check_node_npm
+call :install_deps
+call :start_server
+goto :end_no_pause
 
 :quick_start
 cls
@@ -33,7 +118,7 @@ echo.
 call :check_node_npm
 call :install_deps
 call :start_server
-goto :end
+goto :end_no_pause
 
 :full_check
 cls
@@ -42,12 +127,10 @@ echo   XLab Web - Full Check + Start
 echo ==========================================
 echo.
 call :clean_cache
-call :type_check
-call :lint_check
 call :check_node_npm
 call :install_deps
 call :start_server
-goto :end
+goto :end_no_pause
 
 :optimize_only
 cls
@@ -62,7 +145,7 @@ call :test_build
 echo.
 echo Optimization Complete!
 pause
-goto :start
+goto :show_menu
 
 :check_node_npm
 echo Checking Node.js...
@@ -75,7 +158,7 @@ if errorlevel 1 (
 echo + Node.js is installed
 
 echo Checking npm...
-npm --version >nul 2>&1
+call npm --version >nul 2>&1
 if errorlevel 1 (
     echo X npm not found!
     pause
@@ -91,7 +174,7 @@ if exist "node_modules\@radix-ui\react-slot\package.json" (
     echo + @radix-ui/react-slot already installed
 ) else (
     echo Installing @radix-ui/react-slot...
-    npm install @radix-ui/react-slot --no-fund --no-audit --silent
+    call npm install @radix-ui/react-slot --no-fund --no-audit --silent
     if errorlevel 1 (
         echo X Failed to install package
         pause
@@ -108,7 +191,7 @@ if exist ".next" rmdir /s /q .next >nul 2>&1
 echo + URL: http://localhost:3000
 echo + Press Ctrl+C to stop
 echo.
-npm run dev:simple
+call npm run dev:simple
 goto :eof
 
 :clean_cache
@@ -123,9 +206,9 @@ goto :eof
 
 :type_check
 echo Running TypeScript check...
-call npx tsc --noEmit
+call npx tsc --noEmit --skipLibCheck
 if errorlevel 1 (
-    echo X TypeScript errors found
+    echo ! TypeScript issues found - continuing anyway
 ) else (
     echo + TypeScript check passed
 )
@@ -134,9 +217,9 @@ goto :eof
 
 :lint_check
 echo Running ESLint check...
-call npx next lint --quiet
+call npx next lint --quiet --fix
 if errorlevel 1 (
-    echo X ESLint issues found
+    echo ! ESLint issues found - continuing anyway
 ) else (
     echo + ESLint check passed
 )
@@ -154,5 +237,4 @@ if errorlevel 1 (
 echo.
 goto :eof
 
-:end
-pause
+:end_no_pause

@@ -4,11 +4,10 @@ import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } fr
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
-import { Product as ProductType } from '@/models/ProductModel';
+import { Product } from '@/types';
 import { useCart } from '@/components/cart/CartContext';
 import dynamic from 'next/dynamic';
 import RichTextContent from '@/components/common/RichTextContent';
-import { Product as UIProduct } from '@/types';
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import RelatedProducts from '../../../components/product/RelatedProducts';
@@ -116,7 +115,7 @@ const ProductSpecifications = ({
   );
 };
 
-export default function ProductDetail({ product }: { product: ProductType }) {
+export default function ProductDetail({ product }: { product: Product }) {
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
     const mainElement = document.querySelector('main');

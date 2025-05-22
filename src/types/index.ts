@@ -36,6 +36,11 @@ export interface Product {
   type?: string;
   options?: { name: string; price: number }[];
   versions?: { name: string; description?: string; price: number; originalPrice: number; features: string[] }[];
+  productOptions?: string[];
+  optionPrices?: { [key: string]: { price: number; originalPrice: number } };
+  requirements?: string[];
+  categories?: string[];
+  isPublished?: boolean;
 }
 
 export interface Category {
