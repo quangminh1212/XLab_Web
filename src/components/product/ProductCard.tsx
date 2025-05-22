@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, memo, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -23,7 +23,7 @@ interface ProductCardProps {
   onView?: (id: string) => void
 }
 
-export default function ProductCard({
+const ProductCard = memo(function ProductCard({
   id,
   name,
   description,
@@ -132,7 +132,7 @@ export default function ProductCard({
     )
   }
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     
@@ -155,11 +155,11 @@ export default function ProductCard({
     if (onAddToCart) {
       onAddToCart(id)
     }
-  }
+  }, [id, name, price, displayImageUrl, addItem, onAddToCart])
 
-  const handleView = () => {
+  const handleView = useCallback(() => {
     if (onView) onView(id)
-  }
+  }, [onView, id])
 
   // Handle image error and use placeholder
   const handleImageError = () => {
@@ -314,4 +314,6 @@ export default function ProductCard({
       </div>
     </Link>
   )
-} 
+})
+
+export default ProductCard 

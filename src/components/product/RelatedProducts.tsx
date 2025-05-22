@@ -1,7 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import ProductGrid from './ProductGrid';
+import { useEffect, useState, memo, useCallback } from 'react';
+import dynamic from 'next/dynamic';
+
+// Lazy load ProductGrid để cải thiện performance
+const ProductGrid = dynamic(() => import('./ProductGrid'), {
+  loading: () => (
+    <div className="mt-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-8">
+        <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-2 animate-pulse"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto animate-pulse"></div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="bg-white rounded-lg shadow-sm animate-pulse">
+            <div className="w-full h-48 bg-gray-200 rounded-t-lg"></div>
+            <div className="p-4 space-y-3">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  ),
+  ssr: true
+});
 
 interface Product {
   id: string;
@@ -26,7 +51,7 @@ interface RelatedProductsProps {
   limit?: number;
 }
 
-export default function RelatedProducts({ 
+const RelatedProducts = memo(function RelatedProducts({ 
   currentProductId, 
   categoryId, 
   limit = 4 
@@ -99,4 +124,6 @@ export default function RelatedProducts({
       />
     </div>
   );
-} 
+});
+
+export default RelatedProducts; 

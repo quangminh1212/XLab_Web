@@ -1,25 +1,22 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.js
 .yarn/install-state.gz
 
 # testing
-/coverage
-/coverage-temp
-/.nyc_output
-cypress/videos
-cypress/screenshots
-/__tests__/output
+/coverage/
 
 # next.js
-/.next
+/.next/
+.next/
 /out/
 
 # production
-/build
+build/
+dist/
 
 # misc
 .DS_Store
@@ -29,6 +26,7 @@ cypress/screenshots
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 lerna-debug.log*
 next.config.log
 next-fix-all.log
@@ -121,7 +119,9 @@ no-trace.bat
 run-fixed.bat
 
 # SWC related
-/.swc-disabled/
+.swc/
+.swc-disabled/
+node_modules/@next/swc-*
 .next/trace
 .next/trace.*
 
@@ -136,31 +136,28 @@ run-fixed.bat
 /.next/trace.old*
 
 # IDE
-.idea
-.vscode
+.idea/
+.vscode/
 
 # Generated files
 /*.timestamp
 *-timestamp
 
 # Runtime generated files
-/public/timestamp-handler.js
-/.next/static/webpack/
-/.next/cache/
-/.next/server/vendor-chunks/
-/.next/trace
-/.next/server/*.pack
-/.next/server/*.pack.gz
-/.next/static/chunks/
-/.next/static/css/app/layout-*.css
-/.next/static/main-app-*.js
-/.next/static/app/layout.*.js
-/.next/static/app-pages-internals.*.js
-/.next/static/main-app.*.js
-/.next/static/app/layout.*.js
-/.next/static/app/loading.*.js
-/.next/static/app/admin/layout.*.js
-/.next/static/app/admin/page.*.js
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+.next/cache/*
+.next/server/vendor-chunks/*
+.next/trace*
+.next/static/webpack/
+.next/server/*.pack
+.next/server/*.pack.gz
 
 # backups
 /public/images/backup-categories/
@@ -252,9 +249,68 @@ temp-config.js
 .env.local
 .env.development.local
 .env.test.local
+.env.production.local
 
 # Images and product resource directories
 /public/images/products/unknown/
 
 # Reorganization scripts
 /scripts/reorganize-product-images.js
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# SWC
+.swc/
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Vercel
+.vercel
+
+# Turbo
+.turbo/
+
+# Cache
+.cache/
+node_modules/.cache/
+
+# Temporary files
+*.temp
+*.tmp
+
+# Test files (can be removed after testing)
+test-cart.html
+
+# Keep important directories
+!.next/static/app/.gitkeep
+!.next/static/css/.gitkeep
+!.next/static/chunks/.gitkeep
+!public/images/**/.gitkeep

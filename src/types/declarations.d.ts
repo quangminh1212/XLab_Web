@@ -1,6 +1,9 @@
-declare module 'html-to-draftjs';
-declare module 'draftjs-to-html';
-declare module 'draft-js';
-declare module 'react-draft-wysiwyg';
+// TypeScript declarations for custom modules
+// Add module declarations here as needed
 
-// Khai báo custom modules (nếu cần) 
+// Example:
+// declare module 'custom-package' {
+//   export interface CustomInterface {
+//     // interface definition
+//   }
+// } 
