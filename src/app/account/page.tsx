@@ -396,7 +396,7 @@ export default function AccountPage() {
 
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
-              <p className="text-3xl font-bold text-gray-800">{formatCurrency(totalSpent)}</p>
+              <p className="text-3xl font-bold text-gray-800 whitespace-nowrap">{formatCurrency(totalSpent)}</p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
@@ -407,7 +407,7 @@ export default function AccountPage() {
 
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
-              <p className="text-3xl font-bold text-green-600">{formatCurrency(totalSaved)}</p>
+              <p className="text-3xl font-bold text-green-600 whitespace-nowrap">{formatCurrency(totalSaved)}</p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 12a1 1 0 11-2 0 1 1 0 012 0zm-1-3a1 1 0 00-1 1v.5a.5.5 0 001 0V12zm0-5a.5.5 0 00-.5.5v3a.5.5 0 001 0v-3A.5.5 0 0010 6z" clipRule="evenodd" />
