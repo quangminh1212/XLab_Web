@@ -201,7 +201,7 @@ export default function CartPage() {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
-            <p className="text-base md:text-lg max-w-3xl opacity-90">
+            <p className="text-base md:text-lg max-w-3xl opacity-90 whitespace-nowrap overflow-hidden text-ellipsis">
               Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng tôi.
             </p>
           </motion.div>
