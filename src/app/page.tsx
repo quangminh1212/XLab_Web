@@ -1,5 +1,6 @@
 'use client';
 
+// Thêm comment này để kiểm tra hot-reload
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';

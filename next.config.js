@@ -102,6 +102,18 @@ const nextConfig = {
       transform: 'tailwindcss/utilities/{{member}}',
     },
   },
+  // Cấu hình webpackDevMiddleware để giải quyết lỗi 404
+  webpackDevMiddleware: config => {
+    // Tối ưu hóa cấu hình middleware để giảm lỗi 404
+    config.watchOptions = {
+      ...config.watchOptions,
+      aggregateTimeout: 200,
+      poll: 1000,
+      ignored: /node_modules/,
+    };
+    config.writeToDisk = true;
+    return config;
+  },
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.watchOptions = {
@@ -117,7 +129,22 @@ const nextConfig = {
         // Include [runtime] to ensure unique filenames per runtime
         hotUpdateChunkFilename: 'static/webpack/[id].[fullhash].[runtime].hot-update.js',
         hotUpdateMainFilename: 'static/webpack/[fullhash].[runtime].hot-update.json',
+        publicPath: '/_next/',
       };
+
+      // Cấu hình HMR để giảm thiểu lỗi 404
+      if (config.plugins) {
+        config.plugins.forEach((plugin) => {
+          if (plugin.constructor.name === 'HotModuleReplacementPlugin') {
+            plugin.options = {
+              ...plugin.options,
+              multiStep: false,
+              fullBuildTimeout: 200,
+              requestTimeout: 10000,
+            };
+          }
+        });
+      }
     }
 
     config.infrastructureLogging = {
@@ -139,7 +166,6 @@ const nextConfig = {
     // Đảm bảo publicPath luôn được đặt đúng để tránh lỗi 404
     config.output = {
       ...config.output,
-      publicPath: '/_next/',
       assetModuleFilename: 'static/[hash][ext]',
       // Sử dụng tên file cố định không có hash
       chunkFilename: isServer ? 

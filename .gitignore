@@ -248,15 +248,11 @@ temp-config.js
 # Additional ignore patterns for Next.js 15+
 /.next/server/middleware*
 /.next/server/edge-chunks/
-/.next/server/app/
-/.next/server/app-paths-manifest.json
-/.next/server/server-reference-manifest.json
-/.next/server/flight-server-css-manifest.json
-/.next/types/
-/.next/server/vendor-chunks/
-/.next/server/server/
-/.next/server/vendor-chunks/next.js
-# next.js static files
+
+# Hot update files causing 404 errors
+/_next/static/webpack/*.hot-update.js
+/_next/static/webpack/main-app.*.hot-update.js
+/_next/static/webpack/app/*.hot-update.js
 
 # Logs
 logs
