@@ -2,23 +2,18 @@
 
 ## 🚀 Cách khởi động nhanh
 
-### Phương pháp 1: Batch file (Khuyến nghị)
+### Khởi động đơn giản (Khuyến nghị)
 ```batch
 .\run.bat
 ```
 
-### Phương pháp 2: PowerShell trực tiếp
-```powershell
-powershell -ExecutionPolicy Bypass -File start.ps1
-```
-
-### Phương pháp 3: Manual
+### Khởi động thủ công
 ```bash
 # 1. Cài package thiếu
 npm install @radix-ui/react-slot
 
 # 2. Dọn cache (nếu cần)
-Remove-Item .next -Recurse -Force -ErrorAction SilentlyContinue
+rmdir /s /q .next
 
 # 3. Khởi động server
 npm run dev:simple
@@ -26,12 +21,12 @@ npm run dev:simple
 
 ## 📋 Các bước tự động
 
-Khi chạy `run.bat`, script sẽ tự động:
+Khi chạy `.\run.bat`, script sẽ tự động thực hiện:
 
-1. ✅ Kiểm tra Node.js và npm
-2. ✅ Cài đặt dependencies thiếu
-3. ✅ Dọn cache build
-4. ✅ Khởi động development server
+1. ✅ **[1/4]** Kiểm tra Node.js installation
+2. ✅ **[2/4]** Kiểm tra npm installation  
+3. ✅ **[3/4]** Cài đặt dependencies thiếu (@radix-ui/react-slot)
+4. ✅ **[4/4]** Dọn cache và khởi động development server
 
 ## 🌐 Truy cập ứng dụng
 
@@ -45,16 +40,24 @@ Khi chạy `run.bat`, script sẽ tự động:
 npm install @radix-ui/react-slot
 ```
 
-### Lỗi cache
+### Lỗi cache build
 ```bash
 rmdir /s /q .next
 ```
 
-### Lỗi port đã sử dụng
-Server sẽ tự động chuyển sang port 3001, 3002, ...
+### Port đã được sử dụng
+Next.js sẽ tự động chuyển sang port khác (3001, 3002, ...)
 
-## 📁 Cấu trúc files
+## 📁 Cấu trúc đơn giản
 
-- `run.bat` - Script chính (gọi PowerShell)
-- `start.ps1` - PowerShell script thực thi
-- `package.json` - Dependencies và scripts 
+- `run.bat` - Script khởi động duy nhất (tích hợp tất cả)
+- `package.json` - Dependencies và npm scripts
+- `STARTUP.md` - Hướng dẫn này
+
+## ⚡ Tính năng
+
+- 🔍 **Auto-detect**: Tự động kiểm tra môi trường
+- 📦 **Auto-install**: Tự động cài package thiếu
+- 🧹 **Auto-clean**: Tự động dọn cache build
+- 🎨 **User-friendly**: Giao diện rõ ràng với progress indicators
+- 🛡️ **Error handling**: Xử lý lỗi và hướng dẫn sửa 
