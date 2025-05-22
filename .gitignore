@@ -79,6 +79,7 @@ next-env.d.ts
 !.next/static/chunks/.gitkeep
 !.next/server/.gitkeep
 !.next/server/app/.gitkeep
+!public/images/**/.gitkeep
 
 # Cấu hình Next.js
 .env*.local
@@ -248,72 +249,9 @@ temp-config.js
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local
 
-# NextJs build output
-.next/
-.next
-.vercel
+# Images and product resource directories
+/public/images/products/unknown/
 
-# Temp files
-.swc/
-.swc-disabled/
-
-# Additional ignore patterns for Next.js 15+
-/.next/server/middleware*
-/.next/server/edge-chunks/
-
-# Hot update files causing 404 errors
-/_next/static/webpack/*.hot-update.js
-/_next/static/webpack/main-app.*.hot-update.js
-/_next/static/webpack/app/*.hot-update.js
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Local .env files
-.env.local
-.env.*.local
-
-# Operating System files
-.DS_Store
-Thumbs.db
-
-# IDE files
-.vscode/
-.idea/
-
-# Build artifacts
-/build
-/dist
-
-# Cache folders
-.cache/
-.next/cache/
-
-# Other generated files
-*.tsbuildinfo
-next-env.d.ts
-
-# Keep essential static files to prevent 404 errors
-!.next/static/chunks/app/loading.js
-!.next/static/chunks/app/not-found.js
-!.next/static/chunks/app-pages-internals.js
-!.next/static/chunks/main-app.js
-
-# Keep webpack cache files to prevent ENOENT errors
-!.next/cache/webpack/client-development/*.pack.gz
-!.next/cache/webpack/server-development/*.pack.gz
-!.next/cache/webpack/client-development/*.pack
-!.next/cache/webpack/server-development/*.pack
-
-# Keep important Next.js manifest files
-!.next/server/middleware-manifest.json
-!.next/server/build-manifest.json
-!.next/server/pages-manifest.json
+# Reorganization scripts
+/scripts/reorganize-product-images.js
