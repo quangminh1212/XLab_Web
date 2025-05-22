@@ -50,7 +50,12 @@ echo ==========================================
 echo.
 echo 🚀 Starting server immediately...
 echo.
+
+REM Kill existing processes and clean cache
+taskkill /f /im node.exe >nul 2>&1
+timeout /t 1 /nobreak >nul 2>&1
 if exist ".next" rmdir /s /q .next >nul 2>&1
+
 echo 🌐 Server will start at: http://localhost:3000
 echo 🛑 Press Ctrl+C to stop
 echo.
@@ -80,6 +85,12 @@ if errorlevel 1 (
 )
 
 echo ✅ Environment OK
+
+REM Kill existing processes and clean cache
+echo 🛑 Stopping existing processes...
+taskkill /f /im node.exe >nul 2>&1
+timeout /t 1 /nobreak >nul 2>&1
+
 echo 🧹 Cleaning cache...
 if exist ".next" rmdir /s /q .next >nul 2>&1
 
@@ -185,9 +196,32 @@ if exist "node_modules\@radix-ui\react-slot\package.json" (
 echo.
 goto :eof
 
+:kill_processes
+echo Stopping any running development servers...
+taskkill /f /im node.exe >nul 2>&1
+taskkill /f /im "Next.js" >nul 2>&1
+
+REM Kill processes using port 3000
+for /f "tokens=5" %%a in ('netstat -aon ^| find ":3000" ^| find "LISTENING"') do (
+    taskkill /f /pid %%a >nul 2>&1
+)
+
+REM Wait for processes to fully terminate
+timeout /t 2 /nobreak >nul 2>&1
+goto :eof
+
 :start_server
 echo Starting development server...
-if exist ".next" rmdir /s /q .next >nul 2>&1
+
+REM Kill any existing processes first
+call :kill_processes
+
+REM Clean .next directory
+if exist ".next" (
+    rmdir /s /q .next >nul 2>&1
+    if exist ".next" rd /s /q .next >nul 2>&1
+)
+
 echo + URL: http://localhost:3000
 echo + Press Ctrl+C to stop
 echo.
@@ -196,10 +230,30 @@ goto :eof
 
 :clean_cache
 echo Cleaning cache and temporary files...
-if exist ".next" rmdir /s /q .next >nul 2>&1
+
+REM Kill any existing Node.js processes
+echo Stopping existing Node.js processes...
+taskkill /f /im node.exe >nul 2>&1
+taskkill /f /im "Next.js" >nul 2>&1
+
+REM Wait a moment for processes to fully terminate
+timeout /t 2 /nobreak >nul 2>&1
+
+REM Force remove .next directory
+if exist ".next" (
+    echo Removing .next directory...
+    rmdir /s /q .next >nul 2>&1
+    if exist ".next" (
+        echo Forcing removal of .next directory...
+        rd /s /q .next >nul 2>&1
+    )
+)
+
+REM Clean other cache directories
 if exist "node_modules\.cache" rmdir /s /q node_modules\.cache >nul 2>&1
 if exist "*.temp" del /q *.temp >nul 2>&1
 if exist "*.tmp" del /q *.tmp >nul 2>&1
+
 echo + Cache cleaned
 echo.
 goto :eof
