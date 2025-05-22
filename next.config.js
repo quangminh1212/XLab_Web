@@ -31,6 +31,10 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  webpack: (config, { dev, isServer }) => {
+    config.cache = false;
+    return config;
+  }
 };
 
 module.exports = nextConfig;

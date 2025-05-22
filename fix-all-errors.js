@@ -300,6 +300,27 @@ function createStaticFiles() {
       console.log('Đã tạo file middleware-manifest.json');
     }
     
+    // Tạo file build-manifest.json
+    const buildManifestPath = path.join(__dirname, '.next/server/build-manifest.json');
+    if (!fs.existsSync(buildManifestPath)) {
+      fs.writeFileSync(buildManifestPath, '{}');
+      console.log('Đã tạo file build-manifest.json');
+    }
+    
+    // Tạo file pages-manifest.json
+    const pagesManifestPath = path.join(__dirname, '.next/server/pages-manifest.json');
+    if (!fs.existsSync(pagesManifestPath)) {
+      fs.writeFileSync(pagesManifestPath, '{}');
+      console.log('Đã tạo file pages-manifest.json');
+    }
+    
+    // Tạo file routes-manifest.json
+    const routesManifestPath = path.join(__dirname, '.next/routes-manifest.json');
+    if (!fs.existsSync(routesManifestPath)) {
+      fs.writeFileSync(routesManifestPath, '{}');
+      console.log('Đã tạo file routes-manifest.json');
+    }
+    
     // Tạo các file CSS và JS cố định để tránh lỗi 404
     const staticFiles = [
       {
@@ -354,6 +375,19 @@ function createStaticFiles() {
         path: '.next/static/webpack/empty-hot-update.json',
         content: '{}'
       },
+      // Thêm file font để tránh lỗi 404
+      {
+        path: '.next/static/media/a34f9d1faa5f3315-s.p.woff2',
+        content: ''
+      },
+      {
+        path: '.next/static/media/df0a9ae256c0569c-s.woff2',
+        content: ''
+      },
+      {
+        path: '.next/static/media/6d93bde91c0c2823-s.woff2',
+        content: ''
+      },
       // Thêm file xử lý lỗi turbopack-hmr
       {
         path: '.next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js',
@@ -404,7 +438,7 @@ function createStaticFiles() {
       }
       
       // Tạo các file .pack và .pack.gz trống để tránh lỗi ENOENT
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 10; i++) {
         const packFile = path.join(fullPath, `${i}.pack`);
         fs.writeFileSync(packFile, '{}');
         console.log(`Đã tạo file ${dir}/${i}.pack`);

@@ -172,22 +172,23 @@ export default function CartPage() {
                         variants={itemVariants}
                         whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
                       >
-                        {/* Hình ảnh sản phẩm - Thay đổi thành hình vuông */}
-                        <div className="md:w-1/4 aspect-square bg-gray-50 rounded-lg flex items-center justify-center p-2 border border-gray-100">
+                        {/* Hình ảnh sản phẩm - Kích thước nhỏ hơn */}
+                        <div className="md:w-1/5 aspect-square bg-gray-50 rounded-lg flex items-center justify-center p-2 border border-gray-100">
                           <Image
                             src={item.image || '/images/placeholder/product-placeholder.jpg'}
                             alt={item.name}
-                            width={120}
-                            height={120}
+                            width={80}
+                            height={80}
                             className="w-full h-full object-contain transition-transform hover:scale-105"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.src = '/images/placeholder/product-placeholder.jpg';
                             }}
+                            unoptimized={true}
                           />
                         </div>
-                        <div className="md:w-3/4 flex flex-col justify-between flex-grow">
-                          <div className="flex flex-col md:flex-row md:justify-between">
+                        <div className="md:w-4/5 flex flex-col justify-between flex-grow">
+                          <div className="flex flex-col md:flex-row md:justify-between md:items-center">
                             <div>
                               <h3 className="text-lg font-bold text-gray-800 hover:text-primary-600 transition-colors">
                                 <Link href={`/products/${item.id}`}>
@@ -198,7 +199,7 @@ export default function CartPage() {
                                 <span className="text-sm text-gray-500">Phiên bản: {item.version}</span>
                               )}
                             </div>
-                            <p className="text-lg font-bold text-primary-600 mt-1 md:mt-0">
+                            <p className="text-lg font-bold text-primary-600 mt-1 md:mt-0 md:ml-4 whitespace-nowrap">
                               {formatCurrency(item.price)}
                             </p>
                           </div>
@@ -344,14 +345,14 @@ export default function CartPage() {
                   </div>
                   
                   <div className="space-y-2 mb-6">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span className="text-gray-600">Tạm tính</span>
-                      <span>{formatCurrency(subtotal)}</span>
+                      <span className="whitespace-nowrap">{formatCurrency(subtotal)}</span>
                     </div>
                     {appliedCoupon && (
-                      <div className="flex justify-between text-green-600">
+                      <div className="flex justify-between items-center text-green-600">
                         <span>Giảm giá</span>
-                        <span>-{formatCurrency(couponDiscount)}</span>
+                        <span className="whitespace-nowrap">-{formatCurrency(couponDiscount)}</span>
                       </div>
                     )}
                   </div>
@@ -359,7 +360,7 @@ export default function CartPage() {
                   <div className="border-t border-b border-gray-200 py-4 mb-6">
                     <div className="flex justify-between items-center">
                       <span className="text-lg font-bold">Tổng cộng</span>
-                      <span className="text-xl font-bold text-primary-600">{formatCurrency(total)}</span>
+                      <span className="text-xl font-bold text-primary-600 whitespace-nowrap">{formatCurrency(total)}</span>
                     </div>
                   </div>
                   
@@ -371,20 +372,12 @@ export default function CartPage() {
                   </Link>
                   
                   <div className="text-center">
-                    <p className="mb-3 text-sm text-gray-600">Chúng tôi chấp nhận các phương thức thanh toán sau</p>
-                    <div className="flex justify-center space-x-3">
-                      <div className="w-10 h-6 bg-gray-100 rounded-md flex items-center justify-center shadow-sm">
-                        <Image src="/images/payment/visa.svg" alt="Visa" width={24} height={16} />
-                      </div>
-                      <div className="w-10 h-6 bg-gray-100 rounded-md flex items-center justify-center shadow-sm">
-                        <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={24} height={16} />
-                      </div>
-                      <div className="w-10 h-6 bg-gray-100 rounded-md flex items-center justify-center shadow-sm">
-                        <Image src="/images/payment/momo.svg" alt="MoMo" width={20} height={16} />
-                      </div>
-                      <div className="w-10 h-6 bg-gray-100 rounded-md flex items-center justify-center shadow-sm">
-                        <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={24} height={16} />
-                      </div>
+                    <p className="mb-2 text-sm text-gray-600">Chúng tôi chấp nhận</p>
+                    <div className="flex justify-center space-x-2">
+                      <Image src="/images/payment/visa.svg" alt="Visa" width={20} height={14} className="h-4" />
+                      <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={20} height={14} className="h-4" />
+                      <Image src="/images/payment/momo.svg" alt="MoMo" width={16} height={14} className="h-4" />
+                      <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={20} height={14} className="h-4" />
                     </div>
                   </div>
                 </div>
@@ -440,19 +433,19 @@ export default function CartPage() {
             {featuredProducts.map((product) => (
               <motion.div 
                 key={product.id} 
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full"
                 variants={itemVariants}
               >
-                {/* Thay đổi thành hình vuông */}
+                {/* Thay đổi thành hình vuông nhỏ hơn */}
                 <div className="aspect-square bg-gradient-to-r from-gray-50 to-gray-100 relative overflow-hidden">
                   {/* Hình ảnh sản phẩm */}
                   <div className="w-full h-full flex items-center justify-center p-4">
                     <Image
-                      src={product.imageUrl || '/images/product-placeholder.svg'}
+                      src={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
                       alt={product.name}
-                      width={200}
-                      height={200}
-                      className="w-full h-full object-contain transition-transform group-hover:scale-110"
+                      width={160}
+                      height={160}
+                      className="w-3/4 h-3/4 object-contain transition-transform group-hover:scale-110"
                       unoptimized={true}
                     />
                   </div>
@@ -468,32 +461,32 @@ export default function CartPage() {
                   )}
                 </div>
                 
-                <div className="p-5">
+                <div className="p-4 flex-grow flex flex-col">
                   <Link href={`/products/${product.id}`} className="group">
-                    <h3 className="text-lg font-bold mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">{product.name}</h3>
+                    <h3 className="text-base font-bold mb-1 text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">{product.name}</h3>
                   </Link>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  <p className="text-gray-600 text-xs mb-2 line-clamp-2 flex-grow">
                     {product.description}
                   </p>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mt-auto">
                     <div>
                       {product.salePrice && product.salePrice < product.price ? (
-                        <>
-                          <span className="text-lg font-bold text-primary-600 block">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base font-bold text-primary-600 whitespace-nowrap">
                             {formatCurrency(product.salePrice)}
                           </span>
-                          <span className="text-sm text-gray-500 line-through">
+                          <span className="text-xs text-gray-500 line-through whitespace-nowrap">
                             {formatCurrency(product.price)}
                           </span>
-                        </>
+                        </div>
                       ) : (
-                        <span className="text-lg font-bold text-primary-600">
+                        <span className="text-base font-bold text-primary-600 whitespace-nowrap">
                           {formatCurrency(product.price)}
                         </span>
                       )}
                     </div>
                     <button 
-                      className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-3 py-2 rounded text-sm font-medium transition-colors border border-primary-200 flex items-center"
+                      className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs font-medium transition-colors border border-primary-200 flex items-center"
                       onClick={() => addItemToCart({
                         id: product.id.toString(),
                         name: product.name,
@@ -502,8 +495,8 @@ export default function CartPage() {
                         image: product.imageUrl || '/images/product-placeholder.svg'
                       })}
                     >
-                      <AiOutlinePlus className="mr-1 w-4 h-4" />
-                      Thêm vào giỏ
+                      <AiOutlinePlus className="mr-1 w-3 h-3" />
+                      Thêm
                     </button>
                   </div>
                 </div>

@@ -300,3 +300,20 @@ Thumbs.db
 # Other generated files
 *.tsbuildinfo
 next-env.d.ts
+
+# Keep essential static files to prevent 404 errors
+!.next/static/chunks/app/loading.js
+!.next/static/chunks/app/not-found.js
+!.next/static/chunks/app-pages-internals.js
+!.next/static/chunks/main-app.js
+
+# Keep webpack cache files to prevent ENOENT errors
+!.next/cache/webpack/client-development/*.pack.gz
+!.next/cache/webpack/server-development/*.pack.gz
+!.next/cache/webpack/client-development/*.pack
+!.next/cache/webpack/server-development/*.pack
+
+# Keep important Next.js manifest files
+!.next/server/middleware-manifest.json
+!.next/server/build-manifest.json
+!.next/server/pages-manifest.json

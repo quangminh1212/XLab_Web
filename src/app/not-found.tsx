@@ -2,19 +2,21 @@ import Link from 'next/link'
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] py-16">
-      <div className="text-center">
-        <h1 className="text-9xl font-bold text-teal-500">404</h1>
-        <h2 className="text-4xl font-bold text-gray-900 mt-4 mb-6">Không tìm thấy trang</h2>
-        <p className="text-xl text-gray-600 max-w-md mx-auto mb-8">
-          Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
+        <h1 className="mb-4 text-center text-4xl font-bold text-red-600">404</h1>
+        <h2 className="mb-6 text-center text-2xl font-semibold text-gray-800">
+          Không tìm thấy trang
+        </h2>
+        <p className="mb-8 text-center text-gray-600">
+          Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/" className="text-white bg-teal-600 hover:bg-teal-700 rounded-full px-6 py-3 transition-colors font-medium shadow-sm">
-            Về trang chủ
-          </Link>
-          <Link href="/contact" className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 rounded-full px-6 py-3 transition-colors font-medium shadow-sm">
-            Liên hệ hỗ trợ
+        <div className="flex justify-center">
+          <Link
+            href="/"
+            className="rounded-md bg-primary-600 px-6 py-2 text-white transition-colors hover:bg-primary-700"
+          >
+            Quay lại trang chủ
           </Link>
         </div>
       </div>
