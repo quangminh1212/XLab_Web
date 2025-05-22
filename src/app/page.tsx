@@ -120,32 +120,6 @@ function HomePage() {
                   <p className="text-sm text-gray-700 mb-3">
                     Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
                   </p>
-                  <div className="space-y-2 mb-3">
-                    <div className="flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-                          <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                        </svg>
-                      </span>
-                      <span className="text-sm text-gray-700">Thành lập năm 2020</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-                          <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                        </svg>
-                      </span>
-                      <span className="text-sm text-gray-700">Đội ngũ 50+ chuyên gia</span>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-                          <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                        </svg>
-                      </span>
-                      <span className="text-sm text-gray-700">10.000+ khách hàng tin dùng</span>
-                    </div>
-                  </div>
                   <div className="mt-4">
                     <Link 
                       href="/about"
@@ -260,32 +234,6 @@ function HomePage() {
                     <div className="text-xs text-gray-600">Năm kinh nghiệm</div>
                   </div>
                 </div>
-              </div>
-            </section>
-            
-            {/* Bản tin - Phần mới */}
-            <section className="bg-white rounded-xl shadow-sm p-4 mb-3">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Tin tức mới nhất</h2>
-              
-              <div className="space-y-3">
-                <div className="border-b border-gray-100 pb-3">
-                  <p className="text-sm font-medium text-gray-900 mb-1">Ra mắt phiên bản ChatGPT Premium mới</p>
-                  <p className="text-xs text-gray-600 mb-1">Trải nghiệm AI tiên tiến nhất với khả năng xử lý nâng cao</p>
-                  <p className="text-xs text-primary-600">15/08/2023</p>
-                </div>
-                
-                <div className="border-b border-gray-100 pb-3">
-                  <p className="text-sm font-medium text-gray-900 mb-1">XLab đạt chứng nhận bảo mật ISO 27001</p>
-                  <p className="text-xs text-gray-600 mb-1">Cam kết bảo vệ dữ liệu khách hàng theo tiêu chuẩn quốc tế</p>
-                  <p className="text-xs text-primary-600">02/07/2023</p>
-                </div>
-                
-                <Link href="/news" className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center justify-center mt-2">
-                  Xem tất cả tin tức
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </Link>
               </div>
             </section>
           </div>
