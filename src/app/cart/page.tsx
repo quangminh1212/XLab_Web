@@ -60,20 +60,44 @@ export default function CartPage() {
   
   // Enrich cart items with image and description from product data
   const cart = cartItems.map(item => {
-    const productDetail = products.find((p: any) => p.id === item.id);
+    // Find product with multiple matching strategies 
+    const productDetail = products.find((p: any) => {
+      const productId = String(p.id).toLowerCase();
+      const itemId = String(item.id).toLowerCase();
+      const productName = String(p.name).toLowerCase();
+      const itemName = String(item.name).toLowerCase();
+      
+      return productId === itemId || 
+             productId === itemName ||
+             productName === itemId ||
+             productName === itemName ||
+             p.slug === itemId ||
+             p.slug === itemName;
+    });
     
-    // Get image URL - priority: item.image, product.images[0], fallback
-    let imageUrl = item.image || '/images/placeholder/product-placeholder.svg';
+    // Get image URL - priority: product.images[0], item.image, fallback
+    let imageUrl = '/images/placeholder/product-placeholder.svg';
+    
     if (productDetail?.images && Array.isArray(productDetail.images) && productDetail.images.length > 0) {
       imageUrl = productDetail.images[0];
-    } else if (productDetail?.imageUrl) {
-      imageUrl = productDetail.imageUrl;
+    } else if (item.image && !item.image.includes('placeholder')) {
+      imageUrl = item.image;
+    }
+    
+    // Get description from product data
+    let description = '';
+    if (productDetail?.shortDescription) {
+      // Clean HTML tags from description
+      description = productDetail.shortDescription.replace(/<[^>]*>/g, '').trim();
+    } else if (productDetail?.description) {
+      // Clean HTML tags and limit length  
+      description = productDetail.description.replace(/<[^>]*>/g, '').trim().substring(0, 150) + '...';
     }
     
     return {
       ...item,
       image: imageUrl,
-      description: productDetail?.shortDescription || productDetail?.description || ''
+      description: description
     };
   });
   
