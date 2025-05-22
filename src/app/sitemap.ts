@@ -61,19 +61,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ] as MetadataRoute.Sitemap;
 
-  // TODO: Thêm các trang động từ API hoặc database ở đây
-  // Ví dụ: /products/[id], etc.
-  
-  // Có thể fetch dữ liệu từ API hoặc sử dụng dữ liệu tĩnh
+  // Dynamic pages can be added here when needed
   const dynamicPages = [] as MetadataRoute.Sitemap;
-  /* Ví dụ:
-  const productPages = (await fetchProducts()).map((product) => ({
-    url: `${baseUrl}/products/${product.id}`,
-    lastModified: product.updatedAt,
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  })) as MetadataRoute.Sitemap;
-  */
 
   // Gộp tất cả URL
   return [...staticPages, ...dynamicPages];

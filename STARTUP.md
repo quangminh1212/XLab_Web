@@ -54,10 +54,4 @@ Next.js sẽ tự động chuyển sang port khác (3001, 3002, ...)
 - `package.json` - Dependencies và npm scripts
 - `STARTUP.md` - Hướng dẫn này
 
-## ⚡ Tính năng
-
-- 🔍 **Auto-detect**: Tự động kiểm tra môi trường
-- 📦 **Auto-install**: Tự động cài package thiếu
-- 🧹 **Auto-clean**: Tự động dọn cache build
-- 🎨 **User-friendly**: Giao diện rõ ràng với progress indicators
-- 🛡️ **Error handling**: Xử lý lỗi và hướng dẫn sửa 
+## ⚡ Tính năng- 🔍 **Auto-detect**: Tự động kiểm tra môi trường- 📦 **Auto-install**: Tự động cài package thiếu- 🧹 **Auto-clean**: Tự động dọn cache build- 🎨 **User-friendly**: Giao diện rõ ràng với progress indicators- 🛡️ **Error handling**: Xử lý lỗi và hướng dẫn sửa## 🛠️ Scripts tối ưu### Kiểm tra và tối ưu toàn diện```bash.\optimize.bat```### Scripts npm có sẵn```bashnpm run check          # TypeScript + ESLint checknpm run fix           # Auto-fix ESLint issuesnpm run type-check    # TypeScript type checkingnpm run lint:check    # ESLint check only``` 
