@@ -389,6 +389,36 @@ function createStaticFiles() {
     console.log(`Đã cấu hình xử lý cho ${dummyHashFiles.length} file với hash động`);
     
     console.log('✅ Đã tạo các thư mục và file static cần thiết!');
+    
+    // Tạo thư mục cache webpack để giải quyết lỗi ENOENT với file .pack.gz
+    const webpackCacheDirs = [
+      '.next/cache/webpack/client-development',
+      '.next/cache/webpack/server-development'
+    ];
+    
+    webpackCacheDirs.forEach(dir => {
+      const fullPath = path.join(__dirname, dir);
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true });
+        console.log(`Đã tạo thư mục cache webpack: ${dir}`);
+      }
+      
+      // Tạo các file .pack và .pack.gz trống để tránh lỗi ENOENT
+      for (let i = 0; i < 3; i++) {
+        const packFile = path.join(fullPath, `${i}.pack`);
+        fs.writeFileSync(packFile, '{}');
+        console.log(`Đã tạo file ${dir}/${i}.pack`);
+        
+        try {
+          // Tạo file .pack.gz trống
+          const packGzFile = path.join(fullPath, `${i}.pack.gz`);
+          fs.writeFileSync(packGzFile, '');
+          console.log(`Đã tạo file ${dir}/${i}.pack.gz`);
+        } catch (err) {
+          console.log(`Không thể tạo file ${dir}/${i}.pack.gz: ${err.message}`);
+        }
+      }
+    });
   } catch (err) {
     console.error('❌ Lỗi khi tạo thư mục và file static:', err);
   }

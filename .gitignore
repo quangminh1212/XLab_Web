@@ -59,6 +59,15 @@ next-env.d.ts
 .next/static/app/page.js
 .next/static/app-pages-internals.*.js
 .next/static/app-pages-internals.js
+.next/cache/webpack/client-development/*.pack.gz
+.next/cache/webpack/server-development/*.pack.gz
+
+# payment images
+/public/images/payment/visa.svg
+/public/images/payment/mastercard.svg
+/public/images/payment/momo.svg
+/public/images/payment/zalopay.svg
+/public/images/products/chatgpt/*.png
 .next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js
 .next/static/webpack/*.hot-update.json
 .next/static/webpack/*.hot-update.js
