@@ -21,7 +21,7 @@
     "update-product-ids": "node scripts/update-product-ids.js"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-slot": "1.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.12.1",
@@ -55,7 +55,12 @@
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
-  "keywords": ["nextjs", "react", "ecommerce", "web-app"],
+  "keywords": [
+    "nextjs",
+    "react",
+    "ecommerce",
+    "web-app"
+  ],
   "author": "XLab Team",
   "license": "MIT",
   "description": "XLab Web - Modern e-commerce platform built with Next.js"

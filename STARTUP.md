@@ -68,11 +68,18 @@ Hiển thị menu với các options:
 ### Lỗi "Module not found"
 Chạy `run.bat dev` hoặc `run.bat auto` để tự động cài package
 
-### Lỗi cache build
-Tất cả mode đều tự động dọn cache
+### Lỗi cache build / EPERM errors
+- Script tự động kill processes cũ và force clean cache
+- Nếu vẫn lỗi, chạy lại `run.bat` (script sẽ tự fix)
 
 ### Port đã được sử dụng
-Next.js sẽ tự động chuyển sang port khác (3001, 3002, ...)
+- Script tự động kill processes đang dùng port 3000
+- Next.js sẽ tự động chuyển sang port khác (3001, 3002, ...)
+
+### Lỗi "operation not permitted"
+- Script tự động kill Node.js processes trước khi start
+- Wait 2 giây để processes terminate hoàn toàn
+- Force remove .next directory nếu cần
 
 ## 📁 Cấu trúc đơn giản
 
