@@ -429,16 +429,12 @@ export default function AccountPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Image
-                      src={imageError ? '/images/avatar-placeholder.svg' : (session?.user?.image || '/images/avatar-placeholder.svg')}
+                      src={imageError ? '/images/avatar-placeholder.svg' : profile.avatar}
                       alt={profile.name}
                       fill
                       className="rounded-full"
                       style={{ objectFit: 'cover' }}
-                      onError={(e) => {
-                        console.log('Avatar image error in account page, using fallback');
-                        setImageError(true);
-                        console.log('Lỗi khi tải ảnh đại diện, sử dụng ảnh mặc định');
-                      }}
+                      onError={() => setImageError(true)}
                       priority
                       unoptimized={true}
                     />
