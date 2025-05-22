@@ -132,12 +132,13 @@ export default function CartPage() {
       <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white py-10 md:py-16">
         <div className="container mx-auto px-4">
           <motion.div
+            className="flex items-center space-x-4"
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">Giỏ hàng của bạn</h1>
-            <p className="text-base md:text-lg max-w-3xl opacity-90">
+            <h1 className="text-3xl md:text-4xl font-bold whitespace-nowrap">Giỏ hàng của bạn</h1>
+            <p className="text-base md:text-lg opacity-90 whitespace-nowrap">
               Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng tôi.
             </p>
           </motion.div>
