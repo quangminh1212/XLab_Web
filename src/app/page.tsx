@@ -436,13 +436,6 @@ function HomePage() {
         </div>
       </div>
 
-      {/* Software Categories */}
-      <section className="py-8 sm:py-10 bg-gray-50">
-        <div className="container">
-          {/* ... existing code ... */}
-        </div>
-      </section>
-
       {/* Call to Action */}
       <section className="py-8 sm:py-10 md:py-12 bg-gradient-to-br from-primary-500 to-primary-600 text-white">
         <div className="container">
