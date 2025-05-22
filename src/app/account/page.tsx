@@ -113,6 +113,11 @@ export default function AccountPage() {
   });
   const [settingsSaved, setSettingsSaved] = useState(false);
 
+  const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
+  const formatCurrency = (amount: number) => {
+    return currencyFormatter.format(amount);
+  };
+
   useEffect(() => {
     // Chuyển hướng người dùng nếu chưa đăng nhập
     if (status === 'unauthenticated') {
@@ -287,11 +292,6 @@ export default function AccountPage() {
       setSaving(false);
       // Xử lý thông báo lỗi ở đây nếu cần
     }
-  };
-
-  // Hàm định dạng tiền tệ
-  const formatCurrency = (amount: number) => {
-    return amount.toLocaleString('vi-VN') + ' ₫';
   };
 
   // Hàm định dạng ngày
