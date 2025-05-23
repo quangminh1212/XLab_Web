@@ -7,7 +7,7 @@ export default function ServicesPage() {
       <section className="bg-primary-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Dịch vụ</h1>
-          <p className="text-xl max-w-3xl">
+          <p className="text-xl max-w-3xl whitespace-nowrap">
             Chúng tôi cung cấp các dịch vụ công nghệ chuyên nghiệp giúp doanh nghiệp của bạn phát triển.
           </p>
         </div>

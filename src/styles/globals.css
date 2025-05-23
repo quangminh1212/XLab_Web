@@ -34,10 +34,7 @@
 
 @layer components {
   .container {
-    @apply mx-auto w-full max-w-[98%] px-0 sm:px-0 md:px-0 lg:px-0;
-    width: 100%;
-    padding-right: 0;
-    padding-left: 0;
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
     margin-right: auto;
     margin-left: auto;
   }
@@ -234,37 +231,6 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--primary-dark);
-}
-
-/* Make sure tailwind utilities are applied correctly */
-@media (min-width: 640px) {
-  .container {
-    max-width: 95%;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 95%;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container {
-    max-width: 98%;
-  }
-}
-
-@media (min-width: 1280px) {
-  .container {
-    max-width: 98%;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container {
-    max-width: 98%;
-  }
 }
 
 /* Import other style modules */
