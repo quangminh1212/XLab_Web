@@ -377,21 +377,6 @@ export default function WarrantyPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="bg-primary-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800">Sứ mệnh của chúng tôi</h3>
-                <p className="text-gray-700 mb-4">
-                  Sứ mệnh của XLab là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
-                </p>
-                <div className="flex space-x-4 mt-4">
-                  <Link href="/contact" className="text-primary-600 hover:text-primary-800 font-medium">
-                    Liên hệ ngay
-                  </Link>
-                  <Link href="/faqs" className="text-primary-600 hover:text-primary-800 font-medium">
-                    Câu hỏi thường gặp
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         </div>
