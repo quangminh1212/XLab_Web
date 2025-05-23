@@ -25,7 +25,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-            <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
+            <div className="container max-w-7xl mx-auto px-4">
                 <div className="mb-8">
                     <Link href="/categories" className="text-teal-600 flex items-center mb-4 text-sm">
                         <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,7 +53,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 </div>
 
                 {categoryProducts.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {categoryProducts.map((product) => (
                             <ProductCard 
                                 key={product.id}

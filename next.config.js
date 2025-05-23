@@ -2,9 +2,6 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    optimizePackageImports: ['react-icons'],
-  },
   reactStrictMode: true,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
@@ -30,11 +27,6 @@ const nextConfig = {
     styledComponents: true,
   },
   poweredByHeader: false,
-  logging: {
-    fetches: {
-      fullUrl: false,
-    },
-  },
   compress: true,
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],

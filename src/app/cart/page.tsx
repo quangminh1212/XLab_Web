@@ -524,7 +524,7 @@ export default function CartPage() {
           </h2>
           
           <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
             variants={containerVariants}
             initial="hidden"
             animate="visible"

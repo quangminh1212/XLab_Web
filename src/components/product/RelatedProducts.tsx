@@ -120,7 +120,7 @@ const RelatedProducts = memo(function RelatedProducts({
         products={mappedProducts}
         title="Sản phẩm liên quan"
         subtitle="Bạn có thể quan tâm đến các sản phẩm khác tương tự"
-        columns={5}
+        columns={4}
       />
     </div>
   );
