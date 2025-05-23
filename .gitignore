@@ -254,3 +254,27 @@ test-cart.html
 !.next/static/css/.gitkeep
 !.next/static/chunks/.gitkeep
 !public/images/**/.gitkeep
+
+# Files generated during development
+.next/trace
+.next/trace.*
+.next/static/chunks/webpack-*
+.next/static/chunks/pages/
+.next/server/app/
+.next/server/pages/
+.next/types/
+.next/cache/
+.next/build-id
+.next/static/development/
+.next/static/webpack/
+
+# Hot reload artifacts
+**/*.hot-update.js
+**/*.hot-update.json
+
+# Build artifacts
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# Development artifacts
+run.bat.log
