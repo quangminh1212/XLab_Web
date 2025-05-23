@@ -292,9 +292,9 @@ export default function ProductsPage() {
                     originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
                     image={imageUrl}
                     category={categories.find(c => c.id === product.categoryId)?.name}
-                    rating={product.rating}
-                    reviewCount={product.reviewCount}
-                    weeklyPurchases={product.weeklyPurchases}
+                    rating={typeof product.rating === 'string' ? parseFloat(product.rating) : (product.rating || 0)}
+                    reviewCount={typeof product.reviewCount === 'string' ? parseInt(product.reviewCount) : (product.reviewCount || 0)}
+                    weeklyPurchases={typeof product.weeklyPurchases === 'string' ? parseInt(product.weeklyPurchases) : (product.weeklyPurchases || 0)}
                     slug={product.slug}
                   />
                 );

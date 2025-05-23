@@ -315,3 +315,52 @@ test-server.html
 
 # Utility scripts
 scripts/disable-tracing.js
+
+# Additional runtime generated files - 2025
+.next/static/chunks/pages/*
+.next/static/chunks/app/*
+.next/server/app/*
+.next/server/pages-manifest.json
+.next/server/middleware-manifest.json
+.next/server/font-manifest.json
+.next/types/*
+.next/standalone/*
+.next/export/*
+.next/required-server-files.json
+.next/BUILD_ID
+
+# Development runtime files
+.next/static/chunks/development/*
+.next/static/chunks/webpack/*
+.next/static/chunks/runtime/*
+.next/server/vendor-chunks/*
+.next/server/ssr-module-cache.js
+.next/server/edge-runtime-webpack.js
+
+# Process and server files
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Temporary folders
+tmp/
+temp/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
