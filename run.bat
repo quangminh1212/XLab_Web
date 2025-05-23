@@ -98,6 +98,9 @@ echo 📦 Installing dependencies...
 if not exist "node_modules\@radix-ui\react-slot\package.json" (
     call npm install @radix-ui/react-slot --silent >nul 2>&1
 )
+if not exist "node_modules\json5\package.json" (
+    call npm install json5 --silent >nul 2>&1
+)
 
 echo.
 echo 🌐 Server will start at: http://localhost:3000
@@ -181,18 +184,35 @@ goto :eof
 
 :install_deps
 echo Installing dependencies...
+
+REM Check and install @radix-ui/react-slot
 if exist "node_modules\@radix-ui\react-slot\package.json" (
     echo + @radix-ui/react-slot already installed
 ) else (
     echo Installing @radix-ui/react-slot...
     call npm install @radix-ui/react-slot --no-fund --no-audit --silent
     if errorlevel 1 (
-        echo X Failed to install package
+        echo X Failed to install @radix-ui/react-slot
         pause
         exit /b 1
     )
-    echo + Package installed
+    echo + @radix-ui/react-slot installed
 )
+
+REM Check and install json5
+if exist "node_modules\json5\package.json" (
+    echo + json5 already installed
+) else (
+    echo Installing json5...
+    call npm install json5 --no-fund --no-audit --silent
+    if errorlevel 1 (
+        echo X Failed to install json5
+        pause
+        exit /b 1
+    )
+    echo + json5 installed
+)
+
 echo.
 goto :eof
 
