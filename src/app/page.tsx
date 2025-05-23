@@ -72,7 +72,7 @@ function HomePage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-8 sm:py-10 md:py-12">
-        <div className="container mx-auto">
+        <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
           <div className="flex flex-col items-center text-center">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
@@ -97,7 +97,7 @@ function HomePage() {
         </div>
       </section>
 
-      <div className="container mx-auto py-6">
+      <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%] py-6">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-4">
           {/* Sidebar Column - Left */}
@@ -259,7 +259,7 @@ function HomePage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
                   </div>
                 ) : products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                     {featuredProducts.map((product) => (
                       <ProductCard 
                         key={product.id}
@@ -310,7 +310,7 @@ function HomePage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
                   </div>
                 ) : products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                     {products
                       .filter(product => product.isAccount || product.type === 'account')
                       .slice(0, 6)
