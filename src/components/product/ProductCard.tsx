@@ -174,12 +174,12 @@ const ProductCard = memo(function ProductCard({
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className="group flex flex-col h-[400px] bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
+      className="group flex flex-col h-[320px] bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      <div className="relative aspect-square bg-white flex-shrink-0">
+      <div className="relative h-[160px] bg-white flex-shrink-0">
         {originalPrice && discountPercentage > 0 && (
           <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
             -{discountPercentage}%
@@ -261,7 +261,7 @@ const ProductCard = memo(function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between">
+      <div className="p-3 flex-1 flex flex-col min-h-[160px]">
         {category && (
           <div className="text-xs text-gray-500 mb-1 truncate">{category}</div>
         )}
@@ -301,7 +301,7 @@ const ProductCard = memo(function ProductCard({
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                {weeklyPurchases} đã mua
+                {weeklyPurchases}+
               </div>
             )}
           </div>

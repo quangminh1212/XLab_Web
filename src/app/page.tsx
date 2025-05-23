@@ -265,7 +265,7 @@ function HomePage() {
                         key={product.id}
                         id={product.id.toString()}
                         name={product.name}
-                        description={product.shortDescription || product.description || ''}
+                        description={product.shortDescription || ''}
                         price={product.price || 0}
                         originalPrice={product.originalPrice}
                         image={getValidImageUrl(product)}
