@@ -298,7 +298,3 @@ run.bat.log
 # Development artifacts
 *.hot-update.js
 *.hot-update.json
-
-# New additions
-start-clean.bat
-test-server.html

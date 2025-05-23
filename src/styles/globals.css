@@ -111,35 +111,6 @@
   .container-custom {
     @apply container mx-auto max-w-[98%];
   }
-
-  /* Line clamp utilities */
-  .line-clamp-1 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-  }
-
-  .line-clamp-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-
-  .line-clamp-3 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-  }
-
-  .line-clamp-none {
-    overflow: visible;
-    display: block;
-    -webkit-box-orient: horizontal;
-    -webkit-line-clamp: none;
-  }
 }
 
 /* Animation classes */
@@ -261,6 +232,9 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--primary-dark);
 }
+
+/* Import other style modules */
+@import './utils.css';
 
 /* Styles for Rich Text Content */
 .rich-text-content {
