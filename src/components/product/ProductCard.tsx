@@ -181,7 +181,7 @@ const ProductCard = memo(function ProductCard({
     >
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
+          <div className="absolute top-1 left-1 z-10 bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
             -{discountPercentage}%
           </div>
         )}
@@ -202,7 +202,7 @@ const ProductCard = memo(function ProductCard({
         {!isImageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-white">
             <svg
-              className="w-10 h-10 text-gray-300 animate-spin"
+              className="w-8 h-8 text-gray-300 animate-spin"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -261,14 +261,14 @@ const ProductCard = memo(function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between">
+      <div className="p-2 flex-1 flex flex-col justify-between">
         {category && (
-          <div className="text-xs text-gray-500 mb-1">{category}</div>
+          <div className="text-xs text-gray-500 mb-0.5">{category}</div>
         )}
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-0.5">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+        <p className="text-xs text-gray-500 line-clamp-2 mb-1">
           {shortDescription}
         </p>
         <div className="flex items-center justify-between">
@@ -278,12 +278,12 @@ const ProductCard = memo(function ProductCard({
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-xs text-gray-500 line-through">
+                <span className="ml-1 text-xs text-gray-500 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
             </div>
-            <div className="mt-1">
+            <div className="mt-0.5">
               {rating > 0 ? (
                 renderRatingStars(rating)
               ) : (
@@ -295,7 +295,7 @@ const ProductCard = memo(function ProductCard({
             <div className="text-xs text-gray-500 flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-3 w-3 mr-1"
+                className="h-3 w-3 mr-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

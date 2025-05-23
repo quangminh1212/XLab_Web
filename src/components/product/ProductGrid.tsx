@@ -49,15 +49,15 @@ const ProductGrid = ({
   const getColumnsClass = () => {
     switch (columns) {
       case 2:
-        return 'grid-cols-1 sm:grid-cols-2';
+        return 'grid-cols-2 sm:grid-cols-2';
       case 3:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+        return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3';
       case 4:
-        return 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4';
+        return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
       case 5:
-        return 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+        return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
       default:
-        return 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+        return 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
     }
   };
   
@@ -125,7 +125,7 @@ const ProductGrid = ({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-3`}>
+      <div className={`grid ${getColumnsClass()} gap-2`}>
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
