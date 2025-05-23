@@ -174,14 +174,14 @@ const ProductCard = memo(function ProductCard({
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className="group flex flex-col h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
+      className="group flex flex-col h-[320px] bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      <div className="relative pt-[100%] bg-white">
+      <div className="relative h-[160px] bg-white flex-shrink-0">
         {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-1 left-1 z-10 bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
             -{discountPercentage}%
           </div>
         )}
@@ -242,7 +242,7 @@ const ProductCard = memo(function ProductCard({
           <div className="flex flex-col gap-2">
             <button
               onClick={handleAddToCart}
-              className="bg-white text-gray-800 hover:bg-primary-100 hover:text-primary-600 px-4 py-2 rounded-full font-medium transition-colors active:scale-95"
+              className="bg-white text-gray-800 hover:bg-primary-100 hover:text-primary-600 px-4 py-2 rounded-full font-medium transition-colors active:scale-95 text-sm"
             >
               Thêm vào giỏ
             </button>
@@ -253,7 +253,7 @@ const ProductCard = memo(function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-full font-medium text-center transition-colors active:scale-95"
+              className="bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-full font-medium text-center transition-colors active:scale-95 text-sm"
             >
               Mua ngay
             </button>
@@ -261,55 +261,59 @@ const ProductCard = memo(function ProductCard({
         </div>
       </div>
 
-      <div className="p-2 flex-1 flex flex-col justify-between">
+      <div className="p-3 flex-1 flex flex-col min-h-[160px]">
         {category && (
-          <div className="text-xs text-gray-500 mb-0.5">{category}</div>
+          <div className="text-xs text-gray-500 mb-1 truncate">{category}</div>
         )}
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-0.5">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-2 min-h-[40px] flex items-start">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-1">
+        <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">
           {shortDescription}
         </p>
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center">
-              <span className="text-sm font-semibold text-gray-900">
-                {formatCurrency(price)}
-              </span>
-              {originalPrice && discountPercentage > 0 && (
-                <span className="ml-1 text-xs text-gray-500 line-through">
-                  {formatCurrency(originalPrice)}
+        <div className="mt-auto">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex-1">
+              <div className="flex items-center flex-wrap">
+                <span className="text-sm font-semibold text-gray-900">
+                  {formatCurrency(price)}
                 </span>
-              )}
+                {originalPrice && discountPercentage > 0 && (
+                  <span className="ml-2 text-xs text-gray-500 line-through">
+                    {formatCurrency(originalPrice)}
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="mt-0.5">
-              {rating > 0 ? (
-                renderRatingStars(rating)
-              ) : (
-                <div className="h-4"></div>
-              )}
-            </div>
+            {weeklyPurchases > 0 && (
+              <div className="text-xs text-gray-500 flex items-center ml-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+                {weeklyPurchases}+
+              </div>
+            )}
           </div>
-          {weeklyPurchases > 0 && (
-            <div className="text-xs text-gray-500 flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3 w-3 mr-0.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              {weeklyPurchases}+
-            </div>
-          )}
+          <div className="flex items-center">
+            {rating > 0 ? (
+              renderRatingStars(rating)
+            ) : (
+              <div className="h-4 flex items-center">
+                <span className="text-xs text-gray-400">Chưa có đánh giá</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>
