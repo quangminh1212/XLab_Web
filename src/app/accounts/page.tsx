@@ -218,6 +218,7 @@ export default function AccountsPage() {
                       image={accountImageUrl}
                       rating={account.rating || 0}
                       isAccount={true}
+                      weeklyPurchases={parseInt(account.weeklyPurchases) || 0}
                     />
                   );
                 })
