@@ -302,3 +302,13 @@ run.bat.log
 # New additions
 start-clean.bat
 test-server.html
+
+# Middleware và manifest files generated
+/.next/server/middleware-manifest.json
+/.next/server/middleware-build-manifest.js
+/.next/server/middleware-react-loadable-manifest.js
+/.next/server/interception-route-rewrite-manifest.js
+/.next/server/server-reference-manifest.*
+/.next/server/next-font-manifest.*
+/.next/server/app-paths-manifest.json
+/.next/server/pages-manifest.json
