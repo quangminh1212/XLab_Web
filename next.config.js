@@ -4,6 +4,7 @@ const path = require('path');
 const nextConfig = {
   experimental: {
     optimizePackageImports: ['react-icons'],
+    suppressHydrationWarning: true,
   },
   reactStrictMode: true,
   images: {
@@ -36,9 +37,6 @@ const nextConfig = {
     },
   },
   compress: true,
-  // Disable tracing to avoid EPERM errors
-  generateEtags: false,
-  trailingSlash: false,
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
