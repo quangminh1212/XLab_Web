@@ -269,9 +269,9 @@ function HomePage() {
                         price={product.price || 0}
                         originalPrice={product.originalPrice}
                         image={getValidImageUrl(product)}
-                        rating={typeof product.rating === 'string' ? parseFloat(product.rating) : (product.rating || 0)}
-                        reviewCount={typeof product.reviewCount === 'string' ? parseInt(product.reviewCount) : (product.reviewCount || 0)}
-                        weeklyPurchases={typeof product.weeklyPurchases === 'string' ? parseInt(product.weeklyPurchases) : (product.weeklyPurchases || 0)}
+                        rating={product.rating}
+                        reviewCount={product.reviewCount || 0}
+                        weeklyPurchases={product.weeklyPurchases || 0}
                         slug={product.slug}
                       />
                     ))}
@@ -323,9 +323,9 @@ function HomePage() {
                           price={product.price || 0}
                           originalPrice={product.originalPrice}
                           image={getValidImageUrl(product)}
-                          rating={typeof product.rating === 'string' ? parseFloat(product.rating) : (product.rating || 0)}
-                          reviewCount={typeof product.reviewCount === 'string' ? parseInt(product.reviewCount) : (product.reviewCount || 0)}
-                          weeklyPurchases={typeof product.weeklyPurchases === 'string' ? parseInt(product.weeklyPurchases) : (product.weeklyPurchases || 0)}
+                          rating={product.rating}
+                          reviewCount={product.reviewCount || 0}
+                          weeklyPurchases={product.weeklyPurchases || 0}
                           slug={product.slug}
                           isAccount={true}
                         />

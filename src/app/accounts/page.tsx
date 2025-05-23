@@ -212,14 +212,11 @@ export default function AccountsPage() {
                       key={account.id}
                       id={account.id.toString()}
                       name={account.name}
-                      description={account.shortDescription || account.description || ''}
+                      description={account.description || ''}
                       price={account.salePrice || account.price || 0}
                       originalPrice={account.salePrice ? account.price : undefined}
                       image={accountImageUrl}
-                      rating={typeof account.rating === 'string' ? parseFloat(account.rating) : (account.rating || 0)}
-                      reviewCount={typeof account.reviewCount === 'string' ? parseInt(account.reviewCount) : (account.reviewCount || 0)}
-                      weeklyPurchases={typeof account.weeklyPurchases === 'string' ? parseInt(account.weeklyPurchases) : (account.weeklyPurchases || 0)}
-                      slug={account.slug}
+                      rating={account.rating || 0}
                       isAccount={true}
                     />
                   );
