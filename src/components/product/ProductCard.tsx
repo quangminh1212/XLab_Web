@@ -269,7 +269,7 @@ const ProductCard = memo(function ProductCard({
         </h3>
         {shortDescription && (
           <div
-            className="text-[0.6rem] font-normal text-gray-500 line-clamp-2 mb-2"
+            className="text-[0.5rem] font-light text-gray-500 line-clamp-2 mb-2"
             dangerouslySetInnerHTML={{ __html: shortDescription }}
           />
         )}
