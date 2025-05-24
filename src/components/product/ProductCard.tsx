@@ -269,14 +269,14 @@ const ProductCard = memo(function ProductCard({
         </h3>
         {shortDescription && (
           <div
-            className="text-xs text-gray-500 line-clamp-2 mb-2"
+            className="text-[0.7rem] text-gray-500 line-clamp-2 mb-2"
             dangerouslySetInnerHTML={{ __html: shortDescription }}
           />
         )}
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center">
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-lg font-semibold text-gray-900">
                 {formatCurrency(price)}
               </span>
               {originalPrice && (
