@@ -5,70 +5,59 @@ node_modules/
 .pnp
 .pnp.js
 
-# Next.js
+# Next.js build output and cache
 /.next/
 /out/
-.next/trace*
+.next/**/*
+.turbo/
+.swc/
 
-# Production
-build/
-dist/
-
-# Environment
+# Environment variables
 .env*
 !.env.example
 
 # Logs
 *.log
+logs/
 
-# Runtime
+# OS generated files
 .DS_Store
 *.pem
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Runtime data
 .vercel
-.turbo/
+.cache/
+*.temp
+*.tmp
+*.timestamp
+*-timestamp
 
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# SWC
-.swc/
-node_modules/@next/swc-*
+# Build artifacts
+build/
+dist/
 
-# IDE
-.idea/
-.vscode/
+# Development scripts and utilities (không cần commit)
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+no-trace.bat
+run-fixed.bat
+*.bat
+*.ps1
 
-# Cache
-.cache/
-*.temp
-*.tmp
-
-# payment images
-/public/images/payment/visa.svg
-/public/images/payment/mastercard.svg
-/public/images/payment/momo.svg
-/public/images/payment/zalopay.svg
-/public/images/products/chatgpt/*.png
-.next/static/chunks/_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js.js
-.next/static/webpack/*.hot-update.json
-.next/static/webpack/*.hot-update.js
-.next/trace
-
-# Keep directory structure
-!.next/static/app/.gitkeep
-!.next/static/css/.gitkeep
-!.next/static/chunks/.gitkeep
-!public/images/**/.gitkeep
-
-# Logs
-logs
-next-setup.log
-
-# vercel
-.turbo
-
-# Files to be deleted after migration
+# Fix scripts (đã hoàn thành)
 fix-all-errors.log
 fix-auth-component.js
 fix-missing-files.js
@@ -77,180 +66,22 @@ fix-static-files.log
 fix-swc-errors.js
 hide-warnings.js
 update-gitignore.js
-dev.cmd
-dev.ps1
-powershell-dev.ps1
-start-dev.bat
-no-trace.bat
-run-fixed.bat
-
-# SWC related
-.swc-disabled/
-node_modules/@next/swc-*
-
-# Custom build files
-/.next/static/main-app*.js
-/.next/static/app-pages-internals*.js
-/.next/static/runtime*.js
-/.next/static/css/app/layout-*.css
-/.next/static/main-app-*.js
-/.next/trace*
-/.next/trace
-/.next/trace.old*
-
-# Generated files
-/*.timestamp
-*-timestamp
-
-# Runtime generated files
-.next/static/chunks/webpack-*
-.next/static/chunks/framework-*
-.next/static/chunks/main-*
-.next/static/chunks/polyfills-*
-.next/static/chunks/app-*
-.next/static/css/app/layout-*.css
-.next/static/main-app-*.js
-.next/static/development/*
-.next/cache/*
-.next/server/vendor-chunks/*
-.next/trace*
-.next/static/webpack/
-.next/server/*.pack
-.next/server/*.pack.gz
-
-# backups
-/public/images/backup-categories/
-/public/images/products-backup/
-node_modules/@next/swc-*
-
-# SWC related files
-/node_modules/@next/swc-win32-x64-msvc/
-/node_modules/@next/swc-win32-ia32-msvc/
-/node_modules/@next/swc-win32-arm64-msvc/
-/.swc-disabled/
-
-# Added by update-gitignore.js
-# Next.js runtime files
-/.next/static/development/
-/.next/static/css/
-/.next/server/pages/
-/.next/server/chunks/
-/.next/server/*.json
-/.next/build-manifest.json
-/.next/app-paths-manifest.json
-/.next/next-font-manifest.json
-/.next/middleware-manifest.json
-**/*.hot-update.js
-**/*.hot-update.json
-/node_modules/.cache/
-/.swc/
-/.turbo/
-.next/trace.*
-dev.cmd
-dev.ps1
-powershell-dev.ps1
-start-dev.bat
-
-# Next.js build artifacts
-.next/trace
-.next/trace.*
-
-# Test files
-test-cart.html
-.next/cache/*
-!.next/cache/.gitkeep
-.next/static/chunks/webpack-*
-.next/static/chunks/framework-*
-.next/static/chunks/main-*
-.next/static/chunks/polyfills-*
-.next/static/chunks/app-*
-.next/static/css/app/layout-*.css
-.next/static/main-app-*.js
-.next/static/development/*
-
-# SWC related files
-.swc-disabled/
-node_modules/@next/swc-*
-
-# Local development files
-dev.cmd
-dev.ps1
-powershell-dev.ps1
-start-dev.bat
-*.log
-
-# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
 check-env.js
-fix-auth-component.js
-fix-missing-files.js
-fix-static-files.js
 fix-chunks-final.js
 fix-next-chunks.js
 fix-products-json.js
-fix-swc-errors.js
 fix-trace-error.js
-hide-warnings.js
-update-gitignore.js
 next-setup.js
-
-# Logs and temporary files
 next-fix-all.log
-
-# xlab web
 xlab-utils.log
-.traceignore
-.cursorignore
 
-# temporary files
-*.temp
-temp-config.js
+# Backup files
+/public/images/backup-categories/
+/public/images/products-backup/
 
-# Images and product resource directories
-/public/images/products/unknown/
-
-# Reorganization scripts
-/scripts/reorganize-product-images.js
-
-# IDEs and editors
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# SWC
-.swc/
-.swc-disabled/
-node_modules/@next/swc-*
-
-# Vercel
-.vercel
-
-# Turbo
-.turbo/
-
-# Cache
-.cache/
-node_modules/.cache/
-
-# Temporary files
-*.temp
-*.tmp
-
-# Test files (can be removed after testing)
+# Test files
 test-cart.html
 
-# Keep important directories
-!.next/static/app/.gitkeep
-!.next/static/css/.gitkeep
-!.next/static/chunks/.gitkeep
+# Keep essential directory structure
+!.next/.gitkeep
 !public/images/**/.gitkeep

@@ -4,10 +4,19 @@ const { spawn } = require('child_process');
 
 console.log('🚀 Đang khởi động XLab Web Development Server...');
 
-// Khởi động next dev trực tiếp
+// Set environment variables để tắt telemetry và cache
+process.env.NEXT_TELEMETRY_DISABLED = '1';
+process.env.SWC_DISABLE_CACHE = '1';
+
+// Khởi động next dev trực tiếp với environment variables
 const nextProcess = spawn('npx', ['next', 'dev'], {
   stdio: 'inherit',
-  shell: true
+  shell: true,
+  env: {
+    ...process.env,
+    NEXT_TELEMETRY_DISABLED: '1',
+    SWC_DISABLE_CACHE: '1'
+  }
 });
 
 nextProcess.on('close', (code) => {

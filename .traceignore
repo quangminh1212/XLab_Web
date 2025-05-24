@@ -1,0 +1,4 @@
+# Ignore patterns for Next.js trace
+.next/**
+node_modules/**
+public/**

@@ -3,6 +3,12 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Tắt tracing để tránh lỗi EPERM trên Windows
+  experimental: {
+    instrumentationHook: false,
+  },
+  // Tắt telemetry và tracing
+  telemetry: false,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
     remotePatterns: [
