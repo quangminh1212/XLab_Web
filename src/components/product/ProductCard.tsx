@@ -46,6 +46,10 @@ const ProductCard = memo(function ProductCard({
   const router = useRouter()
   const { addItem } = useCart()
   
+  // Validate rating and reviewCount to ensure they are numbers
+  const validRating = typeof rating === 'number' && !isNaN(rating) ? rating : 0
+  const validReviewCount = typeof reviewCount === 'number' && !isNaN(reviewCount) ? reviewCount : 0
+  
   // Log the image URL for debugging
   console.log(`ProductCard image URL for ${name}:`, image)
   
@@ -200,7 +204,7 @@ const ProductCard = memo(function ProductCard({
     >
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-md">
+          <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs px-2.5 py-1.5 rounded-lg shadow-md">
             -{discountPercentage}%
           </div>
         )}
@@ -243,7 +247,7 @@ const ProductCard = memo(function ProductCard({
 
         {showAddedEffect && (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 animate-fadeInOut">
-            <div className="bg-white text-green-600 font-bold px-4 py-2 rounded-full flex items-center shadow-lg">
+            <div className="bg-white text-green-600 px-4 py-2 rounded-full flex items-center shadow-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
@@ -260,7 +264,7 @@ const ProductCard = memo(function ProductCard({
           <div className="flex flex-col gap-2.5">
             <button
               onClick={handleAddToCart}
-              className="bg-white text-gray-800 hover:bg-gray-50 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
+              className="bg-white text-gray-800 hover:bg-gray-50 px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
             >
               Thêm vào giỏ
             </button>
@@ -271,7 +275,7 @@ const ProductCard = memo(function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white hover:from-teal-600 hover:to-cyan-700 px-5 py-2.5 rounded-xl font-medium text-center transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
+              className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white hover:from-teal-600 hover:to-cyan-700 px-5 py-2.5 rounded-xl text-center transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
             >
               Mua ngay
             </button>
@@ -281,7 +285,7 @@ const ProductCard = memo(function ProductCard({
 
       <div className="p-4 flex-1 flex flex-col space-y-3">
         {category && (
-          <div className={`text-xs font-medium ${productColors.category} px-2 py-1 rounded-md w-fit`}>
+          <div className={`text-xs ${productColors.category} px-2 py-1 rounded-md w-fit`}>
             {category}
           </div>
         )}
@@ -292,7 +296,7 @@ const ProductCard = memo(function ProductCard({
           </h3>
           {shortDescription && (
             <div
-              className="text-sm text-gray-500 line-clamp-3 leading-normal min-h-[3.6rem] overflow-hidden font-normal"
+              className="text-[8px] text-gray-500 line-clamp-3 leading-tight min-h-[2rem] overflow-hidden"
               dangerouslySetInnerHTML={{ __html: shortDescription }}
             />
           )}
@@ -306,20 +310,35 @@ const ProductCard = memo(function ProductCard({
                   {formatCurrency(price)}
                 </span>
                 {originalPrice && (
-                  <span className="text-sm text-gray-400 line-through font-medium">
+                  <span className="text-sm text-gray-400 line-through">
                     {formatCurrency(originalPrice)}
                   </span>
                 )}
               </div>
-              {rating > 0 ? (
+              {validRating > 0 ? (
                 <div className="flex items-center space-x-1">
-                  {renderRatingStars(rating)}
-                  {reviewCount > 0 && (
-                    <span className="text-xs text-gray-500 ml-1">({reviewCount}+)</span>
-                  )}
+                  {renderRatingStars(validRating)}
+                  <span className="text-xs text-gray-600 ml-1 font-medium">
+                    {validRating.toFixed(1)} ({validReviewCount > 0 ? `${validReviewCount}+` : '0'})
+                  </span>
                 </div>
               ) : (
-                <div className="h-5"></div>
+                <div className="flex items-center space-x-1">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <svg
+                        key={i}
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-gray-200"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <span className="text-xs text-gray-400 ml-1">Chưa có đánh giá</span>
+                </div>
               )}
             </div>
             
