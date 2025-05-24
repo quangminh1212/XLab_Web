@@ -126,7 +126,7 @@ const ProductGrid = ({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-4 md:gap-6`}>
+      <div className={`grid ${getColumnsClass()} gap-3 auto-rows-fr`}>
         {products.map((product) => {
           // Sử dụng giá đã được tính toán từ API hoặc fallback cho logic cũ
           const displayPrice = (product as any).displayPrice || calculateMinPrice(product);
