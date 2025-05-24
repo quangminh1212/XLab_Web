@@ -264,12 +264,12 @@ const ProductCard = memo(function ProductCard({
         {category && (
           <div className="text-xs text-gray-500 mb-1">{category}</div>
         )}
-        <h3 className="text-base font-medium text-gray-900 line-clamp-2 mb-1">
+        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-1">
           {name}
         </h3>
         {shortDescription && (
           <div
-            className="text-[0.7rem] text-gray-500 line-clamp-2 mb-2"
+            className="text-[0.65rem] font-normal text-gray-500 line-clamp-2 mb-2"
             dangerouslySetInnerHTML={{ __html: shortDescription }}
           />
         )}
