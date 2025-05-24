@@ -267,9 +267,12 @@ const ProductCard = memo(function ProductCard({
         <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-2">
-          {shortDescription}
-        </p>
+        {shortDescription && (
+          <div
+            className="text-xs text-gray-500 line-clamp-2 mb-2"
+            dangerouslySetInnerHTML={{ __html: shortDescription }}
+          />
+        )}
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center">
