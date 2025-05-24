@@ -284,14 +284,8 @@ const ProductCard = memo(function ProductCard({
       </div>
 
       <div className="p-4 flex-1 flex flex-col space-y-3">
-        {category && (
-          <div className={`text-xs ${productColors.category} px-2 py-1 rounded-md w-fit`}>
-            {category}
-          </div>
-        )}
-        
         <div className="flex-1 space-y-2.5">
-          <h3 className={`${isAccount ? 'text-base' : 'text-lg'} font-bold text-gray-900 line-clamp-2 leading-tight`}>
+          <h3 className={`${isAccount ? 'text-xl' : 'text-2xl'} font-bold text-gray-900 line-clamp-2 leading-tight`}>
             {name}
           </h3>
           {shortDescription && (
@@ -319,7 +313,7 @@ const ProductCard = memo(function ProductCard({
                 <div className="flex items-center space-x-1">
                   {renderRatingStars(validRating)}
                   <span className="text-xs text-gray-600 ml-1 font-medium">
-                    {validRating.toFixed(1)} ({validReviewCount > 0 ? `${validReviewCount}+` : '0'})
+                    {validRating.toFixed(1)}
                   </span>
                 </div>
               ) : (
