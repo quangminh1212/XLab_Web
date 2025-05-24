@@ -180,6 +180,11 @@ const ProductCard = memo(function ProductCard({
       onClick={handleView}
     >
       <div className="relative pt-[100%] bg-white">
+        {originalPrice && discountPercentage > 0 && (
+          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
+            -{discountPercentage}%
+          </div>
+        )}
         <Image
           src={displayImageUrl}
           alt={name}
