@@ -213,6 +213,7 @@ export default function AccountsPage() {
                   
                   return (
                     <ProductCard
+                      isAccount={true}
                       key={account.id}
                       id={account.id.toString()}
                       name={account.name}
@@ -221,7 +222,6 @@ export default function AccountsPage() {
                       originalPrice={originalPrice && originalPrice > displayPrice ? originalPrice : undefined}
                       image={accountImageUrl}
                       rating={account.rating || 0}
-                      isAccount={true}
                       weeklyPurchases={parseInt(account.weeklyPurchases) || 0}
                     />
                   );
