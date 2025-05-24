@@ -17,6 +17,7 @@ interface Product {
   id: string;
   name: string;
   description: string;
+  shortDescription?: string;
   price?: number;
   originalPrice?: number;
   image: string;
@@ -135,7 +136,7 @@ const ProductGrid = ({
               key={product.id}
               id={product.id}
               name={product.name}
-              description={product.description}
+              description={product.shortDescription || product.description || ''}
               price={minPrice}
               originalPrice={originalPrice}
               image={product.image}

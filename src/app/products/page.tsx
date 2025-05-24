@@ -267,15 +267,27 @@ export default function ProductsPage() {
                 // Log the product data for debugging
                 console.log(`Product ${product.id} image data:`, product.images);
                 
-                // Xác định giá hiển thị - kiểm tra versions trước
-                const displayPrice = product.versions && product.versions.length > 0
-                  ? product.versions[0].price || 0
-                  : product.price || 0;
+                // Xác định giá hiển thị - kiểm tra optionPrices trước, sau đó versions
+                const displayPrice = (() => {
+                  if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+                    return product.optionPrices[Object.keys(product.optionPrices)[0]].price;
+                  }
+                  if (product.versions && product.versions.length > 0) {
+                    return product.versions[0].price || 0;
+                  }
+                  return product.price || 0;
+                })();
                 
-                // Xác định giá gốc - kiểm tra versions trước
-                const originalPrice = product.versions && product.versions.length > 0
-                  ? product.versions[0].originalPrice || 0
-                  : product.salePrice || 0;
+                // Xác định giá gốc - kiểm tra optionPrices trước, sau đó versions
+                const originalPrice = (() => {
+                  if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+                    return product.optionPrices[Object.keys(product.optionPrices)[0]].originalPrice;
+                  }
+                  if (product.versions && product.versions.length > 0) {
+                    return product.versions[0].originalPrice;
+                  }
+                  return product.originalPrice || 0;
+                })();
                   
                 // Lấy ảnh sản phẩm (sử dụng helper function)
                 const imageUrl = getValidImageUrl(product);

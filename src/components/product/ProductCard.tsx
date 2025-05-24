@@ -69,8 +69,8 @@ const ProductCard = memo(function ProductCard({
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image)
   
-  // Sử dụng mô tả ngắn thay vì cắt mô tả dài
-  const shortDescription = description
+  // Sử dụng mô tả ngắn đã được truyền vào
+  const shortDescription = description || ''
       
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage = originalPrice && originalPrice > price 
@@ -278,9 +278,14 @@ const ProductCard = memo(function ProductCard({
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-xs text-gray-500 line-through">
-                  {formatCurrency(originalPrice)}
-                </span>
+                <>
+                  <span className="ml-2 text-xs text-gray-500 line-through">
+                    {formatCurrency(originalPrice)}
+                  </span>
+                  <span className="ml-1 px-1 py-0.5 text-xs bg-red-100 text-red-600 rounded">
+                    -{discountPercentage}%
+                  </span>
+                </>
               )}
             </div>
             <div className="mt-1">
