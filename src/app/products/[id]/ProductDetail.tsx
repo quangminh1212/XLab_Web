@@ -6,17 +6,11 @@ import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 import { Product } from '@/types';
 import { useCart } from '@/components/cart/CartContext';
-import dynamic from 'next/dynamic';
 import RichTextContent from '@/components/common/RichTextContent';
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import RelatedProducts from '../../../components/product/RelatedProducts';
-
-// Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
-const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
-  loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
-  ssr: false // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
-});
+import VoiceTypingDemo from './VoiceTypingDemo';
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
