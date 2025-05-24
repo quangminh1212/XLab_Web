@@ -17,7 +17,11 @@ const SpeechToTextDemo = () => {
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    // Kiểm tra xem trình duyệt có hỗ trợ Web Speech API không
+    // Kiểm tra xem có phải là client-side và trình duyệt có hỗ trợ Web Speech API không
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       setIsSupported(false);
       return;

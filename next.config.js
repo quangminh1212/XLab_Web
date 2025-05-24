@@ -38,6 +38,16 @@ const nextConfig = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
     };
+    
+    // Tắt hoàn toàn code splitting để tránh ChunkLoadError
+    if (dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: false,
+        runtimeChunk: false
+      };
+    }
+    
     return config;
   }
 };
