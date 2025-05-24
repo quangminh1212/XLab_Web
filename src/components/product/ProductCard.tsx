@@ -197,7 +197,7 @@ const ProductCard = memo(function ProductCard({
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full bg-white rounded-xl border-2 ${productColors.border} shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-opacity-80 hover:-translate-y-2 transform ${isAccount ? 'text-sm' : ''}`}
+      className={`group flex flex-col h-full bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 transform ${isAccount ? 'text-sm' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
