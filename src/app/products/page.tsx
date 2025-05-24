@@ -264,35 +264,64 @@ export default function ProductsPage() {
             {/* Product grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {sortedProducts.map((product) => {
-                // Log the product data for debugging
-                console.log(`Product ${product.id} image data:`, product.images);
-                
-                // Xác định giá hiển thị - kiểm tra optionPrices trước, sau đó versions
-                const displayPrice = (() => {
-                  if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-                    return product.optionPrices[Object.keys(product.optionPrices)[0]].price;
-                  }
+                // Tính giá thấp nhất từ các phiên bản và tùy chọn (logic giống ProductGrid)
+                const calculateMinPrice = (product: any): number => {
+                  let minPrice = Infinity;
+                  
+                  // Kiểm tra các phiên bản
                   if (product.versions && product.versions.length > 0) {
-                    return product.versions[0].price || 0;
+                    product.versions.forEach((version: any) => {
+                      if (version.price < minPrice) {
+                        minPrice = version.price;
+                      }
+                    });
                   }
-                  return product.price || 0;
-                })();
-                
-                // Xác định giá gốc - kiểm tra optionPrices trước, sau đó versions
-                const originalPrice = (() => {
+                  
+                  // Kiểm tra các tùy chọn sản phẩm
                   if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-                    return product.optionPrices[Object.keys(product.optionPrices)[0]].originalPrice;
+                    Object.values(product.optionPrices).forEach((option: any) => {
+                      if (option.price < minPrice) {
+                        minPrice = option.price;
+                      }
+                    });
                   }
+                  
+                  // Nếu có giá cố định
+                  if (product.price !== undefined && product.price < minPrice) {
+                    minPrice = product.price;
+                  }
+                  
+                  return minPrice === Infinity ? 0 : minPrice;
+                };
+                
+                // Tính giá gốc tương ứng với giá thấp nhất (logic giống ProductGrid)
+                const calculateOriginalPrice = (product: any, minPrice: number): number | undefined => {
+                  // Nếu giá thấp nhất từ version
                   if (product.versions && product.versions.length > 0) {
-                    return product.versions[0].originalPrice;
+                    const version = product.versions.find((v: any) => v.price === minPrice);
+                    if (version) {
+                      return version.originalPrice;
+                    }
                   }
-                  return product.originalPrice || 0;
-                })();
+                  
+                  // Nếu giá thấp nhất từ optionPrice
+                  if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
+                    for (const key in product.optionPrices) {
+                      if (product.optionPrices[key].price === minPrice) {
+                        return product.optionPrices[key].originalPrice;
+                      }
+                    }
+                  }
+                  
+                  // Sử dụng giá gốc cố định nếu có
+                  return product.originalPrice;
+                };
+                
+                const displayPrice = calculateMinPrice(product);
+                const originalPrice = calculateOriginalPrice(product, displayPrice);
                   
                 // Lấy ảnh sản phẩm (sử dụng helper function)
                 const imageUrl = getValidImageUrl(product);
-                
-                console.log(`Processed image URL for ${product.name}:`, imageUrl);
                 
                 return (
                   <ProductCard 
@@ -301,7 +330,7 @@ export default function ProductsPage() {
                     name={product.name}
                     description={product.shortDescription || ''}
                     price={displayPrice}
-                    originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
+                    originalPrice={originalPrice && originalPrice > displayPrice ? originalPrice : undefined}
                     image={imageUrl}
                     category={categories.find(c => c.id === product.categoryId)?.name}
                     rating={product.rating}
