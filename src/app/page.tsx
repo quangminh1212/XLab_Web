@@ -320,24 +320,8 @@ function HomePage() {
                           id={product.id.toString()}
                           name={product.name}
                           description={product.shortDescription || ''}
-                          price={(() => {
-                            if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-                              return product.optionPrices[Object.keys(product.optionPrices)[0]].price;
-                            }
-                            if (product.versions && product.versions.length > 0) {
-                              return product.versions[0].price || 0;
-                            }
-                            return product.price || 0;
-                          })()}
-                          originalPrice={(() => {
-                            if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-                              return product.optionPrices[Object.keys(product.optionPrices)[0]].originalPrice;
-                            }
-                            if (product.versions && product.versions.length > 0) {
-                              return product.versions[0].originalPrice;
-                            }
-                            return product.originalPrice || 0;
-                          })()}
+                          price={product.displayPrice || product.price || 0}
+                          originalPrice={product.displayOriginalPrice && product.displayOriginalPrice > (product.displayPrice || product.price || 0) ? product.displayOriginalPrice : undefined}
                           image={getValidImageUrl(product)}
                           rating={product.rating}
                           reviewCount={product.reviewCount || 0}

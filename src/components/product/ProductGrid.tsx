@@ -128,8 +128,9 @@ const ProductGrid = ({
 
       <div className={`grid ${getColumnsClass()} gap-4 md:gap-6`}>
         {products.map((product) => {
-          const minPrice = calculateMinPrice(product);
-          const originalPrice = calculateOriginalPrice(product, minPrice);
+          // Sử dụng giá đã được tính toán từ API hoặc fallback cho logic cũ
+          const displayPrice = (product as any).displayPrice || calculateMinPrice(product);
+          const originalPrice = (product as any).displayOriginalPrice || calculateOriginalPrice(product, displayPrice);
           
           return (
             <ProductCard
@@ -137,8 +138,8 @@ const ProductGrid = ({
               id={product.id}
               name={product.name}
               description={product.shortDescription || product.description || ''}
-              price={minPrice}
-              originalPrice={originalPrice}
+              price={displayPrice}
+              originalPrice={originalPrice && originalPrice > displayPrice ? originalPrice : undefined}
               image={product.image}
               category={product.category}
               rating={product.rating}

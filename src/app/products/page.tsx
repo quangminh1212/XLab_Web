@@ -264,61 +264,9 @@ export default function ProductsPage() {
             {/* Product grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {sortedProducts.map((product) => {
-                // Tính giá thấp nhất từ các phiên bản và tùy chọn (logic giống ProductGrid)
-                const calculateMinPrice = (product: any): number => {
-                  let minPrice = Infinity;
-                  
-                  // Kiểm tra các phiên bản
-                  if (product.versions && product.versions.length > 0) {
-                    product.versions.forEach((version: any) => {
-                      if (version.price < minPrice) {
-                        minPrice = version.price;
-                      }
-                    });
-                  }
-                  
-                  // Kiểm tra các tùy chọn sản phẩm
-                  if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-                    Object.values(product.optionPrices).forEach((option: any) => {
-                      if (option.price < minPrice) {
-                        minPrice = option.price;
-                      }
-                    });
-                  }
-                  
-                  // Nếu có giá cố định
-                  if (product.price !== undefined && product.price < minPrice) {
-                    minPrice = product.price;
-                  }
-                  
-                  return minPrice === Infinity ? 0 : minPrice;
-                };
-                
-                // Tính giá gốc tương ứng với giá thấp nhất (logic giống ProductGrid)
-                const calculateOriginalPrice = (product: any, minPrice: number): number | undefined => {
-                  // Nếu giá thấp nhất từ version
-                  if (product.versions && product.versions.length > 0) {
-                    const version = product.versions.find((v: any) => v.price === minPrice);
-                    if (version) {
-                      return version.originalPrice;
-                    }
-                  }
-                  
-                  // Nếu giá thấp nhất từ optionPrice
-                  if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-                    for (const key in product.optionPrices) {
-                      if (product.optionPrices[key].price === minPrice) {
-                        return product.optionPrices[key].originalPrice;
-                      }
-                    }
-                  }
-                  
-                  // Sử dụng giá gốc cố định nếu có
-                  return product.originalPrice;
-                };
-                
-                const displayPrice = calculateMinPrice(product);
-                const originalPrice = calculateOriginalPrice(product, displayPrice);
+                // Sử dụng giá đã được tính toán từ API
+                const displayPrice = product.displayPrice || product.price || 0;
+                const originalPrice = product.displayOriginalPrice && product.displayOriginalPrice > displayPrice ? product.displayOriginalPrice : undefined;
                   
                 // Lấy ảnh sản phẩm (sử dụng helper function)
                 const imageUrl = getValidImageUrl(product);
