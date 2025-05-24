@@ -168,19 +168,19 @@ const ProductCard = memo(function ProductCard({
   // Tạo slug từ tên nếu không có slug được truyền vào
   const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-  // Tạo màu sắc cho border và category dựa trên ID sản phẩm
+  // Tạo màu sắc cho border và category dựa trên ID sản phẩm - theme XLab
   const getProductColors = (productId: string) => {
     const colorVariants = [
-      { border: 'border-blue-200', category: 'text-blue-600 bg-blue-50' },
-      { border: 'border-purple-200', category: 'text-purple-600 bg-purple-50' }, 
-      { border: 'border-green-200', category: 'text-green-600 bg-green-50' },
-      { border: 'border-yellow-200', category: 'text-yellow-600 bg-yellow-50' },
-      { border: 'border-red-200', category: 'text-red-600 bg-red-50' },
-      { border: 'border-cyan-200', category: 'text-cyan-600 bg-cyan-50' },
-      { border: 'border-indigo-200', category: 'text-indigo-600 bg-indigo-50' },
+      { border: 'border-teal-200', category: 'text-teal-600 bg-teal-50' },
+      { border: 'border-cyan-200', category: 'text-cyan-600 bg-cyan-50' }, 
       { border: 'border-emerald-200', category: 'text-emerald-600 bg-emerald-50' },
-      { border: 'border-orange-200', category: 'text-orange-600 bg-orange-50' },
-      { border: 'border-pink-200', category: 'text-pink-600 bg-pink-50' }
+      { border: 'border-blue-200', category: 'text-blue-600 bg-blue-50' },
+      { border: 'border-indigo-200', category: 'text-indigo-600 bg-indigo-50' },
+      { border: 'border-slate-200', category: 'text-slate-600 bg-slate-50' },
+      { border: 'border-gray-200', category: 'text-gray-600 bg-gray-50' },
+      { border: 'border-teal-300', category: 'text-teal-700 bg-teal-100' },
+      { border: 'border-cyan-300', category: 'text-cyan-700 bg-cyan-100' },
+      { border: 'border-emerald-300', category: 'text-emerald-700 bg-emerald-100' }
     ]
     
     // Sử dụng ID để tạo index ổn định
@@ -271,7 +271,7 @@ const ProductCard = memo(function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 px-5 py-2.5 rounded-xl font-medium text-center transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
+              className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white hover:from-teal-600 hover:to-cyan-700 px-5 py-2.5 rounded-xl font-medium text-center transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
             >
               Mua ngay
             </button>
@@ -292,7 +292,7 @@ const ProductCard = memo(function ProductCard({
           </h3>
           {shortDescription && (
             <div
-              className="text-sm text-gray-500 line-clamp-3 leading-normal min-h-[3.6rem] overflow-hidden"
+              className="text-sm text-gray-500 line-clamp-3 leading-normal min-h-[3.6rem] overflow-hidden font-normal"
               dangerouslySetInnerHTML={{ __html: shortDescription }}
             />
           )}
