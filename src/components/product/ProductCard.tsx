@@ -180,12 +180,6 @@ const ProductCard = memo(function ProductCard({
       onClick={handleView}
     >
       <div className="relative pt-[100%] bg-white">
-        {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
-            -{discountPercentage}%
-          </div>
-        )}
-
         <Image
           src={displayImageUrl}
           alt={name}
@@ -277,15 +271,10 @@ const ProductCard = memo(function ProductCard({
               <span className="text-sm font-semibold text-gray-900">
                 {formatCurrency(price)}
               </span>
-              {originalPrice && discountPercentage > 0 && (
-                <>
-                  <span className="ml-2 text-xs text-gray-500 line-through">
-                    {formatCurrency(originalPrice)}
-                  </span>
-                  <span className="ml-1 px-1 py-0.5 text-xs bg-red-100 text-red-600 rounded">
-                    -{discountPercentage}%
-                  </span>
-                </>
+              {originalPrice && (
+                <span className="ml-2 text-xs text-gray-500 line-through">
+                  {formatCurrency(originalPrice)}
+                </span>
               )}
             </div>
             <div className="mt-1">
