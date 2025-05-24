@@ -106,8 +106,8 @@ const ProductCard = memo(function ProductCard({
                 ? 'text-yellow-400'
                 : i === fullStars && hasHalfStar
                 ? 'text-yellow-400'
-                : 'text-gray-300'
-            } mr-0.5`}
+                : 'text-gray-200'
+            }`}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -115,7 +115,7 @@ const ProductCard = memo(function ProductCard({
               <defs>
                 <linearGradient id={`halfGradient-${id}-${i}`}>
                   <stop offset="50%" stopColor="#FACC15" />
-                  <stop offset="50%" stopColor="#D1D5DB" />
+                  <stop offset="50%" stopColor="#E5E7EB" />
                 </linearGradient>
               </defs>
             ) : null}
@@ -125,9 +125,6 @@ const ProductCard = memo(function ProductCard({
             />
           </svg>
         ))}
-        {reviewCount > 0 && (
-          <span className="ml-1 text-xs text-gray-500">({reviewCount})</span>
-        )}
       </div>
     )
   }
@@ -171,17 +168,39 @@ const ProductCard = memo(function ProductCard({
   // Tạo slug từ tên nếu không có slug được truyền vào
   const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
+  // Tạo màu sắc cho border và category dựa trên ID sản phẩm
+  const getProductColors = (productId: string) => {
+    const colorVariants = [
+      { border: 'border-blue-200', category: 'text-blue-600 bg-blue-50' },
+      { border: 'border-purple-200', category: 'text-purple-600 bg-purple-50' }, 
+      { border: 'border-green-200', category: 'text-green-600 bg-green-50' },
+      { border: 'border-yellow-200', category: 'text-yellow-600 bg-yellow-50' },
+      { border: 'border-red-200', category: 'text-red-600 bg-red-50' },
+      { border: 'border-cyan-200', category: 'text-cyan-600 bg-cyan-50' },
+      { border: 'border-indigo-200', category: 'text-indigo-600 bg-indigo-50' },
+      { border: 'border-emerald-200', category: 'text-emerald-600 bg-emerald-50' },
+      { border: 'border-orange-200', category: 'text-orange-600 bg-orange-50' },
+      { border: 'border-pink-200', category: 'text-pink-600 bg-pink-50' }
+    ]
+    
+    // Sử dụng ID để tạo index ổn định
+    const index = productId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colorVariants.length
+    return colorVariants[index]
+  }
+
+  const productColors = getProductColors(id)
+
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md ${isAccount ? 'text-sm' : ''}`}
+      className={`group flex flex-col h-full bg-white rounded-xl border-2 ${productColors.border} shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-opacity-80 hover:-translate-y-2 transform ${isAccount ? 'text-sm' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
+          <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg shadow-md">
             -{discountPercentage}%
           </div>
         )}
@@ -190,7 +209,7 @@ const ProductCard = memo(function ProductCard({
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-cover transition-all duration-500 ${
+          className={`object-contain p-6 transition-all duration-500 ${
             isHovered ? 'scale-110' : 'scale-100'
           } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
@@ -201,7 +220,7 @@ const ProductCard = memo(function ProductCard({
         {!isImageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-white">
             <svg
-              className="w-10 h-10 text-gray-300 animate-spin"
+              className="w-8 h-8 text-gray-400 animate-spin"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -224,7 +243,7 @@ const ProductCard = memo(function ProductCard({
 
         {showAddedEffect && (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 animate-fadeInOut">
-            <div className="bg-white text-green-600 font-bold px-4 py-2 rounded-full flex items-center">
+            <div className="bg-white text-green-600 font-bold px-4 py-2 rounded-full flex items-center shadow-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
@@ -238,10 +257,10 @@ const ProductCard = memo(function ProductCard({
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2.5">
             <button
               onClick={handleAddToCart}
-              className="bg-white text-gray-800 hover:bg-primary-100 hover:text-primary-600 px-4 py-2 rounded-full font-medium transition-colors active:scale-95"
+              className="bg-white text-gray-800 hover:bg-gray-50 px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
             >
               Thêm vào giỏ
             </button>
@@ -252,7 +271,7 @@ const ProductCard = memo(function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-full font-medium text-center transition-colors active:scale-95"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 px-5 py-2.5 rounded-xl font-medium text-center transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
             >
               Mua ngay
             </button>
@@ -260,58 +279,70 @@ const ProductCard = memo(function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between">
+      <div className="p-4 flex-1 flex flex-col space-y-3">
         {category && (
-          <div className="text-xs text-gray-500 mb-1">{category}</div>
-        )}
-        <h3 className={`${isAccount ? 'text-sm' : 'text-lg'} font-semibold text-gray-900 line-clamp-2 mb-1`}>
-          {name}
-        </h3>
-        {shortDescription && (
-          <div
-            className={`${isAccount ? 'text-[0.6rem]' : '!text-[0.6rem]'} font-light text-gray-500 line-clamp-2 mb-2`}
-            dangerouslySetInnerHTML={{ __html: shortDescription }}
-          />
-        )}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center">
-              <span className="text-lg font-semibold text-gray-900">
-                {formatCurrency(price)}
-              </span>
-              {originalPrice && (
-                <span className="ml-2 text-xs text-gray-500 line-through">
-                  {formatCurrency(originalPrice)}
-                </span>
-              )}
-            </div>
-            <div className="mt-1">
-              {rating > 0 ? (
-                renderRatingStars(rating)
-              ) : (
-                <div className="h-4"></div>
-              )}
-            </div>
+          <div className={`text-xs font-medium ${productColors.category} px-2 py-1 rounded-md w-fit`}>
+            {category}
           </div>
-          {weeklyPurchases > 0 && (
-            <div className="text-xs text-gray-500 flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3 w-3 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              {weeklyPurchases}+
-            </div>
+        )}
+        
+        <div className="flex-1 space-y-2.5">
+          <h3 className={`${isAccount ? 'text-base' : 'text-lg'} font-bold text-gray-900 line-clamp-2 leading-tight`}>
+            {name}
+          </h3>
+          {shortDescription && (
+            <div
+              className="text-sm text-gray-500 line-clamp-3 leading-normal min-h-[3.6rem] overflow-hidden"
+              dangerouslySetInnerHTML={{ __html: shortDescription }}
+            />
           )}
+        </div>
+
+        <div className="space-y-2.5 mt-auto">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="flex items-baseline space-x-2">
+                <span className="text-xl font-bold text-gray-900">
+                  {formatCurrency(price)}
+                </span>
+                {originalPrice && (
+                  <span className="text-sm text-gray-400 line-through font-medium">
+                    {formatCurrency(originalPrice)}
+                  </span>
+                )}
+              </div>
+              {rating > 0 ? (
+                <div className="flex items-center space-x-1">
+                  {renderRatingStars(rating)}
+                  {reviewCount > 0 && (
+                    <span className="text-xs text-gray-500 ml-1">({reviewCount}+)</span>
+                  )}
+                </div>
+              ) : (
+                <div className="h-5"></div>
+              )}
+            </div>
+            
+            {weeklyPurchases > 0 && (
+              <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-md flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+                {weeklyPurchases}+
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>
