@@ -267,7 +267,7 @@ export default function ProductCard({
         {category && (
           <div className="text-xs text-gray-500 mb-1">{category}</div>
         )}
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
+        <h3 className="text-base font-semibold text-gray-900 line-clamp-2 mb-1">
           {name}
         </h3>
         <p className="text-xs text-gray-500 line-clamp-2 mb-2">
@@ -276,11 +276,11 @@ export default function ProductCard({
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center">
-              <span className="text-sm font-semibold text-gray-900">
+              <span className="text-base font-bold text-gray-900">
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-xs text-gray-500 line-through">
+                <span className="ml-2 text-sm text-gray-500 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
