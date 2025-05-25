@@ -298,7 +298,7 @@ function HomePage() {
                 <div className="flex justify-between items-center mb-5">
                   <h2 className="text-2xl font-bold text-gray-800">Dịch vụ</h2>
                   <Link
-                    href="/services"
+                    href="/products?filter=service"
                     className="text-primary-600 hover:text-primary-800 transition-colors text-base font-medium"
                   >
                     Xem tất cả

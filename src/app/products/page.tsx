@@ -3,17 +3,27 @@
 import { categories } from '@/data/mockData'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import ProductImage from '@/components/product/ProductImage'
 import ProductCard from '@/components/product/ProductCard'
 import { Button } from '@/components/common/button'
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // Set filter from URL params
+  useEffect(() => {
+    const filterParam = searchParams.get('filter');
+    if (filterParam && ['all', 'software', 'service'].includes(filterParam)) {
+      setFilter(filterParam);
+    }
+  }, [searchParams]);
 
   // Fetch products from API
   useEffect(() => {
@@ -49,18 +59,18 @@ export default function ProductsPage() {
     document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ'
   }, []);
 
-  // Lọc sản phẩm theo loại: chỉ lấy phần mềm
-  const softwareProducts = Array.isArray(products) 
-    ? products.filter(product =>
-        !product.isAccount && (product.type === 'software' || !product.type)
-      )
-    : [];
+  // Lọc tất cả sản phẩm (bao gồm phần mềm và dịch vụ)
+  const allProducts = Array.isArray(products) ? products : [];
 
   // Lọc theo danh mục và tìm kiếm
-  const filteredProducts = Array.isArray(softwareProducts) 
-    ? softwareProducts.filter(product => {
-        // Lọc theo danh mục
-        if (filter !== 'all' && product.categoryId !== filter) {
+  const filteredProducts = Array.isArray(allProducts) 
+    ? allProducts.filter(product => {
+        // Lọc theo loại sản phẩm
+        if (filter === 'software') {
+          if (product.isAccount || product.type === 'account') return false;
+        } else if (filter === 'service') {
+          if (!product.isAccount && product.type !== 'account') return false;
+        } else if (filter !== 'all' && product.categoryId !== filter) {
           return false;
         }
 
@@ -95,31 +105,39 @@ export default function ProductsPage() {
       })
     : [];
 
-  // Lọc các loại sản phẩm đặc biệt cho phần mềm
-  const featuredProducts = Array.isArray(softwareProducts) 
-    ? softwareProducts.filter(product => product.isFeatured)
+  // Lọc các loại sản phẩm đặc biệt
+  const featuredProducts = Array.isArray(allProducts) 
+    ? allProducts.filter(product => product.isFeatured)
     : [];
     
-  const newProducts = Array.isArray(softwareProducts) 
-    ? softwareProducts.slice().sort((a, b) =>
+  const newProducts = Array.isArray(allProducts) 
+    ? allProducts.slice().sort((a, b) =>
         new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime()
       ).slice(0, 6)
     : [];
     
-  const popularProducts = Array.isArray(softwareProducts) 
-    ? softwareProducts.slice().sort((a, b) =>
+  const popularProducts = Array.isArray(allProducts) 
+    ? allProducts.slice().sort((a, b) =>
         (b.downloadCount || 0) - (a.downloadCount || 0)
       ).slice(0, 6)
     : [];
 
   // Danh mục sản phẩm
   const productCategories = [
-    { id: 'all', name: 'Tất cả', count: Array.isArray(softwareProducts) ? softwareProducts.length : 0 },
+    { id: 'all', name: 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
+    { id: 'software', name: 'Phần mềm', count: Array.isArray(allProducts) 
+        ? allProducts.filter(p => !p.isAccount && (p.type === 'software' || !p.type)).length
+        : 0 
+    },
+    { id: 'service', name: 'Dịch vụ', count: Array.isArray(allProducts) 
+        ? allProducts.filter(p => p.isAccount || p.type === 'account').length
+        : 0 
+    },
     ...categories.map(cat => ({
       id: cat.id,
       name: cat.name,
-      count: Array.isArray(softwareProducts) 
-        ? softwareProducts.filter(p => p.categoryId === cat.id).length
+      count: Array.isArray(allProducts) 
+        ? allProducts.filter(p => p.categoryId === cat.id).length
         : 0
     }))
   ];
@@ -205,35 +223,48 @@ export default function ProductsPage() {
     <div className="py-4 bg-gray-50">
       <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
         <div className="mb-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Phần mềm máy tính</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Sản phẩm</h1>
           <p className="text-sm md:text-base text-gray-600">
-            Danh sách các phần mềm chất lượng cao với mức giá tốt nhất thị trường.
+            Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
           </p>
         </div>
         
-        {/* Tabs điều hướng */}
+        {/* Filter tabs */}
         <div className="border-b border-gray-200 mb-4">
           <div className="flex space-x-4">
-            <Link href="/products">
-              <div className="py-2 px-2 border-b-2 border-primary-600 text-primary-600 font-medium text-sm md:text-base">
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+            <button
+              onClick={() => setFilter('all')}
+              className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14-7l-7 7-7-7" />
+                </svg>
+                Tất cả
+              </div>
+            </button>
+            <button
+              onClick={() => setFilter('software')}
+              className={`py-2 px-2 ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
                 Phần mềm
-                </div>
               </div>
-            </Link>
-            <Link href="/services">
-              <div className="py-2 px-2 text-gray-500 hover:text-gray-700 font-medium text-sm md:text-base">
-                <div className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  Dịch vụ
-                </div>
+            </button>
+            <button
+              onClick={() => setFilter('service')}
+              className={`py-2 px-2 ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Dịch vụ
               </div>
-            </Link>
+            </button>
           </div>
         </div>
         
@@ -297,6 +328,7 @@ export default function ProductsPage() {
                     weeklyPurchases={product.weeklyPurchases}
                     totalSold={product.totalSold}
                     slug={product.slug}
+                    isAccount={product.isAccount || product.type === 'account'}
                   />
                 );
               })}

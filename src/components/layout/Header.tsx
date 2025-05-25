@@ -127,12 +127,6 @@ const Header = () => {
               Sản phẩm
             </Link>
             <Link
-              href="/services"
-              className={`${isActive('/services')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
-            >
-              Dịch vụ
-            </Link>
-            <Link
               href="/about"
               className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
             >
