@@ -1,8 +1,6 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Dịch vụ | XLab - Phần mềm và Dịch vụ',
-  description: 'Khám phá các dịch vụ công nghệ chuyên nghiệp của XLab dành cho doanh nghiệp',
+  description: 'Danh sách các dịch vụ cao cấp với giá tốt nhất thị trường',
 }
 
 export default function ServicesLayout({
@@ -10,9 +8,5 @@ export default function ServicesLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <div className="services-layout">
-      {children}
-    </div>
-  )
+  return <>{children}</>
 } 

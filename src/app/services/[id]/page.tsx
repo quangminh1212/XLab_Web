@@ -10,9 +10,9 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
   // Await params trước khi sử dụng thuộc tính của nó
   const { id: accountId } = await params;
   
-  console.log(`Đang tìm kiếm tài khoản với ID hoặc slug: ${accountId}`);
+  console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
   
-  // Tìm sản phẩm từ mockData (loại tài khoản)
+  // Tìm sản phẩm từ mockData (loại dịch vụ)
   // Tìm theo slug trước
   let selectedProduct = mockProducts.find(
     (p) => p.slug === accountId && (p.isAccount || p.type === 'account')

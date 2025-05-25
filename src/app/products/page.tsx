@@ -224,13 +224,13 @@ export default function ProductsPage() {
                 </div>
               </div>
             </Link>
-            <Link href="/accounts">
+            <Link href="/services">
               <div className="py-2 px-2 text-gray-500 hover:text-gray-700 font-medium text-sm md:text-base">
                 <div className="flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  Tài khoản
+                  Dịch vụ
                 </div>
               </div>
             </Link>

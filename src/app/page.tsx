@@ -292,13 +292,13 @@ function HomePage() {
               </div>
             </div>
 
-            {/* Tài khoản */}
+            {/* Dịch vụ */}
             <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-2xl font-bold text-gray-800">Tài khoản</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">Dịch vụ</h2>
                   <Link
-                    href="/accounts"
+                    href="/services"
                     className="text-primary-600 hover:text-primary-800 transition-colors text-base font-medium"
                   >
                     Xem tất cả
@@ -338,9 +338,9 @@ function HomePage() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
-                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có tài khoản</h3>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có dịch vụ</h3>
                       <p className="text-gray-500 max-w-lg mx-auto text-sm">
-                        Chúng tôi sẽ sớm cập nhật các tài khoản.
+                        Chúng tôi sẽ sớm cập nhật các dịch vụ.
                       </p>
                     </div>
                   </div>

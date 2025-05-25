@@ -1,358 +1,246 @@
+'use client'
+
 import Link from 'next/link'
+import ProductCard from '@/components/product/ProductCard'
+import { Product } from '@/types'
+import { useState, useEffect } from 'react'
+
+// Mở rộng kiểu Product để thêm thuộc tính plans
+interface ServiceProduct extends Product {
+  plans?: {
+    id: string;
+    name: string;
+    price: number;
+    salePrice: number;
+    description: string;
+    features: string[];
+  }[];
+}
 
 export default function ServicesPage() {
-  return (
-    <div>
-      {/* Page Header */}
-      <section className="bg-primary-600 text-white py-16">
-        <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Dịch vụ</h1>
-          <p className="text-xl max-w-3xl">
-            Chúng tôi cung cấp các dịch vụ công nghệ chuyên nghiệp giúp doanh nghiệp của bạn phát triển.
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<string>('all');
+  const [sortOrder, setSortOrder] = useState('newest');
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/products');
+        
+        if (!response.ok) {
+          throw new Error('Không thể tải sản phẩm');
+        }
+        
+        const result = await response.json();
+        
+        // Đảm bảo dữ liệu được trả về đúng định dạng
+        if (result.success && Array.isArray(result.data)) {
+          setProducts(result.data);
+        } else {
+          setProducts([]);
+          setError('Định dạng dữ liệu không hợp lệ');
+        }
+        
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || 'Đã xảy ra lỗi');
+        setLoading(false);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+
+  // Lọc dịch vụ từ danh sách sản phẩm - đảm bảo products là mảng
+  const services = Array.isArray(products) 
+    ? products.filter(product => product.isAccount === true)
+    : [];
+
+  // Sắp xếp dịch vụ - đảm bảo services là mảng
+  const sortedServices = Array.isArray(services) 
+    ? [...services].sort((a, b) => {
+        if (sortOrder === 'newest') {
+          return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
+        } else if (sortOrder === 'price-low') {
+          return (a.salePrice || a.price) - (b.salePrice || b.price);
+        } else if (sortOrder === 'price-high') {
+          return (b.salePrice || b.price) - (a.salePrice || a.price);
+        } else if (sortOrder === 'popular') {
+          return (b.downloadCount || 0) - (a.downloadCount || 0);
+        }
+        return 0;
+      })
+    : [];
+
+  // Danh mục sản phẩm
+  const categories = [
+    { id: 'all', name: 'Tất cả', count: services.length },
+    { id: 'services', name: 'Dịch vụ', count: Array.isArray(services) 
+        ? services.filter(a => a.categoryId === 'services').length
+        : 0 
+    }
+  ];
+
+  // Hiển thị loading
+  if (loading) {
+    return (
+      <div className="py-12 flex justify-center">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-gray-600">Đang tải dịch vụ...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Hiển thị lỗi
+  if (error) {
+    return (
+      <div className="py-12 flex justify-center">
+        <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải dịch vụ</h2>
+          <p className="text-gray-600 mb-6">
+            {error}
           </p>
-        </div>
-      </section>
-
-      {/* Main Services */}
-      <section className="py-16">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Service 1 */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Phát triển phần mềm theo yêu cầu</h3>
-                <p className="text-gray-600 mb-4">
-                  Chúng tôi xây dựng các giải pháp phần mềm tùy chỉnh theo nhu cầu cụ thể của doanh nghiệp, từ ứng dụng web đến ứng dụng di động và hệ thống backend.
-                </p>
-                <Link
-                  href="/services/software-development"
-                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
-                >
-                  Tìm hiểu thêm
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 ml-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-
-            {/* Service 2 */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Dịch vụ đám mây</h3>
-                <p className="text-gray-600 mb-4">
-                  Cung cấp giải pháp đám mây toàn diện, từ tư vấn và triển khai đến quản lý và tối ưu hóa, giúp doanh nghiệp tiết kiệm chi phí và tăng cường khả năng mở rộng.
-                </p>
-                <Link
-                  href="/services/cloud-services"
-                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
-                >
-                  Tìm hiểu thêm
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 ml-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-
-            {/* Service 3 */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Tư vấn công nghệ</h3>
-                <p className="text-gray-600 mb-4">
-                  Cung cấp dịch vụ tư vấn chuyên nghiệp về chiến lược công nghệ, lộ trình chuyển đổi số và tối ưu hóa quy trình, giúp doanh nghiệp đưa ra quyết định đúng đắn.
-                </p>
-                <Link
-                  href="/services/consulting"
-                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
-                >
-                  Tìm hiểu thêm
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 ml-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-
-            {/* Service 4 */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="md:w-1/4 flex-shrink-0">
-                <div className="bg-primary-100 text-primary-600 rounded-full w-20 h-20 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-10 w-10"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="md:w-3/4">
-                <h3 className="text-xl font-bold mb-3">Hỗ trợ kỹ thuật</h3>
-                <p className="text-gray-600 mb-4">
-                  Đội ngũ hỗ trợ kỹ thuật 24/7 luôn sẵn sàng giải quyết mọi vấn đề, đảm bảo hệ thống của bạn hoạt động trơn tru và hiệu quả.
-                </p>
-                <Link
-                  href="/services/technical-support"
-                  className="text-primary-600 font-medium hover:text-primary-700 inline-flex items-center"
-                >
-                  Tìm hiểu thêm
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 ml-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Additional Services */}
-      <section className="py-16 bg-gray-50">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Dịch vụ bổ sung</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto">
-              Ngoài các dịch vụ chính, chúng tôi còn cung cấp nhiều dịch vụ bổ sung để đáp ứng đầy đủ nhu cầu của doanh nghiệp.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Đào tạo</h3>
-              <p className="text-gray-600">
-                Chương trình đào tạo chuyên sâu giúp nhân viên của bạn nắm vững cách sử dụng và tối ưu hóa các giải pháp phần mềm.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Bảo trì và nâng cấp</h3>
-              <p className="text-gray-600">
-                Dịch vụ bảo trì và nâng cấp hệ thống thường xuyên, đảm bảo phần mềm luôn hoạt động ổn định và cập nhật với công nghệ mới nhất.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Tích hợp hệ thống</h3>
-              <p className="text-gray-600">
-                Giúp kết nối và tích hợp các hệ thống, ứng dụng và dịch vụ khác nhau để tạo ra một hệ sinh thái công nghệ thống nhất.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">An ninh mạng</h3>
-              <p className="text-gray-600">
-                Dịch vụ bảo mật toàn diện, từ đánh giá rủi ro đến triển khai các giải pháp bảo mật và giám sát liên tục.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Phân tích dữ liệu</h3>
-              <p className="text-gray-600">
-                Dịch vụ phân tích dữ liệu chuyên sâu giúp bạn khai thác giá trị từ dữ liệu và đưa ra quyết định kinh doanh sáng suốt.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold mb-3">Thiết kế UX/UI</h3>
-              <p className="text-gray-600">
-                Dịch vụ thiết kế trải nghiệm người dùng và giao diện chuyên nghiệp, giúp tạo ra các sản phẩm số thân thiện và hấp dẫn.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Service Features */}
-      <section className="py-16">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">Các tính năng nổi bật</h2>
-            <p className="text-gray-600 max-w-3xl mx-auto">
-              Chúng tôi cung cấp nhiều tính năng và lợi ích để đảm bảo dịch vụ của chúng tôi đáp ứng được nhu cầu của bạn.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Chất lượng cao</h3>
-              <p className="text-gray-600">Đảm bảo chất lượng cao nhất trong mọi dịch vụ chúng tôi cung cấp.</p>
-            </div>
-
-            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Đúng thời hạn</h3>
-              <p className="text-gray-600">Hoàn thành dự án đúng thời hạn mà không làm ảnh hưởng đến chất lượng.</p>
-            </div>
-
-            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Bảo mật</h3>
-              <p className="text-gray-600">Bảo vệ dữ liệu và thông tin của bạn với các tiêu chuẩn bảo mật cao nhất.</p>
-            </div>
-
-            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Chi phí hợp lý</h3>
-              <p className="text-gray-600">Cung cấp dịch vụ với chi phí phải chăng và minh bạch, không có phí ẩn.</p>
-            </div>
-
-            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 8l-7 7-7-7" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Mở rộng dễ dàng</h3>
-              <p className="text-gray-600">Dễ dàng mở rộng dịch vụ khi nhu cầu kinh doanh của bạn tăng lên.</p>
-            </div>
-
-            <div className="p-6 border border-gray-100 rounded-lg text-center hover:shadow-md transition-shadow">
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 text-primary-600 rounded-full mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Hiệu suất cao</h3>
-              <p className="text-gray-600">Tối ưu hóa hiệu suất cho mọi dịch vụ và giải pháp chúng tôi cung cấp.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-primary-600 text-white">
-        <div className="container">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">
-              Sẵn sàng nâng cấp hệ thống công nghệ của bạn?
-            </h2>
-            <p className="text-xl mb-8">
-              Liên hệ với chúng tôi ngay hôm nay để được tư vấn miễn phí về giải pháp phù hợp nhất cho doanh nghiệp của bạn.
-            </p>
-            <Link
-              href="/contact"
-              className="btn bg-white text-primary-600 hover:bg-gray-100 px-8 py-3 text-lg"
+          <div className="flex justify-center gap-4">
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
             >
-              Đặt lịch tư vấn
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Thử lại
+            </button>
+            <Link
+              href="/"
+              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center justify-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7m-7-7v14" />
+              </svg>
+              Về trang chủ
             </Link>
           </div>
         </div>
-      </section>
+      </div>
+    );
+  }
+
+  return (
+    <div className="py-4 bg-gray-50">
+      <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
+        <div className="mb-4">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Dịch vụ</h1>
+          <p className="text-sm md:text-base text-gray-600">
+            Danh sách các dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
+          </p>
+        </div>
+        
+        {/* Tabs điều hướng */}
+        <div className="border-b border-gray-200 mb-4">
+          <div className="flex space-x-4">
+            <Link href="/products">
+              <div className="py-2 px-2 text-gray-500 hover:text-gray-700 font-medium text-sm md:text-base">
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Phần mềm
+                </div>
+              </div>
+            </Link>
+            <Link href="/services">
+              <div className="py-2 px-2 border-b-2 border-primary-600 text-primary-600 font-medium text-sm md:text-base">
+                <div className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  Dịch vụ
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+        
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Main content */}
+          <div className="w-full">
+            {/* Filters bar */}
+            <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
+              <div className="text-sm md:text-base text-gray-600">
+                Hiển thị {sortedServices.length} kết quả
+              </div>
+              <div className="flex items-center space-x-2">
+                <label htmlFor="sort" className="text-sm md:text-base text-gray-700">Sắp xếp:</label>
+                <select 
+                  id="sort"
+                  className="text-sm md:text-base border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                >
+                  <option value="newest">Mới nhất</option>
+                  <option value="price-low">Giá thấp đến cao</option>
+                  <option value="price-high">Giá cao đến thấp</option>
+                  <option value="popular">Phổ biến nhất</option>
+                </select>
+              </div>
+            </div>
+            
+            {/* Product grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {sortedServices.length > 0 ? (
+                sortedServices.map((service) => {
+                  // Lấy ảnh sản phẩm từ service.images nếu có, hoặc từ imageUrl (cho tương thích)
+                  const serviceImageUrl = service.images && service.images.length > 0
+                    ? (typeof service.images[0] === 'string' 
+                        ? (service.images[0].startsWith('blob:') 
+                            ? '/images/placeholder/product-placeholder.jpg' 
+                            : service.images[0])
+                        : ((service.images[0] as any)?.url || '/images/placeholder/product-placeholder.jpg'))
+                    : (service.imageUrl || '/images/placeholder/product-placeholder.jpg');
+                  
+                  return (
+                    <ProductCard
+                      key={service.id}
+                      id={service.id.toString()}
+                      name={service.name}
+                      description={service.shortDescription || ''}
+                      price={service.salePrice || service.price || 0}
+                      originalPrice={service.salePrice ? service.price : undefined}
+                      image={serviceImageUrl}
+                      rating={service.rating || 0}
+                      totalSold={service.totalSold || 0}
+                      isAccount={true}
+                    />
+                  );
+                })
+              ) : (
+                <div className="col-span-full text-center py-10">
+                  <p className="text-gray-500">Không tìm thấy dịch vụ nào.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
+}
+
+// Helper function to format currency
+function formatCurrency(value: number): string {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
 } 

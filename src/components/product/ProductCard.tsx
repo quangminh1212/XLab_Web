@@ -175,7 +175,7 @@ export default function ProductCard({
 
   return (
     <Link
-      href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
+              href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
       className="group flex flex-col h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
