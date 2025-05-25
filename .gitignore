@@ -12,6 +12,14 @@ node_modules/
 .turbo/
 .swc/
 
+# Next.js trace files (prevent EPERM errors on Windows)
+.next/trace
+.next/cache/
+.next/server/
+.next/static/
+.next/types/
+trace
+
 # Environment variables
 .env*
 !.env.example

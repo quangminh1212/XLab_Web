@@ -3,6 +3,22 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Completely disable tracing to prevent EPERM errors on Windows
+  tracing: false,
+  experimental: {
+    // Disable OpenTelemetry tracing
+    serverComponentsExternalPackages: ['@opentelemetry/api'],
+    // Disable other experimental features that might cause file conflicts
+    optimizeCss: false,
+  },
+  // Disable Next.js telemetry
+  telemetry: false,
+  // Disable webpack logging that might cause file access issues
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
     remotePatterns: [
