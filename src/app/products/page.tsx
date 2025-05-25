@@ -262,7 +262,7 @@ export default function ProductsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" style={{ gridAutoRows: '1fr' }}>
               {sortedProducts.map((product) => {
                 // Sử dụng giá đã được tính toán từ API
                 const displayPrice = product.displayPrice || product.price || 0;

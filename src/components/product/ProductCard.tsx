@@ -202,7 +202,8 @@ const ProductCard = memo(function ProductCard({
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      <div className="relative pt-[100%] bg-white">
+      {/* Fixed aspect ratio image container */}
+      <div className="relative w-full" style={{ paddingBottom: '75%' }}>
         {originalPrice && discountPercentage > 0 && (
           <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs px-2.5 py-1.5 rounded-lg shadow-md">
             -{discountPercentage}%
@@ -283,24 +284,27 @@ const ProductCard = memo(function ProductCard({
         </div>
       </div>
 
-      <div className="p-4 flex-1 flex flex-col space-y-3">
-        <div className="flex-1 space-y-2.5">
-          <h3 className={`${isAccount ? 'text-xl' : 'text-2xl'} font-bold text-gray-900 line-clamp-2 leading-tight`}>
+      {/* Flexible content container */}
+      <div className="p-4 flex-1 flex flex-col justify-between min-h-0">
+        {/* Top content with fixed structure */}
+        <div className="flex flex-col space-y-2.5 min-h-0">
+          <h3 className={`${isAccount ? 'text-base' : 'text-lg'} font-bold text-gray-900 line-clamp-2 leading-tight min-h-[2.5rem]`}>
             {name}
           </h3>
           {shortDescription && (
             <div
-              className="text-[8px] text-gray-500 line-clamp-3 leading-tight min-h-[2rem] overflow-hidden"
+              className="text-xs text-gray-500 line-clamp-2 leading-tight min-h-[2rem] overflow-hidden"
               dangerouslySetInnerHTML={{ __html: shortDescription }}
             />
           )}
         </div>
 
-        <div className="space-y-2.5 mt-auto">
+        {/* Bottom content - price and rating */}
+        <div className="space-y-2.5 mt-auto pt-3">
           <div className="flex items-center justify-between">
-            <div className="space-y-1">
+            <div className="space-y-1 flex-1">
               <div className="flex items-baseline space-x-2">
-                <span className="text-xl font-bold text-gray-900">
+                <span className={`${isAccount ? 'text-lg' : 'text-xl'} font-bold text-gray-900`}>
                   {formatCurrency(price)}
                 </span>
                 {originalPrice && (
@@ -337,7 +341,7 @@ const ProductCard = memo(function ProductCard({
             </div>
             
             {weeklyPurchases > 0 && (
-              <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-md flex items-center">
+              <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-md flex items-center flex-shrink-0 ml-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-3 w-3 mr-1"

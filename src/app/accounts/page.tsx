@@ -195,7 +195,7 @@ export default function AccountsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" style={{ gridAutoRows: '1fr' }}>
               {sortedAccounts.length > 0 ? (
                 sortedAccounts.map((account) => {
                   // Sử dụng giá đã được tính toán từ API
