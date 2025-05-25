@@ -6,9 +6,9 @@ import { notFound } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 
-export default async function AccountPage({ params }: { params: { id: string } }) {
+export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params trước khi sử dụng thuộc tính của nó
-  const { id: accountId } = await Promise.resolve(params);
+  const { id: accountId } = await params;
   
   console.log(`Đang tìm kiếm tài khoản với ID hoặc slug: ${accountId}`);
   

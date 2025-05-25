@@ -9,17 +9,16 @@ import RichTextEditor from '@/components/common/RichTextEditor';
 import { v4 as uuidv4 } from 'uuid';
 
 interface AdminEditProductPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const router = useRouter();
   
-  // Truy cập params.id an toàn, tương thích với React.use trong Next.js 15+
-  // Sử dụng biến tạm để tránh truy cập trực tiếp vào params.id
-  const { id } = params;
+  // Unwrap params Promise với React.use() theo chuẩn Next.js mới
+  const { id } = React.use(params);
   const productId = id;
   const isNew = productId === 'new';
   

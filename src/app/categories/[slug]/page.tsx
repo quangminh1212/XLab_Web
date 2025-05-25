@@ -9,13 +9,14 @@ import ProductCard from '@/components/product/ProductCard';
 import ProductImage from '@/components/product/ProductImage';
 
 interface CategoryPageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-    const category = categories.find((cat) => cat.slug === params.slug);
+    const { slug } = React.use(params);
+    const category = categories.find((cat) => cat.slug === slug);
 
     if (!category) {
         notFound();

@@ -77,15 +77,14 @@ const samplePurchaseHistory: Order[] = [
 ];
 
 interface OrderDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   // Use React.use to properly unwrap the params object
-  const safeParams = React.use(params as any) as { id: string };
-  const orderId = safeParams.id;
+  const { id: orderId } = React.use(params);
   
   const router = useRouter();
   const { data: session, status } = useSession();
