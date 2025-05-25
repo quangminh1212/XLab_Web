@@ -9,7 +9,7 @@ import { useCart } from '@/components/cart/CartContext'
 interface ProductCardProps {
   id: string
   name: string
-  description: string  // Thực tế là shortDescription
+  description: string  // Mô tả ngắn của sản phẩm
   price: number
   originalPrice?: number
   image: string
@@ -18,6 +18,7 @@ interface ProductCardProps {
   reviewCount?: number
   isAccount?: boolean
   weeklyPurchases?: number
+  totalSold?: number
   slug?: string
   onAddToCart?: (id: string) => void
   onView?: (id: string) => void
@@ -35,6 +36,7 @@ export default function ProductCard({
   reviewCount = 0,
   isAccount = false,
   weeklyPurchases = 0,
+  totalSold = 0,
   slug = '',
   onAddToCart = () => {},
   onView = () => {}
@@ -70,7 +72,7 @@ export default function ProductCard({
   const cleanImageUrl = getValidImageUrl(image)
   
   // Sử dụng mô tả ngắn thay vì cắt mô tả dài
-  const shortDescription = description
+  const shortDescription = description || ''
       
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage = originalPrice && originalPrice > price 
@@ -291,25 +293,46 @@ export default function ProductCard({
               )}
             </div>
           </div>
-          {weeklyPurchases > 0 && (
-            <div className="text-xs text-gray-500 flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-3 w-3 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              {weeklyPurchases}+
-            </div>
-          )}
+          <div className="flex flex-col gap-1">
+            {totalSold > 0 && (
+              <div className="text-xs text-gray-500 flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  />
+                </svg>
+                {totalSold} đã bán
+              </div>
+            )}
+            {weeklyPurchases > 0 && (
+              <div className="text-xs text-gray-500 flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3 w-3 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+                {weeklyPurchases}+ tuần
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>

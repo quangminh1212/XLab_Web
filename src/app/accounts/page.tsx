@@ -212,11 +212,12 @@ export default function AccountsPage() {
                       key={account.id}
                       id={account.id.toString()}
                       name={account.name}
-                      description={account.description || ''}
+                      description={account.shortDescription || ''}
                       price={account.salePrice || account.price || 0}
                       originalPrice={account.salePrice ? account.price : undefined}
                       image={accountImageUrl}
                       rating={account.rating || 0}
+                      totalSold={account.totalSold || 0}
                       isAccount={true}
                     />
                   );

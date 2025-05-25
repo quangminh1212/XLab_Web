@@ -326,6 +326,7 @@ function HomePage() {
                           rating={product.rating}
                           reviewCount={product.reviewCount || 0}
                           weeklyPurchases={product.weeklyPurchases || 0}
+                          totalSold={product.totalSold || 0}
                           slug={product.slug}
                           isAccount={true}
                         />

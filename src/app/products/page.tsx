@@ -295,6 +295,7 @@ export default function ProductsPage() {
                     rating={product.rating}
                     reviewCount={product.reviewCount}
                     weeklyPurchases={product.weeklyPurchases}
+                    totalSold={product.totalSold}
                     slug={product.slug}
                   />
                 );

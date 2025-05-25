@@ -17,12 +17,14 @@ interface Product {
   id: string;
   name: string;
   description: string;
+  shortDescription?: string;
   price?: number;
   originalPrice?: number;
   image: string;
   category?: string;
   rating?: number;
   reviewCount?: number;
+  totalSold?: number;
   isAccount?: boolean;
   versions?: ProductVersion[];
   optionPrices?: {[key: string]: OptionPrice};
@@ -135,13 +137,14 @@ const ProductGrid = ({
               key={product.id}
               id={product.id}
               name={product.name}
-              description={product.description}
+              description={product.shortDescription || product.description || ''}
               price={minPrice}
               originalPrice={originalPrice}
               image={product.image}
               category={product.category}
               rating={product.rating}
               reviewCount={product.reviewCount}
+              totalSold={product.totalSold}
               isAccount={product.isAccount}
               onAddToCart={onAddToCart}
               onView={onProductView}

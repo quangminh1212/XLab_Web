@@ -83,6 +83,7 @@
     "salePrice": 0,
     "rating": "4.7",
     "weeklyPurchases": "35",
+    "totalSold": 1250,
     "specs": "",
     "type": "account",
     "isAccount": true,
@@ -137,6 +138,7 @@
       }
     },
     "specs": "",
-    "weeklyPurchases": 14
+    "weeklyPurchases": 14,
+    "totalSold": 890
   }
 ]

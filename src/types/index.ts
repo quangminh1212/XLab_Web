@@ -27,6 +27,7 @@ export interface Product {
   viewCount?: number;
   rating?: number;
   weeklyPurchases?: number;
+  totalSold?: number;
   version?: string;
   size?: string;
   licenseType?: string;
