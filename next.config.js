@@ -3,22 +3,9 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Completely disable tracing to prevent EPERM errors on Windows
-  tracing: false,
-  experimental: {
-    // Disable OpenTelemetry tracing
-    serverComponentsExternalPackages: ['@opentelemetry/api'],
-    // Disable other experimental features that might cause file conflicts
-    optimizeCss: false,
-  },
-  // Disable Next.js telemetry
-  telemetry: false,
-  // Disable webpack logging that might cause file access issues
-  logging: {
-    fetches: {
-      fullUrl: false,
-    },
-  },
+  // External packages for server components (Next.js 15 syntax)
+  serverExternalPackages: ['@opentelemetry/api'],
+  // Image optimization
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
     remotePatterns: [
@@ -33,29 +20,36 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  // Build settings
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Compiler options
   compiler: {
     styledComponents: true,
   },
+  // Performance settings
   poweredByHeader: false,
   compress: true,
+  // Sass configuration
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
-  assetPrefix: '',
+  // Webpack configuration
   webpack: (config, { dev, isServer }) => {
+    // Disable caching for development
     config.cache = false;
+    
+    // Set up path aliases
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
     };
     
-    // Tắt hoàn toàn code splitting để tránh ChunkLoadError
+    // Disable code splitting in development to avoid chunk errors
     if (dev) {
       config.optimization = {
         ...config.optimization,
