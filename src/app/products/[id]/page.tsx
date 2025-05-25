@@ -2,8 +2,37 @@ import { notFound } from 'next/navigation';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
-import ProductDetail from './ProductDetail';
-import ProductFallback from './fallback';
+import { default as dynamicImport } from 'next/dynamic';
+
+// Loading component đơn giản để hiển thị ngay lập tức
+function ProductFallbackLoading() {
+  return (
+    <div className="container mx-auto px-4 py-8 animate-pulse">
+      <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-gray-200 w-full h-96 rounded-lg"></div>
+          <div>
+            <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
+            <div className="h-24 bg-gray-200 rounded w-full mb-4"></div>
+            <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+            <div className="h-10 bg-gray-200 rounded w-1/3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Import các component với cơ chế lazy load
+const DynamicProductDetail = dynamicImport(() => import('@/app/products/[id]/ProductDetail'), {
+  loading: () => <ProductFallbackLoading />,
+  ssr: true
+});
+
+const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/fallback'), {
+  ssr: true
+});
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'auto';
@@ -54,9 +83,27 @@ export default async function ProductPage({ params }: { params: { id: string } }
     console.log(`Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`);
     
     // Truyền dữ liệu sản phẩm sang client component
-    return <ProductDetail product={product} />;
+    return (
+      <>
+        <DynamicProductDetail product={product} />
+        <div id="fallback-container" style={{ display: 'none' }}>
+          <DynamicProductFallback />
+        </div>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              setTimeout(function() {
+                if (document.querySelector('.product-detail-loaded') === null) {
+                  document.getElementById('fallback-container').style.display = 'block';
+                }
+              }, 2000);
+            `
+          }}
+        />
+      </>
+    );
   } catch (error) {
     console.error('Error in ProductPage:', error);
-    return <ProductFallback />;
+    return <DynamicProductFallback />;
   }
 } 

@@ -262,14 +262,25 @@ export default function ProductsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" style={{ gridAutoRows: '1fr' }}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {sortedProducts.map((product) => {
-                // Sử dụng giá đã được tính toán từ API
-                const displayPrice = product.displayPrice || product.price || 0;
-                const originalPrice = product.displayOriginalPrice && product.displayOriginalPrice > displayPrice ? product.displayOriginalPrice : undefined;
+                // Log the product data for debugging
+                console.log(`Product ${product.id} image data:`, product.images);
+                
+                // Xác định giá hiển thị - kiểm tra versions trước
+                const displayPrice = product.versions && product.versions.length > 0
+                  ? product.versions[0].price || 0
+                  : product.price || 0;
+                
+                // Xác định giá gốc - kiểm tra versions trước
+                const originalPrice = product.versions && product.versions.length > 0
+                  ? product.versions[0].originalPrice || 0
+                  : product.salePrice || 0;
                   
                 // Lấy ảnh sản phẩm (sử dụng helper function)
                 const imageUrl = getValidImageUrl(product);
+                
+                console.log(`Processed image URL for ${product.name}:`, imageUrl);
                 
                 return (
                   <ProductCard 
@@ -278,7 +289,7 @@ export default function ProductsPage() {
                     name={product.name}
                     description={product.shortDescription || ''}
                     price={displayPrice}
-                    originalPrice={originalPrice && originalPrice > displayPrice ? originalPrice : undefined}
+                    originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
                     image={imageUrl}
                     category={categories.find(c => c.id === product.categoryId)?.name}
                     rating={product.rating}

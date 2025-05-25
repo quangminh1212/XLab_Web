@@ -195,13 +195,9 @@ export default function AccountsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" style={{ gridAutoRows: '1fr' }}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
               {sortedAccounts.length > 0 ? (
                 sortedAccounts.map((account) => {
-                  // Sử dụng giá đã được tính toán từ API
-                  const displayPrice = (account as any).displayPrice || account.price || 0;
-                  const originalPrice = (account as any).displayOriginalPrice && (account as any).displayOriginalPrice > displayPrice ? (account as any).displayOriginalPrice : undefined;
-                  
                   // Lấy ảnh sản phẩm từ account.images nếu có, hoặc từ imageUrl (cho tương thích)
                   const accountImageUrl = account.images && account.images.length > 0
                     ? (typeof account.images[0] === 'string' 
@@ -213,16 +209,15 @@ export default function AccountsPage() {
                   
                   return (
                     <ProductCard
-                      isAccount={true}
                       key={account.id}
                       id={account.id.toString()}
                       name={account.name}
                       description={account.description || ''}
-                      price={displayPrice}
-                      originalPrice={originalPrice && originalPrice > displayPrice ? originalPrice : undefined}
+                      price={account.salePrice || account.price || 0}
+                      originalPrice={account.salePrice ? account.price : undefined}
                       image={accountImageUrl}
                       rating={account.rating || 0}
-                      weeklyPurchases={parseInt(account.weeklyPurchases) || 0}
+                      isAccount={true}
                     />
                   );
                 })

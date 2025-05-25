@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, memo, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import ProductGrid from './ProductGrid';
 
 interface Product {
@@ -26,7 +26,7 @@ interface RelatedProductsProps {
   limit?: number;
 }
 
-const RelatedProducts = memo(function RelatedProducts({ 
+export default function RelatedProducts({ 
   currentProductId, 
   categoryId, 
   limit = 4 
@@ -99,6 +99,4 @@ const RelatedProducts = memo(function RelatedProducts({
       />
     </div>
   );
-});
-
-export default RelatedProducts; 
+} 

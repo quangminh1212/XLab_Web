@@ -259,7 +259,7 @@ function HomePage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
                   </div>
                 ) : products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" style={{ gridAutoRows: '1fr' }}>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
                     {featuredProducts.map((product) => (
                       <ProductCard 
                         key={product.id}
@@ -310,7 +310,7 @@ function HomePage() {
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
                   </div>
                 ) : products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3" style={{ gridAutoRows: '1fr' }}>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
                     {products
                       .filter(product => product.isAccount || product.type === 'account')
                       .slice(0, 6)
@@ -320,8 +320,8 @@ function HomePage() {
                           id={product.id.toString()}
                           name={product.name}
                           description={product.shortDescription || ''}
-                          price={product.displayPrice || product.price || 0}
-                          originalPrice={product.displayOriginalPrice && product.displayOriginalPrice > (product.displayPrice || product.price || 0) ? product.displayOriginalPrice : undefined}
+                          price={product.price || 0}
+                          originalPrice={product.originalPrice}
                           image={getValidImageUrl(product)}
                           rating={product.rating}
                           reviewCount={product.reviewCount || 0}

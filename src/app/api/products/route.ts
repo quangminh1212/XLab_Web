@@ -75,45 +75,17 @@ export async function GET(request: Request) {
           : []
       };
       
-      // Tính giá thấp nhất để hiển thị trên thẻ sản phẩm
-      let minPrice = Infinity;
-      let correspondingOriginalPrice = 0;
-      
-      // Kiểm tra giá từ versions
+      // Đảm bảo có giá của sản phẩm để hiển thị
       if (processedProduct.versions && processedProduct.versions.length > 0) {
-        processedProduct.versions.forEach((version: any) => {
-          if (version.price < minPrice) {
-            minPrice = version.price;
-            correspondingOriginalPrice = version.originalPrice || 0;
-          }
-        });
-      }
-      
-      // Kiểm tra giá từ optionPrices
-      if (processedProduct.optionPrices && Object.keys(processedProduct.optionPrices).length > 0) {
-        Object.values(processedProduct.optionPrices).forEach((option: any) => {
-          if (option.price < minPrice) {
-            minPrice = option.price;
-            correspondingOriginalPrice = option.originalPrice || 0;
-          }
-        });
-      }
-      
-      // Fallback: sử dụng giá cố định nếu có
-      if ((processedProduct as any).price !== undefined && (processedProduct as any).price > 0 && (processedProduct as any).price < minPrice) {
-        minPrice = (processedProduct as any).price;
-        correspondingOriginalPrice = (processedProduct as any).originalPrice || 0;
-      }
-      
-      // Gán giá thấp nhất và giá gốc tương ứng để hiển thị
-      if (minPrice !== Infinity) {
-        (processedProduct as any).displayPrice = minPrice;
-        (processedProduct as any).displayOriginalPrice = correspondingOriginalPrice;
+        // Thêm các trường giá để tương thích với giao diện
+        const firstVersion = processedProduct.versions[0];
+        (processedProduct as any).price = firstVersion.price;
+        (processedProduct as any).originalPrice = firstVersion.originalPrice;
         
-        // Tính phần trăm giảm giá
-        if (correspondingOriginalPrice > minPrice) {
+        // Tính toán discount percentage nếu có
+        if (firstVersion.originalPrice > firstVersion.price) {
           (processedProduct as any).discountPercentage = 
-            Math.round(((correspondingOriginalPrice - minPrice) / correspondingOriginalPrice) * 100);
+            Math.round((1 - (firstVersion.price / firstVersion.originalPrice)) * 100);
         }
       }
       

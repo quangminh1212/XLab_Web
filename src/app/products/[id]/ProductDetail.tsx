@@ -4,13 +4,20 @@ import React, { useState, useEffect, Fragment, useCallback, useRef, useMemo } fr
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
-import { Product } from '@/types';
+import { Product as ProductType } from '@/models/ProductModel';
 import { useCart } from '@/components/cart/CartContext';
+import dynamic from 'next/dynamic';
 import RichTextContent from '@/components/common/RichTextContent';
+import { Product as UIProduct } from '@/types';
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import RelatedProducts from '../../../components/product/RelatedProducts';
-import VoiceTypingDemo from './VoiceTypingDemo';
+
+// Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
+const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
+  loading: () => <div className="animate-pulse h-40 bg-gray-100 rounded-lg"></div>,
+  ssr: false // Tắt SSR vì component sử dụng Web Speech API chỉ hoạt động trên client
+});
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
@@ -109,7 +116,7 @@ const ProductSpecifications = ({
   );
 };
 
-export default function ProductDetail({ product }: { product: Product }) {
+export default function ProductDetail({ product }: { product: ProductType }) {
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
     const mainElement = document.querySelector('main');

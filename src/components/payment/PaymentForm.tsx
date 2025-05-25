@@ -7,7 +7,6 @@ import { siteConfig } from '@/config/siteConfig'
 
 interface PaymentFormProps {
   amount: number
-  productName?: string
   orderId?: string
   onSuccess?: (transactionId: string) => void
   onError?: (error: string) => void
@@ -15,7 +14,6 @@ interface PaymentFormProps {
 
 const PaymentForm = ({ 
   amount, 
-  productName,
   orderId = `ORDER-${Date.now()}`,
   onSuccess,
   onError 

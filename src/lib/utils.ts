@@ -175,8 +175,8 @@ const downloadCountCache: Record<string, number> = {};
 
 // Initialize cache from mockData
 products.forEach(product => {
-  viewCountCache[product.slug] = product.viewCount || 0;
-  downloadCountCache[product.slug] = product.downloadCount || 0;
+  viewCountCache[product.slug] = product.viewCount;
+  downloadCountCache[product.slug] = product.downloadCount;
 });
 
 /**

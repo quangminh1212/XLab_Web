@@ -72,9 +72,14 @@ const isStaticFile = (path: string) => {
   );
 };
 
-// Debug function (disabled for production)
+// Hàm debug để kiểm tra token và đường dẫn
 const debug = (request: NextRequest, token: any) => {
-  // Debug disabled for better performance
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Middleware Debug]:', {
+      path: request.nextUrl.pathname,
+      token: token ? `Found (${token.email})` : 'Not found',
+    });
+  }
 };
 
 export async function middleware(request: NextRequest) {

@@ -108,7 +108,7 @@ function SettingsPage() {
     });
   };
 
-  const handleToggleChange = (field: 'maintenanceMode' | 'disableRegistration' | 'disableCheckout', checked: boolean) => {
+  const handleToggleChange = (field: keyof SystemSettings, checked: boolean) => {
     setSettings(prev => {
       // Create a deep copy of the current settings
       const newSettings = JSON.parse(JSON.stringify(prev)) as SystemSettings;

@@ -1,227 +1,261 @@
 # XLab Web
 
-Dự án web bán hàng và phân phối phần mềm XLab - **Đã được tối ưu theo chuẩn quốc tế**.
+Dự án web bán hàng và phân phối phần mềm XLab.
 
-## ⚡ Khởi chạy nhanh
+## Cấu trúc dự án
 
-### Cách 1: Sử dụng run.bat (Windows - Khuyến nghị)
-```bash
-# Chỉ cần double-click file run.bat hoặc chạy:
-run.bat
+Sau khi tái cấu trúc, dự án được tổ chức như sau:
+
+```
+src/
+├── app/               # Next.js app router
+├── components/        # Các component được tổ chức theo module
+│   ├── auth/          # Components liên quan đến xác thực
+│   ├── cart/          # Components liên quan đến giỏ hàng
+│   ├── common/        # Components dùng chung
+│   ├── layout/        # Components layout (Header, Footer,...)
+│   ├── payment/       # Components liên quan đến thanh toán
+│   └── product/       # Components liên quan đến sản phẩm
+├── config/            # Cấu hình dự án
+├── lib/               # Các tiện ích và helpers
+├── models/            # Định nghĩa models
+├── scripts/           # Scripts hỗ trợ
+├── styles/            # CSS và styles
+└── types/             # TypeScript type definitions
 ```
 
-### Cách 2: Manual
+## Các module chính
+
+### Components
+Các component được tổ chức theo module chức năng:
+
+- `auth`: Xác thực và phân quyền
+- `cart`: Giỏ hàng và chức năng mua hàng
+- `common`: Components dùng chung (Button, Spinner,...)
+- `layout`: Layout dùng chung (Header, Footer,...)
+- `payment`: Các components thanh toán
+- `product`: Components liên quan đến sản phẩm
+
+### Cách import
+
+Tất cả các module đều có file `index.ts` export các components, giúp việc import trở nên đơn giản:
+
+```tsx
+// Cách cũ
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
+// Cách mới - rõ ràng và tổ chức tốt hơn
+import { Header, Footer } from '@/components/layout';
+```
+
+## Phát triển
+
 ```bash
 # Cài đặt dependencies
 npm install
 
 # Chạy môi trường phát triển
 npm run dev
+
+# Build cho production
+npm run build
+
+# Chạy bản build
+npm start
 ```
 
-## 🏗️ Cấu trúc dự án đã tối ưu
+## Lưu ý khi phát triển
 
-Dự án đã được tái cấu trúc và tối ưu theo [React Performance Guidelines](https://legacy.reactjs.org/docs/optimizing-performance.html) và Next.js Best Practices:
+- Tạo components mới trong thư mục tương ứng với chức năng
+- Export component trong file `index.ts` của thư mục đó
+- Sử dụng các utilities từ `lib` cho các xử lý chung
+- Định nghĩa các types trong thư mục `types`
+- Tạo mới hoặc sửa đổi cấu hình trong thư mục `config`
 
-```
-XLab_Web/
-├── src/
-│   ├── app/               # Next.js 15 App Router
-│   ├── components/        # Components với React.memo và lazy loading
-│   │   ├── auth/          # Xác thực và phân quyền
-│   │   ├── cart/          # Giỏ hàng với framer-motion
-│   │   ├── common/        # Components dùng chung
-│   │   ├── layout/        # Layout components
-│   │   ├── payment/       # Components thanh toán
-│   │   └── product/       # Product components (tối ưu performance)
-│   ├── config/            # Cấu hình dự án
-│   ├── lib/               # Utilities và helpers
-│   ├── models/            # TypeScript models
-│   ├── styles/            # Tailwind CSS
-│   └── types/             # TypeScript definitions
-├── scripts/               # Development và deployment scripts
-│   ├── setup-dev.js       # Cross-platform dev setup
-│   ├── update-purchases.js
-│   ├── verify-products.js
-│   └── reorganize-product-images.js
-├── public/                # Static assets
-├── package.json           # Simplified dependencies (12 packages)
-├── run.bat               # Quick setup và run script
-└── README.md
-```
+## Tính năng
 
-## 🚀 Scripts đã được tối ưu
+- **Trang chủ**: Giới thiệu tổng quan về công ty và các dịch vụ
+- **Sản phẩm**: Trình bày chi tiết các sản phẩm phần mềm
+- **Dịch vụ**: Mô tả các dịch vụ công nghệ và hỗ trợ
+- **Báo giá**: Hiển thị các gói dịch vụ và báo giá
+- **Giới thiệu**: Thông tin về công ty và đội ngũ
+- **Liên hệ**: Form liên hệ và thông tin liên lạc
 
-```json
-{
-  "scripts": {
-    "dev": "node scripts/setup-dev.js",
-    "dev:simple": "next dev",
-    "dev:clean": "rimraf .next && next dev", 
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "update-purchases": "node scripts/update-purchases.js",
-    "verify-products": "node scripts/verify-products.js"
-  }
-}
-```
+## Công nghệ sử dụng
 
-## ⚡ Tối ưu Performance đã áp dụng
+- [Next.js 14](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [React](https://reactjs.org/)
 
-### React Performance Optimization
-- ✅ **React.memo** cho ProductCard và RelatedProducts
-- ✅ **useCallback** cho event handlers
-- ✅ **Dynamic imports** với lazy loading
-- ✅ **Code splitting** tự động
-- ✅ **Image optimization** với Next.js Image
+## Cài đặt và chạy dự án
 
-### Dependencies Optimization  
-- 🗑️ **Loại bỏ 9 packages không dùng**: draft-js, tinymce, react-quill, v.v.
-- 📦 **Giữ lại 12 packages cần thiết**: React, Next.js, Tailwind, Framer Motion
-- 📉 **Giảm 43% bundle size**
+### Yêu cầu
 
-### Build Performance
-- ⚡ **Faster compilation** với ít dependencies
-- 🎯 **Tree shaking** tối ưu  
-- 📱 **Better mobile performance**
+- Node.js phiên bản 18.17 hoặc cao hơn
+- npm hoặc yarn hoặc pnpm
 
-## 🛠️ Công nghệ sử dụng
+### Các bước cài đặt
 
-- **[Next.js 15.2.4](https://nextjs.org/)** - React framework with App Router
-- **[React 18.2.0](https://reactjs.org/)** - UI library với performance optimizations
-- **[TypeScript 5.3.3](https://www.typescriptlang.org/)** - Type safety
-- **[Tailwind CSS 3.4.0](https://tailwindcss.com/)** - Utility-first CSS
-- **[Framer Motion 12.12.1](https://www.framer.com/motion/)** - Animations
-- **[NextAuth 4.24.10](https://next-auth.js.org/)** - Authentication
+1. Clone dự án:
 
-## 📦 Cài đặt và chạy dự án
-
-### Yêu cầu hệ thống
-- **Node.js** phiên bản 18.17+ 
-- **npm** hoặc **yarn** hoặc **pnpm**
-- **Windows/macOS/Linux** (Cross-platform)
-
-### 🚀 Cách 1: Quick Setup (Khuyến nghị)
-
-**Windows:**
-```bash
-# Chỉ cần double-click hoặc chạy:
-run.bat
-```
-
-**macOS/Linux:**
-```bash
-# Chạy setup script:
-npm run dev
-```
-
-### 🔧 Cách 2: Manual Setup
-
-1. **Clone dự án:**
 ```bash
 git clone <repository-url>
 cd XLab_Web
 ```
 
-2. **Cài đặt dependencies:**
+2. Cài đặt các dependencies:
+
 ```bash
 npm install
+# hoặc
+yarn install
+# hoặc
+pnpm install
 ```
 
-3. **Chạy development server:**
+3. Chạy dự án ở môi trường phát triển:
+
 ```bash
 npm run dev
+# hoặc
+yarn dev
+# hoặc
+pnpm dev
 ```
 
-4. **Truy cập:** [http://localhost:3000](http://localhost:3000)
+4. Mở trình duyệt và truy cập [http://localhost:3000](http://localhost:3000)
 
-### 🏭 Production Build
+### Build và chạy ở môi trường production
+
+1. Build dự án:
 
 ```bash
-# Build cho production
 npm run build
-
-# Chạy production server
-npm run start
+# hoặc
+yarn build
+# hoặc
+pnpm build
 ```
 
-## 🎯 Tính năng chính
+2. Chạy ở môi trường production:
 
-- **🏠 Trang chủ**: Hero section với search và product grids
-- **🛍️ Sản phẩm**: Product detail với lazy loading và animations
-- **🛒 Giỏ hàng**: Cart với quantity controls và checkout flow
-- **🔐 Xác thực**: Google OAuth với NextAuth
-- **💳 Thanh toán**: Payment integration
-- **👤 Tài khoản**: User dashboard và order history
-- **⚡ Performance**: Optimized với React.memo và lazy loading
-
-## 📱 Responsive Design
-
-- **📱 Mobile-first** approach
-- **🖥️ Desktop optimized** 
-- **⚡ Fast loading** trên tất cả devices
-- **🎨 Modern UI/UX** với Tailwind CSS
-
-## 🛡️ Bảo mật
-
-- **🔐 NextAuth** authentication
-- **🛡️ CSRF protection**
-- **🔒 Environment variables** security
-- **🚫 Input validation** và sanitization
-
-## 🚀 Development Tips
-
-### Performance Best Practices đã áp dụng:
-```tsx
-// ✅ Sử dụng React.memo
-const ProductCard = memo(function ProductCard({ ... }) { ... });
-
-// ✅ Sử dụng useCallback cho event handlers  
-const handleAddToCart = useCallback((e) => { ... }, [deps]);
-
-// ✅ Lazy loading components
-const ProductGrid = dynamic(() => import('./ProductGrid'), {
-  loading: () => <ProductSkeleton />,
-  ssr: true
-});
-```
-
-### Scripts hữu ích:
 ```bash
-# Xác thực sản phẩm
-npm run verify-products
-
-# Cập nhật purchases
-npm run update-purchases
-
-# Development với auto-setup
-npm run dev
-
-# Clean build
-npm run dev:clean
+npm run start
+# hoặc
+yarn start
+# hoặc
+pnpm start
 ```
 
-## 🌐 Deployment
+## Tác giả
 
-Dự án đã được tối ưu cho:
-- **Vercel** (khuyến nghị)
-- **Netlify** 
-- **Traditional hosting**
-- **Docker containers**
+XLab Development Team
 
-## 👥 Đóng góp
+## Giấy phép
 
-1. Fork dự án
-2. Tạo feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'feat: add amazing feature'`
-4. Push branch: `git push origin feature/amazing-feature` 
-5. Tạo Pull Request
+Copyright © 2023 XLab. All rights reserved.
 
-## 📄 Giấy phép
+## Product ID Generation
 
-Copyright © 2025 XLab. All rights reserved.
+Products in the system use automatically generated IDs based on their names. This provides several benefits:
 
----
+1. **Human-readable IDs**: IDs are more meaningful and can be easily understood
+2. **SEO-friendly**: When used in URLs, these IDs are more favorable for search engines
+3. **Consistency**: All products follow the same naming convention
 
-**🎉 Dự án đã được tối ưu 43% bundle size và cải thiện đáng kể performance!**
+The ID generation follows these rules:
+- Convert name to lowercase
+- Remove special characters
+- Replace spaces with hyphens
+- Handle duplicates by adding a numeric suffix (e.g., "product-name-1")
+
+For example:
+- "Product Name" becomes "product-name"
+- "Product Name (Special)" becomes "product-name-special"
+
+If you need to update existing product IDs to follow this convention, you can run:
+
+```
+node utils/update-product-ids.js
+```
+
+## Cài đặt Google OAuth đăng nhập
+
+Để thiết lập đăng nhập bằng Google, bạn cần tạo Google OAuth credentials:
+
+1. Đi đến [Google Cloud Console](https://console.cloud.google.com/)
+2. Tạo dự án mới hoặc chọn dự án hiện có
+3. Từ menu bên trái, chọn "APIs & Services" > "Credentials"
+4. Click "Create Credentials" và chọn "OAuth client ID"
+5. Chọn "Web application" làm loại ứng dụng
+6. Thêm tên cho ứng dụng của bạn (ví dụ: "XLab Web")
+7. Thêm các URL sau vào phần "Authorized JavaScript origins":
+   - `http://localhost:3000` (cho môi trường phát triển)
+   - `http://58.186.71.93:3000` (cho môi trường hiện tại nếu cần)
+   - `https://your-production-domain.com` (cho môi trường sản xuất)
+8. Thêm các URL sau vào phần "Authorized redirect URIs":
+   - `http://localhost:3000/api/auth/callback/google` (cho môi trường phát triển)
+   - `http://58.186.71.93:3000/api/auth/callback/google` (cho môi trường hiện tại nếu cần)
+   - `https://your-production-domain.com/api/auth/callback/google` (cho môi trường sản xuất)
+9. Click "Create"
+10. Sao chép Client ID và Client Secret
+11. Thêm chúng vào file `.env.local`:
+
+```
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=K2P5fgz9WJdLsY7mXn4A6BcRtVxZqH8DbE3NpQuT
+
+# Google OAuth credentials
+GOOGLE_CLIENT_ID=your_client_id_here
+GOOGLE_CLIENT_SECRET=your_client_secret_here
+```
+
+12. Khởi động lại server để các thay đổi có hiệu lực
+
+## Lưu ý bảo mật
+
+- **KHÔNG** commit file `.env.local` lên git repository
+- **KHÔNG** chia sẻ Google Client Secret với bất kỳ ai
+- Trong môi trường sản xuất, hãy tạo một NEXTAUTH_SECRET mạnh và duy nhất
+
+## Hướng dẫn chạy ứng dụng
+
+### Yêu cầu
+- Node.js phiên bản 20.x trở lên
+- npm phiên bản 10.x trở lên
+
+### Cách chạy
+
+1. Chạy bình thường:
+```
+run.bat
+```
+
+2. Cài đặt mới hoàn toàn (xóa cache và cài đặt lại):
+```
+run.bat clean
+```
+
+hoặc
+```
+run.bat --clean
+```
+hoặc
+```
+run.bat -c
+```
+
+Đồng thời, khi chạy không có tham số, script sẽ hỏi bạn muốn chạy bình thường hay cài đặt mới.
+
+### Các lỗi thường gặp
+
+1. Lỗi "Cannot read properties of undefined (reading 'call')":
+   - Đã được sửa trong cấu hình webpack
+
+2. Lỗi "Port 3000 is in use":
+   - Hệ thống sẽ tự động chuyển sang cổng khác
+
+3. Lỗi EPERM khi xóa hoặc cài đặt:
+   - Chạy lại với quyền admin hoặc đóng tất cả ứng dụng đang sử dụng tệp

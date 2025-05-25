@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, memo, useCallback } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -23,7 +23,7 @@ interface ProductCardProps {
   onView?: (id: string) => void
 }
 
-const ProductCard = memo(function ProductCard({
+export default function ProductCard({
   id,
   name,
   description,
@@ -45,10 +45,6 @@ const ProductCard = memo(function ProductCard({
   const [showAddedEffect, setShowAddedEffect] = useState(false)
   const router = useRouter()
   const { addItem } = useCart()
-  
-  // Validate rating and reviewCount to ensure they are numbers
-  const validRating = typeof rating === 'number' && !isNaN(rating) ? rating : 0
-  const validReviewCount = typeof reviewCount === 'number' && !isNaN(reviewCount) ? reviewCount : 0
   
   // Log the image URL for debugging
   console.log(`ProductCard image URL for ${name}:`, image)
@@ -73,8 +69,8 @@ const ProductCard = memo(function ProductCard({
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image)
   
-  // Sử dụng mô tả ngắn đã được truyền vào
-  const shortDescription = description || ''
+  // Sử dụng mô tả ngắn thay vì cắt mô tả dài
+  const shortDescription = description
       
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage = originalPrice && originalPrice > price 
@@ -110,8 +106,8 @@ const ProductCard = memo(function ProductCard({
                 ? 'text-yellow-400'
                 : i === fullStars && hasHalfStar
                 ? 'text-yellow-400'
-                : 'text-gray-200'
-            }`}
+                : 'text-gray-300'
+            } mr-0.5`}
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -119,7 +115,7 @@ const ProductCard = memo(function ProductCard({
               <defs>
                 <linearGradient id={`halfGradient-${id}-${i}`}>
                   <stop offset="50%" stopColor="#FACC15" />
-                  <stop offset="50%" stopColor="#E5E7EB" />
+                  <stop offset="50%" stopColor="#D1D5DB" />
                 </linearGradient>
               </defs>
             ) : null}
@@ -129,11 +125,14 @@ const ProductCard = memo(function ProductCard({
             />
           </svg>
         ))}
+        {reviewCount > 0 && (
+          <span className="ml-1 text-xs text-gray-500">({reviewCount})</span>
+        )}
       </div>
     )
   }
 
-  const handleAddToCart = useCallback((e: React.MouseEvent) => {
+  const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     
@@ -156,11 +155,11 @@ const ProductCard = memo(function ProductCard({
     if (onAddToCart) {
       onAddToCart(id)
     }
-  }, [id, name, price, displayImageUrl, addItem, onAddToCart])
+  }
 
-  const handleView = useCallback(() => {
+  const handleView = () => {
     if (onView) onView(id)
-  }, [onView, id])
+  }
 
   // Handle image error and use placeholder
   const handleImageError = () => {
@@ -172,49 +171,27 @@ const ProductCard = memo(function ProductCard({
   // Tạo slug từ tên nếu không có slug được truyền vào
   const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-  // Tạo màu sắc cho border và category dựa trên ID sản phẩm - theme XLab
-  const getProductColors = (productId: string) => {
-    const colorVariants = [
-      { border: 'border-teal-200', category: 'text-teal-600 bg-teal-50' },
-      { border: 'border-cyan-200', category: 'text-cyan-600 bg-cyan-50' }, 
-      { border: 'border-emerald-200', category: 'text-emerald-600 bg-emerald-50' },
-      { border: 'border-blue-200', category: 'text-blue-600 bg-blue-50' },
-      { border: 'border-indigo-200', category: 'text-indigo-600 bg-indigo-50' },
-      { border: 'border-slate-200', category: 'text-slate-600 bg-slate-50' },
-      { border: 'border-gray-200', category: 'text-gray-600 bg-gray-50' },
-      { border: 'border-teal-300', category: 'text-teal-700 bg-teal-100' },
-      { border: 'border-cyan-300', category: 'text-cyan-700 bg-cyan-100' },
-      { border: 'border-emerald-300', category: 'text-emerald-700 bg-emerald-100' }
-    ]
-    
-    // Sử dụng ID để tạo index ổn định
-    const index = productId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colorVariants.length
-    return colorVariants[index]
-  }
-
-  const productColors = getProductColors(id)
-
   return (
     <Link
       href={isAccount ? `/accounts/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 transform ${isAccount ? 'text-sm' : ''}`}
+      className="group flex flex-col h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
-      {/* Fixed aspect ratio image container */}
-      <div className="relative w-full" style={{ paddingBottom: '75%' }}>
+      <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs px-2.5 py-1.5 rounded-lg shadow-md">
+          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
             -{discountPercentage}%
           </div>
         )}
+
         <Image
           src={displayImageUrl}
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-contain p-6 transition-all duration-500 ${
+          className={`object-cover transition-all duration-500 ${
             isHovered ? 'scale-110' : 'scale-100'
           } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
@@ -225,7 +202,7 @@ const ProductCard = memo(function ProductCard({
         {!isImageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-white">
             <svg
-              className="w-8 h-8 text-gray-400 animate-spin"
+              className="w-10 h-10 text-gray-300 animate-spin"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -248,7 +225,7 @@ const ProductCard = memo(function ProductCard({
 
         {showAddedEffect && (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 animate-fadeInOut">
-            <div className="bg-white text-green-600 px-4 py-2 rounded-full flex items-center shadow-lg">
+            <div className="bg-white text-green-600 font-bold px-4 py-2 rounded-full flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
@@ -262,10 +239,10 @@ const ProductCard = memo(function ProductCard({
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-2">
             <button
               onClick={handleAddToCart}
-              className="bg-white text-gray-800 hover:bg-gray-50 px-5 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
+              className="bg-white text-gray-800 hover:bg-primary-100 hover:text-primary-600 px-4 py-2 rounded-full font-medium transition-colors active:scale-95"
             >
               Thêm vào giỏ
             </button>
@@ -276,7 +253,7 @@ const ProductCard = memo(function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white hover:from-teal-600 hover:to-cyan-700 px-5 py-2.5 rounded-xl text-center transition-all duration-200 shadow-lg hover:shadow-xl active:scale-95"
+              className="bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-full font-medium text-center transition-colors active:scale-95"
             >
               Mua ngay
             </button>
@@ -284,86 +261,57 @@ const ProductCard = memo(function ProductCard({
         </div>
       </div>
 
-      {/* Flexible content container */}
-      <div className="p-4 flex-1 flex flex-col justify-between min-h-0">
-        {/* Top content with fixed structure */}
-        <div className="flex flex-col space-y-2.5 min-h-0">
-          <h3 className={`${isAccount ? 'text-base' : 'text-lg'} font-bold text-gray-900 line-clamp-2 leading-tight min-h-[2.5rem]`}>
-            {name}
-          </h3>
-          {shortDescription && (
-            <div
-              className="text-xs text-gray-500 line-clamp-2 leading-tight min-h-[2rem] overflow-hidden"
-              dangerouslySetInnerHTML={{ __html: shortDescription }}
-            />
-          )}
-        </div>
-
-        {/* Bottom content - price and rating */}
-        <div className="space-y-2.5 mt-auto pt-3">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1 flex-1">
-              <div className="flex items-baseline space-x-2">
-                <span className={`${isAccount ? 'text-lg' : 'text-xl'} font-bold text-gray-900`}>
-                  {formatCurrency(price)}
+      <div className="p-3 flex-1 flex flex-col justify-between">
+        {category && (
+          <div className="text-xs text-gray-500 mb-1">{category}</div>
+        )}
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 mb-1">
+          {name}
+        </h3>
+        <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+          {shortDescription}
+        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center">
+              <span className="text-sm font-semibold text-gray-900">
+                {formatCurrency(price)}
+              </span>
+              {originalPrice && discountPercentage > 0 && (
+                <span className="ml-2 text-xs text-gray-500 line-through">
+                  {formatCurrency(originalPrice)}
                 </span>
-                {originalPrice && (
-                  <span className="text-sm text-gray-400 line-through">
-                    {formatCurrency(originalPrice)}
-                  </span>
-                )}
-              </div>
-              {validRating > 0 ? (
-                <div className="flex items-center space-x-1">
-                  {renderRatingStars(validRating)}
-                  <span className="text-xs text-gray-600 ml-1 font-medium">
-                    {validRating.toFixed(1)}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-1">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-gray-200"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-400 ml-1">Chưa có đánh giá</span>
-                </div>
               )}
             </div>
-            
-            {weeklyPurchases > 0 && (
-              <div className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-md flex items-center flex-shrink-0 ml-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-                {weeklyPurchases}+
-              </div>
-            )}
+            <div className="mt-1">
+              {rating > 0 ? (
+                renderRatingStars(rating)
+              ) : (
+                <div className="h-4"></div>
+              )}
+            </div>
           </div>
+          {weeklyPurchases > 0 && (
+            <div className="text-xs text-gray-500 flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3 w-3 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+              {weeklyPurchases}+
+            </div>
+          )}
         </div>
       </div>
     </Link>
   )
-})
-
-export default ProductCard 
+} 

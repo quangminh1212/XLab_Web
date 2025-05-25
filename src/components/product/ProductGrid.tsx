@@ -17,7 +17,6 @@ interface Product {
   id: string;
   name: string;
   description: string;
-  shortDescription?: string;
   price?: number;
   originalPrice?: number;
   image: string;
@@ -126,20 +125,19 @@ const ProductGrid = ({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-3`} style={{ gridAutoRows: '1fr' }}>
+      <div className={`grid ${getColumnsClass()} gap-4 md:gap-6`}>
         {products.map((product) => {
-          // Sử dụng giá đã được tính toán từ API hoặc fallback cho logic cũ
-          const displayPrice = (product as any).displayPrice || calculateMinPrice(product);
-          const originalPrice = (product as any).displayOriginalPrice || calculateOriginalPrice(product, displayPrice);
+          const minPrice = calculateMinPrice(product);
+          const originalPrice = calculateOriginalPrice(product, minPrice);
           
           return (
             <ProductCard
               key={product.id}
               id={product.id}
               name={product.name}
-              description={product.shortDescription || product.description || ''}
-              price={displayPrice}
-              originalPrice={originalPrice && originalPrice > displayPrice ? originalPrice : undefined}
+              description={product.description}
+              price={minPrice}
+              originalPrice={originalPrice}
               image={product.image}
               category={product.category}
               rating={product.rating}
