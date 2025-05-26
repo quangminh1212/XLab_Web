@@ -272,3 +272,17 @@ Thumbs.db
 desktop.ini
 # Dependencies
 run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log

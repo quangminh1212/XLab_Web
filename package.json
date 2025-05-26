@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:clean": "node scripts/fix-project.js && npm run dev",
+    "dev:clean": "npm run fix:all && npm run dev",
     "dev:safe": "node scripts/fix-project.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
     "build": "next build",
@@ -15,7 +15,8 @@
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "fix": "node scripts/fix-project.js",
     "update-purchases": "node src/scripts/update-purchases.js",
-    "verify-products": "node src/scripts/verify-products.js"
+    "verify-products": "node src/scripts/verify-products.js",
+    "fix:all": "node scripts/fix-all-issues.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",

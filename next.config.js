@@ -3,7 +3,10 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: false,
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
+  },
   experimental: {
     serverActions: {
       allowedOrigins: ["localhost:3000", "localhost:3001", "localhost:3002"]
@@ -38,6 +41,11 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'styles')],
   },
   assetPrefix: '',
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
   webpack: (config, { dev, isServer }) => {
     config.cache = false;
     config.resolve.alias = {
