@@ -262,7 +262,6 @@ temp-config.js
 # Next.js Build Files
 .next/**/*
 # Development Files
-run.bat
 check-critters.js
 generate-static-files.js
 check-products.ps1
