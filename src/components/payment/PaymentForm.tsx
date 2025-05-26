@@ -293,7 +293,7 @@ const PaymentForm = ({
           {paymentMethod === 'momo' && (
             <div className="border border-gray-200 rounded-lg p-4">
               <div className="text-center">
-                <Image src="/images/payment/momo-qr.png" alt="MoMo QR Code" width={200} height={200} className="mx-auto mb-4" />
+                <Image src="/images/payment/momo-qr.svg" alt="MoMo QR Code" width={200} height={200} className="mx-auto mb-4" />
                 <p className="text-gray-700 mb-2">Quét mã QR bằng ứng dụng MoMo</p>
                 <div className="text-primary-500 font-bold text-xl mb-2">{formatCurrency(amount)}</div>
                 <p className="text-xs text-gray-500">Hoặc chuyển khoản đến SĐT: {momoPhone}</p>

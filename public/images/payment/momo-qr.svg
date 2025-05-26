@@ -1,0 +1,53 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="white"/>
+  <rect x="20" y="20" width="160" height="160" fill="#A50064"/>
+  <rect x="30" y="30" width="140" height="140" fill="white"/>
+  
+  <!-- QR Code pattern placeholder -->
+  <rect x="40" y="40" width="10" height="10" fill="black"/>
+  <rect x="60" y="40" width="10" height="10" fill="black"/>
+  <rect x="80" y="40" width="10" height="10" fill="black"/>
+  <rect x="100" y="40" width="10" height="10" fill="black"/>
+  <rect x="120" y="40" width="10" height="10" fill="black"/>
+  <rect x="140" y="40" width="10" height="10" fill="black"/>
+  <rect x="160" y="40" width="10" height="10" fill="black"/>
+  
+  <rect x="40" y="60" width="10" height="10" fill="black"/>
+  <rect x="80" y="60" width="10" height="10" fill="black"/>
+  <rect x="120" y="60" width="10" height="10" fill="black"/>
+  <rect x="160" y="60" width="10" height="10" fill="black"/>
+  
+  <rect x="40" y="80" width="10" height="10" fill="black"/>
+  <rect x="60" y="80" width="10" height="10" fill="black"/>
+  <rect x="100" y="80" width="10" height="10" fill="black"/>
+  <rect x="140" y="80" width="10" height="10" fill="black"/>
+  <rect x="160" y="80" width="10" height="10" fill="black"/>
+  
+  <rect x="40" y="100" width="10" height="10" fill="black"/>
+  <rect x="80" y="100" width="10" height="10" fill="black"/>
+  <rect x="120" y="100" width="10" height="10" fill="black"/>
+  <rect x="160" y="100" width="10" height="10" fill="black"/>
+  
+  <rect x="40" y="120" width="10" height="10" fill="black"/>
+  <rect x="60" y="120" width="10" height="10" fill="black"/>
+  <rect x="80" y="120" width="10" height="10" fill="black"/>
+  <rect x="100" y="120" width="10" height="10" fill="black"/>
+  <rect x="140" y="120" width="10" height="10" fill="black"/>
+  <rect x="160" y="120" width="10" height="10" fill="black"/>
+  
+  <rect x="40" y="140" width="10" height="10" fill="black"/>
+  <rect x="80" y="140" width="10" height="10" fill="black"/>
+  <rect x="120" y="140" width="10" height="10" fill="black"/>
+  <rect x="160" y="140" width="10" height="10" fill="black"/>
+  
+  <rect x="40" y="160" width="10" height="10" fill="black"/>
+  <rect x="60" y="160" width="10" height="10" fill="black"/>
+  <rect x="80" y="160" width="10" height="10" fill="black"/>
+  <rect x="100" y="160" width="10" height="10" fill="black"/>
+  <rect x="120" y="160" width="10" height="10" fill="black"/>
+  <rect x="140" y="160" width="10" height="10" fill="black"/>
+  <rect x="160" y="160" width="10" height="10" fill="black"/>
+  
+  <!-- MoMo text -->
+  <text x="100" y="190" text-anchor="middle" fill="#A50064" font-family="Arial, sans-serif" font-size="14" font-weight="bold">MoMo QR Code</text>
+</svg> 
