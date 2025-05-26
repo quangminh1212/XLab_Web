@@ -36,7 +36,7 @@ export default function Footer() {
               giúp doanh nghiệp tối ưu hóa hoạt động và tăng trưởng bền vững.
             </p>
             
-            <div className="flex justify-center md:justify-start space-x-4">
+            <div className="flex justify-center space-x-4">
               <a 
                 href={siteConfig.social.facebook} 
                 target="_blank" 
