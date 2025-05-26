@@ -258,14 +258,14 @@ export default function ProductCard({
   return (
     <Link
               href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full bg-gradient-to-br ${currentColor.bg} rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg ${currentColor.hover}`}
+      className={`group flex flex-col h-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-medium px-2 py-1 rounded-md shadow-lg`}>
+          <div className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}>
             -{discountPercentage}%
           </div>
         )}
@@ -323,12 +323,17 @@ export default function ProductCard({
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <button
               onClick={handleAddToCart}
-              className={`bg-white/95 text-gray-800 ${currentColor.buttonHover} border border-transparent px-4 py-2 rounded-full font-medium transition-all duration-200 active:scale-95 shadow-lg`}
+              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-5 py-2.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform`}
             >
-              Thêm vào giỏ
+              <span className="flex items-center justify-center">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 7m0 6l-1.5 6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6" />
+                </svg>
+                Thêm vào giỏ
+              </span>
             </button>
             <button
               onClick={(e) => {
@@ -337,32 +342,38 @@ export default function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className={`bg-gradient-to-r ${currentColor.button} text-white px-4 py-2 rounded-full font-medium text-center transition-all duration-200 active:scale-95 shadow-lg`}
+              className={`bg-gradient-to-r ${currentColor.button} text-white px-5 py-2.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20`}
             >
-              Mua ngay
+              <span className="flex items-center justify-center">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Mua ngay
+              </span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between bg-white">
+      <div className="p-4 flex-1 flex flex-col justify-between bg-white/95 backdrop-blur-sm">
         {category && (
-          <div className="text-xs text-gray-500 mb-1">{category}</div>
+          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">{category}</div>
         )}
-        <h3 className="text-base font-semibold text-gray-900 line-clamp-2 mb-1">
+        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
           {name}
         </h3>
-        <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+        <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center">
-              <span className={`text-base font-bold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}>
+            <div className="flex items-center mb-1">
+              <span className={`text-lg font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent drop-shadow-sm`}>
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-sm text-gray-400 line-through">
+                <span className="ml-2 text-sm text-gray-400 line-through relative">
+                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-400 to-transparent h-0.5 top-1/2 -translate-y-1/2"></span>
                   {formatCurrency(originalPrice)}
                 </span>
               )}
@@ -377,7 +388,7 @@ export default function ProductCard({
           </div>
           <div className="flex flex-col gap-1">
             {totalSold > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center`}>
+              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-gradient-to-r ${currentColor.bg} border border-gray-200/50`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
@@ -392,11 +403,11 @@ export default function ProductCard({
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                   />
                 </svg>
-                {totalSold} đã bán
+                <span className="font-semibold">{totalSold}</span>&nbsp;đã bán
               </div>
             )}
             {weeklyPurchases > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center`}>
+              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-gradient-to-r ${currentColor.bg} border border-gray-200/50`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
@@ -411,7 +422,7 @@ export default function ProductCard({
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                {weeklyPurchases}+ tuần
+                <span className="font-semibold">{weeklyPurchases}+</span>&nbsp;tuần
               </div>
             )}
           </div>
