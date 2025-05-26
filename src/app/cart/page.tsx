@@ -466,18 +466,18 @@ export default function CartPage() {
                   
                   <Link
                     href="/checkout?skipInfo=true"
-                    className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-3 block text-center py-2.5 rounded text-sm font-medium transition-colors"
+                    className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-4 block text-center py-4 rounded-lg text-base font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
                   >
-                    Tiến hành thanh toán
+                    🚀 Tiến hành thanh toán
                   </Link>
                   
                   <div className="text-center">
-                    <p className="mb-1.5 text-xs text-gray-500">Chúng tôi chấp nhận</p>
-                    <div className="flex justify-center space-x-1.5">
-                      <Image src="/images/payment/visa.svg" alt="Visa" width={18} height={12} className="h-3" />
-                      <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={18} height={12} className="h-3" />
-                      <Image src="/images/payment/momo.svg" alt="MoMo" width={14} height={12} className="h-3" />
-                      <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={18} height={12} className="h-3" />
+                    <p className="mb-3 text-sm text-gray-600 font-medium">Chúng tôi chấp nhận</p>
+                    <div className="flex justify-center space-x-3">
+                      <Image src="/images/payment/visa.svg" alt="Visa" width={40} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
+                      <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={40} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
+                      <Image src="/images/payment/momo.svg" alt="MoMo" width={32} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
+                      <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={40} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
                     </div>
                   </div>
                 </div>
