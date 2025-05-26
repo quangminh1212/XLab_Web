@@ -127,7 +127,7 @@ const ProductGrid = ({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-4 md:gap-6`}>
+      <div className={`grid ${getColumnsClass()} gap-3 auto-rows-fr`}>
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
