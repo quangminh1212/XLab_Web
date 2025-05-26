@@ -258,3 +258,17 @@ temp-config.js
 
 # Reorganization scripts
 /scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+run.bat
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies

@@ -9,9 +9,9 @@
     "dev:win": "rimraf .next && set NODE_OPTIONS=--no-warnings && next dev",
     "dev:wasm": "cross-env NEXT_DISABLE_SWC_NATIVE=1 NEXT_USE_SWC_WASM=1 NODE_OPTIONS=--no-warnings next dev",
     "dev:no-hot": "cross-env NODE_OPTIONS='--no-warnings' next dev --no-hot",
-    "dev:clean": "rimraf .next && next dev",
+    "dev:clean": "node scripts/fix-project.js && npm run dev",
     "dev:export": "cross-env NEXT_PUBLIC_EXPORT=true next dev",
-    "dev:safe": "cross-env NODE_OPTIONS='--no-warnings' next dev",
+    "dev:safe": "node scripts/fix-project.js && npm run dev",
     "dev:no-trace": "cross-env NODE_OPTIONS='--no-warnings' next dev",
     "prebuild": "rimraf .next && echo Preparing build environment...",
     "build": "node fix-all-errors.js && rimraf .next/cache && next build",
@@ -23,7 +23,8 @@
     "fix-errors": "node fix-all-errors.js",
     "update-purchases": "node src/scripts/update-purchases.js",
     "verify-products": "node src/scripts/verify-products.js",
-    "check-products": "powershell -ExecutionPolicy Bypass -File check-products.ps1"
+    "check-products": "powershell -ExecutionPolicy Bypass -File check-products.ps1",
+    "fix": "node scripts/fix-project.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
