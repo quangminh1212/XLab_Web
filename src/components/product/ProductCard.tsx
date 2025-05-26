@@ -250,8 +250,10 @@ export default function ProductCard({
   ];
 
   // Chọn màu dựa trên ID sản phẩm để đảm bảo consistent
-  const colorIndex = parseInt(id) % colorPalette.length;
-  const currentColor = colorPalette[colorIndex];
+  const safeId = id || '0';
+  const parsedId = parseInt(safeId);
+  const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
+  const currentColor = colorPalette[colorIndex] || colorPalette[0];
 
   return (
     <Link
