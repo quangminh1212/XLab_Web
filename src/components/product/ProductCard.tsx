@@ -387,7 +387,7 @@ export default function ProductCard({
           </div>
           <div className="flex flex-col gap-1 items-end">
             {totalSold > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white border border-gray-200 shadow-sm`}>
+              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
@@ -406,7 +406,7 @@ export default function ProductCard({
               </div>
             )}
             {weeklyPurchases > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white border border-gray-200 shadow-sm`}>
+              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
