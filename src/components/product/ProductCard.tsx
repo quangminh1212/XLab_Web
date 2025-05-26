@@ -345,7 +345,7 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between">
+      <div className="p-3 flex-1 flex flex-col justify-between bg-white">
         {category && (
           <div className="text-xs text-gray-500 mb-1">{category}</div>
         )}
