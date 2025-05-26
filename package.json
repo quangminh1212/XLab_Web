@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:clean": "node scripts/fix-project.js && npm run dev",
-    "dev:safe": "node scripts/fix-project.js && npm run dev",
+    "dev:clean": "node scripts/fix-project.js && node scripts/fix-missing-files.js && npm run dev",
+    "dev:safe": "node scripts/fix-project.js && node scripts/fix-missing-files.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
@@ -13,7 +13,7 @@
     "start:export": "serve out -p 3000",
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
-    "fix": "node scripts/fix-project.js",
+    "fix": "node scripts/fix-project.js && node scripts/fix-missing-files.js",
     "update-purchases": "node src/scripts/update-purchases.js",
     "verify-products": "node src/scripts/verify-products.js"
   },
