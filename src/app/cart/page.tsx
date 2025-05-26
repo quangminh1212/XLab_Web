@@ -472,12 +472,12 @@ export default function CartPage() {
                   </Link>
                   
                   <div className="text-center">
-                    <p className="mb-3 text-sm text-gray-600 font-medium">Chúng tôi chấp nhận</p>
-                    <div className="flex justify-center space-x-3">
-                      <Image src="/images/payment/visa.svg" alt="Visa" width={40} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
-                      <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={40} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
-                      <Image src="/images/payment/momo.svg" alt="MoMo" width={32} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
-                      <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={40} height={28} className="h-7 rounded border border-gray-200 bg-white p-1" />
+                    <p className="mb-4 text-base text-gray-700 font-semibold">Chúng tôi chấp nhận</p>
+                    <div className="flex justify-center space-x-6">
+                      <Image src="/images/payment/visa.svg" alt="Visa" width={120} height={84} className="w-auto rounded-lg border-2 border-gray-300 bg-white p-3 shadow-sm hover:shadow-md transition-shadow" style={{height: '84px'}} />
+                      <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={120} height={84} className="w-auto rounded-lg border-2 border-gray-300 bg-white p-3 shadow-sm hover:shadow-md transition-shadow" style={{height: '84px'}} />
+                      <Image src="/images/payment/momo.svg" alt="MoMo" width={96} height={84} className="w-auto rounded-lg border-2 border-gray-300 bg-white p-3 shadow-sm hover:shadow-md transition-shadow" style={{height: '84px'}} />
+                      <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={120} height={84} className="w-auto rounded-lg border-2 border-gray-300 bg-white p-3 shadow-sm hover:shadow-md transition-shadow" style={{height: '84px'}} />
                     </div>
                   </div>
                 </div>
