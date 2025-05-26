@@ -173,17 +173,97 @@ export default function ProductCard({
   // Tạo slug từ tên nếu không có slug được truyền vào
   const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
+  // Color palette phù hợp với logo XLab (chuyên nghiệp, hiện đại)
+  const colorPalette = [
+    {
+      name: 'teal',
+      bg: 'from-white via-teal-50 to-teal-100',
+      hover: 'hover:border-teal-300 hover:shadow-teal-100/50',
+      badge: 'from-teal-500 to-teal-600',
+      button: 'from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700',
+      buttonHover: 'hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300',
+      price: 'from-teal-600 to-teal-700',
+      stats: 'text-teal-600',
+      statsIcon: 'text-teal-500',
+      overlay: 'to-teal-900/40'
+    },
+    {
+      name: 'blue',
+      bg: 'from-white via-blue-50 to-blue-100',
+      hover: 'hover:border-blue-300 hover:shadow-blue-100/50',
+      badge: 'from-blue-500 to-blue-600',
+      button: 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700',
+      buttonHover: 'hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300',
+      price: 'from-blue-600 to-blue-700',
+      stats: 'text-blue-600',
+      statsIcon: 'text-blue-500',
+      overlay: 'to-blue-900/40'
+    },
+    {
+      name: 'purple',
+      bg: 'from-white via-purple-50 to-purple-100',
+      hover: 'hover:border-purple-300 hover:shadow-purple-100/50',
+      badge: 'from-purple-500 to-purple-600',
+      button: 'from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700',
+      buttonHover: 'hover:bg-purple-50 hover:text-purple-700 hover:border-purple-300',
+      price: 'from-purple-600 to-purple-700',
+      stats: 'text-purple-600',
+      statsIcon: 'text-purple-500',
+      overlay: 'to-purple-900/40'
+    },
+    {
+      name: 'emerald',
+      bg: 'from-white via-emerald-50 to-emerald-100',
+      hover: 'hover:border-emerald-300 hover:shadow-emerald-100/50',
+      badge: 'from-emerald-500 to-emerald-600',
+      button: 'from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700',
+      buttonHover: 'hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300',
+      price: 'from-emerald-600 to-emerald-700',
+      stats: 'text-emerald-600',
+      statsIcon: 'text-emerald-500',
+      overlay: 'to-emerald-900/40'
+    },
+    {
+      name: 'orange',
+      bg: 'from-white via-orange-50 to-orange-100',
+      hover: 'hover:border-orange-300 hover:shadow-orange-100/50',
+      badge: 'from-orange-500 to-orange-600',
+      button: 'from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700',
+      buttonHover: 'hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300',
+      price: 'from-orange-600 to-orange-700',
+      stats: 'text-orange-600',
+      statsIcon: 'text-orange-500',
+      overlay: 'to-orange-900/40'
+    },
+    {
+      name: 'indigo',
+      bg: 'from-white via-indigo-50 to-indigo-100',
+      hover: 'hover:border-indigo-300 hover:shadow-indigo-100/50',
+      badge: 'from-indigo-500 to-indigo-600',
+      button: 'from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700',
+      buttonHover: 'hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300',
+      price: 'from-indigo-600 to-indigo-700',
+      stats: 'text-indigo-600',
+      statsIcon: 'text-indigo-500',
+      overlay: 'to-indigo-900/40'
+    }
+  ];
+
+  // Chọn màu dựa trên ID sản phẩm để đảm bảo consistent
+  const colorIndex = parseInt(id) % colorPalette.length;
+  const currentColor = colorPalette[colorIndex];
+
   return (
     <Link
               href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className="group flex flex-col h-full bg-gradient-to-br from-white via-gray-50 to-teal-50 rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-teal-300 hover:shadow-teal-100/50"
+      className={`group flex flex-col h-full bg-gradient-to-br ${currentColor.bg} rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg ${currentColor.hover}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-xs font-medium px-2 py-1 rounded-md shadow-lg">
+          <div className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-medium px-2 py-1 rounded-md shadow-lg`}>
             -{discountPercentage}%
           </div>
         )}
@@ -226,8 +306,8 @@ export default function ProductCard({
         )}
 
         {showAddedEffect && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 to-teal-900/40 z-20 animate-fadeInOut">
-            <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg">
+          <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}>
+            <div className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
@@ -237,14 +317,14 @@ export default function ProductCard({
         )}
 
         <div
-          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 to-teal-900/40 flex items-center justify-center transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 ${currentColor.overlay} flex items-center justify-center transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <div className="flex flex-col gap-2">
             <button
               onClick={handleAddToCart}
-              className="bg-white/95 text-gray-800 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 border border-transparent px-4 py-2 rounded-full font-medium transition-all duration-200 active:scale-95 shadow-lg"
+              className={`bg-white/95 text-gray-800 ${currentColor.buttonHover} border border-transparent px-4 py-2 rounded-full font-medium transition-all duration-200 active:scale-95 shadow-lg`}
             >
               Thêm vào giỏ
             </button>
@@ -255,7 +335,7 @@ export default function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 px-4 py-2 rounded-full font-medium text-center transition-all duration-200 active:scale-95 shadow-lg"
+              className={`bg-gradient-to-r ${currentColor.button} text-white px-4 py-2 rounded-full font-medium text-center transition-all duration-200 active:scale-95 shadow-lg`}
             >
               Mua ngay
             </button>
@@ -276,7 +356,7 @@ export default function ProductCard({
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center">
-              <span className="text-base font-bold bg-gradient-to-r from-teal-600 to-teal-700 bg-clip-text text-transparent">
+              <span className={`text-base font-bold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}>
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
@@ -295,10 +375,10 @@ export default function ProductCard({
           </div>
           <div className="flex flex-col gap-1">
             {totalSold > 0 && (
-              <div className="text-xs text-teal-600 flex items-center">
+              <div className={`text-xs ${currentColor.stats} flex items-center`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 mr-1 text-teal-500"
+                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -314,10 +394,10 @@ export default function ProductCard({
               </div>
             )}
             {weeklyPurchases > 0 && (
-              <div className="text-xs text-teal-600 flex items-center">
+              <div className={`text-xs ${currentColor.stats} flex items-center`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 mr-1 text-teal-500"
+                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
