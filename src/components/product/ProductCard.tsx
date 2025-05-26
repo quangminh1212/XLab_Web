@@ -176,14 +176,14 @@ export default function ProductCard({
   return (
     <Link
               href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className="group flex flex-col h-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md"
+      className="group flex flex-col h-full bg-gradient-to-br from-white via-gray-50 to-teal-50 rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-teal-300 hover:shadow-teal-100/50"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleView}
     >
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className="absolute top-2 left-2 z-10 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded">
+          <div className="absolute top-2 left-2 z-10 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-xs font-medium px-2 py-1 rounded-md shadow-lg">
             -{discountPercentage}%
           </div>
         )}
@@ -226,8 +226,8 @@ export default function ProductCard({
         )}
 
         {showAddedEffect && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-20 animate-fadeInOut">
-            <div className="bg-white text-green-600 font-bold px-4 py-2 rounded-full flex items-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 to-teal-900/40 z-20 animate-fadeInOut">
+            <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
@@ -237,14 +237,14 @@ export default function ProductCard({
         )}
 
         <div
-          className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 to-teal-900/40 flex items-center justify-center transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <div className="flex flex-col gap-2">
             <button
               onClick={handleAddToCart}
-              className="bg-white text-gray-800 hover:bg-primary-100 hover:text-primary-600 px-4 py-2 rounded-full font-medium transition-colors active:scale-95"
+              className="bg-white/95 text-gray-800 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 border border-transparent px-4 py-2 rounded-full font-medium transition-all duration-200 active:scale-95 shadow-lg"
             >
               Thêm vào giỏ
             </button>
@@ -255,7 +255,7 @@ export default function ProductCard({
                 handleAddToCart(e);
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-full font-medium text-center transition-colors active:scale-95"
+              className="bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700 px-4 py-2 rounded-full font-medium text-center transition-all duration-200 active:scale-95 shadow-lg"
             >
               Mua ngay
             </button>
@@ -276,11 +276,11 @@ export default function ProductCard({
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center">
-              <span className="text-base font-bold text-gray-900">
+              <span className="text-base font-bold bg-gradient-to-r from-teal-600 to-teal-700 bg-clip-text text-transparent">
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-sm text-gray-500 line-through">
+                <span className="ml-2 text-sm text-gray-400 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
@@ -295,10 +295,10 @@ export default function ProductCard({
           </div>
           <div className="flex flex-col gap-1">
             {totalSold > 0 && (
-              <div className="text-xs text-gray-500 flex items-center">
+              <div className="text-xs text-teal-600 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 mr-1"
+                  className="h-3 w-3 mr-1 text-teal-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -314,10 +314,10 @@ export default function ProductCard({
               </div>
             )}
             {weeklyPurchases > 0 && (
-              <div className="text-xs text-gray-500 flex items-center">
+              <div className="text-xs text-teal-600 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 mr-1"
+                  className="h-3 w-3 mr-1 text-teal-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
