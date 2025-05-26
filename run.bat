@@ -1,15 +1,15 @@
 @echo off
-title XLab Web Development Server
+title XLab Web - Quick Start
 echo.
 echo ==========================================
-echo    🚀 XLab Web Development Server
+echo    ⚡ XLab Web - Quick Start
 echo ==========================================
 echo.
-echo 🔧 Preparing development environment...
+echo 🚀 Starting development server...
 echo.
 
-rem Run the fix missing files script and start development server
-npm run fix && node scripts/fix-missing-files.js && npm run dev
+rem Start development server directly
+npm run dev
 
 rem Keep the window open if there's an error
 if errorlevel 1 (
