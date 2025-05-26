@@ -271,3 +271,4 @@ check-products.ps1
 Thumbs.db
 desktop.ini
 # Dependencies
+run.bat

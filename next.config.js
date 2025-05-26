@@ -3,6 +3,12 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: false,
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3000", "localhost:3001", "localhost:3002"]
+    }
+  },
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
     remotePatterns: [
