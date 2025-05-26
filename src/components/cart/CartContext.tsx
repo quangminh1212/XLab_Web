@@ -10,13 +10,14 @@ interface CartItem {
   image?: string
   options?: string[]
   version?: string
+  uniqueKey?: string // Key duy nhất để phân biệt các variant
 }
 
 interface CartContextType {
   items: CartItem[]
   addItem: (item: CartItem) => void
-  removeItem: (id: string) => void
-  updateQuantity: (id: string, quantity: number) => void
+  removeItem: (uniqueKey: string) => void
+  updateQuantity: (uniqueKey: string, quantity: number) => void
   clearCart: () => void
   itemCount: number
   totalAmount: number
@@ -32,6 +33,13 @@ const CartContext = createContext<CartContextType>({
   totalAmount: 0,
 })
 
+// Tạo key duy nhất cho sản phẩm dựa trên id, version và options
+const generateUniqueKey = (item: CartItem): string => {
+  const version = item.version || 'default'
+  const options = (item.options || []).sort().join('|')
+  return `${item.id}_${version}_${options}`
+}
+
 export const useCart = () => {
   return useContext(CartContext)
 }
@@ -45,7 +53,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const savedCart = localStorage.getItem('cart')
     if (savedCart) {
       try {
-        setItems(JSON.parse(savedCart))
+        const parsedCart = JSON.parse(savedCart)
+        // Đảm bảo tất cả items có uniqueKey
+        const cartWithUniqueKeys = parsedCart.map((item: CartItem) => ({
+          ...item,
+          uniqueKey: item.uniqueKey || generateUniqueKey(item)
+        }))
+        setItems(cartWithUniqueKeys)
       } catch (error) {
         console.error('Failed to parse cart from localStorage', error)
       }
@@ -60,16 +74,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [items, loaded])
 
+  // Hàm kiểm tra xem 2 sản phẩm có giống nhau không (bao gồm tất cả thuộc tính)
+  const isSameProduct = (item1: CartItem, item2: CartItem): boolean => {
+    return generateUniqueKey(item1) === generateUniqueKey(item2)
+  }
+
   const addItem = (newItem: CartItem) => {
     setItems(prevItems => {
-      const existingItemIndex = prevItems.findIndex(item => item.id === newItem.id)
+      // Tìm sản phẩm giống nhau hoàn toàn (bao gồm version và options)
+      const existingItemIndex = prevItems.findIndex(item => isSameProduct(item, newItem))
       
       if (existingItemIndex > -1) {
-        // Nếu item đã tồn tại, tăng số lượng nhưng giữ nguyên hình ảnh cũ nếu có
+        // Nếu item đã tồn tại hoàn toàn giống nhau, gộp số lượng
         const updatedItems = [...prevItems]
         updatedItems[existingItemIndex].quantity += newItem.quantity || 1
         
-        // Đảm bảo giữ lại đường dẫn hình ảnh nếu đã tồn tại
+        // Đảm bảo item đã có uniqueKey
+        if (!updatedItems[existingItemIndex].uniqueKey) {
+          updatedItems[existingItemIndex].uniqueKey = generateUniqueKey(updatedItems[existingItemIndex])
+        }
+        
+        // Đảm bảo giữ lại đường dẫn hình ảnh tốt nhất
         if (newItem.image && 
             (!updatedItems[existingItemIndex].image || 
              updatedItems[existingItemIndex].image === '/images/placeholder/product-placeholder.svg' ||
@@ -78,49 +103,42 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           updatedItems[existingItemIndex].image = newItem.image
         }
         
-        // Cập nhật version nếu có
-        if (newItem.version && (!updatedItems[existingItemIndex].version)) {
-          updatedItems[existingItemIndex].version = newItem.version
-        }
-        
-        // Cập nhật options nếu có
-        if (newItem.options && newItem.options.length > 0) {
-          updatedItems[existingItemIndex].options = newItem.options
-        }
-        
         return updatedItems
       } else {
-        // Nếu là item mới, thêm vào mảng và đảm bảo có đường dẫn hình ảnh
+        // Nếu là item mới hoặc có thuộc tính khác nhau, thêm vào mảng
         const itemImage = newItem.image || '/images/placeholder/product-placeholder.svg'
         // Kiểm tra đường dẫn hình ảnh
         const finalImage = itemImage.includes('/images/product-placeholder.svg') || 
                            itemImage.includes('/images/placeholder/product-placeholder.jpg') ? 
                            '/images/placeholder/product-placeholder.svg' : itemImage
         
-        return [...prevItems, { 
+        const itemWithUniqueKey = { 
           ...newItem, 
           image: finalImage,
           quantity: newItem.quantity || 1,
           version: newItem.version || undefined,
-          options: newItem.options || undefined
-        }]
+          options: newItem.options || undefined,
+          uniqueKey: generateUniqueKey(newItem)
+        }
+        
+        return [...prevItems, itemWithUniqueKey]
       }
     })
   }
 
-  const removeItem = (id: string) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id))
+  const removeItem = (uniqueKey: string) => {
+    setItems(prevItems => prevItems.filter(item => item.uniqueKey !== uniqueKey))
   }
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = (uniqueKey: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(id)
+      removeItem(uniqueKey)
       return
     }
     
     setItems(prevItems => 
       prevItems.map(item => 
-        item.id === id ? { ...item, quantity } : item
+        item.uniqueKey === uniqueKey ? { ...item, quantity } : item
       )
     )
   }

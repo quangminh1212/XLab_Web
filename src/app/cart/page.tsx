@@ -18,6 +18,7 @@ interface CartItemWithVersion {
   image?: string;
   version?: string;
   description?: string;
+  uniqueKey?: string;
 }
 
 // Định nghĩa danh sách mã giảm giá
@@ -126,9 +127,9 @@ export default function CartPage() {
   const featuredProducts = products.filter((product: any) => product.isFeatured).slice(0, 3);
   
   // Handle quantity change
-  const handleQuantityChange = (itemId: string, newQuantity: number) => {
+  const handleQuantityChange = (uniqueKey: string, newQuantity: number) => {
     if (newQuantity >= 1) {
-      updateItemQuantity(itemId, newQuantity);
+      updateItemQuantity(uniqueKey, newQuantity);
     }
   };
 
@@ -255,7 +256,7 @@ export default function CartPage() {
                   <div className="space-y-3">
                     {cart.map((item) => (
                       <motion.div 
-                        key={item.id} 
+                        key={item.uniqueKey || item.id} 
                         className="flex items-start gap-3 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
                         variants={itemVariants}
                         whileHover={{ scale: 1.005, transition: { duration: 0.2 } }}
@@ -304,7 +305,7 @@ export default function CartPage() {
                                 <div className="flex items-center border rounded border-gray-300 overflow-hidden">
                                   <button 
                                     className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
-                                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                    onClick={() => handleQuantityChange(item.uniqueKey || item.id, item.quantity - 1)}
                                     aria-label="Giảm số lượng"
                                   >
                                     <AiOutlineMinus className="w-3 h-3" />
@@ -317,7 +318,7 @@ export default function CartPage() {
                                   />
                                   <button 
                                     className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
-                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                    onClick={() => handleQuantityChange(item.uniqueKey || item.id, item.quantity + 1)}
                                     aria-label="Tăng số lượng"
                                   >
                                     <AiOutlinePlus className="w-3 h-3" />
@@ -325,7 +326,7 @@ export default function CartPage() {
                                 </div>
                                 <button 
                                   className="text-red-500 hover:text-red-700 transition-colors p-1"
-                                  onClick={() => removeItemFromCart(item.id)}
+                                  onClick={() => removeItemFromCart(item.uniqueKey || item.id)}
                                   aria-label="Xóa sản phẩm"
                                 >
                                   <AiOutlineDelete className="w-4 h-4" />
