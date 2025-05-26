@@ -365,66 +365,22 @@ export default function ProductCard({
         <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
           {shortDescription}
         </p>
-        <div className="flex items-end justify-between">
-          <div className="flex-1">
-            <div className="flex items-baseline flex-wrap gap-2 mb-2">
-              <span className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}>
-                {formatCurrency(price)}
-              </span>
-              {originalPrice && discountPercentage > 0 && (
-                <span className="text-sm text-gray-400 line-through">
-                  {formatCurrency(originalPrice)}
-                </span>
-              )}
-            </div>
-            <div>
-              {rating > 0 ? (
-                renderRatingStars(rating)
-              ) : (
-                <div className="h-4"></div>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 items-end">
-            {totalSold > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                  />
-                </svg>
-                <span className="font-semibold">{totalSold}</span>&nbsp;đã bán
-              </div>
-            )}
-            {weeklyPurchases > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                  />
-                </svg>
-                <span className="font-semibold">{weeklyPurchases}+</span>&nbsp;tuần
-              </div>
-            )}
-          </div>
+                <div className="flex items-baseline flex-wrap gap-2 mb-2">
+          <span className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}>
+            {formatCurrency(price)}
+          </span>
+          {originalPrice && discountPercentage > 0 && (
+            <span className="text-sm text-gray-400 line-through">
+              {formatCurrency(originalPrice)}
+            </span>
+          )}
+        </div>
+        <div>
+          {rating > 0 ? (
+            renderRatingStars(rating)
+          ) : (
+            <div className="h-4"></div>
+          )}
         </div>
       </div>
     </Link>
