@@ -20,14 +20,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Logo và giới thiệu */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center justify-center mb-6">
-              <div className="relative p-6 rounded-2xl bg-gradient-to-br from-white via-gray-50 to-gray-100 shadow-xl">
+            <Link href="/" className="flex items-center justify-center mb-8">
+              <div className="relative p-8 rounded-2xl bg-gradient-to-br from-white via-gray-50 to-gray-100 shadow-xl">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={180}
-                  height={72}
-                  className="w-auto h-18"
+                  width={240}
+                  height={96}
+                  className="w-auto h-24"
                 />
               </div>
             </Link>
