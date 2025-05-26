@@ -355,7 +355,7 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-4 flex-1 flex flex-col justify-between bg-white/95 backdrop-blur-sm">
+      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
         {category && (
           <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">{category}</div>
         )}
@@ -365,20 +365,19 @@ export default function ProductCard({
         <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
           {shortDescription}
         </p>
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center mb-1">
-              <span className={`text-lg font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent drop-shadow-sm`}>
+        <div className="flex items-end justify-between">
+          <div className="flex-1">
+            <div className="flex items-baseline flex-wrap gap-2 mb-2">
+              <span className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}>
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
-                <span className="ml-2 text-sm text-gray-400 line-through relative">
-                  <span className="absolute inset-0 bg-gradient-to-r from-transparent via-red-400 to-transparent h-0.5 top-1/2 -translate-y-1/2"></span>
+                <span className="text-sm text-gray-400 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
             </div>
-            <div className="mt-1">
+            <div>
               {rating > 0 ? (
                 renderRatingStars(rating)
               ) : (
@@ -386,9 +385,9 @@ export default function ProductCard({
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 items-end">
             {totalSold > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-gradient-to-r ${currentColor.bg} border border-gray-200/50`}>
+              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white border border-gray-200 shadow-sm`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
@@ -407,7 +406,7 @@ export default function ProductCard({
               </div>
             )}
             {weeklyPurchases > 0 && (
-              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-gradient-to-r ${currentColor.bg} border border-gray-200/50`}>
+              <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white border border-gray-200 shadow-sm`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
