@@ -292,7 +292,7 @@ function NotificationsPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00A19A]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -303,7 +303,7 @@ function NotificationsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Quản lý thông báo</h1>
         <button
           onClick={() => setActiveTab('create')}
-          className="bg-[#00A19A] text-white px-4 py-2 rounded-md hover:bg-[#008B85] transition-colors"
+          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-indigo-700 transition-colors"
         >
           Tạo thông báo mới
         </button>
@@ -330,7 +330,7 @@ function NotificationsPage() {
               onClick={() => setActiveTab('list')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'list'
-                  ? 'border-[#00A19A] text-[#00A19A]'
+                  ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -344,7 +344,7 @@ function NotificationsPage() {
               }}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'create'
-                  ? 'border-[#00A19A] text-[#00A19A]'
+                  ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -355,7 +355,7 @@ function NotificationsPage() {
                 onClick={() => setActiveTab('edit')}
                 className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                   activeTab === 'edit'
-                    ? 'border-[#00A19A] text-[#00A19A]'
+                    ? 'border-blue-600 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -366,7 +366,7 @@ function NotificationsPage() {
               onClick={() => setActiveTab('settings')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'settings'
-                  ? 'border-[#00A19A] text-[#00A19A]'
+                  ? 'border-blue-600 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -391,7 +391,7 @@ function NotificationsPage() {
                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(notification.priority)}`}>
                               {notification.priority === 'high' ? 'Cao' : notification.priority === 'medium' ? 'Trung bình' : 'Thấp'}
                             </span>
-                            <span className="px-2 py-1 text-xs font-medium bg-teal-100 text-[#00A19A] rounded-full">
+                            <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-600 rounded-full">
                               {notification.type === 'promotion' ? 'Khuyến mãi' : 
                                notification.type === 'update' ? 'Cập nhật' :
                                notification.type === 'order' ? 'Đơn hàng' : 'Hệ thống'}
@@ -410,7 +410,7 @@ function NotificationsPage() {
                           </div>
                           {notification.link && (
                             <div className="mt-2">
-                              <a href={notification.link} className="text-[#00A19A] hover:text-[#008B85] text-sm">
+                              <a href={notification.link} className="text-blue-600 hover:text-blue-700 text-sm">
                                 Xem chi tiết →
                               </a>
                             </div>
@@ -459,7 +459,7 @@ function NotificationsPage() {
                     id="title"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
                     placeholder="Nhập tiêu đề thông báo"
                   />
@@ -474,7 +474,7 @@ function NotificationsPage() {
                     value={form.content}
                     onChange={(e) => setForm({ ...form, content: e.target.value })}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
                     placeholder="Nhập nội dung thông báo"
                   />
@@ -488,7 +488,7 @@ function NotificationsPage() {
                     id="type"
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="system">Hệ thống</option>
                     <option value="promotion">Khuyến mãi</option>
@@ -532,7 +532,7 @@ function NotificationsPage() {
                     id="edit-title"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
                     placeholder="Nhập tiêu đề thông báo"
                   />
@@ -547,7 +547,7 @@ function NotificationsPage() {
                     value={form.content}
                     onChange={(e) => setForm({ ...form, content: e.target.value })}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
                     placeholder="Nhập nội dung thông báo"
                   />
@@ -561,7 +561,7 @@ function NotificationsPage() {
                     id="edit-type"
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="system">Hệ thống</option>
                     <option value="promotion">Khuyến mãi</option>

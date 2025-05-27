@@ -77,7 +77,7 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isOpen]);
 
   const isActive = (path: string) => {
-    return pathname === path ? 'text-[#00A19A] font-medium' : 'text-gray-700 hover:text-[#00A19A]';
+    return pathname === path ? 'text-blue-600 font-medium' : 'text-gray-700 hover:text-blue-600';
   };
 
   const toggleMenu = () => {
@@ -153,7 +153,7 @@ const Header = () => {
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={toggleNotification}
-                  className="text-gray-700 hover:text-[#00A19A] focus:outline-none relative"
+                  className="text-gray-700 hover:text-blue-600 focus:outline-none relative"
                   aria-label="Thông báo"
                   aria-expanded={isNotificationOpen}
                   aria-haspopup="true"
@@ -195,7 +195,7 @@ const Header = () => {
                             e.stopPropagation();
                             markAllAsRead();
                           }}
-                          className="text-xs sm:text-sm text-[#00A19A] hover:text-[#008B85]"
+                          className="text-xs sm:text-sm text-blue-600 hover:text-blue-700"
                         >
                           Đánh dấu tất cả đã đọc
                         </button>
@@ -207,7 +207,7 @@ const Header = () => {
                         notifications.slice(0, 5).map((notification) => (
                           <div 
                             key={notification.id} 
-                            className={`p-2 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-teal-50' : ''}`}
+                            className={`p-2 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-blue-50' : ''}`}
                             onClick={() => markAsRead(notification.id)}
                             role="menuitem"
                           >
@@ -228,7 +228,7 @@ const Header = () => {
                     <div className="px-4 py-2 border-t border-gray-100 text-center">
                       <Link
                         href="/notifications"
-                        className="text-xs sm:text-sm text-[#00A19A] hover:text-[#008B85]"
+                        className="text-xs sm:text-sm text-blue-600 hover:text-blue-700"
                         onClick={() => setIsNotificationOpen(false)}
                         role="menuitem"
                       >
@@ -241,7 +241,7 @@ const Header = () => {
             )}
 
             {/* Cart Icon */}
-            <Link href="/cart" className="text-gray-700 hover:text-[#00A19A] relative">
+            <Link href="/cart" className="text-gray-700 hover:text-blue-600 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4 sm:h-5 sm:w-5"
@@ -256,7 +256,7 @@ const Header = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-[#00A19A] text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
+              <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
                 {itemCount}
               </span>
             </Link>
@@ -267,7 +267,7 @@ const Header = () => {
                 <button
                   ref={profileButtonRef}
                   onClick={toggleProfile}
-                  className="flex items-center text-gray-700 hover:text-[#00A19A] focus:outline-none"
+                  className="flex items-center text-gray-700 hover:text-blue-600 focus:outline-none"
                   aria-expanded={isProfileOpen}
                   aria-haspopup="true"
                 >
@@ -299,7 +299,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-[#00A19A] hover:bg-[#008B85] text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -364,7 +364,7 @@ const Header = () => {
             {/* Mobile menu button */}
             <button
               onClick={toggleMenu}
-              className="md:hidden text-gray-700 hover:text-[#00A19A] focus:outline-none p-1"
+              className="md:hidden text-gray-700 hover:text-blue-600 focus:outline-none p-1"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -436,7 +436,7 @@ const Header = () => {
                     signIn();
                     setIsOpen(false);
                   }}
-                  className="w-full bg-[#00A19A] hover:bg-[#008B85] text-white py-3 rounded-lg text-lg tracking-wide font-medium transition-colors"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-lg text-lg tracking-wide font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
