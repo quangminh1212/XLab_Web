@@ -101,10 +101,10 @@ function NotificationsPage() {
         title: form.title,
         content: form.content,
         type: form.type,
-        link: form.link || undefined,
-        priority: form.priority,
-        expiresAt: form.expiresAt || undefined,
-        targetUsers: form.targetUsers ? form.targetUsers.split(',').map(email => email.trim()).filter(email => email) : []
+        link: undefined,
+        priority: 'medium',
+        expiresAt: undefined,
+        targetUsers: []
       };
 
       const response = await fetch('/api/notifications', {
@@ -147,10 +147,10 @@ function NotificationsPage() {
         title: form.title,
         content: form.content,
         type: form.type,
-        link: form.link || undefined,
-        priority: form.priority,
-        expiresAt: form.expiresAt || undefined,
-        targetUsers: form.targetUsers ? form.targetUsers.split(',').map(email => email.trim()).filter(email => email) : []
+        link: undefined,
+        priority: 'medium',
+        expiresAt: undefined,
+        targetUsers: []
       };
 
       const response = await fetch(`/api/admin/notifications/${isEditing}`, {
@@ -208,10 +208,10 @@ function NotificationsPage() {
       title: notification.title,
       content: notification.content,
       type: notification.type,
-      targetUsers: notification.targetUsers?.join(', ') || '',
-      link: notification.link || '',
-      priority: notification.priority,
-      expiresAt: notification.expiresAt ? notification.expiresAt.split('T')[0] : ''
+      targetUsers: '',
+      link: '',
+      priority: 'medium',
+      expiresAt: ''
     });
     setIsEditing(notification.id);
     setActiveTab('edit');
@@ -480,83 +480,21 @@ function NotificationsPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
-                      Loại thông báo *
-                    </label>
-                    <select
-                      id="type"
-                      value={form.type}
-                      onChange={(e) => setForm({ ...form, type: e.target.value as any })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="system">Hệ thống</option>
-                      <option value="promotion">Khuyến mãi</option>
-                      <option value="update">Cập nhật</option>
-                      <option value="order">Đơn hàng</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
-                      Độ ưu tiên
-                    </label>
-                    <select
-                      id="priority"
-                      value={form.priority}
-                      onChange={(e) => setForm({ ...form, priority: e.target.value as any })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="low">Thấp</option>
-                      <option value="medium">Trung bình</option>
-                      <option value="high">Cao</option>
-                    </select>
-                  </div>
-                </div>
-
                 <div>
-                  <label htmlFor="link" className="block text-sm font-medium text-gray-700 mb-2">
-                    Liên kết (tùy chọn)
+                  <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
+                    Loại thông báo *
                   </label>
-                  <input
-                    type="url"
-                    id="link"
-                    value={form.link}
-                    onChange={(e) => setForm({ ...form, link: e.target.value })}
+                  <select
+                    id="type"
+                    value={form.type}
+                    onChange={(e) => setForm({ ...form, type: e.target.value as any })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="/products hoặc https://example.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="targetUsers" className="block text-sm font-medium text-gray-700 mb-2">
-                    Gửi tới (tùy chọn)
-                  </label>
-                  <input
-                    type="text"
-                    id="targetUsers"
-                    value={form.targetUsers}
-                    onChange={(e) => setForm({ ...form, targetUsers: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="email1@example.com, email2@example.com (để trống để gửi cho tất cả)"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Nhập email người dùng, cách nhau bằng dấu phẩy. Để trống để gửi cho tất cả người dùng.
-                  </p>
-                </div>
-
-                <div>
-                  <label htmlFor="expiresAt" className="block text-sm font-medium text-gray-700 mb-2">
-                    Ngày hết hạn (tùy chọn)
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="expiresAt"
-                    value={form.expiresAt}
-                    onChange={(e) => setForm({ ...form, expiresAt: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
+                  >
+                    <option value="system">Hệ thống</option>
+                    <option value="promotion">Khuyến mãi</option>
+                    <option value="update">Cập nhật</option>
+                    <option value="order">Đơn hàng</option>
+                  </select>
                 </div>
 
                 <div className="flex justify-end space-x-3">
@@ -615,83 +553,21 @@ function NotificationsPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="edit-type" className="block text-sm font-medium text-gray-700 mb-2">
-                      Loại thông báo *
-                    </label>
-                    <select
-                      id="edit-type"
-                      value={form.type}
-                      onChange={(e) => setForm({ ...form, type: e.target.value as any })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="system">Hệ thống</option>
-                      <option value="promotion">Khuyến mãi</option>
-                      <option value="update">Cập nhật</option>
-                      <option value="order">Đơn hàng</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="edit-priority" className="block text-sm font-medium text-gray-700 mb-2">
-                      Độ ưu tiên
-                    </label>
-                    <select
-                      id="edit-priority"
-                      value={form.priority}
-                      onChange={(e) => setForm({ ...form, priority: e.target.value as any })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    >
-                      <option value="low">Thấp</option>
-                      <option value="medium">Trung bình</option>
-                      <option value="high">Cao</option>
-                    </select>
-                  </div>
-                </div>
-
                 <div>
-                  <label htmlFor="edit-link" className="block text-sm font-medium text-gray-700 mb-2">
-                    Liên kết (tùy chọn)
+                  <label htmlFor="edit-type" className="block text-sm font-medium text-gray-700 mb-2">
+                    Loại thông báo *
                   </label>
-                  <input
-                    type="url"
-                    id="edit-link"
-                    value={form.link}
-                    onChange={(e) => setForm({ ...form, link: e.target.value })}
+                  <select
+                    id="edit-type"
+                    value={form.type}
+                    onChange={(e) => setForm({ ...form, type: e.target.value as any })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="/products hoặc https://example.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="edit-targetUsers" className="block text-sm font-medium text-gray-700 mb-2">
-                    Gửi tới (tùy chọn)
-                  </label>
-                  <input
-                    type="text"
-                    id="edit-targetUsers"
-                    value={form.targetUsers}
-                    onChange={(e) => setForm({ ...form, targetUsers: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="email1@example.com, email2@example.com (để trống để gửi cho tất cả)"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">
-                    Nhập email người dùng, cách nhau bằng dấu phẩy. Để trống để gửi cho tất cả người dùng.
-                  </p>
-                </div>
-
-                <div>
-                  <label htmlFor="edit-expiresAt" className="block text-sm font-medium text-gray-700 mb-2">
-                    Ngày hết hạn (tùy chọn)
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="edit-expiresAt"
-                    value={form.expiresAt}
-                    onChange={(e) => setForm({ ...form, expiresAt: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
+                  >
+                    <option value="system">Hệ thống</option>
+                    <option value="promotion">Khuyến mãi</option>
+                    <option value="update">Cập nhật</option>
+                    <option value="order">Đơn hàng</option>
+                  </select>
                 </div>
 
                 <div className="flex justify-between">
