@@ -100,7 +100,7 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container max-w-[99.5%] mx-auto py-1.5">
+      <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex items-center justify-center">
@@ -110,44 +110,44 @@ const Header = () => {
                 alt="XLab Logo"
                 width={100}
                 height={60}
-                className="w-auto h-9 md:h-10"
+                className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-3 lg:space-x-4 xl:space-x-6">
-            <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium`}>
+          <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
+            <Link href="/" className={`${isActive('/')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}>
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/products')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
             >
               Sản phẩm
             </Link>
             <Link
               href="/about"
-              className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/about')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/contact')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium`}
+              className={`${isActive('/bao-hanh')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
             >
               Bảo hành
             </Link>
           </nav>
 
           {/* Right Side - Auth + Cart */}
-          <div className="flex items-center space-x-2 md:space-x-3">
+          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
             {/* Notification Icon */}
             {session && (
               <div className="relative" ref={notificationRef}>
@@ -160,7 +160,7 @@ const Header = () => {
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
+                    className="h-4 w-4 sm:h-5 sm:w-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -244,7 +244,7 @@ const Header = () => {
             <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-4 w-4 sm:h-5 sm:w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -256,7 +256,7 @@ const Header = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute -top-1.5 -right-1.5 bg-primary-600 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-primary-600 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
                 {itemCount}
               </span>
             </Link>
@@ -276,7 +276,7 @@ const Header = () => {
                     alt={session.user?.name || "User"}
                     width={30}
                     height={30}
-                    className="w-6 h-6 md:w-7 md:h-7 rounded-full"
+                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full"
                     unoptimized={true}
                   />
                   <svg
@@ -299,7 +299,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-primary-600 hover:bg-primary-700 text-white py-1.5 px-3 rounded-md text-sm transition-colors"
+                  className="bg-primary-600 hover:bg-primary-700 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -364,11 +364,11 @@ const Header = () => {
             {/* Mobile menu button */}
             <button
               onClick={toggleMenu}
-              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none"
+              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none p-1"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-5 w-5 sm:h-6 sm:w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -386,17 +386,17 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="md:hidden mt-4 py-4 border-t border-gray-200">
+          <nav className="md:hidden mt-2 py-3 border-t border-gray-200 bg-white">
             <Link
               href="/"
-              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              className={`block py-2 px-4 text-base font-medium hover:bg-gray-50 transition-colors ${isActive('/')}`}
               onClick={() => setIsOpen(false)}
             >
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              className={`block py-2 px-4 text-base font-medium hover:bg-gray-50 transition-colors ${isActive('/products')}`}
               onClick={() => setIsOpen(false)}
             >
               Sản phẩm

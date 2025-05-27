@@ -71,24 +71,24 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-8 sm:py-10 md:py-12">
-        <div className="container mx-auto">
+      <section className="w-full bg-gradient-to-br from-primary-50 via-white to-primary-50 py-6 sm:py-8 md:py-10 lg:py-12">
+        <div className="container mx-auto px-responsive">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            <h1 className="heading-1 mb-3 sm:mb-4 md:mb-6">
               <span className="text-gray-900">X</span><span className="text-primary-500">Lab</span>
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mb-8">
+            <p className="text-responsive-lg text-gray-600 max-w-3xl mb-6 sm:mb-8">
               Tối ưu hiệu quả, tối thiểu chi phí!
             </p>
 
-            <div className="relative w-full max-w-2xl">
+            <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl">
               <input
                 type="text"
                 placeholder="Tìm kiếm phần mềm, ứng dụng..."
-                className="w-full px-4 py-3 pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800 text-sm sm:text-base"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <button className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
                   <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
                 </svg>
               </button>
@@ -97,37 +97,37 @@ function HomePage() {
         </div>
       </section>
 
-      <div className="container mx-auto py-6">
+      <div className="container mx-auto py-responsive">
         {/* Chuyển sang layout 2 cột với sidebar bên trái */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-responsive">
           {/* Sidebar Column - Left */}
           <div className="w-full flex flex-col h-full md:col-span-1">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
-              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-3">
-                <div className="bg-white rounded-lg p-4">
-                  <div className="flex justify-center mb-4">
-                    <div className="relative w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-12 h-12 text-primary-600">
+              <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-responsive-sm">
+                <div className="bg-white rounded-lg p-responsive-sm">
+                  <div className="flex justify-center mb-3 sm:mb-4">
+                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-primary-50 rounded-full flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 sm:w-12 sm:h-12 text-primary-600">
                         <path fillRule="evenodd" d="M9.315 7.584C12.195 3.883 16.695 1.5 21.75 1.5a.75.75 0 01.75.75c0 5.056-2.383 9.555-6.084 12.436A6.75 6.75 0 019.75 22.5a.75.75 0 01-.75-.75v-4.131A15.838 15.838 0 016.382 15H2.25a.75.75 0 01-.75-.75 6.75 6.75 0 017.815-6.666zM15 6.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" clipRule="evenodd" />
                         <path d="M5.26 17.242a.75.75 0 10-.897-1.203 5.243 5.243 0 00-2.05 5.022.75.75 0 00.625.627 5.243 5.243 0 005.022-2.051.75.75 0 10-1.202-.897 3.744 3.744 0 01-3.008 1.51c0-1.23.592-2.323 1.51-3.008z" />
                       </svg>
                     </div>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold mb-3 text-gray-800 text-center">Về XLab</h2>
-                  <p className="text-sm text-gray-700 mb-3">
+                  <h2 className="heading-3 mb-3 text-gray-800 text-center">Về XLab</h2>
+                  <p className="text-responsive-sm text-gray-700 mb-3">
                     XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.
                   </p>
-                  <p className="text-sm text-gray-700 mb-3">
+                  <p className="text-responsive-sm text-gray-700 mb-3">
                     Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
                   </p>
                   <div className="mt-4">
                     <Link 
                       href="/about"
-                      className="w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
+                      className="w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-3 sm:px-4 rounded-lg transition-colors flex items-center justify-center text-responsive-sm"
                     >
                       Tìm hiểu thêm
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                       </svg>
                     </Link>

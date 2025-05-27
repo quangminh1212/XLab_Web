@@ -121,13 +121,13 @@ const ProductGrid = ({
   return (
     <div className="w-full">
       {(title || subtitle) && (
-        <div className="mb-6">
-          {title && <h2 className="text-2xl font-bold text-gray-800">{title}</h2>}
-          {subtitle && <p className="mt-2 text-gray-600">{subtitle}</p>}
+        <div className="mb-responsive">
+          {title && <h2 className="heading-2 text-gray-800">{title}</h2>}
+          {subtitle && <p className="mt-2 text-responsive-base text-gray-600">{subtitle}</p>}
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-3 auto-rows-fr`}>
+      <div className={`grid ${getColumnsClass()} gap-responsive auto-rows-fr`}>
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);

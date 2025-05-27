@@ -16,20 +16,20 @@ export default function Footer() {
         }} />
       </div>
       
-      <div className="relative container max-w-[95%] mx-auto pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="relative container max-w-[95%] mx-auto pt-12 pb-6 sm:pt-16 sm:pb-8">
+        <div className="grid grid-responsive-4 gap-responsive-lg">
           {/* Logo và giới thiệu */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center justify-center mb-8">
+            <Link href="/" className="flex items-center justify-center mb-6 sm:mb-8">
               <Image
                 src="/images/logo.jpg"
                 alt={`${siteConfig.name} Logo`}
                 width={240}
                 height={96}
-                className="w-auto h-24 rounded-lg"
+                className="w-auto h-16 sm:h-20 md:h-24 rounded-lg"
               />
             </Link>
-            <p className="text-gray-400 mb-6 text-base text-center leading-relaxed">
+            <p className="text-gray-400 mb-4 sm:mb-6 text-responsive-sm text-center leading-relaxed">
               Chúng tôi chuyên cung cấp các giải pháp phần mềm và dịch vụ công nghệ
               giúp doanh nghiệp tối ưu hóa hoạt động và tăng trưởng bền vững.
             </p>
@@ -70,37 +70,37 @@ export default function Footer() {
 
           {/* Liên kết nhanh */}
           <div className="flex flex-col items-center md:items-start">
-            <h3 className="text-white text-xl font-bold mb-6 relative">
+            <h3 className="text-white heading-4 mb-4 sm:mb-6 relative text-center md:text-left">
               Liên kết nhanh
-              <div className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full"></div>
+              <div className="absolute -bottom-2 left-1/2 md:left-0 transform -translate-x-1/2 md:translate-x-0 w-12 h-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full"></div>
             </h3>
-            <ul className="space-y-4 text-center md:text-left">
-              <li>
-                <Link href="/" className="hover:text-primary-400 text-base transition-colors duration-300 hover:translate-x-1 inline-block">
-                  Trang chủ
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="hover:text-primary-400 text-base transition-colors duration-300 hover:translate-x-1 inline-block">
-                  Sản phẩm
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-primary-400 text-base transition-colors duration-300 hover:translate-x-1 inline-block">
-                  Dịch vụ
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-primary-400 text-base transition-colors duration-300 hover:translate-x-1 inline-block">
-                  Giới thiệu
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-primary-400 text-base transition-colors duration-300 hover:translate-x-1 inline-block">
-                  Liên hệ
-                </Link>
-              </li>
-            </ul>
+                          <ul className="space-y-3 sm:space-y-4 text-center md:text-left">
+                <li>
+                  <Link href="/" className="hover:text-primary-400 text-responsive-sm transition-colors duration-300 hover:translate-x-1 inline-block">
+                    Trang chủ
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/products" className="hover:text-primary-400 text-responsive-sm transition-colors duration-300 hover:translate-x-1 inline-block">
+                    Sản phẩm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services" className="hover:text-primary-400 text-responsive-sm transition-colors duration-300 hover:translate-x-1 inline-block">
+                    Dịch vụ
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about" className="hover:text-primary-400 text-responsive-sm transition-colors duration-300 hover:translate-x-1 inline-block">
+                    Giới thiệu
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-primary-400 text-responsive-sm transition-colors duration-300 hover:translate-x-1 inline-block">
+                    Liên hệ
+                  </Link>
+                </li>
+              </ul>
           </div>
 
           {/* Sản phẩm */}
