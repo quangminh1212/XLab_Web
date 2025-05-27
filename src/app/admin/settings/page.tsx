@@ -23,18 +23,29 @@ function SettingsPage() {
         if (response.ok) {
           const data = await response.json();
           setSettings(data);
+        } else if (response.status === 401) {
+          // Session expired or invalid, redirect to login
+          window.location.href = '/login?redirect=/admin/settings';
+          return;
         } else {
-          console.error('Failed to fetch settings:', response.status);
+          setErrors([`Không thể tải cài đặt (Lỗi ${response.status})`]);
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
+        setErrors(['Không thể kết nối đến máy chủ']);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchSettings();
-  }, []);
+    // Only fetch if we have a session
+    if (session) {
+      fetchSettings();
+    } else if (session === null) {
+      // No session, redirect to login
+      window.location.href = '/login?redirect=/admin/settings';
+    }
+  }, [session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,13 +119,19 @@ function SettingsPage() {
     });
   };
 
-  const handleToggleChange = (field: keyof SystemSettings, checked: boolean) => {
+  const handleToggleChange = (field: 'maintenanceMode' | 'disableRegistration' | 'disableCheckout', checked: boolean) => {
     setSettings(prev => {
       // Create a deep copy of the current settings
       const newSettings = JSON.parse(JSON.stringify(prev)) as SystemSettings;
       
       // Update the specific field
-      newSettings[field] = checked;
+      if (field === 'maintenanceMode') {
+        newSettings.maintenanceMode = checked;
+      } else if (field === 'disableRegistration') {
+        newSettings.disableRegistration = checked;
+      } else if (field === 'disableCheckout') {
+        newSettings.disableCheckout = checked;
+      }
       
       return newSettings;
     });
