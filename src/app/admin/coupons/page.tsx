@@ -415,22 +415,22 @@ function CouponsPage() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                     <tr>
-                      <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                         Mã / Tên
                       </th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                         Loại / Giá trị
                       </th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                         Thời gian
                       </th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                         Sử dụng
                       </th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                         Trạng thái
                       </th>
-                      <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                         Hành động
                       </th>
                     </tr>
@@ -438,53 +438,53 @@ function CouponsPage() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {coupons.map((coupon) => (
                       <tr key={coupon.id} className="hover:bg-gray-50 transition-colors duration-150">
-                        <td className="px-3 py-2 whitespace-nowrap">
+                        <td className="px-4 py-3 whitespace-nowrap">
                           <div>
-                            <div className="bg-primary-500 text-white font-mono font-bold text-xs px-2 py-1 rounded border border-primary-300">
+                            <div className="bg-primary-500 text-white font-mono font-bold text-sm px-3 py-1.5 rounded border border-primary-300">
                               {coupon.code}
                             </div>
-                            <div className="text-xs font-medium text-gray-700 mt-1">{coupon.name}</div>
+                            <div className="text-sm font-medium text-gray-700 mt-1.5">{coupon.name}</div>
                           </div>
                         </td>
-                        <td className="px-3 py-2 whitespace-nowrap">
-                          <div className="space-y-1">
-                            <div className="inline-flex items-center px-2 py-1 rounded bg-gray-50 border border-gray-200 text-gray-700">
-                              <span className="text-xs font-medium mr-1">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="space-y-1.5">
+                            <div className="inline-flex items-center px-3 py-1.5 rounded bg-gray-50 border border-gray-200 text-gray-700">
+                              <span className="text-sm font-medium mr-2">
                                 {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
                               </span>
-                              <span className="text-xs font-bold">
+                              <span className="text-sm font-bold">
                                 {coupon.type === 'percentage' ? `${coupon.value}%` : formatCurrency(coupon.value)}
                               </span>
                             </div>
                             {coupon.minOrder && (
-                              <div className="text-xs text-gray-500 bg-gray-50 px-1 py-0.5 rounded border border-gray-200">
+                              <div className="text-sm text-gray-500 bg-gray-50 px-2 py-1 rounded border border-gray-200">
                                 Tối thiểu: {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
                           </div>
                         </td>
-                        <td className="px-3 py-2 whitespace-nowrap">
-                          <div className="space-y-1">
-                            <div className="bg-gray-50 border border-gray-200 rounded p-1 text-center">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="space-y-1.5">
+                            <div className="bg-gray-50 border border-gray-200 rounded p-2 text-center">
                               <div className="text-xs text-gray-500 font-medium uppercase">Bắt đầu</div>
-                              <div className="text-xs font-medium text-gray-700">{formatDate(coupon.startDate)}</div>
+                              <div className="text-sm font-medium text-gray-700">{formatDate(coupon.startDate)}</div>
                             </div>
-                            <div className="bg-gray-50 border border-gray-200 rounded p-1 text-center">
+                            <div className="bg-gray-50 border border-gray-200 rounded p-2 text-center">
                               <div className="text-xs text-gray-500 font-medium uppercase">Kết thúc</div>
-                              <div className="text-xs font-medium text-gray-700">{formatDate(coupon.endDate)}</div>
+                              <div className="text-sm font-medium text-gray-700">{formatDate(coupon.endDate)}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-2 whitespace-nowrap">
-                          <div className="bg-gray-50 border border-gray-200 rounded p-2 text-center">
-                            <div className="text-lg font-bold text-gray-700">{coupon.usedCount}</div>
-                            <div className="text-xs text-gray-500 font-medium">
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="bg-gray-50 border border-gray-200 rounded p-3 text-center">
+                            <div className="text-xl font-bold text-gray-700">{coupon.usedCount}</div>
+                            <div className="text-sm text-gray-500 font-medium">
                               {coupon.usageLimit ? `/ ${coupon.usageLimit} lần` : '/ ∞ lần'}
                             </div>
-                            <div className="mt-1">
-                              <div className={`w-full bg-gray-200 rounded-full h-1 ${coupon.usageLimit ? 'block' : 'hidden'}`}>
+                            <div className="mt-1.5">
+                              <div className={`w-full bg-gray-200 rounded-full h-1.5 ${coupon.usageLimit ? 'block' : 'hidden'}`}>
                                 <div 
-                                  className="bg-primary-500 h-1 rounded-full transition-all duration-300" 
+                                  className="bg-primary-500 h-1.5 rounded-full transition-all duration-300" 
                                   style={{ 
                                     width: coupon.usageLimit ? `${Math.min((coupon.usedCount / coupon.usageLimit) * 100, 100)}%` : '0%' 
                                   }}
@@ -493,35 +493,35 @@ function CouponsPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-2 whitespace-nowrap">
+                        <td className="px-4 py-3 whitespace-nowrap">
                           {isExpired(coupon.endDate) ? (
-                            <div className="inline-flex items-center px-2 py-1 rounded border bg-red-50 border-red-200 text-red-700">
-                              <div className="w-1.5 h-1.5 rounded-full bg-red-400 mr-1"></div>
-                              <span className="text-xs font-medium uppercase tracking-wide">Đã hết hạn</span>
+                            <div className="inline-flex items-center px-3 py-1.5 rounded border bg-red-50 border-red-200 text-red-700">
+                              <div className="w-2 h-2 rounded-full bg-red-400 mr-2"></div>
+                              <span className="text-sm font-medium uppercase tracking-wide">Đã hết hạn</span>
                             </div>
                           ) : coupon.isActive ? (
-                            <div className="inline-flex items-center px-2 py-1 rounded border bg-primary-50 border-primary-200 text-primary-700">
-                              <div className="w-1.5 h-1.5 rounded-full bg-primary-500 mr-1"></div>
-                              <span className="text-xs font-medium uppercase tracking-wide">Đang hoạt động</span>
+                            <div className="inline-flex items-center px-3 py-1.5 rounded border bg-primary-50 border-primary-200 text-primary-700">
+                              <div className="w-2 h-2 rounded-full bg-primary-500 mr-2"></div>
+                              <span className="text-sm font-medium uppercase tracking-wide">Đang hoạt động</span>
                             </div>
                           ) : (
-                            <div className="inline-flex items-center px-2 py-1 rounded border bg-gray-50 border-gray-200 text-gray-600">
-                              <div className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1"></div>
-                              <span className="text-xs font-medium uppercase tracking-wide">Tạm dừng</span>
+                            <div className="inline-flex items-center px-3 py-1.5 rounded border bg-gray-50 border-gray-200 text-gray-600">
+                              <div className="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
+                              <span className="text-sm font-medium uppercase tracking-wide">Tạm dừng</span>
                             </div>
                           )}
                         </td>
-                        <td className="px-3 py-2 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-1">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                          <div className="flex space-x-2">
                             <button
                               onClick={() => handleEditCoupon(coupon)}
-                              className="px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors duration-150 text-xs font-medium border border-gray-200"
+                              className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors duration-150 text-sm font-medium border border-gray-200"
                             >
                               Sửa
                             </button>
                             <button
                               onClick={() => handleToggleStatus(coupon.id, coupon.isActive)}
-                              className={`px-2 py-1 rounded transition-colors duration-150 text-xs font-medium border ${
+                              className={`px-3 py-1.5 rounded transition-colors duration-150 text-sm font-medium border ${
                                 coupon.isActive 
                                   ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-200' 
                                   : 'bg-primary-100 text-primary-600 hover:bg-primary-200 border-primary-200'
@@ -531,7 +531,7 @@ function CouponsPage() {
                             </button>
                             <button
                               onClick={() => handleDeleteCoupon(coupon.id)}
-                              className="px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors duration-150 text-xs font-medium border border-red-200"
+                              className="px-3 py-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors duration-150 text-sm font-medium border border-red-200"
                             >
                               Xóa
                             </button>
