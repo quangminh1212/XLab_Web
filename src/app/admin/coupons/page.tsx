@@ -303,23 +303,33 @@ function CouponsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-                      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-xl shadow-xl p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white mb-2">🏷️ Quản lý mã giảm giá</h1>
-            <p className="text-blue-100">Tạo và quản lý các mã giảm giá cho khách hàng</p>
+      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-xl shadow-xl p-6">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
+            <span className="text-3xl">🏷️</span>
           </div>
-          <div className="text-white/80">
-            <div className="text-right">
-              <div className="text-2xl font-bold">{coupons.length}</div>
-              <div className="text-sm">Mã đang có</div>
+          <h1 className="text-3xl font-bold text-white mb-2">Quản lý mã giảm giá</h1>
+          <p className="text-primary-100 mb-6">Tạo và quản lý các mã giảm giá cho khách hàng</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+              <div className="text-2xl font-bold text-white">{coupons.length}</div>
+              <div className="text-sm text-primary-100">Tổng số mã</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+              <div className="text-2xl font-bold text-white">{coupons.filter(c => c.isActive).length}</div>
+              <div className="text-sm text-primary-100">Đang hoạt động</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+              <div className="text-2xl font-bold text-white">{coupons.filter(c => isExpired(c.endDate)).length}</div>
+              <div className="text-sm text-primary-100">Đã hết hạn</div>
             </div>
           </div>
         </div>
         
         {/* Tabs */}
         <div className="mt-6">
-          <nav className="flex space-x-2">
+          <nav className="flex justify-center space-x-2">
             <button
               onClick={() => setActiveTab('list')}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
@@ -426,50 +436,109 @@ function CouponsPage() {
                       <tr key={coupon.id} className="hover:bg-gray-50 transition-colors duration-150">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <div className="text-sm font-bold text-gray-900 font-mono bg-gray-100 px-2 py-1 rounded inline-block">{coupon.code}</div>
-                            <div className="text-sm text-gray-600 mt-1">{coupon.name}</div>
+                            <div className="relative inline-block">
+                              <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white font-mono font-bold text-sm px-4 py-2 rounded-lg shadow-lg border-2 border-primary-300 transform rotate-1 hover:rotate-0 transition-transform duration-200">
+                                {coupon.code}
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full"></div>
+                                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-primary-300 rounded-full"></div>
+                              </div>
+                            </div>
+                            <div className="text-sm font-medium text-gray-700 mt-2">{coupon.name}</div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div>
-                            <div className="text-sm text-gray-900">
-                              {coupon.type === 'percentage' ? `${coupon.value}%` : formatCurrency(coupon.value)}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {coupon.minOrder ? `Tối thiểu: ${formatCurrency(coupon.minOrder)}` : ''}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div>
-                            <div>Từ: {formatDate(coupon.startDate)}</div>
-                            <div>Đến: {formatDate(coupon.endDate)}</div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <div>
-                            <div>{coupon.usedCount}</div>
-                            <div className="text-xs">
-                              {coupon.usageLimit ? `/ ${coupon.usageLimit}` : '/ ∞'}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex flex-col space-y-1">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              coupon.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          <div className="space-y-2">
+                            <div className={`inline-flex items-center px-3 py-2 rounded-lg shadow-sm border-2 ${
+                              coupon.type === 'percentage' 
+                                ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-300 text-orange-800'
+                                : 'bg-gradient-to-r from-green-50 to-green-100 border-green-300 text-green-800'
                             }`}>
-                              {coupon.isActive ? 'Hoạt động' : 'Tạm dừng'}
-                            </span>
-                            {isExpired(coupon.endDate) && (
-                              <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                Đã hết hạn
+                              <span className="text-lg font-bold">
+                                {coupon.type === 'percentage' ? '📊' : '💰'}
                               </span>
+                              <span className="ml-2 text-sm font-bold">
+                                {coupon.type === 'percentage' ? `${coupon.value}%` : formatCurrency(coupon.value)}
+                              </span>
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded border">
+                                📏 Tối thiểu: {formatCurrency(coupon.minOrder)}
+                              </div>
                             )}
-                            {!isValidNow(coupon.startDate, coupon.endDate) && !isExpired(coupon.endDate) && (
-                              <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                Chưa bắt đầu
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="space-y-2">
+                            <div className="bg-gradient-to-r from-purple-50 to-purple-100 border-2 border-purple-300 rounded-lg p-2 text-center shadow-sm">
+                              <div className="text-xs text-purple-600 font-bold uppercase">🚀 Bắt đầu</div>
+                              <div className="text-sm font-bold text-purple-800">{formatDate(coupon.startDate)}</div>
+                            </div>
+                            <div className="bg-gradient-to-r from-pink-50 to-pink-100 border-2 border-pink-300 rounded-lg p-2 text-center shadow-sm">
+                              <div className="text-xs text-pink-600 font-bold uppercase">🏁 Kết thúc</div>
+                              <div className="text-sm font-bold text-pink-800">{formatDate(coupon.endDate)}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg p-3 text-center shadow-sm">
+                            <div className="text-2xl font-bold text-blue-800">{coupon.usedCount}</div>
+                            <div className="text-xs text-blue-600 font-medium">
+                              {coupon.usageLimit ? `/ ${coupon.usageLimit} lần` : '/ ∞ lần'}
+                            </div>
+                            <div className="mt-1">
+                              <div className={`w-full bg-blue-200 rounded-full h-1.5 ${coupon.usageLimit ? 'block' : 'hidden'}`}>
+                                <div 
+                                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" 
+                                  style={{ 
+                                    width: coupon.usageLimit ? `${Math.min((coupon.usedCount / coupon.usageLimit) * 100, 100)}%` : '0%' 
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex flex-col space-y-2">
+                            {/* Trạng thái hoạt động */}
+                            <div className={`relative inline-flex items-center px-3 py-2 rounded-lg border-2 shadow-sm ${
+                              coupon.isActive 
+                                ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-300 text-green-800' 
+                                : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-300 text-gray-700'
+                            }`}>
+                              <div className={`w-2 h-2 rounded-full mr-2 ${
+                                coupon.isActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
+                              }`}></div>
+                              <span className="text-xs font-bold uppercase tracking-wide">
+                                {coupon.isActive ? '✅ Hoạt động' : '⏸️ Tạm dừng'}
                               </span>
+                              {coupon.isActive && (
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                              )}
+                            </div>
+                            
+                            {/* Trạng thái thời gian */}
+                            {isExpired(coupon.endDate) && (
+                              <div className="relative inline-flex items-center px-3 py-2 rounded-lg border-2 bg-gradient-to-r from-red-50 to-red-100 border-red-300 text-red-800 shadow-sm">
+                                <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
+                                <span className="text-xs font-bold uppercase tracking-wide">❌ Đã hết hạn</span>
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                              </div>
+                            )}
+                            
+                            {!isValidNow(coupon.startDate, coupon.endDate) && !isExpired(coupon.endDate) && (
+                              <div className="relative inline-flex items-center px-3 py-2 rounded-lg border-2 bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-300 text-yellow-800 shadow-sm">
+                                <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2 animate-pulse"></div>
+                                <span className="text-xs font-bold uppercase tracking-wide">⏳ Chưa bắt đầu</span>
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+                              </div>
+                            )}
+                            
+                            {isValidNow(coupon.startDate, coupon.endDate) && coupon.isActive && (
+                              <div className="relative inline-flex items-center px-3 py-2 rounded-lg border-2 bg-gradient-to-r from-blue-50 to-blue-100 border-blue-300 text-blue-800 shadow-sm">
+                                <div className="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></div>
+                                <span className="text-xs font-bold uppercase tracking-wide">🟢 Đang áp dụng</span>
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                              </div>
                             )}
                           </div>
                         </td>
