@@ -32,7 +32,8 @@ function NotificationsPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
-  const [activeTab, setActiveTab] = useState<'list' | 'create' | 'settings'>('list');
+  const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'list' | 'create' | 'edit' | 'settings'>('list');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -75,6 +76,19 @@ function NotificationsPage() {
     }
   };
 
+  // Reset form
+  const resetForm = () => {
+    setForm({
+      title: '',
+      content: '',
+      type: 'system',
+      targetUsers: '',
+      link: '',
+      priority: 'medium',
+      expiresAt: ''
+    });
+  };
+
   // Tạo thông báo mới
   const handleCreateNotification = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,15 +119,7 @@ function NotificationsPage() {
 
       if (response.ok) {
         setSuccessMessage('Thông báo đã được tạo thành công!');
-        setForm({
-          title: '',
-          content: '',
-          type: 'system',
-          targetUsers: '',
-          link: '',
-          priority: 'medium',
-          expiresAt: ''
-        });
+        resetForm();
         fetchNotifications(); // Refresh list
         setTimeout(() => setActiveTab('list'), 2000);
       } else {
@@ -125,6 +131,90 @@ function NotificationsPage() {
     } finally {
       setIsCreating(false);
     }
+  };
+
+  // Cập nhật thông báo
+  const handleUpdateNotification = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isEditing) return;
+
+    setIsCreating(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      const requestData = {
+        title: form.title,
+        content: form.content,
+        type: form.type,
+        link: form.link || undefined,
+        priority: form.priority,
+        expiresAt: form.expiresAt || undefined,
+        targetUsers: form.targetUsers ? form.targetUsers.split(',').map(email => email.trim()).filter(email => email) : []
+      };
+
+      const response = await fetch(`/api/admin/notifications/${isEditing}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccessMessage('Thông báo đã được cập nhật thành công!');
+        resetForm();
+        setIsEditing(null);
+        fetchNotifications();
+        setTimeout(() => setActiveTab('list'), 2000);
+      } else {
+        setErrorMessage(data.error || 'Đã xảy ra lỗi khi cập nhật thông báo');
+      }
+    } catch (error) {
+      console.error('Error updating notification:', error);
+      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  // Xóa thông báo
+  const handleDeleteNotification = async (id: string) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa thông báo này?')) return;
+
+    try {
+      const response = await fetch(`/api/admin/notifications/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setSuccessMessage('Thông báo đã được xóa thành công!');
+        fetchNotifications();
+      } else {
+        const data = await response.json();
+        setErrorMessage(data.error || 'Đã xảy ra lỗi khi xóa thông báo');
+      }
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+    }
+  };
+
+  // Chỉnh sửa thông báo
+  const handleEditNotification = (notification: Notification) => {
+    setForm({
+      title: notification.title,
+      content: notification.content,
+      type: notification.type,
+      targetUsers: notification.targetUsers?.join(', ') || '',
+      link: notification.link || '',
+      priority: notification.priority,
+      expiresAt: notification.expiresAt ? notification.expiresAt.split('T')[0] : ''
+    });
+    setIsEditing(notification.id);
+    setActiveTab('edit');
   };
 
   // Format thời gian
@@ -181,6 +271,17 @@ function NotificationsPage() {
     }
   }, []);
 
+  // Clear messages after 5 seconds
+  useEffect(() => {
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage('');
+        setErrorMessage('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, errorMessage]);
+
   // Save settings
   const handleSaveSettings = () => {
     localStorage.setItem('admin_notification_settings', JSON.stringify(notificationSettings));
@@ -236,7 +337,11 @@ function NotificationsPage() {
               Danh sách thông báo ({notifications.length})
             </button>
             <button
-              onClick={() => setActiveTab('create')}
+              onClick={() => {
+                setActiveTab('create');
+                resetForm();
+                setIsEditing(null);
+              }}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'create'
                   ? 'border-primary-500 text-primary-600'
@@ -245,6 +350,18 @@ function NotificationsPage() {
             >
               Tạo thông báo
             </button>
+            {isEditing && (
+              <button
+                onClick={() => setActiveTab('edit')}
+                className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
+                  activeTab === 'edit'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Chỉnh sửa
+              </button>
+            )}
             <button
               onClick={() => setActiveTab('settings')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
@@ -299,6 +416,20 @@ function NotificationsPage() {
                             </div>
                           )}
                         </div>
+                      </div>
+                      <div className="flex flex-col space-y-2">
+                        <button
+                          onClick={() => handleEditNotification(notification)}
+                          className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                        >
+                          Chỉnh sửa
+                        </button>
+                        <button
+                          onClick={() => handleDeleteNotification(notification.id)}
+                          className="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                        >
+                          Xóa
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -442,6 +573,145 @@ function NotificationsPage() {
                     className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400"
                   >
                     {isCreating ? 'Đang tạo...' : 'Tạo thông báo'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Form chỉnh sửa thông báo */}
+          {activeTab === 'edit' && (
+            <div className="max-w-2xl">
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">Chỉnh sửa thông báo</h2>
+              
+              <form onSubmit={handleUpdateNotification} className="space-y-6">
+                <div>
+                  <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 mb-2">
+                    Tiêu đề thông báo *
+                  </label>
+                  <input
+                    type="text"
+                    id="edit-title"
+                    value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    required
+                    placeholder="Nhập tiêu đề thông báo"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="edit-content" className="block text-sm font-medium text-gray-700 mb-2">
+                    Nội dung thông báo *
+                  </label>
+                  <textarea
+                    id="edit-content"
+                    value={form.content}
+                    onChange={(e) => setForm({ ...form, content: e.target.value })}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    required
+                    placeholder="Nhập nội dung thông báo"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="edit-type" className="block text-sm font-medium text-gray-700 mb-2">
+                      Loại thông báo *
+                    </label>
+                    <select
+                      id="edit-type"
+                      value={form.type}
+                      onChange={(e) => setForm({ ...form, type: e.target.value as any })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="system">Hệ thống</option>
+                      <option value="promotion">Khuyến mãi</option>
+                      <option value="update">Cập nhật</option>
+                      <option value="order">Đơn hàng</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="edit-priority" className="block text-sm font-medium text-gray-700 mb-2">
+                      Độ ưu tiên
+                    </label>
+                    <select
+                      id="edit-priority"
+                      value={form.priority}
+                      onChange={(e) => setForm({ ...form, priority: e.target.value as any })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="low">Thấp</option>
+                      <option value="medium">Trung bình</option>
+                      <option value="high">Cao</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="edit-link" className="block text-sm font-medium text-gray-700 mb-2">
+                    Liên kết (tùy chọn)
+                  </label>
+                  <input
+                    type="url"
+                    id="edit-link"
+                    value={form.link}
+                    onChange={(e) => setForm({ ...form, link: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="/products hoặc https://example.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="edit-targetUsers" className="block text-sm font-medium text-gray-700 mb-2">
+                    Gửi tới (tùy chọn)
+                  </label>
+                  <input
+                    type="text"
+                    id="edit-targetUsers"
+                    value={form.targetUsers}
+                    onChange={(e) => setForm({ ...form, targetUsers: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="email1@example.com, email2@example.com (để trống để gửi cho tất cả)"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Nhập email người dùng, cách nhau bằng dấu phẩy. Để trống để gửi cho tất cả người dùng.
+                  </p>
+                </div>
+
+                <div>
+                  <label htmlFor="edit-expiresAt" className="block text-sm font-medium text-gray-700 mb-2">
+                    Ngày hết hạn (tùy chọn)
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id="edit-expiresAt"
+                    value={form.expiresAt}
+                    onChange={(e) => setForm({ ...form, expiresAt: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetForm();
+                      setIsEditing(null);
+                      setActiveTab('list');
+                    }}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isCreating}
+                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400"
+                  >
+                    {isCreating ? 'Đang cập nhật...' : 'Cập nhật thông báo'}
                   </button>
                 </div>
               </form>
