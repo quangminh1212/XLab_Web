@@ -10,7 +10,11 @@ const fetch = require('node-fetch');
 
 // URL API cập nhật số lượt mua
 const API_URL = 'http://localhost:3000/api/admin/products/update-purchases';
-const AUTH_KEY = process.env.UPDATE_PURCHASES_AUTH_KEY || 'update-purchases-secure-key';
+const AUTH_KEY = process.env.UPDATE_PURCHASES_AUTH_KEY;
+if (!AUTH_KEY) {
+  console.error('UPDATE_PURCHASES_AUTH_KEY is required in environment variables');
+  process.exit(1);
+}
 
 async function updatePurchases() {
   try {

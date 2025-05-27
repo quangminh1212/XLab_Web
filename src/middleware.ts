@@ -72,7 +72,7 @@ const isStaticFile = (path: string) => {
   );
 };
 
-// Hàm debug để kiểm tra token và đường dẫn
+// Hàm debug để kiểm tra token và đường dẫn (chỉ trong development)
 const debug = (request: NextRequest, token: any) => {
   if (process.env.NODE_ENV === 'development') {
     console.log('[Middleware Debug]:', {

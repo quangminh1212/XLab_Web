@@ -28,12 +28,18 @@ const NEXTAUTH_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 // Không bật debug trong môi trường production
 // const DEBUG_ENABLED = process.env.NODE_ENV === 'development';
 
-// Secret key cho NextAuth
-const AUTH_SECRET = process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=";
+// Secret key cho NextAuth - yêu cầu phải có trong .env.local
+const AUTH_SECRET = process.env.NEXTAUTH_SECRET;
+if (!AUTH_SECRET) {
+  throw new Error('NEXTAUTH_SECRET is required in environment variables');
+}
 
-// Google OAuth credentials
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "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";
+// Google OAuth credentials - yêu cầu phải có trong .env.local
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  throw new Error('GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required in environment variables');
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -55,9 +61,11 @@ export const authOptions: NextAuthOptions = {
         if (token.picture) {
           session.user.image = token.picture as string;
         }
-        // In ra console hình ảnh để kiểm tra
-        console.log("AUTH SESSION IMAGE:", session.user.image);
-        console.log("AUTH TOKEN PICTURE:", token.picture);
+        // Remove sensitive logging in production
+        if (process.env.NODE_ENV === 'development') {
+          console.log("AUTH SESSION IMAGE:", session.user.image);
+          console.log("AUTH TOKEN PICTURE:", token.picture);
+        }
         // Kiểm tra email có trong danh sách admin không
         if (token.email && ADMIN_EMAILS.includes(token.email as string)) {
           session.user.isAdmin = true;
@@ -72,9 +80,11 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
       }
       // Lưu thông tin avatar từ Google vào token (token.picture đã được tự động thêm bởi NextAuth)
-      console.log("AUTH JWT TOKEN:", token);
-      if (account && account.provider === 'google' && account.id_token) {
-        console.log("AUTH GOOGLE ACCOUNT:", account);
+      if (process.env.NODE_ENV === 'development') {
+        console.log("AUTH JWT TOKEN:", token);
+        if (account && account.provider === 'google' && account.id_token) {
+          console.log("AUTH GOOGLE ACCOUNT:", account);
+        }
       }
       return token;
     },
