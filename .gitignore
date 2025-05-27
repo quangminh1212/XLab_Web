@@ -199,6 +199,10 @@ start-dev.bat
 .next/trace
 .next/trace.*
 
+# Data files (notification data, etc.)
+/data/
+data/notifications.json
+
 # Test files
 test-cart.html
 .next/cache/*

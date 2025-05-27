@@ -186,6 +186,7 @@ function SettingsPage() {
             >
               Email
             </button>
+
             <button
               onClick={() => setActiveTab('advanced')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${

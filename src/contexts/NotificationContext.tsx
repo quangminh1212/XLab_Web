@@ -3,21 +3,24 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export interface Notification {
-  id: number;
+  id: number | string;
   title: string;
   content: string;
   time: string;
   isRead: boolean;
   type?: 'promotion' | 'update' | 'order' | 'system';
   link?: string;
+  priority?: 'low' | 'medium' | 'high';
 }
 
 interface NotificationContextType {
   notifications: Notification[];
   unreadCount: number;
-  markAsRead: (id: number) => void;
+  markAsRead: (id: number | string) => void;
   markAllAsRead: () => void;
   addNotification: (notification: Omit<Notification, 'id' | 'isRead' | 'time'>) => void;
+  loading: boolean;
+  fetchNotifications: () => Promise<void>;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -31,57 +34,77 @@ export const useNotifications = () => {
 };
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Mẫu thông báo ban đầu
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: 1,
-      title: 'Khuyến mãi đặc biệt',
-      content: 'Giảm 50% tất cả sản phẩm phần mềm trong tuần này!',
-      time: '1 giờ trước',
-      isRead: false,
-      type: 'promotion',
-      link: '/products'
-    },
-    {
-      id: 2,
-      title: 'Cập nhật mới',
-      content: 'Phiên bản 2.0 đã ra mắt với nhiều tính năng mới',
-      time: '1 ngày trước',
-      isRead: false,
-      type: 'update',
-      link: '/products/1'
-    },
-    {
-      id: 3,
-      title: 'Đơn hàng đã xác nhận',
-      content: 'Đơn hàng #12345 của bạn đã được xác nhận',
-      time: '3 ngày trước',
-      isRead: true,
-      type: 'order',
-      link: '/orders/12345'
-    },
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Tính toán số thông báo chưa đọc
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
+  // Tải thông báo từ API
+  const fetchNotifications = async () => {
+    try {
+      const response = await fetch('/api/notifications');
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data.notifications || []);
+      } else if (response.status === 401) {
+        // User chưa đăng nhập, không hiển thị thông báo
+        setNotifications([]);
+      } else {
+        console.error('Failed to fetch notifications:', response.status);
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Hàm đánh dấu một thông báo đã đọc
-  const markAsRead = (id: number) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id ? { ...notification, isRead: true } : notification
-      )
-    );
+  const markAsRead = async (id: number | string) => {
+    try {
+      const response = await fetch('/api/notifications/mark-read', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ notificationId: id.toString() }),
+      });
+
+      if (response.ok) {
+        setNotifications(prev => 
+          prev.map(notification => 
+            notification.id === id.toString() ? { ...notification, isRead: true } : notification
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
   };
 
   // Hàm đánh dấu tất cả thông báo đã đọc
-  const markAllAsRead = () => {
-    setNotifications(prev =>
-      prev.map(notification => ({ ...notification, isRead: true }))
-    );
+  const markAllAsRead = async () => {
+    try {
+      const response = await fetch('/api/notifications/mark-read', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ markAll: true }),
+      });
+
+      if (response.ok) {
+        setNotifications(prev =>
+          prev.map(notification => ({ ...notification, isRead: true }))
+        );
+      }
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+    }
   };
 
-  // Hàm thêm thông báo mới
+  // Hàm thêm thông báo mới (chỉ để demo)
   const addNotification = (notification: Omit<Notification, 'id' | 'isRead' | 'time'>) => {
     const newNotification: Notification = {
       ...notification,
@@ -93,25 +116,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setNotifications(prev => [newNotification, ...prev]);
   };
 
-  // Lưu thông báo vào localStorage khi có thay đổi
+  // Tải thông báo khi component mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('notifications', JSON.stringify(notifications));
-    }
-  }, [notifications]);
-
-  // Khôi phục thông báo từ localStorage khi khởi tạo
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedNotifications = localStorage.getItem('notifications');
-      if (savedNotifications) {
-        try {
-          setNotifications(JSON.parse(savedNotifications));
-        } catch (error) {
-          console.error('Failed to parse notifications from localStorage:', error);
-        }
-      }
-    }
+    fetchNotifications();
   }, []);
 
   const value = {
@@ -119,7 +126,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     unreadCount,
     markAsRead,
     markAllAsRead,
-    addNotification
+    addNotification,
+    loading,
+    fetchNotifications
   };
 
   return (
