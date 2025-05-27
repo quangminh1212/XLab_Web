@@ -93,10 +93,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  // Lấy token từ cookie với secret cố định
+  // Lấy token từ cookie với secret từ environment hoặc fallback
   const token = await getToken({
     req: request,
-    secret: "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=",
+    secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-build",
   });
   
   // Log thông tin debug

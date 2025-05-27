@@ -104,7 +104,24 @@ function formatTimeAgo(dateString: string): string {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+    
+    // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
+      if (process.env.NODE_ENV === 'development') {
+        // Trả về thông báo demo cho development
+        const demoNotifications = [
+          {
+            id: 'demo-1',
+            title: 'Chào mừng đến với XLab!',
+            content: 'Đây là thông báo demo. Vui lòng đăng nhập để xem thông báo thực.',
+            type: 'system',
+            time: 'Vừa xong',
+            isRead: false,
+            priority: 'medium'
+          }
+        ];
+        return NextResponse.json({ notifications: demoNotifications });
+      }
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
