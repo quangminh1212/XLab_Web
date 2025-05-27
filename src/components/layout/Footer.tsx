@@ -21,15 +21,13 @@ export default function Footer() {
           {/* Logo và giới thiệu */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center justify-center mb-8">
-              <div className="relative p-8 rounded-2xl bg-gradient-to-br from-white via-gray-50 to-gray-100 shadow-xl">
-                <Image
-                  src="/images/logo.jpg"
-                  alt={`${siteConfig.name} Logo`}
-                  width={240}
-                  height={96}
-                  className="w-auto h-24"
-                />
-              </div>
+              <Image
+                src="/images/logo.jpg"
+                alt={`${siteConfig.name} Logo`}
+                width={240}
+                height={96}
+                className="w-auto h-24 rounded-lg"
+              />
             </Link>
             <p className="text-gray-400 mb-6 text-base text-center leading-relaxed">
               Chúng tôi chuyên cung cấp các giải pháp phần mềm và dịch vụ công nghệ
