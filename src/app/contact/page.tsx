@@ -372,7 +372,7 @@ export default function ContactPage() {
       <section className="bg-gray-100 py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6 text-center">Vị trí của chúng tôi</h2>
-          <div className="rounded-lg overflow-hidden h-96 max-w-5xl mx-auto">
+          <div className="rounded-lg overflow-hidden h-[500px] max-w-7xl mx-auto">
             <iframe
               src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(siteConfig.contact.address)}`}
               width="100%"
