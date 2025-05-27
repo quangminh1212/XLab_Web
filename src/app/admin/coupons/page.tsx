@@ -295,7 +295,7 @@ function CouponsPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00A19A]"></div>
       </div>
     );
   }
@@ -303,11 +303,11 @@ function CouponsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-6">
+      <div className="bg-gradient-to-r from-[#00A19A] to-[#008B85] rounded-lg shadow-lg p-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white mb-2">🏷️ Quản lý mã giảm giá</h1>
-            <p className="text-blue-100">Tạo và quản lý các mã giảm giá cho khách hàng</p>
+            <p className="text-teal-100">Tạo và quản lý các mã giảm giá cho khách hàng</p>
           </div>
           <div className="text-white/80">
             <div className="text-right">
@@ -324,7 +324,7 @@ function CouponsPage() {
               onClick={() => setActiveTab('list')}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                 activeTab === 'list'
-                  ? 'bg-white text-blue-600 shadow-md'
+                  ? 'bg-white text-[#00A19A] shadow-md'
                   : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
@@ -338,7 +338,7 @@ function CouponsPage() {
               }}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                 activeTab === 'create'
-                  ? 'bg-white text-blue-600 shadow-md'
+                  ? 'bg-white text-[#00A19A] shadow-md'
                   : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
@@ -349,7 +349,7 @@ function CouponsPage() {
                 onClick={() => setActiveTab('edit')}
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                   activeTab === 'edit'
-                    ? 'bg-white text-blue-600 shadow-md'
+                    ? 'bg-white text-[#00A19A] shadow-md'
                     : 'text-white/80 hover:text-white hover:bg-white/20'
                 }`}
               >
@@ -391,7 +391,7 @@ function CouponsPage() {
                 <p className="text-gray-500 mb-8">Tạo mã giảm giá đầu tiên để bắt đầu chương trình khuyến mãi cho khách hàng</p>
                 <button
                   onClick={() => setActiveTab('create')}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                  className="px-6 py-3 bg-gradient-to-r from-[#00A19A] to-[#008B85] text-white rounded-lg hover:from-[#008B85] hover:to-[#007A75] transform hover:scale-105 transition-all duration-200 shadow-lg"
                 >
                   🚀 Tạo mã đầu tiên
                 </button>
@@ -477,7 +477,7 @@ function CouponsPage() {
                           <div className="flex space-x-2">
                             <button
                               onClick={() => handleEditCoupon(coupon)}
-                              className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-150 text-xs font-medium"
+                              className="px-3 py-1.5 bg-teal-100 text-[#00A19A] rounded-lg hover:bg-teal-200 transition-colors duration-150 text-xs font-medium"
                             >
                               ✏️ Sửa
                             </button>
@@ -528,7 +528,7 @@ function CouponsPage() {
                       type="text"
                       value={form.code}
                       onChange={(e) => setForm(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                       placeholder="VD: SUMMER2024"
                       required
                     />
@@ -551,7 +551,7 @@ function CouponsPage() {
                     type="text"
                     value={form.name}
                     onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                     placeholder="VD: Giảm giá mùa hè"
                     required
                   />
@@ -565,7 +565,7 @@ function CouponsPage() {
                   <select
                     value={form.type}
                     onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as 'percentage' | 'fixed' }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                   >
                     <option value="percentage">Phần trăm (%)</option>
                     <option value="fixed">Số tiền cố định (VNĐ)</option>
@@ -581,7 +581,7 @@ function CouponsPage() {
                     type="number"
                     value={form.value}
                     onChange={(e) => setForm(prev => ({ ...prev, value: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                     placeholder={form.type === 'percentage' ? 'VD: 10' : 'VD: 50000'}
                     min="0"
                     max={form.type === 'percentage' ? 100 : undefined}
@@ -601,7 +601,7 @@ function CouponsPage() {
                     type="number"
                     value={form.minOrder}
                     onChange={(e) => setForm(prev => ({ ...prev, minOrder: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                     placeholder="VD: 100000"
                     min="0"
                   />
@@ -618,7 +618,7 @@ function CouponsPage() {
                       type="number"
                       value={form.maxDiscount}
                       onChange={(e) => setForm(prev => ({ ...prev, maxDiscount: Number(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                       placeholder="VD: 500000"
                       min="0"
                     />
@@ -635,7 +635,7 @@ function CouponsPage() {
                     type="number"
                     value={form.usageLimit}
                     onChange={(e) => setForm(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                     placeholder="VD: 100"
                     min="0"
                   />
@@ -651,7 +651,7 @@ function CouponsPage() {
                     type="date"
                     value={form.startDate}
                     onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                     required
                   />
                 </div>
@@ -665,7 +665,7 @@ function CouponsPage() {
                     type="date"
                     value={form.endDate}
                     onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                     required
                   />
                 </div>
@@ -680,7 +680,7 @@ function CouponsPage() {
                   value={form.description}
                   onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                   placeholder="Mô tả chi tiết về mã giảm giá này..."
                 />
               </div>
@@ -694,7 +694,7 @@ function CouponsPage() {
                   type="text"
                   value={form.applicableProducts}
                   onChange={(e) => setForm(prev => ({ ...prev, applicableProducts: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#00A19A] focus:border-[#00A19A]"
                   placeholder="VD: prod1, prod2, prod3 (phân cách bằng dấu phẩy)"
                 />
                 <p className="text-sm text-gray-500 mt-1">Để trống nếu áp dụng cho tất cả sản phẩm</p>
@@ -716,7 +716,7 @@ function CouponsPage() {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
+                  className="px-4 py-2 bg-[#00A19A] text-white rounded-md hover:bg-[#008B85] disabled:opacity-50"
                 >
                   {isCreating ? 'Đang xử lý...' : (activeTab === 'create' ? 'Tạo mã giảm giá' : 'Cập nhật')}
                 </button>

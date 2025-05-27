@@ -292,7 +292,7 @@ function NotificationsPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00A19A]"></div>
       </div>
     );
   }
@@ -303,7 +303,7 @@ function NotificationsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Quản lý thông báo</h1>
         <button
           onClick={() => setActiveTab('create')}
-          className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
+          className="bg-[#00A19A] text-white px-4 py-2 rounded-md hover:bg-[#008B85] transition-colors"
         >
           Tạo thông báo mới
         </button>
@@ -330,7 +330,7 @@ function NotificationsPage() {
               onClick={() => setActiveTab('list')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'list'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-[#00A19A] text-[#00A19A]'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -344,7 +344,7 @@ function NotificationsPage() {
               }}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'create'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-[#00A19A] text-[#00A19A]'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -355,7 +355,7 @@ function NotificationsPage() {
                 onClick={() => setActiveTab('edit')}
                 className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                   activeTab === 'edit'
-                    ? 'border-primary-500 text-primary-600'
+                    ? 'border-[#00A19A] text-[#00A19A]'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -366,7 +366,7 @@ function NotificationsPage() {
               onClick={() => setActiveTab('settings')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'settings'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-[#00A19A] text-[#00A19A]'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -391,7 +391,7 @@ function NotificationsPage() {
                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(notification.priority)}`}>
                               {notification.priority === 'high' ? 'Cao' : notification.priority === 'medium' ? 'Trung bình' : 'Thấp'}
                             </span>
-                            <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                            <span className="px-2 py-1 text-xs font-medium bg-teal-100 text-[#00A19A] rounded-full">
                               {notification.type === 'promotion' ? 'Khuyến mãi' : 
                                notification.type === 'update' ? 'Cập nhật' :
                                notification.type === 'order' ? 'Đơn hàng' : 'Hệ thống'}
@@ -410,7 +410,7 @@ function NotificationsPage() {
                           </div>
                           {notification.link && (
                             <div className="mt-2">
-                              <a href={notification.link} className="text-primary-600 hover:text-primary-800 text-sm">
+                              <a href={notification.link} className="text-[#00A19A] hover:text-[#008B85] text-sm">
                                 Xem chi tiết →
                               </a>
                             </div>
@@ -420,15 +420,15 @@ function NotificationsPage() {
                       <div className="flex flex-col space-y-2">
                         <button
                           onClick={() => handleEditNotification(notification)}
-                          className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                          className="px-3 py-1.5 text-sm bg-[#00A19A] text-white rounded hover:bg-[#008B85] transition-colors"
                         >
                           Chỉnh sửa
                         </button>
-                        <button
-                          onClick={() => handleDeleteNotification(notification.id)}
-                          className="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                        >
-                          Xóa
+                                                  <button
+                            onClick={() => handleDeleteNotification(notification.id)}
+                            className="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                          >
+                            Xóa
                         </button>
                       </div>
                     </div>
@@ -459,7 +459,7 @@ function NotificationsPage() {
                     id="title"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                     required
                     placeholder="Nhập tiêu đề thông báo"
                   />
@@ -474,7 +474,7 @@ function NotificationsPage() {
                     value={form.content}
                     onChange={(e) => setForm({ ...form, content: e.target.value })}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                     required
                     placeholder="Nhập nội dung thông báo"
                   />
@@ -488,7 +488,7 @@ function NotificationsPage() {
                     id="type"
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                   >
                     <option value="system">Hệ thống</option>
                     <option value="promotion">Khuyến mãi</option>
@@ -508,7 +508,7 @@ function NotificationsPage() {
                   <button
                     type="submit"
                     disabled={isCreating}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400"
+                    className="px-4 py-2 bg-[#00A19A] text-white rounded-md hover:bg-[#008B85] disabled:bg-gray-400"
                   >
                     {isCreating ? 'Đang tạo...' : 'Tạo thông báo'}
                   </button>
@@ -532,7 +532,7 @@ function NotificationsPage() {
                     id="edit-title"
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                     required
                     placeholder="Nhập tiêu đề thông báo"
                   />
@@ -547,7 +547,7 @@ function NotificationsPage() {
                     value={form.content}
                     onChange={(e) => setForm({ ...form, content: e.target.value })}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                     required
                     placeholder="Nhập nội dung thông báo"
                   />
@@ -561,7 +561,7 @@ function NotificationsPage() {
                     id="edit-type"
                     value={form.type}
                     onChange={(e) => setForm({ ...form, type: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                   >
                     <option value="system">Hệ thống</option>
                     <option value="promotion">Khuyến mãi</option>
@@ -585,7 +585,7 @@ function NotificationsPage() {
                   <button
                     type="submit"
                     disabled={isCreating}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400"
+                    className="px-4 py-2 bg-[#00A19A] text-white rounded-md hover:bg-[#008B85] disabled:bg-gray-400"
                   >
                     {isCreating ? 'Đang cập nhật...' : 'Cập nhật thông báo'}
                   </button>
@@ -614,7 +614,7 @@ function NotificationsPage() {
                             ...notificationSettings,
                             autoSendOrderNotifications: e.target.checked
                           })}
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
                     </div>
@@ -629,7 +629,7 @@ function NotificationsPage() {
                             ...notificationSettings,
                             autoSendPromotions: e.target.checked
                           })}
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
                     </div>
@@ -644,7 +644,7 @@ function NotificationsPage() {
                             ...notificationSettings,
                             autoSendUpdates: e.target.checked
                           })}
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
                     </div>
@@ -659,7 +659,7 @@ function NotificationsPage() {
                             ...notificationSettings,
                             emailNotifications: e.target.checked
                           })}
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
                     </div>
@@ -678,7 +678,7 @@ function NotificationsPage() {
                       ...notificationSettings,
                       retentionDays: parseInt(e.target.value) || 30
                     })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                     min="1"
                     max="365"
                   />
@@ -690,7 +690,7 @@ function NotificationsPage() {
                 <div className="pt-4">
                   <button
                     onClick={handleSaveSettings}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                    className="px-4 py-2 bg-[#00A19A] text-white rounded-md hover:bg-[#008B85]"
                   >
                     Lưu cài đặt
                   </button>

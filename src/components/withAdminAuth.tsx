@@ -33,7 +33,7 @@ function withAdminAuth<P extends object>(Component: ComponentType<P>) {
     if (status === 'loading' || !session) {
       return (
         <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00A19A]"></div>
         </div>
       )
     }
@@ -46,7 +46,7 @@ function withAdminAuth<P extends object>(Component: ComponentType<P>) {
           <p className="text-gray-600 mb-4">Bạn không có quyền truy cập vào trang này.</p>
           <button 
             onClick={() => router.push('/')}
-            className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+            className="px-4 py-2 bg-[#00A19A] text-white rounded hover:bg-[#008B85]"
           >
             Quay về trang chủ
           </button>
