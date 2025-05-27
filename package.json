@@ -14,6 +14,7 @@
     "lint": "next lint",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "fix": "node scripts/fix-project.js",
+    "fix:security": "node scripts/fix-security-issues.js",
     "update-purchases": "node src/scripts/update-purchases.js",
     "verify-products": "node src/scripts/verify-products.js",
     "fix:all": "node scripts/fix-all-issues.js"
