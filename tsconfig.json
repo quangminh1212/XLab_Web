@@ -26,6 +26,24 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@/app/*": [
+        "./src/app/*"
+      ],
+      "@/shared/*": [
+        "./src/shared/*"
+      ],
+      "@/features/*": [
+        "./src/features/*"
+      ],
+      "@/core/*": [
+        "./src/core/*"
+      ],
+      "@/infrastructure/*": [
+        "./src/infrastructure/*"
+      ],
+      "@/config/*": [
+        "./src/config/*"
       ]
     }
   },
