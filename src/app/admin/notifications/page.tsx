@@ -292,7 +292,7 @@ function NotificationsPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
       </div>
     );
   }
@@ -303,7 +303,7 @@ function NotificationsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Quản lý thông báo</h1>
         <button
           onClick={() => setActiveTab('create')}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-md hover:from-blue-700 hover:to-indigo-700 transition-colors"
+                            className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2 rounded-md hover:from-primary-700 hover:to-primary-800 transition-colors"
         >
           Tạo thông báo mới
         </button>
@@ -330,7 +330,7 @@ function NotificationsPage() {
               onClick={() => setActiveTab('list')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'list'
-                  ? 'border-blue-600 text-blue-600'
+                  ? 'border-primary-600 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -344,7 +344,7 @@ function NotificationsPage() {
               }}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'create'
-                  ? 'border-blue-600 text-blue-600'
+                  ? 'border-primary-600 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -355,7 +355,7 @@ function NotificationsPage() {
                 onClick={() => setActiveTab('edit')}
                 className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                   activeTab === 'edit'
-                    ? 'border-blue-600 text-blue-600'
+                    ? 'border-primary-600 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -366,7 +366,7 @@ function NotificationsPage() {
               onClick={() => setActiveTab('settings')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
                 activeTab === 'settings'
-                  ? 'border-blue-600 text-blue-600'
+                  ? 'border-primary-600 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -391,7 +391,7 @@ function NotificationsPage() {
                             <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(notification.priority)}`}>
                               {notification.priority === 'high' ? 'Cao' : notification.priority === 'medium' ? 'Trung bình' : 'Thấp'}
                             </span>
-                            <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-600 rounded-full">
+                            <span className="px-2 py-1 text-xs font-medium bg-primary-100 text-primary-600 rounded-full">
                               {notification.type === 'promotion' ? 'Khuyến mãi' : 
                                notification.type === 'update' ? 'Cập nhật' :
                                notification.type === 'order' ? 'Đơn hàng' : 'Hệ thống'}
@@ -410,7 +410,7 @@ function NotificationsPage() {
                           </div>
                           {notification.link && (
                             <div className="mt-2">
-                              <a href={notification.link} className="text-blue-600 hover:text-blue-700 text-sm">
+                              <a href={notification.link} className="text-primary-600 hover:text-primary-700 text-sm">
                                 Xem chi tiết →
                               </a>
                             </div>

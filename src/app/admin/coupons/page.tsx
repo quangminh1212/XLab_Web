@@ -295,7 +295,7 @@ function CouponsPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
       </div>
     );
   }
@@ -303,7 +303,7 @@ function CouponsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-xl shadow-xl p-6">
+                      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-xl shadow-xl p-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white mb-2">🏷️ Quản lý mã giảm giá</h1>
@@ -324,7 +324,7 @@ function CouponsPage() {
               onClick={() => setActiveTab('list')}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                 activeTab === 'list'
-                  ? 'bg-white text-blue-600 shadow-md'
+                  ? 'bg-white text-primary-600 shadow-md'
                   : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
@@ -338,7 +338,7 @@ function CouponsPage() {
               }}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                 activeTab === 'create'
-                  ? 'bg-white text-blue-600 shadow-md'
+                  ? 'bg-white text-primary-600 shadow-md'
                   : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
@@ -349,7 +349,7 @@ function CouponsPage() {
                 onClick={() => setActiveTab('edit')}
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                   activeTab === 'edit'
-                    ? 'bg-white text-blue-600 shadow-md'
+                    ? 'bg-white text-primary-600 shadow-md'
                     : 'text-white/80 hover:text-white hover:bg-white/20'
                 }`}
               >
@@ -391,7 +391,7 @@ function CouponsPage() {
                 <p className="text-gray-500 mb-8">Tạo mã giảm giá đầu tiên để bắt đầu chương trình khuyến mãi cho khách hàng</p>
                 <button
                   onClick={() => setActiveTab('create')}
-                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                  className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transform hover:scale-105 transition-all duration-200 shadow-lg"
                 >
                   🚀 Tạo mã đầu tiên
                 </button>
@@ -477,7 +477,7 @@ function CouponsPage() {
                           <div className="flex space-x-2">
                             <button
                               onClick={() => handleEditCoupon(coupon)}
-                              className="px-3 py-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors duration-150 text-xs font-medium"
+                              className="px-3 py-1.5 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition-colors duration-150 text-xs font-medium"
                             >
                               ✏️ Sửa
                             </button>
@@ -716,7 +716,7 @@ function CouponsPage() {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-md hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50"
+                                      className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-md hover:from-primary-700 hover:to-primary-800 disabled:opacity-50"
                 >
                   {isCreating ? 'Đang xử lý...' : (activeTab === 'create' ? 'Tạo mã giảm giá' : 'Cập nhật')}
                 </button>

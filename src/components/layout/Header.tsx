@@ -256,7 +256,7 @@ const Header = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
+              <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
                 {itemCount}
               </span>
             </Link>
@@ -267,7 +267,7 @@ const Header = () => {
                 <button
                   ref={profileButtonRef}
                   onClick={toggleProfile}
-                  className="flex items-center text-gray-700 hover:text-blue-600 focus:outline-none"
+                  className="flex items-center text-gray-700 hover:text-primary-600 focus:outline-none"
                   aria-expanded={isProfileOpen}
                   aria-haspopup="true"
                 >
@@ -299,7 +299,7 @@ const Header = () => {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
+                  className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                 >
                   Đăng nhập
                 </button>
@@ -364,7 +364,7 @@ const Header = () => {
             {/* Mobile menu button */}
             <button
               onClick={toggleMenu}
-              className="md:hidden text-gray-700 hover:text-blue-600 focus:outline-none p-1"
+              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none p-1"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -436,7 +436,7 @@ const Header = () => {
                     signIn();
                     setIsOpen(false);
                   }}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 rounded-lg text-lg tracking-wide font-medium transition-colors"
+                  className="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-3 rounded-lg text-lg tracking-wide font-medium transition-colors"
                 >
                   Đăng nhập
                 </button>
