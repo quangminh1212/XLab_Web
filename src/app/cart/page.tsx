@@ -21,12 +21,7 @@ interface CartItemWithVersion {
   uniqueKey?: string;
 }
 
-// Định nghĩa danh sách mã giảm giá
-const AVAILABLE_COUPONS = [
-  { code: 'WELCOME10', discount: 0.1, name: 'Giảm 10% cho đơn hàng đầu tiên' },
-  { code: 'FREESHIP', discount: 30000, name: 'Miễn phí vận chuyển (30.000đ)' },
-  { code: 'XLAB20', discount: 0.2, name: 'Giảm 20% cho sản phẩm XLab' }
-];
+// Danh sách mã giảm giá sẽ được lấy từ API
 
 export default function CartPage() {
   const { items: cartItems, removeItem: removeItemFromCart, updateQuantity: updateItemQuantity, clearCart, addItem: addItemToCart } = useCart();
@@ -109,12 +104,7 @@ export default function CartPage() {
   const calculateCouponDiscount = () => {
     if (!appliedCoupon) return 0;
     
-    // Nếu giảm giá là phần trăm
-    if (appliedCoupon.discount < 1) {
-      return subtotal * appliedCoupon.discount;
-    }
-    
-    // Nếu giảm giá là số tiền cố định
+    // Với API mới, discountAmount đã được tính sẵn
     return appliedCoupon.discount;
   };
   
@@ -134,7 +124,7 @@ export default function CartPage() {
   };
 
   // Áp dụng mã giảm giá
-  const applyPromoCode = () => {
+  const applyPromoCode = async () => {
     setCouponError('');
     
     if (!couponCode.trim()) {
@@ -142,15 +132,33 @@ export default function CartPage() {
       return;
     }
     
-    const foundCoupon = AVAILABLE_COUPONS.find(
-      coupon => coupon.code === couponCode.toUpperCase()
-    );
-    
-    if (foundCoupon) {
-      setAppliedCoupon(foundCoupon);
-      setCouponCode('');
-    } else {
-      setCouponError('Mã giảm giá không hợp lệ hoặc đã hết hạn');
+    try {
+      const response = await fetch('/api/cart/validate-coupon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          code: couponCode.toUpperCase(),
+          orderTotal: subtotal
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        setAppliedCoupon({
+          code: result.coupon.code,
+          discount: result.coupon.discountAmount,
+          name: result.coupon.name
+        });
+        setCouponCode('');
+      } else {
+        setCouponError(result.error);
+      }
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      setCouponError('Đã xảy ra lỗi khi áp dụng mã giảm giá');
     }
   };
   
@@ -397,12 +405,28 @@ export default function CartPage() {
                           exit={{ opacity: 0, height: 0 }}
                         >
                           <p className="font-medium">Mã khuyến mãi có sẵn:</p>
-                          {AVAILABLE_COUPONS.map(coupon => (
-                            <div key={coupon.code} className="flex justify-between">
-                              <span className="font-mono text-primary-700">{coupon.code}</span>
-                              <span>{coupon.name}</span>
+                          <div className="space-y-1">
+                            <div className="flex justify-between">
+                              <span className="font-mono text-primary-700">SUMMER2024</span>
+                              <span>Giảm 20% (tối thiểu 100.000đ)</span>
                             </div>
-                          ))}
+                            <div className="flex justify-between">
+                              <span className="font-mono text-primary-700">WELCOME50</span>
+                              <span>Giảm 50.000đ (tối thiểu 200.000đ)</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-mono text-primary-700">WELCOME10</span>
+                              <span>Giảm 10% cho đơn hàng đầu tiên</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-mono text-primary-700">FREESHIP</span>
+                              <span>Miễn phí vận chuyển (30.000đ)</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="font-mono text-primary-700">XLAB20</span>
+                              <span>Giảm 20% cho sản phẩm XLab</span>
+                            </div>
+                          </div>
                         </motion.div>
                       )}
                       
