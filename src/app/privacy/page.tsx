@@ -96,9 +96,9 @@ export default function PrivacyPage() {
                             Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua:
                         </p>
                         <ul>
-                            <li>Email: <a href={`mailto:${siteConfig.contact.email}`} className="text-teal-600 hover:underline">{siteConfig.contact.email}</a></li>
+                            <li>Email: <a href={`mailto:${siteConfig.contact.email}`} className="text-primary-600 hover:underline">{siteConfig.contact.email}</a></li>
                             <li>Điện thoại: {siteConfig.contact.phone}</li>
-                            <li>Hoặc truy cập trang <Link href="/contact" className="text-teal-600 hover:underline">Liên hệ</Link> của chúng tôi</li>
+                            <li>Hoặc truy cập trang <Link href="/contact" className="text-primary-600 hover:underline">Liên hệ</Link> của chúng tôi</li>
                         </ul>
                     </div>
                 </div>

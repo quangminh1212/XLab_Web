@@ -19,9 +19,9 @@ export default function CategoriesPage() {
                         <Link
                             key={category.id}
                             href={`/categories/${category.slug}`}
-                            className="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all border border-gray-100 flex flex-col hover:border-teal-200 hover:-translate-y-1 duration-300"
+                            className="group bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all border border-gray-100 flex flex-col hover:border-primary-200 hover:-translate-y-1 duration-300"
                         >
-                            <div className="relative bg-gradient-to-br from-teal-50 to-blue-50 aspect-[2/1] overflow-hidden">
+                            <div className="relative bg-gradient-to-br from-primary-50 to-blue-50 aspect-[2/1] overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 
                                 <div className="relative h-full flex items-center justify-center p-8">
@@ -36,20 +36,20 @@ export default function CategoriesPage() {
                                 </div>
                                 
                                 <div className="absolute bottom-3 left-3">
-                                    <span className="px-3 py-1 bg-white/90 text-teal-700 text-xs font-medium rounded-full shadow-sm">
+                                    <span className="px-3 py-1 bg-white/90 text-primary-700 text-xs font-medium rounded-full shadow-sm">
                                         {category.productCount} sản phẩm
                                     </span>
                                 </div>
                             </div>
                             
                             <div className="p-6">
-                                <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-teal-600 transition-colors">
+                                <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
                                     {category.name}
                                 </h2>
                                 <p className="text-gray-600 text-sm mb-4">
                                     {category.description}
                                 </p>
-                                <div className="flex items-center mt-auto text-teal-600 font-medium text-sm">
+                                <div className="flex items-center mt-auto text-primary-600 font-medium text-sm">
                                     <span>Xem danh mục</span>
                                     <svg className="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -72,13 +72,13 @@ export default function CategoriesPage() {
                         <div className="flex space-x-4">
                             <Link 
                                 href="/contact"
-                                className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-lg font-medium transition-colors shadow-sm"
+                                className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-3 rounded-lg font-medium transition-colors shadow-sm"
                             >
                                 Liên hệ hỗ trợ
                             </Link>
                             <Link 
                                 href="/products"
-                                className="border border-teal-600 text-teal-600 hover:bg-teal-50 px-5 py-3 rounded-lg font-medium transition-colors"
+                                className="border border-primary-500 text-primary-600 hover:bg-primary-50 px-5 py-3 rounded-lg font-medium transition-colors"
                             >
                                 Xem tất cả sản phẩm
                             </Link>

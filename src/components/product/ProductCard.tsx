@@ -177,15 +177,15 @@ export default function ProductCard({
   const colorPalette = [
     {
       name: 'teal',
-      bg: 'from-white via-teal-50 to-teal-100',
-      hover: 'hover:border-teal-300 hover:shadow-teal-100/50',
-      badge: 'from-teal-500 to-teal-600',
-      button: 'from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700',
-      buttonHover: 'hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300',
-      price: 'from-teal-600 to-teal-700',
-      stats: 'text-teal-600',
-      statsIcon: 'text-teal-500',
-      overlay: 'to-teal-900/40'
+          bg: 'from-white via-primary-50 to-primary-100',
+    hover: 'hover:border-primary-300 hover:shadow-primary-100/50',
+    badge: 'from-primary-500 to-primary-600',
+    button: 'from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700',
+    buttonHover: 'hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300',
+    price: 'from-primary-600 to-primary-700',
+    stats: 'text-primary-600',
+    statsIcon: 'text-primary-500',
+    overlay: 'to-primary-900/40'
     },
     {
       name: 'blue',

@@ -42,7 +42,7 @@ export default function TermsPage() {
 
                         <h2>6. Bảo mật và dữ liệu cá nhân</h2>
                         <p>
-                            Chúng tôi thu thập và xử lý dữ liệu cá nhân của bạn theo <Link href="/privacy" className="text-teal-600 hover:underline">Chính sách Bảo mật</Link> của chúng tôi. Bằng cách sử dụng dịch vụ của chúng tôi, bạn đồng ý với việc thu thập và xử lý dữ liệu theo chính sách này.
+                            Chúng tôi thu thập và xử lý dữ liệu cá nhân của bạn theo <Link href="/privacy" className="text-primary-600 hover:underline">Chính sách Bảo mật</Link> của chúng tôi. Bằng cách sử dụng dịch vụ của chúng tôi, bạn đồng ý với việc thu thập và xử lý dữ liệu theo chính sách này.
                         </p>
 
                         <h2>7. Tuyên bố từ chối trách nhiệm</h2>
@@ -72,7 +72,7 @@ export default function TermsPage() {
 
                         <h2>12. Liên hệ</h2>
                         <p>
-                            Nếu bạn có bất kỳ câu hỏi nào về các Điều khoản này, vui lòng liên hệ với chúng tôi qua địa chỉ email: <a href={`mailto:${siteConfig.contact.email}`} className="text-teal-600 hover:underline">{siteConfig.contact.email}</a> hoặc truy cập trang <Link href="/contact" className="text-teal-600 hover:underline">Liên hệ</Link> của chúng tôi.
+                            Nếu bạn có bất kỳ câu hỏi nào về các Điều khoản này, vui lòng liên hệ với chúng tôi qua địa chỉ email: <a href={`mailto:${siteConfig.contact.email}`} className="text-primary-600 hover:underline">{siteConfig.contact.email}</a> hoặc truy cập trang <Link href="/contact" className="text-primary-600 hover:underline">Liên hệ</Link> của chúng tôi.
                         </p>
                     </div>
                 </div>

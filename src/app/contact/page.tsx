@@ -53,7 +53,7 @@ export default function ContactPage() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-teal-600 to-teal-700 text-white py-16">
+      <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Liên hệ với chúng tôi</h1>
           <p className="text-xl max-w-3xl">
@@ -93,7 +93,7 @@ export default function ContactPage() {
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                       />
                     </div>
 
@@ -108,7 +108,7 @@ export default function ContactPage() {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                       />
                     </div>
                   </div>
@@ -124,7 +124,7 @@ export default function ContactPage() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                       />
                     </div>
 
@@ -138,7 +138,7 @@ export default function ContactPage() {
                         name="company"
                         value={formData.company}
                         onChange={handleChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                       />
                     </div>
                   </div>
@@ -152,7 +152,7 @@ export default function ContactPage() {
                       name="service"
                       value={formData.service}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value="">-- Chọn dịch vụ --</option>
                       <option value="software-development">Phát triển phần mềm</option>
@@ -174,7 +174,7 @@ export default function ContactPage() {
                       required
                       value={formData.message}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-teal-500 focus:border-teal-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                     ></textarea>
                   </div>
 
@@ -182,7 +182,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="text-white bg-teal-600 hover:bg-teal-700 rounded-full px-8 py-3 transition-colors font-medium shadow-sm"
+                      className="text-white bg-primary-500 hover:bg-primary-600 rounded-full px-8 py-3 transition-colors font-medium shadow-sm"
                     >
                       {isSubmitting ? 'Đang gửi...' : 'Gửi tin nhắn'}
                     </button>
@@ -201,7 +201,7 @@ export default function ContactPage() {
                     <div className="flex-shrink-0 mt-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-teal-600"
+                        className="h-6 w-6 text-primary-600"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -230,7 +230,7 @@ export default function ContactPage() {
                     <div className="flex-shrink-0 mt-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-teal-600"
+                        className="h-6 w-6 text-primary-600"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -253,7 +253,7 @@ export default function ContactPage() {
                     <div className="flex-shrink-0 mt-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-teal-600"
+                        className="h-6 w-6 text-primary-600"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -276,7 +276,7 @@ export default function ContactPage() {
                     <div className="flex-shrink-0 mt-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-teal-600"
+                        className="h-6 w-6 text-primary-600"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -305,11 +305,11 @@ export default function ContactPage() {
                     href={siteConfig.social.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-gray-100 hover:bg-teal-50 p-3 rounded-full transition-colors"
+                    className="bg-gray-100 hover:bg-primary-50 p-3 rounded-full transition-colors"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-teal-600"
+                      className="h-6 w-6 text-primary-600"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -320,11 +320,11 @@ export default function ContactPage() {
                     href={siteConfig.social.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-gray-100 hover:bg-teal-50 p-3 rounded-full transition-colors"
+                    className="bg-gray-100 hover:bg-primary-50 p-3 rounded-full transition-colors"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-teal-600"
+                      className="h-6 w-6 text-primary-600"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -335,11 +335,11 @@ export default function ContactPage() {
                     href={siteConfig.social.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-gray-100 hover:bg-teal-50 p-3 rounded-full transition-colors"
+                    className="bg-gray-100 hover:bg-primary-50 p-3 rounded-full transition-colors"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-teal-600"
+                      className="h-6 w-6 text-primary-600"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -350,11 +350,11 @@ export default function ContactPage() {
                     href={siteConfig.social.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-gray-100 hover:bg-teal-50 p-3 rounded-full transition-colors"
+                    className="bg-gray-100 hover:bg-primary-50 p-3 rounded-full transition-colors"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-teal-600"
+                      className="h-6 w-6 text-primary-600"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >

@@ -28,7 +28,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="container max-w-7xl mx-auto px-4">
                 <div className="mb-8">
-                    <Link href="/categories" className="text-teal-600 flex items-center mb-4 text-sm">
+                    <Link href="/categories" className="text-primary-600 flex items-center mb-4 text-sm">
                         <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
@@ -36,7 +36,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                     </Link>
 
                     <div className="flex items-center mb-6">
-                        <div className="w-16 h-16 bg-teal-50 rounded-lg flex items-center justify-center mr-4">
+                        <div className="w-16 h-16 bg-primary-50 rounded-lg flex items-center justify-center mr-4">
                             <Image
                                 src={category.imageUrl || '/images/placeholder.svg'}
                                 alt={category.name}
@@ -80,7 +80,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                         </p>
                         <Link
                             href="/categories"
-                            className="text-white bg-teal-600 hover:bg-teal-700 rounded-full px-6 py-2 transition-colors font-medium shadow-sm inline-block"
+                            className="text-white bg-primary-500 hover:bg-primary-600 rounded-full px-6 py-2 transition-colors font-medium shadow-sm inline-block"
                         >
                             Xem các danh mục khác
                         </Link>
