@@ -303,21 +303,32 @@ function CouponsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Quản lý mã giảm giá</h1>
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-lg p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-white mb-2">🏷️ Quản lý mã giảm giá</h1>
+            <p className="text-blue-100">Tạo và quản lý các mã giảm giá cho khách hàng</p>
+          </div>
+          <div className="text-white/80">
+            <div className="text-right">
+              <div className="text-2xl font-bold">{coupons.length}</div>
+              <div className="text-sm">Mã đang có</div>
+            </div>
+          </div>
+        </div>
         
         {/* Tabs */}
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
+        <div className="mt-6">
+          <nav className="flex space-x-2">
             <button
               onClick={() => setActiveTab('list')}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                 activeTab === 'list'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
-              Danh sách mã ({coupons.length})
+              📋 Danh sách mã ({coupons.length})
             </button>
             <button
               onClick={() => {
@@ -325,24 +336,24 @@ function CouponsPage() {
                 resetForm();
                 setIsEditing(null);
               }}
-              className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                 activeTab === 'create'
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
-              Tạo mã mới
+              ➕ Tạo mã mới
             </button>
             {isEditing && (
               <button
                 onClick={() => setActiveTab('edit')}
-                className={`whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                   activeTab === 'edit'
-                    ? 'border-primary-500 text-primary-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-white text-blue-600 shadow-md'
+                    : 'text-white/80 hover:text-white hover:bg-white/20'
                 }`}
               >
-                Chỉnh sửa
+                ✏️ Chỉnh sửa
               </button>
             )}
           </nav>
@@ -351,13 +362,19 @@ function CouponsPage() {
 
       {/* Messages */}
       {successMessage && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
-          {successMessage}
+        <div className="bg-green-50 border-l-4 border-green-400 text-green-700 p-4 rounded-lg shadow-sm">
+          <div className="flex items-center">
+            <span className="text-green-400 mr-3">✅</span>
+            <span>{successMessage}</span>
+          </div>
         </div>
       )}
       {errorMessage && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {errorMessage}
+        <div className="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-lg shadow-sm">
+          <div className="flex items-center">
+            <span className="text-red-400 mr-3">❌</span>
+            <span>{errorMessage}</span>
+          </div>
         </div>
       )}
 
@@ -368,47 +385,49 @@ function CouponsPage() {
             <h2 className="text-lg font-medium text-gray-900 mb-4">Danh sách mã giảm giá</h2>
             
             {coupons.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">Chưa có mã giảm giá nào được tạo.</p>
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">🏷️</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có mã giảm giá nào</h3>
+                <p className="text-gray-500 mb-8">Tạo mã giảm giá đầu tiên để bắt đầu chương trình khuyến mãi cho khách hàng</p>
                 <button
                   onClick={() => setActiveTab('create')}
-                  className="mt-4 px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+                  className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
                 >
-                  Tạo mã đầu tiên
+                  🚀 Tạo mã đầu tiên
                 </button>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto bg-white rounded-lg shadow-sm">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Mã / Tên
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        🏷️ Mã / Tên
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Loại / Giá trị
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        💰 Loại / Giá trị
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Thời gian
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        📅 Thời gian
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Sử dụng
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        📊 Sử dụng
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Trạng thái
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        🎯 Trạng thái
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Hành động
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        ⚡ Hành động
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {coupons.map((coupon) => (
-                      <tr key={coupon.id}>
+                      <tr key={coupon.id} className="hover:bg-gray-50 transition-colors duration-150">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">{coupon.code}</div>
-                            <div className="text-sm text-gray-500">{coupon.name}</div>
+                            <div className="text-sm font-bold text-gray-900 font-mono bg-gray-100 px-2 py-1 rounded inline-block">{coupon.code}</div>
+                            <div className="text-sm text-gray-600 mt-1">{coupon.name}</div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -458,23 +477,25 @@ function CouponsPage() {
                           <div className="flex space-x-2">
                             <button
                               onClick={() => handleEditCoupon(coupon)}
-                              className="text-primary-600 hover:text-primary-900"
+                              className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors duration-150 text-xs font-medium"
                             >
-                              Sửa
+                              ✏️ Sửa
                             </button>
                             <button
                               onClick={() => handleToggleStatus(coupon.id, coupon.isActive)}
-                              className={`${
-                                coupon.isActive ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'
+                              className={`px-3 py-1.5 rounded-lg transition-colors duration-150 text-xs font-medium ${
+                                coupon.isActive 
+                                  ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' 
+                                  : 'bg-green-100 text-green-700 hover:bg-green-200'
                               }`}
                             >
-                              {coupon.isActive ? 'Tạm dừng' : 'Kích hoạt'}
+                              {coupon.isActive ? '⏸️ Dừng' : '▶️ Hoạt động'}
                             </button>
                             <button
                               onClick={() => handleDeleteCoupon(coupon.id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-150 text-xs font-medium"
                             >
-                              Xóa
+                              🗑️ Xóa
                             </button>
                           </div>
                         </td>
