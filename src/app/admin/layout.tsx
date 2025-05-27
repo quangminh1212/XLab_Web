@@ -34,7 +34,7 @@ export default function AdminLayout({
     }, [isSidebarCollapsed]);
 
     const isActive = (path: string) => {
-        const active = pathname === path;
+        const active = pathname === path || pathname.startsWith(path + '/');
         return active ? 'bg-primary-700 text-white' : '';
     };
     
@@ -180,6 +180,34 @@ export default function AdminLayout({
                                         </svg>
                                         {!isSidebarCollapsed && (
                                             <span>Quản lý đơn hàng</span>
+                                        )}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin/notifications"
+                                        className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/notifications')} ${isSidebarCollapsed ? 'justify-center' : ''}`}
+                                        title="Quản lý thông báo"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${isSidebarCollapsed ? '' : 'mr-3'} ${pathname.startsWith('/admin/notifications') ? 'text-white' : 'text-primary-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5M4 19h6v-7a3 3 0 00-3-3H4a3 3 0 00-3 3v7M4 9V6a3 3 0 013-3h3l3 3v3M4 9h6m6 0a3 3 0 013 3v7l-3-3h-3a3 3 0 01-3-3V9z" />
+                                        </svg>
+                                        {!isSidebarCollapsed && (
+                                            <span>Quản lý thông báo</span>
+                                        )}
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin/coupons"
+                                        className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-primary-50 transition-colors ${isActive('/admin/coupons')} ${isSidebarCollapsed ? 'justify-center' : ''}`}
+                                        title="Quản lý mã giảm giá"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${isSidebarCollapsed ? '' : 'mr-3'} ${pathname.startsWith('/admin/coupons') ? 'text-white' : 'text-primary-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {!isSidebarCollapsed && (
+                                            <span>Quản lý mã giảm giá</span>
                                         )}
                                     </Link>
                                 </li>
