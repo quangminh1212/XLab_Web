@@ -303,9 +303,9 @@ function CouponsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-xl shadow-xl p-6">
+      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-xl shadow-lg border border-primary-300 p-6">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 border border-white/30">
             <span className="text-3xl">🏷️</span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Quản lý mã giảm giá</h1>
@@ -390,7 +390,7 @@ function CouponsPage() {
 
       {/* Content */}
       {activeTab === 'list' && (
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white rounded-lg shadow border border-gray-100">
           <div className="p-6">
             <h2 className="text-lg font-medium text-gray-900 mb-4">Danh sách mã giảm giá</h2>
             
@@ -401,33 +401,33 @@ function CouponsPage() {
                 <p className="text-gray-500 mb-8">Tạo mã giảm giá đầu tiên để bắt đầu chương trình khuyến mãi cho khách hàng</p>
                 <button
                   onClick={() => setActiveTab('create')}
-                  className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transform hover:scale-105 transition-all duration-200 shadow-lg"
+                  className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg"
                 >
                   🚀 Tạo mã đầu tiên
                 </button>
               </div>
             ) : (
-              <div className="overflow-x-auto bg-white rounded-lg shadow-sm">
+              <div className="overflow-x-auto bg-white rounded-lg border border-gray-100">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                     <tr>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        🏷️ Mã / Tên
+                        Mã / Tên
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        💰 Loại / Giá trị
+                        Loại / Giá trị
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        📅 Thời gian
+                        Thời gian
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        📊 Sử dụng
+                        Sử dụng
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        🎯 Trạng thái
+                        Trạng thái
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                        ⚡ Hành động
+                        Hành động
                       </th>
                     </tr>
                   </thead>
@@ -437,10 +437,8 @@ function CouponsPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
                             <div className="relative inline-block">
-                              <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white font-mono font-bold text-sm px-4 py-2 rounded-lg shadow-lg border-2 border-primary-300 transform rotate-1 hover:rotate-0 transition-transform duration-200">
+                              <div className="bg-primary-500 text-white font-mono font-bold text-sm px-4 py-2 rounded-lg border border-primary-300">
                                 {coupon.code}
-                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full"></div>
-                                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-primary-300 rounded-full"></div>
                               </div>
                             </div>
                             <div className="text-sm font-medium text-gray-700 mt-2">{coupon.name}</div>
@@ -448,47 +446,43 @@ function CouponsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="space-y-2">
-                            <div className={`inline-flex items-center px-3 py-2 rounded-lg shadow-sm border-2 ${
-                              coupon.type === 'percentage' 
-                                ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-orange-300 text-orange-800'
-                                : 'bg-gradient-to-r from-green-50 to-green-100 border-green-300 text-green-800'
-                            }`}>
-                              <span className="text-lg font-bold">
-                                {coupon.type === 'percentage' ? '📊' : '💰'}
+                            <div className="inline-flex items-center px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700">
+                              <span className="text-sm font-medium mr-2">
+                                {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
                               </span>
-                              <span className="ml-2 text-sm font-bold">
+                              <span className="text-sm font-bold">
                                 {coupon.type === 'percentage' ? `${coupon.value}%` : formatCurrency(coupon.value)}
                               </span>
                             </div>
                             {coupon.minOrder && (
-                              <div className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded border">
-                                📏 Tối thiểu: {formatCurrency(coupon.minOrder)}
+                              <div className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded border border-gray-200">
+                                Tối thiểu: {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="space-y-2">
-                            <div className="bg-gradient-to-r from-purple-50 to-purple-100 border-2 border-purple-300 rounded-lg p-2 text-center shadow-sm">
-                              <div className="text-xs text-purple-600 font-bold uppercase">🚀 Bắt đầu</div>
-                              <div className="text-sm font-bold text-purple-800">{formatDate(coupon.startDate)}</div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 text-center">
+                              <div className="text-xs text-gray-500 font-medium uppercase">Bắt đầu</div>
+                              <div className="text-sm font-medium text-gray-700">{formatDate(coupon.startDate)}</div>
                             </div>
-                            <div className="bg-gradient-to-r from-pink-50 to-pink-100 border-2 border-pink-300 rounded-lg p-2 text-center shadow-sm">
-                              <div className="text-xs text-pink-600 font-bold uppercase">🏁 Kết thúc</div>
-                              <div className="text-sm font-bold text-pink-800">{formatDate(coupon.endDate)}</div>
+                            <div className="bg-gray-50 border border-gray-200 rounded-lg p-2 text-center">
+                              <div className="text-xs text-gray-500 font-medium uppercase">Kết thúc</div>
+                              <div className="text-sm font-medium text-gray-700">{formatDate(coupon.endDate)}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-2 border-blue-300 rounded-lg p-3 text-center shadow-sm">
-                            <div className="text-2xl font-bold text-blue-800">{coupon.usedCount}</div>
-                            <div className="text-xs text-blue-600 font-medium">
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+                            <div className="text-2xl font-bold text-gray-700">{coupon.usedCount}</div>
+                            <div className="text-xs text-gray-500 font-medium">
                               {coupon.usageLimit ? `/ ${coupon.usageLimit} lần` : '/ ∞ lần'}
                             </div>
                             <div className="mt-1">
-                              <div className={`w-full bg-blue-200 rounded-full h-1.5 ${coupon.usageLimit ? 'block' : 'hidden'}`}>
+                              <div className={`w-full bg-gray-200 rounded-full h-1.5 ${coupon.usageLimit ? 'block' : 'hidden'}`}>
                                 <div 
-                                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" 
+                                  className="bg-primary-500 h-1.5 rounded-full transition-all duration-300" 
                                   style={{ 
                                     width: coupon.usageLimit ? `${Math.min((coupon.usedCount / coupon.usageLimit) * 100, 100)}%` : '0%' 
                                   }}
@@ -499,45 +493,21 @@ function CouponsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex flex-col space-y-2">
-                            {/* Trạng thái hoạt động */}
-                            <div className={`relative inline-flex items-center px-3 py-2 rounded-lg border-2 shadow-sm ${
-                              coupon.isActive 
-                                ? 'bg-gradient-to-r from-green-50 to-green-100 border-green-300 text-green-800' 
-                                : 'bg-gradient-to-r from-gray-50 to-gray-100 border-gray-300 text-gray-700'
-                            }`}>
-                              <div className={`w-2 h-2 rounded-full mr-2 ${
-                                coupon.isActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
-                              }`}></div>
-                              <span className="text-xs font-bold uppercase tracking-wide">
-                                {coupon.isActive ? '✅ Hoạt động' : '⏸️ Tạm dừng'}
-                              </span>
-                              {coupon.isActive && (
-                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
-                              )}
-                            </div>
-                            
-                            {/* Trạng thái thời gian */}
-                            {isExpired(coupon.endDate) && (
-                              <div className="relative inline-flex items-center px-3 py-2 rounded-lg border-2 bg-gradient-to-r from-red-50 to-red-100 border-red-300 text-red-800 shadow-sm">
-                                <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
-                                <span className="text-xs font-bold uppercase tracking-wide">❌ Đã hết hạn</span>
-                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                            {/* Trạng thái chính */}
+                            {isExpired(coupon.endDate) ? (
+                              <div className="inline-flex items-center px-3 py-2 rounded-lg border bg-red-50 border-red-200 text-red-700">
+                                <div className="w-2 h-2 rounded-full bg-red-400 mr-2"></div>
+                                <span className="text-xs font-medium uppercase tracking-wide">Đã hết hạn</span>
                               </div>
-                            )}
-                            
-                            {!isValidNow(coupon.startDate, coupon.endDate) && !isExpired(coupon.endDate) && (
-                              <div className="relative inline-flex items-center px-3 py-2 rounded-lg border-2 bg-gradient-to-r from-yellow-50 to-yellow-100 border-yellow-300 text-yellow-800 shadow-sm">
-                                <div className="w-2 h-2 rounded-full bg-yellow-500 mr-2 animate-pulse"></div>
-                                <span className="text-xs font-bold uppercase tracking-wide">⏳ Chưa bắt đầu</span>
-                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+                            ) : coupon.isActive ? (
+                              <div className="inline-flex items-center px-3 py-2 rounded-lg border bg-primary-50 border-primary-200 text-primary-700">
+                                <div className="w-2 h-2 rounded-full bg-primary-500 mr-2"></div>
+                                <span className="text-xs font-medium uppercase tracking-wide">Đang hoạt động</span>
                               </div>
-                            )}
-                            
-                            {isValidNow(coupon.startDate, coupon.endDate) && coupon.isActive && (
-                              <div className="relative inline-flex items-center px-3 py-2 rounded-lg border-2 bg-gradient-to-r from-blue-50 to-blue-100 border-blue-300 text-blue-800 shadow-sm">
-                                <div className="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></div>
-                                <span className="text-xs font-bold uppercase tracking-wide">🟢 Đang áp dụng</span>
-                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                            ) : (
+                              <div className="inline-flex items-center px-3 py-2 rounded-lg border bg-gray-50 border-gray-200 text-gray-600">
+                                <div className="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
+                                <span className="text-xs font-medium uppercase tracking-wide">Tạm dừng</span>
                               </div>
                             )}
                           </div>
@@ -546,25 +516,25 @@ function CouponsPage() {
                           <div className="flex space-x-2">
                             <button
                               onClick={() => handleEditCoupon(coupon)}
-                              className="px-3 py-1.5 bg-primary-100 text-primary-600 rounded-lg hover:bg-primary-200 transition-colors duration-150 text-xs font-medium"
+                              className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors duration-150 text-xs font-medium border border-gray-200"
                             >
-                              ✏️ Sửa
+                              Sửa
                             </button>
                             <button
                               onClick={() => handleToggleStatus(coupon.id, coupon.isActive)}
-                              className={`px-3 py-1.5 rounded-lg transition-colors duration-150 text-xs font-medium ${
+                              className={`px-3 py-1.5 rounded-lg transition-colors duration-150 text-xs font-medium border ${
                                 coupon.isActive 
-                                  ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' 
-                                  : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                  ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-200' 
+                                  : 'bg-primary-100 text-primary-600 hover:bg-primary-200 border-primary-200'
                               }`}
                             >
-                              {coupon.isActive ? '⏸️ Dừng' : '▶️ Hoạt động'}
+                              {coupon.isActive ? 'Dừng' : 'Hoạt động'}
                             </button>
                             <button
                               onClick={() => handleDeleteCoupon(coupon.id)}
-                              className="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors duration-150 text-xs font-medium"
+                              className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors duration-150 text-xs font-medium border border-red-200"
                             >
-                              🗑️ Xóa
+                              Xóa
                             </button>
                           </div>
                         </td>
@@ -579,17 +549,17 @@ function CouponsPage() {
       )}
 
       {(activeTab === 'create' || activeTab === 'edit') && (
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
+        <div className="bg-white rounded-lg shadow border border-gray-100 max-w-4xl mx-auto">
+          <div className="p-4">
+            <h2 className="text-lg font-medium text-gray-900 mb-3">
               {activeTab === 'create' ? 'Tạo mã giảm giá mới' : 'Chỉnh sửa mã giảm giá'}
             </h2>
             
-            <form onSubmit={activeTab === 'create' ? handleCreateCoupon : handleUpdateCoupon} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={activeTab === 'create' ? handleCreateCoupon : handleUpdateCoupon} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Mã giảm giá */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Mã giảm giá *
                   </label>
                   <div className="flex">
@@ -597,14 +567,14 @@ function CouponsPage() {
                       type="text"
                       value={form.code}
                       onChange={(e) => setForm(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-1 px-2 py-1.5 border border-gray-300 rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       placeholder="VD: SUMMER2024"
                       required
                     />
                     <button
                       type="button"
                       onClick={generateCode}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-200"
+                      className="px-3 py-1.5 bg-gray-100 text-gray-700 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-200 text-sm"
                     >
                       Tạo tự động
                     </button>
@@ -613,14 +583,14 @@ function CouponsPage() {
 
                 {/* Tên mã giảm giá */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Tên mã giảm giá *
                   </label>
                   <input
                     type="text"
                     value={form.name}
                     onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     placeholder="VD: Giảm giá mùa hè"
                     required
                   />
@@ -628,13 +598,13 @@ function CouponsPage() {
 
                 {/* Loại giảm giá */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Loại giảm giá *
                   </label>
                   <select
                     value={form.type}
                     onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as 'percentage' | 'fixed' }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                   >
                     <option value="percentage">Phần trăm (%)</option>
                     <option value="fixed">Số tiền cố định (VNĐ)</option>
@@ -643,98 +613,98 @@ function CouponsPage() {
 
                 {/* Giá trị giảm */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Giá trị giảm *
                   </label>
                   <input
                     type="number"
                     value={form.value}
                     onChange={(e) => setForm(prev => ({ ...prev, value: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     placeholder={form.type === 'percentage' ? 'VD: 10' : 'VD: 50000'}
                     min="0"
                     max={form.type === 'percentage' ? 100 : undefined}
                     required
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     {form.type === 'percentage' ? 'Nhập số phần trăm (0-100)' : 'Nhập số tiền (VNĐ)'}
                   </p>
                 </div>
 
                 {/* Đơn hàng tối thiểu */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Đơn hàng tối thiểu
                   </label>
                   <input
                     type="number"
                     value={form.minOrder}
                     onChange={(e) => setForm(prev => ({ ...prev, minOrder: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     placeholder="VD: 100000"
                     min="0"
                   />
-                  <p className="text-sm text-gray-500 mt-1">Để trống nếu không có yêu cầu tối thiểu</p>
+                  <p className="text-xs text-gray-500 mt-1">Để trống nếu không có yêu cầu tối thiểu</p>
                 </div>
 
                 {/* Giảm tối đa */}
                 {form.type === 'percentage' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
                       Giảm tối đa
                     </label>
                     <input
                       type="number"
                       value={form.maxDiscount}
                       onChange={(e) => setForm(prev => ({ ...prev, maxDiscount: Number(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       placeholder="VD: 500000"
                       min="0"
                     />
-                    <p className="text-sm text-gray-500 mt-1">Để trống nếu không giới hạn</p>
+                    <p className="text-xs text-gray-500 mt-1">Để trống nếu không giới hạn</p>
                   </div>
                 )}
 
                 {/* Giới hạn sử dụng */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Giới hạn sử dụng
                   </label>
                   <input
                     type="number"
                     value={form.usageLimit}
                     onChange={(e) => setForm(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     placeholder="VD: 100"
                     min="0"
                   />
-                  <p className="text-sm text-gray-500 mt-1">Để trống hoặc 0 nếu không giới hạn</p>
+                  <p className="text-xs text-gray-500 mt-1">Để trống hoặc 0 nếu không giới hạn</p>
                 </div>
 
                 {/* Ngày bắt đầu */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Ngày bắt đầu *
                   </label>
                   <input
                     type="date"
                     value={form.startDate}
                     onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     required
                   />
                 </div>
 
                 {/* Ngày kết thúc */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Ngày kết thúc *
                   </label>
                   <input
                     type="date"
                     value={form.endDate}
                     onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     required
                   />
                 </div>
@@ -742,31 +712,31 @@ function CouponsPage() {
 
               {/* Mô tả */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   Mô tả
                 </label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  rows={2}
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                   placeholder="Mô tả chi tiết về mã giảm giá này..."
                 />
               </div>
 
               {/* Sản phẩm áp dụng */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-xs font-medium text-gray-700 mb-1">
                   ID sản phẩm áp dụng
                 </label>
                 <input
                   type="text"
                   value={form.applicableProducts}
                   onChange={(e) => setForm(prev => ({ ...prev, applicableProducts: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                   placeholder="VD: prod1, prod2, prod3 (phân cách bằng dấu phẩy)"
                 />
-                <p className="text-sm text-gray-500 mt-1">Để trống nếu áp dụng cho tất cả sản phẩm</p>
+                <p className="text-xs text-gray-500 mt-1">Để trống nếu áp dụng cho tất cả sản phẩm</p>
               </div>
 
               {/* Buttons */}
@@ -778,14 +748,14 @@ function CouponsPage() {
                     setIsEditing(null);
                     setActiveTab('list');
                   }}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                  className="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 text-sm"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={isCreating}
-                                      className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-md hover:from-primary-700 hover:to-primary-800 disabled:opacity-50"
+                  className="px-3 py-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-md hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 text-sm"
                 >
                   {isCreating ? 'Đang xử lý...' : (activeTab === 'create' ? 'Tạo mã giảm giá' : 'Cập nhật')}
                 </button>
