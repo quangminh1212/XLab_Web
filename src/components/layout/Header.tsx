@@ -77,7 +77,7 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isOpen]);
 
   const isActive = (path: string) => {
-    return pathname === path ? 'text-blue-600 font-medium' : 'text-gray-700 hover:text-blue-600';
+    return pathname === path ? 'text-primary-600 font-medium' : 'text-gray-700 hover:text-primary-600';
   };
 
   const toggleMenu = () => {
@@ -153,7 +153,7 @@ const Header = () => {
               <div className="relative" ref={notificationRef}>
                 <button
                   onClick={toggleNotification}
-                  className="text-gray-700 hover:text-blue-600 focus:outline-none relative"
+                  className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
                   aria-label="Thông báo"
                   aria-expanded={isNotificationOpen}
                   aria-haspopup="true"
@@ -195,7 +195,7 @@ const Header = () => {
                             e.stopPropagation();
                             markAllAsRead();
                           }}
-                          className="text-xs sm:text-sm text-blue-600 hover:text-blue-700"
+                          className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                         >
                           Đánh dấu tất cả đã đọc
                         </button>
@@ -207,7 +207,7 @@ const Header = () => {
                         notifications.slice(0, 5).map((notification) => (
                           <div 
                             key={notification.id} 
-                            className={`p-2 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-blue-50' : ''}`}
+                            className={`p-2 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
                             onClick={() => markAsRead(notification.id)}
                             role="menuitem"
                           >
@@ -228,7 +228,7 @@ const Header = () => {
                     <div className="px-4 py-2 border-t border-gray-100 text-center">
                       <Link
                         href="/notifications"
-                        className="text-xs sm:text-sm text-blue-600 hover:text-blue-700"
+                        className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                         onClick={() => setIsNotificationOpen(false)}
                         role="menuitem"
                       >
@@ -241,7 +241,7 @@ const Header = () => {
             )}
 
             {/* Cart Icon */}
-            <Link href="/cart" className="text-gray-700 hover:text-blue-600 relative">
+            <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4 sm:h-5 sm:w-5"
