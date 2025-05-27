@@ -45,6 +45,8 @@ function CouponsPage() {
   const [activeTab, setActiveTab] = useState<'list' | 'create' | 'edit'>('list');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
 
   // Form state
   const [form, setForm] = useState<CouponForm>({
@@ -149,7 +151,7 @@ function CouponsPage() {
   // Update coupon
   const handleUpdateCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isEditing) return;
+    if (!editingCoupon) return;
 
     setIsCreating(true);
     setErrorMessage('');
@@ -161,7 +163,7 @@ function CouponsPage() {
         applicableProducts: form.applicableProducts ? form.applicableProducts.split(',').map(id => id.trim()).filter(id => id) : []
       };
 
-      const response = await fetch(`/api/admin/coupons/${isEditing}`, {
+      const response = await fetch(`/api/admin/coupons/${editingCoupon.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -173,10 +175,8 @@ function CouponsPage() {
 
       if (response.ok) {
         setSuccessMessage('Mã giảm giá đã được cập nhật thành công!');
-        resetForm();
-        setIsEditing(null);
+        closeEditModal();
         fetchCoupons();
-        setTimeout(() => setActiveTab('list'), 2000);
       } else {
         setErrorMessage(data.error || 'Đã xảy ra lỗi khi cập nhật mã giảm giá');
       }
@@ -249,8 +249,15 @@ function CouponsPage() {
       endDate: coupon.endDate.split('T')[0],
       applicableProducts: coupon.applicableProducts?.join(', ') || ''
     });
-    setIsEditing(coupon.id);
-    setActiveTab('edit');
+    setEditingCoupon(coupon);
+    setShowEditModal(true);
+  };
+
+  // Close edit modal
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingCoupon(null);
+    resetForm();
   };
 
   // Format currency
@@ -358,18 +365,7 @@ function CouponsPage() {
             >
               ➕ Tạo mã mới
             </button>
-            {isEditing && (
-              <button
-                onClick={() => setActiveTab('edit')}
-                className={`px-3 py-1.5 rounded-md font-medium text-sm transition-colors duration-200 ${
-                  activeTab === 'edit'
-                    ? 'bg-white text-primary-600 shadow-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/20'
-                }`}
-                >
-                ✏️ Chỉnh sửa
-              </button>
-            )}
+
           </nav>
         </div>
       </div>
@@ -547,14 +543,14 @@ function CouponsPage() {
         </div>
       )}
 
-      {(activeTab === 'create' || activeTab === 'edit') && (
+      {activeTab === 'create' && (
         <div className="bg-white rounded-lg shadow border border-gray-100 max-w-4xl mx-auto">
           <div className="p-3">
             <h2 className="text-base font-medium text-gray-900 mb-2">
-              {activeTab === 'create' ? 'Tạo mã giảm giá mới' : 'Chỉnh sửa mã giảm giá'}
+              Tạo mã giảm giá mới
             </h2>
             
-            <form onSubmit={activeTab === 'create' ? handleCreateCoupon : handleUpdateCoupon} className="space-y-4">
+            <form onSubmit={handleCreateCoupon} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Mã giảm giá */}
                 <div>
@@ -744,7 +740,6 @@ function CouponsPage() {
                   type="button"
                   onClick={() => {
                     resetForm();
-                    setIsEditing(null);
                     setActiveTab('list');
                   }}
                   className="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 text-sm"
@@ -756,10 +751,224 @@ function CouponsPage() {
                   disabled={isCreating}
                   className="px-3 py-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-md hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 text-sm"
                 >
-                  {isCreating ? 'Đang xử lý...' : (activeTab === 'create' ? 'Tạo mã giảm giá' : 'Cập nhật')}
+                  {isCreating ? 'Đang xử lý...' : 'Tạo mã giảm giá'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {showEditModal && editingCoupon && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Chỉnh sửa mã giảm giá: {editingCoupon.code}
+                </h3>
+                <button
+                  onClick={closeEditModal}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-4">
+              <form onSubmit={handleUpdateCoupon} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Mã giảm giá */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Mã giảm giá *
+                    </label>
+                    <input
+                      type="text"
+                      value={form.code}
+                      onChange={(e) => setForm(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      placeholder="VD: SUMMER2024"
+                      required
+                    />
+                  </div>
+
+                  {/* Tên mã giảm giá */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Tên mã giảm giá *
+                    </label>
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      placeholder="VD: Giảm giá mùa hè"
+                      required
+                    />
+                  </div>
+
+                  {/* Loại giảm giá */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Loại giảm giá *
+                    </label>
+                    <select
+                      value={form.type}
+                      onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as 'percentage' | 'fixed' }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="percentage">Phần trăm (%)</option>
+                      <option value="fixed">Số tiền cố định (VNĐ)</option>
+                    </select>
+                  </div>
+
+                  {/* Giá trị giảm */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Giá trị giảm *
+                    </label>
+                    <input
+                      type="number"
+                      value={form.value}
+                      onChange={(e) => setForm(prev => ({ ...prev, value: Number(e.target.value) }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      placeholder={form.type === 'percentage' ? 'VD: 10' : 'VD: 50000'}
+                      min="0"
+                      max={form.type === 'percentage' ? 100 : undefined}
+                      required
+                    />
+                  </div>
+
+                  {/* Đơn hàng tối thiểu */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Đơn hàng tối thiểu
+                    </label>
+                    <input
+                      type="number"
+                      value={form.minOrder}
+                      onChange={(e) => setForm(prev => ({ ...prev, minOrder: Number(e.target.value) }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      placeholder="VD: 100000"
+                      min="0"
+                    />
+                  </div>
+
+                  {/* Giảm tối đa */}
+                  {form.type === 'percentage' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Giảm tối đa
+                      </label>
+                      <input
+                        type="number"
+                        value={form.maxDiscount}
+                        onChange={(e) => setForm(prev => ({ ...prev, maxDiscount: Number(e.target.value) }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="VD: 500000"
+                        min="0"
+                      />
+                    </div>
+                  )}
+
+                  {/* Giới hạn sử dụng */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Giới hạn sử dụng
+                    </label>
+                    <input
+                      type="number"
+                      value={form.usageLimit}
+                      onChange={(e) => setForm(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      placeholder="VD: 100"
+                      min="0"
+                    />
+                  </div>
+
+                  {/* Ngày bắt đầu */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ngày bắt đầu *
+                    </label>
+                    <input
+                      type="date"
+                      value={form.startDate}
+                      onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+
+                  {/* Ngày kết thúc */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Ngày kết thúc *
+                    </label>
+                    <input
+                      type="date"
+                      value={form.endDate}
+                      onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Mô tả */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Mô tả
+                  </label>
+                  <textarea
+                    value={form.description}
+                    onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
+                    rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="Mô tả chi tiết về mã giảm giá này..."
+                  />
+                </div>
+
+                {/* Sản phẩm áp dụng */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    ID sản phẩm áp dụng
+                  </label>
+                  <input
+                    type="text"
+                    value={form.applicableProducts}
+                    onChange={(e) => setForm(prev => ({ ...prev, applicableProducts: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="VD: prod1, prod2, prod3 (phân cách bằng dấu phẩy)"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">Để trống nếu áp dụng cho tất cả sản phẩm</p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={closeEditModal}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+                    disabled={isCreating}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isCreating}
+                    className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-md hover:from-primary-700 hover:to-primary-800 disabled:opacity-50"
+                  >
+                    {isCreating ? 'Đang cập nhật...' : 'Cập nhật'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
