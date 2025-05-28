@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { siteConfig } from '@/config/siteConfig'
@@ -14,11 +14,25 @@ interface PaymentFormProps {
 
 const PaymentForm = ({ 
   amount, 
-  orderId = `ORDER-${Date.now()}`,
+  orderId,
   onSuccess,
   onError 
 }: PaymentFormProps) => {
   const router = useRouter()
+  
+  // Tạo orderId stable để tránh hydration mismatch
+  const [stableOrderId, setStableOrderId] = useState<string>('')
+  
+  // Sử dụng useEffect để tạo orderId chỉ ở client side
+  useEffect(() => {
+    if (!orderId && !stableOrderId) {
+      setStableOrderId(`ORDER-${Date.now()}`)
+    }
+  }, [orderId, stableOrderId])
+  
+  // Sử dụng orderId được truyền vào hoặc stableOrderId được tạo
+  const finalOrderId = orderId || stableOrderId
+  
   const [verificationCode, setVerificationCode] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -156,7 +170,7 @@ const PaymentForm = ({
     try {
       if (verificationMethod === 'vnpay') {
         // Tự động xác thực VNPay
-        await startAutoVerification(orderId)
+        await startAutoVerification(finalOrderId)
         setIsLoading(false)
       } else {
         // Phương thức thủ công như cũ
@@ -171,7 +185,7 @@ const PaymentForm = ({
         if (onSuccess) {
           onSuccess(transactionId)
         } else {
-          router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}`)
+          router.push(`/payment/success?orderId=${finalOrderId}&transactionId=${transactionId}`)
         }
       }
     } catch (error) {
@@ -199,7 +213,7 @@ const PaymentForm = ({
     const bankId = 'MB' // MBBank
     const accountNo = bankInfo.accountNumber
     const amount_number = amount
-    const addInfo = orderId
+    const addInfo = finalOrderId
     const template = 'compact' // Template compact - chỉ QR thuần túy không có văn bản
     
     // Đảm bảo encode đúng các thông tin
@@ -259,18 +273,27 @@ const PaymentForm = ({
               {/* QR Code thật từ VietQR */}
               <div className="relative inline-block">
                 <div className="w-80 h-80 relative">
-                  <Image 
-                    src={generateQRCode()}
-                    alt="VietQR Payment Code"
-                    fill
-                    className="object-contain rounded-lg"
-                    priority
-                    onError={(e) => {
-                      // Fallback nếu API VietQR lỗi
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+UVIgQ29kZTwvdGV4dD48L3N2Zz4=';
-                    }}
-                  />
+                  {finalOrderId ? (
+                    <Image 
+                      src={generateQRCode()}
+                      alt="VietQR Payment Code"
+                      fill
+                      className="object-contain rounded-lg"
+                      priority
+                      onError={(e) => {
+                        // Fallback nếu API VietQR lỗi
+                        const target = e.target as HTMLImageElement;
+                        target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+UVIgQ29kZTwvdGV4dD48L3N2Zz4=';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                        <p className="text-gray-600 text-sm">Đang tạo mã QR...</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
               
@@ -338,7 +361,11 @@ const PaymentForm = ({
                 <div className="pt-2">
                   <span className="text-sm font-medium text-gray-600 block mb-2">Nội dung chuyển khoản:</span>
                   <div className="bg-primary-50 border border-primary-200 rounded-md p-3 text-center">
-                    <span className="font-mono font-bold text-primary-700">{orderId}</span>
+                    {finalOrderId ? (
+                      <span className="font-mono font-bold text-primary-700">{finalOrderId}</span>
+                    ) : (
+                      <span className="text-gray-400 text-sm">Đang tạo mã đơn hàng...</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -460,7 +487,7 @@ const PaymentForm = ({
                         <p className="text-sm font-medium text-green-800">Xác nhận thanh toán</p>
                         <p className="text-xs text-green-700 mt-1">
                           Bằng cách click nút bên dưới, bạn xác nhận đã chuyển khoản <strong>{formatCurrency(amount)}</strong> 
-                          {' '}vào tài khoản <strong>{bankInfo.accountNumber}</strong> với nội dung <strong>{orderId}</strong>
+                          {' '}vào tài khoản <strong>{bankInfo.accountNumber}</strong> với nội dung <strong>{finalOrderId}</strong>
                         </p>
                       </div>
                     </div>
@@ -511,8 +538,8 @@ const PaymentForm = ({
 
                 <button
                   type="submit"
-                  disabled={isLoading || isPolling}
-                  className={`w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 ${isLoading || isPolling ? 'opacity-70 cursor-not-allowed' : 'hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl'}`}
+                  disabled={isLoading || isPolling || !finalOrderId}
+                  className={`w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 ${isLoading || isPolling || !finalOrderId ? 'opacity-70 cursor-not-allowed' : 'hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl'}`}
                 >
                   {isLoading || isPolling ? (
                     <div className="flex items-center justify-center gap-2">
