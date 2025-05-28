@@ -29,9 +29,9 @@ export default function Footer() {
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={140}
-                  height={56}
-                  className="w-auto h-14 transition-transform duration-300 group-hover:scale-105"
+                  width={160}
+                  height={64}
+                  className="w-auto h-16 transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
