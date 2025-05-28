@@ -7,6 +7,7 @@ const VNP_COMMAND_QUERY = 'querydr'
 const VNP_TMN_CODE = process.env.VNPAY_TMN_CODE || 'SANDBOX_TEST'
 const VNP_SECRET_KEY = process.env.VNPAY_SECRET_KEY || 'SANDBOX_SECRET_KEY'
 const VNP_API_URL = process.env.VNPAY_API_URL || 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
+const PAYMENT_DEMO_MODE = process.env.PAYMENT_DEMO_MODE === 'true'
 
 // Hàm tạo secure hash theo chuẩn VNPay
 function createSecureHash(data: string, secretKey: string): string {
@@ -39,6 +40,32 @@ export async function POST(request: NextRequest) {
         { error: 'Missing required parameters' },
         { status: 400 }
       )
+    }
+
+    // Kiểm tra nếu ở demo mode hoặc không có credentials thật
+    const isDemo = PAYMENT_DEMO_MODE || 
+                   VNP_TMN_CODE === 'DEMO_MODE' || 
+                   VNP_TMN_CODE === 'SANDBOX_TEST' ||
+                   process.env.NODE_ENV === 'development'
+
+    if (isDemo) {
+      console.log('🎭 Running in DEMO MODE - Simulating VNPay response')
+      
+      // Giả lập thời gian xử lý
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      // Giả lập response thành công
+      return NextResponse.json({
+        success: true,
+        status: '00', // Thành công
+        statusText: 'Giao dịch thanh toán thành công (Demo)',
+        transactionNo: `DEMO${Date.now()}`,
+        amount: amount || 29800000,
+        bankCode: 'DEMO_BANK',
+        payDate: formatDateTime(new Date()),
+        isDemo: true,
+        message: 'Đây là giao dịch demo - không có tiền thật được chuyển'
+      })
     }
 
     // Tạo request ID unique
@@ -107,6 +134,23 @@ export async function POST(request: NextRequest) {
         data: vnpayResult
       })
     } else {
+      // Nếu có lỗi từ VNPay nhưng đang ở dev mode, fallback sang demo
+      if (process.env.NODE_ENV === 'development' && vnpayResult.vnp_ResponseCode === '02') {
+        console.log('⚠️ VNPay API error in development - falling back to demo mode')
+        
+        return NextResponse.json({
+          success: true,
+          status: '00',
+          statusText: 'Giao dịch thành công (Fallback demo)',
+          transactionNo: `FALLBACK${Date.now()}`,
+          amount: amount || 29800000,
+          bankCode: 'FALLBACK_BANK',
+          payDate: formatDateTime(new Date()),
+          isDemo: true,
+          message: 'VNPay API không khả dụng - sử dụng demo mode'
+        })
+      }
+
       return NextResponse.json({
         success: false,
         error: vnpayResult.vnp_Message || 'Unknown error from VNPay',
@@ -117,18 +161,20 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('VNPay API Error:', error)
     
-    // Giả lập response cho demo (khi không có VNPay credentials thật)
+    // Fallback demo mode cho tất cả lỗi trong development
     if (process.env.NODE_ENV === 'development') {
-      // Giả lập trạng thái thành công sau 3 giây
+      console.log('🔄 Error in development - using demo response')
+      
+      // Giả lập trạng thái thành công sau 1 giây
       await new Promise(resolve => setTimeout(resolve, 1000))
       
       return NextResponse.json({
         success: true,
         status: '00', // Thành công
-        statusText: 'Giao dịch thanh toán thành công',
-        transactionNo: `VNP${Date.now()}`,
+        statusText: 'Giao dịch thanh toán thành công (Error fallback)',
+        transactionNo: `ERR${Date.now()}`,
         amount: 29800000, // Demo amount
-        bankCode: 'NCB',
+        bankCode: 'ERROR_FALLBACK',
         payDate: formatDateTime(new Date()),
         isDemo: true
       })
