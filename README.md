@@ -203,6 +203,45 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ## 💳 Tích hợp VNPay
 
+### 🔧 Environment Variables
+
+Thêm các dòng sau vào file `.env.local`:
+
+```bash
+# VNPay Configuration
+VNPAY_TMN_CODE=your_tmn_code_here
+VNPAY_SECRET_KEY=your_secret_key_here  
+VNPAY_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
+```
+
+### 📋 Cách lấy TMN Code và Secret Key
+
+1. Đăng ký tài khoản VNPay Merchant tại: https://vnpay.vn
+2. Sau khi được duyệt, đăng nhập vào portal merchant
+3. Vào **Cấu hình** > **Thông tin kết nối**
+4. Copy `TMN Code` và `Secret Key`
+
+### 🧪 Sandbox Environment (Demo)
+
+Để test trong môi trường phát triển, hệ thống sẽ tự động sử dụng demo data nếu không có credentials thật.
+
+### ✨ Chức năng đã tích hợp
+
+✅ **Tự động xác thực VNPay**
+- Tự động polling để check trạng thái giao dịch
+- Không cần nhập mã thủ công
+- Tự động chuyển hướng khi thanh toán thành công
+
+✅ **API QueryDr Integration**  
+- Tuân thủ chuẩn VNPay API 2.1.0
+- Secure hash SHA512
+- Error handling đầy đủ
+
+✅ **UI/UX cải tiến**
+- 3 phương thức xác thực: VNPay Auto, Confirm, Manual Code
+- Real-time polling status
+- Loading states và progress indicators
+
 ### 🌐 VNPay APIs Overview
 
 Hệ thống VNPay đã được tích hợp hoàn chỉnh với 4 endpoints chính:
@@ -213,25 +252,6 @@ Hệ thống VNPay đã được tích hợp hoàn chỉnh với 4 endpoints ch�
 | `/api/payment/vnpay/ipn` | GET/POST | Webhook từ VNPay | ✅ Hoàn thành |
 | `/api/payment/vnpay/return` | GET | Return URL cho browser | ✅ Hoàn thành |
 | `/api/payment/vnpay` | POST | Query trạng thái giao dịch | ✅ Hoàn thành |
-
-### 🔧 Environment Configuration
-
-Thêm các biến sau vào `.env.local`:
-
-```bash
-# VNPay Configuration - Demo Mode
-VNPAY_TMN_CODE=DEMO_MODE
-VNPAY_SECRET_KEY=DEMO_SECRET
-VNPAY_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
-
-# VNPay URLs
-VNP_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
-VNP_RETURN_URL=http://localhost:3000/api/payment/vnpay/return
-VNP_IPN_URL=http://localhost:3000/api/payment/vnpay/ipn
-
-# Payment Configuration
-PAYMENT_DEMO_MODE=true
-```
 
 ### 🚀 API Usage Examples
 
@@ -340,6 +360,14 @@ Khi `PAYMENT_DEMO_MODE=true` hoặc `VNPAY_TMN_CODE=DEMO_MODE`:
 - **✅ IP Address tracking**: Log IP để audit
 - **✅ Timestamp validation**: Kiểm tra thời gian expire
 - **✅ Error handling**: Comprehensive error management
+
+### 🧪 Testing
+
+1. Chạy server: `npm run dev`
+2. Vào trang checkout: http://localhost:3000/checkout?skipInfo=true
+3. Chọn "Tự động xác thực VNPay"
+4. Click "Bắt đầu xác thực tự động"
+5. Hệ thống sẽ mô phỏng polling và tự động thành công sau vài giây
 
 ### 🧪 Testing Flow
 
