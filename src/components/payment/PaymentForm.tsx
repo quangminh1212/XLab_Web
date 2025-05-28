@@ -22,6 +22,7 @@ const PaymentForm = ({
   const [verificationCode, setVerificationCode] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [verificationMethod, setVerificationMethod] = useState<'code' | 'confirm'>('confirm')
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -34,10 +35,12 @@ const PaymentForm = ({
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
     
-    if (!verificationCode.trim()) {
-      newErrors.verificationCode = 'Vui lòng nhập mã xác thực sau khi chuyển khoản'
-    } else if (verificationCode.length < 6) {
-      newErrors.verificationCode = 'Mã xác thực phải có ít nhất 6 ký tự'
+    if (verificationMethod === 'code') {
+      if (!verificationCode.trim()) {
+        newErrors.verificationCode = 'Vui lòng nhập mã xác thực sau khi chuyển khoản'
+      } else if (verificationCode.length < 6) {
+        newErrors.verificationCode = 'Mã xác thực phải có ít nhất 6 ký tự'
+      }
     }
     
     setErrors(newErrors)
@@ -55,10 +58,12 @@ const PaymentForm = ({
     
     try {
       // Giả lập call API xác thực
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      await new Promise(resolve => setTimeout(resolve, 1500))
       
       // Giả lập transaction ID
-      const transactionId = `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+      const transactionId = verificationMethod === 'code' 
+        ? `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+        : `CONF-${Date.now()}-${Math.floor(Math.random() * 1000)}`
       
       setIsLoading(false)
       
@@ -248,29 +253,97 @@ const PaymentForm = ({
               
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-700 mb-2">
-                    Mã xác thực (Mã giao dịch sau khi chuyển khoản)
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Chọn phương thức xác thực
                   </label>
-                  <input
-                    id="verificationCode"
-                    type="text"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                    placeholder="Nhập mã giao dịch hoặc mã xác thực"
-                    className={`w-full border ${errors.verificationCode ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors`}
-                  />
-                  {errors.verificationCode && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {errors.verificationCode}
-                    </p>
-                  )}
-                  <p className="mt-2 text-xs text-gray-500">
-                    💡 Nhập mã giao dịch từ SMS/App ngân hàng hoặc 6 số cuối của số tài khoản bạn chuyển từ
-                  </p>
+                  <div className="space-y-3">
+                    {/* Phương thức xác nhận đơn giản */}
+                    <label className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${verificationMethod === 'confirm' ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                      <input
+                        type="radio"
+                        value="confirm"
+                        checked={verificationMethod === 'confirm'}
+                        onChange={(e) => setVerificationMethod(e.target.value as 'code' | 'confirm')}
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                      />
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                          <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Xác nhận đã chuyển khoản (Khuyến nghị)
+                        </div>
+                        <p className="text-xs text-gray-600 mt-1">Đơn giản, nhanh chóng - chỉ cần click xác nhận</p>
+                      </div>
+                    </label>
+
+                    {/* Phương thức nhập mã */}
+                    <label className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${verificationMethod === 'code' ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                      <input
+                        type="radio"
+                        value="code"
+                        checked={verificationMethod === 'code'}
+                        onChange={(e) => setVerificationMethod(e.target.value as 'code' | 'confirm')}
+                        className="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                      />
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                          <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                          Nhập mã xác thực
+                        </div>
+                        <p className="text-xs text-gray-600 mt-1">Bảo mật cao - nhập mã giao dịch từ SMS/App bank</p>
+                      </div>
+                    </label>
+                  </div>
                 </div>
+                 
+                {verificationMethod === 'code' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div>
+                      <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-700 mb-2">
+                        Mã xác thực (Mã giao dịch sau khi chuyển khoản)
+                      </label>
+                      <input
+                        id="verificationCode"
+                        type="text"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                        placeholder="Nhập mã giao dịch hoặc mã xác thực"
+                        className={`w-full border ${errors.verificationCode ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors`}
+                      />
+                      {errors.verificationCode && (
+                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {errors.verificationCode}
+                        </p>
+                      )}
+                      <p className="mt-2 text-xs text-gray-600">
+                        💡 Nhập mã giao dịch từ SMS/App ngân hàng hoặc 6 số cuối của số tài khoản bạn chuyển từ
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {verificationMethod === 'confirm' && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium text-green-800">Xác nhận thanh toán</p>
+                        <p className="text-xs text-green-700 mt-1">
+                          Bằng cách click nút bên dưới, bạn xác nhận đã chuyển khoản <strong>{formatCurrency(amount)}</strong> 
+                          {' '}vào tài khoản <strong>{bankInfo.accountNumber}</strong> với nội dung <strong>{orderId}</strong>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {errors.submit && (
                   <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
@@ -299,7 +372,7 @@ const PaymentForm = ({
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      Xác nhận đã chuyển khoản
+                      {verificationMethod === 'confirm' ? 'Xác nhận đã chuyển khoản' : 'Xác thực với mã'}
                     </div>
                   )}
                 </button>
