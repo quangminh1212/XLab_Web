@@ -20,15 +20,15 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
       
       <div className="relative container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           
           {/* Logo và giới thiệu - Layout ngang */}
           <div className="flex flex-col items-center lg:items-start">
             {/* Container cho text và logo */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-4 mb-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-5 mb-6">
               {/* Text bên trái */}
               <div className="flex-1 order-2 lg:order-1">
-                <p className="text-slate-400 text-xs text-center lg:text-left leading-relaxed max-w-xs mb-4 lg:mb-0">
+                <p className="text-slate-400 text-sm text-center lg:text-left leading-relaxed max-w-sm mb-4 lg:mb-0">
                   Chúng tôi chuyên cung cấp các giải pháp phần mềm và dịch vụ công nghệ 
                   giúp doanh nghiệp tối ưu hóa hoạt động.
                 </p>
@@ -41,9 +41,9 @@ export default function Footer() {
                     <Image
                       src="/images/logo.jpg"
                       alt={`${siteConfig.name} Logo`}
-                      width={160}
-                      height={64}
-                      className="w-auto h-16 transition-transform duration-300 group-hover:scale-105"
+                      width={180}
+                      height={72}
+                      className="w-auto h-18 transition-transform duration-300 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
