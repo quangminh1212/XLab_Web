@@ -1,19 +1,22 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
+import { processGoogleAvatarUrl, createImageErrorHandler } from '@/shared/utils';
 
 const Header = () => {
-  const pathname = usePathname();
   const { data: session } = useSession();
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
-  const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
@@ -272,12 +275,13 @@ const Header = () => {
                   aria-haspopup="true"
                 >
                   <Image
-                    src={session.user?.image || "/images/avatar-placeholder.svg"}
+                    src={processGoogleAvatarUrl(session.user?.image)}
                     alt={session.user?.name || "User"}
                     width={30}
                     height={30}
                     className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full"
                     unoptimized={true}
+                    onError={createImageErrorHandler(session.user?.image)}
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

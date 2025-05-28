@@ -13,8 +13,40 @@ const nextConfig = {
     }
   },
   images: {
-    domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
+    domains: [
+      'via.placeholder.com', 
+      'placehold.co', 
+      'i.pravatar.cc', 
+      'images.unsplash.com', 
+      'lh3.googleusercontent.com',
+      'lh4.googleusercontent.com',
+      'lh5.googleusercontent.com',
+      'lh6.googleusercontent.com',
+      'googleusercontent.com',
+      'storage.googleapis.com',
+      'avatars.githubusercontent.com'
+    ],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh4.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh5.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh6.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+      },
       {
         protocol: 'https',
         hostname: '**',
