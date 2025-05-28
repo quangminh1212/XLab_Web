@@ -20,7 +20,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
       
       <div className="relative container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           
           {/* Logo và giới thiệu - Layout ngang */}
           <div className="flex flex-col items-center lg:items-start">
@@ -29,8 +29,7 @@ export default function Footer() {
               {/* Text bên trái */}
               <div className="flex-1 order-2 lg:order-1">
                 <p className="text-slate-400 text-sm text-center lg:text-left leading-relaxed max-w-sm mb-4 lg:mb-0">
-                  Chúng tôi chuyên cung cấp các giải pháp phần mềm và dịch vụ công nghệ 
-                  giúp doanh nghiệp tối ưu hóa hoạt động.
+                  Giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.
                 </p>
               </div>
               
@@ -121,46 +120,6 @@ export default function Footer() {
                 <Link href="/contact" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Liên hệ
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Sản phẩm */}
-          <div className="flex flex-col items-center lg:items-start">
-            <h3 className="text-white text-lg font-bold mb-5 relative group">
-              <span className="relative z-10">Sản phẩm</span>
-              <div className="absolute -bottom-1 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
-            </h3>
-            <ul className="space-y-2.5 text-center lg:text-left">
-              <li>
-                <Link href="/products/xlab-office-suite" className="group inline-flex items-center text-slate-400 hover:text-purple-400 text-sm transition-all duration-300 hover:translate-x-1">
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-purple-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  XLab Office Suite
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/xlab-erp-system" className="group inline-flex items-center text-slate-400 hover:text-purple-400 text-sm transition-all duration-300 hover:translate-x-1">
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-purple-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  XLab ERP System
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/xlab-secure-vault" className="group inline-flex items-center text-slate-400 hover:text-purple-400 text-sm transition-all duration-300 hover:translate-x-1">
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-purple-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  XLab Secure Vault
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/xlab-design-master" className="group inline-flex items-center text-slate-400 hover:text-purple-400 text-sm transition-all duration-300 hover:translate-x-1">
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-purple-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  XLab Design Master
-                </Link>
-              </li>
-              <li>
-                <Link href="/products/xlab-code-ide" className="group inline-flex items-center text-slate-400 hover:text-purple-400 text-sm transition-all duration-300 hover:translate-x-1">
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-purple-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  XLab Code IDE
                 </Link>
               </li>
             </ul>
