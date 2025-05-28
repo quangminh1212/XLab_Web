@@ -36,87 +36,32 @@ function getTransaction(orderId: string): Transaction | null {
   }
 }
 
-// Verify payment with verification code (improved bank API check)
+// Verify payment with verification code (mock bank API check)
 async function verifyWithBank(verificationCode: string, amount: number, orderId: string) {
-  // Improved verification logic with multiple validation patterns
+  // Mock bank verification logic
+  // In real implementation, this would call bank API
   
-  // Pattern 1: Standard bank transaction code (6-20 characters, alphanumeric)
-  const isStandardCode = /^[A-Z0-9]{6,20}$/i.test(verificationCode)
-  
-  // Pattern 2: Vietnamese bank format (FT + digits)
-  const isVietBankFormat = /^FT\d{10,15}$/i.test(verificationCode)
-  
-  // Pattern 3: MBBank specific format (digits + letters)
-  const isMBBankFormat = /^\d{6,}[A-Z]*$/i.test(verificationCode)
-  
-  // Pattern 4: Last 6 digits of sender account (for reference)
-  const isAccountReference = /^\d{6}$/.test(verificationCode)
-  
-  // Pattern 5: SMS transaction code format
-  const isSMSFormat = /^[A-Z]{2}\d{8,12}$/i.test(verificationCode)
-  
-  if (!isStandardCode && !isVietBankFormat && !isMBBankFormat && !isAccountReference && !isSMSFormat) {
-    return { 
-      success: false, 
-      message: 'Mã xác thực không đúng định dạng. Vui lòng nhập mã giao dịch từ SMS hoặc App ngân hàng.' 
-    }
-  }
-  
-  // Enhanced mock verification with realistic scenarios
-  const mockTransactionId = `MB${Date.now().toString().slice(-8)}_${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
-  
-  // More realistic success rate based on code format
-  let successRate = 0.85 // Base 85% success rate
-  
-  if (isVietBankFormat || isMBBankFormat) {
-    successRate = 0.95 // Higher success for proper bank formats
-  } else if (isAccountReference) {
-    successRate = 0.75 // Lower for account reference method
-  }
-  
-  // Additional validation: check if code length matches expected patterns
+  // Simple validation: code should be at least 6 characters
   if (verificationCode.length < 6) {
-    return { 
-      success: false, 
-      message: 'Mã xác thực quá ngắn. Vui lòng nhập đầy đủ mã giao dịch.' 
-    }
+    return { success: false, message: 'Mã xác thực không hợp lệ' }
   }
   
-  if (verificationCode.length > 25) {
-    return { 
-      success: false, 
-      message: 'Mã xác thực quá dài. Vui lòng kiểm tra lại mã giao dịch.' 
-    }
-  }
+  // Mock some scenarios
+  const mockTransactionId = `BANK_${Date.now()}_${Math.floor(Math.random() * 1000)}`
   
-  const isSuccess = Math.random() < successRate
+  // 90% success rate for demo
+  const isSuccess = Math.random() > 0.1
   
   if (isSuccess) {
-    // Simulate realistic response time (500ms - 2000ms)
-    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1500))
-    
     return {
       success: true,
       transactionId: mockTransactionId,
-      message: 'Xác thực thành công. Giao dịch đã được xác nhận.',
-      bankInfo: {
-        bankCode: 'MB',
-        bankName: 'MBBank',
-        verificationTime: new Date().toISOString()
-      }
+      message: 'Xác thực thành công'
     }
   } else {
-    // Provide more specific error messages
-    const errorMessages = [
-      'Không tìm thấy giao dịch tương ứng với mã xác thực.',
-      'Mã xác thực đã hết hạn hoặc không chính xác.',
-      'Số tiền giao dịch không khớp với đơn hàng.',
-      'Mã xác thực đã được sử dụng cho đơn hàng khác.'
-    ]
-    
     return {
       success: false,
-      message: errorMessages[Math.floor(Math.random() * errorMessages.length)]
+      message: 'Không tìm thấy giao dịch tương ứng với mã xác thực'
     }
   }
 }

@@ -33,41 +33,16 @@ function saveTransaction(transaction: any) {
     
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, 'utf8')
-      try {
-        transactions = JSON.parse(data)
-      } catch (parseError) {
-        console.error('Error parsing transactions file:', parseError)
-        transactions = []
-      }
+      transactions = JSON.parse(data)
     }
     
-    // Check for duplicate transactions
-    const existingIndex = transactions.findIndex((t: any) => 
-      t.orderId === transaction.orderId && 
-      t.transactionNo === transaction.transactionNo
-    )
-    
-    const newTransaction = {
+    transactions.push({
       ...transaction,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-    
-    if (existingIndex >= 0) {
-      // Update existing transaction instead of creating duplicate
-      transactions[existingIndex] = {
-        ...transactions[existingIndex],
-        ...newTransaction,
-        updatedAt: new Date().toISOString()
-      }
-      console.log('Transaction updated:', transaction.orderId)
-    } else {
-      // Add new transaction
-      transactions.push(newTransaction)
-      console.log('Transaction saved:', transaction.orderId)
-    }
+      createdAt: new Date().toISOString()
+    })
     
     fs.writeFileSync(filePath, JSON.stringify(transactions, null, 2))
+    console.log('Transaction saved:', transaction.vnp_TxnRef)
   } catch (error) {
     console.error('Error saving transaction:', error)
   }

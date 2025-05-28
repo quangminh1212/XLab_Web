@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 
 const VNP_URL = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html' // Test environment
-const VNP_TMN_CODE = process.env.VNP_TMN_CODE || 'DEMO'
-const VNP_HASH_SECRET = process.env.VNP_HASH_SECRET || 'QWERTYUIOPASDFGHJKLZXCVBNM123456'
-const VNP_RETURN_URL = (process.env.NEXTAUTH_URL || 'http://localhost:3000') + '/api/payment/vnpay/return'
+const VNP_TMN_CODE = process.env.VNP_TMN_CODE || 'YOUR_TMN_CODE'
+const VNP_HASH_SECRET = process.env.VNP_HASH_SECRET || 'YOUR_HASH_SECRET'
+const VNP_RETURN_URL = process.env.NEXTAUTH_URL + '/api/payment/vnpay/return'
 
 function sortObject(obj: any) {
   const sorted: any = {}
@@ -21,42 +21,14 @@ function sortObject(obj: any) {
   return sorted
 }
 
-// Check if VNPay is properly configured
-function isVNPayConfigured(): boolean {
-  return !!(
-    process.env.VNP_TMN_CODE && 
-    process.env.VNP_HASH_SECRET && 
-    process.env.VNP_TMN_CODE !== 'YOUR_TMN_CODE' &&
-    process.env.VNP_HASH_SECRET !== 'YOUR_HASH_SECRET'
-  )
-}
-
 export async function POST(request: NextRequest) {
   try {
-    // Check VNPay configuration first
-    if (!isVNPayConfigured()) {
-      console.warn('VNPay not properly configured, using demo mode')
-      return NextResponse.json({
-        success: false,
-        error: 'VNPay chưa được cấu hình. Vui lòng sử dụng phương thức chuyển khoản ngân hàng.',
-        demo: true
-      }, { status: 503 })
-    }
-
     const body = await request.json()
     const { amount, orderId, orderInfo, bankCode } = body
 
     if (!amount || !orderId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
-
-    // Validate amount
-    if (amount <= 0 || amount > 1000000000) { // Max 1 billion VND
-      return NextResponse.json(
-        { error: 'Số tiền không hợp lệ' },
         { status: 400 }
       )
     }
@@ -93,8 +65,6 @@ export async function POST(request: NextRequest) {
     vnp_Params['vnp_SecureHash'] = signed
 
     const paymentUrl = VNP_URL + '?' + new URLSearchParams(vnp_Params).toString()
-
-    console.log('VNPay payment created:', { orderId, amount, isConfigured: isVNPayConfigured() })
 
     return NextResponse.json({
       success: true,
