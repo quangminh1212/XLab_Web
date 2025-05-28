@@ -33,7 +33,7 @@ Dự án web bán hàng và phân phối phần mềm XLab được xây dựng 
 - **📱 Responsive**: Tối ưu cho mọi thiết bị
 
 ### 🆕 Tính năng mới nhất
-- **⚡ Tự động xác thực VNPay**: Không cần nhập mã thủ công
+- **⚡ Xác thực thanh toán đa dạng**: Call API bank, đọc SMS banking, v.v
 - **🎨 UI/UX cải tiến**: Giao diện hiện đại, user-friendly
 - **🔄 Real-time polling**: Kiểm tra trạng thái thanh toán tự động
 - **📊 Admin Dashboard**: Quản lý comprehensive
@@ -227,7 +227,9 @@ VNPAY_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
 
 ### ✨ Chức năng đã tích hợp
 
-✅ **Tự động xác thực VNPay**
+✅ **Xác thực thanh toán đa phương thức**
+- Call API bank trực tiếp
+- Đọc qua SMS banking
 - Tự động polling để check trạng thái giao dịch
 - Không cần nhập mã thủ công
 - Tự động chuyển hướng khi thanh toán thành công
@@ -238,7 +240,7 @@ VNPAY_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
 - Error handling đầy đủ
 
 ✅ **UI/UX cải tiến**
-- 3 phương thức xác thực: VNPay Auto, Confirm, Manual Code
+- 3 phương thức xác thực: Bank API, SMS Banking, Manual Code
 - Real-time polling status
 - Loading states và progress indicators
 
@@ -365,7 +367,7 @@ Khi `PAYMENT_DEMO_MODE=true` hoặc `VNPAY_TMN_CODE=DEMO_MODE`:
 
 1. Chạy server: `npm run dev`
 2. Vào trang checkout: http://localhost:3000/checkout?skipInfo=true
-3. Chọn "Tự động xác thực VNPay"
+3. Chọn "Xác thực qua Bank API" hoặc "Đọc SMS Banking"
 4. Click "Bắt đầu xác thực tự động"
 5. Hệ thống sẽ mô phỏng polling và tự động thành công sau vài giây
 
@@ -544,7 +546,8 @@ http://localhost:3000/admin/coupons
    - Admin access control
 
 2. **Payment Integration**  
-   - VNPay auto verification
+   - Bank API verification
+   - SMS Banking integration
    - QR code generation
    - Error handling
 

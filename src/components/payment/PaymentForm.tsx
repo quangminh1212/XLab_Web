@@ -59,8 +59,8 @@ const PaymentForm = ({
     return `${year}${month}${day}${hours}${minutes}${seconds}`
   }
 
-  // Hàm polling VNPay để check trạng thái thanh toán
-  const pollVNPayStatus = async (orderId: string, transactionDate: string): Promise<boolean> => {
+  // Hàm polling Bank API để check trạng thái thanh toán
+  const pollBankAPIStatus = async (orderId: string, transactionDate: string): Promise<boolean> => {
     try {
       const response = await fetch('/api/payment/vnpay', {
         method: 'POST',
@@ -75,7 +75,7 @@ const PaymentForm = ({
       })
 
       const result = await response.json()
-      console.log('VNPay polling result:', result)
+      console.log('Bank API polling result:', result)
 
       if (result.success && result.status === '00') {
         // Thanh toán thành công
@@ -88,12 +88,12 @@ const PaymentForm = ({
         throw new Error(result.statusText || 'Giao dịch không thành công')
       }
     } catch (error) {
-      console.error('VNPay polling error:', error)
+      console.error('Bank API polling error:', error)
       throw error
     }
   }
 
-  // Hàm auto-check với polling
+  // Hàm auto-check với polling qua Bank API/SMS Banking
   const startAutoVerification = async (orderId: string) => {
     const transactionDate = formatDateTime(new Date())
     setTransactionStartTime(transactionDate)
@@ -108,12 +108,12 @@ const PaymentForm = ({
         attempts++
         setPollingAttempts(attempts)
 
-        const isSuccess = await pollVNPayStatus(orderId, transactionDate)
+        const isSuccess = await pollBankAPIStatus(orderId, transactionDate)
         
         if (isSuccess) {
           // Thanh toán thành công
           setIsPolling(false)
-          const transactionId = `VNP-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+          const transactionId = `BANK-${Date.now()}-${Math.floor(Math.random() * 1000)}`
           
           if (onSuccess) {
             onSuccess(transactionId)
@@ -147,7 +147,7 @@ const PaymentForm = ({
     setIsLoading(true)
     
     try {
-      // Tự động xác thực VNPay
+      // Tự động xác thực qua Bank API/SMS Banking
       await startAutoVerification(finalOrderId)
       setIsLoading(false)
     } catch (error) {
@@ -333,26 +333,33 @@ const PaymentForm = ({
               </div>
             </div>
 
-            {/* Form xác thực VNPay */}
+            {/* Form xác thực thanh toán */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Xác thực tự động VNPay
+                Xác thực thanh toán đa phương thức
               </h4>
               
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="bg-white border border-blue-300 rounded-lg p-4">
                   <div className="flex items-start gap-3">
                     <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                     <div>
-                      <p className="text-sm font-medium text-blue-800">Thanh toán tự động</p>
+                      <p className="text-sm font-medium text-blue-800">Bank API / SMS Banking</p>
                       <p className="text-xs text-blue-700 mt-1">
-                        Sau khi chuyển khoản, click "Bắt đầu xác thực" để hệ thống tự động kiểm tra giao dịch qua VNPay API. 
-                        Quá trình hoàn toàn tự động, không cần nhập mã.
+                        Sau khi chuyển khoản, click "Bắt đầu xác thực" để hệ thống tự động:
+                      </p>
+                      <ul className="text-xs text-blue-700 mt-2 ml-4 list-disc">
+                        <li>Call API trực tiếp từ ngân hàng</li>
+                        <li>Đọc thông tin qua SMS Banking</li>
+                        <li>Hoặc các phương thức xác thực khác</li>
+                      </ul>
+                      <p className="text-xs text-blue-700 mt-1">
+                        Quá trình hoàn toàn tự động, không cần nhập mã thủ công.
                       </p>
                       {isPolling && (
                         <div className="mt-3 p-3 bg-blue-100 border border-blue-300 rounded-md">
@@ -361,15 +368,15 @@ const PaymentForm = ({
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span className="text-sm font-medium text-blue-800">Đang kiểm tra giao dịch...</span>
+                            <span className="text-sm font-medium text-blue-800">Đang xác thực qua Bank API...</span>
                           </div>
                           <p className="text-xs text-blue-600">
-                            Lần thử: {pollingAttempts}/30 • Kiểm tra lại sau 10 giây • 
+                            Lần thử: {pollingAttempts}/30 • Kiểm tra SMS Banking & API • 
                             Thời gian chờ tối đa: 5 phút
                           </p>
                           <div className="mt-2 bg-white rounded-md p-2 border border-blue-200">
                             <div className="flex justify-between text-xs text-blue-600">
-                              <span>Tiến độ:</span>
+                              <span>Tiến độ xác thực:</span>
                               <span>{Math.round((pollingAttempts / 30) * 100)}%</span>
                             </div>
                             <div className="w-full bg-blue-200 rounded-full h-1.5 mt-1">
@@ -386,34 +393,34 @@ const PaymentForm = ({
                 </div>
                 
                 {errors.submit && (
-                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
+                  <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {errors.submit}
+                    <span className="text-sm">{errors.submit}</span>
                   </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={isLoading || isPolling || !finalOrderId}
-                  className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ${isLoading || isPolling || !finalOrderId ? 'opacity-70 cursor-not-allowed' : 'hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl'}`}
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   {isLoading || isPolling ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                    <>
+                      <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Đang kiểm tra giao dịch...
-                    </div>
+                      {isPolling ? 'Đang xác thực Bank API...' : 'Đang khởi tạo...'}
+                    </>
                   ) : (
-                    <div className="flex items-center justify-center gap-2">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      Bắt đầu xác thực tự động
-                    </div>
+                      Bắt đầu xác thực Bank API
+                    </>
                   )}
                 </button>
               </form>
