@@ -93,7 +93,7 @@ const PaymentForm = ({
     const accountNo = bankInfo.accountNumber
     const amount_number = amount
     const addInfo = orderId
-    const template = 'print' // Template print có đầy đủ thông tin hơn
+    const template = 'compact' // Template compact - chỉ QR thuần túy không có văn bản
     
     // Đảm bảo encode đúng các thông tin
     const encodedAccountName = encodeURIComponent(bankInfo.accountName)
