@@ -118,9 +118,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
     
     const product = products.find(p => 
       p.id === productId || 
-      p.slug === productId || 
-      p.name === productName ||
-      p.slug === productName.toLowerCase().replace(/\s+/g, '-')
+      p.slug === productId
     );
     
     console.log('Sản phẩm tìm thấy:', product);
@@ -128,15 +126,8 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
     if (product && product.images && product.images.length > 0) {
       const firstImage = product.images[0];
       console.log('Ảnh đầu tiên:', firstImage);
-      if (typeof firstImage === 'string') {
-        const imageUrl = firstImage.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage;
-        console.log('URL ảnh cuối cùng:', imageUrl);
-        return imageUrl;
-      } else if (firstImage.url) {
-        const imageUrl = firstImage.url.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage.url;
-        console.log('URL ảnh cuối cùng (từ object):', imageUrl);
-        return imageUrl;
-      }
+      // Trả về ảnh đầu tiên trong mảng images
+      return firstImage;
     }
     
     console.log('Sử dụng ảnh placeholder');

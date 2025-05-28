@@ -49,18 +49,13 @@ export default function OrderHistoryPage() {
   const getProductImage = (productId: string, productName: string) => {
     const product = products.find(p => 
       p.id === productId || 
-      p.slug === productId || 
-      p.name === productName ||
-      p.slug === productName.toLowerCase().replace(/\s+/g, '-')
+      p.slug === productId
     );
     
     if (product && product.images && product.images.length > 0) {
       const firstImage = product.images[0];
-      if (typeof firstImage === 'string') {
-        return firstImage.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage;
-      } else if (firstImage.url) {
-        return firstImage.url.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage.url;
-      }
+      // Trả về ảnh đầu tiên trong mảng images
+      return firstImage;
     }
     
     return '/images/placeholder/product-placeholder.jpg';
