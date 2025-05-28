@@ -83,154 +83,252 @@ const PaymentForm = ({
   // Thông tin ngân hàng
   const bankInfo = {
     bankName: 'MBBank (Ngân hàng Quân đội)',
-    accountName: siteConfig.legal.companyName || 'CÔNG TY XLAB',
+    accountName: siteConfig.legal.companyName || 'XLab Technologies',
     accountNumber: '0123456789'
   };
 
+  // Tạo QR Code VietQR
+  const generateQRCode = () => {
+    const bankId = 'MB' // MBBank
+    const accountNo = bankInfo.accountNumber
+    const amount_number = amount
+    const addInfo = orderId
+    const template = 'print' // Template print có đầy đủ thông tin hơn
+    
+    // Đảm bảo encode đúng các thông tin
+    const encodedAccountName = encodeURIComponent(bankInfo.accountName)
+    const encodedAddInfo = encodeURIComponent(addInfo)
+    
+    // Sử dụng format đầy đủ với tất cả parameters
+    const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${amount_number}&addInfo=${encodedAddInfo}&accountName=${encodedAccountName}`
+    
+    // Debug log để kiểm tra URL
+    console.log('QR URL:', qrUrl)
+    console.log('Amount:', amount_number)
+    console.log('Order ID:', addInfo)
+    console.log('Account Name:', bankInfo.accountName)
+    
+    return qrUrl
+  }
+
   return (
-    <div className="w-full max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-      <div className="p-6 bg-primary-500 text-white">
-        <h2 className="text-2xl font-bold">Thanh toán chuyển khoản</h2>
-        <p className="mt-1 text-primary-100">Chuyển khoản và nhập mã xác thực</p>
+    <div className="w-full max-w-5xl mx-auto">
+      {/* Header với màu XLab */}
+      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-t-xl p-6 text-white">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">Chi tiết thanh toán</h2>
+            <p className="text-primary-100 text-sm">Chuyển khoản ngân hàng và xác thực</p>
+          </div>
+        </div>
       </div>
-      
-      <div className="p-6">
-        <div className="mb-6">
-          <div className="font-semibold text-lg mb-2">Chi tiết thanh toán</div>
-          <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-            <span className="text-gray-600">Tổng thanh toán:</span>
-            <span className="text-xl font-bold text-primary-600">{formatCurrency(amount)}</span>
+
+      <div className="bg-white rounded-b-xl shadow-lg border border-gray-200">
+        {/* Tổng tiền với màu XLab */}
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex justify-between items-center">
+            <span className="text-lg text-gray-600">Tổng thanh toán:</span>
+            <span className="text-2xl font-bold text-primary-600">{formatCurrency(amount)}</span>
           </div>
         </div>
 
-        {/* Chia thành 2 cột */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Cột trái - Logo và QR Code */}
-          <div className="border border-gray-200 rounded-lg p-4">
-            <h3 className="font-medium mb-4 text-center text-lg">Quét mã thanh toán</h3>
-            
-            {/* Hiển thị logo MBBank */}
+        {/* Layout chính */}
+        <div className="grid lg:grid-cols-2 gap-0">
+          {/* Cột trái - QR Code và hướng dẫn */}
+          <div className="p-6 lg:border-r border-gray-100">
             <div className="text-center mb-6">
-              <Image 
-                src="/images/mbbank.jpg" 
-                alt="MBBank Logo" 
-                width={200} 
-                height={100} 
-                className="mx-auto rounded-lg shadow-sm"
-              />
-            </div>
-
-            {/* QR Code giả lập */}
-            <div className="text-center mb-6">
-              <div className="inline-block p-4 bg-white border-2 border-gray-300 rounded-lg">
-                <div className="w-40 h-40 bg-gray-100 flex items-center justify-center rounded">
-                  <span className="text-sm text-gray-500">QR Code</span>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
+                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01" />
+                </svg>
+                Quét mã thanh toán
+              </h3>
+              
+              {/* QR Code thật từ VietQR */}
+              <div className="relative inline-block">
+                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-8 rounded-2xl shadow-lg">
+                  <div className="bg-white p-6 rounded-xl">
+                    <div className="w-64 h-64 relative">
+                      <Image 
+                        src={generateQRCode()}
+                        alt="VietQR Payment Code"
+                        fill
+                        className="object-contain rounded-lg"
+                        priority
+                        onError={(e) => {
+                          // Fallback nếu API VietQR lỗi
+                          const target = e.target as HTMLImageElement;
+                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+UVIgQ29kZTwvdGV4dD48L3N2Zz4=';
+                        }}
+                      />
+                    </div>
+                    {/* Thông tin bên dưới QR */}
+                    <div className="mt-4 text-center text-xs text-gray-600">
+                      <div className="font-semibold">Số tiền: {formatCurrency(amount)}</div>
+                      <div className="font-mono mt-1">{orderId}</div>
+                    </div>
+                  </div>
+                  {/* Logo MBBank ở góc */}
+                  <div className="absolute top-2 right-2 w-12 h-8 bg-red-600 rounded overflow-hidden flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">MB</span>
+                  </div>
                 </div>
               </div>
+              
               <p className="text-sm text-gray-600 mt-3 font-medium">Quét mã QR để chuyển khoản nhanh</p>
             </div>
-            
-            <div className="p-4 bg-blue-50 text-sm rounded border-l-4 border-blue-400">
-              <p className="mb-2 font-medium text-blue-800">📱 Hướng dẫn quét QR:</p>
-              <ul className="list-decimal list-inside text-blue-700 space-y-1 text-xs">
-                <li>Mở ứng dụng MBBank</li>
-                <li>Chọn "Quét QR Code"</li>
-                <li>Quét mã QR bên trên</li>
-                <li>Kiểm tra thông tin và xác nhận</li>
-                <li>Sao chép mã giao dịch</li>
-              </ul>
+
+            {/* Hướng dẫn với màu XLab */}
+            <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+              <h4 className="font-semibold text-primary-800 mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                Hướng dẫn thanh toán
+              </h4>
+              <div className="space-y-2">
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">1</span>
+                  <span className="text-sm text-primary-700">Mở ứng dụng Bank</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
+                  <span className="text-sm text-primary-700">Quét QR Code hoặc nhập thông tin bên phải</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
+                  <span className="text-sm text-primary-700">Xác nhận và lấy mã giao dịch</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">4</span>
+                  <span className="text-sm text-primary-700">Nhập mã xác thực bên phải</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Cột phải - Thông tin chi tiết và Form xác thực */}
-          <div className="flex flex-col justify-between">
-            <div className="flex-grow">
-              <h3 className="font-medium mb-4 text-center text-lg">Thông tin chuyển khoản</h3>
-              
-              {/* Thông tin chi tiết ngân hàng */}
-              <div className="space-y-3 text-sm bg-gray-50 p-4 rounded-lg mb-6">
-                <div className="flex justify-between">
-                  <span className="font-medium text-gray-600">Ngân hàng:</span>
-                  <span className="font-semibold">{bankInfo.bankName}</span>
+          {/* Cột phải - Thông tin và xác thực */}
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-8m-9 0h2m0 0V9a2 2 0 012-2h2m-6 12V9a2 2 0 012-2h2m0 0V5a2 2 0 012-2h4" />
+              </svg>
+              Thông tin chuyển khoản
+            </h3>
+            
+            {/* Thông tin ngân hàng với màu XLab */}
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border border-gray-200 p-4 mb-6">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-600">Ngân hàng:</span>
+                  <span className="font-semibold text-gray-900">{bankInfo.bankName}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-gray-600">Chủ tài khoản:</span>
-                  <span className="font-semibold">{bankInfo.accountName}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-600">Chủ tài khoản:</span>
+                  <span className="font-semibold text-gray-900">{bankInfo.accountName}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-gray-600">Số tài khoản:</span>
-                  <span className="font-mono font-semibold text-blue-600">{bankInfo.accountNumber}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-600">Số tài khoản:</span>
+                  <span className="font-mono font-bold text-primary-600 text-lg">{bankInfo.accountNumber}</span>
                 </div>
-                <div className="flex justify-between border-t pt-2">
-                  <span className="font-medium text-gray-600">Số tiền:</span>
-                  <span className="text-lg font-bold text-red-600">{formatCurrency(amount)}</span>
+                <hr className="border-gray-300"/>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-600">Số tiền:</span>
+                  <span className="text-lg font-bold text-primary-600">{formatCurrency(amount)}</span>
                 </div>
-                <div className="flex flex-col border-t pt-2">
-                  <span className="font-medium text-gray-600 mb-1">Nội dung chuyển khoản:</span>
-                  <span className="font-mono font-semibold text-green-600 bg-green-50 p-2 rounded text-center">{orderId}</span>
+                <div className="pt-2">
+                  <span className="text-sm font-medium text-gray-600 block mb-2">Nội dung chuyển khoản:</span>
+                  <div className="bg-primary-50 border border-primary-200 rounded-md p-3 text-center">
+                    <span className="font-mono font-bold text-primary-700">{orderId}</span>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              <form onSubmit={handleSubmit} className="h-full flex flex-col">
-                <div className="flex-grow">
-                  <h4 className="font-medium mb-3 text-center">Xác thực thanh toán</h4>
-                  
-                  <div className="mb-6">
-                    <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-700 mb-2">
-                      Mã xác thực (Mã giao dịch sau khi chuyển khoản)
-                    </label>
-                    <input
-                      id="verificationCode"
-                      type="text"
-                      value={verificationCode}
-                      onChange={(e) => setVerificationCode(e.target.value)}
-                      placeholder="Nhập mã giao dịch hoặc mã xác thực"
-                      className={`w-full border ${errors.verificationCode ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500`}
-                    />
-                    {errors.verificationCode && (
-                      <p className="mt-1 text-sm text-red-600">{errors.verificationCode}</p>
-                    )}
-                    <p className="mt-2 text-xs text-gray-500">
-                      Nhập mã giao dịch từ SMS/App ngân hàng hoặc 6 số cuối của số tài khoản bạn chuyển từ
+            {/* Form xác thực với màu XLab */}
+            <div className="bg-secondary-50 border border-secondary-200 rounded-lg p-4">
+              <h4 className="font-semibold text-secondary-800 mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Xác thực thanh toán
+              </h4>
+              
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-700 mb-2">
+                    Mã xác thực (Mã giao dịch sau khi chuyển khoản)
+                  </label>
+                  <input
+                    id="verificationCode"
+                    type="text"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                    placeholder="Nhập mã giao dịch hoặc mã xác thực"
+                    className={`w-full border ${errors.verificationCode ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors`}
+                  />
+                  {errors.verificationCode && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {errors.verificationCode}
                     </p>
-                  </div>
-                  
-                  {errors.submit && (
-                    <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-md">
-                      {errors.submit}
-                    </div>
                   )}
+                  <p className="mt-2 text-xs text-gray-500">
+                    💡 Nhập mã giao dịch từ SMS/App ngân hàng hoặc 6 số cuối của số tài khoản bạn chuyển từ
+                  </p>
                 </div>
                 
-                <div className="mt-auto">
-                  <div className="mb-4">
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className={`w-full bg-primary-600 text-white py-3 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-primary-700'}`}
-                    >
-                      {isLoading ? (
-                        <div className="flex items-center justify-center">
-                          <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Đang xác thực...
-                        </div>
-                      ) : (
-                        'Xác nhận đã chuyển khoản'
-                      )}
-                    </button>
+                {errors.submit && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {errors.submit}
                   </div>
-                  
-                  <div className="text-center">
-                    <div className="p-3 bg-yellow-50 text-xs rounded border-l-4 border-yellow-400">
-                      <p className="font-medium text-yellow-800 mb-1">⚠️ Lưu ý quan trọng:</p>
-                      <p className="text-yellow-700">Đơn hàng sẽ được xác nhận trong vòng 5-10 phút sau khi xác thực thành công. Vui lòng chụp lại biên lai chuyển khoản để hỗ trợ tra soát khi cần.</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl'}`}
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Đang xác thực...
                     </div>
-                  </div>
-                </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Xác nhận đã chuyển khoản
+                    </div>
+                  )}
+                </button>
               </form>
+            </div>
+
+            {/* Lưu ý quan trọng */}
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-xs text-yellow-800 flex items-start gap-2">
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <span>
+                  <strong>Lưu ý:</strong> Đơn hàng sẽ được xác nhận trong vòng 5-10 phút sau khi xác thực thành công. Vui lòng chụp lại biên lai chuyển khoản.
+                </span>
+              </p>
             </div>
           </div>
         </div>
