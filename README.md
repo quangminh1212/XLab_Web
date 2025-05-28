@@ -203,57 +203,186 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ## 💳 Tích hợp VNPay
 
-### 🚀 Tính năng tự động xác thực VNPay
+### 🌐 VNPay APIs Overview
 
-Hệ thống đã tích hợp **API VNPay QueryDr** để tự động xác thực thanh toán mà không cần nhập mã thủ công.
+Hệ thống VNPay đã được tích hợp hoàn chỉnh với 4 endpoints chính:
 
-### ✨ Các phương thức thanh toán
+| API Endpoint | Method | Mục đích | Trạng thái |
+|-------------|--------|----------|-----------|
+| `/api/payment/vnpay/create` | POST | Tạo URL thanh toán | ✅ Hoàn thành |
+| `/api/payment/vnpay/ipn` | GET/POST | Webhook từ VNPay | ✅ Hoàn thành |
+| `/api/payment/vnpay/return` | GET | Return URL cho browser | ✅ Hoàn thành |
+| `/api/payment/vnpay` | POST | Query trạng thái giao dịch | ✅ Hoàn thành |
 
-1. **🔥 Tự động xác thực VNPay (Khuyến nghị)**
-   - Hoàn toàn tự động
-   - Real-time polling mỗi 10 giây
-   - Tự động chuyển hướng khi thành công
-   - Thời gian chờ tối đa: 5 phút
+### 🔧 Environment Configuration
 
-2. **✅ Xác nhận đã chuyển khoản**
-   - Đơn giản, nhanh chóng
-   - Chỉ cần click xác nhận
+Thêm các biến sau vào `.env.local`:
 
-3. **🔐 Nhập mã xác thực**
-   - Bảo mật cao
-   - Nhập mã từ SMS/App banking
-
-### ⚙️ Cấu hình VNPay
-
-Thêm vào `.env.local`:
 ```bash
-# VNPay Configuration
-VNPAY_TMN_CODE=your_tmn_code
-VNPAY_SECRET_KEY=your_secret_key  
+# VNPay Configuration - Demo Mode
+VNPAY_TMN_CODE=DEMO_MODE
+VNPAY_SECRET_KEY=DEMO_SECRET
 VNPAY_API_URL=https://sandbox.vnpayment.vn/merchant_webapi/api/transaction
+
+# VNPay URLs
+VNP_URL=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+VNP_RETURN_URL=http://localhost:3000/api/payment/vnpay/return
+VNP_IPN_URL=http://localhost:3000/api/payment/vnpay/ipn
+
+# Payment Configuration
+PAYMENT_DEMO_MODE=true
 ```
 
-### 🛠️ Technical Implementation
+### 🚀 API Usage Examples
 
-- **API Endpoint**: `/api/payment/vnpay`
-- **Chuẩn VNPay**: API 2.1.0
-- **Security**: SHA512 hash
-- **Demo Mode**: Tự động mô phỏng khi không có credentials
+#### 1. Tạo URL thanh toán (Create Payment)
 
-### 📱 Cách sử dụng
+```javascript
+// POST /api/payment/vnpay/create
+const response = await fetch('/api/payment/vnpay/create', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    amount: 298000,           // Số tiền (VND)
+    orderId: 'ORDER-123456',  // Mã đơn hàng unique
+    orderInfo: 'Thanh toan don hang ORDER-123456',
+    ipAddr: '127.0.0.1',      // IP khách hàng
+    locale: 'vn',             // Ngôn ngữ (vn/en)
+    bankCode: 'NCB'           // Mã ngân hàng (optional)
+  })
+})
 
-1. Vào checkout: http://localhost:3000/checkout?skipInfo=true
-2. Chọn "Tự động xác thực VNPay"
-3. Click "Bắt đầu xác thực tự động"
-4. Quét QR code và chuyển khoản
-5. Đợi hệ thống tự động xác thực! 🎉
+const result = await response.json()
+// { success: true, paymentUrl: "https://sandbox.vnpayment.vn/...", orderId: "..." }
+```
 
-### 📊 Demo Mode
+#### 2. Xử lý IPN (Instant Payment Notification)
 
-Trong development, hệ thống sẽ:
-- Mô phỏng API VNPay response
-- Tự động thành công sau 1-3 giây
-- Hiển thị progress polling realtime
+```javascript
+// VNPay sẽ gọi webhook này khi có giao dịch
+// GET/POST /api/payment/vnpay/ipn?vnp_Amount=29800000&vnp_BankCode=NCB&...
+
+// API tự động:
+// - Verify vnp_SecureHash
+// - Parse transaction data
+// - Update database
+// - Return { RspCode: '00', Message: 'success' }
+```
+
+#### 3. Xử lý Return URL
+
+```javascript
+// VNPay redirect browser về endpoint này
+// GET /api/payment/vnpay/return?vnp_Amount=29800000&vnp_ResponseCode=00&...
+
+// API tự động:
+// - Verify checksum
+// - Parse transaction result
+// - Redirect to /payment/result với thông tin
+```
+
+#### 4. Query trạng thái giao dịch
+
+```javascript
+// POST /api/payment/vnpay
+const response = await fetch('/api/payment/vnpay', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    orderId: 'ORDER-123456',
+    transactionDate: '20250528222030',
+    amount: 298000
+  })
+})
+
+const result = await response.json()
+// { success: true, status: '00', statusText: 'Giao dịch thành công', ... }
+```
+
+### 📊 Response Codes
+
+| Mã | Ý nghĩa | Xử lý |
+|----|---------|-------|
+| `00` | Giao dịch thành công | ✅ Cập nhật đơn hàng thành công |
+| `01` | Giao dịch chưa hoàn tất | ⏳ Tiếp tục polling |
+| `02` | Giao dịch bị lỗi | ❌ Thông báo lỗi |
+| `24` | Khách hàng hủy giao dịch | 🚫 Hủy đơn hàng |
+| `51` | Tài khoản không đủ số dư | 💰 Thông báo lỗi số dư |
+| `97` | Lỗi checksum | 🔒 Lỗi bảo mật |
+
+### 🎯 Demo Mode Features
+
+Khi `PAYMENT_DEMO_MODE=true` hoặc `VNPAY_TMN_CODE=DEMO_MODE`:
+
+- ✅ **Không gọi API VNPay thật**
+- ✅ **Simulate response thành công**
+- ✅ **Tự động fallback khi có lỗi**
+- ✅ **Logging chi tiết cho debug**
+
+```javascript
+// Demo response example
+{
+  success: true,
+  status: '00',
+  statusText: 'Giao dịch thanh toán thành công (Demo)',
+  transactionNo: 'DEMO1748445635721',
+  amount: 298000,
+  bankCode: 'DEMO_BANK',
+  isDemo: true,
+  message: 'Đây là giao dịch demo - không có tiền thật được chuyển'
+}
+```
+
+### 🛡️ Security Features
+
+- **✅ SHA512 HMAC**: Secure hash verification
+- **✅ Parameter sorting**: Tuân thủ chuẩn VNPay
+- **✅ IP Address tracking**: Log IP để audit
+- **✅ Timestamp validation**: Kiểm tra thời gian expire
+- **✅ Error handling**: Comprehensive error management
+
+### 🧪 Testing Flow
+
+1. **Tạo đơn hàng**: Sử dụng `/create` endpoint
+2. **Chuyển hướng**: User đi đến VNPay payment page
+3. **Thanh toán**: User thực hiện thanh toán trên VNPay
+4. **IPN Callback**: VNPay gọi `/ipn` để cập nhật database
+5. **Return**: VNPay redirect browser về `/return`
+6. **Result Page**: User xem kết quả tại `/payment/result`
+
+### 📱 Integration với UI
+
+```tsx
+// Trong component thanh toán
+const handleVNPayPayment = async () => {
+  const response = await fetch('/api/payment/vnpay/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      amount: 298000,
+      orderId: `ORDER-${Date.now()}`,
+      orderInfo: 'Thanh toan don hang XLab',
+      ipAddr: await getClientIP()
+    })
+  })
+  
+  const { paymentUrl } = await response.json()
+  
+  // Chuyển hướng đến VNPay
+  window.location.href = paymentUrl
+}
+```
+
+### ✅ HOÀN THÀNH - VNPay Integration
+
+VNPay đã được tích hợp đầy đủ và sẵn sàng sử dụng!
+
+- **🔗 Create Payment URL**: Tạo link thanh toán
+- **📨 IPN Handler**: Xử lý webhook từ VNPay  
+- **🔙 Return URL**: Xử lý redirect sau thanh toán
+- **🔍 Transaction Query**: Kiểm tra trạng thái giao dịch
+- **🎭 Demo Mode**: Test không cần credentials thật
+- **🎨 Result Page**: UI hiển thị kết quả đẹp
 
 ---
 
