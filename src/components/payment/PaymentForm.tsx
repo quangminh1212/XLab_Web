@@ -121,17 +121,23 @@ const PaymentForm = ({
       if (result.success && result.paymentUrl) {
         // Redirect to VNPay
         window.location.href = result.paymentUrl
+      } else if (result.demo) {
+        // VNPay not configured, show informative message
+        setIsLoading(false)
+        setErrors({ 
+          submit: 'VNPay đang trong chế độ demo. Vui lòng sử dụng phương thức chuyển khoản ngân hàng bên dưới.' 
+        })
       } else {
         setIsLoading(false)
         setErrors({ 
-          submit: 'Không thể tạo liên kết thanh toán VNPay. Vui lòng thử lại.' 
+          submit: result.error || 'Không thể tạo liên kết thanh toán VNPay. Vui lòng thử lại.' 
         })
       }
     } catch (error) {
       setIsLoading(false)
       console.error('VNPay create error:', error)
       setErrors({ 
-        submit: 'Có lỗi xảy ra khi tạo thanh toán VNPay. Vui lòng thử lại.' 
+        submit: 'Có lỗi xảy ra khi tạo thanh toán VNPay. Vui lòng sử dụng phương thức chuyển khoản ngân hàng.' 
       })
     }
   }
