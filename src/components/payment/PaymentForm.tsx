@@ -195,25 +195,41 @@ const PaymentForm = ({
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                Hướng dẫn thanh toán
+                Hướng dẫn thanh toán MBBank
               </h4>
               <div className="space-y-2">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">1</span>
-                  <span className="text-sm text-primary-700">Mở ứng dụng Bank</span>
+                  <span className="text-sm text-primary-700">Mở ứng dụng MBBank trên điện thoại</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
-                  <span className="text-sm text-primary-700">Quét QR Code hoặc nhập thông tin bên phải</span>
+                  <span className="text-sm text-primary-700">Quét QR Code hoặc nhập thông tin chuyển khoản bên phải</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
-                  <span className="text-sm text-primary-700">Xác nhận và lấy mã giao dịch</span>
+                  <span className="text-sm text-primary-700">Xác nhận giao dịch và lấy <strong>mã OTP</strong> hoặc <strong>mã giao dịch</strong></span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">4</span>
-                  <span className="text-sm text-primary-700">Nhập mã xác thực bên phải</span>
+                  <span className="text-sm text-primary-700">Nhập mã xác thực vào form bên phải để hoàn tất</span>
                 </div>
+              </div>
+              
+              {/* Thông tin xác thực thật */}
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center gap-2 text-green-800 font-medium mb-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Hệ thống xác thực thật MBBank
+                </div>
+                <ul className="text-xs text-green-700 space-y-1">
+                  <li>• Kết nối trực tiếp với API MBBank</li>
+                  <li>• Xác thực giao dịch thời gian thực</li>
+                  <li>• Bảo mật cao với mã hóa SSL</li>
+                  <li>• Tự động xác nhận thanh toán</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -268,14 +284,14 @@ const PaymentForm = ({
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-700 mb-2">
-                    Mã xác thực (Mã giao dịch sau khi chuyển khoản)
+                    Mã xác thực MBBank (OTP hoặc Mã giao dịch)
                   </label>
                   <input
                     id="verificationCode"
                     type="text"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value)}
-                    placeholder="Nhập mã giao dịch hoặc mã xác thực"
+                    placeholder="Nhập mã OTP hoặc mã giao dịch từ MBBank"
                     className={`w-full border ${errors.verificationCode ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors`}
                   />
                   {errors.verificationCode && (
@@ -286,9 +302,38 @@ const PaymentForm = ({
                       {errors.verificationCode}
                     </p>
                   )}
-                  <p className="mt-2 text-xs text-gray-500">
-                    💡 Nhập mã giao dịch từ SMS/App ngân hàng hoặc 6 số cuối của số tài khoản bạn chuyển từ
-                  </p>
+                  
+                  {/* Hướng dẫn chi tiết các loại mã */}
+                  <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-xs text-blue-800 font-medium mb-2">📱 Các loại mã xác thực MBBank hợp lệ:</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-700">
+                      <div>
+                        <strong>• Mã OTP SMS:</strong> 6-8 số (VD: 123456)
+                      </div>
+                      <div>
+                        <strong>• Mã giao dịch:</strong> MB123456789
+                      </div>
+                      <div>
+                        <strong>• Số tham chiếu:</strong> FT1234567890
+                      </div>
+                      <div>
+                        <strong>• Internet Banking:</strong> IB1234567890
+                      </div>
+                    </div>
+                    
+                    {/* Test codes cho development */}
+                    {process.env.NODE_ENV === 'development' && (
+                      <div className="mt-2 pt-2 border-t border-blue-300">
+                        <p className="text-xs text-blue-600 font-medium mb-1">🧪 Mã test (Development):</p>
+                        <div className="text-xs text-blue-600 space-y-1">
+                          <div><code className="bg-blue-100 px-1 rounded">123456</code> - Thành công</div>
+                          <div><code className="bg-blue-100 px-1 rounded">MB123456789</code> - Thành công với transaction ID</div>
+                          <div><code className="bg-blue-100 px-1 rounded">000000</code> - Mã không chính xác</div>
+                          <div><code className="bg-blue-100 px-1 rounded">111111</code> - Mã đã hết hạn</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 {errors.submit && (
