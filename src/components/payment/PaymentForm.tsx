@@ -54,85 +54,29 @@ const PaymentForm = ({
     setIsLoading(true)
     
     try {
-      // Gọi API xác thực thực tế
-      const response = await fetch('/api/payment/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          orderId,
-          verificationCode,
-          amount
-        })
-      })
+      // Giả lập call API xác thực
+      await new Promise(resolve => setTimeout(resolve, 2000))
       
-      const result = await response.json()
+      // Giả lập transaction ID
+      const transactionId = `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`
       
       setIsLoading(false)
       
-      if (result.success) {
-        console.log('Payment verified successfully:', result.transaction)
-        
-        if (onSuccess) {
-          onSuccess(result.transaction.transactionId)
-        } else {
-          router.push(`/payment/result?status=success&orderId=${orderId}&amount=${amount}&transactionId=${result.transaction.transactionId}`)
-        }
+      if (onSuccess) {
+        onSuccess(transactionId)
       } else {
-        setErrors({ 
-          submit: result.message || 'Có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại.' 
-        })
+        router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}`)
       }
     } catch (error) {
       setIsLoading(false)
-      console.error('Payment verification error:', error)
       
-      const errorMessage = 'Có lỗi xảy ra trong quá trình xác thực. Vui lòng kiểm tra kết nối mạng và thử lại.'
+      const errorMessage = 'Có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại.'
       
       if (onError) {
         onError(errorMessage)
       } else {
         setErrors({ submit: errorMessage })
       }
-    }
-  }
-
-  // Handle VNPay payment
-  const handleVNPayPayment = async () => {
-    setIsLoading(true)
-    
-    try {
-      const response = await fetch('/api/payment/vnpay/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount,
-          orderId,
-          orderInfo: `Thanh toan don hang ${orderId} - Gia tri ${formatCurrency(amount)}`,
-          bankCode: '' // Empty for VNPay gateway selection
-        })
-      })
-      
-      const result = await response.json()
-      
-      if (result.success && result.paymentUrl) {
-        // Redirect to VNPay
-        window.location.href = result.paymentUrl
-      } else {
-        setIsLoading(false)
-        setErrors({ 
-          submit: 'Không thể tạo liên kết thanh toán VNPay. Vui lòng thử lại.' 
-        })
-      }
-    } catch (error) {
-      setIsLoading(false)
-      console.error('VNPay create error:', error)
-      setErrors({ 
-        submit: 'Có lỗi xảy ra khi tạo thanh toán VNPay. Vui lòng thử lại.' 
-      })
     }
   }
 
@@ -294,12 +238,12 @@ const PaymentForm = ({
             </div>
 
             {/* Form xác thực với màu XLab */}
-            <div className="bg-secondary-50 border border-secondary-200 rounded-lg p-4 mb-6">
+            <div className="bg-secondary-50 border border-secondary-200 rounded-lg p-4">
               <h4 className="font-semibold text-secondary-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Xác thực thanh toán chuyển khoản
+                Xác thực thanh toán
               </h4>
               
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -360,42 +304,6 @@ const PaymentForm = ({
                   )}
                 </button>
               </form>
-            </div>
-
-            {/* VNPay Payment Option */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-                Thanh toán trực tuyến VNPay
-              </h4>
-              <p className="text-sm text-blue-700 mb-4">
-                Thanh toán an toàn qua cổng VNPay với thẻ ATM, thẻ tín dụng, hoặc ví điện tử
-              </p>
-              
-              <button
-                onClick={handleVNPayPayment}
-                disabled={isLoading}
-                className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl'}`}
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Đang chuyển hướng...
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                    Thanh toán qua VNPay
-                  </div>
-                )}
-              </button>
             </div>
 
             {/* Lưu ý quan trọng */}
