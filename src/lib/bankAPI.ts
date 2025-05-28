@@ -475,6 +475,13 @@ export interface ExcelTransactionData {
 }
 
 /**
+ * Cache for transaction data to avoid repeated file reads
+ */
+let transactionCache: ExcelTransactionData[] | null = null
+let cacheTimestamp = 0
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
+/**
  * API để fetch dữ liệu giao dịch từ Google Sheets hoặc CSV upload
  */
 export async function fetchTransactionData(): Promise<ExcelTransactionData[]> {
@@ -530,10 +537,17 @@ export async function fetchTransactionData(): Promise<ExcelTransactionData[]> {
 }
 
 /**
- * Load transaction data từ file local
+ * Load transaction data từ file local với caching
  */
 async function loadLocalTransactionData(): Promise<ExcelTransactionData[]> {
   try {
+    // Check cache first
+    const now = Date.now()
+    if (transactionCache && (now - cacheTimestamp) < CACHE_DURATION) {
+      console.log(`💾 Using cached transaction data (${transactionCache.length} transactions)`)
+      return transactionCache
+    }
+
     const fs = require('fs')
     const path = require('path')
     
@@ -545,7 +559,10 @@ async function loadLocalTransactionData(): Promise<ExcelTransactionData[]> {
       const jsonData = JSON.parse(fileContent)
       
       if (Array.isArray(jsonData)) {
-        console.log(`📄 Loaded ${jsonData.length} transactions from local file`)
+        // Update cache
+        transactionCache = jsonData
+        cacheTimestamp = now
+        console.log(`📄 Loaded ${jsonData.length} transactions from local file (cached)`)
         return jsonData
       }
     }
@@ -566,14 +583,18 @@ async function loadLocalTransactionData(): Promise<ExcelTransactionData[]> {
       }
     ]
     
-    console.log(`📋 Using ${mockTransactions.length} mock transactions (file not found)`)
+    // Cache mock data too
+    transactionCache = mockTransactions
+    cacheTimestamp = now
+    console.log(`📋 Using ${mockTransactions.length} mock transactions (file not found, cached)`)
     return mockTransactions
     
   } catch (error) {
     console.error('💥 Error loading local transaction data:', error)
     
     // Ultimate fallback
-    return [{
+    const now = Date.now()
+    const fallbackData = [{
       bank: 'MBBank',
       transactionDate: '2025-05-29 01:59:00',
       accountNumber: '669912122000',
@@ -585,7 +606,21 @@ async function loadLocalTransactionData(): Promise<ExcelTransactionData[]> {
       referenceCode: '',
       balance: 0
     }]
+    
+    // Cache fallback data
+    transactionCache = fallbackData
+    cacheTimestamp = now
+    return fallbackData
   }
+}
+
+/**
+ * Clear transaction cache (useful for testing or when data updates)
+ */
+export function clearTransactionCache(): void {
+  transactionCache = null
+  cacheTimestamp = 0
+  console.log('🗑️ Transaction cache cleared')
 }
 
 /**
