@@ -197,7 +197,7 @@ const PaymentForm = ({
   return (
     <div className="w-full max-w-5xl mx-auto">
       {/* Header với màu XLab */}
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-t-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-t-xl p-6 text-white">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +206,7 @@ const PaymentForm = ({
           </div>
           <div>
             <h2 className="text-xl font-bold">Chi tiết thanh toán</h2>
-            <p className="text-primary-100 text-sm">Thanh toán tự động qua VNPay</p>
+            <p className="text-teal-100 text-sm">Thanh toán tự động qua VNPay</p>
           </div>
         </div>
       </div>
@@ -216,7 +216,7 @@ const PaymentForm = ({
         <div className="p-6 border-b border-gray-100">
           <div className="flex justify-between items-center">
             <span className="text-lg text-gray-600">Tổng thanh toán:</span>
-            <span className="text-2xl font-bold text-primary-600">{formatCurrency(amount)}</span>
+            <span className="text-2xl font-bold text-teal-600">{formatCurrency(amount)}</span>
           </div>
         </div>
 
@@ -226,7 +226,7 @@ const PaymentForm = ({
           <div className="p-6 lg:border-r border-gray-100">
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
-                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v0zM3 7a2 2 0 012-2h14a2 2 0 012 2v0M8 12h.01M12 12h.01M16 12h.01" />
                 </svg>
                 Quét mã thanh toán
@@ -251,7 +251,7 @@ const PaymentForm = ({
                   ) : (
                     <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center">
                       <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
                         <p className="text-gray-600 text-sm">Đang tạo mã QR...</p>
                       </div>
                     </div>
@@ -263,8 +263,8 @@ const PaymentForm = ({
             </div>
 
             {/* Hướng dẫn với màu XLab */}
-            <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-              <h4 className="font-semibold text-primary-800 mb-3 flex items-center gap-2">
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+              <h4 className="font-semibold text-teal-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
@@ -272,20 +272,20 @@ const PaymentForm = ({
               </h4>
               <div className="space-y-2">
                 <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">1</span>
-                  <span className="text-sm text-primary-700">Mở ứng dụng Bank</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-teal-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">1</span>
+                  <span className="text-sm text-teal-700">Mở ứng dụng Bank</span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
-                  <span className="text-sm text-primary-700">Quét QR Code hoặc nhập thông tin bên phải</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-teal-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
+                  <span className="text-sm text-teal-700">Quét QR Code hoặc nhập thông tin bên phải</span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
-                  <span className="text-sm text-primary-700">Xác nhận chuyển khoản</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-teal-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
+                  <span className="text-sm text-teal-700">Xác nhận chuyển khoản</span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">4</span>
-                  <span className="text-sm text-primary-700">Click "Bắt đầu xác thực" để hệ thống tự động kiểm tra</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-teal-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">4</span>
+                  <span className="text-sm text-teal-700">Click "Bắt đầu xác thực" để hệ thống tự động kiểm tra</span>
                 </div>
               </div>
             </div>
@@ -294,7 +294,7 @@ const PaymentForm = ({
           {/* Cột phải - Thông tin và xác thực */}
           <div className="p-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
               Thông tin chuyển khoản
@@ -313,18 +313,18 @@ const PaymentForm = ({
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-600">Số tài khoản:</span>
-                  <span className="font-mono font-bold text-primary-600 text-lg">{bankInfo.accountNumber}</span>
+                  <span className="font-mono font-bold text-teal-600 text-lg">{bankInfo.accountNumber}</span>
                 </div>
                 <hr className="border-gray-300"/>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-600">Số tiền:</span>
-                  <span className="text-lg font-bold text-primary-600">{formatCurrency(amount)}</span>
+                  <span className="text-lg font-bold text-teal-600">{formatCurrency(amount)}</span>
                 </div>
                 <div className="pt-2">
                   <span className="text-sm font-medium text-gray-600 block mb-2">Nội dung chuyển khoản:</span>
-                  <div className="bg-primary-50 border border-primary-200 rounded-md p-3 text-center">
+                  <div className="bg-teal-50 border border-teal-200 rounded-md p-3 text-center">
                     {finalOrderId ? (
-                      <span className="font-mono font-bold text-primary-700">{finalOrderId}</span>
+                      <span className="font-mono font-bold text-teal-700">{finalOrderId}</span>
                     ) : (
                       <span className="text-gray-400 text-sm">Đang tạo mã đơn hàng...</span>
                     )}
@@ -334,8 +334,8 @@ const PaymentForm = ({
             </div>
 
             {/* Form xác thực thanh toán */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+            <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+              <h4 className="font-semibold text-teal-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -343,45 +343,45 @@ const PaymentForm = ({
               </h4>
               
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="bg-white border border-blue-300 rounded-lg p-4">
+                <div className="bg-white border border-teal-300 rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                     <div>
-                      <p className="text-sm font-medium text-blue-800">Bank API / SMS Banking</p>
-                      <p className="text-xs text-blue-700 mt-1">
+                      <p className="text-sm font-medium text-teal-800">Bank API / SMS Banking</p>
+                      <p className="text-xs text-teal-700 mt-1">
                         Sau khi chuyển khoản, click "Bắt đầu xác thực" để hệ thống tự động:
                       </p>
-                      <ul className="text-xs text-blue-700 mt-2 ml-4 list-disc">
+                      <ul className="text-xs text-teal-700 mt-2 ml-4 list-disc">
                         <li>Call API trực tiếp từ ngân hàng</li>
                         <li>Đọc thông tin qua SMS Banking</li>
                         <li>Hoặc các phương thức xác thực khác</li>
                       </ul>
-                      <p className="text-xs text-blue-700 mt-1">
+                      <p className="text-xs text-teal-700 mt-1">
                         Quá trình hoàn toàn tự động, không cần nhập mã thủ công.
                       </p>
                       {isPolling && (
-                        <div className="mt-3 p-3 bg-blue-100 border border-blue-300 rounded-md">
+                        <div className="mt-3 p-3 bg-teal-100 border border-teal-300 rounded-md">
                           <div className="flex items-center gap-2 mb-2">
-                            <svg className="animate-spin h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                            <svg className="animate-spin h-4 w-4 text-teal-600" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span className="text-sm font-medium text-blue-800">Đang xác thực qua Bank API...</span>
+                            <span className="text-sm font-medium text-teal-800">Đang xác thực qua Bank API...</span>
                           </div>
-                          <p className="text-xs text-blue-600">
+                          <p className="text-xs text-teal-600">
                             Lần thử: {pollingAttempts}/30 • Kiểm tra SMS Banking & API • 
                             Thời gian chờ tối đa: 5 phút
                           </p>
-                          <div className="mt-2 bg-white rounded-md p-2 border border-blue-200">
-                            <div className="flex justify-between text-xs text-blue-600">
+                          <div className="mt-2 bg-white rounded-md p-2 border border-teal-200">
+                            <div className="flex justify-between text-xs text-teal-600">
                               <span>Tiến độ xác thực:</span>
                               <span>{Math.round((pollingAttempts / 30) * 100)}%</span>
                             </div>
-                            <div className="w-full bg-blue-200 rounded-full h-1.5 mt-1">
+                            <div className="w-full bg-teal-200 rounded-full h-1.5 mt-1">
                               <div 
-                                className="bg-blue-600 h-1.5 rounded-full transition-all duration-300" 
+                                className="bg-teal-600 h-1.5 rounded-full transition-all duration-300" 
                                 style={{ width: `${(pollingAttempts / 30) * 100}%` }}
                               ></div>
                             </div>
@@ -404,7 +404,7 @@ const PaymentForm = ({
                 <button
                   type="submit"
                   disabled={isLoading || isPolling || !finalOrderId}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   {isLoading || isPolling ? (
                     <>
