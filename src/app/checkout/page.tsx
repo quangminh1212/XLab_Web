@@ -318,10 +318,6 @@ export default function CheckoutPage() {
                     <span>Tạm tính</span>
                     <span>{formatCurrency(subtotal)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Thuế (10%)</span>
-                    <span>{formatCurrency(tax)}</span>
-                  </div>
                 </div>
                 
                 <div className="border-t border-b border-gray-200 py-4 mb-6">

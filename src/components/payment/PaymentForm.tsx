@@ -153,7 +153,7 @@ const PaymentForm = ({
               <div className="relative inline-block">
                 <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-8 rounded-2xl shadow-lg">
                   <div className="bg-white p-6 rounded-xl">
-                    <div className="w-64 h-64 relative">
+                    <div className="w-80 h-80 relative">
                       <Image 
                         src={generateQRCode()}
                         alt="VietQR Payment Code"
