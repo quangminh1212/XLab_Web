@@ -141,7 +141,7 @@ const PaymentForm = ({
 
   // Thông tin ngân hàng - fallback nếu không có trong siteConfig
   const bankInfo = {
-    bankName: 'Vietcombank',
+    bankName: 'MBBank (Ngân hàng Quân đội)',
     accountName: siteConfig.legal.companyName,
     accountNumber: '1234567890'
   };
@@ -201,8 +201,8 @@ const PaymentForm = ({
                   checked={paymentMethod === 'banking'}
                   onChange={() => setPaymentMethod('banking')}
                 />
-                <Image src="/images/icons/bank-transfer.svg" alt="Bank Transfer" width={40} height={40} className="mb-2" />
-                <span className="text-sm font-medium">Chuyển khoản</span>
+                <Image src="/images/mbbank.jpg" alt="MBBank" width={40} height={24} className="mb-2 rounded" />
+                <span className="text-sm font-medium">MBBank</span>
               </label>
             </div>
           </div>
@@ -304,23 +304,67 @@ const PaymentForm = ({
           
           {paymentMethod === 'banking' && (
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="font-medium mb-3">Thông tin chuyển khoản</h3>
+              <h3 className="font-medium mb-3 text-center">Chuyển khoản MBBank</h3>
               
-              <div className="space-y-2 text-sm">
-                <p><span className="font-medium">Ngân hàng:</span> {bankInfo.bankName}</p>
-                <p><span className="font-medium">Chủ tài khoản:</span> {bankInfo.accountName}</p>
-                <p><span className="font-medium">Số tài khoản:</span> {bankInfo.accountNumber}</p>
-                <p><span className="font-medium">Số tiền:</span> <span className="text-primary-600 font-bold">{formatCurrency(amount)}</span></p>
-                <p><span className="font-medium">Nội dung chuyển khoản:</span> <span className="text-primary-600">{orderId}</span></p>
+              {/* Hiển thị logo MBBank */}
+              <div className="text-center mb-4">
+                <Image 
+                  src="/images/mbbank.jpg" 
+                  alt="MBBank Logo" 
+                  width={200} 
+                  height={100} 
+                  className="mx-auto rounded-lg shadow-sm"
+                />
+              </div>
+
+              {/* QR Code giả lập */}
+              <div className="text-center mb-4">
+                <div className="inline-block p-4 bg-white border-2 border-gray-300 rounded-lg">
+                  <div className="w-32 h-32 bg-gray-100 flex items-center justify-center rounded">
+                    <span className="text-xs text-gray-500">QR Code</span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Quét mã QR để chuyển khoản nhanh</p>
               </div>
               
-              <div className="mt-4 p-3 bg-primary-50 text-sm rounded">
-                <p className="mb-1 font-medium">Lưu ý:</p>
-                <ul className="list-disc list-inside text-gray-700 space-y-1">
-                  <li>Vui lòng nhập chính xác nội dung chuyển khoản</li>
-                  <li>Chụp lại biên lai chuyển khoản để hỗ trợ tra soát khi cần</li>
-                  <li>Đơn hàng sẽ được xác nhận trong vòng 24h sau khi thanh toán thành công</li>
+              <div className="space-y-3 text-sm bg-gray-50 p-4 rounded-lg">
+                <div className="flex justify-between">
+                  <span className="font-medium text-gray-600">Ngân hàng:</span>
+                  <span className="font-semibold">{bankInfo.bankName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-gray-600">Chủ tài khoản:</span>
+                  <span className="font-semibold">{bankInfo.accountName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-gray-600">Số tài khoản:</span>
+                  <span className="font-mono font-semibold text-blue-600">{bankInfo.accountNumber}</span>
+                </div>
+                <div className="flex justify-between border-t pt-2">
+                  <span className="font-medium text-gray-600">Số tiền:</span>
+                  <span className="text-lg font-bold text-red-600">{formatCurrency(amount)}</span>
+                </div>
+                <div className="flex flex-col border-t pt-2">
+                  <span className="font-medium text-gray-600 mb-1">Nội dung chuyển khoản:</span>
+                  <span className="font-mono font-semibold text-green-600 bg-green-50 p-2 rounded text-center">{orderId}</span>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-blue-50 text-sm rounded border-l-4 border-blue-400">
+                <p className="mb-2 font-medium text-blue-800">📋 Hướng dẫn chuyển khoản:</p>
+                <ul className="list-decimal list-inside text-blue-700 space-y-1 text-xs">
+                  <li>Mở ứng dụng MBBank hoặc Internet Banking</li>
+                  <li>Chọn chuyển khoản trong nước</li>
+                  <li>Nhập thông tin tài khoản như trên</li>
+                  <li>Nhập chính xác nội dung chuyển khoản</li>
+                  <li>Xác nhận và hoàn tất giao dịch</li>
+                  <li>Chụp lại biên lai để tra soát khi cần</li>
                 </ul>
+              </div>
+
+              <div className="mt-3 p-3 bg-yellow-50 text-xs rounded border-l-4 border-yellow-400">
+                <p className="font-medium text-yellow-800 mb-1">⚠️ Lưu ý quan trọng:</p>
+                <p className="text-yellow-700">Đơn hàng sẽ được xác nhận và giao trong vòng 24h sau khi nhận được thanh toán thành công.</p>
               </div>
             </div>
           )}
