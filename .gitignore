@@ -44,6 +44,10 @@ next-fix-all.log
 *.tsbuildinfo
 next-env.d.ts
 
+# Payment transaction data (generated at runtime)
+/data/transactions.json
+/data/orders.json
+
 # Generated product images with UUID patterns
 /public/images/products/chatgpt/*-*-*-*-*.png
 /public/images/products/grok/*-*-*-*-*.png
@@ -8520,3 +8524,1210 @@ test-cart.html
 .next/static/development/*
 
 # SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
+
+# SWC related files
+.swc-disabled/
+node_modules/@next/swc-*
+
+# Local development files
+dev.cmd
+dev.ps1
+powershell-dev.ps1
+start-dev.bat
+*.log
+
+# Các file fix lỗi cũ - đã tích hợp vào fix-all-errors.js
+check-env.js
+fix-auth-component.js
+fix-missing-files.js
+fix-static-files.js
+fix-chunks-final.js
+fix-next-chunks.js
+fix-products-json.js
+fix-swc-errors.js
+fix-trace-error.js
+hide-warnings.js
+update-gitignore.js
+next-setup.js
+
+# Logs and temporary files
+next-fix-all.log
+
+# xlab web
+xlab-utils.log
+.traceignore
+.cursorignore
+
+# temporary files
+*.temp
+temp-config.js
+
+.env.local
+.env.development.local
+.env.test.local
+
+# Images and product resource directories
+/public/images/products/unknown/
+
+# Reorganization scripts
+/scripts/reorganize-product-images.js
+
+# Next.js Build Files
+.next/**/*
+# Development Files
+check-critters.js
+generate-static-files.js
+check-products.ps1
+# IDE and OS Files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Dependencies
+run.bat
+
+# Additional Next.js runtime files that should be ignored
+/.next/server/app/page.js
+/.next/server/pages/_document.js
+/.next/server/pages/_app.js
+/.next/server/pages/_error.js
+/.next/static/chunks/fallback/
+/.next/static/webpack/*.hot-update.json
+/.next/static/webpack/*.hot-update.js
+# Fix all issues script generated
+/.next/trace.*
+/scripts/fix-all-issues.js
+# Development files
+fix-all-issues.log
+
+# Data files (notification data, etc.)
+/data/
+
+dataloga/notifications.json
+
+# Test files
+test-cart.html
+.next/cache/*
+!.next/cache/.gitkeep
+.next/static/chunks/webpack-*
+.next/static/chunks/framework-*
+.next/static/chunks/main-*
+.next/static/chunks/polyfills-*
+.next/static/chunks/app-*
+.next/static/css/app/layout-*.css
+.next/static/main-app-*.js
+.next/static/development/*
