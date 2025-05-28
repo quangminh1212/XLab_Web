@@ -4,6 +4,7 @@ export interface OrderItem {
   quantity: number;
   price: number;
   options?: string[];
+  image?: string;
 }
 
 export interface Order {

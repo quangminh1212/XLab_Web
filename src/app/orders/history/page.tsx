@@ -3,12 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface OrderItem {
   productId: string;
   productName: string;
   quantity: number;
   price: number;
+  image?: string;
 }
 
 interface Order {
@@ -23,6 +26,45 @@ export default function OrderHistoryPage() {
   const { data: session, status } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Tải danh sách sản phẩm
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data.data || []);
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải danh sách sản phẩm:', error);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+
+  // Hàm lấy ảnh sản phẩm từ danh sách sản phẩm
+  const getProductImage = (productId: string, productName: string) => {
+    const product = products.find(p => 
+      p.id === productId || 
+      p.slug === productId || 
+      p.name === productName ||
+      p.slug === productName.toLowerCase().replace(/\s+/g, '-')
+    );
+    
+    if (product && product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
+      if (typeof firstImage === 'string') {
+        return firstImage.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage;
+      } else if (firstImage.url) {
+        return firstImage.url.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage.url;
+      }
+    }
+    
+    return '/images/placeholder/product-placeholder.jpg';
+  };
 
   useEffect(() => {
     // Chỉ fetch dữ liệu khi người dùng đã đăng nhập
@@ -42,42 +84,43 @@ export default function OrderHistoryPage() {
           console.error('Lỗi khi lấy dữ liệu đơn hàng:', error);
           
           // Dữ liệu mẫu để hiển thị khi có lỗi
-          setOrders([
+          const sampleOrders: Order[] = [
             {
-              id: 'ORD-001',
+              id: 'ORD-12345',
               status: 'completed',
-              totalAmount: 990000,
-              createdAt: '2023-05-20T15:30:00Z',
+              totalAmount: 149000,
+              createdAt: '2023-03-15T15:30:00Z',
               items: [
                 {
-                  productId: 'prod-vt',
-                  productName: 'VoiceTyping',
+                  productId: 'chatgpt',
+                  productName: 'ChatGPT',
                   quantity: 1,
-                  price: 990000
+                  price: 149000
                 }
               ]
             },
             {
-              id: 'ORD-002',
-              status: 'processing',
-              totalAmount: 1700000,
-              createdAt: '2023-05-28T21:20:00Z',
+              id: 'ORD-12346',
+              status: 'completed',
+              totalAmount: 298000,
+              createdAt: '2023-04-20T21:20:00Z',
               items: [
                 {
-                  productId: 'prod-office',
-                  productName: 'Office Suite',
+                  productId: 'grok',
+                  productName: 'Grok',
                   quantity: 1,
-                  price: 1200000
+                  price: 149000
                 },
                 {
-                  productId: 'prod-backup',
-                  productName: 'Backup Pro',
+                  productId: 'chatgpt',
+                  productName: 'ChatGPT',
                   quantity: 1,
-                  price: 500000
+                  price: 149000
                 }
               ]
             }
-          ]);
+          ];
+          setOrders(sampleOrders);
         } finally {
           setLoading(false);
         }
@@ -205,10 +248,24 @@ export default function OrderHistoryPage() {
               <div className="px-6 py-4">
                 <div className="divide-y divide-gray-200">
                   {order.items.map((item, index) => (
-                    <div key={index} className="py-3 flex justify-between items-center">
-                      <div>
-                        <h3 className="font-medium">{item.productName}</h3>
-                        <p className="text-sm text-gray-500">Số lượng: {item.quantity}</p>
+                    <div key={index} className="py-3 flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                          <Image
+                            src={getProductImage(item.productId, item.productName)}
+                            alt={item.productName}
+                            fill
+                            className="object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = '/images/placeholder/product-placeholder.jpg';
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">{item.productName}</h3>
+                          <p className="text-sm text-gray-500">Số lượng: {item.quantity}</p>
+                        </div>
                       </div>
                       <div className="text-right">
                         <p className="font-medium">{formatCurrency(item.price)}</p>

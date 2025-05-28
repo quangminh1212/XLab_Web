@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -15,6 +16,7 @@ interface OrderItem {
   licenseKey: string;
   expiryDate: string;
   updates: boolean;
+  image?: string;
 }
 
 interface Order {
@@ -30,46 +32,46 @@ const samplePurchaseHistory: Order[] = [
   {
     id: 'ORD-12345',
     date: '15/03/2023',
-    total: 4990000,
+    total: 149000,
     status: 'Hoàn thành',
     items: [
       {
-        id: 'business-suite',
-        name: 'XLab Business Suite',
+        id: 'chatgpt',
+        name: 'ChatGPT',
         version: 'Chuyên nghiệp',
-        price: 4990000,
-        originalPrice: 5990000,
-        licenseKey: 'XLAB-BS-PRO-1234-5678-90AB',
+        price: 149000,
+        originalPrice: 500000,
+        licenseKey: 'XLAB-CGP-PRO-1234-5678-90AB',
         expiryDate: '15/03/2024',
-        updates: true,
+        updates: true
       }
     ]
   },
   {
     id: 'ORD-12346',
     date: '20/04/2023',
-    total: 3980000,
+    total: 298000,
     status: 'Hoàn thành',
     items: [
       {
-        id: 'security-pro',
-        name: 'XLab Security Pro',
+        id: 'grok',
+        name: 'Grok',
         version: 'Cơ bản',
-        price: 1990000,
-        originalPrice: 2490000,
-        licenseKey: 'XLAB-SP-BAS-2345-6789-01CD',
-        expiryDate: '20/04/2024',
-        updates: true,
+        price: 149000,
+        originalPrice: 750000,
+        licenseKey: 'XLAB-GRK-BAS-5678-9012-CDEF',
+        expiryDate: '20/05/2024',
+        updates: true
       },
       {
-        id: 'design-master',
-        name: 'XLab Design Master',
-        version: 'Tiêu chuẩn',
-        price: 1990000,
-        originalPrice: 2490000,
-        licenseKey: 'XLAB-DM-STD-3456-7890-12EF',
-        expiryDate: '20/04/2024',
-        updates: true,
+        id: 'chatgpt',
+        name: 'ChatGPT',
+        version: 'Premium',
+        price: 149000,
+        originalPrice: 500000,
+        licenseKey: 'XLAB-CGP-PRE-9012-3456-GHIJ',
+        expiryDate: '20/05/2024',
+        updates: false
       }
     ]
   }
@@ -81,6 +83,45 @@ export default function OrdersPage() {
   const [purchaseHistory, setPurchaseHistory] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Tải danh sách sản phẩm
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data.data || []);
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải danh sách sản phẩm:', error);
+      }
+    };
+    
+    fetchProducts();
+  }, []);
+
+  // Hàm lấy ảnh sản phẩm từ danh sách sản phẩm
+  const getProductImage = (productId: string, productName: string) => {
+    const product = products.find(p => 
+      p.id === productId || 
+      p.slug === productId || 
+      p.name === productName ||
+      p.slug === productName.toLowerCase().replace(/\s+/g, '-')
+    );
+    
+    if (product && product.images && product.images.length > 0) {
+      const firstImage = product.images[0];
+      if (typeof firstImage === 'string') {
+        return firstImage.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage;
+      } else if (firstImage.url) {
+        return firstImage.url.startsWith('blob:') ? '/images/placeholder/product-placeholder.jpg' : firstImage.url;
+      }
+    }
+    
+    return '/images/placeholder/product-placeholder.jpg';
+  };
 
   useEffect(() => {
     // Chuyển hướng người dùng nếu chưa đăng nhập
@@ -211,6 +252,9 @@ export default function OrdersPage() {
                               Sản phẩm
                             </th>
                             <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Ảnh
+                            </th>
+                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                               Phiên bản
                             </th>
                             <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -230,6 +274,20 @@ export default function OrdersPage() {
                                 </div>
                                 <div className="text-sm text-gray-500">
                                   Hết hạn: {item.expiryDate}
+                                </div>
+                              </td>
+                              <td className="px-4 py-4 whitespace-nowrap">
+                                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
+                                  <Image
+                                    src={getProductImage(item.id, item.name)}
+                                    alt={item.name}
+                                    fill
+                                    className="object-contain"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = '/images/placeholder/product-placeholder.jpg';
+                                    }}
+                                  />
                                 </div>
                               </td>
                               <td className="px-4 py-4 whitespace-nowrap">

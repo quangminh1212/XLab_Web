@@ -7,6 +7,7 @@ interface OrderItem {
   productName: string;
   quantity: number;
   price: number;
+  image?: string;
 }
 
 interface Order {
@@ -39,50 +40,50 @@ export async function GET() {
     // để lấy đơn hàng của người dùng hiện tại
     const mockOrders: Order[] = [
       {
-        id: 'ORD-001',
+        id: 'ORD-12345',
         userId: '1',
         userName: 'Nguyễn Văn A',
         userEmail: 'nguyenvana@example.com',
         items: [
           {
-            productId: 'prod-vt',
-            productName: 'VoiceTyping',
+            productId: 'chatgpt',
+            productName: 'ChatGPT',
             quantity: 1,
-            price: 990000
+            price: 149000
           }
         ],
-        totalAmount: 990000,
+        totalAmount: 149000,
         status: 'completed',
         paymentMethod: 'bank_transfer',
         paymentStatus: 'paid',
-        createdAt: '2023-05-20T15:30:00Z',
-        updatedAt: '2023-05-20T15:30:00Z'
+        createdAt: '2023-03-15T15:30:00Z',
+        updatedAt: '2023-03-15T15:30:00Z'
       },
       {
-        id: 'ORD-002',
-        userId: '2',
-        userName: 'Trần Thị B',
-        userEmail: 'tranthib@example.com',
+        id: 'ORD-12346',
+        userId: '1',
+        userName: 'Nguyễn Văn A',
+        userEmail: 'nguyenvana@example.com',
         items: [
           {
-            productId: 'prod-office',
-            productName: 'Office Suite',
+            productId: 'grok',
+            productName: 'Grok',
             quantity: 1,
-            price: 1200000
+            price: 149000
           },
           {
-            productId: 'prod-backup',
-            productName: 'Backup Pro',
+            productId: 'chatgpt',
+            productName: 'ChatGPT',
             quantity: 1,
-            price: 500000
+            price: 149000
           }
         ],
-        totalAmount: 1700000,
-        status: 'processing',
+        totalAmount: 298000,
+        status: 'completed',
         paymentMethod: 'momo',
         paymentStatus: 'paid',
-        createdAt: '2023-05-28T21:20:00Z',
-        updatedAt: '2023-05-28T21:20:00Z'
+        createdAt: '2023-04-20T21:20:00Z',
+        updatedAt: '2023-04-20T21:20:00Z'
       }
     ];
 
