@@ -23,22 +23,22 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           
           {/* Logo và social icons - Cột riêng bên trái */}
-          <div className="flex flex-col items-center lg:items-start">
-            <Link href="/" className="flex items-center group mb-6">
+          <div className="flex flex-col items-center">
+            <Link href="/" className="flex items-center justify-center group mb-8">
               <div className="relative overflow-hidden rounded-lg">
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={200}
-                  height={80}
-                  className="w-auto h-20 transition-transform duration-300 group-hover:scale-105"
+                  width={240}
+                  height={96}
+                  className="w-auto h-24 transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </Link>
             
             {/* Social icons */}
-            <div className="flex space-x-3">
+            <div className="flex justify-center space-x-3">
               <a 
                 href={siteConfig.social.facebook} 
                 target="_blank" 
