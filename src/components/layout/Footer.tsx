@@ -20,37 +20,24 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
       
       <div className="relative container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           
-          {/* Logo và giới thiệu - Layout ngang */}
+          {/* Logo và social icons - Cột riêng bên trái */}
           <div className="flex flex-col items-center lg:items-start">
-            {/* Container cho text và logo */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-5 mb-6">
-              {/* Text bên trái */}
-              <div className="flex-1 order-2 lg:order-1">
-                <p className="text-slate-400 text-sm text-center lg:text-left leading-relaxed max-w-sm mb-4 lg:mb-0">
-                  Giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.
-                </p>
+            <Link href="/" className="flex items-center group mb-6">
+              <div className="relative overflow-hidden rounded-lg">
+                <Image
+                  src="/images/logo.jpg"
+                  alt={`${siteConfig.name} Logo`}
+                  width={120}
+                  height={48}
+                  className="w-auto h-12 transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
-              
-              {/* Logo bên phải */}
-              <div className="order-1 lg:order-2 mb-4 lg:mb-0">
-                <Link href="/" className="flex items-center group">
-                  <div className="relative overflow-hidden rounded-lg">
-                    <Image
-                      src="/images/logo.jpg"
-                      alt={`${siteConfig.name} Logo`}
-                      width={180}
-                      height={72}
-                      className="w-auto h-18 transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                </Link>
-              </div>
-            </div>
+            </Link>
             
-            {/* Social icons ở dưới */}
+            {/* Social icons */}
             <div className="flex space-x-3">
               <a 
                 href={siteConfig.social.facebook} 
@@ -82,6 +69,33 @@ export default function Footer() {
                   <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                 </svg>
               </a>
+            </div>
+          </div>
+
+          {/* Giới thiệu mở rộng */}
+          <div className="flex flex-col items-center lg:items-start lg:col-span-2">
+            <h3 className="text-white text-lg font-bold mb-5 relative group">
+              <span className="relative z-10">Về XLab</span>
+              <div className="absolute -bottom-1 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
+            </h3>
+            <div className="space-y-4 text-center lg:text-left">
+              <p className="text-slate-400 text-sm leading-relaxed">
+                XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp. Chúng tôi cam kết mang đến những sản phẩm chất lượng cao, đáp ứng mọi nhu cầu số hóa của khách hàng.
+              </p>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Với đội ngũ chuyên gia giàu kinh nghiệm và công nghệ tiên tiến, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp trong và ngoài nước.
+              </p>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mt-4">
+                <span className="px-3 py-1 text-xs bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
+                  500+ Khách hàng
+                </span>
+                <span className="px-3 py-1 text-xs bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
+                  5+ Năm kinh nghiệm
+                </span>
+                <span className="px-3 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
+                  24/7 Hỗ trợ
+                </span>
+              </div>
             </div>
           </div>
 
