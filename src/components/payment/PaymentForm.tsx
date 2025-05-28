@@ -72,28 +72,26 @@ const PaymentForm = ({
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
     
-    if (paymentMethod === 'card') {
-      if (!cardNumber.trim()) {
-        newErrors.cardNumber = 'Vui lòng nhập số thẻ'
-      } else if (cardNumber.replace(/\s/g, '').length < 16) {
-        newErrors.cardNumber = 'Số thẻ không hợp lệ'
-      }
-      
-      if (!cardName.trim()) {
-        newErrors.cardName = 'Vui lòng nhập tên trên thẻ'
-      }
-      
-      if (!expiryDate.trim()) {
-        newErrors.expiryDate = 'Vui lòng nhập ngày hết hạn'
-      } else if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
-        newErrors.expiryDate = 'Ngày hết hạn không hợp lệ'
-      }
-      
-      if (!cvv.trim()) {
-        newErrors.cvv = 'Vui lòng nhập mã CVV'
-      } else if (!/^\d{3,4}$/.test(cvv)) {
-        newErrors.cvv = 'Mã CVV không hợp lệ'
-      }
+    if (!cardNumber.trim()) {
+      newErrors.cardNumber = 'Vui lòng nhập số thẻ'
+    } else if (cardNumber.replace(/\s/g, '').length < 16) {
+      newErrors.cardNumber = 'Số thẻ không hợp lệ'
+    }
+    
+    if (!cardName.trim()) {
+      newErrors.cardName = 'Vui lòng nhập tên trên thẻ'
+    }
+    
+    if (!expiryDate.trim()) {
+      newErrors.expiryDate = 'Vui lòng nhập ngày hết hạn'
+    } else if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+      newErrors.expiryDate = 'Ngày hết hạn không hợp lệ'
+    }
+    
+    if (!cvv.trim()) {
+      newErrors.cvv = 'Vui lòng nhập mã CVV'
+    } else if (!/^\d{3,4}$/.test(cvv)) {
+      newErrors.cvv = 'Mã CVV không hợp lệ'
     }
     
     setErrors(newErrors)
@@ -136,16 +134,6 @@ const PaymentForm = ({
     }
   }
 
-  // Thông tin MoMo - fallback nếu không có trong siteConfig
-  const momoPhone = '0901234567';
-
-  // Thông tin ngân hàng - fallback nếu không có trong siteConfig
-  const bankInfo = {
-    bankName: 'MBBank (Ngân hàng Quân đội)',
-    accountName: siteConfig.legal.companyName,
-    accountNumber: '1234567890'
-  };
-
   return (
     <div className="w-full max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden">
       <div className="p-6 bg-primary-500 text-white">
@@ -165,8 +153,8 @@ const PaymentForm = ({
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <div className="font-semibold mb-3">Phương thức thanh toán</div>
-            <div className="grid grid-cols-3 gap-3">
-              <label className={`flex flex-col items-center justify-center p-3 border rounded-lg cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-primary-300'}`}>
+            <div className="grid grid-cols-1 gap-3">
+              <label className={`flex flex-col items-center justify-center p-4 border rounded-lg cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-primary-300'}`}>
                 <input 
                   type="radio" 
                   name="paymentMethod" 
@@ -175,199 +163,98 @@ const PaymentForm = ({
                   checked={paymentMethod === 'card'}
                   onChange={() => setPaymentMethod('card')}
                 />
-                <Image src="/images/icons/credit-card.svg" alt="Credit Card" width={40} height={40} className="mb-2" />
-                <span className="text-sm font-medium">Thẻ tín dụng</span>
-              </label>
-              
-              <label className={`flex flex-col items-center justify-center p-3 border rounded-lg cursor-pointer transition-all ${paymentMethod === 'momo' ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-primary-300'}`}>
-                <input 
-                  type="radio" 
-                  name="paymentMethod" 
-                  value="momo" 
-                  className="sr-only"
-                  checked={paymentMethod === 'momo'}
-                  onChange={() => setPaymentMethod('momo')}
-                />
-                <Image src="/images/icons/momo.svg" alt="MoMo" width={40} height={40} className="mb-2" />
-                <span className="text-sm font-medium">MoMo</span>
-              </label>
-              
-              <label className={`flex flex-col items-center justify-center p-3 border rounded-lg cursor-pointer transition-all ${paymentMethod === 'banking' ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-primary-300'}`}>
-                <input 
-                  type="radio" 
-                  name="paymentMethod" 
-                  value="banking" 
-                  className="sr-only"
-                  checked={paymentMethod === 'banking'}
-                  onChange={() => setPaymentMethod('banking')}
-                />
-                <Image src="/images/mbbank.jpg" alt="MBBank" width={40} height={24} className="mb-2 rounded" />
-                <span className="text-sm font-medium">MBBank</span>
+                <div className="flex items-center space-x-4">
+                  <Image src="/images/icons/credit-card.svg" alt="Credit Card" width={40} height={40} />
+                  <span className="text-lg font-medium">Thẻ tín dụng / Thẻ ghi nợ</span>
+                  <div className="flex items-center space-x-2 ml-auto">
+                    <Image src="/images/payment/visa.svg" alt="Visa" width={40} height={25} className="h-6 w-auto" />
+                    <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={40} height={25} className="h-6 w-auto" />
+                  </div>
+                </div>
               </label>
             </div>
           </div>
           
-          {paymentMethod === 'card' && (
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                  Số thẻ
-                </label>
-                <div className="relative">
-                  <input
-                    id="cardNumber"
-                    type="text"
-                    value={cardNumber}
-                    onChange={handleCardNumberChange}
-                    placeholder="1234 5678 9012 3456"
-                    maxLength={19}
-                    className={`w-full border ${errors.cardNumber ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
-                  />
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
-                    <Image src="/images/payment/visa.svg" alt="Visa" width={25} height={15} className="h-5 w-auto" />
-                    <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={25} height={15} className="h-5 w-auto" />
-                  </div>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                Số thẻ
+              </label>
+              <div className="relative">
+                <input
+                  id="cardNumber"
+                  type="text"
+                  value={cardNumber}
+                  onChange={handleCardNumberChange}
+                  placeholder="1234 5678 9012 3456"
+                  maxLength={19}
+                  className={`w-full border ${errors.cardNumber ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
+                />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                  <Image src="/images/payment/visa.svg" alt="Visa" width={25} height={15} className="h-5 w-auto" />
+                  <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={25} height={15} className="h-5 w-auto" />
                 </div>
-                {errors.cardNumber && (
-                  <p className="mt-1 text-xs text-red-600">{errors.cardNumber}</p>
-                )}
               </div>
-              
+              {errors.cardNumber && (
+                <p className="mt-1 text-xs text-red-600">{errors.cardNumber}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="cardName" className="block text-sm font-medium text-gray-700 mb-1">
+                Tên trên thẻ
+              </label>
+              <input
+                id="cardName"
+                type="text"
+                value={cardName}
+                onChange={(e) => setCardName(e.target.value)}
+                placeholder="NGUYEN VAN A"
+                className={`w-full border ${errors.cardName ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
+              />
+              {errors.cardName && (
+                <p className="mt-1 text-xs text-red-600">{errors.cardName}</p>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="cardName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Tên trên thẻ
+                <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  Ngày hết hạn
                 </label>
                 <input
-                  id="cardName"
+                  id="expiryDate"
                   type="text"
-                  value={cardName}
-                  onChange={(e) => setCardName(e.target.value)}
-                  placeholder="NGUYEN VAN A"
-                  className={`w-full border ${errors.cardName ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
+                  value={expiryDate}
+                  onChange={handleExpiryDateChange}
+                  placeholder="MM/YY"
+                  maxLength={5}
+                  className={`w-full border ${errors.expiryDate ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
                 />
-                {errors.cardName && (
-                  <p className="mt-1 text-xs text-red-600">{errors.cardName}</p>
+                {errors.expiryDate && (
+                  <p className="mt-1 text-xs text-red-600">{errors.expiryDate}</p>
                 )}
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-1">
-                    Ngày hết hạn
-                  </label>
-                  <input
-                    id="expiryDate"
-                    type="text"
-                    value={expiryDate}
-                    onChange={handleExpiryDateChange}
-                    placeholder="MM/YY"
-                    maxLength={5}
-                    className={`w-full border ${errors.expiryDate ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
-                  />
-                  {errors.expiryDate && (
-                    <p className="mt-1 text-xs text-red-600">{errors.expiryDate}</p>
-                  )}
-                </div>
-                
-                <div>
-                  <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">
-                    CVV
-                  </label>
-                  <input
-                    id="cvv"
-                    type="text"
-                    value={cvv}
-                    onChange={(e) => setCvv(e.target.value.replace(/[^\d]/g, '').slice(0, 4))}
-                    placeholder="123"
-                    maxLength={4}
-                    className={`w-full border ${errors.cvv ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
-                  />
-                  {errors.cvv && (
-                    <p className="mt-1 text-xs text-red-600">{errors.cvv}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-          
-          {paymentMethod === 'momo' && (
-            <div className="border border-gray-200 rounded-lg p-4">
-              <div className="text-center">
-                <Image src="/images/payment/momo-qr.svg" alt="MoMo QR Code" width={200} height={200} className="mx-auto mb-4" />
-                <p className="text-gray-700 mb-2">Quét mã QR bằng ứng dụng MoMo</p>
-                <div className="text-primary-500 font-bold text-xl mb-2">{formatCurrency(amount)}</div>
-                <p className="text-xs text-gray-500">Hoặc chuyển khoản đến SĐT: {momoPhone}</p>
-                <p className="text-xs text-gray-500 mt-1">Nội dung chuyển khoản: {orderId}</p>
-              </div>
-            </div>
-          )}
-          
-          {paymentMethod === 'banking' && (
-            <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="font-medium mb-3 text-center">Chuyển khoản MBBank</h3>
-              
-              {/* Hiển thị logo MBBank */}
-              <div className="text-center mb-4">
-                <Image 
-                  src="/images/mbbank.jpg" 
-                  alt="MBBank Logo" 
-                  width={200} 
-                  height={100} 
-                  className="mx-auto rounded-lg shadow-sm"
+              <div>
+                <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">
+                  CVV
+                </label>
+                <input
+                  id="cvv"
+                  type="text"
+                  value={cvv}
+                  onChange={(e) => setCvv(e.target.value.replace(/[^\d]/g, '').slice(0, 4))}
+                  placeholder="123"
+                  maxLength={4}
+                  className={`w-full border ${errors.cvv ? 'border-red-500' : 'border-gray-300'} rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500`}
                 />
-              </div>
-
-              {/* QR Code giả lập */}
-              <div className="text-center mb-4">
-                <div className="inline-block p-4 bg-white border-2 border-gray-300 rounded-lg">
-                  <div className="w-32 h-32 bg-gray-100 flex items-center justify-center rounded">
-                    <span className="text-xs text-gray-500">QR Code</span>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Quét mã QR để chuyển khoản nhanh</p>
-              </div>
-              
-              <div className="space-y-3 text-sm bg-gray-50 p-4 rounded-lg">
-                <div className="flex justify-between">
-                  <span className="font-medium text-gray-600">Ngân hàng:</span>
-                  <span className="font-semibold">{bankInfo.bankName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-gray-600">Chủ tài khoản:</span>
-                  <span className="font-semibold">{bankInfo.accountName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-gray-600">Số tài khoản:</span>
-                  <span className="font-mono font-semibold text-blue-600">{bankInfo.accountNumber}</span>
-                </div>
-                <div className="flex justify-between border-t pt-2">
-                  <span className="font-medium text-gray-600">Số tiền:</span>
-                  <span className="text-lg font-bold text-red-600">{formatCurrency(amount)}</span>
-                </div>
-                <div className="flex flex-col border-t pt-2">
-                  <span className="font-medium text-gray-600 mb-1">Nội dung chuyển khoản:</span>
-                  <span className="font-mono font-semibold text-green-600 bg-green-50 p-2 rounded text-center">{orderId}</span>
-                </div>
-              </div>
-              
-              <div className="mt-4 p-3 bg-blue-50 text-sm rounded border-l-4 border-blue-400">
-                <p className="mb-2 font-medium text-blue-800">📋 Hướng dẫn chuyển khoản:</p>
-                <ul className="list-decimal list-inside text-blue-700 space-y-1 text-xs">
-                  <li>Mở ứng dụng MBBank hoặc Internet Banking</li>
-                  <li>Chọn chuyển khoản trong nước</li>
-                  <li>Nhập thông tin tài khoản như trên</li>
-                  <li>Nhập chính xác nội dung chuyển khoản</li>
-                  <li>Xác nhận và hoàn tất giao dịch</li>
-                  <li>Chụp lại biên lai để tra soát khi cần</li>
-                </ul>
-              </div>
-
-              <div className="mt-3 p-3 bg-yellow-50 text-xs rounded border-l-4 border-yellow-400">
-                <p className="font-medium text-yellow-800 mb-1">⚠️ Lưu ý quan trọng:</p>
-                <p className="text-yellow-700">Đơn hàng sẽ được xác nhận và giao trong vòng 24h sau khi nhận được thanh toán thành công.</p>
+                {errors.cvv && (
+                  <p className="mt-1 text-xs text-red-600">{errors.cvv}</p>
+                )}
               </div>
             </div>
-          )}
+          </div>
           
           {errors.submit && (
             <div className="mt-4 p-3 bg-red-50 text-red-700 text-sm rounded-md">
