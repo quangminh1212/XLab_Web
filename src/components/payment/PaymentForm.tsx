@@ -83,8 +83,8 @@ const PaymentForm = ({
   // Thông tin ngân hàng
   const bankInfo = {
     bankName: 'MBBank (Ngân hàng Quân đội)',
-    accountName: siteConfig.legal.companyName || 'XLab Technologies',
-    accountNumber: '0123456789'
+    accountName: 'Trang',
+    accountNumber: '669912122000'
   };
 
   // Tạo QR Code VietQR
