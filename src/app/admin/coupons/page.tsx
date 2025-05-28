@@ -47,6 +47,8 @@ function CouponsPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [inlineEditing, setInlineEditing] = useState<{[key: string]: boolean}>({});
+  const [editValues, setEditValues] = useState<{[key: string]: any}>({});
 
   // Form state
   const [form, setForm] = useState<CouponForm>({
@@ -284,6 +286,62 @@ function CouponsPage() {
     return new Date(startDate) <= now && new Date(endDate) >= now;
   };
 
+  // Inline editing functions
+  const startInlineEdit = (couponId: string, field: string, currentValue: any) => {
+    setInlineEditing(prev => ({ ...prev, [`${couponId}-${field}`]: true }));
+    setEditValues(prev => ({ ...prev, [`${couponId}-${field}`]: currentValue }));
+  };
+
+  const cancelInlineEdit = (couponId: string, field: string) => {
+    setInlineEditing(prev => {
+      const newState = { ...prev };
+      delete newState[`${couponId}-${field}`];
+      return newState;
+    });
+    setEditValues(prev => {
+      const newState = { ...prev };
+      delete newState[`${couponId}-${field}`];
+      return newState;
+    });
+  };
+
+  const saveInlineEdit = async (couponId: string, field: string) => {
+    const editKey = `${couponId}-${field}`;
+    const newValue = editValues[editKey];
+    
+    try {
+      const coupon = coupons.find(c => c.id === couponId);
+      if (!coupon) return;
+
+      const updateData = { ...coupon, [field]: newValue };
+      
+      const response = await fetch(`/api/admin/coupons/${couponId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (response.ok) {
+        setCoupons(prev => prev.map(c => 
+          c.id === couponId ? { ...c, [field]: newValue } : c
+        ));
+        setSuccessMessage('Cập nhật thành công!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      } else {
+        setErrorMessage('Có lỗi xảy ra khi cập nhật');
+        setTimeout(() => setErrorMessage(''), 3000);
+      }
+    } catch (error) {
+      console.error('Error updating coupon:', error);
+      setErrorMessage('Có lỗi xảy ra khi cập nhật');
+      setTimeout(() => setErrorMessage(''), 3000);
+    }
+
+    cancelInlineEdit(couponId, field);
+  };
+
   useEffect(() => {
     fetchCoupons();
   }, []);
@@ -439,7 +497,49 @@ function CouponsPage() {
                             <div className="bg-primary-500 text-white font-mono font-bold text-sm px-3 py-1.5 rounded border border-primary-300">
                               {coupon.code}
                             </div>
-                            <div className="text-sm font-medium text-gray-700 mt-1.5">{coupon.name}</div>
+                            <div className="text-sm font-medium text-gray-700 mt-1.5">
+                              {inlineEditing[`${coupon.id}-name`] ? (
+                                <div className="flex items-center space-x-1">
+                                  <input
+                                    type="text"
+                                    value={editValues[`${coupon.id}-name`] || ''}
+                                    onChange={(e) => setEditValues(prev => ({
+                                      ...prev,
+                                      [`${coupon.id}-name`]: e.target.value
+                                    }))}
+                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        saveInlineEdit(coupon.id, 'name');
+                                      } else if (e.key === 'Escape') {
+                                        cancelInlineEdit(coupon.id, 'name');
+                                      }
+                                    }}
+                                    autoFocus
+                                  />
+                                  <button
+                                    onClick={() => saveInlineEdit(coupon.id, 'name')}
+                                    className="text-green-600 hover:text-green-800 text-xs"
+                                  >
+                                    ✓
+                                  </button>
+                                  <button
+                                    onClick={() => cancelInlineEdit(coupon.id, 'name')}
+                                    className="text-red-600 hover:text-red-800 text-xs"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ) : (
+                                <span
+                                  onClick={() => startInlineEdit(coupon.id, 'name', coupon.name)}
+                                  className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                  title="Click để chỉnh sửa"
+                                >
+                                  {coupon.name}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -448,13 +548,95 @@ function CouponsPage() {
                               <span className="text-sm font-medium mr-2">
                                 {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
                               </span>
-                              <span className="text-sm font-bold">
-                                {coupon.type === 'percentage' ? `${coupon.value}%` : formatCurrency(coupon.value)}
-                              </span>
+                              {inlineEditing[`${coupon.id}-value`] ? (
+                                <div className="flex items-center space-x-1">
+                                  <input
+                                    type="number"
+                                    value={editValues[`${coupon.id}-value`] || ''}
+                                    onChange={(e) => setEditValues(prev => ({
+                                      ...prev,
+                                      [`${coupon.id}-value`]: parseFloat(e.target.value) || 0
+                                    }))}
+                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-16"
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        saveInlineEdit(coupon.id, 'value');
+                                      } else if (e.key === 'Escape') {
+                                        cancelInlineEdit(coupon.id, 'value');
+                                      }
+                                    }}
+                                    autoFocus
+                                  />
+                                  <span className="text-sm font-bold">
+                                    {coupon.type === 'percentage' ? '%' : 'đ'}
+                                  </span>
+                                  <button
+                                    onClick={() => saveInlineEdit(coupon.id, 'value')}
+                                    className="text-green-600 hover:text-green-800 text-xs"
+                                  >
+                                    ✓
+                                  </button>
+                                  <button
+                                    onClick={() => cancelInlineEdit(coupon.id, 'value')}
+                                    className="text-red-600 hover:text-red-800 text-xs"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ) : (
+                                <span
+                                  onClick={() => startInlineEdit(coupon.id, 'value', coupon.value)}
+                                  className="text-sm font-bold cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                  title="Click để chỉnh sửa"
+                                >
+                                  {coupon.type === 'percentage' ? `${coupon.value}%` : formatCurrency(coupon.value)}
+                                </span>
+                              )}
                             </div>
                             {coupon.minOrder && (
                               <div className="text-sm text-gray-500 bg-gray-50 px-2 py-1 rounded border border-gray-200">
-                                Tối thiểu: {formatCurrency(coupon.minOrder)}
+                                {inlineEditing[`${coupon.id}-minOrder`] ? (
+                                  <div className="flex items-center space-x-1">
+                                    <span>Tối thiểu:</span>
+                                    <input
+                                      type="number"
+                                      value={editValues[`${coupon.id}-minOrder`] || ''}
+                                      onChange={(e) => setEditValues(prev => ({
+                                        ...prev,
+                                        [`${coupon.id}-minOrder`]: parseFloat(e.target.value) || 0
+                                      }))}
+                                      className="border border-gray-300 rounded px-1 py-0.5 text-xs w-20"
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                          saveInlineEdit(coupon.id, 'minOrder');
+                                        } else if (e.key === 'Escape') {
+                                          cancelInlineEdit(coupon.id, 'minOrder');
+                                        }
+                                      }}
+                                      autoFocus
+                                    />
+                                    <button
+                                      onClick={() => saveInlineEdit(coupon.id, 'minOrder')}
+                                      className="text-green-600 hover:text-green-800 text-xs"
+                                    >
+                                      ✓
+                                    </button>
+                                    <button
+                                      onClick={() => cancelInlineEdit(coupon.id, 'minOrder')}
+                                      className="text-red-600 hover:text-red-800 text-xs"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span
+                                    onClick={() => startInlineEdit(coupon.id, 'minOrder', coupon.minOrder)}
+                                    className="cursor-pointer hover:bg-gray-200 px-1 py-0.5 rounded"
+                                    title="Click để chỉnh sửa"
+                                  >
+                                    Tối thiểu: {formatCurrency(coupon.minOrder)}
+                                  </span>
+                                )}
                               </div>
                             )}
                           </div>
@@ -463,11 +645,95 @@ function CouponsPage() {
                           <div className="space-y-1.5">
                             <div className="bg-gray-50 border border-gray-200 rounded p-2 text-center">
                               <div className="text-xs text-gray-500 font-medium uppercase">Bắt đầu</div>
-                              <div className="text-sm font-medium text-gray-700">{formatDate(coupon.startDate)}</div>
+                              {inlineEditing[`${coupon.id}-startDate`] ? (
+                                <div className="flex flex-col items-center space-y-1">
+                                  <input
+                                    type="date"
+                                    value={editValues[`${coupon.id}-startDate`] || ''}
+                                    onChange={(e) => setEditValues(prev => ({
+                                      ...prev,
+                                      [`${coupon.id}-startDate`]: e.target.value
+                                    }))}
+                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-28"
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        saveInlineEdit(coupon.id, 'startDate');
+                                      } else if (e.key === 'Escape') {
+                                        cancelInlineEdit(coupon.id, 'startDate');
+                                      }
+                                    }}
+                                    autoFocus
+                                  />
+                                  <div className="flex space-x-1">
+                                    <button
+                                      onClick={() => saveInlineEdit(coupon.id, 'startDate')}
+                                      className="text-green-600 hover:text-green-800 text-xs"
+                                    >
+                                      ✓
+                                    </button>
+                                    <button
+                                      onClick={() => cancelInlineEdit(coupon.id, 'startDate')}
+                                      className="text-red-600 hover:text-red-800 text-xs"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div
+                                  onClick={() => startInlineEdit(coupon.id, 'startDate', coupon.startDate.split('T')[0])}
+                                  className="text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                  title="Click để chỉnh sửa"
+                                >
+                                  {formatDate(coupon.startDate)}
+                                </div>
+                              )}
                             </div>
                             <div className="bg-gray-50 border border-gray-200 rounded p-2 text-center">
                               <div className="text-xs text-gray-500 font-medium uppercase">Kết thúc</div>
-                              <div className="text-sm font-medium text-gray-700">{formatDate(coupon.endDate)}</div>
+                              {inlineEditing[`${coupon.id}-endDate`] ? (
+                                <div className="flex flex-col items-center space-y-1">
+                                  <input
+                                    type="date"
+                                    value={editValues[`${coupon.id}-endDate`] || ''}
+                                    onChange={(e) => setEditValues(prev => ({
+                                      ...prev,
+                                      [`${coupon.id}-endDate`]: e.target.value
+                                    }))}
+                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-28"
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        saveInlineEdit(coupon.id, 'endDate');
+                                      } else if (e.key === 'Escape') {
+                                        cancelInlineEdit(coupon.id, 'endDate');
+                                      }
+                                    }}
+                                    autoFocus
+                                  />
+                                  <div className="flex space-x-1">
+                                    <button
+                                      onClick={() => saveInlineEdit(coupon.id, 'endDate')}
+                                      className="text-green-600 hover:text-green-800 text-xs"
+                                    >
+                                      ✓
+                                    </button>
+                                    <button
+                                      onClick={() => cancelInlineEdit(coupon.id, 'endDate')}
+                                      className="text-red-600 hover:text-red-800 text-xs"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div
+                                  onClick={() => startInlineEdit(coupon.id, 'endDate', coupon.endDate.split('T')[0])}
+                                  className="text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                  title="Click để chỉnh sửa"
+                                >
+                                  {formatDate(coupon.endDate)}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </td>
@@ -475,7 +741,49 @@ function CouponsPage() {
                           <div className="bg-gray-50 border border-gray-200 rounded p-3 text-center">
                             <div className="text-xl font-bold text-gray-700">{coupon.usedCount}</div>
                             <div className="text-sm text-gray-500 font-medium">
-                              {coupon.usageLimit ? `/ ${coupon.usageLimit} lần` : '/ ∞ lần'}
+                              {inlineEditing[`${coupon.id}-usageLimit`] ? (
+                                <div className="flex items-center justify-center space-x-1">
+                                  <span>/</span>
+                                  <input
+                                    type="number"
+                                    value={editValues[`${coupon.id}-usageLimit`] || ''}
+                                    onChange={(e) => setEditValues(prev => ({
+                                      ...prev,
+                                      [`${coupon.id}-usageLimit`]: parseInt(e.target.value) || 0
+                                    }))}
+                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-12 text-center"
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                        saveInlineEdit(coupon.id, 'usageLimit');
+                                      } else if (e.key === 'Escape') {
+                                        cancelInlineEdit(coupon.id, 'usageLimit');
+                                      }
+                                    }}
+                                    autoFocus
+                                  />
+                                  <span>lần</span>
+                                  <button
+                                    onClick={() => saveInlineEdit(coupon.id, 'usageLimit')}
+                                    className="text-green-600 hover:text-green-800 text-xs"
+                                  >
+                                    ✓
+                                  </button>
+                                  <button
+                                    onClick={() => cancelInlineEdit(coupon.id, 'usageLimit')}
+                                    className="text-red-600 hover:text-red-800 text-xs"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ) : (
+                                <span
+                                  onClick={() => startInlineEdit(coupon.id, 'usageLimit', coupon.usageLimit || 0)}
+                                  className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                  title="Click để chỉnh sửa"
+                                >
+                                  {coupon.usageLimit ? `/ ${coupon.usageLimit} lần` : '/ ∞ lần'}
+                                </span>
+                              )}
                             </div>
                             <div className="mt-1.5">
                               <div className={`w-full bg-gray-200 rounded-full h-1.5 ${coupon.usageLimit ? 'block' : 'hidden'}`}>
