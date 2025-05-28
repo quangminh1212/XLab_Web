@@ -110,7 +110,6 @@ const PaymentForm = ({
   const generateQRCode = () => {
     const bankId = 'MB' // MBBank
     const accountNo = bankInfo.accountNumber
-    const amount_number = amount
     const addInfo = orderId
     const template = 'compact' // Template compact - chỉ QR thuần túy không có văn bản
     
@@ -119,11 +118,11 @@ const PaymentForm = ({
     const encodedAddInfo = encodeURIComponent(addInfo)
     
     // Sử dụng format đầy đủ với tất cả parameters
-    const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${amount_number}&addInfo=${encodedAddInfo}&accountName=${encodedAccountName}`
+    const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${amount}&addInfo=${encodedAddInfo}&accountName=${encodedAccountName}`
     
     // Debug log để kiểm tra URL
     console.log('QR URL:', qrUrl)
-    console.log('Amount:', amount_number)
+    console.log('Amount:', amount)
     console.log('Order ID:', addInfo)
     console.log('Account Name:', bankInfo.accountName)
     
