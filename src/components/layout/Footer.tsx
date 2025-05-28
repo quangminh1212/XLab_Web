@@ -74,25 +74,25 @@ export default function Footer() {
 
           {/* Giới thiệu */}
           <div className="flex flex-col items-center lg:items-start">
-            <h3 className="text-white text-lg font-bold mb-5 relative group">
+            <h3 className="text-white text-xl font-bold mb-5 relative group">
               <span className="relative z-10">Về XLab</span>
               <div className="absolute -bottom-1 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <div className="space-y-3 text-center lg:text-left">
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-slate-400 text-base leading-relaxed">
                 XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.
               </p>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-slate-400 text-base leading-relaxed">
                 Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.
               </p>
               <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 mt-3">
-                <span className="px-2 py-1 text-xs bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
+                <span className="px-3 py-1.5 text-sm bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
                   500+ Khách hàng
                 </span>
-                <span className="px-2 py-1 text-xs bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
+                <span className="px-3 py-1.5 text-sm bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
                   5+ Năm
                 </span>
-                <span className="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
+                <span className="px-3 py-1.5 text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
                   24/7 Hỗ trợ
                 </span>
               </div>
@@ -101,25 +101,25 @@ export default function Footer() {
 
           {/* Sản phẩm & Dịch vụ + Điều hướng */}
           <div className="flex flex-col items-center lg:items-start">
-            <h3 className="text-white text-lg font-bold mb-5 relative group">
+            <h3 className="text-white text-xl font-bold mb-5 relative group">
               <span className="relative z-10">Sản phẩm & Dịch vụ</span>
               <div className="absolute -bottom-1 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
-            <ul className="space-y-2.5 text-center lg:text-left mb-4">
+            <ul className="space-y-3 text-center lg:text-left mb-4">
               <li>
-                <Link href="/products" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
+                <Link href="/products" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-base transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Sản phẩm
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
+                <Link href="/services" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-base transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Dịch vụ
                 </Link>
               </li>
               <li>
-                <Link href="/testimonials" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
+                <Link href="/testimonials" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-base transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Đánh giá
                 </Link>
@@ -128,19 +128,19 @@ export default function Footer() {
             
             {/* Điều hướng */}
             <div className="pt-4 border-t border-slate-700 w-full">
-              <h4 className="text-white text-sm font-semibold mb-3 text-center lg:text-left">Điều hướng</h4>
-              <div className="space-y-2 text-center lg:text-left">
-                <Link href="/" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
+              <h4 className="text-white text-base font-semibold mb-3 text-center lg:text-left">Điều hướng</h4>
+              <div className="space-y-3 text-center lg:text-left">
+                <Link href="/" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Trang chủ
                 </Link>
                 <br />
-                <Link href="/about" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
+                <Link href="/about" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Giới thiệu
                 </Link>
                 <br />
-                <Link href="/pricing" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
+                <Link href="/pricing" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Bảng giá
                 </Link>
@@ -150,54 +150,54 @@ export default function Footer() {
 
           {/* Thông tin liên hệ */}
           <div className="flex flex-col items-center lg:items-start">
-            <h3 className="text-white text-lg font-bold mb-5 relative group">
+            <h3 className="text-white text-xl font-bold mb-5 relative group">
               <span className="relative z-10">Liên hệ</span>
               <div className="absolute -bottom-1 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
-            <ul className="space-y-3.5 text-center lg:text-left mb-4">
+            <ul className="space-y-4 text-center lg:text-left mb-4">
               <li className="flex items-start justify-center lg:justify-start group">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500/20 to-red-500/20 mr-2.5 group-hover:from-orange-500/30 group-hover:to-red-500/30 transition-all duration-300 border border-orange-500/20">
-                  <svg className="h-4 w-4 text-orange-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-5 w-5 text-orange-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <span className="text-xs text-slate-400 leading-relaxed max-w-[180px]">{siteConfig.contact.address}</span>
+                <span className="text-sm text-slate-400 leading-relaxed max-w-[180px]">{siteConfig.contact.address}</span>
               </li>
               <li className="flex items-start justify-center lg:justify-start group">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-green-500/20 to-emerald-500/20 mr-2.5 group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all duration-300 border border-green-500/20">
-                  <svg className="h-4 w-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-5 w-5 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 </div>
-                <span className="text-xs text-slate-400">{siteConfig.contact.phone}</span>
+                <span className="text-sm text-slate-400">{siteConfig.contact.phone}</span>
               </li>
               <li className="flex items-start justify-center lg:justify-start group">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 mr-2.5 group-hover:from-blue-500/30 group-hover:to-cyan-500/30 transition-all duration-300 border border-blue-500/20">
-                  <svg className="h-4 w-4 text-blue-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-5 w-5 text-blue-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span className="text-xs text-slate-400">{siteConfig.contact.email}</span>
+                <span className="text-sm text-slate-400">{siteConfig.contact.email}</span>
               </li>
               <li className="flex items-start justify-center lg:justify-start group">
                 <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 mr-2.5 group-hover:from-violet-500/30 group-hover:to-purple-500/30 transition-all duration-300 border border-violet-500/20">
-                  <svg className="h-4 w-4 text-violet-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="h-5 w-5 text-violet-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <span className="text-xs text-slate-400">{siteConfig.contact.workingHours}</span>
+                <span className="text-sm text-slate-400">{siteConfig.contact.workingHours}</span>
               </li>
             </ul>
             
             {/* Additional Links */}
-            <div className="space-y-2 text-center lg:text-left">
-              <Link href="/support" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-sm transition-all duration-300 hover:translate-x-1">
+            <div className="space-y-3 text-center lg:text-left">
+              <Link href="/support" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-base transition-all duration-300 hover:translate-x-1">
                 <span className="w-0 group-hover:w-1.5 h-0.5 bg-orange-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                 Hỗ trợ
               </Link>
               <br />
-              <Link href="/contact" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-sm transition-all duration-300 hover:translate-x-1">
+              <Link href="/contact" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-base transition-all duration-300 hover:translate-x-1">
                 <span className="w-0 group-hover:w-1.5 h-0.5 bg-orange-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                 Liên hệ ngay
               </Link>
@@ -220,13 +220,13 @@ export default function Footer() {
         {/* Bottom section - Cải thiện layout */}
         <div className="flex flex-col lg:flex-row justify-between items-center space-y-5 lg:space-y-0">
           <div className="text-center lg:text-left">
-            <p className="text-xs text-slate-400">
+            <p className="text-sm text-slate-400">
               &copy; {currentYear} <span className="text-white font-medium">{siteConfig.name}</span>. Bản quyền thuộc về công ty <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
             </p>
           </div>
           
           <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-6">
-            <span className="text-xs text-slate-400 font-medium">Chấp nhận thanh toán</span>
+            <span className="text-sm text-slate-400 font-medium">Chấp nhận thanh toán</span>
             <div className="flex items-center space-x-2.5">
               {/* Visa */}
               <div className="group relative">
