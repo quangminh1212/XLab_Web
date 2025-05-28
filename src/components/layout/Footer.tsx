@@ -29,9 +29,9 @@ export default function Footer() {
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={280}
-                  height={112}
-                  className="w-auto h-28 transition-transform duration-300 group-hover:scale-105"
+                  width={560}
+                  height={224}
+                  className="w-auto h-56 transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
@@ -72,7 +72,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Giới thiệu mở rộng */}
+          {/* Giới thiệu */}
           <div className="flex flex-col items-center lg:items-start">
             <h3 className="text-white text-lg font-bold mb-5 relative group">
               <span className="relative z-10">Về XLab</span>
@@ -96,32 +96,16 @@ export default function Footer() {
                   24/7 Hỗ trợ
                 </span>
               </div>
-              
-              {/* Quick Links trong cột này */}
-              <div className="mt-6 pt-4 border-t border-slate-700">
-                <h4 className="text-white text-sm font-semibold mb-3">Điều hướng</h4>
-                <div className="space-y-2">
-                  <Link href="/" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
-                    <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                    Trang chủ
-                  </Link>
-                  <br />
-                  <Link href="/about" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
-                    <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                    Giới thiệu
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Sản phẩm & Dịch vụ */}
+          {/* Sản phẩm & Dịch vụ + Điều hướng */}
           <div className="flex flex-col items-center lg:items-start">
             <h3 className="text-white text-lg font-bold mb-5 relative group">
               <span className="relative z-10">Sản phẩm & Dịch vụ</span>
               <div className="absolute -bottom-1 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
-            <ul className="space-y-2.5 text-center lg:text-left">
+            <ul className="space-y-2.5 text-center lg:text-left mb-4">
               <li>
                 <Link href="/products" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
@@ -135,24 +119,33 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Hỗ trợ
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Bảng giá
-                </Link>
-              </li>
-              <li>
                 <Link href="/testimonials" className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm transition-all duration-300 hover:translate-x-1">
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   Đánh giá
                 </Link>
               </li>
             </ul>
+            
+            {/* Điều hướng */}
+            <div className="pt-4 border-t border-slate-700 w-full">
+              <h4 className="text-white text-sm font-semibold mb-3 text-center lg:text-left">Điều hướng</h4>
+              <div className="space-y-2 text-center lg:text-left">
+                <Link href="/" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  Trang chủ
+                </Link>
+                <br />
+                <Link href="/about" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  Giới thiệu
+                </Link>
+                <br />
+                <Link href="/pricing" className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-sm transition-all duration-300 hover:translate-x-1">
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  Bảng giá
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Thông tin liên hệ */}
@@ -197,8 +190,13 @@ export default function Footer() {
               </li>
             </ul>
             
-            {/* Quick Contact Link */}
-            <div className="text-center lg:text-left">
+            {/* Additional Links */}
+            <div className="space-y-2 text-center lg:text-left">
+              <Link href="/support" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-sm transition-all duration-300 hover:translate-x-1">
+                <span className="w-0 group-hover:w-1.5 h-0.5 bg-orange-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                Hỗ trợ
+              </Link>
+              <br />
               <Link href="/contact" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-sm transition-all duration-300 hover:translate-x-1">
                 <span className="w-0 group-hover:w-1.5 h-0.5 bg-orange-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                 Liên hệ ngay
