@@ -29,9 +29,9 @@ export default function Footer() {
                 <Image
                   src="/images/logo.jpg"
                   alt={`${siteConfig.name} Logo`}
-                  width={120}
-                  height={48}
-                  className="w-auto h-12 transition-transform duration-300 group-hover:scale-105"
+                  width={200}
+                  height={80}
+                  className="w-auto h-20 transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
@@ -73,26 +73,26 @@ export default function Footer() {
           </div>
 
           {/* Giới thiệu mở rộng */}
-          <div className="flex flex-col items-center lg:items-start lg:col-span-2">
+          <div className="flex flex-col items-center lg:items-start">
             <h3 className="text-white text-lg font-bold mb-5 relative group">
               <span className="relative z-10">Về XLab</span>
               <div className="absolute -bottom-1 left-1/2 lg:left-0 transform -translate-x-1/2 lg:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
-            <div className="space-y-4 text-center lg:text-left">
+            <div className="space-y-3 text-center lg:text-left">
               <p className="text-slate-400 text-sm leading-relaxed">
-                XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp. Chúng tôi cam kết mang đến những sản phẩm chất lượng cao, đáp ứng mọi nhu cầu số hóa của khách hàng.
+                XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.
               </p>
               <p className="text-slate-400 text-sm leading-relaxed">
-                Với đội ngũ chuyên gia giàu kinh nghiệm và công nghệ tiên tiến, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp trong và ngoài nước.
+                Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.
               </p>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mt-4">
-                <span className="px-3 py-1 text-xs bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 mt-3">
+                <span className="px-2 py-1 text-xs bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
                   500+ Khách hàng
                 </span>
-                <span className="px-3 py-1 text-xs bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
-                  5+ Năm kinh nghiệm
+                <span className="px-2 py-1 text-xs bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
+                  5+ Năm
                 </span>
-                <span className="px-3 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
+                <span className="px-2 py-1 text-xs bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
                   24/7 Hỗ trợ
                 </span>
               </div>
