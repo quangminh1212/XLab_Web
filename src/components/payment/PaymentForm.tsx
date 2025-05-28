@@ -85,7 +85,7 @@ const PaymentForm = ({
     bankName: 'MBBank (Ngân hàng Quân đội)',
     accountName: 'Bach Minh Quang',
     accountNumber: '669912122000'
-  };
+  }; 
 
   // Tạo QR Code VietQR
   const generateQRCode = () => {
