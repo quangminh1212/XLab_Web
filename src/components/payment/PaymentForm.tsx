@@ -83,7 +83,7 @@ const PaymentForm = ({
   // Thông tin ngân hàng
   const bankInfo = {
     bankName: 'MBBank (Ngân hàng Quân đội)',
-    accountName: 'Trang',
+    accountName: 'Bach Minh Quang',
     accountNumber: '669912122000'
   };
 
@@ -151,32 +151,19 @@ const PaymentForm = ({
               
               {/* QR Code thật từ VietQR */}
               <div className="relative inline-block">
-                <div className="bg-gradient-to-br from-primary-500 to-primary-600 p-8 rounded-2xl shadow-lg">
-                  <div className="bg-white p-6 rounded-xl">
-                    <div className="w-80 h-80 relative">
-                      <Image 
-                        src={generateQRCode()}
-                        alt="VietQR Payment Code"
-                        fill
-                        className="object-contain rounded-lg"
-                        priority
-                        onError={(e) => {
-                          // Fallback nếu API VietQR lỗi
-                          const target = e.target as HTMLImageElement;
-                          target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+UVIgQ29kZTwvdGV4dD48L3N2Zz4=';
-                        }}
-                      />
-                    </div>
-                    {/* Thông tin bên dưới QR */}
-                    <div className="mt-4 text-center text-xs text-gray-600">
-                      <div className="font-semibold">Số tiền: {formatCurrency(amount)}</div>
-                      <div className="font-mono mt-1">{orderId}</div>
-                    </div>
-                  </div>
-                  {/* Logo MBBank ở góc */}
-                  <div className="absolute top-2 right-2 w-12 h-8 bg-red-600 rounded overflow-hidden flex items-center justify-center">
-                    <span className="text-white text-sm font-bold">MB</span>
-                  </div>
+                <div className="w-80 h-80 relative">
+                  <Image 
+                    src={generateQRCode()}
+                    alt="VietQR Payment Code"
+                    fill
+                    className="object-contain rounded-lg"
+                    priority
+                    onError={(e) => {
+                      // Fallback nếu API VietQR lỗi
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+UVIgQ29kZTwvdGV4dD48L3N2Zz4=';
+                    }}
+                  />
                 </div>
               </div>
               
