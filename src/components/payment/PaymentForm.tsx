@@ -54,23 +54,42 @@ const PaymentForm = ({
     setIsLoading(true)
     
     try {
-      // Giả lập call API xác thực
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Call API xác thực thật
+      const response = await fetch('/api/payment/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId,
+          verificationCode: verificationCode.trim(),
+          amount
+        })
+      })
       
-      // Giả lập transaction ID
-      const transactionId = `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+      const result = await response.json()
       
       setIsLoading(false)
       
-      if (onSuccess) {
-        onSuccess(transactionId)
+      if (result.success) {
+        if (onSuccess) {
+          onSuccess(result.transactionId)
+        } else {
+          router.push(`/payment/success?orderId=${orderId}&transactionId=${result.transactionId}`)
+        }
       } else {
-        router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}`)
+        const errorMessage = result.message || 'Có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại.'
+        
+        if (onError) {
+          onError(errorMessage)
+        } else {
+          setErrors({ submit: errorMessage })
+        }
       }
     } catch (error) {
       setIsLoading(false)
       
-      const errorMessage = 'Có lỗi xảy ra trong quá trình xác thực. Vui lòng thử lại.'
+      const errorMessage = 'Không thể kết nối đến server. Vui lòng kiểm tra kết nối internet.'
       
       if (onError) {
         onError(errorMessage)
