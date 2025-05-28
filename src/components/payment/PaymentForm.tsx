@@ -22,7 +22,10 @@ const PaymentForm = ({
   const [verificationCode, setVerificationCode] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [verificationMethod, setVerificationMethod] = useState<'code' | 'confirm'>('confirm')
+  const [verificationMethod, setVerificationMethod] = useState<'code' | 'confirm' | 'vnpay'>('vnpay')
+  const [isPolling, setIsPolling] = useState<boolean>(false)
+  const [pollingAttempts, setPollingAttempts] = useState<number>(0)
+  const [transactionStartTime, setTransactionStartTime] = useState<string>('')
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -47,6 +50,100 @@ const PaymentForm = ({
     return Object.keys(newErrors).length === 0
   }
 
+  // Hàm format thời gian cho VNPay
+  const formatDateTime = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
+    
+    return `${year}${month}${day}${hours}${minutes}${seconds}`
+  }
+
+  // Hàm polling VNPay để check trạng thái thanh toán
+  const pollVNPayStatus = async (orderId: string, transactionDate: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/payment/vnpay', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderId,
+          transactionDate,
+          amount
+        })
+      })
+
+      const result = await response.json()
+      console.log('VNPay polling result:', result)
+
+      if (result.success && result.status === '00') {
+        // Thanh toán thành công
+        return true
+      } else if (result.success && result.status === '01') {
+        // Giao dịch chưa hoàn tất, tiếp tục polling
+        return false
+      } else {
+        // Giao dịch có lỗi
+        throw new Error(result.statusText || 'Giao dịch không thành công')
+      }
+    } catch (error) {
+      console.error('VNPay polling error:', error)
+      throw error
+    }
+  }
+
+  // Hàm auto-check với polling
+  const startAutoVerification = async (orderId: string) => {
+    const transactionDate = formatDateTime(new Date())
+    setTransactionStartTime(transactionDate)
+    setIsPolling(true)
+    setPollingAttempts(0)
+
+    const maxAttempts = 30 // Tối đa 5 phút (30 lần x 10 giây)
+    let attempts = 0
+
+    const poll = async (): Promise<void> => {
+      try {
+        attempts++
+        setPollingAttempts(attempts)
+
+        const isSuccess = await pollVNPayStatus(orderId, transactionDate)
+        
+        if (isSuccess) {
+          // Thanh toán thành công
+          setIsPolling(false)
+          const transactionId = `VNP-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+          
+          if (onSuccess) {
+            onSuccess(transactionId)
+          } else {
+            router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}`)
+          }
+          return
+        }
+
+        // Nếu chưa thành công và chưa hết lần thử
+        if (attempts < maxAttempts) {
+          setTimeout(poll, 10000) // Đợi 10 giây rồi thử lại
+        } else {
+          // Hết lần thử
+          setIsPolling(false)
+          setErrors({ submit: 'Không thể xác thực thanh toán tự động. Vui lòng chọn phương thức khác hoặc thử lại.' })
+        }
+      } catch (error) {
+        setIsPolling(false)
+        setErrors({ submit: `Lỗi xác thực thanh toán: ${error instanceof Error ? error.message : 'Unknown error'}` })
+      }
+    }
+
+    // Bắt đầu polling sau 5 giây (cho người dùng thời gian chuyển khoản)
+    setTimeout(poll, 5000)
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     
@@ -57,20 +154,25 @@ const PaymentForm = ({
     setIsLoading(true)
     
     try {
-      // Giả lập call API xác thực
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // Giả lập transaction ID
-      const transactionId = verificationMethod === 'code' 
-        ? `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`
-        : `CONF-${Date.now()}-${Math.floor(Math.random() * 1000)}`
-      
-      setIsLoading(false)
-      
-      if (onSuccess) {
-        onSuccess(transactionId)
+      if (verificationMethod === 'vnpay') {
+        // Tự động xác thực VNPay
+        await startAutoVerification(orderId)
+        setIsLoading(false)
       } else {
-        router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}`)
+        // Phương thức thủ công như cũ
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        
+        const transactionId = verificationMethod === 'code' 
+          ? `TXN-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+          : `CONF-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+        
+        setIsLoading(false)
+        
+        if (onSuccess) {
+          onSuccess(transactionId)
+        } else {
+          router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}`)
+        }
       }
     } catch (error) {
       setIsLoading(false)
@@ -257,13 +359,33 @@ const PaymentForm = ({
                     Chọn phương thức xác thực
                   </label>
                   <div className="space-y-3">
+                    {/* Phương thức VNPay tự động */}
+                    <label className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${verificationMethod === 'vnpay' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                      <input
+                        type="radio"
+                        value="vnpay"
+                        checked={verificationMethod === 'vnpay'}
+                        onChange={(e) => setVerificationMethod(e.target.value as 'code' | 'confirm' | 'vnpay')}
+                        className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                      />
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                          <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Tự động xác thực VNPay (Khuyến nghị)
+                        </div>
+                        <p className="text-xs text-gray-600 mt-1">Hoàn toàn tự động - hệ thống tự kiểm tra sau khi chuyển khoản</p>
+                      </div>
+                    </label>
+
                     {/* Phương thức xác nhận đơn giản */}
                     <label className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-colors ${verificationMethod === 'confirm' ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'}`}>
                       <input
                         type="radio"
                         value="confirm"
                         checked={verificationMethod === 'confirm'}
-                        onChange={(e) => setVerificationMethod(e.target.value as 'code' | 'confirm')}
+                        onChange={(e) => setVerificationMethod(e.target.value as 'code' | 'confirm' | 'vnpay')}
                         className="w-4 h-4 text-primary-600 focus:ring-primary-500"
                       />
                       <div className="ml-3">
@@ -271,7 +393,7 @@ const PaymentForm = ({
                           <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          Xác nhận đã chuyển khoản (Khuyến nghị)
+                          Xác nhận đã chuyển khoản
                         </div>
                         <p className="text-xs text-gray-600 mt-1">Đơn giản, nhanh chóng - chỉ cần click xác nhận</p>
                       </div>
@@ -283,7 +405,7 @@ const PaymentForm = ({
                         type="radio"
                         value="code"
                         checked={verificationMethod === 'code'}
-                        onChange={(e) => setVerificationMethod(e.target.value as 'code' | 'confirm')}
+                        onChange={(e) => setVerificationMethod(e.target.value as 'code' | 'confirm' | 'vnpay')}
                         className="w-4 h-4 text-primary-600 focus:ring-primary-500"
                       />
                       <div className="ml-3">
@@ -344,6 +466,39 @@ const PaymentForm = ({
                     </div>
                   </div>
                 )}
+
+                {/* VNPay Auto Status */}
+                {verificationMethod === 'vnpay' && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium text-blue-800">Xác thực tự động VNPay</p>
+                        <p className="text-xs text-blue-700 mt-1">
+                          Sau khi click "Bắt đầu xác thực tự động", hệ thống sẽ tự động kiểm tra trạng thái thanh toán của bạn qua API VNPay. 
+                          Bạn chỉ cần chuyển khoản theo QR Code bên trái.
+                        </p>
+                        {isPolling && (
+                          <div className="mt-3 p-3 bg-white border border-blue-300 rounded-md">
+                            <div className="flex items-center gap-2 mb-2">
+                              <svg className="animate-spin h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              <span className="text-sm font-medium text-blue-800">Đang kiểm tra giao dịch...</span>
+                            </div>
+                            <p className="text-xs text-blue-600">
+                              Lần thử: {pollingAttempts}/30 • Kiểm tra lại sau 10 giây • 
+                              Thời gian chờ tối đa: 5 phút
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {errors.submit && (
                   <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
@@ -356,23 +511,24 @@ const PaymentForm = ({
 
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className={`w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl'}`}
+                  disabled={isLoading || isPolling}
+                  className={`w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white py-3 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 ${isLoading || isPolling ? 'opacity-70 cursor-not-allowed' : 'hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl'}`}
                 >
-                  {isLoading ? (
+                  {isLoading || isPolling ? (
                     <div className="flex items-center justify-center gap-2">
                       <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Đang xác thực...
+                      {isPolling ? 'Đang kiểm tra giao dịch...' : 'Đang xác thực...'}
                     </div>
                   ) : (
                     <div className="flex items-center justify-center gap-2">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      {verificationMethod === 'confirm' ? 'Xác nhận đã chuyển khoản' : 'Xác thực với mã'}
+                      {verificationMethod === 'vnpay' ? 'Bắt đầu xác thực tự động' : 
+                       verificationMethod === 'confirm' ? 'Xác nhận đã chuyển khoản' : 'Xác thực với mã'}
                     </div>
                   )}
                 </button>
