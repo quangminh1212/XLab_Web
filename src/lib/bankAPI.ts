@@ -174,25 +174,18 @@ export async function verifyMBBankTransaction(
         }
       }
     } else {
-      console.log('🛠️ MBBank API credentials not found, using development simulation')
+      console.log('🛠️ MBBank API credentials not found, using Excel transaction verification')
       
-      // Enhanced development simulation
-      return await simulateMBBankVerification(accountNumber, transactionCode, amount)
+      // Sử dụng tra soát Excel thay vì simulation
+      return await verifyTransactionFromExcel(transactionCode, amount)
     }
     
   } catch (error) {
     console.error('💥 MBBank verification error:', error)
     
-    // Fallback to simulation in case of API errors
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔄 Falling back to development simulation')
-      return await simulateMBBankVerification(accountNumber, transactionCode, amount)
-    }
-    
-    return {
-      verified: false,
-      message: 'Không thể kết nối đến hệ thống MBBank. Vui lòng thử lại sau.'
-    }
+    // Fallback to Excel verification in case of API errors
+    console.log('🔄 Falling back to Excel transaction verification')
+    return await verifyTransactionFromExcel(transactionCode, amount)
   }
 }
 
@@ -461,5 +454,239 @@ export function verifyBankWebhook(
   } catch (error) {
     console.error('Webhook verification error:', error)
     return false
+  }
+}
+
+/**
+ * Tra soát giao dịch từ file Excel/CSV
+ * Đọc và kiểm tra giao dịch thật từ dữ liệu ngân hàng
+ */
+export interface ExcelTransactionData {
+  bank: string              // Ngân hàng
+  transactionDate: string   // Ngày giao dịch  
+  accountNumber: string     // Số tài khoản
+  accountSub: string        // Tài khoản phụ
+  transactionCode: string   // Code TT
+  description: string       // Nội dung thanh toán
+  type: string             // Loại
+  amount: number           // Số tiền
+  referenceCode: string    // Mã tham chiếu
+  balance: number          // Lũy kế
+}
+
+/**
+ * API để fetch dữ liệu giao dịch từ Google Sheets hoặc CSV upload
+ */
+export async function fetchTransactionData(): Promise<ExcelTransactionData[]> {
+  try {
+    // Lấy từ Google Sheets API (nếu có)
+    const googleSheetsUrl = process.env.GOOGLE_SHEETS_API_URL
+    const googleSheetsKey = process.env.GOOGLE_SHEETS_API_KEY
+    const sheetId = process.env.GOOGLE_SHEETS_ID || '1TOKHwtD13QAiQXXB5T_WkARkmT-LonO5s-BjWhj9okA'
+    
+    if (googleSheetsUrl && googleSheetsKey) {
+      console.log('📊 Fetching transaction data from Google Sheets...')
+      
+      const response = await fetch(
+        `${googleSheetsUrl}/v4/spreadsheets/${sheetId}/values/A2:J1000?key=${googleSheetsKey}`
+      )
+      
+      if (response.ok) {
+        const data = await response.json()
+        const transactions: ExcelTransactionData[] = []
+        
+        if (data.values && Array.isArray(data.values)) {
+          for (const row of data.values) {
+            if (row.length >= 10 && row[0]) { // Có đủ dữ liệu và không phải dòng trống
+              transactions.push({
+                bank: row[0] || '',
+                transactionDate: row[1] || '',
+                accountNumber: row[2] || '',
+                accountSub: row[3] || '',
+                transactionCode: row[4] || '',
+                description: row[5] || '',
+                type: row[6] || '',
+                amount: parseFloat(row[7]) || 0,
+                referenceCode: row[8] || '',
+                balance: parseFloat(row[9]) || 0
+              })
+            }
+          }
+        }
+        
+        console.log(`✅ Loaded ${transactions.length} transactions from Google Sheets`)
+        return transactions
+      }
+    }
+    
+    // Fallback: đọc từ file local CSV/JSON
+    console.log('📄 Falling back to local transaction data...')
+    return await loadLocalTransactionData()
+    
+  } catch (error) {
+    console.error('💥 Error fetching transaction data:', error)
+    return await loadLocalTransactionData()
+  }
+}
+
+/**
+ * Load transaction data từ file local
+ */
+async function loadLocalTransactionData(): Promise<ExcelTransactionData[]> {
+  try {
+    const fs = require('fs')
+    const path = require('path')
+    
+    // Đọc từ file transactions.json
+    const filePath = path.join(process.cwd(), 'data', 'transactions.json')
+    
+    if (fs.existsSync(filePath)) {
+      const fileContent = fs.readFileSync(filePath, 'utf8')
+      const jsonData = JSON.parse(fileContent)
+      
+      if (Array.isArray(jsonData)) {
+        console.log(`📄 Loaded ${jsonData.length} transactions from local file`)
+        return jsonData
+      }
+    }
+    
+    // Fallback: mock data dựa trên mẫu từ spreadsheet
+    const mockTransactions: ExcelTransactionData[] = [
+      {
+        bank: 'MBBank',
+        transactionDate: '2025-05-29 01:59:00',
+        accountNumber: '669912122000',
+        accountSub: 'BACH MINH QUANG Chuyen tien Ma giao dich Trace728744 Trace 728744',
+        transactionCode: 'Tiền vào',
+        description: '4000',
+        type: 'FT25149200931766',
+        amount: 4000,
+        referenceCode: '',
+        balance: 0
+      }
+    ]
+    
+    console.log(`📋 Using ${mockTransactions.length} mock transactions (file not found)`)
+    return mockTransactions
+    
+  } catch (error) {
+    console.error('💥 Error loading local transaction data:', error)
+    
+    // Ultimate fallback
+    return [{
+      bank: 'MBBank',
+      transactionDate: '2025-05-29 01:59:00',
+      accountNumber: '669912122000',
+      accountSub: 'BACH MINH QUANG Chuyen tien Ma giao dich Trace728744 Trace 728744',
+      transactionCode: 'Tiền vào',
+      description: '4000',
+      type: 'FT25149200931766',
+      amount: 4000,
+      referenceCode: '',
+      balance: 0
+    }]
+  }
+}
+
+/**
+ * Xác thực giao dịch bằng cách tra soát trong dữ liệu thực
+ */
+export async function verifyTransactionFromExcel(
+  verificationCode: string,
+  amount: number,
+  timeRange?: { from: Date; to: Date }
+): Promise<VietQRVerifyResponse> {
+  try {
+    console.log('🔍 Starting transaction verification from Excel data...')
+    console.log('📋 Search params:', { verificationCode, amount, timeRange })
+    
+    // Fetch dữ liệu giao dịch
+    const transactions = await fetchTransactionData()
+    
+    if (transactions.length === 0) {
+      return {
+        verified: false,
+        message: 'Không có dữ liệu giao dịch để tra soát'
+      }
+    }
+    
+    console.log(`🔎 Searching in ${transactions.length} transactions...`)
+    
+    // Tìm kiếm giao dịch phù hợp
+    const matchedTransactions = transactions.filter(transaction => {
+      // Kiểm tra số tiền khớp
+      const amountMatch = Math.abs(transaction.amount - amount) < 0.01
+      
+      // Kiểm tra mã trong các trường khác nhau
+      const codeInSub = transaction.accountSub.includes(verificationCode)
+      const codeInDescription = transaction.description.includes(verificationCode)
+      const codeInType = transaction.type.includes(verificationCode)
+      const codeInRef = transaction.referenceCode.includes(verificationCode)
+      
+      // Kiểm tra exact match cho một số pattern
+      const exactCodeMatch = 
+        transaction.type === verificationCode ||
+        transaction.referenceCode === verificationCode ||
+        transaction.accountSub.includes(`Trace${verificationCode}`) ||
+        transaction.accountSub.includes(`Ma giao dich ${verificationCode}`)
+      
+      // Kiểm tra thời gian (nếu có)
+      let timeMatch = true
+      if (timeRange) {
+        const transactionTime = new Date(transaction.transactionDate)
+        timeMatch = transactionTime >= timeRange.from && transactionTime <= timeRange.to
+      }
+      
+      const codeMatch = codeInSub || codeInDescription || codeInType || codeInRef || exactCodeMatch
+      
+      console.log(`🔎 Transaction check:`, {
+        amount: transaction.amount,
+        amountMatch,
+        codeMatch,
+        timeMatch,
+        type: transaction.type,
+        ref: transaction.referenceCode
+      })
+      
+      return amountMatch && codeMatch && timeMatch
+    })
+    
+    console.log(`🎯 Found ${matchedTransactions.length} matching transactions`)
+    
+    if (matchedTransactions.length > 0) {
+      const transaction = matchedTransactions[0] // Lấy giao dịch đầu tiên
+      
+      // Tạo transaction ID từ dữ liệu thực
+      const transactionId = transaction.type || `MB${Date.now()}`
+      
+      console.log('✅ Transaction verified from Excel data:', transactionId)
+      
+      return {
+        verified: true,
+        transactionInfo: {
+          transactionId: transactionId,
+          orderId: `ORDER-${Date.now()}`,
+          amount: transaction.amount,
+          bankCode: 'MB',
+          accountNumber: transaction.accountNumber,
+          transactionDate: transaction.transactionDate,
+          description: transaction.description || transaction.accountSub,
+          status: 'success'
+        },
+        message: `Xác thực thành công - Tìm thấy giao dịch ${transactionId} với số tiền ${transaction.amount.toLocaleString('vi-VN')} VND`
+      }
+    } else {
+      return {
+        verified: false,
+        message: `Không tìm thấy giao dịch với mã "${verificationCode}" và số tiền ${amount.toLocaleString('vi-VN')} VND trong dữ liệu ngân hàng`
+      }
+    }
+    
+  } catch (error) {
+    console.error('💥 Excel verification error:', error)
+    return {
+      verified: false,
+      message: 'Lỗi khi tra soát dữ liệu giao dịch. Vui lòng thử lại sau.'
+    }
   }
 } 

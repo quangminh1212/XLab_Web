@@ -280,14 +280,78 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  return NextResponse.json(
-    { 
-      message: 'MBBank Payment Verification API',
-      status: 'active',
-      version: '1.0',
-      methods: ['POST'],
-      description: 'Use POST method to verify payment transactions'
-    },
-    { status: 200 }
-  )
+  try {
+    const { searchParams } = new URL(request.url)
+    const action = searchParams.get('action')
+    
+    if (action === 'test-excel') {
+      // Test tra soát Excel
+      const verificationCode = searchParams.get('code') || 'FT25149200931766'
+      const amount = parseFloat(searchParams.get('amount') || '4000')
+      
+      console.log('🧪 Testing Excel verification:', { verificationCode, amount })
+      
+      const { fetchTransactionData, verifyTransactionFromExcel } = await import('@/lib/bankAPI')
+      
+      // Lấy danh sách giao dịch
+      const transactions = await fetchTransactionData()
+      
+      // Test verification
+      const verificationResult = await verifyTransactionFromExcel(verificationCode, amount)
+      
+      return NextResponse.json({
+        message: 'Excel Transaction Verification Test',
+        testParams: { verificationCode, amount },
+        availableTransactions: transactions.length,
+        transactionSample: transactions.slice(0, 3),
+        verificationResult: verificationResult,
+        timestamp: new Date().toISOString()
+      })
+    }
+    
+    if (action === 'list-transactions') {
+      // Liệt kê tất cả giao dịch
+      const { fetchTransactionData } = await import('@/lib/bankAPI')
+      const transactions = await fetchTransactionData()
+      
+      return NextResponse.json({
+        message: 'Available Transactions',
+        count: transactions.length,
+        transactions: transactions,
+        timestamp: new Date().toISOString()
+      })
+    }
+    
+    // Default response
+    return NextResponse.json(
+      { 
+        message: 'MBBank Payment Verification API',
+        status: 'active',
+        version: '2.0',
+        methods: ['POST'],
+        description: 'Use POST method to verify payment transactions',
+        testEndpoints: {
+          'test-excel': '?action=test-excel&code=FT25149200931766&amount=4000',
+          'list-transactions': '?action=list-transactions'
+        },
+        features: [
+          'Real MBBank API integration',
+          'Excel/Google Sheets transaction verification',
+          'Enhanced validation patterns',
+          'Rate limiting & security'
+        ]
+      },
+      { status: 200 }
+    )
+    
+  } catch (error) {
+    console.error('💥 API Error:', error)
+    return NextResponse.json(
+      { 
+        error: 'Internal server error',
+        message: 'Unable to process request'
+      },
+      { status: 500 }
+    )
+  }
 } 

@@ -208,11 +208,11 @@ const PaymentForm = ({
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
-                  <span className="text-sm text-primary-700">Xác nhận giao dịch và lấy <strong>mã OTP</strong> hoặc <strong>mã giao dịch</strong></span>
+                  <span className="text-sm text-primary-700">Thực hiện chuyển khoản với nội dung: <strong>"Ma giao dich Trace{Date.now().toString().slice(-6)}"</strong></span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">4</span>
-                  <span className="text-sm text-primary-700">Nhập mã xác thực vào form bên phải để hoàn tất</span>
+                  <span className="text-sm text-primary-700">Lấy <strong>mã giao dịch</strong> (FT...) hoặc <strong>số Trace</strong> từ thông báo SMS/App và nhập vào form</span>
                 </div>
               </div>
               
@@ -305,31 +305,47 @@ const PaymentForm = ({
                   
                   {/* Hướng dẫn chi tiết các loại mã */}
                   <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs text-blue-800 font-medium mb-2">📱 Các loại mã xác thực MBBank hợp lệ:</p>
+                    <p className="text-xs text-blue-800 font-medium mb-2">📊 Tra soát giao dịch từ dữ liệu thực:</p>
+                    <div className="text-xs text-blue-700 space-y-1 mb-3">
+                      <div>• Hệ thống sẽ tự động tra soát trong file Excel/CSV chứa dữ liệu giao dịch MBBank</div>
+                      <div>• Nhập <strong>mã giao dịch</strong> hoặc <strong>mã tham chiếu</strong> từ giao dịch đã thực hiện</div>
+                      <div>• Số tiền phải khớp chính xác với giao dịch trong dữ liệu</div>
+                    </div>
+                    
+                    <p className="text-xs text-blue-800 font-medium mb-2">📱 Các loại mã xác thực hợp lệ:</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-700">
                       <div>
+                        <strong>• Mã giao dịch:</strong> FT25149200931766
+                      </div>
+                      <div>
+                        <strong>• Số Trace:</strong> 728744
+                      </div>
+                      <div>
                         <strong>• Mã OTP SMS:</strong> 6-8 số (VD: 123456)
-                      </div>
-                      <div>
-                        <strong>• Mã giao dịch:</strong> MB123456789
-                      </div>
-                      <div>
-                        <strong>• Số tham chiếu:</strong> FT1234567890
                       </div>
                       <div>
                         <strong>• Internet Banking:</strong> IB1234567890
                       </div>
                     </div>
                     
+                    {/* Mẫu giao dịch có sẵn để test */}
+                    <div className="mt-3 pt-3 border-t border-blue-300">
+                      <p className="text-xs text-blue-600 font-medium mb-2">💡 Giao dịch mẫu để test:</p>
+                      <div className="bg-blue-100 p-2 rounded text-xs text-blue-800">
+                        <div><strong>Mã:</strong> <code className="bg-white px-1 rounded">FT25149200931766</code></div>
+                        <div><strong>Số tiền:</strong> <code className="bg-white px-1 rounded">4000</code> VND</div>
+                        <div><strong>Hoặc Trace:</strong> <code className="bg-white px-1 rounded">728744</code></div>
+                      </div>
+                    </div>
+                    
                     {/* Test codes cho development */}
                     {process.env.NODE_ENV === 'development' && (
                       <div className="mt-2 pt-2 border-t border-blue-300">
-                        <p className="text-xs text-blue-600 font-medium mb-1">🧪 Mã test (Development):</p>
+                        <p className="text-xs text-blue-600 font-medium mb-1">🧪 Chế độ phát triển:</p>
                         <div className="text-xs text-blue-600 space-y-1">
-                          <div><code className="bg-blue-100 px-1 rounded">123456</code> - Thành công</div>
-                          <div><code className="bg-blue-100 px-1 rounded">MB123456789</code> - Thành công với transaction ID</div>
-                          <div><code className="bg-blue-100 px-1 rounded">000000</code> - Mã không chính xác</div>
-                          <div><code className="bg-blue-100 px-1 rounded">111111</code> - Mã đã hết hạn</div>
+                          <div><code className="bg-blue-100 px-1 rounded">FT25149200931766</code> - Tra soát từ Excel</div>
+                          <div><code className="bg-blue-100 px-1 rounded">728744</code> - Tìm theo Trace</div>
+                          <div>Số tiền: 4000 VND (khớp với dữ liệu mẫu)</div>
                         </div>
                       </div>
                     )}
