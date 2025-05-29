@@ -1031,35 +1031,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     </span>
                   </h3>
                   
-                  {/* Form thêm tùy chọn mới */}
-                  <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Thêm tùy chọn mới</label>
-                    <div className="flex gap-3">
-                      <input
-                        type="text"
-                        value={newProductOption}
-                        onChange={(e) => setNewProductOption(e.target.value)}
-                        placeholder="Nhập tùy chọn mới (VD: Premium, Basic, Standard)"
-                        className="flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 bg-white"
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            handleAddProductOption();
-                          }
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={handleAddProductOption}
-                        disabled={!newProductOption.trim()}
-                        className="bg-teal-500 text-white px-6 py-3 rounded-md hover:bg-teal-600 transition-all duration-200 font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed min-w-[80px]"
-                      >
-                        Thêm
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Danh sách tùy chọn */}
+                  {/* Danh sách tùy chọn với form thêm mới tích hợp */}
                   <div className="bg-gray-50 rounded-lg min-h-[200px]">
                     <div className="p-3">
                       <div className="flex items-center justify-between mb-3">
@@ -1071,7 +1043,48 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                         )}
                       </div>
                       
-                      <div className="space-y-4 max-h-64 overflow-y-auto">
+                      <div className="space-y-4 max-h-80 overflow-y-auto">
+                        {/* Form thêm tùy chọn mới - tích hợp vào đầu danh sách */}
+                        <div className="p-5 bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl border-2 border-dashed border-teal-300 hover:border-teal-400 transition-all duration-200">
+                          <div className="flex items-center mb-3">
+                            <svg className="w-5 h-5 text-teal-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            <span className="font-medium text-teal-800">Thêm tùy chọn mới</span>
+                          </div>
+                          <div className="flex gap-3">
+                            <input
+                              type="text"
+                              value={newProductOption}
+                              onChange={(e) => setNewProductOption(e.target.value)}
+                              placeholder="Nhập tùy chọn mới (VD: Premium, Basic, Standard)"
+                              className="flex-1 p-3 border-2 border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 bg-white placeholder-teal-400"
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  handleAddProductOption();
+                                }
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={handleAddProductOption}
+                              disabled={!newProductOption.trim()}
+                              className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md min-w-[80px] flex items-center"
+                            >
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                              Thêm
+                            </button>
+                          </div>
+                          <div className="mt-3 text-xs text-teal-700 bg-teal-50 rounded-lg p-2 border border-teal-200">
+                            <span className="font-medium">💡 Gợi ý:</span>
+                            <span className="ml-1">Premium, Basic, Standard • Pro, Starter, Enterprise • 1 Tháng, 6 Tháng, 1 Năm</span>
+                          </div>
+                        </div>
+
+                        {/* Danh sách tùy chọn hiện có */}
                         {productOptions.map((option, index) => (
                           <div key={index} className="relative">
                             {/* Indicator mặc định */}
@@ -1311,17 +1324,12 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                         ))}
                         
                         {productOptions.length === 0 && (
-                          <div className="text-gray-500 text-center p-12 bg-white rounded-xl border-2 border-dashed border-gray-200">
-                            <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="text-gray-500 text-center p-8 bg-white rounded-xl border-2 border-dashed border-gray-200 mt-4">
+                            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
-                            <p className="font-semibold text-xl mb-3">Chưa có tùy chọn nào</p>
-                            <p className="text-sm mb-4 text-gray-600">Thêm các tùy chọn khác nhau cho sản phẩm của bạn</p>
-                            <div className="text-sm text-gray-400 space-y-2">
-                              <p><strong>Ví dụ cho Software:</strong> Premium, Basic, Standard</p>
-                              <p><strong>Ví dụ cho Account:</strong> Pro, Starter, Enterprise</p>
-                              <p><strong>Ví dụ theo thời hạn:</strong> 1 Tháng, 6 Tháng, 1 Năm</p>
-                            </div>
+                            <p className="font-medium text-lg mb-2">Chưa có tùy chọn nào</p>
+                            <p className="text-sm text-gray-600">Sử dụng form bên trên để thêm tùy chọn đầu tiên</p>
                           </div>
                         )}
                       </div>
