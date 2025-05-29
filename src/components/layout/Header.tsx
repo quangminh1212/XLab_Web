@@ -103,8 +103,8 @@ const Header = () => {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
         <div className="flex justify-between items-center">
-          {/* Logo và Balance Display */}
-          <div className="flex items-center space-x-6 md:space-x-8 lg:space-x-10">
+          {/* Logo */}
+          <div className="flex items-center">
             <Link href="/" className="flex items-center justify-center">
               <Image
                 src="/images/logo.jpg"
@@ -114,13 +114,6 @@ const Header = () => {
                 className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
               />
             </Link>
-            
-            {/* Balance Display - Dịch chuyển về bên trái */}
-            {session && (
-              <div className="hidden sm:block">
-                <BalanceDisplay />
-              </div>
-            )}
           </div>
 
           {/* Desktop Navigation */}
@@ -154,8 +147,15 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* Right Side - Auth + Cart */}
+          {/* Right Side - Balance + Auth + Cart */}
           <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+            {/* Balance Display */}
+            {session && (
+              <div className="hidden sm:block">
+                <BalanceDisplay />
+              </div>
+            )}
+            
             {/* Notification Icon */}
             {session && (
               <div className="relative" ref={notificationRef}>
