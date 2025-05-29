@@ -113,18 +113,80 @@ const PaymentForm = ({
       </div>
 
       <div className="p-6">
-        {/* Tổng tiền */}
-        <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-4 mb-6 shadow-sm">
-          <div className="flex justify-between items-center">
-            <span className="text-primary-800 font-medium">Tổng thanh toán:</span>
-            <span className="text-2xl font-bold text-primary-700">{formatCurrency(amount)}</span>
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Cột trái - QR Code */}
           <div>
+            {/* Thông tin tổng hợp - đưa lên trên */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6 mb-6 shadow-lg">
+              <h4 className="font-bold text-lg text-blue-800 mb-4 flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <span>Thông tin thanh toán</span>
+              </h4>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Thông tin đơn hàng */}
+                <div className="bg-white rounded-lg p-4 border border-blue-200">
+                  <h5 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-8 0H3m2 0h6M9 7h6m-6 4h6m-6 4h6" />
+                    </svg>
+                    Đơn hàng
+                  </h5>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Mã đơn hàng:</span>
+                      <span className="font-mono font-bold text-blue-600">{orderId}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Tổng tiền:</span>
+                      <span className="font-bold text-lg text-blue-800">{formatCurrency(amount)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Thông tin ngân hàng */}
+                <div className="bg-white rounded-lg p-4 border border-blue-200">
+                  <h5 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    Ngân hàng
+                  </h5>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Ngân hàng:</span>
+                      <span className="font-medium text-blue-800">{bankInfo.bankName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Số TK:</span>
+                      <span className="font-mono font-bold text-blue-600">{bankInfo.accountNumber}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Chủ TK:</span>
+                      <span className="font-medium text-blue-800">{bankInfo.accountName}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Nội dung chuyển khoản */}
+              <div className="mt-4">
+                <div className="bg-gradient-to-r from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-3">
+                  <div className="text-center">
+                    <span className="text-gray-700 text-sm font-medium block mb-1">Nội dung chuyển khoản:</span>
+                    <div className="bg-white border border-primary-300 rounded-md p-2">
+                      <span className="font-mono font-bold text-primary-700 text-lg">{orderId}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-8 mb-6 shadow-lg text-center">
               <h3 className="font-bold text-xl text-gray-800 mb-6 flex items-center justify-center gap-3">
                 <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
@@ -191,63 +253,10 @@ const PaymentForm = ({
                 </div>
               )}
             </div>
-
-            {/* Thông tin ngân hàng backup */}
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 shadow-sm">
-              <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-8 0H3m2 0h6M9 7h6m-6 4h6m-6 4h6" />
-                </svg>
-                Thông tin chuyển khoản (nếu không quét được QR)
-              </h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Ngân hàng:</span>
-                  <span className="font-medium">{bankInfo.bankName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Số TK:</span>
-                  <span className="font-mono font-bold text-primary-600">{bankInfo.accountNumber}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Chủ TK:</span>
-                  <span className="font-medium">{bankInfo.accountName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Số tiền:</span>
-                  <span className="font-bold text-primary-600">{formatCurrency(amount)}</span>
-                </div>
-                <div className="pt-2">
-                  <span className="text-gray-600 block mb-1">Nội dung:</span>
-                  <div className="bg-primary-50 border border-primary-200 rounded-md p-2 text-center">
-                    <span className="font-mono font-bold text-primary-700">{orderId}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Cột phải - Xác nhận và Hướng dẫn */}
           <div>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-5 mb-6 shadow-sm">
-              <h3 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Thông tin đơn hàng
-              </h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-green-700 text-sm">Mã đơn hàng:</span>
-                  <span className="font-mono text-sm text-green-800">{orderId}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-green-700 text-sm">Tổng tiền:</span>
-                  <span className="font-bold text-lg text-green-800">{formatCurrency(amount)}</span>
-                </div>
-              </div>
-            </div>
-
             <div className="bg-white border-2 border-teal-500 rounded-lg p-4 mb-6 shadow-sm">
               <h4 className="font-semibold text-teal-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
