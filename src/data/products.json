@@ -15,9 +15,15 @@
     "specifications": [],
     "categories": [
       {
-        "id": "ai-tools",
-        "name": "AI Tools",
-        "slug": "ai-tools"
+        "id": {
+          "id": "ai-tools"
+        },
+        "name": {
+          "id": "ai-tools"
+        },
+        "slug": {
+          "id": "ai-tools"
+        }
       }
     ],
     "versions": [
@@ -30,7 +36,7 @@
       }
     ],
     "createdAt": "2025-05-14T15:59:47.484Z",
-    "updatedAt": "2025-05-20T18:10:37.248Z",
+    "updatedAt": "2025-05-29T18:56:37.292Z",
     "price": 149000,
     "salePrice": 0,
     "rating": "4.7",
@@ -50,7 +56,9 @@
       }
     },
     "startDate": "2025-05-29T00:00:00",
-    "endDate": "2025-12-31T23:59:59"
+    "endDate": "2025-12-31T23:59:59",
+    "totalPurchases": "200",
+    "optionDurations": {}
   },
   {
     "id": "grok",
@@ -70,9 +78,15 @@
     "specifications": [],
     "categories": [
       {
-        "id": "ai-tools",
-        "name": "AI Tools", 
-        "slug": "ai-tools"
+        "id": {
+          "id": "ai-tools"
+        },
+        "name": {
+          "id": "ai-tools"
+        },
+        "slug": {
+          "id": "ai-tools"
+        }
       }
     ],
     "versions": [
@@ -85,7 +99,7 @@
       }
     ],
     "createdAt": "2025-05-20T18:06:44.144Z",
-    "updatedAt": "2025-05-25T16:10:40.858Z",
+    "updatedAt": "2025-05-29T18:56:53.103Z",
     "rating": 4.7,
     "type": "account",
     "isAccount": true,
@@ -101,6 +115,8 @@
     },
     "specs": "",
     "weeklyPurchases": 14,
-    "totalSold": 890
+    "totalSold": 890,
+    "totalPurchases": "200",
+    "optionDurations": {}
   }
 ]
