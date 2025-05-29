@@ -22,6 +22,7 @@ interface Order {
   paymentStatus: string;
   createdAt: string;
   updatedAt: string;
+  transactionId?: string;
 }
 
 export async function GET() {
@@ -35,63 +36,63 @@ export async function GET() {
     // Lấy thông tin user
     const userEmail = session.user.email;
 
-    // CHÚ Ý: Đây là dữ liệu mẫu
+    // Trong production, đây sẽ là truy vấn từ database
+    // Hiện tại trả về mảng rỗng để client đọc từ localStorage
+    
+    // CHÚ Ý: Dữ liệu mẫu cho demo
     // Trong ứng dụng thực tế, đây sẽ là truy vấn đến cơ sở dữ liệu
-    // để lấy đơn hàng của người dùng hiện tại
     const mockOrders: Order[] = [
       {
-        id: 'ORD-12345',
-        userId: '1',
-        userName: 'Nguyễn Văn A',
-        userEmail: 'nguyenvana@example.com',
+        id: 'XL-' + Math.floor(100000 + Math.random() * 900000).toString(),
+        userId: userEmail || '',
+        userName: session.user.name || 'Guest',
+        userEmail: userEmail || '',
         items: [
           {
             productId: 'chatgpt',
             productName: 'ChatGPT',
             quantity: 1,
-            price: 149000
+            price: 149000,
+            image: '/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png'
           }
         ],
         totalAmount: 149000,
         status: 'completed',
         paymentMethod: 'bank_transfer',
         paymentStatus: 'paid',
-        createdAt: '2023-03-15T15:30:00Z',
-        updatedAt: '2023-03-15T15:30:00Z'
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 ngày trước
+        updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        transactionId: 'TXN-' + Math.floor(100000 + Math.random() * 900000)
       },
       {
-        id: 'ORD-12346',
-        userId: '1',
-        userName: 'Nguyễn Văn A',
-        userEmail: 'nguyenvana@example.com',
+        id: 'XL-' + Math.floor(100000 + Math.random() * 900000).toString(),
+        userId: userEmail || '',
+        userName: session.user.name || 'Guest',
+        userEmail: userEmail || '',
         items: [
           {
             productId: 'grok',
             productName: 'Grok',
-            quantity: 1,
-            price: 149000
-          },
-          {
-            productId: 'chatgpt',
-            productName: 'ChatGPT',
-            quantity: 1,
-            price: 149000
+            quantity: 2,
+            price: 149000,
+            image: '/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png'
           }
         ],
         totalAmount: 298000,
         status: 'completed',
         paymentMethod: 'momo',
         paymentStatus: 'paid',
-        createdAt: '2023-04-20T21:20:00Z',
-        updatedAt: '2023-04-20T21:20:00Z'
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 ngày trước
+        updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        transactionId: 'TXN-' + Math.floor(100000 + Math.random() * 900000)
       }
     ];
 
-    // Lọc đơn hàng của người dùng hiện tại
-    // Trong thực tế, truy vấn DB sẽ lọc dựa trên userEmail hoặc userId
-    const userOrders = mockOrders.filter(order => order.userEmail === userEmail);
-
-    return NextResponse.json({ orders: userOrders });
+    // Trả về dữ liệu mẫu và để client merge với localStorage
+    return NextResponse.json({ 
+      orders: mockOrders,
+      message: 'Orders fetched successfully' 
+    });
   } catch (error) {
     console.error('Error fetching user orders:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

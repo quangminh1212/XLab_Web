@@ -3,8 +3,10 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function PaymentSuccessPage() {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const productName = searchParams.get("product") || "Grok";
   const amountString = searchParams.get("amount") || "149000";
@@ -30,17 +32,84 @@ export default function PaymentSuccessPage() {
   const quantity = quantityString ? parseInt(quantityString, 10) : calculatedQuantity;
   
   const [orderNumber, setOrderNumber] = useState("");
+  const [orderSaved, setOrderSaved] = useState(false);
   
-  // Tạo mã đơn hàng giả lập
+  // Tạo mã đơn hàng giả lập và lưu đơn hàng
   useEffect(() => {
+    let finalOrderNumber = "";
+    
     if (orderId) {
+      finalOrderNumber = orderId;
       setOrderNumber(orderId);
     } else {
       // Tạo mã đơn hàng ngẫu nhiên với định dạng XL-xxxxxx
-      const randomOrderNumber = "XL-" + Math.floor(100000 + Math.random() * 900000);
-      setOrderNumber(randomOrderNumber);
+      finalOrderNumber = "XL-" + Math.floor(100000 + Math.random() * 900000);
+      setOrderNumber(finalOrderNumber);
     }
-  }, [orderId]);
+
+    // Lưu đơn hàng nếu có session và chưa lưu
+    if (session?.user && !orderSaved && finalOrderNumber) {
+      saveOrderToHistory(finalOrderNumber);
+      setOrderSaved(true);
+    }
+  }, [orderId, session, orderSaved]);
+
+  // Hàm lưu đơn hàng vào localStorage và gửi API
+  const saveOrderToHistory = async (orderNumber: string) => {
+    if (!session?.user?.email) return;
+
+    const orderData = {
+      id: orderNumber,
+      userId: session.user.email,
+      userName: session.user.name || 'Guest',
+      userEmail: session.user.email,
+      items: [{
+        productId: productName.toLowerCase(),
+        productName: productName,
+        quantity: quantity,
+        price: unitPrice,
+        image: getProductImage(productName)
+      }],
+      totalAmount: amount,
+      status: 'completed',
+      paymentMethod: 'online',
+      paymentStatus: 'paid',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      transactionId: transactionId || '',
+    };
+
+    try {
+      // Lưu vào localStorage
+      const existingOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
+      
+      // Kiểm tra xem đơn hàng đã tồn tại chưa
+      const orderExists = existingOrders.some((order: any) => order.id === orderNumber);
+      
+      if (!orderExists) {
+        existingOrders.unshift(orderData); // Thêm vào đầu mảng
+        localStorage.setItem(`orders_${session.user.email}`, JSON.stringify(existingOrders));
+        
+        // Gửi lên API để lưu database (trong production)
+        try {
+          await fetch('/api/orders/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+          });
+        } catch (apiError) {
+          console.error('Error saving order to API:', apiError);
+          // Vẫn tiếp tục vì đã lưu vào localStorage
+        }
+        
+        console.log('Order saved successfully:', orderData);
+      }
+    } catch (error) {
+      console.error('Error saving order:', error);
+    }
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {

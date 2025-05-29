@@ -136,16 +136,80 @@ export default function AccountPage() {
           }
         }
 
-        // Fetch real purchase history from API
+        // Fetch real purchase history from API và localStorage
         (async () => {
           try {
+            // Lấy đơn hàng từ localStorage
+            const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
+            
+            // Lấy đơn hàng từ API
             const res = await fetch('/api/orders/history', { cache: 'no-store' });
-            if (!res.ok) throw new Error('Failed to fetch orders');
-            const data = await res.json();
-            setPurchaseHistory(data.orders || []);
+            let apiOrders = [];
+            
+            if (res.ok) {
+              const data = await res.json();
+              apiOrders = data.orders || [];
+            }
+            
+            // Kết hợp dữ liệu từ localStorage và API, ưu tiên localStorage
+            const allOrders = [...localOrders];
+            
+            // Thêm các đơn hàng từ API nếu chưa có trong localStorage
+            apiOrders.forEach((apiOrder: any) => {
+              const exists = localOrders.some((localOrder: any) => localOrder.id === apiOrder.id);
+              if (!exists) {
+                // Chuyển đổi format từ API sang format component
+                const convertedOrder = {
+                  id: apiOrder.id,
+                  date: new Date(apiOrder.createdAt).toLocaleDateString('vi-VN'),
+                  total: apiOrder.totalAmount,
+                  status: apiOrder.status,
+                  items: apiOrder.items.map((item: any) => ({
+                    id: item.productId,
+                    name: item.productName,
+                    version: 'Premium',
+                    price: item.price,
+                    originalPrice: Math.round(item.price * 1.3), // Giả sử giảm giá 30%
+                    licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
+                    updates: true
+                  }))
+                };
+                allOrders.push(convertedOrder);
+              }
+            });
+            
+            // Sắp xếp theo ngày mới nhất
+            allOrders.sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
+            
+            setPurchaseHistory(allOrders);
+            console.log('Combined orders:', allOrders);
           } catch (err) {
             console.error('Error fetching purchase history:', err);
-            setPurchaseHistory([]);
+            // Fallback: chỉ đọc từ localStorage
+            try {
+              const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
+              const convertedOrders = localOrders.map((order: any) => ({
+                id: order.id,
+                date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
+                total: order.totalAmount,
+                status: order.status,
+                items: order.items.map((item: any) => ({
+                  id: item.productId,
+                  name: item.productName,
+                  version: 'Premium',
+                  price: item.price,
+                  originalPrice: Math.round(item.price * 1.3),
+                  licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                  expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
+                  updates: true
+                }))
+              }));
+              setPurchaseHistory(convertedOrders);
+            } catch (localErr) {
+              console.error('Error reading from localStorage:', localErr);
+              setPurchaseHistory([]);
+            }
           } finally {
             setIsLoading(false);
           }
