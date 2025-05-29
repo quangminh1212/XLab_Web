@@ -140,6 +140,14 @@ export default function AccountPage() {
         // Fetch real purchase history from API và localStorage
         (async () => {
           try {
+            // Lấy dữ liệu sản phẩm để có thông tin originalPrice chính xác
+            const productsRes = await fetch('/api/products', { cache: 'no-store' });
+            let productsData = [];
+            if (productsRes.ok) {
+              const data = await productsRes.json();
+              productsData = data.products || [];
+            }
+
             // Lấy đơn hàng từ localStorage
             const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
             
@@ -165,16 +173,24 @@ export default function AccountPage() {
                   date: new Date(apiOrder.createdAt).toLocaleDateString('vi-VN'),
                   total: apiOrder.totalAmount,
                   status: apiOrder.status,
-                  items: apiOrder.items.map((item: any) => ({
-                    id: item.productId,
-                    name: item.productName,
-                    version: 'Premium',
-                    price: item.price,
-                    originalPrice: item.originalPrice || 500000, // Sửa để đúng với giá gốc thực tế 500.000 VND
-                    licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
-                    updates: true
-                  })),
+                  items: apiOrder.items.map((item: any) => {
+                    // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
+                    const productData = productsData.find((p: any) => p.id === item.productId);
+                    const originalPrice = productData?.versions?.[0]?.originalPrice || 
+                                        productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
+                                        500000; // fallback
+
+                    return {
+                      id: item.productId,
+                      name: item.productName,
+                      version: 'Premium',
+                      price: item.price,
+                      originalPrice: originalPrice,
+                      licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                      expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
+                      updates: true
+                    };
+                  }),
                   couponDiscount: apiOrder.couponDiscount
                 };
                 allOrders.push(convertedOrder);
@@ -188,24 +204,41 @@ export default function AccountPage() {
             console.log('Combined orders:', allOrders);
           } catch (err) {
             console.error('Error fetching purchase history:', err);
-            // Fallback: chỉ đọc từ localStorage
+            // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
             try {
+              // Vẫn cần lấy dữ liệu sản phẩm cho fallback
+              const productsRes = await fetch('/api/products', { cache: 'no-store' });
+              let productsData = [];
+              if (productsRes.ok) {
+                const data = await productsRes.json();
+                productsData = data.products || [];
+              }
+
               const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
               const convertedOrders = localOrders.map((order: any) => ({
                 id: order.id,
                 date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
                 total: order.totalAmount,
                 status: order.status,
-                items: order.items.map((item: any) => ({
-                  id: item.productId,
-                  name: item.productName,
-                  version: 'Premium',
-                  price: item.price,
-                  originalPrice: item.originalPrice || 500000, // Sửa để đúng với giá gốc thực tế 500.000 VND
-                  licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                  expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
-                  updates: true
-                })),
+                items: order.items.map((item: any) => {
+                  // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
+                  const productData = productsData.find((p: any) => p.id === item.productId);
+                  const originalPrice = productData?.versions?.[0]?.originalPrice || 
+                                      productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
+                                      item.originalPrice || // Giữ originalPrice từ localStorage nếu có
+                                      500000; // fallback cuối cùng
+
+                  return {
+                    id: item.productId,
+                    name: item.productName,
+                    version: 'Premium',
+                    price: item.price,
+                    originalPrice: originalPrice,
+                    licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
+                    updates: true
+                  };
+                }),
                 couponDiscount: order.couponDiscount
               }));
               setPurchaseHistory(convertedOrders);
