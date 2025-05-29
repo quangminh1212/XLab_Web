@@ -1059,25 +1059,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     </div>
                   </div>
                   
-                  <div className="mb-4 p-4 bg-teal-50 border border-teal-200 rounded-lg">
-                    <div className="flex items-start">
-                      <svg className="w-5 h-5 text-teal-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <div className="flex-1">
-                        <p className="text-sm text-teal-800 font-medium mb-2">
-                          💡 Hướng dẫn sử dụng:
-                        </p>
-                        <ul className="text-sm text-teal-700 space-y-1">
-                          <li>• Mỗi tùy chọn có thể có thời hạn và giá khác nhau</li>
-                          <li>• Radio button đánh dấu tùy chọn mặc định hiển thị đầu tiên</li>
-                          <li>• Giá trên là giá bán, giá dưới là giá gốc (để tính giảm giá)</li>
-                          <li>• Thời hạn sẽ hiển thị trên trang sản phẩm</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  
                   {/* Thống kê nhanh */}
                   {productOptions.length > 0 && (
                     <div className="mb-4 grid grid-cols-3 gap-3">
