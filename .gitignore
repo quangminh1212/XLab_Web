@@ -44,6 +44,10 @@ next-fix-all.log
 *.tsbuildinfo
 next-env.d.ts
 
+# User generated data files (runtime data)
+/data/users.json
+/data/transactions.json
+
 # Generated product images with UUID patterns
 /public/images/products/chatgpt/*-*-*-*-*.png
 /public/images/products/grok/*-*-*-*-*.png

@@ -241,8 +241,12 @@ const Header = () => {
               </div>
             )}
 
-            {/* Balance Display */}
-            <BalanceDisplay />
+            {/* Balance Display - Hiển thị rõ ràng */}
+            {session && (
+              <div className="hidden sm:block">
+                <BalanceDisplay />
+              </div>
+            )}
 
             {/* Cart Icon */}
             <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
@@ -391,6 +395,13 @@ const Header = () => {
         {/* Mobile Navigation */}
         {isOpen && (
           <nav className="md:hidden mt-2 py-3 border-t border-gray-200 bg-white">
+            {/* Hiển thị số dư trên mobile nếu đã đăng nhập */}
+            {session && (
+              <div className="px-4 py-2 border-b border-gray-100">
+                <BalanceDisplay className="w-full justify-center" />
+              </div>
+            )}
+            
             <Link
               href="/"
               className={`block py-2 px-4 text-base font-medium hover:bg-gray-50 transition-colors ${isActive('/')}`}
