@@ -66,6 +66,8 @@ export interface Product {
     productOptions?: ProductOption[];
     defaultProductOption?: ProductOption;
     optionPrices?: {[key: string]: OptionPrice};
+    startDate?: string; // Ngày bắt đầu hiệu lực
+    endDate?: string;   // Ngày kết thúc hiệu lực
 }
 
 export interface ProductFormData {
@@ -89,4 +91,6 @@ export interface ProductFormData {
     productOptions?: ProductOption[];
     defaultProductOption?: ProductOption;
     optionPrices?: {[key: string]: OptionPrice};
+    startDate?: string; // Ngày bắt đầu hiệu lực
+    endDate?: string;   // Ngày kết thúc hiệu lực
 } 

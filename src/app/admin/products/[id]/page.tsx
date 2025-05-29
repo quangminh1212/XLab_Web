@@ -41,7 +41,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     rating: 5,
     weeklyPurchases: 0,
     type: 'software' as 'software' | 'account',
-    isAccount: false
+    isAccount: false,
+    startDate: '',
+    endDate: ''
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
@@ -88,7 +90,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           rating: productData.rating !== undefined ? productData.rating : 5,
           weeklyPurchases: productData.weeklyPurchases || 0,
           type: productData.type || 'software',
-          isAccount: productData.isAccount || productData.type === 'account' || false
+          isAccount: productData.isAccount || productData.type === 'account' || false,
+          startDate: productData.startDate || '',
+          endDate: productData.endDate || ''
         });
         
         // Tải thông tin tùy chọn sản phẩm nếu có
@@ -510,7 +514,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         productOptions: productOptions,
         defaultProductOption: defaultProductOption,
         // Thêm giá cho từng tùy chọn
-        optionPrices: optionPrices
+        optionPrices: optionPrices,
+        startDate: formData.startDate,
+        endDate: formData.endDate
       };
       
       console.log("Saving product data:", JSON.stringify(productData, null, 2));
@@ -890,6 +896,76 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   <span>0</span>
                   <span>50</span>
                   <span>100+</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Thời hạn sản phẩm */}
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Thời hạn sản phẩm</label>
+              <div className="space-y-3">
+                {/* Ngày bắt đầu */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Ngày bắt đầu</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="datetime-local"
+                      name="startDate"
+                      value={formData.startDate}
+                      onChange={handleInputChange}
+                      className="pl-10 block w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                    />
+                  </div>
+                </div>
+                
+                {/* Ngày kết thúc */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Ngày kết thúc</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2V7a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="datetime-local"
+                      name="endDate"
+                      value={formData.endDate}
+                      onChange={handleInputChange}
+                      min={formData.startDate} // Ngày kết thúc không được trước ngày bắt đầu
+                      className="pl-10 block w-full p-2.5 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                    />
+                  </div>
+                </div>
+                
+                {/* Hiển thị trạng thái */}
+                <div className="text-xs text-gray-500 mt-2">
+                  {formData.startDate && formData.endDate ? (
+                    <div className="flex items-center space-x-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        new Date(formData.startDate) <= new Date() && new Date() <= new Date(formData.endDate)
+                          ? 'bg-green-500' 
+                          : new Date() < new Date(formData.startDate)
+                          ? 'bg-yellow-500'
+                          : 'bg-red-500'
+                      }`}></div>
+                      <span>
+                        {new Date(formData.startDate) <= new Date() && new Date() <= new Date(formData.endDate)
+                          ? 'Đang hoạt động'
+                          : new Date() < new Date(formData.startDate)
+                          ? 'Chưa bắt đầu'
+                          : 'Đã hết hạn'
+                        }
+                      </span>
+                    </div>
+                  ) : (
+                    <span>Không giới hạn thời gian</span>
+                  )}
                 </div>
               </div>
             </div>
