@@ -1045,42 +1045,63 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                       
                       <div className="space-y-4 max-h-80 overflow-y-auto">
                         {/* Form thêm tùy chọn mới - tích hợp vào đầu danh sách */}
-                        <div className="p-5 bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl border-2 border-dashed border-teal-300 hover:border-teal-400 transition-all duration-200">
-                          <div className="flex items-center mb-3">
-                            <svg className="w-5 h-5 text-teal-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            <span className="font-medium text-teal-800">Thêm tùy chọn mới</span>
+                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center mr-3">
+                                <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                              </div>
+                              <span className="font-medium text-gray-700">Thêm tùy chọn mới</span>
+                            </div>
+                            <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded border">
+                              Enter để thêm nhanh
+                            </span>
                           </div>
+                          
                           <div className="flex gap-3">
-                            <input
-                              type="text"
-                              value={newProductOption}
-                              onChange={(e) => setNewProductOption(e.target.value)}
-                              placeholder="Nhập tùy chọn mới (VD: Premium, Basic, Standard)"
-                              className="flex-1 p-3 border-2 border-teal-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 bg-white placeholder-teal-400"
-                              onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                  e.preventDefault();
-                                  handleAddProductOption();
-                                }
-                              }}
-                            />
+                            <div className="flex-1 relative">
+                              <input
+                                type="text"
+                                value={newProductOption}
+                                onChange={(e) => setNewProductOption(e.target.value)}
+                                placeholder="Ví dụ: Premium, Basic, Standard..."
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition-all duration-200 bg-white text-gray-700 placeholder-gray-400"
+                                onKeyPress={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleAddProductOption();
+                                  }
+                                }}
+                              />
+                              {newProductOption.trim() && (
+                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                                </div>
+                              )}
+                            </div>
                             <button
                               type="button"
                               onClick={handleAddProductOption}
                               disabled={!newProductOption.trim()}
-                              className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md min-w-[80px] flex items-center"
+                              className="px-4 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-all duration-200 font-medium shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm flex items-center min-w-[100px] justify-center"
                             >
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                               </svg>
                               Thêm
                             </button>
                           </div>
-                          <div className="mt-3 text-xs text-teal-700 bg-teal-50 rounded-lg p-2 border border-teal-200">
-                            <span className="font-medium">💡 Gợi ý:</span>
-                            <span className="ml-1">Premium, Basic, Standard • Pro, Starter, Enterprise • 1 Tháng, 6 Tháng, 1 Năm</span>
+                          
+                          <div className="mt-3 flex items-center justify-between">
+                            <div className="text-xs text-gray-500">
+                              <span className="font-medium">💡 Gợi ý:</span>
+                              <span className="ml-1">Premium • Basic • Standard • Pro • Starter</span>
+                            </div>
+                            <div className="text-xs text-gray-400">
+                              {newProductOption.trim().length}/50 ký tự
+                            </div>
                           </div>
                         </div>
 
