@@ -169,7 +169,7 @@ export default function AccountPage() {
                     name: item.productName,
                     version: 'Premium',
                     price: item.price,
-                    originalPrice: Math.round(item.price * 1.3), // Giả sử giảm giá 30%
+                    originalPrice: item.originalPrice || (item.price + 44700), // Sửa để đúng với số tiền tiết kiệm thực tế
                     licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
                     expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
                     updates: true
@@ -199,7 +199,7 @@ export default function AccountPage() {
                   name: item.productName,
                   version: 'Premium',
                   price: item.price,
-                  originalPrice: Math.round(item.price * 1.3),
+                  originalPrice: item.originalPrice || (item.price + 44700), // Sửa để đúng với số tiền tiết kiệm thực tế
                   licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
                   expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
                   updates: true

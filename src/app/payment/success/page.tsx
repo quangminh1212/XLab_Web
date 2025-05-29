@@ -68,6 +68,7 @@ export default function PaymentSuccessPage() {
         productName: productName,
         quantity: quantity,
         price: unitPrice,
+        originalPrice: unitPrice + 44700,
         image: getProductImage(productName)
       }],
       totalAmount: amount,
