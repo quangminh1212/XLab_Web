@@ -1032,7 +1032,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   </h3>
                   
                   {/* Danh sách tùy chọn với form thêm mới tích hợp */}
-                  <div className="bg-gray-50 rounded-lg min-h-[200px]">
+                  <div className="bg-gray-50 rounded-lg min-h-[150px]">
                     <div className="p-3">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="font-medium text-gray-700">Danh sách tùy chọn</h4>
@@ -1043,7 +1043,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                         )}
                       </div>
                       
-                      <div className="space-y-4 max-h-80 overflow-y-auto">
+                      <div className="space-y-4 max-h-60 overflow-y-auto">
                         {/* Form thêm tùy chọn mới - tích hợp vào đầu danh sách */}
                         <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200">
                           <div className="flex items-center justify-between mb-2">
@@ -1113,9 +1113,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                               <div className="absolute -left-1 top-0 bottom-0 w-1 bg-teal-500 rounded-r"></div>
                             )}
                             
-                            <div className="p-5 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
+                            <div className="p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
                               {/* Header của tùy chọn */}
-                              <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center space-x-3">
                                   <h5 className="font-semibold text-gray-900 text-lg">{option}</h5>
                                   {option === defaultProductOption && (
@@ -1159,10 +1159,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                               </div>
                               
                               {/* Thông tin chi tiết - Layout cải thiện */}
-                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                                 {/* Cột 1: Thời hạn */}
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                  <div className="flex items-center mb-3">
+                                <div className="bg-gray-50 p-3 rounded-lg">
+                                  <div className="flex items-center mb-2">
                                     <svg className="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
@@ -1190,8 +1190,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                 </div>
                                 
                                 {/* Cột 2: Giá bán */}
-                                <div className="bg-green-50 p-4 rounded-lg">
-                                  <div className="flex items-center mb-3">
+                                <div className="bg-green-50 p-3 rounded-lg">
+                                  <div className="flex items-center mb-2">
                                     <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                                     </svg>
@@ -1260,8 +1260,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                 </div>
                                 
                                 {/* Cột 3: Giá gốc & Giảm giá */}
-                                <div className="bg-blue-50 p-4 rounded-lg">
-                                  <div className="flex items-center mb-3">
+                                <div className="bg-blue-50 p-3 rounded-lg">
+                                  <div className="flex items-center mb-2">
                                     <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z" />
                                     </svg>
@@ -1319,7 +1319,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                               </div>
                               
                               {/* Preview tóm tắt - Cải thiện */}
-                              <div className="mt-5 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border-l-4 border-teal-500">
+                              <div className="mt-3 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border-l-4 border-teal-500">
                                 <div className="flex items-center justify-between">
                                   <span className="text-sm text-gray-600 font-medium">👁️ Preview hiển thị:</span>
                                   <div className="flex items-center space-x-3 text-sm">
