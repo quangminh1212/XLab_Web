@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import QRCode from 'qrcode'
 
 interface PaymentFormProps {
   amount: number
@@ -19,6 +20,7 @@ const PaymentForm = ({
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('')
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -27,6 +29,39 @@ const PaymentForm = ({
       minimumFractionDigits: 0,
     }).format(value);
   }
+
+  // Thông tin ngân hàng
+  const bankInfo = {
+    bankName: 'MBBank (Ngân hàng Quân đội)',
+    accountName: 'Bach Minh Quang',
+    accountNumber: '669912122000',
+    bankCode: '970422' // Mã ngân hàng MBBank
+  };
+
+  // Tạo QR code cho chuyển khoản
+  useEffect(() => {
+    const generateQRCode = async () => {
+      try {
+        // Tạo nội dung QR theo chuẩn VietQR
+        const qrContent = `2|99|${bankInfo.bankCode}|${bankInfo.accountNumber}|${bankInfo.accountName}|${amount}|${orderId}|VN`;
+        
+        const qrCodeDataUrl = await QRCode.toDataURL(qrContent, {
+          width: 300,
+          margin: 2,
+          color: {
+            dark: '#00A19A', // Màu XLab
+            light: '#FFFFFF'
+          }
+        });
+        
+        setQrCodeUrl(qrCodeDataUrl);
+      } catch (error) {
+        console.error('Lỗi tạo QR code:', error);
+      }
+    };
+
+    generateQRCode();
+  }, [amount, orderId]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -59,13 +94,6 @@ const PaymentForm = ({
     }
   }
 
-  // Thông tin ngân hàng
-  const bankInfo = {
-    bankName: 'MBBank (Ngân hàng Quân đội)',
-    accountName: 'Bach Minh Quang',
-    accountNumber: '669912122000'
-  };
-
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
       {/* Header với gradient màu XLab */}
@@ -73,12 +101,12 @@ const PaymentForm = ({
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m0 6v6m8-9a8 8 0 11-16 0 8 8 0 0116 0z" />
             </svg>
           </div>
           <div>
-            <h2 className="text-2xl font-bold">Thanh toán</h2>
-            <p className="text-primary-100 text-sm">Chuyển khoản ngân hàng nhanh chóng</p>
+            <h2 className="text-2xl font-bold">Thanh toán QR Code</h2>
+            <p className="text-primary-100 text-sm">Quét mã để chuyển khoản nhanh chóng</p>
           </div>
         </div>
       </div>
@@ -94,36 +122,60 @@ const PaymentForm = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
-          {/* Cột trái - Thông tin ngân hàng */}
+          {/* Cột trái - QR Code */}
           <div>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-5 mb-6 shadow-sm">
-              <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <div className="bg-white border-2 border-primary-200 rounded-lg p-6 mb-6 shadow-sm text-center">
+              <h3 className="font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
                 <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m0 6v6m8-9a8 8 0 11-16 0 8 8 0 0116 0z" />
+                </svg>
+                Quét mã QR để chuyển khoản
+              </h3>
+              
+              {qrCodeUrl ? (
+                <div className="space-y-4">
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 inline-block">
+                    <img src={qrCodeUrl} alt="QR Code chuyển khoản" className="w-64 h-64 mx-auto" />
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Mở app ngân hàng của bạn và quét mã QR này
+                  </p>
+                </div>
+              ) : (
+                <div className="w-64 h-64 mx-auto bg-gray-100 rounded-lg flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                </div>
+              )}
+            </div>
+
+            {/* Thông tin ngân hàng backup */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 shadow-sm">
+              <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-8 0H3m2 0h6M9 7h6m-6 4h6m-6 4h6" />
                 </svg>
-                Thông tin chuyển khoản
-              </h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Ngân hàng:</span>
-                  <span className="font-medium text-gray-900">{bankInfo.bankName}</span>
+                Thông tin chuyển khoản (nếu không quét được QR)
+              </h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Ngân hàng:</span>
+                  <span className="font-medium">{bankInfo.bankName}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Tên tài khoản:</span>
-                  <span className="font-medium text-gray-900">{bankInfo.accountName}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Số TK:</span>
+                  <span className="font-mono font-bold text-primary-600">{bankInfo.accountNumber}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Số tài khoản:</span>
-                  <span className="font-mono font-bold text-primary-600 text-lg">{bankInfo.accountNumber}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Chủ TK:</span>
+                  <span className="font-medium">{bankInfo.accountName}</span>
                 </div>
-                <hr className="border-gray-300"/>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Số tiền:</span>
-                  <span className="font-bold text-lg text-primary-600">{formatCurrency(amount)}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Số tiền:</span>
+                  <span className="font-bold text-primary-600">{formatCurrency(amount)}</span>
                 </div>
                 <div className="pt-2">
-                  <span className="text-gray-600 text-sm block mb-2">Nội dung chuyển khoản:</span>
-                  <div className="bg-primary-50 border border-primary-200 rounded-md p-3 text-center">
+                  <span className="text-gray-600 block mb-1">Nội dung:</span>
+                  <div className="bg-primary-50 border border-primary-200 rounded-md p-2 text-center">
                     <span className="font-mono font-bold text-primary-700">{orderId}</span>
                   </div>
                 </div>
@@ -140,15 +192,15 @@ const PaymentForm = ({
               <div className="space-y-2">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">1</span>
-                  <span className="text-sm text-teal-700">Chuyển khoản đến thông tin bên trên</span>
+                  <span className="text-sm text-teal-700">Mở app ngân hàng trên điện thoại</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
-                  <span className="text-sm text-teal-700">Nhập đúng nội dung chuyển khoản</span>
+                  <span className="text-sm text-teal-700">Quét mã QR ở bên trên</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
-                  <span className="text-sm text-teal-700">Nhấn "Xác nhận đã chuyển khoản" bên dưới</span>
+                  <span className="text-sm text-teal-700">Xác nhận chuyển khoản và nhấn nút bên dưới</span>
                 </div>
               </div>
             </div>
@@ -178,7 +230,7 @@ const PaymentForm = ({
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="text-center">
                 <p className="text-gray-700 mb-6 font-medium">
-                  Sau khi chuyển khoản thành công, nhấn nút bên dưới để xác nhận
+                  Sau khi quét QR và chuyển khoản thành công, nhấn nút bên dưới để xác nhận
                 </p>
                 
                 {errors.submit && (
@@ -228,8 +280,7 @@ const PaymentForm = ({
                 <div>
                   <p className="text-yellow-800 font-medium text-sm mb-1">Lưu ý quan trọng</p>
                   <p className="text-yellow-700 text-xs leading-relaxed">
-                    Đơn hàng sẽ được xác nhận trong vòng 5-10 phút sau khi xác thực thành công. 
-                    Vui lòng chụp lại biên lai chuyển khoản để đối chiếu khi cần thiết.
+                    QR Code tự động điền đầy đủ thông tin chuyển khoản. Đơn hàng sẽ được xác nhận trong vòng 5-10 phút sau khi chuyển khoản thành công.
                   </p>
                 </div>
               </div>
