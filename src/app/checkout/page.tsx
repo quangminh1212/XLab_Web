@@ -274,7 +274,7 @@ export default function CheckoutPage() {
               ) : (
                 <PaymentForm 
                   amount={total} 
-                  orderId={generateDetailedOrderId()}
+                  productName={cart.map(item => item.name).join(', ')}
                   onSuccess={handlePaymentSuccess}
                   onError={(error) => console.error(error)}
                 />

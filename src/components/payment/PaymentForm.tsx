@@ -24,9 +24,16 @@ const PaymentForm = ({
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('')
+  const [finalOrderId, setFinalOrderId] = useState<string>('')
 
-  // Sử dụng orderId được truyền vào hoặc tạo mới
-  const finalOrderId = orderId || generateDetailedOrderId();
+  // Generate orderId chỉ trên client side để tránh hydration mismatch
+  useEffect(() => {
+    if (orderId) {
+      setFinalOrderId(orderId)
+    } else {
+      setFinalOrderId(generateDetailedOrderId())
+    }
+  }, [orderId])
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -46,6 +53,9 @@ const PaymentForm = ({
 
   // Tạo QR code cho chuyển khoản
   useEffect(() => {
+    // Chỉ tạo QR code khi finalOrderId đã được set
+    if (!finalOrderId) return;
+
     const generateQRCode = async () => {
       try {
         // Tạo nội dung QR theo chuẩn VietQR
@@ -218,7 +228,9 @@ const PaymentForm = ({
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Mã đơn hàng:</span>
-                      <span className="font-mono font-bold text-teal-600">{finalOrderId}</span>
+                      <span className="font-mono font-bold text-teal-600">
+                        {finalOrderId || 'Đang tạo...'}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tổng tiền:</span>
@@ -258,7 +270,9 @@ const PaymentForm = ({
                   <div className="text-center">
                     <span className="text-gray-700 text-sm font-medium block mb-1">Nội dung chuyển khoản:</span>
                     <div className="bg-white border border-primary-300 rounded-md p-2">
-                      <span className="font-mono font-bold text-primary-700 text-lg">{finalOrderId}</span>
+                      <span className="font-mono font-bold text-primary-700 text-lg">
+                        {finalOrderId || 'Đang tạo...'}
+                      </span>
                     </div>
                   </div>
                 </div>
