@@ -67,9 +67,9 @@ const PaymentForm = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+    <div className="bg-gradient-to-br from-primary-50 via-primary-100 to-primary-200 rounded-xl shadow-lg border border-primary-200 overflow-hidden">
       {/* Header với gradient màu XLab */}
-      <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6">
+      <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white p-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,10 +85,10 @@ const PaymentForm = ({
 
       <div className="p-6">
         {/* Tổng tiền */}
-        <div className="bg-gradient-to-br from-primary-50 to-primary-100 border border-primary-200 rounded-lg p-4 mb-6">
+        <div className="bg-white/70 backdrop-blur-sm border border-primary-300 rounded-lg p-4 mb-6 shadow-sm">
           <div className="flex justify-between items-center">
-            <span className="text-primary-700 font-medium">Tổng thanh toán:</span>
-            <span className="text-2xl font-bold text-primary-600">{formatCurrency(amount)}</span>
+            <span className="text-primary-800 font-medium">Tổng thanh toán:</span>
+            <span className="text-2xl font-bold text-primary-700">{formatCurrency(amount)}</span>
           </div>
         </div>
 
@@ -96,42 +96,42 @@ const PaymentForm = ({
           
           {/* Cột trái - Thông tin ngân hàng */}
           <div>
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-5 mb-6">
-              <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white/80 backdrop-blur-sm border border-primary-200 rounded-lg p-5 mb-6 shadow-md">
+              <h3 className="font-semibold text-primary-800 mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-8 0H3m2 0h6M9 7h6m-6 4h6m-6 4h6" />
                 </svg>
                 Thông tin chuyển khoản
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Ngân hàng:</span>
-                  <span className="font-medium text-gray-900">{bankInfo.bankName}</span>
+                  <span className="text-primary-700 text-sm">Ngân hàng:</span>
+                  <span className="font-medium text-primary-900">{bankInfo.bankName}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Tên tài khoản:</span>
-                  <span className="font-medium text-gray-900">{bankInfo.accountName}</span>
+                  <span className="text-primary-700 text-sm">Tên tài khoản:</span>
+                  <span className="font-medium text-primary-900">{bankInfo.accountName}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Số tài khoản:</span>
-                  <span className="font-mono font-bold text-primary-600 text-lg">{bankInfo.accountNumber}</span>
+                  <span className="text-primary-700 text-sm">Số tài khoản:</span>
+                  <span className="font-mono font-bold text-primary-700 text-lg">{bankInfo.accountNumber}</span>
                 </div>
-                <hr className="border-gray-300"/>
+                <hr className="border-primary-300"/>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Số tiền:</span>
-                  <span className="font-bold text-lg text-primary-600">{formatCurrency(amount)}</span>
+                  <span className="text-primary-700 text-sm">Số tiền:</span>
+                  <span className="font-bold text-lg text-primary-700">{formatCurrency(amount)}</span>
                 </div>
                 <div className="pt-2">
-                  <span className="text-gray-600 text-sm block mb-2">Nội dung chuyển khoản:</span>
-                  <div className="bg-primary-50 border border-primary-200 rounded-md p-3 text-center">
-                    <span className="font-mono font-bold text-primary-700">{orderId}</span>
+                  <span className="text-primary-700 text-sm block mb-2">Nội dung chuyển khoản:</span>
+                  <div className="bg-primary-100/70 border border-primary-300 rounded-md p-3 text-center">
+                    <span className="font-mono font-bold text-primary-800">{orderId}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+            <div className="bg-white/60 backdrop-blur-sm border border-primary-200 rounded-lg p-4 shadow-md">
+              <h4 className="font-semibold text-primary-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -140,15 +140,15 @@ const PaymentForm = ({
               <div className="space-y-2">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">1</span>
-                  <span className="text-sm text-blue-700">Chuyển khoản đến thông tin bên trên</span>
+                  <span className="text-sm text-primary-800">Chuyển khoản đến thông tin bên trên</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
-                  <span className="text-sm text-blue-700">Nhập đúng nội dung chuyển khoản</span>
+                  <span className="text-sm text-primary-800">Nhập đúng nội dung chuyển khoản</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
-                  <span className="text-sm text-blue-700">Nhấn "Xác nhận đã chuyển khoản" bên dưới</span>
+                  <span className="text-sm text-primary-800">Nhấn "Xác nhận đã chuyển khoản" bên dưới</span>
                 </div>
               </div>
             </div>
@@ -156,28 +156,28 @@ const PaymentForm = ({
 
           {/* Cột phải - Xác nhận */}
           <div>
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-5 mb-6">
-              <h3 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white/80 backdrop-blur-sm border border-primary-200 rounded-lg p-5 mb-6 shadow-md">
+              <h3 className="font-semibold text-primary-800 mb-3 flex items-center gap-2">
+                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Thông tin đơn hàng
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-green-700 text-sm">Mã đơn hàng:</span>
-                  <span className="font-mono text-sm text-green-800">{orderId}</span>
+                  <span className="text-primary-700 text-sm">Mã đơn hàng:</span>
+                  <span className="font-mono text-sm text-primary-800">{orderId}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-green-700 text-sm">Tổng tiền:</span>
-                  <span className="font-bold text-lg text-green-800">{formatCurrency(amount)}</span>
+                  <span className="text-primary-700 text-sm">Tổng tiền:</span>
+                  <span className="font-bold text-lg text-primary-800">{formatCurrency(amount)}</span>
                 </div>
               </div>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="text-center">
-                <p className="text-gray-600 mb-6">
+                <p className="text-primary-800 mb-6 font-medium">
                   Sau khi chuyển khoản thành công, nhấn nút bên dưới để xác nhận
                 </p>
                 
@@ -196,7 +196,7 @@ const PaymentForm = ({
                   className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 transform ${
                     isLoading
                       ? 'bg-gray-400 cursor-not-allowed scale-95'
-                      : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 focus:ring-4 focus:ring-primary-200 hover:scale-105 shadow-lg hover:shadow-primary-500/25'
+                      : 'bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:ring-4 focus:ring-primary-300 hover:scale-105 shadow-lg hover:shadow-primary-600/30'
                   }`}
                 >
                   {isLoading ? (
@@ -220,14 +220,14 @@ const PaymentForm = ({
             </form>
 
             {/* Lưu ý quan trọng */}
-            <div className="mt-6 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-200 rounded-lg">
+            <div className="mt-6 p-4 bg-white/50 backdrop-blur-sm border border-primary-200 rounded-lg shadow-sm">
               <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
                 <div>
-                  <p className="text-yellow-800 font-medium text-sm mb-1">Lưu ý quan trọng</p>
-                  <p className="text-yellow-700 text-xs leading-relaxed">
+                  <p className="text-primary-800 font-medium text-sm mb-1">Lưu ý quan trọng</p>
+                  <p className="text-primary-700 text-xs leading-relaxed">
                     Đơn hàng sẽ được xác nhận trong vòng 5-10 phút sau khi xác thực thành công. 
                     Vui lòng chụp lại biên lai chuyển khoản để đối chiếu khi cần thiết.
                   </p>
