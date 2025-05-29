@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { generateDetailedOrderId, generateDetailedTransactionId } from '@/shared/utils/orderUtils';
+import { QRBankTransfer } from '@/components/payment';
 
 interface Transaction {
   id: string;
@@ -21,7 +22,7 @@ export default function DepositPage() {
   const searchParams = useSearchParams();
   
   // Tab management
-  const [activeTab, setActiveTab] = useState<'deposit' | 'payment'>('deposit');
+  const [activeTab, setActiveTab] = useState<'deposit' | 'qr-banking' | 'payment'>('deposit');
   
   // Deposit states
   const [amount, setAmount] = useState<string>('');
@@ -29,6 +30,9 @@ export default function DepositPage() {
   const [note, setNote] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>('');
+  
+  // QR Banking states
+  const [qrAmount, setQrAmount] = useState<number>(0);
   
   // Payment states
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
@@ -133,6 +137,19 @@ export default function DepositPage() {
     }
   };
 
+  const handleQRBankingSuccess = async (transactionId: string) => {
+    setMessage(`Nạp tiền QR thành công! Mã giao dịch: ${transactionId}`);
+    await fetchBalance();
+    await fetchTransactions();
+    // Switch to deposit tab to show success message
+    setActiveTab('deposit');
+  };
+
+  const handleQRBankingError = (error: string) => {
+    setMessage(error);
+    setActiveTab('deposit');
+  };
+
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -215,7 +232,9 @@ export default function DepositPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-900">
-              {activeTab === 'deposit' ? 'Nạp tiền vào tài khoản' : 'Thanh toán'}
+              {activeTab === 'deposit' ? 'Nạp tiền vào tài khoản' : 
+               activeTab === 'qr-banking' ? 'Chuyển khoản QR' :
+               'Thanh toán'}
             </h1>
             <Link
               href="/account"
@@ -227,6 +246,8 @@ export default function DepositPage() {
           <p className="text-gray-600 mt-2">
             {activeTab === 'deposit' 
               ? 'Nạp tiền vào tài khoản để mua sản phẩm và dịch vụ'
+              : activeTab === 'qr-banking' 
+              ? 'Quét mã QR để chuyển khoản nhanh chóng và tự động'
               : 'Sử dụng số dư tài khoản để thanh toán'
             }
           </p>
@@ -249,6 +270,21 @@ export default function DepositPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   Nạp tiền
+                </div>
+              </button>
+              <button
+                onClick={() => setActiveTab('qr-banking')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'qr-banking'
+                    ? 'border-teal-500 text-teal-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
+                  </svg>
+                  QR Banking
                 </div>
               </button>
               <button
@@ -321,6 +357,30 @@ export default function DepositPage() {
                     </div>
                   </div>
 
+                  {/* Quick QR Banking */}
+                  <div className="bg-gradient-to-r from-blue-50 to-teal-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium text-gray-800">Nạp tiền nhanh bằng QR</h4>
+                        <p className="text-sm text-gray-600">Quét mã QR để chuyển khoản tự động</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (amount && parseFloat(amount) >= 10000) {
+                            setQrAmount(parseFloat(amount));
+                            setActiveTab('qr-banking');
+                          } else {
+                            alert('Vui lòng nhập số tiền tối thiểu 10.000 VND');
+                          }
+                        }}
+                        className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm"
+                      >
+                        Tạo QR
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Phương thức thanh toán */}
                   <div>
                     <label htmlFor="method" className="block text-sm font-medium text-gray-700 mb-2">
@@ -389,6 +449,77 @@ export default function DepositPage() {
                   </button>
                 </form>
               </div>
+            ) : activeTab === 'qr-banking' ? (
+              /* QR Banking Tab */
+              <div className="space-y-6">
+                {/* Amount Input for QR Banking */}
+                {qrAmount === 0 && (
+                  <div className="space-y-4">
+                    <div>
+                      <label htmlFor="qr-amount" className="block text-sm font-medium text-gray-700 mb-2">
+                        Số tiền nạp (VND)
+                      </label>
+                      <input
+                        type="number"
+                        id="qr-amount"
+                        placeholder="Nhập số tiền..."
+                        min="10000"
+                        step="1000"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        onChange={(e) => setQrAmount(parseFloat(e.target.value) || 0)}
+                      />
+                      <p className="text-sm text-gray-500 mt-1">Số tiền tối thiểu: 10.000 VND</p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      {predefinedAmounts.map((suggestedAmount) => (
+                        <button
+                          key={suggestedAmount}
+                          type="button"
+                          onClick={() => setQrAmount(suggestedAmount)}
+                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-teal-50 hover:border-teal-300 transition-colors"
+                        >
+                          {formatCurrency(suggestedAmount)}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        if (qrAmount >= 10000) {
+                          // Amount is already set, QRBankTransfer will render
+                        } else {
+                          alert('Vui lòng nhập số tiền tối thiểu 10.000 VND');
+                        }
+                      }}
+                      disabled={qrAmount < 10000}
+                      className="w-full py-3 px-6 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Tạo mã QR
+                    </button>
+                  </div>
+                )}
+
+                {/* QR Banking Component */}
+                {qrAmount >= 10000 && (
+                  <QRBankTransfer
+                    amount={qrAmount}
+                    onSuccess={handleQRBankingSuccess}
+                    onError={handleQRBankingError}
+                  />
+                )}
+
+                {qrAmount >= 10000 && (
+                  <div className="text-center">
+                    <button
+                      onClick={() => setQrAmount(0)}
+                      className="text-teal-600 hover:text-teal-700 text-sm"
+                    >
+                      ← Thay đổi số tiền
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               /* Payment Tab */
               <div className="space-y-6">
@@ -426,7 +557,7 @@ export default function DepositPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-3 flex gap-2">
                       <button
                         onClick={() => setActiveTab('deposit')}
                         className="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 transition-colors"
@@ -434,7 +565,19 @@ export default function DepositPage() {
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
-                        Nạp tiền ngay
+                        Nạp tiền thường
+                      </button>
+                      <button
+                        onClick={() => {
+                          setQrAmount(Math.ceil((paymentAmount - balance) / 10000) * 10000);
+                          setActiveTab('qr-banking');
+                        }}
+                        className="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
+                        </svg>
+                        Nạp QR nhanh
                       </button>
                     </div>
                   </div>
@@ -569,16 +712,16 @@ export default function DepositPage() {
           <h3 className="text-lg font-semibold text-blue-900 mb-4">Hướng dẫn sử dụng</h3>
           <div className="grid md:grid-cols-2 gap-6 text-sm text-blue-800">
             <div>
-              <h4 className="font-medium mb-2">💰 Nạp tiền</h4>
-              <p>Nạp tiền vào tài khoản để có số dư mua sản phẩm</p>
+              <h4 className="font-medium mb-2">💰 Nạp tiền thường</h4>
+              <p>Nạp tiền qua các phương thức truyền thống</p>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">📱 QR Banking</h4>
+              <p>Quét mã QR để chuyển khoản tự động và nhanh chóng</p>
             </div>
             <div>
               <h4 className="font-medium mb-2">💳 Thanh toán</h4>
               <p>Sử dụng số dư để thanh toán đơn hàng ngay lập tức</p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">⚡ Xử lý nhanh</h4>
-              <p>Giao dịch được xử lý và cập nhật số dư tức thì</p>
             </div>
             <div>
               <h4 className="font-medium mb-2">🔒 Bảo mật cao</h4>
