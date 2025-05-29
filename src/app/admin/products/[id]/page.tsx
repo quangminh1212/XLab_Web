@@ -792,30 +792,15 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </div>
           
           {/* Thông tin đánh giá và số lượng mua */}
-          <div className="flex flex-wrap gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Đánh giá sao */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md flex-1">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
               <label className="block text-sm font-medium text-gray-700 mb-2">Đánh giá sao</label>
-              <div className="flex items-center">
-                <div className="relative w-full max-w-xs">
-                  <input 
-                    type="range" 
-                    name="rating"
-                    value={formData.rating}
-                    onChange={(e) => {
-                      const value = parseFloat(e.target.value);
-                      setFormData(prev => ({...prev, rating: value}));
-                    }}
-                    min="0"
-                    max="5"
-                    step="0.1"
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
-                  />
-                  <div className="absolute -top-8 left-0 right-0 text-center">
-                    <span className="text-2xl font-bold text-primary-600">{Number(formData.rating).toFixed(1)}</span>
-                  </div>
+              <div className="flex items-center justify-center flex-col space-y-3">
+                <div className="text-center">
+                  <span className="text-3xl font-bold text-primary-600">{Number(formData.rating).toFixed(1)}</span>
                 </div>
-                <div className="ml-4 flex text-2xl">
+                <div className="flex text-2xl justify-center">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -831,18 +816,33 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     </button>
                   ))}
                 </div>
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs text-gray-500">Kém</span>
-                <span className="text-xs text-gray-500">Trung bình</span>
-                <span className="text-xs text-gray-500">Tuyệt vời</span>
+                <div className="w-full">
+                  <input 
+                    type="range" 
+                    name="rating"
+                    value={formData.rating}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value);
+                      setFormData(prev => ({...prev, rating: value}));
+                    }}
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+                  />
+                </div>
+                <div className="flex justify-between w-full text-xs text-gray-500">
+                  <span>Kém</span>
+                  <span>Trung bình</span>
+                  <span>Tuyệt vời</span>
+                </div>
               </div>
             </div>
             
             {/* Số lượng mua trong tuần */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md flex-1">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
               <label className="block text-sm font-medium text-gray-700 mb-2">Số lượng mua trong tuần</label>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 mb-3">
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -885,23 +885,21 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   </button>
                 </div>
               </div>
-              <div className="mt-2">
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
-                  <div 
-                    className="bg-primary-600 h-2.5 rounded-full transition-all duration-300" 
-                    style={{ width: `${Math.min(100, (formData.weeklyPurchases / 100) * 100)}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-1 text-xs text-gray-500">
-                  <span>0</span>
-                  <span>50</span>
-                  <span>100+</span>
-                </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-primary-600 h-2.5 rounded-full transition-all duration-300" 
+                  style={{ width: `${Math.min(100, (formData.weeklyPurchases / 100) * 100)}%` }}
+                ></div>
+              </div>
+              <div className="flex justify-between mt-2 text-xs text-gray-500">
+                <span>0</span>
+                <span>50</span>
+                <span>100+</span>
               </div>
             </div>
             
             {/* Thời hạn sản phẩm */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md flex-1">
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
               <label className="block text-sm font-medium text-gray-700 mb-2">Thời hạn sản phẩm</label>
               <div className="space-y-3">
                 {/* Ngày bắt đầu */}
@@ -971,8 +969,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             </div>
             
             {/* Loại sản phẩm */}
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-700">Loại sản phẩm</label>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
+              <label className="mb-2 text-sm font-medium text-gray-700 block">Loại sản phẩm</label>
               <div className="flex items-center space-x-4">
                 <label className="inline-flex items-center">
                   <input
@@ -1012,40 +1010,43 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Phần hình ảnh và upload */}
-            <div className="order-last flex justify-center">
-              <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col items-center space-y-4 w-full">
-                <div className="border rounded-lg overflow-hidden bg-white aspect-square max-w-md mx-auto flex items-center justify-center mb-3 relative"
-                  onPaste={handlePasteImage} 
-                  tabIndex={0} // Cho phép focus để nhận sự kiện paste
-                  style={{ outline: 'none' }} // Ẩn đường viền khi focus
-                >
-                  {featuredImage ? (
-                    <>
-                      <img 
-                        src={featuredImage} 
-                        alt={formData.name} 
-                        className="object-contain max-w-full max-h-full" 
-                      />
-                      <button
-                        type="button"
-                        onClick={handleRemoveFeaturedImage}
-                        className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                      >
-                        ×
-                      </button>
-                    </>
-                  ) : (
-                    <div className="text-gray-400 text-center p-4">
-                      <span className="block text-3xl mb-2">🖼️</span>
-                      <span className="text-sm">Chưa có ảnh sản phẩm</span>
-                      <p className="text-xs mt-2">Nhấn Ctrl+V để dán ảnh từ clipboard</p>
-                    </div>
-                  )}
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
+            {/* Phần hình ảnh sản phẩm */}
+            <div className="xl:col-span-2">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 h-full">
+                <h3 className="text-lg font-medium mb-4 text-gray-900">Hình ảnh sản phẩm</h3>
+                <div className="flex justify-center">
+                  <div className="border rounded-lg overflow-hidden bg-white aspect-square w-full max-w-sm flex items-center justify-center relative"
+                    onPaste={handlePasteImage} 
+                    tabIndex={0}
+                    style={{ outline: 'none' }}
+                  >
+                    {featuredImage ? (
+                      <>
+                        <img 
+                          src={featuredImage} 
+                          alt={formData.name} 
+                          className="object-contain max-w-full max-h-full" 
+                        />
+                        <button
+                          type="button"
+                          onClick={handleRemoveFeaturedImage}
+                          className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          ×
+                        </button>
+                      </>
+                    ) : (
+                      <div className="text-gray-400 text-center p-4">
+                        <span className="block text-4xl mb-2">🖼️</span>
+                        <span className="text-sm font-medium">Chưa có ảnh sản phẩm</span>
+                        <p className="text-xs mt-2">Nhấn Ctrl+V để dán ảnh từ clipboard</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="mt-4">
                   <input
                     type="file"
                     accept="image/*"
@@ -1057,121 +1058,129 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </div>
             </div>
             
-            {/* Mô tả ngắn và Tùy chọn sản phẩm */}
-            <div className="order-first space-y-4 bg-white p-4 rounded-lg shadow-sm">
-              {/* Tùy chọn loại sản phẩm */}
-              <div className="mb-3">
-                <h3 className="text-md font-medium mb-2">Tùy chọn sản phẩm</h3>
-                <div className="flex mb-3">
-                  <input
-                    type="text"
-                    value={newProductOption}
-                    onChange={(e) => setNewProductOption(e.target.value)}
-                    placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
-                    className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddProductOption}
-                    className="bg-green-500 text-white px-4 py-2 -ml-px rounded-r-md hover:bg-green-600 transition-colors"
-                  >
-                    Thêm
-                  </button>
-                </div>
-                
-                {/* Danh sách tùy chọn */}
-                <div className="bg-white shadow rounded-lg max-h-60 overflow-y-auto">
-                  <div className="space-y-2">
-                    {productOptions.map((option, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors">
-                        <div className="flex-1 flex items-center">
-                          <span>{option}</span>
-                        </div>
-                        <div className="flex items-center space-x-3">
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="number"
-                              value={optionPrices[option]?.price || 0}
-                              onChange={(e) => {
-                                const value = parseFloat(e.target.value);
-                                const price = isNaN(value) ? 0 : value;
-                                setOptionPrices(prev => ({
-                                  ...prev,
-                                  [option]: {
-                                    ...prev[option],
-                                    price: price,
-                                    // Tự động cập nhật giá gốc nếu chưa có hoặc bằng giá cũ
-                                    originalPrice: !prev[option]?.originalPrice ? price : prev[option].originalPrice
-                                  }
-                                }));
-                              }}
-                              className="w-24 p-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
-                              min="0"
-                              step="1000"
-                              title="Giá bán"
-                            />
-                            <span className="text-sm text-gray-500">đ</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="number"
-                              value={optionPrices[option]?.originalPrice || 0}
-                              onChange={(e) => {
-                                const value = parseFloat(e.target.value);
-                                const originalPrice = isNaN(value) ? 0 : value;
-                                setOptionPrices(prev => ({
-                                  ...prev,
-                                  [option]: {
-                                    ...prev[option],
-                                    originalPrice
-                                  }
-                                }));
-                              }}
-                              className="w-24 p-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 text-gray-500"
-                              min="0"
-                              step="1000"
-                              title="Giá gốc"
-                            />
-                            <span className="text-sm text-gray-500">đ</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveProductOption(index)}
-                            className="text-red-500 hover:text-red-700"
-                            title="Xóa tùy chọn"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                          <input
-                            type="radio"
-                            name="defaultOption"
-                            checked={option === defaultProductOption}
-                            onChange={() => handleSetDefaultOption(option)}
-                            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
-                            title="Đặt làm mặc định"
-                          />
-                        </div>
-                      </div>
-                    ))}
+            {/* Phần tùy chọn và mô tả sản phẩm */}
+            <div className="xl:col-span-3">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 h-full">
+                <div className="space-y-6">
+                  {/* Tùy chọn sản phẩm */}
+                  <div>
+                    <h3 className="text-lg font-medium mb-4 text-gray-900">Tùy chọn sản phẩm</h3>
+                    <div className="flex mb-4">
+                      <input
+                        type="text"
+                        value={newProductOption}
+                        onChange={(e) => setNewProductOption(e.target.value)}
+                        placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
+                        className="flex-1 p-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddProductOption}
+                        className="bg-green-500 text-white px-6 py-3 -ml-px rounded-r-md hover:bg-green-600 transition-colors font-medium"
+                      >
+                        Thêm
+                      </button>
+                    </div>
                     
-                    {productOptions.length === 0 && (
-                      <div className="text-gray-500 text-center p-2">
-                        Chưa có tùy chọn nào. Hãy thêm tùy chọn ở phía trên.
+                    {/* Danh sách tùy chọn */}
+                    <div className="bg-gray-50 rounded-lg max-h-60 overflow-y-auto">
+                      <div className="space-y-1 p-1">
+                        {productOptions.map((option, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-white rounded shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex-1">
+                              <span className="font-medium text-gray-900">{option}</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="number"
+                                  value={optionPrices[option]?.price || 0}
+                                  onChange={(e) => {
+                                    const value = parseFloat(e.target.value);
+                                    const price = isNaN(value) ? 0 : value;
+                                    setOptionPrices(prev => ({
+                                      ...prev,
+                                      [option]: {
+                                        ...prev[option],
+                                        price: price,
+                                        // Tự động cập nhật giá gốc nếu chưa có hoặc bằng giá cũ
+                                        originalPrice: !prev[option]?.originalPrice ? price : prev[option].originalPrice
+                                      }
+                                    }));
+                                  }}
+                                  className="w-20 p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+                                  min="0"
+                                  step="1000"
+                                  title="Giá bán"
+                                />
+                                <span className="text-sm text-gray-500">đ</span>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="number"
+                                  value={optionPrices[option]?.originalPrice || 0}
+                                  onChange={(e) => {
+                                    const value = parseFloat(e.target.value);
+                                    const originalPrice = isNaN(value) ? 0 : value;
+                                    setOptionPrices(prev => ({
+                                      ...prev,
+                                      [option]: {
+                                        ...prev[option],
+                                        originalPrice
+                                      }
+                                    }));
+                                  }}
+                                  className="w-20 p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 text-gray-500"
+                                  min="0"
+                                  step="1000"
+                                  title="Giá gốc"
+                                />
+                                <span className="text-sm text-gray-500">đ</span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveProductOption(index)}
+                                className="text-red-500 hover:text-red-700 p-1"
+                                title="Xóa tùy chọn"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                              <input
+                                type="radio"
+                                name="defaultOption"
+                                checked={option === defaultProductOption}
+                                onChange={() => handleSetDefaultOption(option)}
+                                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
+                                title="Đặt làm mặc định"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                        
+                        {productOptions.length === 0 && (
+                          <div className="text-gray-500 text-center p-4 bg-white rounded">
+                            Chưa có tùy chọn nào. Hãy thêm tùy chọn ở phía trên.
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
+                  </div>
+                  
+                  {/* Mô tả ngắn */}
+                  <div>
+                    <h3 className="text-lg font-medium mb-4 text-gray-900">Mô tả ngắn</h3>
+                    <div onPaste={handlePasteDescriptionImage}>
+                      <RichTextEditor
+                        value={formData.shortDescription}
+                        onChange={handleShortDescRichTextChange}
+                        placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
+                        className="min-h-[200px]"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <div onPaste={handlePasteDescriptionImage} className="mb-3">
-                <RichTextEditor
-                  value={formData.shortDescription}
-                  onChange={handleShortDescRichTextChange}
-                  placeholder="Mô tả ngắn gọn về sản phẩm (hiển thị ở trang danh sách)"
-                  className="min-h-[200px]"
-                />
               </div>
             </div>
           </div>
