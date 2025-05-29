@@ -1120,123 +1120,26 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                               <div className="absolute -left-1 top-0 bottom-0 w-1 bg-teal-500 rounded-r"></div>
                             )}
                             
-                            <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
-                              <div className="flex-1 min-w-0 mr-4">
-                                <div className="flex items-center mb-2">
-                                  <span className="font-medium text-gray-900 text-sm mr-2">{option}</span>
+                            <div className="p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
+                              {/* Header của tùy chọn */}
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center space-x-2">
+                                  <h5 className="font-medium text-gray-900 text-base">{option}</h5>
                                   {option === defaultProductOption && (
-                                    <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">
-                                      Mặc định
+                                    <span className="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full font-medium">
+                                      ⭐ Mặc định
                                     </span>
                                   )}
+                                  <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                                    #{index + 1}
+                                  </span>
                                 </div>
                                 
-                                <div className="flex items-center space-x-3">
-                                  <div className="flex items-center">
-                                    <svg className="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <select
-                                      value={optionDurations[option] || '1month'}
-                                      onChange={(e) => {
-                                        setOptionDurations(prev => ({
-                                          ...prev,
-                                          [option]: e.target.value
-                                        }));
-                                      }}
-                                      className="text-xs bg-gray-50 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
-                                    >
-                                      {durationOptions.map((duration) => (
-                                        <option key={duration.value} value={duration.value}>
-                                          {duration.label}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </div>
-                                  
-                                  <div className="flex items-center text-xs text-gray-600">
-                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                                    </svg>
-                                    Giá bán / Giá gốc
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <div className="flex items-center space-x-3">
-                                <div className="flex flex-col space-y-2">
-                                  <div className="flex items-center space-x-2">
-                                    <div className="text-right">
-                                      <div className="text-xs text-gray-500 mb-1">Giá bán</div>
-                                      <div className="flex items-center">
-                                        <input
-                                          type="number"
-                                          value={optionPrices[option]?.price || 0}
-                                          onChange={(e) => {
-                                            const value = parseFloat(e.target.value);
-                                            const price = isNaN(value) ? 0 : value;
-                                            setOptionPrices(prev => ({
-                                              ...prev,
-                                              [option]: {
-                                                ...prev[option],
-                                                price: price,
-                                                originalPrice: !prev[option]?.originalPrice ? price : prev[option].originalPrice
-                                              }
-                                            }));
-                                          }}
-                                          className="w-20 p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 text-right font-medium"
-                                          min="0"
-                                          step="1000"
-                                          title="Giá bán"
-                                        />
-                                        <span className="text-sm text-gray-500 ml-1">đ</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <div className="text-right">
-                                      <div className="text-xs text-gray-500 mb-1">Giá gốc</div>
-                                      <div className="flex items-center">
-                                        <input
-                                          type="number"
-                                          value={optionPrices[option]?.originalPrice || 0}
-                                          onChange={(e) => {
-                                            const value = parseFloat(e.target.value);
-                                            const originalPrice = isNaN(value) ? 0 : value;
-                                            setOptionPrices(prev => ({
-                                              ...prev,
-                                              [option]: {
-                                                ...prev[option],
-                                                originalPrice
-                                              }
-                                            }));
-                                          }}
-                                          className="w-20 p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 text-gray-500 transition-all duration-200 text-right"
-                                          min="0"
-                                          step="1000"
-                                          title="Giá gốc"
-                                        />
-                                        <span className="text-sm text-gray-500 ml-1">đ</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex flex-col space-y-2">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleRemoveProductOption(index)}
-                                    className="text-red-500 hover:text-red-700 p-2 rounded transition-colors duration-200 hover:bg-red-50"
-                                    title="Xóa tùy chọn"
-                                  >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                  </button>
+                                <div className="flex items-center space-x-1">
                                   <button
                                     type="button"
                                     onClick={() => handleSetDefaultOption(option)}
-                                    className={`p-2 rounded transition-all duration-200 ${
+                                    className={`p-1.5 rounded transition-all duration-200 ${
                                       option === defaultProductOption 
                                         ? 'bg-teal-100 text-teal-600' 
                                         : 'text-gray-400 hover:text-teal-600 hover:bg-teal-50'
@@ -1247,6 +1150,151 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                   </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveProductOption(index)}
+                                    className="text-red-500 hover:text-red-700 p-1.5 rounded transition-colors duration-200 hover:bg-red-50"
+                                    title="Xóa tùy chọn"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              {/* Thông tin chi tiết */}
+                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                {/* Cột 1: Thời hạn */}
+                                <div className="bg-gray-50 p-3 rounded-lg">
+                                  <div className="flex items-center mb-2">
+                                    <svg className="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span className="text-sm font-medium text-gray-700">Thời hạn sử dụng</span>
+                                  </div>
+                                  <select
+                                    value={optionDurations[option] || '1month'}
+                                    onChange={(e) => {
+                                      setOptionDurations(prev => ({
+                                        ...prev,
+                                        [option]: e.target.value
+                                      }));
+                                    }}
+                                    className="w-full text-sm bg-white border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+                                  >
+                                    {durationOptions.map((duration) => (
+                                      <option key={duration.value} value={duration.value}>
+                                        {duration.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <div className="mt-2 text-xs text-gray-500">
+                                    Thời gian có thể sử dụng sản phẩm
+                                  </div>
+                                </div>
+                                
+                                {/* Cột 2: Giá bán */}
+                                <div className="bg-green-50 p-3 rounded-lg">
+                                  <div className="flex items-center mb-2">
+                                    <svg className="w-4 h-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                                    </svg>
+                                    <span className="text-sm font-medium text-gray-700">Giá bán</span>
+                                  </div>
+                                  <div className="flex items-center">
+                                    <input
+                                      type="number"
+                                      value={optionPrices[option]?.price || 0}
+                                      onChange={(e) => {
+                                        const value = parseFloat(e.target.value);
+                                        const price = isNaN(value) ? 0 : value;
+                                        setOptionPrices(prev => ({
+                                          ...prev,
+                                          [option]: {
+                                            ...prev[option],
+                                            price: price,
+                                            originalPrice: !prev[option]?.originalPrice ? price : prev[option].originalPrice
+                                          }
+                                        }));
+                                      }}
+                                      className="flex-1 p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 text-right font-medium bg-white"
+                                      min="0"
+                                      step="1000"
+                                      placeholder="0"
+                                    />
+                                    <span className="text-sm text-gray-600 ml-2 font-medium">đ</span>
+                                  </div>
+                                  <div className="mt-2 text-xs text-gray-500">
+                                    Giá khách hàng phải trả
+                                  </div>
+                                </div>
+                                
+                                {/* Cột 3: Giá gốc & Giảm giá */}
+                                <div className="bg-blue-50 p-3 rounded-lg">
+                                  <div className="flex items-center mb-2">
+                                    <svg className="w-4 h-4 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z" />
+                                    </svg>
+                                    <span className="text-sm font-medium text-gray-700">Giá gốc</span>
+                                  </div>
+                                  <div className="flex items-center mb-2">
+                                    <input
+                                      type="number"
+                                      value={optionPrices[option]?.originalPrice || 0}
+                                      onChange={(e) => {
+                                        const value = parseFloat(e.target.value);
+                                        const originalPrice = isNaN(value) ? 0 : value;
+                                        setOptionPrices(prev => ({
+                                          ...prev,
+                                          [option]: {
+                                            ...prev[option],
+                                            originalPrice
+                                          }
+                                        }));
+                                      }}
+                                      className="flex-1 p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-gray-600 transition-all duration-200 text-right bg-white"
+                                      min="0"
+                                      step="1000"
+                                      placeholder="0"
+                                    />
+                                    <span className="text-sm text-gray-600 ml-2">đ</span>
+                                  </div>
+                                  {optionPrices[option]?.originalPrice > (optionPrices[option]?.price || 0) && (
+                                    <div className="mt-1 text-xs">
+                                      <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">
+                                        Giảm {Math.round(((optionPrices[option].originalPrice - optionPrices[option].price) / optionPrices[option].originalPrice) * 100)}%
+                                      </span>
+                                    </div>
+                                  )}
+                                  <div className="mt-2 text-xs text-gray-500">
+                                    Giá trước khi giảm
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {/* Preview tóm tắt */}
+                              <div className="mt-4 p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border-l-4 border-teal-500">
+                                <div className="flex items-center justify-between text-sm">
+                                  <span className="text-gray-600">👁️ Preview:</span>
+                                  <div className="flex items-center space-x-2">
+                                    <span className="font-medium text-gray-800">{option}</span>
+                                    <span className="text-gray-500">•</span>
+                                    <span className="text-teal-600 font-medium">
+                                      {durationOptions.find(d => d.value === (optionDurations[option] || '1month'))?.label}
+                                    </span>
+                                    <span className="text-gray-500">•</span>
+                                    <span className="font-bold text-green-600">
+                                      {(optionPrices[option]?.price || 0).toLocaleString()}đ
+                                    </span>
+                                    {optionPrices[option]?.originalPrice > (optionPrices[option]?.price || 0) && (
+                                      <>
+                                        <span className="text-gray-400 line-through text-xs">
+                                          {(optionPrices[option]?.originalPrice || 0).toLocaleString()}đ
+                                        </span>
+                                      </>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1260,9 +1308,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                             </svg>
                             <p className="font-medium text-lg mb-2">Chưa có tùy chọn nào</p>
                             <p className="text-sm mb-4">Thêm các tùy chọn khác nhau cho sản phẩm của bạn</p>
-                            <div className="text-xs text-gray-400">
-                              <p>VD: Premium, Basic, Standard</p>
-                              <p>Pro, Starter, Enterprise</p>
+                            <div className="text-xs text-gray-400 space-y-1">
+                              <p><strong>Ví dụ cho Software:</strong> Premium, Basic, Standard</p>
+                              <p><strong>Ví dụ cho Account:</strong> Pro, Starter, Enterprise</p>
+                              <p><strong>Ví dụ theo thời hạn:</strong> 1 Tháng, 6 Tháng, 1 Năm</p>
                             </div>
                           </div>
                         )}
