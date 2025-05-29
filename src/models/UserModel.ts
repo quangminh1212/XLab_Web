@@ -5,6 +5,7 @@ export interface User {
   image?: string;
   isAdmin: boolean;
   isActive: boolean;
+  balance: number;
   createdAt: string;
   updatedAt: string;
   lastLogin?: string;

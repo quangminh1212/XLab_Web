@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
+import BalanceDisplay from '@/components/common/BalanceDisplay';
 
 const Header = () => {
   const pathname = usePathname();
@@ -239,6 +240,9 @@ const Header = () => {
                 )}
               </div>
             )}
+
+            {/* Balance Display */}
+            <BalanceDisplay />
 
             {/* Cart Icon */}
             <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">

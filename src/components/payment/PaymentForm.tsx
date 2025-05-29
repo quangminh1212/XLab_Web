@@ -2,6 +2,7 @@
 
 import { FormEvent, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import QRCode from 'qrcode'
 import { generateDetailedOrderId, generateDetailedTransactionId } from '@/shared/utils/orderUtils'
 
@@ -21,10 +22,14 @@ const PaymentForm = ({
   onError 
 }: PaymentFormProps) => {
   const router = useRouter()
+  const { data: session } = useSession()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('')
   const [finalOrderId, setFinalOrderId] = useState<string>('')
+  const [paymentMethod, setPaymentMethod] = useState<'qr' | 'balance'>('qr')
+  const [balance, setBalance] = useState<number>(0)
+  const [loadingBalance, setLoadingBalance] = useState(false)
 
   // Generate orderId chỉ trên client side để tránh hydration mismatch
   useEffect(() => {
@@ -34,6 +39,28 @@ const PaymentForm = ({
       setFinalOrderId(generateDetailedOrderId())
     }
   }, [orderId])
+
+  // Lấy số dư tài khoản
+  useEffect(() => {
+    if (session?.user) {
+      fetchBalance()
+    }
+  }, [session])
+
+  const fetchBalance = async () => {
+    try {
+      setLoadingBalance(true)
+      const response = await fetch('/api/user/balance')
+      if (response.ok) {
+        const data = await response.json()
+        setBalance(data.balance || 0)
+      }
+    } catch (error) {
+      console.error('Error fetching balance:', error)
+    } finally {
+      setLoadingBalance(false)
+    }
+  }
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
