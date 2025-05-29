@@ -1,18 +1,19 @@
 "use client";
 
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import PaymentForm from '@/components/payment/PaymentForm';
+import PaymentForm from '@/components/payment/PaymentForm'
+import { generateDetailedOrderId } from '@/shared/utils/orderUtils'
 
 export default function CheckoutPage() {
-  const { items: cartItems, clearCart } = useCart();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const skipInfo = searchParams?.get('skipInfo') === 'true';
+  const { items: cartItems, clearCart } = useCart()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const skipInfo = searchParams?.get('skipInfo') === 'true'
   
   // Mặc định là bước 1 (thông tin), nhưng nếu có tham số skipInfo=true thì chuyển thẳng bước 2 (thanh toán)
   const [step, setStep] = useState(skipInfo ? 2 : 1);
@@ -273,7 +274,7 @@ export default function CheckoutPage() {
               ) : (
                 <PaymentForm 
                   amount={total} 
-                  orderId={`ORDER-${Date.now()}`}
+                  orderId={generateDetailedOrderId()}
                   onSuccess={handlePaymentSuccess}
                   onError={(error) => console.error(error)}
                 />

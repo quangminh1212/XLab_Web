@@ -3,6 +3,7 @@
 import { FormEvent, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import QRCode from 'qrcode'
+import { generateDetailedOrderId, generateDetailedTransactionId } from '@/shared/utils/orderUtils'
 
 interface PaymentFormProps {
   amount: number
@@ -14,7 +15,7 @@ interface PaymentFormProps {
 
 const PaymentForm = ({ 
   amount, 
-  orderId = `ORDER-${Date.now()}`,
+  orderId,
   productName = "Sản phẩm XLab",
   onSuccess,
   onError 
@@ -23,6 +24,9 @@ const PaymentForm = ({
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('')
+
+  // Sử dụng orderId được truyền vào hoặc tạo mới
+  const finalOrderId = orderId || generateDetailedOrderId();
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -45,7 +49,7 @@ const PaymentForm = ({
     const generateQRCode = async () => {
       try {
         // Tạo nội dung QR theo chuẩn VietQR
-        const qrContent = `2|99|${bankInfo.bankCode}|${bankInfo.accountNumber}|${bankInfo.accountName}|${amount}|${orderId}|VN`;
+        const qrContent = `2|99|${bankInfo.bankCode}|${bankInfo.accountNumber}|${bankInfo.accountName}|${amount}|${finalOrderId}|VN`;
         
         const qrCodeDataUrl = await QRCode.toDataURL(qrContent, {
           width: 600,
@@ -64,7 +68,7 @@ const PaymentForm = ({
     };
 
     generateQRCode();
-  }, [amount, orderId]);
+  }, [amount, finalOrderId]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -75,14 +79,14 @@ const PaymentForm = ({
       // Simulate processing
       await new Promise(resolve => setTimeout(resolve, 2000))
       
-      const transactionId = `TXN-${Date.now()}`
+      const transactionId = generateDetailedTransactionId()
       
       setIsLoading(false)
       
       if (onSuccess) {
         onSuccess(transactionId)
       } else {
-        router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}&product=${encodeURIComponent(productName)}&amount=${amount}`)
+        router.push(`/payment/success?orderId=${finalOrderId}&transactionId=${transactionId}&product=${encodeURIComponent(productName)}&amount=${amount}`)
       }
     } catch (error) {
       setIsLoading(false)
@@ -214,7 +218,7 @@ const PaymentForm = ({
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Mã đơn hàng:</span>
-                      <span className="font-mono font-bold text-teal-600">{orderId}</span>
+                      <span className="font-mono font-bold text-teal-600">{finalOrderId}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tổng tiền:</span>
@@ -254,7 +258,7 @@ const PaymentForm = ({
                   <div className="text-center">
                     <span className="text-gray-700 text-sm font-medium block mb-1">Nội dung chuyển khoản:</span>
                     <div className="bg-white border border-primary-300 rounded-md p-2">
-                      <span className="font-mono font-bold text-primary-700 text-lg">{orderId}</span>
+                      <span className="font-mono font-bold text-primary-700 text-lg">{finalOrderId}</span>
                     </div>
                   </div>
                 </div>

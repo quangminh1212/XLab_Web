@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { generateDetailedOrderId } from '@/shared/utils/orderUtils';
 
 export default function PaymentSuccessPage() {
   const { data: session } = useSession();
@@ -42,8 +43,8 @@ export default function PaymentSuccessPage() {
       finalOrderNumber = orderId;
       setOrderNumber(orderId);
     } else {
-      // Tạo mã đơn hàng ngẫu nhiên với định dạng XL-xxxxxx
-      finalOrderNumber = "XL-" + Math.floor(100000 + Math.random() * 900000);
+      // Tạo mã đơn hàng với định dạng XL-YYYYMMDDHHMMSS
+      finalOrderNumber = generateDetailedOrderId();
       setOrderNumber(finalOrderNumber);
     }
 
