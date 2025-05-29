@@ -1,14 +1,22 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import PaymentForm from "@/components/payment/PaymentForm";
+import { useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const productName = searchParams.get("product") || "Sản phẩm không xác định";
   const amountString = searchParams.get("amount") || "0";
   const amount = parseInt(amountString, 10);
+  
+  // Redirect to deposit page immediately
+  useEffect(() => {
+    if (productName && amount > 0) {
+      router.push(`/account/deposit?amount=${amount}&product=${encodeURIComponent(productName)}`);
+    }
+  }, [productName, amount, router]);
   
   if (!productName || amount <= 0) {
     return (
@@ -17,7 +25,7 @@ export default function CheckoutPage() {
         <p className="mb-6">Không tìm thấy thông tin sản phẩm hoặc số tiền thanh toán không chính xác.</p>
         <Link 
           href="/payment" 
-          className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+          className="inline-block px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
         >
           Quay lại trang thanh toán
         </Link>
@@ -26,23 +34,13 @@ export default function CheckoutPage() {
   }
   
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-center mb-8">Thanh toán đơn hàng</h1>
-      
-      <div className="mb-6 text-center">
-        <Link href="/payment" className="inline-flex items-center text-blue-600 hover:text-blue-800">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Quay lại danh sách sản phẩm
-        </Link>
-      </div>
-      
-      <PaymentForm amount={amount} productName={productName} />
-      
-      <div className="mt-12 text-center text-sm text-gray-600">
-        <p>Thông tin thanh toán của bạn được bảo mật theo tiêu chuẩn PCI DSS.</p>
-        <p className="mt-2">Nếu bạn có thắc mắc về việc thanh toán, vui lòng liên hệ đội ngũ hỗ trợ của chúng tôi qua <a href="mailto:support@xlab.vn" className="text-blue-600 hover:underline">support@xlab.vn</a>.</p>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Đang chuyển hướng đến trang thanh toán...</p>
+        <p className="text-sm text-gray-500 mt-2">
+          Sản phẩm: {productName} | Số tiền: {amount.toLocaleString('vi-VN')} ₫
+        </p>
       </div>
     </div>
   );
