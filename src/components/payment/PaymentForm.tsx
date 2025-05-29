@@ -130,8 +130,8 @@ const PaymentForm = ({
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-sm">
-              <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+            <div className="bg-white border-2 border-teal-500 rounded-lg p-4 shadow-sm">
+              <h4 className="font-semibold text-teal-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -140,15 +140,15 @@ const PaymentForm = ({
               <div className="space-y-2">
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">1</span>
-                  <span className="text-sm text-blue-700">Chuyển khoản đến thông tin bên trên</span>
+                  <span className="text-sm text-teal-700">Chuyển khoản đến thông tin bên trên</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
-                  <span className="text-sm text-blue-700">Nhập đúng nội dung chuyển khoản</span>
+                  <span className="text-sm text-teal-700">Nhập đúng nội dung chuyển khoản</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
-                  <span className="text-sm text-blue-700">Nhấn "Xác nhận đã chuyển khoản" bên dưới</span>
+                  <span className="text-sm text-teal-700">Nhấn "Xác nhận đã chuyển khoản" bên dưới</span>
                 </div>
               </div>
             </div>
