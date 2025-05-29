@@ -220,10 +220,10 @@ const PaymentForm = ({
                   Hệ thống xác thực tự động
                 </div>
                 <ul className="text-xs text-green-700 space-y-1">
-                  <li>• Tự động tra soát giao dịch từ dữ liệu Excel thực tế</li>
-                  <li>• Kết nối trực tiếp với bảng tính MBBank</li>
-                  <li>• Xác thực giao dịch thời gian thực</li>
-                  <li>• Không cần nhập thủ công thông tin</li>
+                  <li>• Tự động tra soát giao dịch từ Google Sheets thực tế</li>
+                  <li>• Kết nối trực tiếp với bảng tính MBBank online</li>
+                  <li>• Kiểm tra tự động qua cột Code TT</li>
+                  <li>• Xác thực thời gian thực không cần thủ công</li>
                 </ul>
               </div>
             </div>
@@ -300,11 +300,11 @@ const PaymentForm = ({
                   
                   {/* Hướng dẫn xác thực tự động */}
                   <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs text-blue-800 font-medium mb-2">🔄 Xác thực tự động từ dữ liệu thực:</p>
+                    <p className="text-xs text-blue-800 font-medium mb-2">🔄 Xác thực tự động từ Google Sheets:</p>
                     <div className="text-xs text-blue-700 space-y-1 mb-3">
-                      <div>• Hệ thống tự động kết nối với bảng Excel chứa dữ liệu giao dịch MBBank</div>
+                      <div>• Hệ thống tự động kết nối với Google Sheets chứa dữ liệu giao dịch MBBank</div>
+                      <div>• Tự động kiểm tra nội dung chuyển khoản qua cột <strong>Code TT</strong></div>
                       <div>• Chỉ cần nhập <strong>mã giao dịch</strong> từ SMS hoặc app MBBank</div>
-                      <div>• Tự động tra soát và xác thực số tiền, thời gian giao dịch</div>
                     </div>
                     
                     <p className="text-xs text-blue-800 font-medium mb-2">📱 Các loại mã hỗ trợ:</p>
@@ -317,25 +317,14 @@ const PaymentForm = ({
                   
                   {/* Mẫu giao dịch có sẵn để test */}
                   <div className="mt-3 pt-3 border-t border-blue-300">
-                    <p className="text-xs text-blue-600 font-medium mb-2">💡 Ví dụ dữ liệu tự động trace:</p>
+                    <p className="text-xs text-blue-600 font-medium mb-2">💡 Dữ liệu mẫu từ Google Sheets:</p>
                     <div className="bg-blue-100 p-2 rounded text-xs text-blue-800">
                       <div><strong>Mã giao dịch:</strong> <code className="bg-white px-1 rounded">FT25149200931766</code></div>
                       <div><strong>Số Trace:</strong> <code className="bg-white px-1 rounded">728744</code></div>
                       <div><strong>Số tiền:</strong> <code className="bg-white px-1 rounded">4000</code> VND</div>
+                      <div><strong>Code TT:</strong> <code className="bg-white px-1 rounded">Tiền vào</code></div>
                     </div>
                   </div>
-                  
-                  {/* Test codes cho development */}
-                  {process.env.NODE_ENV === 'development' && (
-                    <div className="mt-2 pt-2 border-t border-blue-300">
-                      <p className="text-xs text-blue-600 font-medium mb-1">🔧 Chế độ phát triển:</p>
-                      <div className="text-xs text-blue-600 space-y-1">
-                        <div>• Hệ thống tự động kết nối với Excel data</div>
-                        <div>• Nhập mã từ bảng Excel thực tế</div>
-                        <div>• Tự động xác thực thời gian thực</div>
-                      </div>
-                    </div>
-                  )}
                   </div>
                 </div>
                 
