@@ -76,18 +76,48 @@ export default function RelatedProducts({
     return null;
   }
 
-  const mappedProducts = products.map(product => ({
-    id: product.id,
-    name: product.name,
-    description: product.shortDescription || product.description,
-    price: product.price,
-    originalPrice: product.originalPrice,
-    image: product.imageUrl || product.image,
-    category: product.categories?.length ? product.categories[0].name : undefined,
-    rating: product.rating,
-    reviewCount: product.reviewCount,
-    isAccount: product.isAccount || product.type === 'account'
-  }));
+  const mappedProducts = products.map(product => {
+    console.log('RelatedProducts - Raw product:', product);
+    
+    // Đảm bảo tất cả thuộc tính đều là primitive values
+    const safeId = String(product.id || '');
+    const safeName = String(product.name || '');
+    const safeDescription = String(product.shortDescription || product.description || '');
+    const safePrice = Number(product.price) || 0;
+    const safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : undefined;
+    const safeImage = String(product.imageUrl || product.image || '');
+    const safeRating = product.rating ? Number(product.rating) : undefined;
+    const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
+    const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
+    
+    // Xử lý category an toàn
+    let safeCategory;
+    if (product.categories?.length) {
+      const firstCategory = product.categories[0];
+      if (typeof firstCategory === 'string') {
+        safeCategory = firstCategory;
+      } else if (firstCategory && typeof firstCategory === 'object') {
+        // Kiểm tra các cấu trúc object có thể có
+        safeCategory = String(firstCategory.name || firstCategory.id || '');
+      }
+    }
+    
+    const mapped = {
+      id: safeId,
+      name: safeName,
+      description: safeDescription,
+      price: safePrice,
+      originalPrice: safeOriginalPrice,
+      image: safeImage,
+      category: safeCategory,
+      rating: safeRating,
+      reviewCount: safeReviewCount,
+      isAccount: safeIsAccount
+    };
+    
+    console.log('RelatedProducts - Mapped product:', mapped);
+    return mapped;
+  });
 
   return (
     <div className="mt-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

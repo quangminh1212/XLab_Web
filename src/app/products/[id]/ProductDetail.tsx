@@ -616,7 +616,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         {/* Related products */}
         <RelatedProducts 
           currentProductId={product.id} 
-          categoryId={product.categories && product.categories.length > 0 ? product.categories[0].id : undefined} 
+          categoryId={
+            product.categories && product.categories.length > 0 
+              ? typeof product.categories[0].id === 'object' 
+                ? (product.categories[0].id as any)?.id 
+                : product.categories[0].id
+              : undefined
+          } 
         />
       </div>
     </div>

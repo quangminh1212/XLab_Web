@@ -132,22 +132,42 @@ const ProductGrid = ({
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
           
+          // Validate và đảm bảo tất cả props đều là primitive values
+          const safeProps = {
+            key: String(product.id || ''),
+            id: String(product.id || ''),
+            name: String(product.name || ''),
+            description: String(product.shortDescription || product.description || ''),
+            price: Number(minPrice) || 0,
+            originalPrice: originalPrice ? Number(originalPrice) : undefined,
+            image: String(product.image || ''),
+            category: product.category ? String(product.category) : undefined,
+            rating: product.rating ? Number(product.rating) : undefined,
+            reviewCount: product.reviewCount ? Number(product.reviewCount) : undefined,
+            totalSold: product.totalSold ? Number(product.totalSold) : undefined,
+            isAccount: Boolean(product.isAccount),
+            onAddToCart: onAddToCart,
+            onView: onProductView
+          };
+          
+          console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
+          
           return (
             <ProductCard
-              key={product.id}
-              id={product.id}
-              name={product.name}
-              description={product.shortDescription || product.description || ''}
-              price={minPrice}
-              originalPrice={originalPrice}
-              image={product.image}
-              category={product.category}
-              rating={product.rating}
-              reviewCount={product.reviewCount}
-              totalSold={product.totalSold}
-              isAccount={product.isAccount}
-              onAddToCart={onAddToCart}
-              onView={onProductView}
+              key={safeProps.key}
+              id={safeProps.id}
+              name={safeProps.name}
+              description={safeProps.description}
+              price={safeProps.price}
+              originalPrice={safeProps.originalPrice}
+              image={safeProps.image}
+              category={safeProps.category}
+              rating={safeProps.rating}
+              reviewCount={safeProps.reviewCount}
+              totalSold={safeProps.totalSold}
+              isAccount={safeProps.isAccount}
+              onAddToCart={safeProps.onAddToCart}
+              onView={safeProps.onView}
             />
           );
         })}
