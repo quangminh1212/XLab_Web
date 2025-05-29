@@ -8,6 +8,17 @@ import Image from 'next/image';
 import RichTextEditor from '@/components/common/RichTextEditor';
 import { v4 as uuidv4 } from 'uuid';
 
+// Danh sách các tùy chọn thời hạn
+const durationOptions = [
+  { value: '1week', label: '1 Tuần' },
+  { value: '1month', label: '1 Tháng' },
+  { value: '3months', label: '3 Tháng' },
+  { value: '6months', label: '6 Tháng' },
+  { value: '1year', label: '1 Năm' },
+  { value: '2years', label: '2 Năm' },
+  { value: 'lifetime', label: 'Vĩnh viễn' }
+];
+
 interface AdminEditProductPageProps {
   params: Promise<{
     id: string;
@@ -41,9 +52,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     rating: 5,
     weeklyPurchases: 0,
     type: 'software' as 'software' | 'account',
-    isAccount: false,
-    startDate: '',
-    endDate: ''
+    isAccount: false
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
@@ -63,6 +72,9 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   
   // Thêm state cho quản lý giá theo từng tùy chọn sản phẩm
   const [optionPrices, setOptionPrices] = useState<{[key: string]: {price: number, originalPrice: number}}>({});
+
+  // Thêm state cho quản lý thời hạn theo từng tùy chọn sản phẩm
+  const [optionDurations, setOptionDurations] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -90,9 +102,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           rating: productData.rating !== undefined ? productData.rating : 5,
           weeklyPurchases: productData.weeklyPurchases || 0,
           type: productData.type || 'software',
-          isAccount: productData.isAccount || productData.type === 'account' || false,
-          startDate: productData.startDate || '',
-          endDate: productData.endDate || ''
+          isAccount: productData.isAccount || productData.type === 'account' || false
         });
         
         // Tải thông tin tùy chọn sản phẩm nếu có
@@ -108,6 +118,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           setOptionPrices(productData.optionPrices);
         } else {
           setOptionPrices({});
+        }
+        
+        // Tải thời hạn cho từng tùy chọn sản phẩm nếu có
+        if (productData.optionDurations && typeof productData.optionDurations === 'object') {
+          setOptionDurations(productData.optionDurations);
+        } else {
+          setOptionDurations({});
         }
         
         // Tải tùy chọn mặc định
@@ -410,6 +427,12 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         }
       }));
       
+      // Thêm thời hạn mặc định cho tùy chọn mới
+      setOptionDurations(prev => ({
+        ...prev,
+        [newOption]: '1month' // Mặc định là 1 tháng
+      }));
+      
       // Nếu chưa có tùy chọn mặc định, đặt tùy chọn đầu tiên làm mặc định
       if (!defaultProductOption && productOptions.length === 0) {
         setDefaultProductOption(newOption);
@@ -429,6 +452,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const newPrices = {...prev};
       delete newPrices[option];
       return newPrices;
+    });
+    
+    // Xóa thời hạn của tùy chọn
+    setOptionDurations(prev => {
+      const newDurations = {...prev};
+      delete newDurations[option];
+      return newDurations;
     });
     
     // Nếu xóa tùy chọn mặc định, chọn tùy chọn đầu tiên còn lại làm mặc định
@@ -515,8 +545,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         defaultProductOption: defaultProductOption,
         // Thêm giá cho từng tùy chọn
         optionPrices: optionPrices,
-        startDate: formData.startDate,
-        endDate: formData.endDate
+        // Thêm thời hạn cho từng tùy chọn
+        optionDurations: optionDurations
       };
       
       console.log("Saving product data:", JSON.stringify(productData, null, 2));
@@ -792,7 +822,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </div>
           
           {/* Thông tin đánh giá và số lượng mua */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Đánh giá sao */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
               <label className="block text-sm font-medium text-gray-700 mb-3">Đánh giá sao</label>
@@ -936,76 +966,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </label>
               </div>
             </div>
-            
-            {/* Thời hạn sản phẩm */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-              <label className="block text-sm font-medium text-gray-700 mb-3">Thời hạn sản phẩm</label>
-              <div className="space-y-3">
-                {/* Ngày bắt đầu */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Ngày bắt đầu</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <input
-                      type="datetime-local"
-                      name="startDate"
-                      value={formData.startDate}
-                      onChange={handleInputChange}
-                      className="pl-10 block w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 text-xs"
-                    />
-                  </div>
-                </div>
-                
-                {/* Ngày kết thúc */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Ngày kết thúc</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2V7a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <input
-                      type="datetime-local"
-                      name="endDate"
-                      value={formData.endDate}
-                      onChange={handleInputChange}
-                      min={formData.startDate}
-                      className="pl-10 block w-full p-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 text-xs"
-                    />
-                  </div>
-                </div>
-                
-                {/* Hiển thị trạng thái */}
-                <div className="text-xs text-gray-500">
-                  {formData.startDate && formData.endDate ? (
-                    <div className="flex items-center space-x-1">
-                      <div className={`w-2 h-2 rounded-full ${
-                        new Date(formData.startDate) <= new Date() && new Date() <= new Date(formData.endDate)
-                          ? 'bg-green-500' 
-                          : new Date() < new Date(formData.startDate)
-                          ? 'bg-yellow-500'
-                          : 'bg-red-500'
-                      }`}></div>
-                      <span>
-                        {new Date(formData.startDate) <= new Date() && new Date() <= new Date(formData.endDate)
-                          ? 'Đang hoạt động'
-                          : new Date() < new Date(formData.startDate)
-                          ? 'Chưa bắt đầu'
-                          : 'Đã hết hạn'
-                        }
-                      </span>
-                    </div>
-                  ) : (
-                    <span>Không giới hạn thời gian</span>
-                  )}
-                </div>
-              </div>
-            </div>
           </div>
           
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -1067,7 +1027,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                       type="text"
                       value={newProductOption}
                       onChange={(e) => setNewProductOption(e.target.value)}
-                      placeholder="Nhập tùy chọn mới (VD: Full - Dùng riêng - 6 Tháng)"
+                      placeholder="Nhập tùy chọn mới (VD: Premium, Basic, Standard)"
                       className="flex-1 p-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     />
                     <button
@@ -1079,6 +1039,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     </button>
                   </div>
                   
+                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-700">
+                      <strong>Hướng dẫn:</strong> Mỗi tùy chọn sản phẩm có thể có thời hạn sử dụng khác nhau. 
+                      Chọn thời hạn phù hợp và thiết lập giá cho từng tùy chọn. Radio button cho biết tùy chọn mặc định sẽ hiển thị đầu tiên.
+                    </p>
+                  </div>
+                  
                   {/* Danh sách tùy chọn */}
                   <div className="bg-gray-50 rounded-lg max-h-64 overflow-y-auto">
                     <div className="space-y-2 p-3">
@@ -1086,52 +1053,72 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                         <div key={index} className="flex items-center justify-between p-3 bg-white rounded shadow-sm hover:shadow-md transition-shadow">
                           <div className="flex-1 min-w-0">
                             <span className="font-medium text-gray-900 text-sm truncate block">{option}</span>
+                            <div className="mt-1">
+                              <select
+                                value={optionDurations[option] || '1month'}
+                                onChange={(e) => {
+                                  setOptionDurations(prev => ({
+                                    ...prev,
+                                    [option]: e.target.value
+                                  }));
+                                }}
+                                className="text-xs bg-gray-50 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                              >
+                                {durationOptions.map((duration) => (
+                                  <option key={duration.value} value={duration.value}>
+                                    {duration.label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
                           </div>
                           <div className="flex items-center space-x-2 ml-3">
-                            <div className="flex items-center space-x-1">
-                              <input
-                                type="number"
-                                value={optionPrices[option]?.price || 0}
-                                onChange={(e) => {
-                                  const value = parseFloat(e.target.value);
-                                  const price = isNaN(value) ? 0 : value;
-                                  setOptionPrices(prev => ({
-                                    ...prev,
-                                    [option]: {
-                                      ...prev[option],
-                                      price: price,
-                                      originalPrice: !prev[option]?.originalPrice ? price : prev[option].originalPrice
-                                    }
-                                  }));
-                                }}
-                                className="w-16 p-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
-                                min="0"
-                                step="1000"
-                                title="Giá bán"
-                              />
-                              <span className="text-xs text-gray-500">đ</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <input
-                                type="number"
-                                value={optionPrices[option]?.originalPrice || 0}
-                                onChange={(e) => {
-                                  const value = parseFloat(e.target.value);
-                                  const originalPrice = isNaN(value) ? 0 : value;
-                                  setOptionPrices(prev => ({
-                                    ...prev,
-                                    [option]: {
-                                      ...prev[option],
-                                      originalPrice
-                                    }
-                                  }));
-                                }}
-                                className="w-16 p-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 text-gray-500"
-                                min="0"
-                                step="1000"
-                                title="Giá gốc"
-                              />
-                              <span className="text-xs text-gray-500">đ</span>
+                            <div className="flex flex-col space-y-1">
+                              <div className="flex items-center space-x-1">
+                                <input
+                                  type="number"
+                                  value={optionPrices[option]?.price || 0}
+                                  onChange={(e) => {
+                                    const value = parseFloat(e.target.value);
+                                    const price = isNaN(value) ? 0 : value;
+                                    setOptionPrices(prev => ({
+                                      ...prev,
+                                      [option]: {
+                                        ...prev[option],
+                                        price: price,
+                                        originalPrice: !prev[option]?.originalPrice ? price : prev[option].originalPrice
+                                      }
+                                    }));
+                                  }}
+                                  className="w-16 p-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+                                  min="0"
+                                  step="1000"
+                                  title="Giá bán"
+                                />
+                                <span className="text-xs text-gray-500">đ</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <input
+                                  type="number"
+                                  value={optionPrices[option]?.originalPrice || 0}
+                                  onChange={(e) => {
+                                    const value = parseFloat(e.target.value);
+                                    const originalPrice = isNaN(value) ? 0 : value;
+                                    setOptionPrices(prev => ({
+                                      ...prev,
+                                      [option]: {
+                                        ...prev[option],
+                                        originalPrice
+                                      }
+                                    }));
+                                  }}
+                                  className="w-16 p-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 text-gray-500"
+                                  min="0"
+                                  step="1000"
+                                  title="Giá gốc"
+                                />
+                                <span className="text-xs text-gray-500">đ</span>
+                              </div>
                             </div>
                             <button
                               type="button"
