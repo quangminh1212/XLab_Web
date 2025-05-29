@@ -46,12 +46,13 @@ const PaymentForm = ({
         const qrContent = `2|99|${bankInfo.bankCode}|${bankInfo.accountNumber}|${bankInfo.accountName}|${amount}|${orderId}|VN`;
         
         const qrCodeDataUrl = await QRCode.toDataURL(qrContent, {
-          width: 300,
-          margin: 2,
+          width: 400,
+          margin: 4,
           color: {
-            dark: '#00A19A', // Màu XLab
-            light: '#FFFFFF'
-          }
+            dark: '#000000', // Màu đen cho QR code
+            light: '#FFFFFF' // Nền trắng
+          },
+          errorCorrectionLevel: 'M'
         });
         
         setQrCodeUrl(qrCodeDataUrl);
@@ -124,26 +125,69 @@ const PaymentForm = ({
           
           {/* Cột trái - QR Code */}
           <div>
-            <div className="bg-white border-2 border-primary-200 rounded-lg p-6 mb-6 shadow-sm text-center">
-              <h3 className="font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2">
-                <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m0 6v6m8-9a8 8 0 11-16 0 8 8 0 0116 0z" />
-                </svg>
-                Quét mã QR để chuyển khoản
+            <div className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-8 mb-6 shadow-lg text-center">
+              <h3 className="font-bold text-xl text-gray-800 mb-6 flex items-center justify-center gap-3">
+                <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m0 6v6m8-9a8 8 0 11-16 0 8 8 0 0116 0z" />
+                  </svg>
+                </div>
+                <span className="bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+                  Quét mã QR để chuyển khoản
+                </span>
               </h3>
               
               {qrCodeUrl ? (
-                <div className="space-y-4">
-                  <div className="bg-white p-4 rounded-lg border border-gray-200 inline-block">
-                    <img src={qrCodeUrl} alt="QR Code chuyển khoản" className="w-64 h-64 mx-auto" />
+                <div className="space-y-6">
+                  <div className="relative inline-block">
+                    {/* QR Code với viền đẹp */}
+                    <div className="bg-white p-6 rounded-2xl border-4 border-gray-100 shadow-2xl relative overflow-hidden">
+                      {/* Các góc trang trí */}
+                      <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-primary-600 rounded-tl-lg"></div>
+                      <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-primary-600 rounded-tr-lg"></div>
+                      <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-primary-600 rounded-bl-lg"></div>
+                      <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-primary-600 rounded-br-lg"></div>
+                      
+                      <img 
+                        src={qrCodeUrl} 
+                        alt="QR Code chuyển khoản" 
+                        className="w-80 h-80 mx-auto block"
+                        style={{ imageRendering: 'crisp-edges' }}
+                      />
+                    </div>
+                    
+                    {/* Logo XLab ở giữa (tùy chọn) */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                      <div className="bg-white rounded-full p-2 shadow-lg border-2 border-primary-600">
+                        <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">X</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    Mở app ngân hàng của bạn và quét mã QR này
-                  </p>
+                  
+                  {/* Hướng dẫn với icon động */}
+                  <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                    <div className="flex items-center justify-center gap-3 mb-2">
+                      <div className="relative">
+                        <svg className="w-6 h-6 text-primary-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                      </div>
+                      <span className="text-primary-700 font-semibold">Mở app ngân hàng và quét mã QR</span>
+                    </div>
+                    <p className="text-sm text-primary-600 text-center">
+                      Thông tin chuyển khoản sẽ được điền tự động
+                    </p>
+                  </div>
                 </div>
               ) : (
-                <div className="w-64 h-64 mx-auto bg-gray-100 rounded-lg flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                <div className="w-80 h-80 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-medium">Đang tạo mã QR...</p>
+                  </div>
                 </div>
               )}
             </div>
