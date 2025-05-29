@@ -192,7 +192,7 @@ const PaymentForm = ({
             <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
               <h4 className="font-semibold text-primary-800 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 002 2v14a2 2 0 002 2z" />
                 </svg>
                 Hướng dẫn thanh toán MBBank
               </h4>
@@ -203,31 +203,27 @@ const PaymentForm = ({
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">2</span>
-                  <span className="text-sm text-primary-700">Quét QR Code hoặc nhập thông tin chuyển khoản bên phải</span>
+                  <span className="text-sm text-primary-700">Quét QR Code hoặc chuyển khoản đến thông tin bên phải</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">3</span>
-                  <span className="text-sm text-primary-700">Thực hiện chuyển khoản với nội dung: <strong>"Ma giao dich Trace{Date.now().toString().slice(-6)}"</strong></span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-5 h-5 bg-primary-600 text-white rounded-full text-xs flex items-center justify-center font-semibold">4</span>
-                  <span className="text-sm text-primary-700">Lấy <strong>mã giao dịch</strong> (FT...) hoặc <strong>số Trace</strong> từ thông báo SMS/App và nhập vào form</span>
+                  <span className="text-sm text-primary-700">Sau khi chuyển tiền thành công, nhập <strong>mã giao dịch</strong> vào form bên dưới</span>
                 </div>
               </div>
               
-              {/* Thông tin xác thực thật */}
+              {/* Thông tin xác thực tự động */}
               <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-center gap-2 text-green-800 font-medium mb-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Hệ thống xác thực thật MBBank
+                  Hệ thống xác thực tự động
                 </div>
                 <ul className="text-xs text-green-700 space-y-1">
-                  <li>• Kết nối trực tiếp với API MBBank</li>
+                  <li>• Tự động tra soát giao dịch từ dữ liệu Excel thực tế</li>
+                  <li>• Kết nối trực tiếp với bảng tính MBBank</li>
                   <li>• Xác thực giao dịch thời gian thực</li>
-                  <li>• Bảo mật cao với mã hóa SSL</li>
-                  <li>• Tự động xác nhận thanh toán</li>
+                  <li>• Không cần nhập thủ công thông tin</li>
                 </ul>
               </div>
             </div>
@@ -302,52 +298,44 @@ const PaymentForm = ({
                     </p>
                   )}
                   
-                  {/* Hướng dẫn chi tiết các loại mã */}
+                  {/* Hướng dẫn xác thực tự động */}
                   <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p className="text-xs text-blue-800 font-medium mb-2">📊 Tra soát giao dịch từ dữ liệu thực:</p>
+                    <p className="text-xs text-blue-800 font-medium mb-2">🔄 Xác thực tự động từ dữ liệu thực:</p>
                     <div className="text-xs text-blue-700 space-y-1 mb-3">
-                      <div>• Hệ thống sẽ tự động tra soát trong file Excel/CSV chứa dữ liệu giao dịch MBBank</div>
-                      <div>• Nhập <strong>mã giao dịch</strong> hoặc <strong>mã tham chiếu</strong> từ giao dịch đã thực hiện</div>
-                      <div>• Số tiền phải khớp chính xác với giao dịch trong dữ liệu</div>
+                      <div>• Hệ thống tự động kết nối với bảng Excel chứa dữ liệu giao dịch MBBank</div>
+                      <div>• Chỉ cần nhập <strong>mã giao dịch</strong> từ SMS hoặc app MBBank</div>
+                      <div>• Tự động tra soát và xác thực số tiền, thời gian giao dịch</div>
                     </div>
                     
-                    <p className="text-xs text-blue-800 font-medium mb-2">📱 Các loại mã xác thực hợp lệ:</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-700">
-                      <div>
-                        <strong>• Mã giao dịch:</strong> FT25149200931766
-                      </div>
-                      <div>
-                        <strong>• Số Trace:</strong> 728744
-                      </div>
-                      <div>
-                        <strong>• Mã OTP SMS:</strong> 6-8 số (VD: 123456)
-                      </div>
-                      <div>
-                        <strong>• Internet Banking:</strong> IB1234567890
+                    <p className="text-xs text-blue-800 font-medium mb-2">📱 Các loại mã hỗ trợ:</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-blue-700">
+                      <div>• Mã giao dịch: FT...</div>
+                      <div>• Số Trace: 6 số</div>
+                      <div>• Mã OTP SMS: 6-8 số</div>
+                      <div>• Internet Banking: IB...</div>
+                    </div>
+                  
+                  {/* Mẫu giao dịch có sẵn để test */}
+                  <div className="mt-3 pt-3 border-t border-blue-300">
+                    <p className="text-xs text-blue-600 font-medium mb-2">💡 Ví dụ dữ liệu tự động trace:</p>
+                    <div className="bg-blue-100 p-2 rounded text-xs text-blue-800">
+                      <div><strong>Mã giao dịch:</strong> <code className="bg-white px-1 rounded">FT25149200931766</code></div>
+                      <div><strong>Số Trace:</strong> <code className="bg-white px-1 rounded">728744</code></div>
+                      <div><strong>Số tiền:</strong> <code className="bg-white px-1 rounded">4000</code> VND</div>
+                    </div>
+                  </div>
+                  
+                  {/* Test codes cho development */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <div className="mt-2 pt-2 border-t border-blue-300">
+                      <p className="text-xs text-blue-600 font-medium mb-1">🔧 Chế độ phát triển:</p>
+                      <div className="text-xs text-blue-600 space-y-1">
+                        <div>• Hệ thống tự động kết nối với Excel data</div>
+                        <div>• Nhập mã từ bảng Excel thực tế</div>
+                        <div>• Tự động xác thực thời gian thực</div>
                       </div>
                     </div>
-                    
-                    {/* Mẫu giao dịch có sẵn để test */}
-                    <div className="mt-3 pt-3 border-t border-blue-300">
-                      <p className="text-xs text-blue-600 font-medium mb-2">💡 Giao dịch mẫu để test:</p>
-                      <div className="bg-blue-100 p-2 rounded text-xs text-blue-800">
-                        <div><strong>Mã:</strong> <code className="bg-white px-1 rounded">FT25149200931766</code></div>
-                        <div><strong>Số tiền:</strong> <code className="bg-white px-1 rounded">4000</code> VND</div>
-                        <div><strong>Hoặc Trace:</strong> <code className="bg-white px-1 rounded">728744</code></div>
-                      </div>
-                    </div>
-                    
-                    {/* Test codes cho development */}
-                    {process.env.NODE_ENV === 'development' && (
-                      <div className="mt-2 pt-2 border-t border-blue-300">
-                        <p className="text-xs text-blue-600 font-medium mb-1">🧪 Chế độ phát triển:</p>
-                        <div className="text-xs text-blue-600 space-y-1">
-                          <div><code className="bg-blue-100 px-1 rounded">FT25149200931766</code> - Tra soát từ Excel</div>
-                          <div><code className="bg-blue-100 px-1 rounded">728744</code> - Tìm theo Trace</div>
-                          <div>Số tiền: 4000 VND (khớp với dữ liệu mẫu)</div>
-                        </div>
-                      </div>
-                    )}
+                  )}
                   </div>
                 </div>
                 
