@@ -7,6 +7,7 @@ import QRCode from 'qrcode'
 interface PaymentFormProps {
   amount: number
   orderId?: string
+  productName?: string
   onSuccess?: (transactionId: string) => void
   onError?: (error: string) => void
 }
@@ -14,6 +15,7 @@ interface PaymentFormProps {
 const PaymentForm = ({ 
   amount, 
   orderId = `ORDER-${Date.now()}`,
+  productName = "Sản phẩm XLab",
   onSuccess,
   onError 
 }: PaymentFormProps) => {
@@ -46,7 +48,7 @@ const PaymentForm = ({
         const qrContent = `2|99|${bankInfo.bankCode}|${bankInfo.accountNumber}|${bankInfo.accountName}|${amount}|${orderId}|VN`;
         
         const qrCodeDataUrl = await QRCode.toDataURL(qrContent, {
-          width: 400,
+          width: 600,
           margin: 4,
           color: {
             dark: '#000000', // Màu đen cho QR code
@@ -80,7 +82,7 @@ const PaymentForm = ({
       if (onSuccess) {
         onSuccess(transactionId)
       } else {
-        router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}`)
+        router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}&product=${encodeURIComponent(productName)}&amount=${amount}`)
       }
     } catch (error) {
       setIsLoading(false)
@@ -143,17 +145,19 @@ const PaymentForm = ({
                       <img 
                         src={qrCodeUrl} 
                         alt="QR Code chuyển khoản" 
-                        className="w-80 h-80 mx-auto block"
+                        className="w-96 h-96 mx-auto block"
                         style={{ imageRendering: 'crisp-edges' }}
                       />
                     </div>
                     
                     {/* Logo XLab ở giữa (tùy chọn) */}
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                      <div className="bg-white rounded-full p-2 shadow-lg border-2 border-primary-600">
-                        <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
-                          <span className="text-white font-bold text-sm">X</span>
-                        </div>
+                      <div className="bg-white rounded-full p-3 shadow-lg border-2 border-primary-600">
+                        <img 
+                          src="/images/topup.png" 
+                          alt="TopUp Logo" 
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
                       </div>
                     </div>
                   </div>
@@ -175,7 +179,7 @@ const PaymentForm = ({
                   </div>
                 </div>
               ) : (
-                <div className="w-80 h-80 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center">
+                <div className="w-96 h-96 mx-auto bg-gray-100 rounded-2xl flex items-center justify-center">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
                     <p className="text-gray-600 font-medium">Đang tạo mã QR...</p>
