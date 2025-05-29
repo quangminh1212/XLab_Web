@@ -1059,28 +1059,6 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     </div>
                   </div>
                   
-                  {/* Thống kê nhanh */}
-                  {productOptions.length > 0 && (
-                    <div className="mb-4 grid grid-cols-3 gap-3">
-                      <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-3 rounded-lg text-center">
-                        <div className="text-lg font-bold text-blue-700">{productOptions.length}</div>
-                        <div className="text-xs text-blue-600">Tùy chọn</div>
-                      </div>
-                      <div className="bg-gradient-to-r from-green-50 to-green-100 p-3 rounded-lg text-center">
-                        <div className="text-lg font-bold text-green-700">
-                          {Math.min(...Object.values(optionPrices).map(p => p.price)).toLocaleString()}đ
-                        </div>
-                        <div className="text-xs text-green-600">Giá thấp nhất</div>
-                      </div>
-                      <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-3 rounded-lg text-center">
-                        <div className="text-lg font-bold text-purple-700">
-                          {defaultProductOption ? '✓' : '!'}
-                        </div>
-                        <div className="text-xs text-purple-600">Mặc định</div>
-                      </div>
-                    </div>
-                  )}
-                  
                   {/* Danh sách tùy chọn */}
                   <div className="bg-gray-50 rounded-lg min-h-[200px]">
                     <div className="p-3">
