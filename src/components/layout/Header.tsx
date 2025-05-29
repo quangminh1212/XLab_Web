@@ -104,7 +104,7 @@ const Header = () => {
       <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
         <div className="flex justify-between items-center">
           {/* Logo và Balance Display */}
-          <div className="flex items-center space-x-4 md:space-x-6">
+          <div className="flex items-center space-x-6 md:space-x-8 lg:space-x-10">
             <Link href="/" className="flex items-center justify-center">
               <Image
                 src="/images/logo.jpg"
@@ -397,8 +397,8 @@ const Header = () => {
           <nav className="md:hidden mt-2 py-3 border-t border-gray-200 bg-white rounded-b-lg shadow-lg">
             {/* Hiển thị số dư trên mobile nếu đã đăng nhập */}
             {session && (
-              <div className="px-4 py-3 mb-2 bg-gradient-to-r from-teal-50 to-teal-100 mx-2 rounded-lg">
-                <BalanceDisplay className="w-full justify-center text-center" />
+              <div className="px-4 py-3 mb-2 text-center">
+                <BalanceDisplay className="justify-center" />
               </div>
             )}
             
