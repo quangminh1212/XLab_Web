@@ -101,8 +101,8 @@ const PaymentForm = ({
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white p-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h6v6H3V3zm0 12h6v6H3v-6zm12-12h6v6h-6V3zm3 3v3m-3 9h6v6h-6v-6zm3 3v3m-3-12h3v3" />
+            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM13 13h2v2h-2v-2zM15 15h2v2h-2v-2zM13 17h2v2h-2v-2zM15 19h2v2h-2v-2zM17 13h2v2h-2v-2zM19 15h2v2h-2v-2zM17 17h2v2h-2v-2zM19 19h2v2h-2v-2z"/>
             </svg>
           </div>
           <div>
@@ -120,8 +120,8 @@ const PaymentForm = ({
             <div className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-8 mb-6 shadow-lg text-center">
               <h3 className="font-bold text-xl text-gray-800 mb-6 flex items-center justify-center gap-3">
                 <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h6v6H3V3zm0 12h6v6H3v-6zm12-12h6v6h-6V3zm3 3v3m-3 9h6v6h-6v-6zm3 3v3m-3-12h3v3" />
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM13 13h2v2h-2v-2zM15 15h2v2h-2v-2zM13 17h2v2h-2v-2zM15 19h2v2h-2v-2zM17 13h2v2h-2v-2zM19 15h2v2h-2v-2zM17 17h2v2h-2v-2zM19 19h2v2h-2v-2z"/>
                   </svg>
                 </div>
                 <span className="bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
@@ -163,10 +163,7 @@ const PaymentForm = ({
                     <div className="flex items-center justify-center gap-3 mb-2">
                       <div className="relative">
                         <svg className="w-6 h-6 text-primary-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" strokeWidth={2}/>
-                          <circle cx="8.5" cy="8.5" r="1.5" strokeWidth={2}/>
-                          <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" strokeWidth={2}/>
-                          <path d="M3 3h6v6H3V3zm0 12h6v6H3v-6zm12-12h6v6h-6V3z" strokeWidth={1.5}/>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                         </svg>
                         <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
                       </div>
