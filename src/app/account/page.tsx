@@ -24,6 +24,7 @@ interface Order {
   total: number;
   status: string;
   items: OrderItem[];
+  couponDiscount?: number; // Thêm field để lưu số tiền giảm từ voucher
 }
 
 // This would normally come from a database or API
@@ -173,7 +174,8 @@ export default function AccountPage() {
                     licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
                     expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
                     updates: true
-                  }))
+                  })),
+                  couponDiscount: apiOrder.couponDiscount
                 };
                 allOrders.push(convertedOrder);
               }
@@ -203,7 +205,8 @@ export default function AccountPage() {
                   licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
                   expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
                   updates: true
-                }))
+                })),
+                couponDiscount: order.couponDiscount
               }));
               setPurchaseHistory(convertedOrders);
             } catch (localErr) {
@@ -303,11 +306,17 @@ export default function AccountPage() {
   // Tính tổng số tiền đã chi
   const totalSpent = purchaseHistory.reduce((sum, order) => sum + order.total, 0);
 
-  // Tính tổng số tiền đã tiết kiệm
+  // Tính tổng số tiền đã tiết kiệm (bao gồm cả tiết kiệm từ giá sale và voucher)
   const totalSaved = purchaseHistory.reduce((sum, order) => {
-    return sum + order.items.reduce((itemSum, item) => {
+    // Tiết kiệm từ giá sale (originalPrice - price)
+    const saleSavings = order.items.reduce((itemSum, item) => {
       return itemSum + (item.originalPrice - item.price);
     }, 0);
+    
+    // Tiết kiệm từ voucher/coupon
+    const voucherSavings = order.couponDiscount || 0;
+    
+    return sum + saleSavings + voucherSavings;
   }, 0);
 
   // Xử lý lỗi hình ảnh
@@ -652,16 +661,28 @@ export default function AccountPage() {
                             <span className="font-semibold">{formatCurrency(item.price)}</span>
                           </div>
                           <div className="flex justify-between items-center mb-2">
-                            <span className="text-gray-600">Tiết kiệm</span>
+                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
                             <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
                           </div>
-                          {/* Tìm order chứa item hiện tại */}
+                          {/* Tìm order chứa item hiện tại để hiển thị ngày mua */}
                           {purchaseHistory.map(order => {
                             if (order.items.some(orderItem => orderItem.id === item.id)) {
                               return (
-                                <div key={`purchase-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
+                                <div key={`purchase-date-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
                                   <span className="text-gray-600">Ngày mua</span>
                                   <span className="font-semibold">{order.date}</span>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                          {/* Tìm order chứa item hiện tại và hiển thị voucher discount */}
+                          {purchaseHistory.map(order => {
+                            if (order.items.some(orderItem => orderItem.id === item.id) && order.couponDiscount && order.couponDiscount > 0) {
+                              return (
+                                <div key={`voucher-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
+                                  <span className="text-gray-600">Tiết kiệm từ voucher</span>
+                                  <span className="font-semibold text-green-600">{formatCurrency(order.couponDiscount)}</span>
                                 </div>
                               );
                             }
@@ -823,20 +844,49 @@ export default function AccountPage() {
                               </div>
                             ))}
                           </div>
-                          <div className="mt-4 border-t pt-4 flex justify-between items-center">
-                            <div className="text-lg font-semibold">
-                              Tổng: {formatCurrency(order.total)}
+                          <div className="mt-4 border-t pt-4">
+                            {/* Hiển thị chi tiết tiết kiệm */}
+                            <div className="space-y-2 mb-4">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">Tiết kiệm từ giá sale:</span>
+                                <span className="font-semibold text-green-600">
+                                  {formatCurrency(order.items.reduce((sum, item) => sum + (item.originalPrice - item.price), 0))}
+                                </span>
+                              </div>
+                              {order.couponDiscount && order.couponDiscount > 0 && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">Tiết kiệm từ voucher:</span>
+                                  <span className="font-semibold text-green-600">
+                                    {formatCurrency(order.couponDiscount)}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="flex justify-between text-sm font-bold border-t pt-2">
+                                <span className="text-gray-800">Tổng tiết kiệm:</span>
+                                <span className="text-green-600">
+                                  {formatCurrency(
+                                    order.items.reduce((sum, item) => sum + (item.originalPrice - item.price), 0) +
+                                    (order.couponDiscount || 0)
+                                  )}
+                                </span>
+                              </div>
                             </div>
-                            <div className="flex space-x-3">
-                              <Link 
-                                href={`/orders/${order.id}`}
-                                className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm"
-                              >
-                                Chi tiết đơn hàng
-                              </Link>
-                              <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
-                                Tải hóa đơn PDF
-                              </button>
+                            
+                            <div className="flex justify-between items-center">
+                              <div className="text-lg font-semibold">
+                                Tổng thanh toán: {formatCurrency(order.total)}
+                              </div>
+                              <div className="flex space-x-3">
+                                <Link 
+                                  href={`/orders/${order.id}`}
+                                  className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm"
+                                >
+                                  Chi tiết đơn hàng
+                                </Link>
+                                <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
+                                  Tải hóa đơn PDF
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>

@@ -58,6 +58,10 @@ export default function PaymentSuccessPage() {
   const saveOrderToHistory = async (orderNumber: string) => {
     if (!session?.user?.email) return;
 
+    // Lấy thông tin coupon discount từ URL params nếu có
+    const couponDiscountString = searchParams.get("couponDiscount") || "0";
+    const couponDiscount = parseInt(couponDiscountString, 10);
+
     const orderData = {
       id: orderNumber,
       userId: session.user.email,
@@ -72,6 +76,7 @@ export default function PaymentSuccessPage() {
         image: getProductImage(productName)
       }],
       totalAmount: amount,
+      couponDiscount: couponDiscount, // Thêm thông tin voucher discount
       status: 'completed',
       paymentMethod: 'online',
       paymentStatus: 'paid',
