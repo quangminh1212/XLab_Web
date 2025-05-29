@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { generateDetailedOrderId, generateDetailedTransactionId } from '@/shared/utils/orderUtils';
+import { generateDetailedTransactionId } from '@/shared/utils/orderUtils';
 import { QRBankTransfer } from '@/components/payment';
 
 interface Transaction {
@@ -21,24 +21,12 @@ export default function DepositPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // Tab management
-  const [activeTab, setActiveTab] = useState<'deposit' | 'qr-banking' | 'payment'>('deposit');
-  
-  // Deposit states
+  // States
   const [amount, setAmount] = useState<string>('');
-  const [method, setMethod] = useState<string>('bank_transfer');
-  const [note, setNote] = useState<string>('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string>('');
-  
-  // QR Banking states
-  const [qrAmount, setQrAmount] = useState<number>(0);
-  
-  // Payment states
-  const [paymentAmount, setPaymentAmount] = useState<number>(0);
-  const [productName, setProductName] = useState<string>('');
-  const [paymentLoading, setPaymentLoading] = useState(false);
-  const [paymentErrors, setPaymentErrors] = useState<Record<string, string>>({});
+  const [paymentMethod, setPaymentMethod] = useState<'balance' | 'qr-banking'>('balance');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showQR, setShowQR] = useState(false);
   
   // Common states
   const [balance, setBalance] = useState<number>(0);
@@ -53,15 +41,11 @@ export default function DepositPage() {
     }
   }, [session, status, router]);
 
-  // Check URL params for payment mode
+  // Check URL params for amount
   useEffect(() => {
-    const paymentAmountParam = searchParams.get('amount');
-    const productParam = searchParams.get('product');
-    
-    if (paymentAmountParam) {
-      setActiveTab('payment');
-      setPaymentAmount(parseFloat(paymentAmountParam));
-      setProductName(productParam || 'Sản phẩm XLab');
+    const amountParam = searchParams.get('amount');
+    if (amountParam) {
+      setAmount(amountParam);
     }
   }, [searchParams]);
 
@@ -89,21 +73,30 @@ export default function DepositPage() {
     }
   };
 
-  const handleDeposit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!amount || parseFloat(amount) <= 0) {
-      setMessage('Vui lòng nhập số tiền hợp lệ');
+    const depositAmount = parseFloat(amount);
+    
+    if (!depositAmount || depositAmount <= 0) {
+      setErrors({ amount: 'Vui lòng nhập số tiền hợp lệ' });
       return;
     }
 
-    if (parseFloat(amount) < 10000) {
-      setMessage('Số tiền nạp tối thiểu là 10.000 VND');
+    if (depositAmount < 10000) {
+      setErrors({ amount: 'Số tiền nạp tối thiểu là 10.000 VND' });
       return;
     }
 
-    setLoading(true);
-    setMessage('');
+    setErrors({});
+
+    if (paymentMethod === 'qr-banking') {
+      setShowQR(true);
+      return;
+    }
+
+    // Handle balance deposit (manual method)
+    setIsLoading(true);
 
     try {
       const response = await fetch('/api/user/deposit', {
@@ -112,88 +105,41 @@ export default function DepositPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: parseFloat(amount),
-          method,
-          note
+          amount: depositAmount,
+          method: 'manual',
+          note: 'Nạp tiền thủ công'
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(`Nạp tiền thành công! Số dư mới: ${formatCurrency(data.newBalance)}`);
-        setAmount('');
-        setNote('');
         await fetchBalance();
         await fetchTransactions();
+        setAmount('');
+        setErrors({ success: `Nạp tiền thành công! Số dư mới: ${formatCurrency(data.newBalance)}` });
       } else {
-        setMessage(data.error || 'Có lỗi xảy ra khi nạp tiền');
+        setErrors({ submit: data.error || 'Có lỗi xảy ra khi nạp tiền' });
       }
     } catch (error) {
       console.error('Error processing deposit:', error);
-      setMessage('Có lỗi xảy ra khi nạp tiền');
+      setErrors({ submit: 'Có lỗi xảy ra. Vui lòng thử lại.' });
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const handleQRBankingSuccess = async (transactionId: string) => {
-    setMessage(`Nạp tiền QR thành công! Mã giao dịch: ${transactionId}`);
+  const handleQRSuccess = async (transactionId: string) => {
     await fetchBalance();
     await fetchTransactions();
-    // Switch to deposit tab to show success message
-    setActiveTab('deposit');
+    setShowQR(false);
+    setAmount('');
+    setErrors({ success: `Nạp tiền QR thành công! Mã giao dịch: ${transactionId}` });
   };
 
-  const handleQRBankingError = (error: string) => {
-    setMessage(error);
-    setActiveTab('deposit');
-  };
-
-  const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (balance < paymentAmount) {
-      setPaymentErrors({ balance: 'Số dư không đủ để thanh toán' });
-      return;
-    }
-
-    setPaymentLoading(true);
-    setPaymentErrors({});
-    
-    try {
-      const orderId = generateDetailedOrderId();
-      const response = await fetch('/api/payment/balance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: paymentAmount,
-          orderId,
-          productName
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchBalance();
-        await fetchTransactions();
-        
-        const transactionId = data.transaction?.id || generateDetailedTransactionId();
-        
-        // Redirect to success page
-        router.push(`/payment/success?orderId=${orderId}&transactionId=${transactionId}&product=${encodeURIComponent(productName)}&amount=${paymentAmount}`);
-      } else {
-        setPaymentErrors({ submit: data.error || 'Có lỗi xảy ra khi thanh toán' });
-      }
-    } catch (error) {
-      console.error('Error processing payment:', error);
-      setPaymentErrors({ submit: 'Có lỗi xảy ra. Vui lòng thử lại.' });
-    } finally {
-      setPaymentLoading(false);
-    }
+  const handleQRError = (error: string) => {
+    setShowQR(false);
+    setErrors({ submit: error });
   };
 
   const formatCurrency = (amount: number) => {
@@ -215,12 +161,39 @@ export default function DepositPage() {
   };
 
   const predefinedAmounts = [50000, 100000, 200000, 500000, 1000000, 2000000];
-  const isBalanceEnough = balance >= paymentAmount;
 
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
+      </div>
+    );
+  }
+
+  // QR Banking View
+  if (showQR) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
+              <button
+                onClick={() => setShowQR(false)}
+                className="text-teal-600 hover:text-teal-700 font-medium"
+              >
+                ← Quay lại
+              </button>
+            </div>
+            <p className="text-gray-600 mt-2">Quét mã QR để chuyển khoản nhanh chóng</p>
+          </div>
+
+          <QRBankTransfer
+            amount={parseFloat(amount)}
+            onSuccess={handleQRSuccess}
+            onError={handleQRError}
+          />
+        </div>
       </div>
     );
   }
@@ -231,11 +204,7 @@ export default function DepositPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {activeTab === 'deposit' ? 'Nạp tiền vào tài khoản' : 
-               activeTab === 'qr-banking' ? 'Chuyển khoản QR' :
-               'Thanh toán'}
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
             <Link
               href="/account"
               className="text-teal-600 hover:text-teal-700 font-medium"
@@ -243,489 +212,247 @@ export default function DepositPage() {
               ← Quay lại tài khoản
             </Link>
           </div>
-          <p className="text-gray-600 mt-2">
-            {activeTab === 'deposit' 
-              ? 'Nạp tiền vào tài khoản để mua sản phẩm và dịch vụ'
-              : activeTab === 'qr-banking' 
-              ? 'Quét mã QR để chuyển khoản nhanh chóng và tự động'
-              : 'Sử dụng số dư tài khoản để thanh toán'
-            }
-          </p>
+          <p className="text-gray-600 mt-2">Nạp tiền vào tài khoản để mua sản phẩm và dịch vụ</p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-lg shadow-md mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6">
-              <button
-                onClick={() => setActiveTab('deposit')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'deposit'
-                    ? 'border-teal-500 text-teal-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  Nạp tiền
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
+          {/* Main Form */}
+          <div className="lg:w-2/3">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              {/* Balance Display */}
+              <div className="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-6 mb-6">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-teal-800 mb-2">Số dư hiện tại</h3>
+                  <p className="text-3xl font-bold text-teal-900">{formatCurrency(balance)}</p>
                 </div>
-              </button>
-              <button
-                onClick={() => setActiveTab('qr-banking')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'qr-banking'
-                    ? 'border-teal-500 text-teal-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
-                  </svg>
-                  QR Banking
-                </div>
-              </button>
-              <button
-                onClick={() => setActiveTab('payment')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'payment'
-                    ? 'border-teal-500 text-teal-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Thanh toán
-                </div>
-              </button>
-            </nav>
-          </div>
-
-          {/* Tab Content */}
-          <div className="p-6">
-            {/* Balance Display */}
-            <div className="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-6 mb-6">
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-teal-800 mb-2">Số dư hiện tại</h3>
-                <p className="text-3xl font-bold text-teal-900">{formatCurrency(balance)}</p>
               </div>
-            </div>
 
-            {activeTab === 'deposit' ? (
-              /* Deposit Tab */
-              <div className="space-y-6">
-                <form onSubmit={handleDeposit} className="space-y-6">
-                  {/* Số tiền */}
-                  <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-                      Số tiền nạp (VND)
-                    </label>
-                    <input
-                      type="number"
-                      id="amount"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      placeholder="Nhập số tiền..."
-                      min="10000"
-                      step="1000"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                      required
-                    />
-                    <p className="text-sm text-gray-500 mt-1">Số tiền tối thiểu: 10.000 VND</p>
-                  </div>
-
-                  {/* Số tiền gợi ý */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Số tiền gợi ý
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {predefinedAmounts.map((suggestedAmount) => (
-                        <button
-                          key={suggestedAmount}
-                          type="button"
-                          onClick={() => setAmount(suggestedAmount.toString())}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-teal-50 hover:border-teal-300 transition-colors"
-                        >
-                          {formatCurrency(suggestedAmount)}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Quick QR Banking */}
-                  <div className="bg-gradient-to-r from-blue-50 to-teal-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium text-gray-800">Nạp tiền nhanh bằng QR</h4>
-                        <p className="text-sm text-gray-600">Quét mã QR để chuyển khoản tự động</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (amount && parseFloat(amount) >= 10000) {
-                            setQrAmount(parseFloat(amount));
-                            setActiveTab('qr-banking');
-                          } else {
-                            alert('Vui lòng nhập số tiền tối thiểu 10.000 VND');
-                          }
-                        }}
-                        className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm"
-                      >
-                        Tạo QR
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Phương thức thanh toán */}
-                  <div>
-                    <label htmlFor="method" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phương thức thanh toán
-                    </label>
-                    <select
-                      id="method"
-                      value={method}
-                      onChange={(e) => setMethod(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    >
-                      <option value="bank_transfer">Chuyển khoản ngân hàng</option>
-                      <option value="momo">Ví MoMo</option>
-                      <option value="zalopay">ZaloPay</option>
-                      <option value="credit_card">Thẻ tín dụng</option>
-                    </select>
-                  </div>
-
-                  {/* Ghi chú */}
-                  <div>
-                    <label htmlFor="note" className="block text-sm font-medium text-gray-700 mb-2">
-                      Ghi chú (tùy chọn)
-                    </label>
-                    <textarea
-                      id="note"
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                      placeholder="Nhập ghi chú..."
-                      rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    />
-                  </div>
-
-                  {/* Message */}
-                  {message && (
-                    <div className={`p-4 rounded-lg ${
-                      message.includes('thành công') 
-                        ? 'bg-green-50 border border-green-200 text-green-700' 
-                        : 'bg-red-50 border border-red-200 text-red-700'
-                    }`}>
-                      {message}
-                    </div>
-                  )}
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 ${
-                      loading
-                        ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 focus:ring-4 focus:ring-teal-300'
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Amount Input */}
+                <div>
+                  <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
+                    Số tiền nạp (VND) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="Nhập số tiền..."
+                    min="10000"
+                    step="1000"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 ${
+                      errors.amount ? 'border-red-500' : 'border-gray-300'
                     }`}
-                  >
-                    {loading ? (
-                      <div className="flex items-center justify-center gap-3">
-                        <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Đang xử lý...
-                      </div>
-                    ) : (
-                      'Nạp tiền'
-                    )}
-                  </button>
-                </form>
-              </div>
-            ) : activeTab === 'qr-banking' ? (
-              /* QR Banking Tab */
-              <div className="space-y-6">
-                {/* Amount Input for QR Banking */}
-                {qrAmount === 0 && (
-                  <div className="space-y-4">
-                    <div>
-                      <label htmlFor="qr-amount" className="block text-sm font-medium text-gray-700 mb-2">
-                        Số tiền nạp (VND)
-                      </label>
-                      <input
-                        type="number"
-                        id="qr-amount"
-                        placeholder="Nhập số tiền..."
-                        min="10000"
-                        step="1000"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                        onChange={(e) => setQrAmount(parseFloat(e.target.value) || 0)}
-                      />
-                      <p className="text-sm text-gray-500 mt-1">Số tiền tối thiểu: 10.000 VND</p>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-2">
-                      {predefinedAmounts.map((suggestedAmount) => (
-                        <button
-                          key={suggestedAmount}
-                          type="button"
-                          onClick={() => setQrAmount(suggestedAmount)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-teal-50 hover:border-teal-300 transition-colors"
-                        >
-                          {formatCurrency(suggestedAmount)}
-                        </button>
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        if (qrAmount >= 10000) {
-                          // Amount is already set, QRBankTransfer will render
-                        } else {
-                          alert('Vui lòng nhập số tiền tối thiểu 10.000 VND');
-                        }
-                      }}
-                      disabled={qrAmount < 10000}
-                      className="w-full py-3 px-6 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                      Tạo mã QR
-                    </button>
-                  </div>
-                )}
-
-                {/* QR Banking Component */}
-                {qrAmount >= 10000 && (
-                  <QRBankTransfer
-                    amount={qrAmount}
-                    onSuccess={handleQRBankingSuccess}
-                    onError={handleQRBankingError}
+                    required
                   />
-                )}
+                  {errors.amount && (
+                    <p className="mt-1 text-sm text-red-600">{errors.amount}</p>
+                  )}
+                  <p className="text-sm text-gray-500 mt-1">Số tiền tối thiểu: 10.000 VND</p>
+                </div>
 
-                {qrAmount >= 10000 && (
-                  <div className="text-center">
-                    <button
-                      onClick={() => setQrAmount(0)}
-                      className="text-teal-600 hover:text-teal-700 text-sm"
-                    >
-                      ← Thay đổi số tiền
-                    </button>
+                {/* Predefined Amounts */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Số tiền gợi ý
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {predefinedAmounts.map((suggestedAmount) => (
+                      <button
+                        key={suggestedAmount}
+                        type="button"
+                        onClick={() => setAmount(suggestedAmount.toString())}
+                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-teal-50 hover:border-teal-300 transition-colors"
+                      >
+                        {formatCurrency(suggestedAmount)}
+                      </button>
+                    ))}
                   </div>
-                )}
-              </div>
-            ) : (
-              /* Payment Tab */
-              <div className="space-y-6">
-                {/* Payment Info */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-8 0H3m2 0h6M9 7h6m-6 4h6m-6 4h6" />
-                    </svg>
-                    Thông tin thanh toán
-                  </h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Sản phẩm:</span>
-                      <span className="font-medium text-gray-800">{productName}</span>
+                </div>
+
+                {/* Payment Method */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Phương thức nạp tiền <span className="text-red-500">*</span>
+                  </label>
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="balance"
+                        name="paymentMethod"
+                        value="balance"
+                        checked={paymentMethod === 'balance'}
+                        onChange={(e) => setPaymentMethod(e.target.value as 'balance' | 'qr-banking')}
+                        className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
+                      />
+                      <label htmlFor="balance" className="ml-3 block text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+                            <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                            </svg>
+                          </div>
+                          <div>
+                            <div className="font-medium">Nạp tiền thủ công</div>
+                            <div className="text-xs text-gray-500">Nạp trực tiếp vào số dư tài khoản</div>
+                          </div>
+                        </div>
+                      </label>
                     </div>
-                    <div className="flex justify-between items-center border-t pt-2 mt-2">
-                      <span className="text-gray-800 font-medium">Tổng tiền:</span>
-                      <span className="font-bold text-xl text-teal-800">{formatCurrency(paymentAmount)}</span>
+
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="qr-banking"
+                        name="paymentMethod"
+                        value="qr-banking"
+                        checked={paymentMethod === 'qr-banking'}
+                        onChange={(e) => setPaymentMethod(e.target.value as 'balance' | 'qr-banking')}
+                        className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
+                      />
+                      <label htmlFor="qr-banking" className="ml-3 block text-sm font-medium text-gray-700">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
+                            </svg>
+                          </div>
+                          <div>
+                            <div className="font-medium">Chuyển khoản QR</div>
+                            <div className="text-xs text-gray-500">Quét mã QR để chuyển khoản tự động</div>
+                          </div>
+                        </div>
+                      </label>
                     </div>
                   </div>
                 </div>
 
-                {/* Balance Check */}
-                {!isBalanceEnough && paymentAmount > 0 && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <svg className="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <div>
-                        <p className="text-red-800 font-medium text-sm">Số dư không đủ</p>
-                        <p className="text-red-700 text-xs">
-                          Bạn cần thêm {formatCurrency(paymentAmount - balance)} để hoàn tất thanh toán
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-3 flex gap-2">
-                      <button
-                        onClick={() => setActiveTab('deposit')}
-                        className="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 transition-colors"
-                      >
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                        Nạp tiền thường
-                      </button>
-                      <button
-                        onClick={() => {
-                          setQrAmount(Math.ceil((paymentAmount - balance) / 10000) * 10000);
-                          setActiveTab('qr-banking');
-                        }}
-                        className="inline-flex items-center px-3 py-1.5 bg-teal-600 text-white text-xs font-medium rounded hover:bg-teal-700 transition-colors"
-                      >
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
-                        </svg>
-                        Nạp QR nhanh
-                      </button>
-                    </div>
+                {/* Error Messages */}
+                {errors.submit && (
+                  <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center gap-2">
+                    <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {errors.submit}
                   </div>
                 )}
 
-                {/* Payment Form */}
-                <form onSubmit={handlePayment} className="space-y-4">
-                  {paymentErrors.balance && (
-                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
-                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {paymentErrors.balance}
-                    </div>
-                  )}
-
-                  {paymentErrors.submit && (
-                    <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg flex items-center gap-2">
-                      <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {paymentErrors.submit}
-                    </div>
-                  )}
-                  
-                  <button
-                    type="submit"
-                    disabled={paymentLoading || !isBalanceEnough || paymentAmount <= 0}
-                    className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 transform ${
-                      paymentLoading || !isBalanceEnough || paymentAmount <= 0
-                        ? 'bg-gray-400 cursor-not-allowed scale-95'
-                        : 'bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 focus:ring-4 focus:ring-teal-300 hover:scale-105 shadow-lg hover:shadow-teal-600/30'
-                    }`}
-                  >
-                    {paymentLoading ? (
-                      <div className="flex items-center justify-center gap-3">
-                        <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Đang xử lý thanh toán...
-                      </div>
-                    ) : !isBalanceEnough ? (
-                      <div className="flex items-center justify-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Số dư không đủ
-                      </div>
-                    ) : paymentAmount <= 0 ? (
-                      'Chưa có đơn hàng'
-                    ) : (
-                      <div className="flex items-center justify-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Thanh toán {formatCurrency(paymentAmount)}
-                      </div>
-                    )}
-                  </button>
-                </form>
-
-                {/* Security Info */}
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                {/* Success Messages */}
+                {errors.success && (
+                  <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center gap-2">
+                    <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <div>
-                      <p className="text-blue-800 font-medium text-sm mb-1">Thanh toán an toàn</p>
-                      <p className="text-blue-700 text-xs leading-relaxed">
-                        Giao dịch được thực hiện ngay lập tức và bảo mật tuyệt đối. Bạn sẽ nhận được xác nhận đơn hàng sau khi thanh toán thành công.
-                      </p>
-                    </div>
+                    {errors.success}
                   </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+                )}
 
-        {/* Transaction History */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Lịch sử giao dịch</h2>
-          
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            {transactions.length > 0 ? (
-              transactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 transform ${
+                    isLoading
+                      ? 'bg-gray-400 cursor-not-allowed scale-95'
+                      : 'bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 focus:ring-4 focus:ring-teal-300 hover:scale-105 shadow-lg hover:shadow-teal-600/30'
+                  }`}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <span className={`text-sm font-medium ${
-                      transaction.type === 'deposit' 
-                        ? 'text-green-600' 
-                        : transaction.type === 'purchase'
-                        ? 'text-red-600'
-                        : 'text-blue-600'
-                    }`}>
-                      {transaction.type === 'deposit' ? '+ ' : '- '}
-                      {formatCurrency(transaction.amount)}
-                    </span>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      transaction.status === 'completed'
-                        ? 'bg-green-100 text-green-700'
-                        : transaction.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}>
-                      {transaction.status === 'completed' ? 'Hoàn thành' : 
-                       transaction.status === 'pending' ? 'Đang xử lý' : 'Thất bại'}
-                    </span>
-                  </div>
-                  <p className="text-gray-700 text-sm mb-1">{transaction.description}</p>
-                  <p className="text-gray-500 text-xs">{formatDate(transaction.createdAt)}</p>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <p>Chưa có giao dịch nào</p>
-              </div>
-            )}
-          </div>
-        </div>
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-3">
+                      <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Đang xử lý...
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      {paymentMethod === 'qr-banking' ? 'Tạo mã QR' : 'Nạp tiền'}
+                    </div>
+                  )}
+                </button>
+              </form>
 
-        {/* Instructions */}
-        <div className="mt-8 bg-blue-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-4">Hướng dẫn sử dụng</h3>
-          <div className="grid md:grid-cols-2 gap-6 text-sm text-blue-800">
-            <div>
-              <h4 className="font-medium mb-2">💰 Nạp tiền thường</h4>
-              <p>Nạp tiền qua các phương thức truyền thống</p>
+              {/* Security Info */}
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <div>
+                    <p className="text-blue-800 font-medium text-sm mb-1">Nạp tiền an toàn</p>
+                    <p className="text-blue-700 text-xs leading-relaxed">
+                      Giao dịch được bảo mật tuyệt đối. Số dư sẽ được cập nhật ngay lập tức sau khi hoàn tất nạp tiền.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 className="font-medium mb-2">📱 QR Banking</h4>
-              <p>Quét mã QR để chuyển khoản tự động và nhanh chóng</p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">💳 Thanh toán</h4>
-              <p>Sử dụng số dư để thanh toán đơn hàng ngay lập tức</p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">🔒 Bảo mật cao</h4>
-              <p>Hệ thống bảo mật tuyệt đối cho mọi giao dịch</p>
+          </div>
+
+          {/* Transaction History */}
+          <div className="lg:w-1/3">
+            <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">Lịch sử giao dịch</h2>
+              
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {transactions.length > 0 ? (
+                  transactions.slice(0, 10).map((transaction) => (
+                    <div
+                      key={transaction.id}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <span className={`text-sm font-medium ${
+                          transaction.type === 'deposit' 
+                            ? 'text-green-600' 
+                            : transaction.type === 'purchase'
+                            ? 'text-red-600'
+                            : 'text-blue-600'
+                        }`}>
+                          {transaction.type === 'deposit' ? '+ ' : '- '}
+                          {formatCurrency(transaction.amount)}
+                        </span>
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          transaction.status === 'completed'
+                            ? 'bg-green-100 text-green-700'
+                            : transaction.status === 'pending'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}>
+                          {transaction.status === 'completed' ? 'Hoàn thành' : 
+                           transaction.status === 'pending' ? 'Đang xử lý' : 'Thất bại'}
+                        </span>
+                      </div>
+                      <p className="text-gray-700 text-sm mb-1">{transaction.description}</p>
+                      <p className="text-gray-500 text-xs">{formatDate(transaction.createdAt)}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <p>Chưa có giao dịch nào</p>
+                  </div>
+                )}
+              </div>
+
+              {transactions.length > 10 && (
+                <div className="mt-4 text-center">
+                  <Link
+                    href="/account"
+                    className="text-teal-600 hover:text-teal-700 text-sm font-medium"
+                  >
+                    Xem tất cả giao dịch →
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

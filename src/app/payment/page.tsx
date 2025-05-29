@@ -22,7 +22,7 @@ export default function PaymentPage() {
               </div>
               <p className="text-gray-600 text-sm mb-3">Giải pháp quản lý doanh nghiệp toàn diện với các tính năng quản lý nhân sự, kế toán và quản lý khách hàng.</p>
               <Link 
-                href="/account/deposit?amount=5000000&product=XLab%20Business%20Suite" 
+                href="/account/deposit?amount=5000000" 
                 className="inline-block px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
               >
                 Mua ngay
@@ -36,7 +36,7 @@ export default function PaymentPage() {
               </div>
               <p className="text-gray-600 text-sm mb-3">Công cụ phân tích dữ liệu mạnh mẽ giúp doanh nghiệp đưa ra quyết định dựa trên dữ liệu.</p>
               <Link 
-                href="/account/deposit?amount=3500000&product=XLab%20Analytics%20Pro" 
+                href="/account/deposit?amount=3500000" 
                 className="inline-block px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
               >
                 Mua ngay
@@ -50,7 +50,7 @@ export default function PaymentPage() {
               </div>
               <p className="text-gray-600 text-sm mb-3">Hệ thống quản lý quan hệ khách hàng giúp doanh nghiệp tối ưu hóa quy trình bán hàng.</p>
               <Link 
-                href="/account/deposit?amount=2800000&product=XLab%20CRM" 
+                href="/account/deposit?amount=2800000" 
                 className="inline-block px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
               >
                 Mua ngay
@@ -69,7 +69,7 @@ export default function PaymentPage() {
               </div>
               <p className="text-gray-600 text-sm mb-3">Dịch vụ tư vấn chuyên nghiệp giúp doanh nghiệp lựa chọn và triển khai hệ thống phù hợp.</p>
               <Link 
-                href="/account/deposit?amount=2000000&product=Tư%20vấn%20triển%20khai%20hệ%20thống" 
+                href="/account/deposit?amount=2000000" 
                 className="inline-block px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
               >
                 Đăng ký
@@ -83,7 +83,7 @@ export default function PaymentPage() {
               </div>
               <p className="text-gray-600 text-sm mb-3">Khóa đào tạo người dùng cuối giúp nhân viên sử dụng hiệu quả các phần mềm của XLab.</p>
               <Link 
-                href="/account/deposit?amount=1500000&product=Đào%20tạo%20người%20dùng" 
+                href="/account/deposit?amount=1500000" 
                 className="inline-block px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
               >
                 Đăng ký
@@ -97,7 +97,7 @@ export default function PaymentPage() {
               </div>
               <p className="text-gray-600 text-sm mb-3">Gói hỗ trợ kỹ thuật 24/7 trong 1 năm, đảm bảo hệ thống của bạn luôn vận hành trơn tru.</p>
               <Link 
-                href="/account/deposit?amount=3200000&product=Hỗ%20trợ%20kỹ%20thuật%20(1%20năm)" 
+                href="/account/deposit?amount=3200000" 
                 className="inline-block px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
               >
                 Đăng ký

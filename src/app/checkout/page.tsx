@@ -48,7 +48,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (step === 2) {
       const productNames = cart.map(item => item.name).join(', ');
-      router.push(`/account/deposit?amount=${total}&product=${encodeURIComponent(productNames)}`);
+      router.push(`/account/deposit?amount=${total}`);
     }
   }, [step, total, cart, router]);
 

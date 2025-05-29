@@ -14,7 +14,7 @@ export default function CheckoutPage() {
   // Redirect to deposit page immediately
   useEffect(() => {
     if (productName && amount > 0) {
-      router.push(`/account/deposit?amount=${amount}&product=${encodeURIComponent(productName)}`);
+      router.push(`/account/deposit?amount=${amount}`);
     }
   }, [productName, amount, router]);
   
