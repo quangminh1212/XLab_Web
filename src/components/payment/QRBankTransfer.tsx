@@ -43,7 +43,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
   const generateQRCode = async () => {
     // Tạo timestamp như trong deposit page
     const timestamp = Date.now();
-    const newTransactionId = `${timestamp}-XLABRND`;
+    const newTransactionId = `${timestamp}XLABRND`;
     setTransactionId(newTransactionId);
 
     try {

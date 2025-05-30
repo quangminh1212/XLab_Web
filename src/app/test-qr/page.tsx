@@ -16,7 +16,7 @@ export default function TestQRPage() {
     try {
       // Test transaction ID
       const timestamp = Date.now();
-      const transactionId = `${timestamp}-XLABRND`;
+      const transactionId = `${timestamp}XLABRND`;
 
       // Tạo VietQR chuẩn cho MBBank
       const qrPay = QRPay.initVietQR({

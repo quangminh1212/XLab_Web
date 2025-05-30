@@ -49,7 +49,7 @@ export default function DepositPage() {
     
     // Tạo timestamp và thêm suffix XLab
     const timestamp = Date.now();
-    const txId = `${timestamp}-XLABRND`;
+    const txId = `${timestamp}XLABRND`;
     setTransactionId(txId);
     
     // Tạo QR với mã giao dịch
