@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { findTransactionByCode, getSheetDataFromCSV } from '@/lib/googleSheets';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Real bank transaction verification using Google Sheets
 interface BankTransaction {
@@ -12,8 +14,73 @@ interface BankTransaction {
   description: string;
 }
 
+// User balance interface
+interface UserBalance {
+  [email: string]: number;
+}
+
 // Cache to avoid repeated verification of same transaction
 const verifiedTransactions: Record<string, BankTransaction> = {};
+const processedTransactions: Set<string> = new Set(); // Tránh xử lý lặp lại
+
+// Function to get user balance
+const getUserBalance = async (userEmail: string): Promise<number> => {
+  try {
+    const balancePath = path.join(process.cwd(), 'data', 'balances.json');
+    
+    try {
+      const balanceData = await fs.readFile(balancePath, 'utf-8');
+      const balances: UserBalance = JSON.parse(balanceData);
+      return balances[userEmail] || 0;
+    } catch (error) {
+      // File doesn't exist, return 0
+      return 0;
+    }
+  } catch (error) {
+    console.error('Error reading balance:', error);
+    return 0;
+  }
+};
+
+// Function to update user balance
+const updateUserBalance = async (userEmail: string, amount: number): Promise<number> => {
+  try {
+    const balancePath = path.join(process.cwd(), 'data', 'balances.json');
+    const dataDir = path.dirname(balancePath);
+    
+    // Ensure data directory exists
+    try {
+      await fs.access(dataDir);
+    } catch {
+      await fs.mkdir(dataDir, { recursive: true });
+    }
+
+    let balances: UserBalance = {};
+    
+    // Read existing balances
+    try {
+      const balanceData = await fs.readFile(balancePath, 'utf-8');
+      balances = JSON.parse(balanceData);
+    } catch (error) {
+      // File doesn't exist, start with empty object
+      balances = {};
+    }
+
+    // Update balance
+    const currentBalance = balances[userEmail] || 0;
+    const newBalance = currentBalance + amount;
+    balances[userEmail] = newBalance;
+
+    // Write back to file
+    await fs.writeFile(balancePath, JSON.stringify(balances, null, 2));
+    
+    console.log(`💰 Balance updated for ${userEmail}: ${currentBalance} + ${amount} = ${newBalance}`);
+    return newBalance;
+  } catch (error) {
+    console.error('Error updating balance:', error);
+    throw error;
+  }
+};
 
 // Function to check bank transaction from Google Sheets
 const checkBankTransaction = async (
@@ -120,6 +187,19 @@ export async function POST(request: NextRequest) {
         description: bankTransaction.description,
         timestamp: bankTransaction.timestamp
       });
+
+      // Auto-add money to account if not already processed
+      if (!processedTransactions.has(transactionId)) {
+        try {
+          const newBalance = await updateUserBalance(session.user.email, bankTransaction.amount);
+          processedTransactions.add(transactionId); // Mark as processed
+          
+          console.log(`🎉 Auto-deposited ${bankTransaction.amount} VND to ${session.user.email}, new balance: ${newBalance}`);
+        } catch (error) {
+          console.error('Error auto-depositing funds:', error);
+          // Continue with response even if balance update fails
+        }
+      }
 
       return NextResponse.json({
         success: true,

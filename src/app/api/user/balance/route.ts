@@ -1,7 +1,32 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import { getUserByEmail, createOrUpdateUser } from '@/lib/userService';
+import fs from 'fs/promises';
+import path from 'path';
+
+// User balance interface
+interface UserBalance {
+  [email: string]: number;
+}
+
+// Function to get user balance from file
+const getUserBalance = async (userEmail: string): Promise<number> => {
+  try {
+    const balancePath = path.join(process.cwd(), 'data', 'balances.json');
+    
+    try {
+      const balanceData = await fs.readFile(balancePath, 'utf-8');
+      const balances: UserBalance = JSON.parse(balanceData);
+      return balances[userEmail] || 0;
+    } catch (error) {
+      // File doesn't exist, return 0
+      return 0;
+    }
+  } catch (error) {
+    console.error('Error reading balance:', error);
+    return 0;
+  }
+};
 
 export async function GET() {
   try {
@@ -14,23 +39,11 @@ export async function GET() {
       );
     }
 
-    // Lấy thông tin người dùng
-    let user = await getUserByEmail(session.user.email);
-    
-    // Nếu chưa có trong database, tạo mới
-    if (!user) {
-      user = await createOrUpdateUser({
-        email: session.user.email,
-        name: session.user.name || '',
-        image: session.user.image || '',
-        isAdmin: false,
-        isActive: true,
-        balance: 0
-      });
-    }
+    // Get balance from file
+    const balance = await getUserBalance(session.user.email);
 
     return NextResponse.json({
-      balance: user.balance || 0
+      balance: balance
     });
     
   } catch (error) {
