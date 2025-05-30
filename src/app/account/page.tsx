@@ -449,7 +449,12 @@ export default function AccountPage() {
 
   // Hàm xóa sản phẩm đã mua
   const handleDeletePurchase = (productId: string, orderId: string) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi danh sách đã mua?')) {
+    // Tìm tên sản phẩm để hiển thị trong thông báo
+    const order = purchaseHistory.find(o => o.id === orderId);
+    const product = order?.items.find(item => item.id === productId);
+    const productName = product?.name || 'sản phẩm này';
+    
+    if (window.confirm(`Bạn có chắc chắn muốn xóa "${productName}" khỏi danh sách đã mua?\n\nLưu ý: Thao tác này không thể hoàn tác.`)) {
       // Xóa từ localStorage
       if (session?.user?.email) {
         const savedPurchases = localStorage.getItem(`orders_${session.user.email}`);
@@ -480,8 +485,12 @@ export default function AccountPage() {
             }).filter(order => order.items.length > 0);
             
             setPurchaseHistory(updatedHistory);
+            
+            // Hiển thị thông báo thành công
+            alert(`Đã xóa "${productName}" khỏi danh sách sản phẩm đã mua thành công!`);
           } catch (error) {
             console.error('Lỗi khi xóa sản phẩm:', error);
+            alert('Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại.');
           }
         }
       }
@@ -802,233 +811,58 @@ export default function AccountPage() {
 
                 {hasProducts ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* ChatGPT Premium - Card 1 */}
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="p-4">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-bold text-gray-800">ChatGPT</h3>
-                          <p className="text-sm text-gray-600">Premium</p>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Giá</span>
-                            <span className="font-semibold">149.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                            <span className="font-semibold text-green-600">351.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Ngày mua</span>
-                            <span className="font-semibold">23/5/2025</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Hạn giấy phép</span>
-                            <span className="font-semibold">23/6/2025</span>
-                          </div>
-                        </div>
+                    {purchaseHistory.flatMap(order => 
+                      order.items.map((item, index) => (
+                        <div key={`${order.id}-${item.id}-${index}`} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+                          <div className="p-4">
+                            {/* Header của card với nút xóa */}
+                            <div className="flex justify-between items-start mb-4">
+                              <div className="flex-1">
+                                <h3 className="text-lg font-bold text-gray-800">{item.name}</h3>
+                                <p className="text-sm text-gray-600">{item.version}</p>
+                              </div>
+                              <button 
+                                onClick={() => handleDeletePurchase(item.id, order.id)}
+                                className="ml-2 p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                                title="Xóa sản phẩm"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
+                            
+                            <div className="space-y-2 mb-4">
+                              <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600">Giá</span>
+                                <span className="font-semibold">{formatCurrency(item.price)}</span>
+                              </div>
+                              <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600">Tiết kiệm từ giá sale</span>
+                                <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
+                              </div>
+                              <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600">Ngày mua</span>
+                                <span className="font-semibold">{order.date || '--'}</span>
+                              </div>
+                              <div className="flex justify-between items-center text-sm">
+                                <span className="text-gray-600">Hạn giấy phép</span>
+                                <span className="font-semibold">{item.expiryDate || '--'}</span>
+                              </div>
+                            </div>
 
-                        <div className="flex space-x-2">
-                          <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
-                            Tải xuống
-                          </button>
-                          <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
-                            Xem chi tiết
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Grok Premium - Card 2 */}
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="p-4">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-bold text-gray-800">Grok</h3>
-                          <p className="text-sm text-gray-600">Premium</p>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Giá</span>
-                            <span className="font-semibold">149.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                            <span className="font-semibold text-green-600">351.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Ngày mua</span>
-                            <span className="font-semibold">27/5/2025</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Hạn giấy phép</span>
-                            <span className="font-semibold">27/6/2025</span>
+                            <div className="flex space-x-2">
+                              <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
+                                Tải xuống
+                              </button>
+                              <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
+                                Xem chi tiết
+                              </button>
+                            </div>
                           </div>
                         </div>
-
-                        <div className="flex space-x-2">
-                          <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
-                            Tải xuống
-                          </button>
-                          <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
-                            Xem chi tiết
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* ChatGPT Premium - Card 3 */}
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="p-4">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-bold text-gray-800">ChatGPT</h3>
-                          <p className="text-sm text-gray-600">Premium</p>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Giá</span>
-                            <span className="font-semibold">149.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                            <span className="font-semibold text-green-600">351.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Ngày mua</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Hạn giấy phép</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                        </div>
-
-                        <div className="flex space-x-2">
-                          <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
-                            Tải xuống
-                          </button>
-                          <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
-                            Xem chi tiết
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Grok Premium - Card 4 */}
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="p-4">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-bold text-gray-800">Grok</h3>
-                          <p className="text-sm text-gray-600">Premium</p>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Giá</span>
-                            <span className="font-semibold">149.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                            <span className="font-semibold text-green-600">351.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Ngày mua</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Hạn giấy phép</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                        </div>
-
-                        <div className="flex space-x-2">
-                          <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
-                            Tải xuống
-                          </button>
-                          <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
-                            Xem chi tiết
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* ChatGPT Premium - Card 5 */}
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="p-4">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-bold text-gray-800">ChatGPT</h3>
-                          <p className="text-sm text-gray-600">Premium</p>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Giá</span>
-                            <span className="font-semibold">149.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                            <span className="font-semibold text-green-600">351.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Ngày mua</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Hạn giấy phép</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                        </div>
-
-                        <div className="flex space-x-2">
-                          <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
-                            Tải xuống
-                          </button>
-                          <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
-                            Xem chi tiết
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Grok Premium - Card 6 */}
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="p-4">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-bold text-gray-800">Grok</h3>
-                          <p className="text-sm text-gray-600">Premium</p>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Giá</span>
-                            <span className="font-semibold">149.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                            <span className="font-semibold text-green-600">351.000 đ</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Ngày mua</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm">
-                            <span className="text-gray-600">Hạn giấy phép</span>
-                            <span className="font-semibold">--</span>
-                          </div>
-                        </div>
-
-                        <div className="flex space-x-2">
-                          <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
-                            Tải xuống
-                          </button>
-                          <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
-                            Xem chi tiết
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+                      ))
+                    )}
                   </div>
                 ) : (
                   <div className="text-center py-10 bg-gray-50 rounded-lg">
