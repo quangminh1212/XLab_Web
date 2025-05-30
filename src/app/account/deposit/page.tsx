@@ -249,8 +249,8 @@ export default function DepositPage() {
                   )}
                 </div>
                 
-                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="flex items-center justify-center gap-2 text-blue-700">
+                <div className="mt-4 p-4 bg-teal-50 border border-teal-200 rounded-lg">
+                  <div className="flex items-center justify-center gap-2 text-teal-700">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -266,8 +266,8 @@ export default function DepositPage() {
             {/* Current Balance */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                   </svg>
                 </div>
@@ -279,8 +279,8 @@ export default function DepositPage() {
             {/* Transfer Information */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
@@ -331,20 +331,20 @@ export default function DepositPage() {
             </div>
 
             {/* Instructions */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
-              <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-gradient-to-br from-teal-50 to-emerald-50 border border-teal-200 rounded-lg p-4">
+              <h4 className="font-medium text-teal-900 mb-2 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Hướng dẫn nạp tiền
               </h4>
-              <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
+              <ol className="list-decimal list-inside space-y-1 text-xs text-teal-800">
                 <li>Mở app ngân hàng hoặc ví điện tử</li>
                 <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
                 <li>Nhập số tiền muốn nạp (tối thiểu 10.000đ)</li>
-                <li>Nhập nội dung chuyển khoản: <span className="font-mono bg-blue-100 px-1 rounded">{transactionId}</span></li>
+                <li>Nhập nội dung: <span className="font-mono bg-teal-100 px-1 rounded text-xs">{transactionId}</span></li>
                 <li>Xác nhận chuyển khoản</li>
-                <li className="font-semibold text-blue-900">Nhấn nút "Kiểm tra thanh toán" để xác nhận</li>
+                <li className="font-semibold text-teal-900">Nhấn nút "Kiểm tra thanh toán"</li>
               </ol>
             </div>
           </div>

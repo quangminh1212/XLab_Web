@@ -265,19 +265,19 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
           </div>
 
           {/* Instructions */}
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <h5 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="bg-teal-50 rounded-lg p-3 border border-teal-200">
+            <h5 className="font-medium text-teal-800 mb-2 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Hướng dẫn chuyển khoản:
             </h5>
-            <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
+            <ol className="list-decimal list-inside space-y-1 text-xs text-teal-700">
               <li>Mở app ngân hàng hoặc ví điện tử</li>
               <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
               <li>Kiểm tra số tiền và mã giao dịch</li>
               <li>Xác nhận chuyển khoản</li>
-              <li className="font-semibold">Nhấn nút "Kiểm tra thanh toán" sau khi hoàn tất</li>
+              <li className="font-semibold">Nhấn nút "Kiểm tra thanh toán"</li>
             </ol>
           </div>
         </div>
