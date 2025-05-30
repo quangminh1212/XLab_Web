@@ -22,6 +22,7 @@ interface Order {
   id: string;
   date: string;
   total: number;
+  totalAmount?: number; // Thêm trường totalAmount tùy chọn
   status: string;
   items: OrderItem[];
   couponDiscount?: number; // Thêm field để lưu số tiền giảm từ voucher
@@ -335,17 +336,25 @@ export default function AccountPage() {
   };
 
   // Tính tổng số tiền đã chi
-  const totalSpent = purchaseHistory.reduce((sum, order) => sum + order.total, 0);
+  const totalSpent = purchaseHistory.reduce((sum, order) => {
+    // Xử lý các trường hợp total có thể là totalAmount hoặc total
+    const orderTotal = order.total || order.totalAmount || 0;
+    // Đảm bảo giá trị là số và không phải NaN
+    const validTotal = typeof orderTotal === 'number' && !isNaN(orderTotal) ? orderTotal : 0;
+    return sum + validTotal;
+  }, 0);
 
   // Tính tổng số tiền đã tiết kiệm (bao gồm cả tiết kiệm từ giá sale và voucher)
   const totalSaved = purchaseHistory.reduce((sum, order) => {
     // Tiết kiệm từ giá sale (originalPrice - price)
     const saleSavings = order.items.reduce((itemSum, item) => {
-      return itemSum + (item.originalPrice - item.price);
+      const originalPrice = typeof item.originalPrice === 'number' && !isNaN(item.originalPrice) ? item.originalPrice : 0;
+      const currentPrice = typeof item.price === 'number' && !isNaN(item.price) ? item.price : 0;
+      return itemSum + Math.max(0, originalPrice - currentPrice);
     }, 0);
     
     // Tiết kiệm từ voucher/coupon
-    const voucherSavings = order.couponDiscount || 0;
+    const voucherSavings = typeof order.couponDiscount === 'number' && !isNaN(order.couponDiscount) ? order.couponDiscount : 0;
     
     return sum + saleSavings + voucherSavings;
   }, 0);
