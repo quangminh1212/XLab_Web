@@ -62,6 +62,9 @@ export default function PaymentSuccessPage() {
     // Lấy thông tin coupon discount từ URL params nếu có
     const couponDiscountString = searchParams.get("couponDiscount") || "0";
     const couponDiscount = parseInt(couponDiscountString, 10);
+    
+    // Lấy thông tin productOption từ URL params nếu có
+    const productOption = searchParams.get("productOption") || "Full - Dùng riêng - 1 Tháng"; // Mặc định
 
     const orderData = {
       id: orderNumber,
@@ -74,7 +77,8 @@ export default function PaymentSuccessPage() {
         quantity: quantity,
         price: unitPrice,
         originalPrice: 500000,
-        image: getProductImage(productName)
+        image: getProductImage(productName),
+        productOption: productOption // Thêm thông tin productOption
       }],
       totalAmount: amount,
       couponDiscount: couponDiscount, // Thêm thông tin voucher discount

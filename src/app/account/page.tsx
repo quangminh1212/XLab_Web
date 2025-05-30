@@ -28,6 +28,25 @@ interface Order {
   couponDiscount?: number; // Thêm field để lưu số tiền giảm từ voucher
 }
 
+interface OrderHistory {
+  id: string;
+  date: string;
+  total: number;
+  status: string;
+  items: Array<{
+    id: string;
+    name: string;
+    version: string;
+    price: number;
+    originalPrice: number;
+    licenseKey: string;
+    expiryDate: string;
+  }>;
+  couponDiscount?: number;
+  totalAmount?: number;
+  createdAt?: string;
+}
+
 // This would normally come from a database or API
 const userProfile = {
   name: 'Nguyễn Văn A',
@@ -37,6 +56,41 @@ const userProfile = {
   licenseCount: 0, // Đặt thành 0 vì chưa có sản phẩm
   phone: '',
 }
+
+// Hàm tính toán hạn giấy phép dựa trên ngày mua và duration
+const calculateExpiryDate = (purchaseDate: string | Date, duration: string): string => {
+  const purchase = new Date(purchaseDate);
+  let expiryDate = new Date(purchase);
+  
+  switch (duration) {
+    case '1week':
+      expiryDate.setDate(purchase.getDate() + 7);
+      break;
+    case '1month':
+      expiryDate.setMonth(purchase.getMonth() + 1);
+      break;
+    case '3months':
+      expiryDate.setMonth(purchase.getMonth() + 3);
+      break;
+    case '6months':
+      expiryDate.setMonth(purchase.getMonth() + 6);
+      break;
+    case '1year':
+      expiryDate.setFullYear(purchase.getFullYear() + 1);
+      break;
+    case '2years':
+      expiryDate.setFullYear(purchase.getFullYear() + 2);
+      break;
+    case 'lifetime':
+      return 'Vĩnh viễn';
+    default:
+      // Mặc định là 1 tháng nếu không có duration hoặc duration không hợp lệ
+      expiryDate.setMonth(purchase.getMonth() + 1);
+      break;
+  }
+  
+  return expiryDate.toLocaleDateString('vi-VN');
+};
 
 export default function AccountPage() {
   const router = useRouter();
@@ -181,6 +235,17 @@ export default function AccountPage() {
                                         productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
                                         500000; // fallback
 
+                    // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
+                    let duration = '1month'; // Mặc định
+                    if (productData?.optionDurations && item.productOption) {
+                      duration = productData.optionDurations[item.productOption] || '1month';
+                    } else if (productData?.optionDurations && productData.defaultProductOption) {
+                      duration = productData.optionDurations[productData.defaultProductOption] || '1month';
+                    }
+                    
+                    const purchaseDate = new Date(apiOrder.createdAt);
+                    const expiryDate = calculateExpiryDate(purchaseDate, duration);
+
                     return {
                       id: item.productId,
                       name: item.productName,
@@ -188,7 +253,7 @@ export default function AccountPage() {
                       price: item.price,
                       originalPrice: originalPrice,
                       licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                      expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
+                      expiryDate: expiryDate,
                     };
                   }),
                   couponDiscount: apiOrder.couponDiscount
@@ -228,6 +293,17 @@ export default function AccountPage() {
                                       item.originalPrice || // Giữ originalPrice từ localStorage nếu có
                                       500000; // fallback cuối cùng
 
+                  // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
+                  let duration = '1month'; // Mặc định
+                  if (productData?.optionDurations && item.productOption) {
+                    duration = productData.optionDurations[item.productOption] || '1month';
+                  } else if (productData?.optionDurations && productData.defaultProductOption) {
+                    duration = productData.optionDurations[productData.defaultProductOption] || '1month';
+                  }
+                  
+                  const purchaseDate = new Date(order.createdAt);
+                  const expiryDate = calculateExpiryDate(purchaseDate, duration);
+
                   return {
                     id: item.productId,
                     name: item.productName,
@@ -235,7 +311,7 @@ export default function AccountPage() {
                     price: item.price,
                     originalPrice: originalPrice,
                     licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
+                    expiryDate: expiryDate,
                   };
                 }),
                 couponDiscount: order.couponDiscount
