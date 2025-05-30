@@ -324,44 +324,29 @@ export default function DepositPage() {
                     </div>
                   </div>
 
-                  {/* Payment Method Info */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
-                        </svg>
+                  {/* Instructions */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-amber-800 mb-3">Hướng dẫn thanh toán</h4>
+                    <div className="space-y-2 text-sm text-amber-700">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                        <span>Mở app ngân hàng trên điện thoại</span>
                       </div>
-                      <div>
-                        <div className="font-medium text-blue-800">Chuyển khoản QR</div>
-                        <div className="text-xs text-blue-600">Quét mã QR để chuyển khoản tự động</div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                        <span>Quét mã QR ở bên trái</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                        <span>Xác nhận chuyển khoản và nhấn nút bên dưới</span>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Instructions */}
-                <div className="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-amber-800 mb-3">Hướng dẫn thanh toán</h4>
-                  <div className="space-y-2 text-sm text-amber-700">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">1</div>
-                      <span>Mở app ngân hàng trên điện thoại</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">2</div>
-                      <span>Quét mã QR ở bên trái</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">3</div>
-                      <span>Xác nhận chuyển khoản và nhấn nút bên dưới</span>
-                    </div>
-                  </div>
+                  <p className="text-center text-gray-600 text-sm mt-6">
+                    Sau khi quét QR và chuyển khoản thành công, nhấn nút bên dưới để xác nhận
+                  </p>
                 </div>
-
-                <p className="text-center text-gray-600 text-sm mt-6">
-                  Sau khi quét QR và chuyển khoản thành công, nhấn nút bên dưới để xác nhận
-                </p>
               </div>
             </div>
 
@@ -370,23 +355,7 @@ export default function DepositPage() {
               <div className="bg-white rounded-lg shadow-sm border p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-6">Tóm tắt đơn hàng</h3>
                 
-                {/* Sample Product */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                    <div className="w-16 h-16 bg-black rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-xl">𝕏</span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">Grok</h4>
-                      <p className="text-gray-600 text-sm">x3</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-bold text-teal-600">149.000 đ</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-200 mt-6 pt-6">
+                <div className="border-t border-gray-200 pt-6">
                   <div className="space-y-3">
                     <div className="flex justify-between text-gray-600">
                       <span>Tạm tính</span>
@@ -421,7 +390,7 @@ export default function DepositPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-2xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -436,186 +405,121 @@ export default function DepositPage() {
           <p className="text-gray-600 mt-2">Nạp tiền vào tài khoản để mua sản phẩm và dịch vụ</p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
-          {/* Main Form */}
-          <div className="lg:w-2/3">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              {/* Balance Display */}
-              <div className="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-6 mb-6">
-                <div className="text-center">
-                  <h3 className="text-lg font-semibold text-teal-800 mb-2">Số dư hiện tại</h3>
-                  <p className="text-3xl font-bold text-teal-900">{formatCurrency(balance)}</p>
-                </div>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Amount Input */}
-                <div>
-                  <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-                    Số tiền nạp (VND) <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    id="amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Nhập số tiền..."
-                    min="10000"
-                    step="1000"
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 ${
-                      errors.amount ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    required
-                  />
-                  {errors.amount && (
-                    <p className="mt-1 text-sm text-red-600">{errors.amount}</p>
-                  )}
-                  <p className="text-sm text-gray-500 mt-1">Số tiền tối thiểu: 10.000 VND</p>
-                </div>
-
-                {/* Predefined Amounts */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Số tiền gợi ý
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {predefinedAmounts.map((suggestedAmount) => (
-                      <button
-                        key={suggestedAmount}
-                        type="button"
-                        onClick={() => setAmount(suggestedAmount.toString())}
-                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-teal-50 hover:border-teal-300 transition-colors"
-                      >
-                        {formatCurrency(suggestedAmount)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Error Messages */}
-                {errors.submit && (
-                  <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center gap-2">
-                    <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {errors.submit}
-                  </div>
-                )}
-
-                {/* Success Messages */}
-                {errors.success && (
-                  <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center gap-2">
-                    <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {errors.success}
-                  </div>
-                )}
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 transform ${
-                    isLoading
-                      ? 'bg-gray-400 cursor-not-allowed scale-95'
-                      : 'bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 focus:ring-4 focus:ring-teal-300 hover:scale-105 shadow-lg hover:shadow-teal-600/30'
-                  }`}
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center gap-3">
-                      <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Đang xử lý...
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center gap-2">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                      Nạp tiền
-                    </div>
-                  )}
-                </button>
-              </form>
-
-              {/* Security Info */}
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <div>
-                    <p className="text-blue-800 font-medium text-sm mb-1">Nạp tiền an toàn</p>
-                    <p className="text-blue-700 text-xs leading-relaxed">
-                      Giao dịch được bảo mật tuyệt đối. Số dư sẽ được cập nhật ngay lập tức sau khi hoàn tất nạp tiền.
-                    </p>
-                  </div>
-                </div>
-              </div>
+        {/* Main Form */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          {/* Balance Display */}
+          <div className="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-6 mb-6">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-teal-800 mb-2">Số dư hiện tại</h3>
+              <p className="text-3xl font-bold text-teal-900">{formatCurrency(balance)}</p>
             </div>
           </div>
 
-          {/* Transaction History */}
-          <div className="lg:w-1/3">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Lịch sử giao dịch</h2>
-              
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {transactions.length > 0 ? (
-                  transactions.slice(0, 10).map((transaction) => (
-                    <div
-                      key={transaction.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <span className={`text-sm font-medium ${
-                          transaction.type === 'deposit' 
-                            ? 'text-green-600' 
-                            : transaction.type === 'purchase'
-                            ? 'text-red-600'
-                            : 'text-blue-600'
-                        }`}>
-                          {transaction.type === 'deposit' ? '+ ' : '- '}
-                          {formatCurrency(transaction.amount)}
-                        </span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          transaction.status === 'completed'
-                            ? 'bg-green-100 text-green-700'
-                            : transaction.status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-red-100 text-red-700'
-                        }`}>
-                          {transaction.status === 'completed' ? 'Hoàn thành' : 
-                           transaction.status === 'pending' ? 'Đang xử lý' : 'Thất bại'}
-                        </span>
-                      </div>
-                      <p className="text-gray-700 text-sm mb-1">{transaction.description}</p>
-                      <p className="text-gray-500 text-xs">{formatDate(transaction.createdAt)}</p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    <p>Chưa có giao dịch nào</p>
-                  </div>
-                )}
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Amount Input */}
+            <div>
+              <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
+                Số tiền nạp (VND) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                id="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Nhập số tiền..."
+                min="10000"
+                step="1000"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 ${
+                  errors.amount ? 'border-red-500' : 'border-gray-300'
+                }`}
+                required
+              />
+              {errors.amount && (
+                <p className="mt-1 text-sm text-red-600">{errors.amount}</p>
+              )}
+              <p className="text-sm text-gray-500 mt-1">Số tiền tối thiểu: 10.000 VND</p>
+            </div>
 
-              {transactions.length > 10 && (
-                <div className="mt-4 text-center">
-                  <Link
-                    href="/account"
-                    className="text-teal-600 hover:text-teal-700 text-sm font-medium"
+            {/* Predefined Amounts */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Số tiền gợi ý
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {predefinedAmounts.map((suggestedAmount) => (
+                  <button
+                    key={suggestedAmount}
+                    type="button"
+                    onClick={() => setAmount(suggestedAmount.toString())}
+                    className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-teal-50 hover:border-teal-300 transition-colors"
                   >
-                    Xem tất cả giao dịch →
-                  </Link>
+                    {formatCurrency(suggestedAmount)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Error Messages */}
+            {errors.submit && (
+              <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center gap-2">
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {errors.submit}
+              </div>
+            )}
+
+            {/* Success Messages */}
+            {errors.success && (
+              <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg flex items-center gap-2">
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {errors.success}
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full py-4 px-6 rounded-lg font-semibold text-white transition-all duration-200 transform ${
+                isLoading
+                  ? 'bg-gray-400 cursor-not-allowed scale-95'
+                  : 'bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 focus:ring-4 focus:ring-teal-300 hover:scale-105 shadow-lg hover:shadow-teal-600/30'
+              }`}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-3">
+                  <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Đang xử lý...
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Nạp tiền
                 </div>
               )}
+            </button>
+          </form>
+
+          {/* Security Info */}
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <div>
+                <p className="text-blue-800 font-medium text-sm mb-1">Nạp tiền an toàn</p>
+                <p className="text-blue-700 text-xs leading-relaxed">
+                  Giao dịch được bảo mật tuyệt đối. Số dư sẽ được cập nhật ngay lập tức sau khi hoàn tất nạp tiền.
+                </p>
+              </div>
             </div>
           </div>
         </div>
