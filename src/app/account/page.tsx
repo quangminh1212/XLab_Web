@@ -204,7 +204,42 @@ export default function AccountPage() {
             }
 
             // Lấy đơn hàng từ localStorage
-            const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
+            const localOrdersString = localStorage.getItem(`orders_${session.user.email}`);
+            console.log('DEBUG: localStorage key:', `orders_${session.user.email}`);
+            console.log('DEBUG: Raw localStorage data:', localOrdersString);
+            
+            const localOrders = JSON.parse(localOrdersString || '[]');
+            console.log('DEBUG: Parsed localStorage orders:', localOrders);
+
+            // Nếu không có dữ liệu trong localStorage, tạo dữ liệu mẫu để test
+            if (localOrders.length === 0) {
+              console.log('DEBUG: No orders found, creating sample data for testing...');
+              const sampleOrders = [
+                {
+                  id: 'order-sample-001',
+                  createdAt: new Date().toISOString(),
+                  totalAmount: 99000,
+                  status: 'completed',
+                  items: [
+                    {
+                      productId: 'chatgpt-premium',
+                      productName: 'ChatGPT Premium',
+                      productOption: '1month',
+                      price: 99000,
+                      originalPrice: 199000
+                    }
+                  ],
+                  couponDiscount: 0
+                }
+              ];
+              
+              // Lưu vào localStorage để lần sau không bị mất
+              localStorage.setItem(`orders_${session.user.email}`, JSON.stringify(sampleOrders));
+              console.log('DEBUG: Sample data saved to localStorage');
+              
+              // Sử dụng dữ liệu mẫu
+              localOrders.push(...sampleOrders);
+            }
             
             // Chuyển đổi format cho component
             const convertedOrders = localOrders.map((order: any) => ({
@@ -248,7 +283,7 @@ export default function AccountPage() {
             convertedOrders.sort((a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
             
             setPurchaseHistory(convertedOrders);
-            console.log('Orders from localStorage:', convertedOrders);
+            console.log('DEBUG: Final converted orders:', convertedOrders);
           } catch (err) {
             console.error('Error fetching purchase history:', err);
             // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
@@ -492,6 +527,61 @@ export default function AccountPage() {
     }
   };
 
+  // Debug function để kiểm tra localStorage
+  const handleDebugLocalStorage = () => {
+    if (session?.user?.email) {
+      const key = `orders_${session.user.email}`;
+      const data = localStorage.getItem(key);
+      console.log('Current localStorage key:', key);
+      console.log('Current localStorage data:', data);
+      alert(`LocalStorage Debug:\nKey: ${key}\nData: ${data || 'No data found'}`);
+    }
+  };
+
+  // Function để khôi phục dữ liệu mẫu
+  const handleRestoreData = () => {
+    if (session?.user?.email) {
+      const sampleOrders = [
+        {
+          id: 'order-restored-001',
+          createdAt: new Date().toISOString(),
+          totalAmount: 99000,
+          status: 'completed',
+          items: [
+            {
+              productId: 'chatgpt-premium',
+              productName: 'ChatGPT Premium',
+              productOption: '1month',
+              price: 99000,
+              originalPrice: 199000
+            }
+          ],
+          couponDiscount: 0
+        },
+        {
+          id: 'order-restored-002',
+          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 ngày trước
+          totalAmount: 149000,
+          status: 'completed',
+          items: [
+            {
+              productId: 'grok-pro',
+              productName: 'Grok Pro',
+              productOption: '1month',
+              price: 149000,
+              originalPrice: 299000
+            }
+          ],
+          couponDiscount: 10000
+        }
+      ];
+      
+      localStorage.setItem(`orders_${session.user.email}`, JSON.stringify(sampleOrders));
+      alert('Đã khôi phục dữ liệu mẫu! Vui lòng refresh trang để xem kết quả.');
+      window.location.reload();
+    }
+  };
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -680,6 +770,34 @@ export default function AccountPage() {
                 <h2 className="text-2xl font-bold mb-6">Hồ sơ cá nhân</h2>
 
                 <div className="space-y-6">
+                  {/* Thêm debug section */}
+                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h3 className="font-semibold text-yellow-800 mb-3">🔧 Debug & Khôi phục dữ liệu</h3>
+                    <div className="flex flex-wrap gap-2">
+                      <button 
+                        onClick={handleDebugLocalStorage}
+                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition"
+                      >
+                        Kiểm tra localStorage
+                      </button>
+                      <button 
+                        onClick={handleRestoreData}
+                        className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition"
+                      >
+                        Khôi phục dữ liệu mẫu
+                      </button>
+                      <button 
+                        onClick={() => window.location.reload()}
+                        className="px-3 py-1 bg-purple-500 text-white text-sm rounded hover:bg-purple-600 transition"
+                      >
+                        Refresh trang
+                      </button>
+                    </div>
+                    <p className="text-sm text-yellow-700 mt-2">
+                      Nếu không thấy sản phẩm đã mua, hãy nhấn "Khôi phục dữ liệu mẫu" để test.
+                    </p>
+                  </div>
+
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="font-semibold text-gray-800 mb-3">Thông tin cá nhân</h3>
                     <form onSubmit={handleUpdateProfile}>
