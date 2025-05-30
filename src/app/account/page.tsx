@@ -448,7 +448,7 @@ export default function AccountPage() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-primary-600 text-white py-16">
+      <section className="bg-teal-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Tài khoản của tôi</h1>
           <p className="text-xl max-w-3xl">
@@ -553,7 +553,7 @@ export default function AccountPage() {
                 </div>
 
                 <nav className="space-y-1">
-                  <a href="#profile" className="flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-md">
+                  <a href="#profile" className="flex items-center px-4 py-2 bg-teal-50 text-teal-700 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
@@ -633,7 +633,7 @@ export default function AccountPage() {
                           <input
                             type="text"
                             name="name"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
                             value={profile.name}
                             onChange={handleProfileChange}
                           />
@@ -643,7 +643,7 @@ export default function AccountPage() {
                           <input
                             type="email"
                             name="email"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 bg-gray-100"
                             value={profile.email}
                             disabled
                           />
@@ -652,7 +652,7 @@ export default function AccountPage() {
                           <label className="block text-sm font-medium text-gray-700 mb-1">Ngày tham gia</label>
                           <input
                             type="text"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 bg-gray-100"
                             value={profile.memberSince}
                             disabled
                           />
@@ -662,7 +662,7 @@ export default function AccountPage() {
                           <input
                             type="text"
                             name="phone"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
                             placeholder="Chưa cập nhật"
                             value={profile.phone}
                             onChange={handleProfileChange}
@@ -674,7 +674,7 @@ export default function AccountPage() {
                         <button
                           type="submit"
                           disabled={isSaving}
-                          className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
+                          className={`px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
                         >
                           {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
                         </button>
@@ -705,21 +705,21 @@ export default function AccountPage() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu hiện tại</label>
-                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu mới</label>
-                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu mới</label>
-                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500" />
                       </div>
                     </div>
 
                     <div className="mt-4 text-right">
                       <button 
-                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                        className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition"
                         onClick={(e) => {
                           e.preventDefault();
                           setPasswordMessage('Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.');
@@ -799,7 +799,7 @@ export default function AccountPage() {
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có sản phẩm nào</h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">Bạn chưa mua sản phẩm nào. Khám phá các sản phẩm của chúng tôi để bắt đầu.</p>
-                    <Link href="/products" className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition">
+                    <Link href="/products" className="inline-flex items-center bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
@@ -915,7 +915,7 @@ export default function AccountPage() {
                           </div>
                           
                           <div className="flex flex-wrap gap-2">
-                            <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition flex items-center">
+                            <button className="bg-teal-600 text-white px-4 py-2 rounded-md text-sm hover:bg-teal-700 transition flex items-center">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                               </svg>
@@ -927,7 +927,7 @@ export default function AccountPage() {
                               </svg>
                               Tải macOS
                             </button>
-                            <button className="bg-orange-600 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-700 transition flex items-center">
+                            <button className="bg-teal-600 text-white px-4 py-2 rounded-md text-sm hover:bg-teal-700 transition flex items-center">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                               </svg>
@@ -970,7 +970,7 @@ export default function AccountPage() {
                         <select 
                           value={supportProduct}
                           onChange={(e) => setSupportProduct(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
                           required
                         >
                           <option value="">Chọn sản phẩm</option>
@@ -987,7 +987,7 @@ export default function AccountPage() {
                           type="text"
                           value={supportTitle}
                           onChange={(e) => setSupportTitle(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
                           placeholder="Mô tả ngắn gọn vấn đề"
                           required
                         />
@@ -999,7 +999,7 @@ export default function AccountPage() {
                           value={supportDescription}
                           onChange={(e) => setSupportDescription(e.target.value)}
                           rows={4}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
                           placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."
                           required
                         />
@@ -1007,7 +1007,7 @@ export default function AccountPage() {
                       
                       <button
                         type="submit"
-                        className="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition"
+                        className="w-full bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
                       >
                         Gửi yêu cầu hỗ trợ
                       </button>
@@ -1016,43 +1016,43 @@ export default function AccountPage() {
 
                   {/* Thông tin liên hệ */}
                   <div className="space-y-6">
-                    <div className="bg-blue-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-blue-800 mb-4">Liên hệ trực tiếp</h3>
+                    <div className="bg-teal-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-teal-800 mb-4">Liên hệ trực tiếp</h3>
                       <div className="space-y-3">
                         <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                           </svg>
-                          <span className="text-blue-700">xlab.rnd@gmail.com</span>
+                          <span className="text-teal-700">xlab.rnd@gmail.com</span>
                         </div>
                         <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2z" />
                           </svg>
-                          <span className="text-blue-700">1900.xxxx</span>
+                          <span className="text-teal-700">1900.xxxx</span>
                         </div>
                         <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          <span className="text-blue-700">24/7 Support</span>
+                          <span className="text-teal-700">24/7 Support</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-green-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-green-800 mb-4">FAQ phổ biến</h3>
+                    <div className="bg-teal-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-teal-800 mb-4">FAQ phổ biến</h3>
                       <div className="space-y-2">
-                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
                           • Cách kích hoạt giấy phép
                         </Link>
-                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
                           • Chuyển đổi thiết bị
                         </Link>
-                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
                           • Cài đặt và sử dụng
                         </Link>
-                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
                           • Khắc phục sự cố
                         </Link>
                       </div>
@@ -1091,7 +1091,7 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, email: !notificationSettings.email})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.email ? 'bg-primary-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.email ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
                             <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.email ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
@@ -1112,7 +1112,7 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, productUpdates: !notificationSettings.productUpdates})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.productUpdates ? 'bg-primary-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.productUpdates ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
                             <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.productUpdates ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
@@ -1133,7 +1133,7 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, promotions: !notificationSettings.promotions})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.promotions ? 'bg-primary-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.promotions ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
                             <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.promotions ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
@@ -1154,7 +1154,7 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, expiryReminders: !notificationSettings.expiryReminders})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.expiryReminders ? 'bg-primary-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.expiryReminders ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
                             <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.expiryReminders ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
@@ -1164,7 +1164,7 @@ export default function AccountPage() {
                       <div className="text-right">
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                          className="w-full bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
                         >
                           Lưu cài đặt
                         </button>
@@ -1181,7 +1181,7 @@ export default function AccountPage() {
                           <span className="text-sm font-medium text-gray-700">Xuất dữ liệu tài khoản</span>
                           <p className="text-sm text-gray-500">Tải xuống toàn bộ dữ liệu của bạn</p>
                         </div>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm">
+                        <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition text-sm">
                           Xuất dữ liệu
                         </button>
                       </div>
@@ -1191,17 +1191,17 @@ export default function AccountPage() {
                           <span className="text-sm font-medium text-gray-700">Hủy kích hoạt tài khoản</span>
                           <p className="text-sm text-gray-500">Vô hiệu hóa tạm thời tài khoản của bạn</p>
                         </div>
-                        <button className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition text-sm">
+                        <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition text-sm">
                           Hủy kích hoạt
                         </button>
                       </div>
                       
                       <div className="flex items-center justify-between py-3">
                         <div>
-                          <span className="text-sm font-medium text-red-700">Xóa tài khoản</span>
+                          <span className="text-sm font-medium text-gray-700">Xóa tài khoản</span>
                           <p className="text-sm text-gray-500">Xóa vĩnh viễn tài khoản và toàn bộ dữ liệu</p>
                         </div>
-                        <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm">
+                        <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition text-sm">
                           Xóa tài khoản
                         </button>
                       </div>
@@ -1216,7 +1216,7 @@ export default function AccountPage() {
 
       {/* Footer text */}
       <div className="text-center text-gray-600 text-sm mt-8">
-        <p>Cần hỗ trợ? <Link href="/contact" className="text-primary-600 hover:underline">Liên hệ chúng tôi</Link></p>
+        <p>Cần hỗ trợ? <Link href="/contact" className="text-teal-600 hover:underline">Liên hệ chúng tôi</Link></p>
       </div>
     </div>
   );
