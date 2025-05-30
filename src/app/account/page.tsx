@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Avatar from '@/components/common/Avatar'
+import { LocalStorageBackup } from '@/shared/utils/localStorageBackup';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -121,199 +122,161 @@ export default function AccountPage() {
   };
 
   useEffect(() => {
-    // Chuyển hướng người dùng nếu chưa đăng nhập
-    if (status === 'unauthenticated') {
-      console.log('User is not authenticated, redirecting to login page');
-      router.push('/login?callbackUrl=/account');
+    if (status === 'loading') return;
+
+    if (!session?.user) {
+      router.push('/login');
       return;
     }
 
-    if (status === 'loading') {
-      console.log('Session loading...');
-      return;
-    }
+    // Debug localStorage
+    console.log('Current session user:', session.user);
+    const localStorageKey = `orders_${session.user.email}`;
+    console.log('LocalStorage key:', localStorageKey);
+    const localStorageData = localStorage.getItem(localStorageKey);
+    console.log('LocalStorage data:', localStorageData);
+    
+    // Thêm debug cho tất cả keys trong localStorage
+    console.log('All localStorage keys:', Object.keys(localStorage));
 
-    // Nếu người dùng đã xác thực
-    if (status === 'authenticated' && session?.user) {
-      console.log('User is authenticated, loading profile data:', session.user);
-      console.log('Session info: Name =', session.user.name, 'Email =', session.user.email, 'Image =', session.user.image);
-      console.log('Google avatar URL:', session?.user?.image);
-      
-      // Khởi tạo thông tin cơ bản từ session
-      const updatedProfile = {
-        ...userProfile,
-        name: session.user.name || userProfile.name,
-        email: session.user.email || userProfile.email,
-        avatar: session.user.image || '/images/avatar-placeholder.svg',
-        // Sử dụng thông tin bổ sung từ session nếu có
-        phone: session.user.phone || userProfile.phone,
-        memberSince: session.user.memberSince || userProfile.memberSince,
-      };
+    console.log('User is authenticated, loading profile data:', session.user);
+    console.log('Session info: Name =', session.user.name, 'Email =', session.user.email, 'Image =', session.user.image);
+    console.log('Google avatar URL:', session?.user?.image);
+    
+    // Khởi tạo thông tin cơ bản từ session
+    const updatedProfile = {
+      ...userProfile,
+      name: session.user.name || userProfile.name,
+      email: session.user.email || userProfile.email,
+      avatar: session.user.image || '/images/avatar-placeholder.svg',
+      // Sử dụng thông tin bổ sung từ session nếu có
+      phone: session.user.phone || userProfile.phone,
+      memberSince: session.user.memberSince || userProfile.memberSince,
+    };
 
-      // Kiểm tra xem có thông tin đã lưu trong localStorage không
-      try {
-        const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
-        if (savedProfile) {
-          const parsedProfile = JSON.parse(savedProfile);
+    // Kiểm tra xem có thông tin đã lưu trong localStorage không
+    try {
+      const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
+      if (savedProfile) {
+        const parsedProfile = JSON.parse(savedProfile);
 
-          // Nếu session có customName = true, ưu tiên sử dụng name từ session
-          if (session.user.customName) {
-            setProfile({
-              ...updatedProfile,
-              // Lấy một số thông tin từ localStorage nếu cần
-              phone: parsedProfile.phone || updatedProfile.phone,
-            });
-            console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
-          } else {
-            // Ngược lại, kết hợp thông tin từ localStorage và session
-            setProfile({
-              ...updatedProfile,
-              ...parsedProfile,
-              email: session.user.email || updatedProfile.email,
-              avatar: session.user.image || updatedProfile.avatar
-            });
-            console.log('Đã tải thông tin từ localStorage:', parsedProfile);
-          }
+        // Nếu session có customName = true, ưu tiên sử dụng name từ session
+        if (session.user.customName) {
+          setProfile({
+            ...updatedProfile,
+            // Lấy một số thông tin từ localStorage nếu cần
+            phone: parsedProfile.phone || updatedProfile.phone,
+          });
+          console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
         } else {
-          // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
-          setProfile(updatedProfile);
-          console.log('Đã tải thông tin từ session');
+          // Ngược lại, kết hợp thông tin từ localStorage và session
+          setProfile({
+            ...updatedProfile,
+            ...parsedProfile,
+            email: session.user.email || updatedProfile.email,
+            avatar: session.user.image || updatedProfile.avatar
+          });
+          console.log('Đã tải thông tin từ localStorage:', parsedProfile);
         }
-
-        // Tải cài đặt thông báo từ localStorage
-        const savedNotificationSettings = localStorage.getItem(`notification_settings_${session.user.email}`);
-        if (savedNotificationSettings) {
-          try {
-            const parsedSettings = JSON.parse(savedNotificationSettings);
-            setNotificationSettings(parsedSettings);
-            console.log('Đã tải cài đặt thông báo:', parsedSettings);
-          } catch (error) {
-            console.error('Lỗi khi parse cài đặt thông báo:', error);
-          }
-        }
-
-        // Fetch real purchase history from API và localStorage
-        (async () => {
-          try {
-            // Lấy dữ liệu sản phẩm để có thông tin originalPrice chính xác
-            const productsRes = await fetch('/api/products', { cache: 'no-store' });
-            let productsData = [];
-            if (productsRes.ok) {
-              const data = await productsRes.json();
-              productsData = data.products || [];
-            }
-
-            // Lấy đơn hàng từ localStorage
-            const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
-            
-            // Chuyển đổi format cho component
-            const convertedOrders = localOrders.map((order: any) => ({
-              id: order.id,
-              date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
-              total: order.totalAmount,
-              status: order.status,
-              items: order.items.map((item: any) => {
-                // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
-                const productData = productsData.find((p: any) => p.id === item.productId);
-                const originalPrice = productData?.versions?.[0]?.originalPrice || 
-                                    productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
-                                    item.originalPrice || // Giữ originalPrice từ localStorage nếu có
-                                    500000; // fallback cuối cùng
-
-                // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
-                let duration = '1month'; // Mặc định
-                if (productData?.optionDurations && item.productOption) {
-                  duration = productData.optionDurations[item.productOption] || '1month';
-                } else if (productData?.optionDurations && productData.defaultProductOption) {
-                  duration = productData.optionDurations[productData.defaultProductOption] || '1month';
-                }
-                
-                const purchaseDate = new Date(order.createdAt);
-                const expiryDate = calculateExpiryDate(purchaseDate, duration);
-
-                return {
-                  id: item.productId,
-                  name: item.productName,
-                  version: 'Premium',
-                  price: item.price,
-                  originalPrice: originalPrice,
-                  licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                  expiryDate: expiryDate,
-                };
-              }),
-              couponDiscount: order.couponDiscount
-            }));
-            
-            // Sắp xếp theo ngày mới nhất
-            convertedOrders.sort((a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
-            
-            setPurchaseHistory(convertedOrders);
-            console.log('Orders from localStorage:', convertedOrders);
-          } catch (err) {
-            console.error('Error fetching purchase history:', err);
-            // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
-            try {
-              // Vẫn cần lấy dữ liệu sản phẩm cho fallback
-              const productsRes = await fetch('/api/products', { cache: 'no-store' });
-              let productsData = [];
-              if (productsRes.ok) {
-                const data = await productsRes.json();
-                productsData = data.products || [];
-              }
-
-              const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
-              const convertedOrders = localOrders.map((order: any) => ({
-                id: order.id,
-                date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
-                total: order.totalAmount,
-                status: order.status,
-                items: order.items.map((item: any) => {
-                  // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
-                  const productData = productsData.find((p: any) => p.id === item.productId);
-                  const originalPrice = productData?.versions?.[0]?.originalPrice || 
-                                      productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
-                                      item.originalPrice || // Giữ originalPrice từ localStorage nếu có
-                                      500000; // fallback cuối cùng
-
-                  // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
-                  let duration = '1month'; // Mặc định
-                  if (productData?.optionDurations && item.productOption) {
-                    duration = productData.optionDurations[item.productOption] || '1month';
-                  } else if (productData?.optionDurations && productData.defaultProductOption) {
-                    duration = productData.optionDurations[productData.defaultProductOption] || '1month';
-                  }
-                  
-                  const purchaseDate = new Date(order.createdAt);
-                  const expiryDate = calculateExpiryDate(purchaseDate, duration);
-
-                  return {
-                    id: item.productId,
-                    name: item.productName,
-                    version: 'Premium',
-                    price: item.price,
-                    originalPrice: originalPrice,
-                    licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                    expiryDate: expiryDate,
-                  };
-                }),
-                couponDiscount: order.couponDiscount
-              }));
-              setPurchaseHistory(convertedOrders);
-            } catch (localErr) {
-              console.error('Error reading from localStorage:', localErr);
-              setPurchaseHistory([]);
-            }
-          } finally {
-            setIsLoading(false);
-          }
-        })();
-
-      } catch (error) {
-        console.error('Lỗi khi đọc từ localStorage:', error);
-        // Fallback to session data
+      } else {
+        // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
         setProfile(updatedProfile);
-        setIsLoading(false);
+        console.log('Đã tải thông tin từ session');
       }
+
+      // Tải cài đặt thông báo từ localStorage
+      const savedNotificationSettings = localStorage.getItem(`notification_settings_${session.user.email}`);
+      if (savedNotificationSettings) {
+        try {
+          const parsedSettings = JSON.parse(savedNotificationSettings);
+          setNotificationSettings(parsedSettings);
+          console.log('Đã tải cài đặt thông báo:', parsedSettings);
+        } catch (error) {
+          console.error('Lỗi khi parse cài đặt thông báo:', error);
+        }
+      }
+
+      // Fetch real purchase history from API và localStorage
+      (async () => {
+        try {
+          // Tự động kiểm tra và khôi phục dữ liệu nếu bị mất
+          if (session.user.email) {
+            LocalStorageBackup.checkAndRestore(session.user.email);
+          }
+
+          // Lấy dữ liệu sản phẩm để có thông tin originalPrice chính xác
+          const productsRes = await fetch('/api/products', { cache: 'no-store' });
+          let productsData = [];
+          if (productsRes.ok) {
+            const data = await productsRes.json();
+            productsData = data.products || [];
+          }
+
+          // Lấy đơn hàng từ localStorage
+          const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
+          console.log('Raw localOrders:', localOrders);
+          
+          // Nếu có dữ liệu orders, tự động backup
+          if (localOrders.length > 0 && session.user.email) {
+            LocalStorageBackup.autoBackup(session.user.email);
+          }
+
+          // Chuyển đổi format cho component
+          const convertedOrders = localOrders.map((order: any) => ({
+            id: order.id,
+            date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
+            total: order.totalAmount,
+            status: order.status,
+            items: order.items.map((item: any) => {
+              // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
+              const productData = productsData.find((p: any) => p.id === item.productId);
+              const originalPrice = productData?.versions?.[0]?.originalPrice || 
+                                  productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
+                                  item.originalPrice || // Giữ originalPrice từ localStorage nếu có
+                                  500000; // fallback cuối cùng
+
+              // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
+              let duration = '1month'; // Mặc định
+              if (productData?.optionDurations && item.productOption) {
+                duration = productData.optionDurations[item.productOption] || '1month';
+              } else if (productData?.optionDurations && productData.defaultProductOption) {
+                duration = productData.optionDurations[productData.defaultProductOption] || '1month';
+              }
+              
+              const purchaseDate = new Date(order.createdAt);
+              const expiryDate = calculateExpiryDate(purchaseDate, duration);
+
+              return {
+                id: item.productId,
+                name: item.productName,
+                version: 'Premium',
+                price: item.price,
+                originalPrice: originalPrice,
+                licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                expiryDate: expiryDate,
+              };
+            }),
+            couponDiscount: order.couponDiscount
+          }));
+          
+          // Sắp xếp theo ngày mới nhất
+          convertedOrders.sort((a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
+          
+          setPurchaseHistory(convertedOrders);
+          console.log('Final converted orders:', convertedOrders);
+        } catch (err) {
+          console.error('Error fetching purchase history:', err);
+          setPurchaseHistory([]);
+        } finally {
+          setIsLoading(false);
+        }
+      })();
+
+    } catch (error) {
+      console.error('Lỗi khi đọc từ localStorage:', error);
+      // Fallback to session data
+      setProfile(updatedProfile);
+      setIsLoading(false);
     }
   }, [status, router, session]);
 
@@ -489,6 +452,141 @@ export default function AccountPage() {
     } catch (error) {
       console.error('Lỗi khi lưu cài đặt:', error);
       alert('Có lỗi xảy ra khi lưu cài đặt. Vui lòng thử lại.');
+    }
+  };
+
+  // Hàm debug localStorage để kiểm tra dữ liệu
+  const handleDebugLocalStorage = () => {
+    console.log('=== DEBUG LOCALSTORAGE ===');
+    console.log('Current session:', session);
+    
+    if (!session?.user?.email) {
+      console.log('No user email in session');
+      return;
+    }
+
+    const userEmail = session.user.email;
+    const orderKey = `orders_${userEmail}`;
+    
+    // Kiểm tra tất cả keys trong localStorage
+    const allKeys = Object.keys(localStorage);
+    console.log('All localStorage keys:', allKeys);
+    
+    // Tìm tất cả keys liên quan đến user
+    const userKeys = allKeys.filter(key => key.includes(userEmail));
+    console.log('User related keys:', userKeys);
+    
+    // Tìm tất cả keys liên quan đến orders
+    const orderKeys = allKeys.filter(key => key.includes('orders_'));
+    console.log('Order related keys:', orderKeys);
+    
+    // Kiểm tra dữ liệu orders của user hiện tại
+    const orderData = localStorage.getItem(orderKey);
+    console.log(`Data for key "${orderKey}":`, orderData);
+    
+    if (orderData) {
+      try {
+        const parsedOrders = JSON.parse(orderData);
+        console.log('Parsed orders:', parsedOrders);
+        console.log('Number of orders:', parsedOrders.length);
+      } catch (e) {
+        console.error('Error parsing order data:', e);
+      }
+    }
+    
+    // Thông báo cho user
+    alert(`Debug info logged to console. \n\nUser: ${userEmail}\nOrder key: ${orderKey}\nHas data: ${!!orderData}\n\nCheck console for details.`);
+  };
+
+  // Hàm khôi phục dữ liệu mẫu cho testing
+  const handleRestoreTestData = () => {
+    if (!session?.user?.email) {
+      alert('Vui lòng đăng nhập trước!');
+      return;
+    }
+
+    const testOrderData = [
+      {
+        id: `XL-${Date.now()}`,
+        userId: session.user.email,
+        userName: session.user.name || 'Test User',
+        userEmail: session.user.email,
+        items: [{
+          productId: 'chatgpt',
+          productName: 'ChatGPT',
+          quantity: 1,
+          price: 149000,
+          originalPrice: 500000,
+          image: '/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png',
+          productOption: 'Full - Dùng riêng - 1 Tháng'
+        }],
+        totalAmount: 149000,
+        couponDiscount: 0,
+        status: 'completed',
+        paymentMethod: 'online',
+        paymentStatus: 'paid',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        transactionId: `TEST-${Date.now()}`,
+      }
+    ];
+
+    const orderKey = `orders_${session.user.email}`;
+    localStorage.setItem(orderKey, JSON.stringify(testOrderData));
+    
+    alert('Đã khôi phục dữ liệu test. Vui lòng refresh trang!');
+    window.location.reload();
+  };
+
+  // Hàm backup dữ liệu
+  const handleBackupData = () => {
+    if (!session?.user?.email) {
+      alert('Vui lòng đăng nhập trước!');
+      return;
+    }
+
+    try {
+      LocalStorageBackup.exportUserData(session.user.email);
+    } catch (error) {
+      console.error('Error during backup:', error);
+      alert('Có lỗi xảy ra khi backup dữ liệu!');
+    }
+  };
+
+  // Hàm import dữ liệu
+  const handleImportData = async () => {
+    if (!session?.user?.email) {
+      alert('Vui lòng đăng nhập trước!');
+      return;
+    }
+
+    try {
+      const success = await LocalStorageBackup.importUserData();
+      if (success) {
+        alert('Import dữ liệu thành công! Trang sẽ được refresh...');
+        window.location.reload();
+      } else {
+        alert('Import dữ liệu thất bại!');
+      }
+    } catch (error) {
+      console.error('Error during import:', error);
+      alert('Có lỗi xảy ra khi import dữ liệu!');
+    }
+  };
+
+  // Hàm tự động khôi phục dữ liệu
+  const handleAutoRestore = () => {
+    if (!session?.user?.email) {
+      alert('Vui lòng đăng nhập trước!');
+      return;
+    }
+
+    const restored = LocalStorageBackup.checkAndRestore(session.user.email);
+    if (restored) {
+      alert('Đã tìm thấy và khôi phục dữ liệu backup! Trang sẽ được refresh...');
+      window.location.reload();
+    } else {
+      alert('Không tìm thấy dữ liệu backup nào để khôi phục.');
     }
   };
 
@@ -1274,6 +1372,68 @@ export default function AccountPage() {
           </div>
         </div>
       </section>
+
+      {/* Debug Section - chỉ hiển thị khi cần thiết */}
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+        <h2 className="text-xl font-bold text-red-800 mb-4">🔧 Debug Tools (Khắc phục sự cố)</h2>
+        <p className="text-red-700 mb-4 text-sm">
+          Nếu bạn gặp vấn đề mất dữ liệu sản phẩm đã mua, hãy sử dụng các công cụ dưới đây:
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <button
+            onClick={handleDebugLocalStorage}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+          >
+            🔍 Kiểm tra dữ liệu localStorage
+          </button>
+          
+          <button
+            onClick={handleRestoreTestData}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
+          >
+            🔄 Khôi phục dữ liệu mẫu
+          </button>
+
+          <button
+            onClick={handleAutoRestore}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm"
+          >
+            🔮 Tự động khôi phục
+          </button>
+
+          <button
+            onClick={handleBackupData}
+            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm"
+          >
+            💾 Backup dữ liệu
+          </button>
+
+          <button
+            onClick={handleImportData}
+            className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors text-sm"
+          >
+            📁 Import dữ liệu
+          </button>
+        </div>
+        
+        <div className="mt-4 text-xs text-red-600">
+          <p><strong>Hướng dẫn:</strong></p>
+          <ul className="list-disc list-inside mt-2 space-y-1">
+            <li>Nhấn "Kiểm tra dữ liệu" để xem thông tin debug trong console</li>
+            <li>Nhấn "Khôi phục dữ liệu mẫu" để thêm một đơn hàng test</li>
+            <li>Nhấn "Tự động khôi phục" để tìm và restore backup tự động</li>
+            <li>Nhấn "Backup dữ liệu" để tải xuống file backup</li>
+            <li>Nhấn "Import dữ liệu" để khôi phục từ file backup</li>
+            <li>Mở Developer Tools (F12) để xem console logs</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Footer text */}
+      <div className="text-center text-gray-600 text-sm mt-8">
+        <p>Cần hỗ trợ? <Link href="/contact" className="text-primary-600 hover:underline">Liên hệ chúng tôi</Link></p>
+      </div>
     </div>
-  )
+  );
 } 
