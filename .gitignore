@@ -9824,3 +9824,14 @@ test-cart.html
 .next/static/css/app/layout-*.css
 .next/static/main-app-*.js
 .next/static/development/*
+# Runtime files generated during development
+/logs/
+logs/install.log
+logs/server.log
+server_status.tmp
+
+# Auto Fix and Start runtime files
+*.temp
+*.tmp
+npm-cache/
+.node_repl_history 
