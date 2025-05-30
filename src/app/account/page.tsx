@@ -320,65 +320,41 @@ export default function AccountPage() {
   // Hàm xử lý khi thay đổi thông tin
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProfile(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setSaveSuccess(false);
+    setProfile(prev => ({ ...prev, [name]: value }));
   };
 
   // Hàm xử lý khi submit form cập nhật thông tin
-  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-
+    
     try {
-      // Lưu thông tin vào localStorage
+      // Lưu vào localStorage
       if (session?.user?.email) {
-        localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify({
-          name: profile.name,
-          phone: profile.phone,
-          memberSince: profile.memberSince,
-          // Không lưu email và avatar vì sẽ lấy từ session
-        }));
-
-        // Cập nhật thông tin trong session (trong môi trường thực tế sẽ gọi API)
-        /* Trong thực tế, bạn cần gọi API để cập nhật thông tin người dùng:
-        const response = await fetch('/api/user/update', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            email: session.user.email,
-            name: profile.name,
-            phone: profile.phone 
-          })
-        });
-        const data = await response.json();
-        */
-
-        // Cập nhật session để khi refresh trang sẽ giữ nguyên thông tin
+        localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify(profile));
+      }
+      
+      // Cập nhật session nếu cần (chỉ cập nhật name nếu có thay đổi)
+      if (session?.user && profile.name !== session.user.name) {
         await updateSession({
-          name: profile.name,
-          phone: profile.phone
-        });
-
-        console.log('Đã lưu thông tin vào localStorage và cập nhật session:', {
-          name: profile.name,
-          phone: profile.phone
+          ...session,
+          user: {
+            ...session.user,
+            name: profile.name,
+            customName: true // Đánh dấu rằng user đã tùy chỉnh tên
+          }
         });
       }
-
-      setSaving(false);
+      
       setSaveSuccess(true);
-
-      // Tự động ẩn thông báo thành công sau 3 giây
-      setTimeout(() => {
-        setSaveSuccess(false);
-      }, 3000);
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
-      console.error('Lỗi khi lưu thông tin:', error);
+      console.error('Lỗi khi cập nhật profile:', error);
+      alert('Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại.');
+    } finally {
       setSaving(false);
-      // Xử lý thông báo lỗi ở đây nếu cần
     }
   };
 
@@ -471,6 +447,48 @@ export default function AccountPage() {
           }
         }
       }
+    }
+  };
+
+  // Hàm xử lý form support
+  const handleSupportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Reset form
+      setSupportProduct('');
+      setSupportTitle('');
+      setSupportDescription('');
+      setSupportSuccess(true);
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => setSupportSuccess(false), 5000);
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu hỗ trợ:', error);
+      alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại.');
+    }
+  };
+
+  // Hàm xử lý cài đặt thông báo
+  const handleNotificationSettingsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Lưu vào localStorage
+      if (session?.user?.email) {
+        localStorage.setItem(`notification_settings_${session.user.email}`, JSON.stringify(notificationSettings));
+      }
+      
+      setSettingsSaved(true);
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => setSettingsSaved(false), 3000);
+    } catch (error) {
+      console.error('Lỗi khi lưu cài đặt:', error);
+      alert('Có lỗi xảy ra khi lưu cài đặt. Vui lòng thử lại.');
     }
   };
 
@@ -618,7 +636,7 @@ export default function AccountPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    Tải xuống
+                    Tài xuống
                   </a>
                   <a href="#support" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -935,6 +953,322 @@ export default function AccountPage() {
                     <p className="text-gray-600 mb-4 max-w-md mx-auto">Bạn chưa có giấy phép sản phẩm nào. Hãy mua sản phẩm để nhận giấy phép.</p>
                   </div>
                 )}
+              </div>
+
+              {/* Phần Tài xuống */}
+              <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Tài xuống</h2>
+
+                {hasProducts ? (
+                  <div className="space-y-4">
+                    {purchaseHistory.flatMap(order => 
+                      order.items.map((item, index) => (
+                        <div key={`download-${order.id}-${item.id}-${index}`} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                          <div className="flex items-center justify-between mb-3">
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
+                              <p className="text-sm text-gray-600">{item.version}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm text-gray-600">Ngày mua: {order.date}</p>
+                              <p className="text-sm text-gray-600">Hạn: {item.expiryDate}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-2">
+                            <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                              </svg>
+                              Tải Windows
+                            </button>
+                            <button className="bg-gray-600 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                              </svg>
+                              Tải macOS
+                            </button>
+                            <button className="bg-orange-600 text-white px-4 py-2 rounded-md text-sm hover:bg-orange-700 transition flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              Hướng dẫn
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Không có tệp tải xuống</h3>
+                    <p className="text-gray-600 mb-4 max-w-md mx-auto">Bạn chưa có sản phẩm nào để tải xuống. Hãy mua sản phẩm để có thể tải xuống.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Phần Hỗ trợ kỹ thuật */}
+              <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Hỗ trợ kỹ thuật</h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Form yêu cầu hỗ trợ */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Gửi yêu cầu hỗ trợ</h3>
+                    
+                    {supportSuccess && (
+                      <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
+                        Yêu cầu hỗ trợ đã được gửi thành công! Chúng tôi sẽ phản hồi trong vòng 24h.
+                      </div>
+                    )}
+
+                    <form onSubmit={handleSupportSubmit} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Sản phẩm cần hỗ trợ</label>
+                        <select 
+                          value={supportProduct}
+                          onChange={(e) => setSupportProduct(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          required
+                        >
+                          <option value="">Chọn sản phẩm</option>
+                          {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                            <option key={index} value={item.name}>{item.name} - {item.version}</option>
+                          ))}
+                          <option value="general">Vấn đề chung</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề</label>
+                        <input
+                          type="text"
+                          value={supportTitle}
+                          onChange={(e) => setSupportTitle(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          placeholder="Mô tả ngắn gọn vấn đề"
+                          required
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả chi tiết</label>
+                        <textarea
+                          value={supportDescription}
+                          onChange={(e) => setSupportDescription(e.target.value)}
+                          rows={4}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."
+                          required
+                        />
+                      </div>
+                      
+                      <button
+                        type="submit"
+                        className="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition"
+                      >
+                        Gửi yêu cầu hỗ trợ
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* Thông tin liên hệ */}
+                  <div className="space-y-6">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-blue-800 mb-4">Liên hệ trực tiếp</h3>
+                      <div className="space-y-3">
+                        <div className="flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          <span className="text-blue-700">xlab.rnd@gmail.com</span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span className="text-blue-700">1900.xxxx</span>
+                        </div>
+                        <div className="flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-blue-700">24/7 Support</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-green-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-green-800 mb-4">FAQ phổ biến</h3>
+                      <div className="space-y-2">
+                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                          • Cách kích hoạt giấy phép
+                        </Link>
+                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                          • Chuyển đổi thiết bị
+                        </Link>
+                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                          • Cài đặt và sử dụng
+                        </Link>
+                        <Link href="/support" className="block text-green-700 hover:text-green-900 hover:underline">
+                          • Khắc phục sự cố
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Phần Cài đặt tài khoản */}
+              <div id="settings" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Cài đặt tài khoản</h2>
+
+                <div className="space-y-6">
+                  {/* Cài đặt thông báo */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Cài đặt thông báo</h3>
+                    
+                    {settingsSaved && (
+                      <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
+                        Cài đặt đã được lưu thành công!
+                      </div>
+                    )}
+
+                    <form onSubmit={handleNotificationSettingsSubmit} className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Email thông báo</label>
+                          <p className="text-sm text-gray-500">Nhận thông báo qua email</p>
+                        </div>
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={notificationSettings.email}
+                            onChange={(e) => setNotificationSettings({...notificationSettings, email: e.target.checked})}
+                            className="sr-only"
+                          />
+                          <div 
+                            onClick={() => setNotificationSettings({...notificationSettings, email: !notificationSettings.email})}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.email ? 'bg-primary-600' : 'bg-gray-300'}`}
+                          >
+                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.email ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Cập nhật sản phẩm</label>
+                          <p className="text-sm text-gray-500">Thông báo về phiên bản mới</p>
+                        </div>
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={notificationSettings.productUpdates}
+                            onChange={(e) => setNotificationSettings({...notificationSettings, productUpdates: e.target.checked})}
+                            className="sr-only"
+                          />
+                          <div 
+                            onClick={() => setNotificationSettings({...notificationSettings, productUpdates: !notificationSettings.productUpdates})}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.productUpdates ? 'bg-primary-600' : 'bg-gray-300'}`}
+                          >
+                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.productUpdates ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Khuyến mại</label>
+                          <p className="text-sm text-gray-500">Thông báo về ưu đãi đặc biệt</p>
+                        </div>
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={notificationSettings.promotions}
+                            onChange={(e) => setNotificationSettings({...notificationSettings, promotions: e.target.checked})}
+                            className="sr-only"
+                          />
+                          <div 
+                            onClick={() => setNotificationSettings({...notificationSettings, promotions: !notificationSettings.promotions})}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.promotions ? 'bg-primary-600' : 'bg-gray-300'}`}
+                          >
+                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.promotions ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700">Nhắc nhở hết hạn</label>
+                          <p className="text-sm text-gray-500">Thông báo trước khi giấy phép hết hạn</p>
+                        </div>
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={notificationSettings.expiryReminders}
+                            onChange={(e) => setNotificationSettings({...notificationSettings, expiryReminders: e.target.checked})}
+                            className="sr-only"
+                          />
+                          <div 
+                            onClick={() => setNotificationSettings({...notificationSettings, expiryReminders: !notificationSettings.expiryReminders})}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.expiryReminders ? 'bg-primary-600' : 'bg-gray-300'}`}
+                          >
+                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.expiryReminders ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                        >
+                          Lưu cài đặt
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  {/* Quản lý tài khoản */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Quản lý tài khoản</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                        <div>
+                          <span className="text-sm font-medium text-gray-700">Xuất dữ liệu tài khoản</span>
+                          <p className="text-sm text-gray-500">Tải xuống toàn bộ dữ liệu của bạn</p>
+                        </div>
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm">
+                          Xuất dữ liệu
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between py-3 border-b border-gray-200">
+                        <div>
+                          <span className="text-sm font-medium text-gray-700">Hủy kích hoạt tài khoản</span>
+                          <p className="text-sm text-gray-500">Vô hiệu hóa tạm thời tài khoản của bạn</p>
+                        </div>
+                        <button className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition text-sm">
+                          Hủy kích hoạt
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between py-3">
+                        <div>
+                          <span className="text-sm font-medium text-red-700">Xóa tài khoản</span>
+                          <p className="text-sm text-gray-500">Xóa vĩnh viễn tài khoản và toàn bộ dữ liệu</p>
+                        </div>
+                        <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm">
+                          Xóa tài khoản
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
