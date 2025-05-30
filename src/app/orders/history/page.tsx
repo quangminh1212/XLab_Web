@@ -153,11 +153,9 @@ export default function OrderHistoryPage() {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: '2-digit'
     });
   };
 
@@ -199,7 +197,15 @@ export default function OrderHistoryPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-8">Lịch sử đơn hàng của bạn</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Lịch sử mua hàng</h1>
+        <Link 
+          href="/orders/history" 
+          className="text-sm text-blue-600 hover:text-blue-800"
+        >
+          Xem tất cả đơn hàng
+        </Link>
+      </div>
 
       {orders.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
@@ -219,72 +225,38 @@ export default function OrderHistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-1">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                <div className="flex flex-wrap justify-between items-center">
-                  <div>
-                    <span className="text-sm text-gray-500">Mã đơn hàng:</span>
-                    <span className="ml-2 font-medium">{order.id}</span>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-500">Ngày đặt:</span>
-                    <span className="ml-2">{formatDate(order.createdAt)}</span>
-                  </div>
-                  <div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                      {getStatusName(order.status)}
+            <div key={order.id} className="bg-white rounded border shadow-sm hover:shadow-md transition-shadow">
+              <div className="px-4 py-3">
+                <div className="flex items-center justify-between text-sm">
+                  {/* Thông tin đơn hàng - bên trái */}
+                  <div className="flex items-center space-x-4 flex-1">
+                    <span className="font-medium text-gray-900 min-w-[120px]">{order.id}</span>
+                    <span className="text-gray-500">{formatDate(order.createdAt)}</span>
+                    <span className="text-gray-700 flex-1">
+                      {order.items.map((item, index) => (
+                        <span key={index}>
+                          {item.productName}
+                          {index < order.items.length - 1 ? ', ' : ''}
+                        </span>
+                      ))}
                     </span>
                   </div>
-                </div>
-              </div>
-              
-              <div className="px-6 py-4">
-                <div className="divide-y divide-gray-200">
-                  {order.items.map((item, index) => (
-                    <div key={index} className="py-3 flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                          <Image
-                            src={getProductImage(item.productId, item.productName)}
-                            alt={item.productName}
-                            fill
-                            className="object-contain"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = '/images/placeholder/product-placeholder.jpg';
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <h3 className="font-medium">{item.productName}</h3>
-                          <p className="text-sm text-gray-500">Số lượng: {item.quantity}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">{formatCurrency(item.price)}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">Tổng cộng:</span>
-                  <span className="font-bold text-xl text-primary-600">{formatCurrency(order.totalAmount)}</span>
-                </div>
-                <div className="mt-4 flex justify-end">
-                  <Link 
-                    href={`/orders/${order.id}`}
-                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium"
-                  >
-                    Xem chi tiết
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </Link>
+                  
+                  {/* Trạng thái và tổng tiền - bên phải */}
+                  <div className="flex items-center space-x-3">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(order.status)}`}>
+                      {getStatusName(order.status)}
+                    </span>
+                    <span className="font-bold text-primary-600 min-w-[100px] text-right">{formatCurrency(order.totalAmount)}</span>
+                    <Link 
+                      href={`/orders/${order.id}`}
+                      className="text-primary-600 hover:text-primary-800 font-medium text-xs"
+                    >
+                      Chi tiết →
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
