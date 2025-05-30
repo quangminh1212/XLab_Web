@@ -2,6 +2,46 @@
 
 Dự án web bán hàng và phân phối phần mềm XLab.
 
+## Quick Start (Khởi chạy nhanh)
+
+### Với Windows - Chạy bằng 1 lệnh
+
+Dự án đã có sẵn scripts tự động cài đặt dependencies và chạy server:
+
+**Cách 1: Dùng file .bat**
+```bash
+run.bat
+```
+
+**Cách 2: Dùng PowerShell**
+```powershell
+.\run.ps1
+```
+
+Cả hai scripts sẽ tự động:
+- ✅ Kiểm tra và cài đặt `node_modules` nếu chưa có
+- 🔄 Cập nhật dependencies để đảm bảo mới nhất
+- 🚀 Khởi chạy development server
+- ❌ Hiển thị lỗi chi tiết nếu có vấn đề
+
+### Cách chạy thủ công
+
+Nếu muốn chạy từng bước:
+
+```bash
+# 1. Cài đặt dependencies
+npm install
+
+# 2. Chạy môi trường phát triển
+npm run dev
+
+# 3. Build cho production
+npm run build
+
+# 4. Chạy bản build
+npm start
+```
+
 ## Cấu trúc dự án
 
 Sau khi tái cấu trúc, dự án được tổ chức như sau:
