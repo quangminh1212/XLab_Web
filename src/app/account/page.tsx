@@ -206,67 +206,49 @@ export default function AccountPage() {
             // Lấy đơn hàng từ localStorage
             const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
             
-            // Lấy đơn hàng từ API
-            const res = await fetch('/api/orders/history', { cache: 'no-store' });
-            let apiOrders = [];
-            
-            if (res.ok) {
-              const data = await res.json();
-              apiOrders = data.orders || [];
-            }
-            
-            // Kết hợp dữ liệu từ localStorage và API, ưu tiên localStorage
-            const allOrders = [...localOrders];
-            
-            // Thêm các đơn hàng từ API nếu chưa có trong localStorage
-            apiOrders.forEach((apiOrder: any) => {
-              const exists = localOrders.some((localOrder: any) => localOrder.id === apiOrder.id);
-              if (!exists) {
-                // Chuyển đổi format từ API sang format component
-                const convertedOrder = {
-                  id: apiOrder.id,
-                  date: new Date(apiOrder.createdAt).toLocaleDateString('vi-VN'),
-                  total: apiOrder.totalAmount,
-                  status: apiOrder.status,
-                  items: apiOrder.items.map((item: any) => {
-                    // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
-                    const productData = productsData.find((p: any) => p.id === item.productId);
-                    const originalPrice = productData?.versions?.[0]?.originalPrice || 
-                                        productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
-                                        500000; // fallback
+            // Chuyển đổi format cho component
+            const convertedOrders = localOrders.map((order: any) => ({
+              id: order.id,
+              date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
+              total: order.totalAmount,
+              status: order.status,
+              items: order.items.map((item: any) => {
+                // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
+                const productData = productsData.find((p: any) => p.id === item.productId);
+                const originalPrice = productData?.versions?.[0]?.originalPrice || 
+                                    productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
+                                    item.originalPrice || // Giữ originalPrice từ localStorage nếu có
+                                    500000; // fallback cuối cùng
 
-                    // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
-                    let duration = '1month'; // Mặc định
-                    if (productData?.optionDurations && item.productOption) {
-                      duration = productData.optionDurations[item.productOption] || '1month';
-                    } else if (productData?.optionDurations && productData.defaultProductOption) {
-                      duration = productData.optionDurations[productData.defaultProductOption] || '1month';
-                    }
-                    
-                    const purchaseDate = new Date(apiOrder.createdAt);
-                    const expiryDate = calculateExpiryDate(purchaseDate, duration);
+                // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
+                let duration = '1month'; // Mặc định
+                if (productData?.optionDurations && item.productOption) {
+                  duration = productData.optionDurations[item.productOption] || '1month';
+                } else if (productData?.optionDurations && productData.defaultProductOption) {
+                  duration = productData.optionDurations[productData.defaultProductOption] || '1month';
+                }
+                
+                const purchaseDate = new Date(order.createdAt);
+                const expiryDate = calculateExpiryDate(purchaseDate, duration);
 
-                    return {
-                      id: item.productId,
-                      name: item.productName,
-                      version: 'Premium',
-                      price: item.price,
-                      originalPrice: originalPrice,
-                      licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                      expiryDate: expiryDate,
-                    };
-                  }),
-                  couponDiscount: apiOrder.couponDiscount
+                return {
+                  id: item.productId,
+                  name: item.productName,
+                  version: 'Premium',
+                  price: item.price,
+                  originalPrice: originalPrice,
+                  licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                  expiryDate: expiryDate,
                 };
-                allOrders.push(convertedOrder);
-              }
-            });
+              }),
+              couponDiscount: order.couponDiscount
+            }));
             
             // Sắp xếp theo ngày mới nhất
-            allOrders.sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
+            convertedOrders.sort((a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
             
-            setPurchaseHistory(allOrders);
-            console.log('Combined orders:', allOrders);
+            setPurchaseHistory(convertedOrders);
+            console.log('Orders from localStorage:', convertedOrders);
           } catch (err) {
             console.error('Error fetching purchase history:', err);
             // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
@@ -406,11 +388,6 @@ export default function AccountPage() {
     return dateString;
   };
 
-  // Thêm liên kết đến trang đơn hàng
-  const goToOrdersPage = () => {
-    router.push('/orders');
-  };
-
   // Tính tổng số tiền đã chi
   const totalSpent = purchaseHistory.reduce((sum, order) => {
     // Xử lý các trường hợp total có thể là totalAmount hoặc total
@@ -518,7 +495,7 @@ export default function AccountPage() {
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Tài khoản của tôi</h1>
           <p className="text-xl max-w-3xl">
-            Quản lý thông tin cá nhân, giấy phép và lịch sử mua hàng của bạn.
+            Quản lý thông tin cá nhân, sản phẩm đã mua và giấy phép của bạn.
           </p>
         </div>
       </section>
@@ -636,12 +613,6 @@ export default function AccountPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                     Quản lý giấy phép
-                  </a>
-                  <a href="#orders" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                    Lịch sử mua hàng
                   </a>
                   <a href="#downloads" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -965,91 +936,6 @@ export default function AccountPage() {
                   </div>
                 )}
               </div>
-
-              {/* Phần Lịch sử mua hàng */}
-              <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">
-                  Lịch sử mua hàng
-                  {hasProducts && (
-                    <button 
-                      onClick={goToOrdersPage}
-                      className="ml-4 text-sm font-medium text-primary-600 hover:text-primary-700"
-                    >
-                      Xem tất cả đơn hàng
-                    </button>
-                  )}
-                </h2>
-
-                {hasProducts ? (
-                  <div className="space-y-2">
-                    {purchaseHistory.map((order, orderIndex) => (
-                      <div key={orderIndex} className="border rounded-lg overflow-hidden">
-                        {/* Dòng 1: Tất cả thông tin chính */}
-                        <div className="p-3 flex justify-between items-center">
-                          <div className="flex items-center space-x-4 flex-1">
-                            <span className="font-bold text-sm">#{order.id}</span>
-                            <span className="text-xs text-gray-600">{order.date}</span>
-                            <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-800">{order.status}</span>
-                            <div className="flex items-center space-x-2">
-                              {order.items.map((item, itemIndex) => (
-                                <span key={itemIndex} className="text-sm">
-                                  <span className="font-medium">{item.name}</span>
-                                  <span className="text-gray-600 mx-1">•</span>
-                                  <span className="text-primary-600">{formatCurrency(item.price)}</span>
-                                  <button 
-                                    onClick={() => handleDeletePurchase(item.id, order.id)}
-                                    className="ml-2 text-red-500 hover:text-red-700 text-xs"
-                                    title="Xóa"
-                                  >
-                                    ✕
-                                  </button>
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-3 text-sm">
-                            <span className="text-green-600 font-medium">
-                              -{formatCurrency(order.items.reduce((sum, item) => sum + (item.originalPrice - item.price), 0) + (order.couponDiscount || 0))}
-                            </span>
-                            <span className="font-bold">{formatCurrency(order.total)}</span>
-                            <Link 
-                              href={`/orders/${order.id}`}
-                              className="text-primary-600 hover:text-primary-800 text-xs"
-                            >
-                              Chi tiết
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <div className="text-center mt-4">
-                      <button 
-                        onClick={goToOrdersPage}
-                        className="text-primary-600 hover:text-primary-700 text-sm font-medium"
-                      >
-                        Xem tất cả đơn hàng →
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-10 bg-gray-50 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có đơn hàng nào</h3>
-                    <p className="text-gray-600 mb-6 max-w-md mx-auto">Bạn chưa thực hiện giao dịch nào. Hãy khám phá sản phẩm của chúng tôi.</p>
-                    <Link href="/products" className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                      Mua sắm ngay
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              {/* Phần Lịch sử mua hàng đã được xóa để tránh trùng lặp với Sản phẩm đã mua */}
             </div>
           </div>
         </div>
