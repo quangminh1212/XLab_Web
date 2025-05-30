@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -8,6 +8,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
+import Avatar from '@/components/common/Avatar';
 
 const Header = () => {
   const pathname = usePathname();
@@ -279,13 +280,11 @@ const Header = () => {
                   aria-expanded={isProfileOpen}
                   aria-haspopup="true"
                 >
-                  <Image
-                    src={session.user?.image || "/images/avatar-placeholder.svg"}
+                  <Avatar
+                    src={session.user?.image}
                     alt={session.user?.name || "User"}
-                    width={30}
-                    height={30}
-                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 rounded-full"
-                    unoptimized={true}
+                    size="md"
+                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
                   />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

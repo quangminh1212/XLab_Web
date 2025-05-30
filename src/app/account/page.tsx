@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Avatar from '@/components/common/Avatar'
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -15,7 +16,6 @@ interface OrderItem {
   originalPrice: number;
   licenseKey: string;
   expiryDate: string;
-  updates: boolean;
 }
 
 interface Order {
@@ -188,7 +188,6 @@ export default function AccountPage() {
                       originalPrice: originalPrice,
                       licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
                       expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
-                      updates: true
                     };
                   }),
                   couponDiscount: apiOrder.couponDiscount
@@ -236,7 +235,6 @@ export default function AccountPage() {
                     originalPrice: originalPrice,
                     licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
                     expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
-                    updates: true
                   };
                 }),
                 couponDiscount: order.couponDiscount
@@ -452,14 +450,11 @@ export default function AccountPage() {
               <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
-                    <Image
-                      src={session?.user?.image && !imageError ? session.user.image : '/images/avatar-placeholder.svg'}
+                    <Avatar
+                      src={session?.user?.image}
                       alt={profile.name}
-                      width={96}
-                      height={96}
-                      className="rounded-full object-cover"
-                      onError={() => setImageError(true)}
-                      unoptimized
+                      size="xl"
+                      className=""
                     />
                     <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full border-2 border-white flex items-center justify-center text-gray-600 cursor-pointer hover:bg-gray-100">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -478,7 +473,6 @@ export default function AccountPage() {
                             // Trong thực tế, bạn sẽ upload ảnh lên server ở đây
                             // Và cập nhật session và profile với URL mới
                             setProfile(prev => ({ ...prev, avatar: imageUrl }));
-                            setImageError(false);
                           }
                         }}
                       />
