@@ -1077,12 +1077,12 @@ export default function AccountPage() {
                     )}
 
                     <form onSubmit={handleNotificationSettingsSubmit} className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Email thông báo</label>
+                      <div className="flex items-center justify-between py-3">
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Email thông báo</label>
                           <p className="text-sm text-gray-500">Nhận thông báo qua email</p>
                         </div>
-                        <div className="relative">
+                        <div className="flex-shrink-0 ml-4">
                           <input
                             type="checkbox"
                             checked={notificationSettings.email}
@@ -1091,19 +1091,19 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, email: !notificationSettings.email})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.email ? 'bg-teal-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.email ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
-                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.email ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.email ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Cập nhật sản phẩm</label>
+                      <div className="flex items-center justify-between py-3 border-t border-gray-200">
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Cập nhật sản phẩm</label>
                           <p className="text-sm text-gray-500">Thông báo về phiên bản mới</p>
                         </div>
-                        <div className="relative">
+                        <div className="flex-shrink-0 ml-4">
                           <input
                             type="checkbox"
                             checked={notificationSettings.productUpdates}
@@ -1112,19 +1112,19 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, productUpdates: !notificationSettings.productUpdates})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.productUpdates ? 'bg-teal-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.productUpdates ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
-                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.productUpdates ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.productUpdates ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Khuyến mại</label>
+                      <div className="flex items-center justify-between py-3 border-t border-gray-200">
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Khuyến mại</label>
                           <p className="text-sm text-gray-500">Thông báo về ưu đãi đặc biệt</p>
                         </div>
-                        <div className="relative">
+                        <div className="flex-shrink-0 ml-4">
                           <input
                             type="checkbox"
                             checked={notificationSettings.promotions}
@@ -1133,19 +1133,19 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, promotions: !notificationSettings.promotions})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.promotions ? 'bg-teal-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.promotions ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
-                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.promotions ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.promotions ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700">Nhắc nhở hết hạn</label>
+                      <div className="flex items-center justify-between py-3 border-t border-gray-200">
+                        <div className="flex-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Nhắc nhở hết hạn</label>
                           <p className="text-sm text-gray-500">Thông báo trước khi giấy phép hết hạn</p>
                         </div>
-                        <div className="relative">
+                        <div className="flex-shrink-0 ml-4">
                           <input
                             type="checkbox"
                             checked={notificationSettings.expiryReminders}
@@ -1154,17 +1154,17 @@ export default function AccountPage() {
                           />
                           <div 
                             onClick={() => setNotificationSettings({...notificationSettings, expiryReminders: !notificationSettings.expiryReminders})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors ${notificationSettings.expiryReminders ? 'bg-teal-600' : 'bg-gray-300'}`}
+                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.expiryReminders ? 'bg-teal-600' : 'bg-gray-300'}`}
                           >
-                            <div className={`w-4 h-4 bg-white rounded-full transition-transform mt-1 ${notificationSettings.expiryReminders ? 'translate-x-6' : 'translate-x-1'}`}></div>
+                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.expiryReminders ? 'translate-x-6' : 'translate-x-1'}`}></div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="text-right">
+                      <div className="pt-4 border-t border-gray-200">
                         <button
                           type="submit"
-                          className="w-full bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
+                          className="w-full bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors duration-200"
                         >
                           Lưu cài đặt
                         </button>
