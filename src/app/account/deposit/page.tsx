@@ -63,7 +63,7 @@ export default function DepositPage() {
       const qrContent = `MB|${BANK_INFO.accountNumber}|${BANK_INFO.accountName}|0|${txId}|VND`;
       
       const qrUrl = await QRCode.toDataURL(qrContent, {
-        width: 256,
+        width: 320,
         margin: 2,
         color: {
           dark: '#0F766E', // teal-700
@@ -138,20 +138,20 @@ export default function DepositPage() {
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM19 13h-2v2h2v-2zM19 17h-2v2h2v-2zM17 13h-2v2h2v-2zM15 15h-2v2h2v-2zM17 17h-2v2h2v-2zM13 13h2v2h-2v-2zM13 17h2v2h-2v-2zM15 19h2v2h-2v-2zM13 19h2v2h-2v-2zM19 15h2v2h-2v-2zM21 13h2v2h-2v-2zM19 19h2v2h-2v-2z"/>
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Quét mã QR để chuyển khoản</h3>
+                  <h3 className="text-xl font-bold text-gray-900">Quét mã QR để chuyển khoản</h3>
                 </div>
                 
                 {/* QR Code */}
                 {qrCodeUrl && (
                   <div className="relative">
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 bg-gray-50">
-                      <div className="w-64 h-64 mx-auto bg-white border rounded-lg flex items-center justify-center">
-                        <img src={qrCodeUrl} alt="QR Code" className="w-56 h-56" />
+                    <div className="border-2 border-dashed border-teal-200 rounded-xl p-6 bg-gradient-to-br from-teal-50 to-emerald-50">
+                      <div className="w-80 h-80 mx-auto bg-white border-2 border-teal-100 rounded-xl flex items-center justify-center shadow-md">
+                        <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                       </div>
                     </div>
                   </div>
