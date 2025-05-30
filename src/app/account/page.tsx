@@ -447,6 +447,47 @@ export default function AccountPage() {
     router.push('/');
   };
 
+  // Hàm xóa sản phẩm đã mua
+  const handleDeletePurchase = (productId: string, orderId: string) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi danh sách đã mua?')) {
+      // Xóa từ localStorage
+      if (session?.user?.email) {
+        const savedPurchases = localStorage.getItem(`orders_${session.user.email}`);
+        if (savedPurchases) {
+          try {
+            const parsedPurchases = JSON.parse(savedPurchases);
+            const updatedPurchases = parsedPurchases.map((order: any) => {
+              if (order.id === orderId) {
+                return {
+                  ...order,
+                  items: order.items.filter((item: any) => item.id !== productId)
+                };
+              }
+              return order;
+            }).filter((order: any) => order.items.length > 0); // Xóa đơn hàng nếu không còn item nào
+            
+            localStorage.setItem(`orders_${session.user.email}`, JSON.stringify(updatedPurchases));
+            
+            // Cập nhật state
+            const updatedHistory = purchaseHistory.map(order => {
+              if (order.id === orderId) {
+                return {
+                  ...order,
+                  items: order.items.filter(item => item.id !== productId)
+                };
+              }
+              return order;
+            }).filter(order => order.items.length > 0);
+            
+            setPurchaseHistory(updatedHistory);
+          } catch (error) {
+            console.error('Lỗi khi xóa sản phẩm:', error);
+          }
+        }
+      }
+    }
+  };
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -1061,6 +1102,18 @@ export default function AccountPage() {
                               <div className="flex space-x-2">
                                 <button className="text-primary-600 hover:text-primary-900">Sao chép</button>
                                 <button className="text-blue-600 hover:text-blue-900">Gia hạn</button>
+                                <button 
+                                  onClick={() => {
+                                    // Tìm order chứa item này
+                                    const order = purchaseHistory.find(o => o.items.some(i => i.id === item.id));
+                                    if (order) {
+                                      handleDeletePurchase(item.id, order.id);
+                                    }
+                                  }}
+                                  className="text-red-600 hover:text-red-900"
+                                >
+                                  Xóa
+                                </button>
                               </div>
                             </td>
                           </tr>
@@ -1125,6 +1178,12 @@ export default function AccountPage() {
                                     <span className="text-gray-600">Hạn dùng: </span>
                                     <span className="font-semibold">{item.expiryDate}</span>
                                   </div>
+                                  <button 
+                                    onClick={() => handleDeletePurchase(item.id, order.id)}
+                                    className="mt-2 md:mt-0 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm"
+                                  >
+                                    Xóa
+                                  </button>
                                 </div>
                               </div>
                             ))}
@@ -1231,6 +1290,21 @@ export default function AccountPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
                             Tải xuống
+                          </button>
+                          <button 
+                            onClick={() => {
+                              // Tìm order chứa item này
+                              const order = purchaseHistory.find(o => o.items.some(i => i.id === item.id));
+                              if (order) {
+                                handleDeletePurchase(item.id, order.id);
+                              }
+                            }}
+                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm flex items-center"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Xóa
                           </button>
                         </div>
                       </div>
