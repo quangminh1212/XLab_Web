@@ -19,7 +19,6 @@ export default function DepositPage() {
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
 
   // Refs for intervals
-  const checkIntervalRef = useRef<NodeJS.Timeout>();
   const balanceIntervalRef = useRef<NodeJS.Timeout>();
 
   // Bank info constants
@@ -39,23 +38,16 @@ export default function DepositPage() {
   }, [session, status, router]);
 
   useEffect(() => {
-    if (transactionId && session?.user) {
-      console.log('🚀 Setting up auto-check interval for transaction:', transactionId);
-      
-      // Auto-check transaction every 5 seconds
-      checkIntervalRef.current = setInterval(checkTransactionStatus, 5000);
-      
-      // Auto-refresh balance every 10 seconds
-      balanceIntervalRef.current = setInterval(fetchBalance, 10000);
+    if (session?.user) {
+      // Auto-refresh balance every 30 seconds (reduced frequency)
+      balanceIntervalRef.current = setInterval(fetchBalance, 30000);
 
-      // Cleanup intervals on unmount
+      // Cleanup interval on unmount
       return () => {
-        console.log('🛑 Cleaning up intervals');
-        if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
         if (balanceIntervalRef.current) clearInterval(balanceIntervalRef.current);
       };
     }
-  }, [transactionId]);
+  }, [session]);
 
   const fetchBalance = async () => {
     try {
@@ -95,17 +87,21 @@ export default function DepositPage() {
       if (response.ok && data.success) {
         console.log('✅ Transaction found and processed!', data);
         
-        // Stop checking and refresh balance
-        if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
+        // Refresh balance
         await fetchBalance();
         
         // Show success message
         alert(`Giao dịch thành công! Đã nạp ${data.transaction.amount.toLocaleString('vi-VN')} VND vào tài khoản.`);
+        
+        // Generate new transaction code
+        generateTransactionCode();
       } else {
-        console.log('⏳ Transaction not found yet, continuing to check...');
+        console.log('⏳ Transaction not found yet');
+        alert('Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.');
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
+      alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
     } finally {
       setIsChecking(false);
     }
@@ -158,6 +154,7 @@ export default function DepositPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    alert('Đã sao chép vào clipboard!');
   };
 
   const formatTimestamp = (timestamp: string) => {
@@ -183,24 +180,18 @@ export default function DepositPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
-              <p className="text-gray-600 mt-2">Quét mã QR hoặc chuyển khoản thủ công để nạp tiền</p>
-            </div>
-            <Link
-              href="/account"
-              className="text-teal-600 hover:text-teal-700 font-medium flex items-center gap-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <div className="flex items-center gap-3 mb-2">
+            <Link href="/account" className="text-gray-600 hover:text-gray-800">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Quay lại tài khoản
             </Link>
+            <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
           </div>
+          <p className="text-gray-600">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -221,7 +212,7 @@ export default function DepositPage() {
                 {/* QR Code */}
                 {qrCodeUrl && (
                   <div className="relative">
-                    <div className="rounded-xl p-6 bg-white">
+                    <div className="rounded-xl p-6 bg-white shadow-inner">
                       <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
                         <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                       </div>
@@ -229,14 +220,42 @@ export default function DepositPage() {
                   </div>
                 )}
                 
-                <div className="mt-6 p-4 bg-teal-50 border border-teal-200 rounded-lg">
-                  <div className="flex items-center justify-center gap-2 text-teal-700">
+                {/* Check Button */}
+                <div className="mt-6">
+                  <button
+                    onClick={checkTransactionStatus}
+                    disabled={isChecking}
+                    className="w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold py-4 px-6 rounded-lg hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-lg"
+                  >
+                    {isChecking ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                        <span>Đang kiểm tra giao dịch...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Kiểm tra thanh toán</span>
+                      </>
+                    )}
+                  </button>
+                  
+                  {lastCheckTime && (
+                    <p className="text-gray-500 text-sm mt-2">
+                      Lần kiểm tra cuối: {lastCheckTime.toLocaleTimeString('vi-VN')}
+                    </p>
+                  )}
+                </div>
+                
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center justify-center gap-2 text-blue-700">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-sm font-medium">Mở app ngân hàng và quét mã QR</span>
+                    <span className="text-sm font-medium">Nhấn "Kiểm tra thanh toán" sau khi chuyển khoản</span>
                   </div>
-                  <p className="text-teal-600 text-xs mt-1">Sau khi chuyển khoản, số dư sẽ được cập nhật tự động</p>
                 </div>
               </div>
             </div>
@@ -244,170 +263,90 @@ export default function DepositPage() {
 
           {/* Right Column - Balance & Transfer Info */}
           <div className="space-y-6">
-            {/* Balance Display */}
-            <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-8 text-center border border-teal-100">
-              <h3 className="text-lg font-medium text-teal-800 mb-3">Số dư hiện tại</h3>
-              <div className="text-4xl font-bold text-teal-900">
-                {balance === 0 ? '0' : formatCurrency(balance).replace(/[^\d]/g, '')} đ
+            {/* Current Balance */}
+            <div className="bg-white rounded-lg shadow-sm border p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
               </div>
+              <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
             </div>
 
             {/* Transfer Information */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Thông tin chuyển khoản</h3>
               </div>
-
-              <div className="space-y-3">
-                {/* Bank Info - Compact */}
-                <div className="grid grid-cols-1 gap-3">
-                  <div className="bg-teal-50 rounded-lg p-3">
-                    <div className="text-xs text-gray-500 mb-1">Ngân hàng</div>
-                    <div className="font-medium text-teal-700">{BANK_INFO.bankName}</div>
-                  </div>
-                  
-                  <div className="bg-teal-50 rounded-lg p-3">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="text-xs text-gray-500 mb-1">Số tài khoản</div>
-                        <div className="font-mono font-bold text-teal-700">{BANK_INFO.accountNumber}</div>
-                      </div>
-                      <button
-                        onClick={() => copyToClipboard(BANK_INFO.accountNumber)}
-                        className="p-2 text-teal-600 hover:bg-teal-100 rounded"
-                        title="Sao chép số tài khoản"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-teal-50 rounded-lg p-3">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="text-xs text-gray-500 mb-1">Chủ tài khoản</div>
-                        <div className="font-medium text-teal-700">{BANK_INFO.accountName}</div>
-                      </div>
-                      <button
-                        onClick={() => copyToClipboard(BANK_INFO.accountName)}
-                        className="p-2 text-teal-600 hover:bg-teal-100 rounded"
-                        title="Sao chép tên chủ tài khoản"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                    </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Ngân hàng</span>
+                  <span className="font-medium">{BANK_INFO.bankName}</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Số tài khoản</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-teal-600">{BANK_INFO.accountNumber}</span>
+                    <button
+                      onClick={() => copyToClipboard(BANK_INFO.accountNumber)}
+                      className="p-1 text-gray-400 hover:text-teal-600"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
-
-                {/* Transaction ID - Highlighted */}
-                {transactionId && (
-                  <div className="bg-teal-50 rounded-lg p-4 border-l-4 border-teal-500">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="text-xs text-gray-500">Nội dung chuyển khoản</div>
-                      <button
-                        onClick={() => copyToClipboard(transactionId)}
-                        className="p-1 text-teal-600 hover:bg-teal-100 rounded"
-                        title="Sao chép mã giao dịch"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="font-mono font-bold text-lg text-teal-700 break-all">
-                      {transactionId}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-2">
-                      {formatTimestamp(transactionId)} • {session?.user?.email}
-                    </div>
+                
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Chủ tài khoản</span>
+                  <span className="font-medium">{BANK_INFO.accountName}</span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-gray-600">Mã giao dịch</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sm font-bold text-teal-600">{transactionId}</span>
+                    <button
+                      onClick={() => copyToClipboard(transactionId)}
+                      className="p-1 text-gray-400 hover:text-teal-600"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </button>
                   </div>
-                )}
+                </div>
               </div>
             </div>
 
-            {/* Transaction Status - Checking */}
-            {transactionId && (
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    {isChecking ? (
-                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-600"></div>
-                    ) : (
-                      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Trạng thái giao dịch</h3>
-                    <p className="text-sm text-gray-600">
-                      {isChecking ? 'Đang kiểm tra...' : 'Chờ xác nhận thanh toán'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Tự động kiểm tra mỗi:</span>
-                    <span className="text-gray-900 font-medium">5 giây</span>
-                  </div>
-                  
-                  {lastCheckTime && (
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Lần kiểm tra cuối:</span>
-                      <span className="text-gray-900 font-medium">
-                        {lastCheckTime.toLocaleTimeString('vi-VN')}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div className="flex items-start gap-2">
-                      <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <div className="text-blue-800 text-sm">
-                        <p className="font-medium mb-1">Hướng dẫn:</p>
-                        <ul className="text-xs space-y-1">
-                          <li>• Sau khi chuyển khoản, hệ thống sẽ tự động phát hiện</li>
-                          <li>• Số dư sẽ được cập nhật ngay lập tức</li>
-                          <li>• Không cần F5 hay reload trang</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={checkTransactionStatus}
-                    disabled={isChecking}
-                    className="w-full py-2 px-4 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                  >
-                    {isChecking ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                        Đang kiểm tra...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Kiểm tra ngay
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            )}
+            {/* Instructions */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+              <h4 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Hướng dẫn nạp tiền
+              </h4>
+              <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
+                <li>Mở app ngân hàng hoặc ví điện tử</li>
+                <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
+                <li>Nhập số tiền muốn nạp (tối thiểu 10.000đ)</li>
+                <li>Nhập nội dung chuyển khoản: <span className="font-mono bg-blue-100 px-1 rounded">{transactionId}</span></li>
+                <li>Xác nhận chuyển khoản</li>
+                <li className="font-semibold text-blue-900">Nhấn nút "Kiểm tra thanh toán" để xác nhận</li>
+              </ol>
+            </div>
           </div>
         </div>
       </div>

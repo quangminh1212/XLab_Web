@@ -22,8 +22,8 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
   const [transactionId, setTransactionId] = useState<string>('');
   const [isChecking, setIsChecking] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
+  const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
   const intervalRef = useRef<NodeJS.Timeout>();
-  const checkIntervalRef = useRef<NodeJS.Timeout>();
 
   const bankInfo: BankInfo = {
     bankName: 'MBBank (Ngân hàng Quân đội)', 
@@ -76,6 +76,8 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
     if (!transactionId || isChecking) return;
 
     setIsChecking(true);
+    setLastCheckTime(new Date());
+    
     try {
       const response = await fetch('/api/payment/check-bank-transfer', {
         method: 'POST',
@@ -94,12 +96,15 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
 
       if (response.ok && data.success) {
         // Giao dịch thành công
-        clearInterval(checkIntervalRef.current);
         clearInterval(intervalRef.current);
         onSuccess?.(transactionId);
+      } else {
+        // Hiển thị thông báo nếu chưa tìm thấy giao dịch
+        alert('Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.');
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
+      alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
     } finally {
       setIsChecking(false);
     }
@@ -108,12 +113,11 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
   useEffect(() => {
     generateQRCode();
 
-    // Countdown timer
+    // Chỉ countdown timer, bỏ auto check
     intervalRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(intervalRef.current);
-          clearInterval(checkIntervalRef.current);
           onError?.('Mã QR đã hết hạn. Vui lòng tạo lại.');
           return 0;
         }
@@ -121,12 +125,8 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       });
     }, 1000);
 
-    // Check transaction status every 5 seconds
-    checkIntervalRef.current = setInterval(checkTransactionStatus, 5000);
-
     return () => {
       clearInterval(intervalRef.current);
-      clearInterval(checkIntervalRef.current);
     };
   }, [amount]);
 
@@ -176,7 +176,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
           {/* QR Code */}
           <div className="text-center mb-6">
             {qrCodeUrl ? (
-              <div className="inline-block p-6 bg-white rounded-xl">
+              <div className="inline-block p-6 bg-white rounded-xl shadow-inner">
                 <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
                   <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                 </div>
@@ -218,7 +218,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                 <span className="text-gray-600">Số tiền:</span>
                 <span className="font-bold text-xl text-teal-800">{formatCurrency(amount)}</span>
               </div>
-              <div className="flex justify-between items-center border-t pt-2">
+              <div className="flex justify-between items-center">
                 <span className="text-gray-600">Mã giao dịch:</span>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs font-bold text-teal-600">{transactionId}</span>
@@ -235,55 +235,50 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
             </div>
           </div>
 
-          {/* Status */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center gap-3">
+          {/* Check Transaction Button */}
+          <div className="text-center mb-6">
+            <button
+              onClick={checkTransactionStatus}
+              disabled={isChecking}
+              className="w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold py-4 px-6 rounded-lg hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-lg"
+            >
               {isChecking ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-600"></div>
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                  <span>Đang kiểm tra giao dịch...</span>
+                </>
               ) : (
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Kiểm tra thanh toán</span>
+                </>
               )}
-              <div>
-                <p className="text-blue-800 font-medium text-sm">
-                  {isChecking ? 'Đang kiểm tra giao dịch...' : 'Chờ xác nhận thanh toán'}
-                </p>
-                <p className="text-blue-700 text-xs">
-                  Hệ thống sẽ tự động xác nhận khi bạn hoàn tất chuyển khoản
-                </p>
-              </div>
-            </div>
+            </button>
+            
+            {lastCheckTime && (
+              <p className="text-gray-500 text-sm mt-2">
+                Lần kiểm tra cuối: {lastCheckTime.toLocaleTimeString('vi-VN')}
+              </p>
+            )}
           </div>
 
           {/* Instructions */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h5 className="font-medium text-gray-800 mb-2">Hướng dẫn chuyển khoản:</h5>
-            <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600">
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <h5 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Hướng dẫn chuyển khoản:
+            </h5>
+            <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
               <li>Mở app ngân hàng hoặc ví điện tử</li>
               <li>Quét mã QR hoặc nhập thông tin tài khoản</li>
               <li>Kiểm tra số tiền và mã giao dịch</li>
               <li>Xác nhận chuyển khoản</li>
-              <li>Hệ thống sẽ tự động cập nhật số dư</li>
+              <li className="font-semibold">Nhấn nút "Kiểm tra thanh toán" sau khi hoàn tất</li>
             </ol>
-          </div>
-
-          {/* Manual Refresh Button */}
-          <div className="mt-6 text-center">
-            <button
-              onClick={checkTransactionStatus}
-              disabled={isChecking}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {isChecking ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-              ) : (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              )}
-              Kiểm tra lại
-            </button>
           </div>
         </div>
       </div>
