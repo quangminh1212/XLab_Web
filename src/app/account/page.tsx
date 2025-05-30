@@ -981,77 +981,54 @@ export default function AccountPage() {
                 </h2>
 
                 {hasProducts ? (
-                  <div className="space-y-4">
+                  <div className="space-y-2">
                     {purchaseHistory.map((order, orderIndex) => (
                       <div key={orderIndex} className="border rounded-lg overflow-hidden">
-                        {/* Dòng 1: Header đơn hàng */}
-                        <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-                          <div className="flex items-center space-x-4">
-                            <span className="font-bold">#{order.id}</span>
-                            <span className="text-sm text-gray-600">{order.date}</span>
-                            <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">{order.status}</span>
+                        {/* Dòng 1: Tất cả thông tin chính */}
+                        <div className="p-3 flex justify-between items-center">
+                          <div className="flex items-center space-x-4 flex-1">
+                            <span className="font-bold text-sm">#{order.id}</span>
+                            <span className="text-xs text-gray-600">{order.date}</span>
+                            <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-800">{order.status}</span>
+                            <div className="flex items-center space-x-2">
+                              {order.items.map((item, itemIndex) => (
+                                <span key={itemIndex} className="text-sm">
+                                  <span className="font-medium">{item.name}</span>
+                                  <span className="text-gray-600 mx-1">•</span>
+                                  <span className="text-primary-600">{formatCurrency(item.price)}</span>
+                                  <button 
+                                    onClick={() => handleDeletePurchase(item.id, order.id)}
+                                    className="ml-2 text-red-500 hover:text-red-700 text-xs"
+                                    title="Xóa"
+                                  >
+                                    ✕
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
                           </div>
-                          <div className="flex items-center space-x-3">
-                            <span className="font-bold text-primary-600">{formatCurrency(order.total)}</span>
+                          <div className="flex items-center space-x-3 text-sm">
+                            <span className="text-green-600 font-medium">
+                              -{formatCurrency(order.items.reduce((sum, item) => sum + (item.originalPrice - item.price), 0) + (order.couponDiscount || 0))}
+                            </span>
+                            <span className="font-bold">{formatCurrency(order.total)}</span>
                             <Link 
                               href={`/orders/${order.id}`}
-                              className="text-primary-600 hover:text-primary-800 text-sm"
+                              className="text-primary-600 hover:text-primary-800 text-xs"
                             >
-                              Chi tiết →
+                              Chi tiết
                             </Link>
-                          </div>
-                        </div>
-
-                        {/* Dòng 2: Thông tin sản phẩm */}
-                        <div className="p-3">
-                          <div className="flex flex-wrap gap-4">
-                            {order.items.map((item, itemIndex) => (
-                              <div key={itemIndex} className="flex items-center space-x-4 text-sm">
-                                <span className="font-medium">{item.name}</span>
-                                <span className="text-gray-600">|</span>
-                                <span className="text-gray-600">{formatCurrency(item.price)}</span>
-                                <span className="text-gray-600">|</span>
-                                <span className="text-gray-600">HSD: {item.expiryDate}</span>
-                                <button 
-                                  onClick={() => handleDeletePurchase(item.id, order.id)}
-                                  className="text-red-500 hover:text-red-700"
-                                  title="Xóa"
-                                >
-                                  ✕
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Dòng 3: Tổng cộng và tiết kiệm */}
-                        <div className="bg-gray-50 p-3 border-t flex justify-between items-center text-sm">
-                          <div className="flex items-center space-x-6">
-                            <span className="text-green-600 font-medium">
-                              Tiết kiệm: {formatCurrency(
-                                order.items.reduce((sum, item) => sum + (item.originalPrice - item.price), 0) +
-                                (order.couponDiscount || 0)
-                              )}
-                            </span>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <button className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm">
-                              PDF
-                            </button>
                           </div>
                         </div>
                       </div>
                     ))}
                     
-                    <div className="text-center mt-6">
+                    <div className="text-center mt-4">
                       <button 
                         onClick={goToOrdersPage}
-                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        Xem tất cả đơn hàng
+                        Xem tất cả đơn hàng →
                       </button>
                     </div>
                   </div>
