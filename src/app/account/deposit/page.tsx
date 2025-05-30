@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -15,6 +15,12 @@ export default function DepositPage() {
   const [balance, setBalance] = useState<number>(0);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [transactionId, setTransactionId] = useState<string>('');
+  const [isChecking, setIsChecking] = useState(false);
+  const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
+
+  // Refs for intervals
+  const checkIntervalRef = useRef<NodeJS.Timeout>();
+  const balanceIntervalRef = useRef<NodeJS.Timeout>();
 
   // Bank info constants
   const BANK_INFO = {
@@ -32,6 +38,25 @@ export default function DepositPage() {
     }
   }, [session, status, router]);
 
+  useEffect(() => {
+    if (transactionId && session?.user) {
+      console.log('🚀 Setting up auto-check interval for transaction:', transactionId);
+      
+      // Auto-check transaction every 5 seconds
+      checkIntervalRef.current = setInterval(checkTransactionStatus, 5000);
+      
+      // Auto-refresh balance every 10 seconds
+      balanceIntervalRef.current = setInterval(fetchBalance, 10000);
+
+      // Cleanup intervals on unmount
+      return () => {
+        console.log('🛑 Cleaning up intervals');
+        if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
+        if (balanceIntervalRef.current) clearInterval(balanceIntervalRef.current);
+      };
+    }
+  }, [transactionId]);
+
   const fetchBalance = async () => {
     try {
       const response = await fetch('/api/user/balance');
@@ -41,6 +66,48 @@ export default function DepositPage() {
       }
     } catch (error) {
       console.error('Error fetching balance:', error);
+    }
+  };
+
+  const checkTransactionStatus = async () => {
+    if (!transactionId || isChecking) return;
+
+    setIsChecking(true);
+    setLastCheckTime(new Date());
+
+    try {
+      console.log(`🔍 Checking transaction: ${transactionId}`);
+      
+      const response = await fetch('/api/payment/check-bank-transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          transactionId,
+          bankCode: 'MB',
+          accountNumber: BANK_INFO.accountNumber
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        console.log('✅ Transaction found and processed!', data);
+        
+        // Stop checking and refresh balance
+        if (checkIntervalRef.current) clearInterval(checkIntervalRef.current);
+        await fetchBalance();
+        
+        // Show success message
+        alert(`Giao dịch thành công! Đã nạp ${data.transaction.amount.toLocaleString('vi-VN')} VND vào tài khoản.`);
+      } else {
+        console.log('⏳ Transaction not found yet, continuing to check...');
+      }
+    } catch (error) {
+      console.error('Error checking transaction:', error);
+    } finally {
+      setIsChecking(false);
     }
   };
 
@@ -266,6 +333,81 @@ export default function DepositPage() {
                 )}
               </div>
             </div>
+
+            {/* Transaction Status - Checking */}
+            {transactionId && (
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    {isChecking ? (
+                      <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-600"></div>
+                    ) : (
+                      <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Trạng thái giao dịch</h3>
+                    <p className="text-sm text-gray-600">
+                      {isChecking ? 'Đang kiểm tra...' : 'Chờ xác nhận thanh toán'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">Tự động kiểm tra mỗi:</span>
+                    <span className="text-gray-900 font-medium">5 giây</span>
+                  </div>
+                  
+                  {lastCheckTime && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Lần kiểm tra cuối:</span>
+                      <span className="text-gray-900 font-medium">
+                        {lastCheckTime.toLocaleTimeString('vi-VN')}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div className="text-blue-800 text-sm">
+                        <p className="font-medium mb-1">Hướng dẫn:</p>
+                        <ul className="text-xs space-y-1">
+                          <li>• Sau khi chuyển khoản, hệ thống sẽ tự động phát hiện</li>
+                          <li>• Số dư sẽ được cập nhật ngay lập tức</li>
+                          <li>• Không cần F5 hay reload trang</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={checkTransactionStatus}
+                    disabled={isChecking}
+                    className="w-full py-2 px-4 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  >
+                    {isChecking ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                        Đang kiểm tra...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Kiểm tra ngay
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

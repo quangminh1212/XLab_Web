@@ -21,6 +21,7 @@ interface UserBalance {
 
 // Cache to avoid repeated verification of same transaction
 const verifiedTransactions: Record<string, BankTransaction> = {};
+// CLEAR CACHE FOR TESTING - Remove this line in production
 const processedTransactions: Set<string> = new Set(); // Tránh xử lý lặp lại
 
 // Function to get user balance
@@ -178,6 +179,12 @@ export async function POST(request: NextRequest) {
       bankCode,
       accountNumber
     );
+
+    console.log('🔍 Bank transaction result:', {
+      found: !!bankTransaction,
+      transaction: bankTransaction,
+      alreadyProcessed: processedTransactions.has(transactionId)
+    });
 
     if (bankTransaction && bankTransaction.status === 'completed') {
       // Transaction found and verified
