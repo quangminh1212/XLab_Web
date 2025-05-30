@@ -135,64 +135,8 @@ export default function DepositPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Balance & QR */}
+          {/* Left Column - QR Code */}
           <div className="space-y-6">
-            {/* Balance Display */}
-            <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-8 text-center border border-teal-100">
-              <h3 className="text-lg font-medium text-teal-800 mb-3">Số dư hiện tại</h3>
-              <div className="text-4xl font-bold text-teal-900">
-                {balance === 0 ? '0' : formatCurrency(balance).replace(/[^\d]/g, '')} đ
-              </div>
-            </div>
-
-            {/* Transaction Info */}
-            {transactionId && (
-              <div className="bg-white rounded-lg shadow-sm border p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900">Mã giao dịch</h3>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="bg-purple-50 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-600 text-sm">Mã chuyển khoản:</span>
-                      <button
-                        onClick={() => copyToClipboard(transactionId)}
-                        className="p-1 text-purple-600 hover:bg-purple-100 rounded"
-                        title="Sao chép mã giao dịch"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div className="font-mono text-purple-700 font-bold text-sm break-all bg-white p-3 rounded border">
-                      {transactionId}
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Thời gian tạo:</span>
-                      <span className="font-medium text-gray-700">{formatTimestamp(transactionId)}</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Người tạo:</span>
-                      <span className="font-medium text-gray-700">{session?.user?.email}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* QR Code Section */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <div className="text-center">
@@ -229,9 +173,17 @@ export default function DepositPage() {
             </div>
           </div>
 
-          {/* Right Column - Bank Info */}
+          {/* Right Column - Balance & Transfer Info */}
           <div className="space-y-6">
-            {/* Bank Information */}
+            {/* Balance Display */}
+            <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-8 text-center border border-teal-100">
+              <h3 className="text-lg font-medium text-teal-800 mb-3">Số dư hiện tại</h3>
+              <div className="text-4xl font-bold text-teal-900">
+                {balance === 0 ? '0' : formatCurrency(balance).replace(/[^\d]/g, '')} đ
+              </div>
+            </div>
+
+            {/* Transfer Information */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -239,7 +191,7 @@ export default function DepositPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Thông tin ngân hàng</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Thông tin chuyển khoản</h3>
               </div>
 
               <div className="space-y-4">
@@ -289,6 +241,27 @@ export default function DepositPage() {
                   </div>
                 </div>
 
+                {/* Transaction ID */}
+                {transactionId && (
+                  <div className="bg-purple-50 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-600 text-sm">Mã chuyển khoản:</span>
+                      <button
+                        onClick={() => copyToClipboard(transactionId)}
+                        className="p-1 text-purple-600 hover:bg-purple-100 rounded"
+                        title="Sao chép mã giao dịch"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="font-mono text-purple-700 font-bold text-sm break-all bg-white p-3 rounded border">
+                      {transactionId}
+                    </div>
+                  </div>
+                )}
+
                 {/* Transfer Content */}
                 <div className="bg-green-50 rounded-lg p-4">
                   <div className="flex justify-between items-center">
@@ -307,6 +280,25 @@ export default function DepositPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Transaction Details */}
+                {transactionId && (
+                  <>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 text-sm">Thời gian tạo:</span>
+                        <span className="font-medium text-gray-700">{formatTimestamp(transactionId)}</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600 text-sm">Người tạo:</span>
+                        <span className="font-medium text-gray-700">{session?.user?.email}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
