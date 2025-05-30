@@ -8,15 +8,6 @@ import { generateDetailedTransactionId } from '@/shared/utils/orderUtils';
 import { QRBankTransfer } from '@/components/payment';
 import QRCode from 'qrcode';
 
-interface Transaction {
-  id: string;
-  amount: number;
-  type: string;
-  description: string;
-  status: string;
-  createdAt: string;
-}
-
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -29,17 +20,13 @@ export default function DepositPage() {
   const [showQR, setShowQR] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [currentTransactionId, setCurrentTransactionId] = useState<string>('');
-  
-  // Common states
   const [balance, setBalance] = useState<number>(0);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login');
     } else if (session?.user) {
       fetchBalance();
-      fetchTransactions();
     }
   }, [session, status, router]);
 
@@ -67,18 +54,6 @@ export default function DepositPage() {
       }
     } catch (error) {
       console.error('Error fetching balance:', error);
-    }
-  };
-
-  const fetchTransactions = async () => {
-    try {
-      const response = await fetch('/api/user/transactions');
-      if (response.ok) {
-        const data = await response.json();
-        setTransactions(data.transactions || []);
-      }
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
     }
   };
 
@@ -131,7 +106,6 @@ export default function DepositPage() {
 
   const handleQRSuccess = async (transactionId: string) => {
     await fetchBalance();
-    await fetchTransactions();
     setShowQR(false);
     setAmount('');
     setErrors({ success: `Nạp tiền QR thành công! Mã giao dịch: ${transactionId}` });
@@ -157,16 +131,6 @@ export default function DepositPage() {
       currency: 'VND',
       minimumFractionDigits: 0
     }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
   const predefinedAmounts = [50000, 100000, 200000, 500000, 1000000, 2000000];
