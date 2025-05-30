@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { generateDetailedTransactionId } from '@/shared/utils/orderUtils';
 import { QRBankTransfer } from '@/components/payment';
+import QRCode from 'qrcode';
 
 interface Transaction {
   id: string;
@@ -27,6 +28,8 @@ export default function DepositPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showQR, setShowQR] = useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const [currentTransactionId, setCurrentTransactionId] = useState<string>('');
   
   // Common states
   const [balance, setBalance] = useState<number>(0);
@@ -48,6 +51,13 @@ export default function DepositPage() {
       setAmount(amountParam);
     }
   }, [searchParams]);
+
+  // Generate QR code when showQR is true
+  useEffect(() => {
+    if (showQR && amount && !qrCodeUrl) {
+      generateQRCode(parseFloat(amount));
+    }
+  }, [showQR, amount, qrCodeUrl]);
 
   const fetchBalance = async () => {
     try {
@@ -91,6 +101,7 @@ export default function DepositPage() {
     setErrors({});
 
     if (paymentMethod === 'qr-banking') {
+      await generateQRCode(depositAmount);
       setShowQR(true);
       return;
     }
@@ -129,6 +140,31 @@ export default function DepositPage() {
     }
   };
 
+  const generateQRCode = async (depositAmount: number) => {
+    const transactionId = `XL-${Date.now()}`;
+    
+    // VietQR format
+    const bankCode = 'MB';
+    const accountNumber = '669912122000';
+    const qrContent = `2|010|${bankCode}|${accountNumber}|BACH MINH QUANG|${depositAmount}|${transactionId}|VND`;
+    
+    try {
+      const qrUrl = await QRCode.toDataURL(qrContent, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#0F766E', // teal-700
+          light: '#FFFFFF'
+        }
+      });
+      setQrCodeUrl(qrUrl);
+      setCurrentTransactionId(transactionId);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      setErrors({ submit: 'Không thể tạo mã QR. Vui lòng thử lại.' });
+    }
+  };
+
   const handleQRSuccess = async (transactionId: string) => {
     await fetchBalance();
     await fetchTransactions();
@@ -139,7 +175,15 @@ export default function DepositPage() {
 
   const handleQRError = (error: string) => {
     setShowQR(false);
+    setQrCodeUrl('');
     setErrors({ submit: error });
+  };
+
+  const handleBackFromQR = () => {
+    setShowQR(false);
+    setQrCodeUrl('');
+    setCurrentTransactionId('');
+    setErrors({});
   };
 
   const formatCurrency = (amount: number) => {
@@ -172,27 +216,224 @@ export default function DepositPage() {
 
   // QR Banking View
   if (showQR) {
+    const transactionId = currentTransactionId || `XL-${Date.now()}`;
+    const bankInfo = {
+      bankName: 'MBBank (Ngân hàng Quân đội)',
+      accountNumber: '669912122000',
+      accountName: 'Bach Minh Quang'
+    };
+
     return (
       <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between">
-              <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Thanh toán đơn hàng</h1>
               <button
-                onClick={() => setShowQR(false)}
-                className="text-teal-600 hover:text-teal-700 font-medium"
+                onClick={handleBackFromQR}
+                className="text-teal-600 hover:text-teal-700 font-medium flex items-center gap-2"
               >
-                ← Quay lại
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Quay lại
               </button>
             </div>
-            <p className="text-gray-600 mt-2">Quét mã QR để chuyển khoản nhanh chóng</p>
           </div>
 
-          <QRBankTransfer
-            amount={parseFloat(amount)}
-            onSuccess={handleQRSuccess}
-            onError={handleQRError}
-          />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* QR Code Section - Left */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
+                      </svg>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900">Quét mã QR để chuyển khoản</h3>
+                  </div>
+                  
+                  {/* QR Code */}
+                  <div className="relative">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 bg-gray-50">
+                      <div className="w-64 h-64 mx-auto bg-white border rounded-lg flex items-center justify-center">
+                        {qrCodeUrl ? (
+                          <img src={qrCodeUrl} alt="QR Code" className="w-56 h-56" />
+                        ) : (
+                          <div className="w-56 h-56 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 p-4 bg-teal-50 border border-teal-200 rounded-lg">
+                    <div className="flex items-center justify-center gap-2 text-teal-700">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      <span className="text-sm font-medium">Mở app ngân hàng và quét mã QR</span>
+                    </div>
+                    <p className="text-teal-600 text-xs mt-1">Thông tin chuyển khoản sẽ được điền tự động</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Information - Center */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                    <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Thông tin thanh toán</h3>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Order Information */}
+                  <div className="bg-teal-50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg className="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <h4 className="font-semibold text-teal-800">Đơn hàng</h4>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Mã đơn hàng:</span>
+                        <span className="font-medium text-teal-700">{transactionId}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Tổng tiền:</span>
+                        <span className="font-bold text-teal-700 text-lg">{formatCurrency(parseFloat(amount))}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bank Information */}
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      <h4 className="font-semibold text-blue-800">Ngân hàng</h4>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Ngân hàng:</span>
+                        <span className="font-medium text-blue-700">{bankInfo.bankName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Số TK:</span>
+                        <span className="font-mono font-bold text-blue-700">{bankInfo.accountNumber}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Chủ TK:</span>
+                        <span className="font-medium text-blue-700">{bankInfo.accountName}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Transfer Content */}
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span className="font-semibold text-green-800">Nội dung chuyển khoản:</span>
+                    </div>
+                    <div className="bg-white border border-green-200 rounded p-3">
+                      <input
+                        type="text"
+                        value={transactionId}
+                        readOnly
+                        className="w-full text-center font-mono font-bold text-green-700 bg-transparent border-none focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Instructions */}
+                <div className="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-amber-800 mb-3">Hướng dẫn thanh toán</h4>
+                  <div className="space-y-2 text-sm text-amber-700">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">1</div>
+                      <span>Mở app ngân hàng trên điện thoại</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">2</div>
+                      <span>Quét mã QR ở bên trái</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center text-xs font-bold">3</div>
+                      <span>Xác nhận chuyển khoản và nhấn nút bên dưới</span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-center text-gray-600 text-sm mt-6">
+                  Sau khi quét QR và chuyển khoản thành công, nhấn nút bên dưới để xác nhận
+                </p>
+              </div>
+            </div>
+
+            {/* Order Summary - Right */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">Tóm tắt đơn hàng</h3>
+                
+                {/* Sample Product */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-16 h-16 bg-black rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-xl">𝕏</span>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900">Grok</h4>
+                      <p className="text-gray-600 text-sm">x3</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-bold text-teal-600">149.000 đ</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 mt-6 pt-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-gray-600">
+                      <span>Tạm tính</span>
+                      <span>{formatCurrency(parseFloat(amount))}</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-lg text-teal-600 border-t border-gray-200 pt-3">
+                      <span>Tổng cộng</span>
+                      <span>{formatCurrency(parseFloat(amount))}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Confirm Button */}
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => handleQRSuccess(transactionId)}
+              className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-4 px-8 rounded-lg flex items-center gap-2 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-teal-600/30"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Xác nhận đã chuyển khoản
+            </button>
+          </div>
         </div>
       </div>
     );
