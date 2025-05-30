@@ -24,7 +24,6 @@ export default function DepositPage() {
   
   // States
   const [amount, setAmount] = useState<string>('');
-  const [paymentMethod, setPaymentMethod] = useState<'balance' | 'qr-banking'>('balance');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showQR, setShowQR] = useState(false);
@@ -100,44 +99,9 @@ export default function DepositPage() {
 
     setErrors({});
 
-    if (paymentMethod === 'qr-banking') {
-      await generateQRCode(depositAmount);
-      setShowQR(true);
-      return;
-    }
-
-    // Handle balance deposit (manual method)
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('/api/user/deposit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: depositAmount,
-          method: 'manual',
-          note: 'Nạp tiền thủ công'
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        await fetchBalance();
-        await fetchTransactions();
-        setAmount('');
-        setErrors({ success: `Nạp tiền thành công! Số dư mới: ${formatCurrency(data.newBalance)}` });
-      } else {
-        setErrors({ submit: data.error || 'Có lỗi xảy ra khi nạp tiền' });
-      }
-    } catch (error) {
-      console.error('Error processing deposit:', error);
-      setErrors({ submit: 'Có lỗi xảy ra. Vui lòng thử lại.' });
-    } finally {
-      setIsLoading(false);
-    }
+    // Chỉ sử dụng phương thức chuyển khoản QR
+    await generateQRCode(depositAmount);
+    setShowQR(true);
   };
 
   const generateQRCode = async (depositAmount: number) => {
@@ -359,6 +323,21 @@ export default function DepositPage() {
                       />
                     </div>
                   </div>
+
+                  {/* Payment Method Info */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="font-medium text-blue-800">Chuyển khoản QR</div>
+                        <div className="text-xs text-blue-600">Quét mã QR để chuyển khoản tự động</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Instructions */}
@@ -513,64 +492,6 @@ export default function DepositPage() {
                   </div>
                 </div>
 
-                {/* Payment Method */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Phương thức nạp tiền <span className="text-red-500">*</span>
-                  </label>
-                  <div className="space-y-3">
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="balance"
-                        name="paymentMethod"
-                        value="balance"
-                        checked={paymentMethod === 'balance'}
-                        onChange={(e) => setPaymentMethod(e.target.value as 'balance' | 'qr-banking')}
-                        className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
-                      />
-                      <label htmlFor="balance" className="ml-3 block text-sm font-medium text-gray-700">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                            <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                            </svg>
-                          </div>
-                          <div>
-                            <div className="font-medium">Nạp tiền thủ công</div>
-                            <div className="text-xs text-gray-500">Nạp trực tiếp vào số dư tài khoản</div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="qr-banking"
-                        name="paymentMethod"
-                        value="qr-banking"
-                        checked={paymentMethod === 'qr-banking'}
-                        onChange={(e) => setPaymentMethod(e.target.value as 'balance' | 'qr-banking')}
-                        className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300"
-                      />
-                      <label htmlFor="qr-banking" className="ml-3 block text-sm font-medium text-gray-700">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h4M4 8h4m4 0V4m0 0h.01M12 4h4.01M16 4h4M4 16h4m4 0v4m0-4h.01M12 16h4.01M16 16h4M4 20h4m4 0v-4m0 4h.01M12 20h4.01M16 20h4" />
-                            </svg>
-                          </div>
-                          <div>
-                            <div className="font-medium">Chuyển khoản QR</div>
-                            <div className="text-xs text-gray-500">Quét mã QR để chuyển khoản tự động</div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Error Messages */}
                 {errors.submit && (
                   <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex items-center gap-2">
@@ -614,7 +535,7 @@ export default function DepositPage() {
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                       </svg>
-                      {paymentMethod === 'qr-banking' ? 'Tạo mã QR' : 'Nạp tiền'}
+                      Nạp tiền
                     </div>
                   )}
                 </button>
