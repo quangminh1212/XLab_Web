@@ -309,52 +309,6 @@ export default function DepositPage() {
                 </div>
               </div>
             </div>
-
-            {/* Instructions */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900">Hướng dẫn chuyển khoản</h3>
-              </div>
-
-              <div className="space-y-3 text-sm text-gray-600">
-                <div className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
-                  <span>Quét mã QR bằng app ngân hàng hoặc chuyển khoản thủ công</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
-                  <span>Nhập số tiền muốn nạp (tối thiểu 10.000 VND)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
-                  <span>Sử dụng đúng mã giao dịch làm nội dung chuyển khoản</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">4</span>
-                  <span>Số dư sẽ được cập nhật tự động trong vòng 1-5 phút</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Security Info */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                <div>
-                  <p className="text-blue-800 font-semibold text-base mb-1">Nạp tiền an toàn</p>
-                  <p className="text-blue-700 text-sm leading-relaxed">
-                    Mã giao dịch được tạo duy nhất theo thời gian và tài khoản. Hệ thống tự động xác thực và cập nhật số dư ngay sau khi nhận được chuyển khoản.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
