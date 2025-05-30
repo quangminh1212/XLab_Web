@@ -149,8 +149,8 @@ export default function DepositPage() {
                 {/* QR Code */}
                 {qrCodeUrl && (
                   <div className="relative">
-                    <div className="border border-gray-200 rounded-xl p-6 bg-white">
-                      <div className="w-80 h-80 mx-auto bg-white border border-gray-100 rounded-xl flex items-center justify-center shadow-sm">
+                    <div className="rounded-xl p-6 bg-white">
+                      <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
                         <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                       </div>
                     </div>

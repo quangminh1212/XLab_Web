@@ -167,8 +167,8 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
           {/* QR Code */}
           <div className="text-center mb-6">
             {qrCodeUrl ? (
-              <div className="inline-block p-6 bg-white border border-gray-200 rounded-xl">
-                <div className="w-80 h-80 mx-auto bg-white border border-gray-100 rounded-xl flex items-center justify-center shadow-sm">
+              <div className="inline-block p-6 bg-white rounded-xl">
+                <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
                   <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                 </div>
               </div>
