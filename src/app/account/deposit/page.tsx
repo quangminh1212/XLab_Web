@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import QRCode from 'qrcode';
+import { QRPay } from 'vietnam-qr-pay';
 
 export default function DepositPage() {
   const { data: session, status } = useSession();
@@ -46,11 +47,9 @@ export default function DepositPage() {
   const generateTransactionCode = () => {
     if (!session?.user?.email) return;
     
-    // Tạo timestamp epoch
+    // Tạo timestamp và thêm suffix XLab
     const timestamp = Date.now();
-    
-    // Chỉ dùng timestamp làm mã giao dịch
-    const txId = `${timestamp}`;
+    const txId = `${timestamp}-XLABRND`;
     setTransactionId(txId);
     
     // Tạo QR với mã giao dịch
@@ -59,8 +58,14 @@ export default function DepositPage() {
 
   const generateQRCode = async (txId: string) => {
     try {
-      // VietQR format với transaction ID
-      const qrContent = `MB|${BANK_INFO.accountNumber}|${BANK_INFO.accountName}|0|${txId}|VND`;
+      // Sử dụng thư viện vietnam-qr-pay để tạo VietQR chuẩn cho MBBank
+      const qrPay = QRPay.initVietQR({
+        bankBin: '970422', // MBBank bin code
+        bankNumber: BANK_INFO.accountNumber,
+        purpose: txId // Sử dụng transaction ID làm nội dung chuyển tiền
+      });
+      
+      const qrContent = qrPay.build();
       
       const qrUrl = await QRCode.toDataURL(qrContent, {
         width: 320,

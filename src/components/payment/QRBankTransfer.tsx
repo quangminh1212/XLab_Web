@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
-import { generateDetailedTransactionId } from '@/shared/utils/orderUtils';
+import { QRPay, BanksObject } from 'vietnam-qr-pay';
 
 interface QRBankTransferProps {
   amount: number;
@@ -26,10 +26,10 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
   const checkIntervalRef = useRef<NodeJS.Timeout>();
 
   const bankInfo: BankInfo = {
-    bankName: 'Vietcombank',
-    accountNumber: '1234567890',
-    accountName: 'CONG TY XLAB',
-    bankCode: 'VCB'
+    bankName: 'MBBank (Ngân hàng Quân đội)', 
+    accountNumber: '669912122000',
+    accountName: 'BACH MINH QUANG',
+    bankCode: 'MB'
   };
 
   const formatCurrency = (value: number) => {
@@ -41,13 +41,22 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
   };
 
   const generateQRCode = async () => {
-    const newTransactionId = generateDetailedTransactionId();
+    // Tạo timestamp như trong deposit page
+    const timestamp = Date.now();
+    const newTransactionId = `${timestamp}-XLABRND`;
     setTransactionId(newTransactionId);
 
-    // QR content theo chuẩn VietQR
-    const qrContent = `2|010|${bankInfo.bankCode}|${bankInfo.accountNumber}|${bankInfo.accountName}|${amount}|${newTransactionId}|VND`;
-    
     try {
+      // Sử dụng thư viện vietnam-qr-pay để tạo VietQR chuẩn
+      const qrPay = QRPay.initVietQR({
+        bankBin: '970422', // MBBank bin code
+        bankNumber: bankInfo.accountNumber,
+        amount: amount.toString(),
+        purpose: `Nap tien XLab ${newTransactionId}` // Nội dung chuyển tiền
+      });
+      
+      const qrContent = qrPay.build();
+      
       const qrUrl = await QRCode.toDataURL(qrContent, {
         width: 320,
         margin: 2,
