@@ -1,7 +1,16 @@
-import { type ClassValue, clsx } from "clsx";
+import { type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { products } from '@/data/mockData';
 import { Product } from '@/types';
+
+// Safe imports to handle potential undefined modules
+let clsx: any;
+try {
+  clsx = require("clsx").clsx;
+} catch (error) {
+  console.warn("Failed to import clsx, using fallback");
+  clsx = (...inputs: any[]) => inputs.filter(Boolean).join(" ");
+}
 
 /**
  * Kết hợp các class CSS với clsx và tailwind-merge
@@ -10,7 +19,12 @@ import { Product } from '@/types';
  * @returns Chuỗi class đã được kết hợp
  */
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  try {
+    return twMerge(clsx(inputs));
+  } catch (error) {
+    console.warn("Error in cn function, using fallback:", error);
+    return inputs.filter(Boolean).join(" ");
+  }
 }
 
 export function containerClass(...additionalClasses: ClassValue[]) {
@@ -175,8 +189,8 @@ const downloadCountCache: Record<string, number> = {};
 
 // Initialize cache from mockData
 products.forEach(product => {
-  viewCountCache[product.slug] = product.viewCount;
-  downloadCountCache[product.slug] = product.downloadCount;
+  viewCountCache[product.slug] = product.viewCount || 0;
+  downloadCountCache[product.slug] = product.downloadCount || 0;
 });
 
 /**
