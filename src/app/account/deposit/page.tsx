@@ -183,8 +183,8 @@ export default function DepositPage() {
             {/* Transfer Information */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
@@ -194,20 +194,20 @@ export default function DepositPage() {
               <div className="space-y-3">
                 {/* Bank Info - Compact */}
                 <div className="grid grid-cols-1 gap-3">
-                  <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="bg-teal-50 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">Ngân hàng</div>
-                    <div className="font-medium text-blue-700">{BANK_INFO.bankName}</div>
+                    <div className="font-medium text-teal-700">{BANK_INFO.bankName}</div>
                   </div>
                   
-                  <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="bg-teal-50 rounded-lg p-3">
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="text-xs text-gray-500 mb-1">Số tài khoản</div>
-                        <div className="font-mono font-bold text-blue-700">{BANK_INFO.accountNumber}</div>
+                        <div className="font-mono font-bold text-teal-700">{BANK_INFO.accountNumber}</div>
                       </div>
                       <button
                         onClick={() => copyToClipboard(BANK_INFO.accountNumber)}
-                        className="p-2 text-blue-600 hover:bg-blue-100 rounded"
+                        className="p-2 text-teal-600 hover:bg-teal-100 rounded"
                         title="Sao chép số tài khoản"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,15 +217,15 @@ export default function DepositPage() {
                     </div>
                   </div>
                   
-                  <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="bg-teal-50 rounded-lg p-3">
                     <div className="flex justify-between items-center">
                       <div>
                         <div className="text-xs text-gray-500 mb-1">Chủ tài khoản</div>
-                        <div className="font-medium text-blue-700">{BANK_INFO.accountName}</div>
+                        <div className="font-medium text-teal-700">{BANK_INFO.accountName}</div>
                       </div>
                       <button
                         onClick={() => copyToClipboard(BANK_INFO.accountName)}
-                        className="p-2 text-blue-600 hover:bg-blue-100 rounded"
+                        className="p-2 text-teal-600 hover:bg-teal-100 rounded"
                         title="Sao chép tên chủ tài khoản"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,12 +238,12 @@ export default function DepositPage() {
 
                 {/* Transaction ID - Highlighted */}
                 {transactionId && (
-                  <div className="bg-purple-50 rounded-lg p-4 border-l-4 border-purple-400">
+                  <div className="bg-teal-50 rounded-lg p-4 border-l-4 border-teal-500">
                     <div className="flex justify-between items-center mb-2">
                       <div className="text-xs text-gray-500">Nội dung chuyển khoản</div>
                       <button
                         onClick={() => copyToClipboard(transactionId)}
-                        className="p-1 text-purple-600 hover:bg-purple-100 rounded"
+                        className="p-1 text-teal-600 hover:bg-teal-100 rounded"
                         title="Sao chép mã giao dịch"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -251,7 +251,7 @@ export default function DepositPage() {
                         </svg>
                       </button>
                     </div>
-                    <div className="font-mono font-bold text-lg text-purple-700 break-all">
+                    <div className="font-mono font-bold text-lg text-teal-700 break-all">
                       {transactionId}
                     </div>
                     <div className="text-xs text-gray-500 mt-2">
