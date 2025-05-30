@@ -176,6 +176,7 @@ export default function DepositPage() {
   const handleQRError = (error: string) => {
     setShowQR(false);
     setQrCodeUrl('');
+    setCurrentTransactionId('');
     setErrors({ submit: error });
   };
 
