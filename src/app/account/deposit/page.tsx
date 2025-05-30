@@ -13,13 +13,13 @@ export default function DepositPage() {
   // States
   const [balance, setBalance] = useState<number>(0);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const [transactionId, setTransactionId] = useState<string>('');
 
   // Bank info constants
   const BANK_INFO = {
     bankName: 'MBBank (Ngân hàng Quân đội)',
     accountNumber: '669912122000',
-    accountName: 'BACH MINH QUANG',
-    qrContent: 'MB|669912122000|BACH MINH QUANG|0|NAP TIEN XLAB|VND'
+    accountName: 'BACH MINH QUANG'
   };
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function DepositPage() {
       router.push('/login');
     } else if (session?.user) {
       fetchBalance();
-      generateFixedQRCode();
+      generateTransactionCode();
     }
   }, [session, status, router]);
 
@@ -43,9 +43,29 @@ export default function DepositPage() {
     }
   };
 
-  const generateFixedQRCode = async () => {
+  const generateTransactionCode = () => {
+    if (!session?.user?.email) return;
+    
+    // Tạo timestamp epoch
+    const timestamp = Date.now();
+    
+    // Lấy phần username từ email (trước @)
+    const username = session.user.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    
+    // Tạo mã giao dịch: TIMESTAMP-USERNAME
+    const txId = `${timestamp}-${username}`;
+    setTransactionId(txId);
+    
+    // Tạo QR với mã giao dịch
+    generateQRCode(txId);
+  };
+
+  const generateQRCode = async (txId: string) => {
     try {
-      const qrUrl = await QRCode.toDataURL(BANK_INFO.qrContent, {
+      // VietQR format với transaction ID
+      const qrContent = `MB|${BANK_INFO.accountNumber}|${BANK_INFO.accountName}|0|${txId}|VND`;
+      
+      const qrUrl = await QRCode.toDataURL(qrContent, {
         width: 256,
         margin: 2,
         color: {
@@ -69,6 +89,19 @@ export default function DepositPage() {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+  };
+
+  const formatTimestamp = (timestamp: string) => {
+    const epochTime = parseInt(timestamp.split('-')[0]);
+    const date = new Date(epochTime);
+    return date.toLocaleString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
   };
 
   if (status === 'loading') {
@@ -111,6 +144,54 @@ export default function DepositPage() {
                 {balance === 0 ? '0' : formatCurrency(balance).replace(/[^\d]/g, '')} đ
               </div>
             </div>
+
+            {/* Transaction Info */}
+            {transactionId && (
+              <div className="bg-white rounded-lg shadow-sm border p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">Mã giao dịch</h3>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="bg-purple-50 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-600 text-sm">Mã chuyển khoản:</span>
+                      <button
+                        onClick={() => copyToClipboard(transactionId)}
+                        className="p-1 text-purple-600 hover:bg-purple-100 rounded"
+                        title="Sao chép mã giao dịch"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="font-mono text-purple-700 font-bold text-sm break-all bg-white p-3 rounded border">
+                      {transactionId}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-sm">Thời gian tạo:</span>
+                      <span className="font-medium text-gray-700">{formatTimestamp(transactionId)}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 text-sm">Người tạo:</span>
+                      <span className="font-medium text-gray-700">{session?.user?.email}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* QR Code Section */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -213,9 +294,9 @@ export default function DepositPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 text-sm">Nội dung chuyển khoản:</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-green-700">NAP TIEN XLAB</span>
+                      <span className="font-medium text-green-700">{transactionId}</span>
                       <button
-                        onClick={() => copyToClipboard('NAP TIEN XLAB')}
+                        onClick={() => copyToClipboard(transactionId)}
                         className="p-1 text-green-600 hover:bg-green-100 rounded"
                         title="Sao chép nội dung chuyển khoản"
                       >
@@ -251,7 +332,7 @@ export default function DepositPage() {
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
-                  <span>Kiểm tra thông tin và xác nhận chuyển khoản</span>
+                  <span>Sử dụng đúng mã giao dịch làm nội dung chuyển khoản</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">4</span>
@@ -269,7 +350,7 @@ export default function DepositPage() {
                 <div>
                   <p className="text-blue-800 font-semibold text-base mb-1">Nạp tiền an toàn</p>
                   <p className="text-blue-700 text-sm leading-relaxed">
-                    Giao dịch được bảo mật tuyệt đối. Hệ thống tự động xác thực và cập nhật số dư ngay sau khi nhận được chuyển khoản.
+                    Mã giao dịch được tạo duy nhất theo thời gian và tài khoản. Hệ thống tự động xác thực và cập nhật số dư ngay sau khi nhận được chuyển khoản.
                   </p>
                 </div>
               </div>
