@@ -49,11 +49,8 @@ export default function DepositPage() {
     // Tạo timestamp epoch
     const timestamp = Date.now();
     
-    // Lấy phần username từ email (trước @)
-    const username = session.user.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    
-    // Tạo mã giao dịch: TIMESTAMP-USERNAME
-    const txId = `${timestamp}-${username}`;
+    // Chỉ dùng timestamp làm mã giao dịch
+    const txId = `${timestamp}`;
     setTransactionId(txId);
     
     // Tạo QR với mã giao dịch
@@ -92,7 +89,7 @@ export default function DepositPage() {
   };
 
   const formatTimestamp = (timestamp: string) => {
-    const epochTime = parseInt(timestamp.split('-')[0]);
+    const epochTime = parseInt(timestamp);
     const date = new Date(epochTime);
     return date.toLocaleString('vi-VN', {
       year: 'numeric',
@@ -194,24 +191,23 @@ export default function DepositPage() {
                 <h3 className="text-lg font-semibold text-gray-900">Thông tin chuyển khoản</h3>
               </div>
 
-              <div className="space-y-4">
-                {/* Bank Name */}
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Ngân hàng:</span>
-                    <span className="font-medium text-blue-700">{BANK_INFO.bankName}</span>
+              <div className="space-y-3">
+                {/* Bank Info - Compact */}
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="text-xs text-gray-500 mb-1">Ngân hàng</div>
+                    <div className="font-medium text-blue-700">{BANK_INFO.bankName}</div>
                   </div>
-                </div>
-
-                {/* Account Number */}
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Số tài khoản:</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-blue-700 text-lg">{BANK_INFO.accountNumber}</span>
+                  
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-xs text-gray-500 mb-1">Số tài khoản</div>
+                        <div className="font-mono font-bold text-blue-700">{BANK_INFO.accountNumber}</div>
+                      </div>
                       <button
                         onClick={() => copyToClipboard(BANK_INFO.accountNumber)}
-                        className="p-1 text-blue-600 hover:bg-blue-100 rounded"
+                        className="p-2 text-blue-600 hover:bg-blue-100 rounded"
                         title="Sao chép số tài khoản"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,17 +216,16 @@ export default function DepositPage() {
                       </button>
                     </div>
                   </div>
-                </div>
-
-                {/* Account Name */}
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Chủ tài khoản:</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-blue-700">{BANK_INFO.accountName}</span>
+                  
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-xs text-gray-500 mb-1">Chủ tài khoản</div>
+                        <div className="font-medium text-blue-700">{BANK_INFO.accountName}</div>
+                      </div>
                       <button
                         onClick={() => copyToClipboard(BANK_INFO.accountName)}
-                        className="p-1 text-blue-600 hover:bg-blue-100 rounded"
+                        className="p-2 text-blue-600 hover:bg-blue-100 rounded"
                         title="Sao chép tên chủ tài khoản"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,11 +236,11 @@ export default function DepositPage() {
                   </div>
                 </div>
 
-                {/* Transaction ID */}
+                {/* Transaction ID - Highlighted */}
                 {transactionId && (
-                  <div className="bg-purple-50 rounded-lg p-4">
+                  <div className="bg-purple-50 rounded-lg p-4 border-l-4 border-purple-400">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-600 text-sm">Mã chuyển khoản:</span>
+                      <div className="text-xs text-gray-500">Nội dung chuyển khoản</div>
                       <button
                         onClick={() => copyToClipboard(transactionId)}
                         className="p-1 text-purple-600 hover:bg-purple-100 rounded"
@@ -256,48 +251,13 @@ export default function DepositPage() {
                         </svg>
                       </button>
                     </div>
-                    <div className="font-mono text-purple-700 font-bold text-sm break-all bg-white p-3 rounded border">
+                    <div className="font-mono font-bold text-lg text-purple-700 break-all">
                       {transactionId}
                     </div>
-                  </div>
-                )}
-
-                {/* Transfer Content */}
-                <div className="bg-green-50 rounded-lg p-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Nội dung chuyển khoản:</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-green-700">{transactionId}</span>
-                      <button
-                        onClick={() => copyToClipboard(transactionId)}
-                        className="p-1 text-green-600 hover:bg-green-100 rounded"
-                        title="Sao chép nội dung chuyển khoản"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
+                    <div className="text-xs text-gray-500 mt-2">
+                      {formatTimestamp(transactionId)} • {session?.user?.email}
                     </div>
                   </div>
-                </div>
-
-                {/* Transaction Details */}
-                {transactionId && (
-                  <>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-sm">Thời gian tạo:</span>
-                        <span className="font-medium text-gray-700">{formatTimestamp(transactionId)}</span>
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-sm">Người tạo:</span>
-                        <span className="font-medium text-gray-700">{session?.user?.email}</span>
-                      </div>
-                    </div>
-                  </>
                 )}
               </div>
             </div>
