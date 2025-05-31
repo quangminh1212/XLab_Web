@@ -1,4 +1,4 @@
-import fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { User } from '@/models/UserModel';
@@ -110,6 +110,64 @@ function getBackupFilePath(email: string, timestamp: string): string {
   return path.join(BACKUP_DIR, backupFileName);
 }
 
+// File lock management
+const fileLocks = new Map<string, Promise<void>>();
+
+async function withFileLock<T>(filePath: string, operation: () => Promise<T>): Promise<T> {
+  const lockKey = path.resolve(filePath);
+  
+  // Wait for any existing lock on this file
+  if (fileLocks.has(lockKey)) {
+    await fileLocks.get(lockKey);
+  }
+  
+  // Create new lock
+  let resolveLock: () => void;
+  const lockPromise = new Promise<void>((resolve) => {
+    resolveLock = resolve;
+  });
+  
+  fileLocks.set(lockKey, lockPromise);
+  
+  try {
+    const result = await operation();
+    return result;
+  } finally {
+    // Release lock
+    fileLocks.delete(lockKey);
+    resolveLock!();
+  }
+}
+
+// Retry mechanism for Windows file operations
+async function retryOperation<T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 5,
+  delayMs: number = 100
+): Promise<T> {
+  let lastError: Error;
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      lastError = error;
+      
+      // Retry on file system errors
+      if (error.code === 'EPERM' || error.code === 'EBUSY' || error.code === 'ENOENT') {
+        if (i < maxRetries - 1) {
+          await new Promise(resolve => setTimeout(resolve, delayMs * (i + 1)));
+          continue;
+        }
+      }
+      
+      throw error;
+    }
+  }
+  
+  throw lastError!;
+}
+
 // Tạo backup dữ liệu
 async function createBackup(email: string, userData: UserData): Promise<void> {
   try {
@@ -139,137 +197,95 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
 
 // Lưu dữ liệu user
 export async function saveUserData(email: string, userData: UserData): Promise<void> {
-  try {
-    await ensureDirectoryExists(USER_DATA_DIR);
-    
-    // Tạo backup trước khi lưu
-    const existingData = await getUserData(email);
-    if (existingData) {
-      await createBackup(email, existingData);
-    }
-    
-    // Cập nhật metadata
-    userData.metadata.lastBackup = new Date().toISOString();
-    userData.metadata.dataVersion = '1.0';
-    userData.metadata.checksum = createDataChecksum(userData);
-    
-    const filePath = getUserFilePath(email);
-    const tempFilePath = `${filePath}.tmp.${Date.now()}`;
-    
-    try {
-      const dataString = JSON.stringify(userData, null, 2);
-      const { encrypted, iv, tag } = encryptData(dataString);
-      
-      const encryptedData = {
-        email: email,
-        data: encrypted,
-        iv: iv,
-        tag: tag,
-        lastModified: new Date().toISOString(),
-        checksum: userData.metadata.checksum
-      };
-      
-      // Ghi vào file tạm thời trước
-      await fs.writeFile(tempFilePath, JSON.stringify(encryptedData, null, 2), 'utf8');
-      
-      // Kiểm tra file tạm thời có đúng không
-      const tempContent = await fs.readFile(tempFilePath, 'utf8');
-      JSON.parse(tempContent); // Test parse để chắc chắn JSON hợp lệ
-      
-      // Atomic rename - di chuyển file tạm thời thành file chính
-      await fs.rename(tempFilePath, filePath);
-      
-      console.log(`✅ User data saved securely for: ${email}`);
-    } catch (writeError) {
-      // Xóa file tạm thời nếu có lỗi
+  const filePath = getUserFilePath(email);
+  
+  return withFileLock(filePath, async () => {
+    await retryOperation(async () => {
       try {
-        await fs.unlink(tempFilePath);
-      } catch (unlinkError) {
-        // Ignore unlink errors
+        // Đảm bảo thư mục tồn tại
+        const userDir = path.dirname(filePath);
+        await ensureDirectoryExists(userDir);
+        
+        // Tạo backup trước khi ghi file mới
+        const existingData = await getUserData(email);
+        if (existingData) {
+          await createBackup(email, existingData);
+        }
+        
+        // Update metadata trước khi mã hóa
+        userData.metadata.lastBackup = new Date().toISOString();
+        userData.metadata.checksum = createDataChecksum(userData);
+        
+        // Mã hóa dữ liệu
+        const dataString = JSON.stringify(userData);
+        const { encrypted, iv, tag } = encryptData(dataString);
+        
+        const encryptedData = {
+          data: encrypted,
+          iv: iv,
+          tag: tag,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Tạo file name duy nhất cho temp file
+        const tempFilePath = `${filePath}.tmp.${Date.now()}.${Math.random().toString(36).substr(2, 9)}`;
+        
+        try {
+          // Ghi vào file tạm thời trước
+          await fs.writeFile(tempFilePath, JSON.stringify(encryptedData, null, 2), 'utf8');
+          
+          // Kiểm tra file tạm thời có đúng không
+          const tempContent = await fs.readFile(tempFilePath, 'utf8');
+          JSON.parse(tempContent); // Test parse để chắc chắn JSON hợp lệ
+          
+          // Windows-safe file replace
+          const backupPath = `${filePath}.backup.${Date.now()}`;
+          
+          // Nếu file cũ tồn tại, rename nó thành backup
+          try {
+            await fs.access(filePath);
+            await fs.rename(filePath, backupPath);
+          } catch (accessError) {
+            // File cũ không tồn tại, không cần backup
+          }
+          
+          try {
+            // Rename file tạm thời thành file chính
+            await fs.rename(tempFilePath, filePath);
+            
+            // Xóa backup file nếu thành công
+            try {
+              await fs.unlink(backupPath);
+            } catch (unlinkError) {
+              // Ignore cleanup errors
+            }
+            
+            console.log(`✅ User data saved securely for: ${email}`);
+          } catch (renameError) {
+            // Khôi phục file cũ nếu rename failed
+            try {
+              await fs.rename(backupPath, filePath);
+            } catch (restoreError) {
+              console.error('Failed to restore backup after rename failure:', restoreError);
+            }
+            throw renameError;
+          }
+          
+        } catch (writeError) {
+          // Xóa file tạm thời nếu có lỗi
+          try {
+            await fs.unlink(tempFilePath);
+          } catch (unlinkError) {
+            // Ignore unlink errors
+          }
+          throw writeError;
+        }
+      } catch (error) {
+        console.error(`❌ Error saving user data for ${email}:`, error);
+        throw error;
       }
-      throw writeError;
-    }
-  } catch (error) {
-    console.error(`❌ Error saving user data for ${email}:`, error);
-    throw error;
-  }
-}
-
-// Lấy dữ liệu user
-export async function getUserData(email: string): Promise<UserData | null> {
-  try {
-    const filePath = getUserFilePath(email);
-    
-    try {
-      await fs.access(filePath);
-    } catch {
-      return null; // File không tồn tại
-    }
-    
-    const fileContent = await fs.readFile(filePath, 'utf8');
-    
-    // Kiểm tra nội dung file có hợp lệ không
-    if (!fileContent || fileContent.trim() === '') {
-      console.warn(`⚠️ Empty or invalid file content for user: ${email}, creating new data`);
-      return null;
-    }
-    
-    // Kiểm tra xem có phải JSON hợp lệ không
-    let encryptedData;
-    try {
-      encryptedData = JSON.parse(fileContent);
-    } catch (parseError) {
-      console.error(`❌ Invalid JSON in user data file for ${email}:`, parseError);
-      // Thử tạo backup của file bị lỗi
-      try {
-        const corruptedBackupPath = `${filePath}.corrupted.${Date.now()}`;
-        await fs.copyFile(filePath, corruptedBackupPath);
-        console.log(`📁 Corrupted file backed up to: ${corruptedBackupPath}`);
-      } catch (backupError) {
-        console.error('Failed to backup corrupted file:', backupError);
-      }
-      return null;
-    }
-    
-    // Kiểm tra cấu trúc dữ liệu
-    if (!encryptedData.data || !encryptedData.iv || !encryptedData.tag) {
-      console.error(`❌ Invalid encrypted data structure for user: ${email}`);
-      return null;
-    }
-    
-    let decryptedString;
-    try {
-      decryptedString = decryptData(
-        encryptedData.data,
-        encryptedData.iv,
-        encryptedData.tag
-      );
-    } catch (decryptError) {
-      console.error(`❌ Decryption failed for user ${email}:`, decryptError);
-      return null;
-    }
-    
-    let userData: UserData;
-    try {
-      userData = JSON.parse(decryptedString);
-    } catch (parseError) {
-      console.error(`❌ Invalid JSON in decrypted data for user ${email}:`, parseError);
-      return null;
-    }
-    
-    // Kiểm tra checksum nếu có
-    if (userData.metadata && userData.metadata.checksum) {
-      const currentChecksum = createDataChecksum(userData);
-      if (currentChecksum !== userData.metadata.checksum) {
-        console.warn(`⚠️ Data integrity warning for user: ${email}`);
-      }
-    }
-    
-    return userData;
-  } catch (error) {
-    console.error(`❌ Error loading user data for ${email}:`, error);
-    return null;
-  }
+    });
+  });
 }
 
 // Tạo dữ liệu user mới
@@ -471,4 +487,85 @@ export async function restoreFromBackup(email: string, backupTimestamp: string):
     console.error(`❌ Error restoring backup for ${email}:`, error);
     return false;
   }
+}
+
+// Lấy dữ liệu user
+export async function getUserData(email: string): Promise<UserData | null> {
+  const filePath = getUserFilePath(email);
+  
+  return withFileLock(filePath, async () => {
+    return retryOperation(async () => {
+      try {
+        try {
+          await fs.access(filePath);
+        } catch {
+          return null; // File không tồn tại
+        }
+        
+        const fileContent = await fs.readFile(filePath, 'utf8');
+        
+        // Kiểm tra nội dung file có hợp lệ không
+        if (!fileContent || fileContent.trim() === '') {
+          console.warn(`⚠️ Empty or invalid file content for user: ${email}, creating new data`);
+          return null;
+        }
+        
+        // Kiểm tra xem có phải JSON hợp lệ không
+        let encryptedData;
+        try {
+          encryptedData = JSON.parse(fileContent);
+        } catch (parseError) {
+          console.error(`❌ Invalid JSON in user data file for ${email}:`, parseError);
+          // Thử tạo backup của file bị lỗi
+          try {
+            const corruptedBackupPath = `${filePath}.corrupted.${Date.now()}`;
+            await fs.copyFile(filePath, corruptedBackupPath);
+            console.log(`📁 Corrupted file backed up to: ${corruptedBackupPath}`);
+          } catch (backupError) {
+            console.error('Failed to backup corrupted file:', backupError);
+          }
+          return null;
+        }
+        
+        // Kiểm tra cấu trúc dữ liệu
+        if (!encryptedData.data || !encryptedData.iv || !encryptedData.tag) {
+          console.error(`❌ Invalid encrypted data structure for user: ${email}`);
+          return null;
+        }
+        
+        let decryptedString;
+        try {
+          decryptedString = decryptData(
+            encryptedData.data,
+            encryptedData.iv,
+            encryptedData.tag
+          );
+        } catch (decryptError) {
+          console.error(`❌ Decryption failed for user ${email}:`, decryptError);
+          return null;
+        }
+        
+        let userData: UserData;
+        try {
+          userData = JSON.parse(decryptedString);
+        } catch (parseError) {
+          console.error(`❌ Invalid JSON in decrypted data for user ${email}:`, parseError);
+          return null;
+        }
+        
+        // Kiểm tra checksum nếu có
+        if (userData.metadata && userData.metadata.checksum) {
+          const currentChecksum = createDataChecksum(userData);
+          if (currentChecksum !== userData.metadata.checksum) {
+            console.warn(`⚠️ Data integrity warning for user: ${email}`);
+          }
+        }
+        
+        return userData;
+      } catch (error) {
+        console.error(`❌ Error loading user data for ${email}:`, error);
+        return null;
+      }
+    });
+  });
 } 
