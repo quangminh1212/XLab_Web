@@ -568,4 +568,70 @@ export async function getUserData(email: string): Promise<UserData | null> {
       }
     });
   });
+}
+
+// Cleanup các file temporary và backup cũ
+export async function cleanupOldFiles(): Promise<void> {
+  try {
+    const userDir = path.dirname(getUserFilePath('dummy'));
+    const backupDir = path.dirname(getBackupFilePath('dummy', ''));
+    
+    // Cleanup user directory
+    try {
+      const userFiles = await fs.readdir(userDir);
+      const now = Date.now();
+      const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+      
+      for (const file of userFiles) {
+        if (file.includes('.tmp.') || file.includes('.backup.') || file.includes('.corrupted.')) {
+          const filePath = path.join(userDir, file);
+          try {
+            const stats = await fs.stat(filePath);
+            if (now - stats.mtime.getTime() > maxAge) {
+              await fs.unlink(filePath);
+              console.log(`🧹 Cleaned up old file: ${file}`);
+            }
+          } catch (error) {
+            // Ignore errors for individual files
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error cleaning user directory:', error);
+    }
+    
+    // Cleanup backup directory
+    try {
+      const backupFiles = await fs.readdir(backupDir);
+      const now = Date.now();
+      const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
+      
+      for (const file of backupFiles) {
+        if (file.includes('.tmp.')) {
+          const filePath = path.join(backupDir, file);
+          try {
+            const stats = await fs.stat(filePath);
+            if (now - stats.mtime.getTime() > maxAge) {
+              await fs.unlink(filePath);
+              console.log(`🧹 Cleaned up old backup: ${file}`);
+            }
+          } catch (error) {
+            // Ignore errors for individual files
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error cleaning backup directory:', error);
+    }
+    
+    console.log('✅ File cleanup completed');
+  } catch (error) {
+    console.error('❌ Error during file cleanup:', error);
+  }
+}
+
+// Auto cleanup khi startup
+if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
+  // Run cleanup on startup, but don't wait for it
+  cleanupOldFiles().catch(console.error);
 } 
