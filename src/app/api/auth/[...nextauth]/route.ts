@@ -37,6 +37,9 @@ if (!AUTH_SECRET && process.env.NODE_ENV !== 'development') {
 // Google OAuth credentials - yêu cầu phải có trong .env.local
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+
+
 if ((!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) && process.env.NODE_ENV !== 'development') {
   console.warn('Google OAuth credentials are not set. Using fallback for development only.');
 }

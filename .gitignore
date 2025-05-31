@@ -198,6 +198,9 @@ node_modules/@next/swc-*
 /.turbo/
 .next/trace.*
 dev.cmd
+
+# Test files
+test-*.js
 dev.ps1
 powershell-dev.ps1
 start-dev.bat
