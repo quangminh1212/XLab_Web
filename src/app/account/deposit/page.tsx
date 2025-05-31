@@ -131,7 +131,7 @@ export default function DepositPage() {
       const qrContent = qrPay.build();
       
       const qrUrl = await QRCode.toDataURL(qrContent, {
-        width: 384,
+        width: 320,
         margin: 2,
         color: {
           dark: '#0F766E', // teal-700
@@ -213,8 +213,8 @@ export default function DepositPage() {
                 {qrCodeUrl && (
                   <div className="relative">
                     <div className="rounded-xl p-6 bg-white shadow-inner">
-                      <div className="w-96 h-96 mx-auto bg-white rounded-xl flex items-center justify-center">
-                        <img src={qrCodeUrl} alt="QR Code" className="w-88 h-88" />
+                      <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
+                        <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                       </div>
                     </div>
                   </div>

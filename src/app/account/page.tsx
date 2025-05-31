@@ -22,29 +22,9 @@ interface Order {
   id: string;
   date: string;
   total: number;
-  totalAmount?: number; // Thêm trường totalAmount tùy chọn
   status: string;
   items: OrderItem[];
   couponDiscount?: number; // Thêm field để lưu số tiền giảm từ voucher
-}
-
-interface OrderHistory {
-  id: string;
-  date: string;
-  total: number;
-  status: string;
-  items: Array<{
-    id: string;
-    name: string;
-    version: string;
-    price: number;
-    originalPrice: number;
-    licenseKey: string;
-    expiryDate: string;
-  }>;
-  couponDiscount?: number;
-  totalAmount?: number;
-  createdAt?: string;
 }
 
 // This would normally come from a database or API
@@ -56,41 +36,6 @@ const userProfile = {
   licenseCount: 0, // Đặt thành 0 vì chưa có sản phẩm
   phone: '',
 }
-
-// Hàm tính toán hạn giấy phép dựa trên ngày mua và duration
-const calculateExpiryDate = (purchaseDate: string | Date, duration: string): string => {
-  const purchase = new Date(purchaseDate);
-  let expiryDate = new Date(purchase);
-  
-  switch (duration) {
-    case '1week':
-      expiryDate.setDate(purchase.getDate() + 7);
-      break;
-    case '1month':
-      expiryDate.setMonth(purchase.getMonth() + 1);
-      break;
-    case '3months':
-      expiryDate.setMonth(purchase.getMonth() + 3);
-      break;
-    case '6months':
-      expiryDate.setMonth(purchase.getMonth() + 6);
-      break;
-    case '1year':
-      expiryDate.setFullYear(purchase.getFullYear() + 1);
-      break;
-    case '2years':
-      expiryDate.setFullYear(purchase.getFullYear() + 2);
-      break;
-    case 'lifetime':
-      return 'Vĩnh viễn';
-    default:
-      // Mặc định là 1 tháng nếu không có duration hoặc duration không hợp lệ
-      expiryDate.setMonth(purchase.getMonth() + 1);
-      break;
-  }
-  
-  return expiryDate.toLocaleDateString('vi-VN');
-};
 
 export default function AccountPage() {
   const router = useRouter();
@@ -121,181 +66,260 @@ export default function AccountPage() {
   };
 
   useEffect(() => {
-    if (status === 'loading') return;
-
-    if (!session?.user) {
-      router.push('/login');
+    // Chuyển hướng người dùng nếu chưa đăng nhập
+    if (status === 'unauthenticated') {
+      console.log('User is not authenticated, redirecting to login page');
+      router.push('/login?callbackUrl=/account');
       return;
     }
 
-    console.log('User is authenticated, loading profile data:', session.user);
-    console.log('Session user image:', session.user.image);
-    
-    // Khởi tạo thông tin cơ bản từ session
-    const updatedProfile = {
-      ...userProfile,
-      name: session.user.name || userProfile.name,
-      email: session.user.email || userProfile.email,
-      avatar: session.user.image || '/images/avatar-placeholder.svg',
-      // Sử dụng thông tin bổ sung từ session nếu có
-      phone: session.user.phone || userProfile.phone,
-      memberSince: session.user.memberSince || userProfile.memberSince,
-    };
+    if (status === 'loading') {
+      console.log('Session loading...');
+      return;
+    }
 
-    // Kiểm tra xem có thông tin đã lưu trong localStorage không
-    try {
-      const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
-      if (savedProfile) {
-        const parsedProfile = JSON.parse(savedProfile);
+    // Nếu người dùng đã xác thực
+    if (status === 'authenticated' && session?.user) {
+      console.log('User is authenticated, loading profile data:', session.user);
+      console.log('Session info: Name =', session.user.name, 'Email =', session.user.email, 'Image =', session.user.image);
+      console.log('Google avatar URL:', session?.user?.image);
+      
+      // Khởi tạo thông tin cơ bản từ session
+      const updatedProfile = {
+        ...userProfile,
+        name: session.user.name || userProfile.name,
+        email: session.user.email || userProfile.email,
+        avatar: session.user.image || '/images/avatar-placeholder.svg',
+        // Sử dụng thông tin bổ sung từ session nếu có
+        phone: session.user.phone || userProfile.phone,
+        memberSince: session.user.memberSince || userProfile.memberSince,
+      };
 
-        // Nếu session có customName = true, ưu tiên sử dụng name từ session
-        if (session.user.customName) {
-          setProfile({
-            ...updatedProfile,
-            // Lấy một số thông tin từ localStorage nếu cần
-            phone: parsedProfile.phone || updatedProfile.phone,
-          });
-          console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
-        } else {
-          // Ngược lại, kết hợp thông tin từ localStorage và session
-          setProfile({
-            ...updatedProfile,
-            ...parsedProfile,
-            email: session.user.email || updatedProfile.email,
-            avatar: session.user.image || updatedProfile.avatar
-          });
-          console.log('Đã tải thông tin từ localStorage:', parsedProfile);
-        }
-      } else {
-        // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
-        setProfile(updatedProfile);
-        console.log('Đã tải thông tin từ session');
-        console.log('Profile avatar set to:', updatedProfile.avatar);
-      }
+      // Kiểm tra xem có thông tin đã lưu trong localStorage không
+      try {
+        const savedProfile = localStorage.getItem(`user_profile_${session.user.email}`);
+        if (savedProfile) {
+          const parsedProfile = JSON.parse(savedProfile);
 
-      // Tải cài đặt thông báo từ localStorage
-      const savedNotificationSettings = localStorage.getItem(`notification_settings_${session.user.email}`);
-      if (savedNotificationSettings) {
-        try {
-          const parsedSettings = JSON.parse(savedNotificationSettings);
-          setNotificationSettings(parsedSettings);
-          console.log('Đã tải cài đặt thông báo:', parsedSettings);
-        } catch (error) {
-          console.error('Lỗi khi parse cài đặt thông báo:', error);
-        }
-      }
-
-      // Fetch real purchase history from API và localStorage
-      (async () => {
-        try {
-          // Lấy dữ liệu sản phẩm để có thông tin originalPrice chính xác
-          const productsRes = await fetch('/api/products', { cache: 'no-store' });
-          let productsData = [];
-          if (productsRes.ok) {
-            const data = await productsRes.json();
-            productsData = data.products || [];
+          // Nếu session có customName = true, ưu tiên sử dụng name từ session
+          if (session.user.customName) {
+            setProfile({
+              ...updatedProfile,
+              // Lấy một số thông tin từ localStorage nếu cần
+              phone: parsedProfile.phone || updatedProfile.phone,
+            });
+            console.log('Đã tải thông tin từ session (tên tùy chỉnh)');
+          } else {
+            // Ngược lại, kết hợp thông tin từ localStorage và session
+            setProfile({
+              ...updatedProfile,
+              ...parsedProfile,
+              email: session.user.email || updatedProfile.email,
+              avatar: session.user.image || updatedProfile.avatar
+            });
+            console.log('Đã tải thông tin từ localStorage:', parsedProfile);
           }
-
-          // Lấy đơn hàng từ localStorage
-          const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
-          
-          // Chuyển đổi format cho component
-          const convertedOrders = localOrders.map((order: any) => ({
-            id: order.id,
-            date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
-            total: order.totalAmount,
-            status: order.status,
-            items: order.items.map((item: any) => {
-              // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
-              const productData = productsData.find((p: any) => p.id === item.productId);
-              const originalPrice = productData?.versions?.[0]?.originalPrice || 
-                                  productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
-                                  item.originalPrice || // Giữ originalPrice từ localStorage nếu có
-                                  500000; // fallback cuối cùng
-
-              // Tính toán hạn giấy phép dựa trên ngày mua và duration từ sản phẩm
-              let duration = '1month'; // Mặc định
-              if (productData?.optionDurations && item.productOption) {
-                duration = productData.optionDurations[item.productOption] || '1month';
-              } else if (productData?.optionDurations && productData.defaultProductOption) {
-                duration = productData.optionDurations[productData.defaultProductOption] || '1month';
-              }
-              
-              const purchaseDate = new Date(order.createdAt);
-              const expiryDate = calculateExpiryDate(purchaseDate, duration);
-
-              return {
-                id: item.productId,
-                name: item.productName,
-                version: 'Premium',
-                price: item.price,
-                originalPrice: originalPrice,
-                licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-                expiryDate: expiryDate,
-              };
-            }),
-            couponDiscount: order.couponDiscount
-          }));
-          
-          // Sắp xếp theo ngày mới nhất
-          convertedOrders.sort((a: any, b: any) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
-          
-          setPurchaseHistory(convertedOrders);
-          console.log('Loaded purchase history:', convertedOrders.length, 'orders');
-        } catch (err) {
-          console.error('Error fetching purchase history:', err);
-          setPurchaseHistory([]);
-        } finally {
-          setIsLoading(false);
+        } else {
+          // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
+          setProfile(updatedProfile);
+          console.log('Đã tải thông tin từ session');
         }
-      })();
 
-    } catch (error) {
-      console.error('Lỗi khi đọc từ localStorage:', error);
-      // Fallback to session data
-      setProfile(updatedProfile);
-      setIsLoading(false);
+        // Tải cài đặt thông báo từ localStorage
+        const savedNotificationSettings = localStorage.getItem(`notification_settings_${session.user.email}`);
+        if (savedNotificationSettings) {
+          try {
+            const parsedSettings = JSON.parse(savedNotificationSettings);
+            setNotificationSettings(parsedSettings);
+            console.log('Đã tải cài đặt thông báo:', parsedSettings);
+          } catch (error) {
+            console.error('Lỗi khi parse cài đặt thông báo:', error);
+          }
+        }
+
+        // Fetch real purchase history from API và localStorage
+        (async () => {
+          try {
+            // Lấy dữ liệu sản phẩm để có thông tin originalPrice chính xác
+            const productsRes = await fetch('/api/products', { cache: 'no-store' });
+            let productsData = [];
+            if (productsRes.ok) {
+              const data = await productsRes.json();
+              productsData = data.products || [];
+            }
+
+            // Lấy đơn hàng từ localStorage
+            const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
+            
+            // Lấy đơn hàng từ API
+            const res = await fetch('/api/orders/history', { cache: 'no-store' });
+            let apiOrders = [];
+            
+            if (res.ok) {
+              const data = await res.json();
+              apiOrders = data.orders || [];
+            }
+            
+            // Kết hợp dữ liệu từ localStorage và API, ưu tiên localStorage
+            const allOrders = [...localOrders];
+            
+            // Thêm các đơn hàng từ API nếu chưa có trong localStorage
+            apiOrders.forEach((apiOrder: any) => {
+              const exists = localOrders.some((localOrder: any) => localOrder.id === apiOrder.id);
+              if (!exists) {
+                // Chuyển đổi format từ API sang format component
+                const convertedOrder = {
+                  id: apiOrder.id,
+                  date: new Date(apiOrder.createdAt).toLocaleDateString('vi-VN'),
+                  total: apiOrder.totalAmount,
+                  status: apiOrder.status,
+                  items: apiOrder.items.map((item: any) => {
+                    // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
+                    const productData = productsData.find((p: any) => p.id === item.productId);
+                    const originalPrice = productData?.versions?.[0]?.originalPrice || 
+                                        productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
+                                        500000; // fallback
+
+                    return {
+                      id: item.productId,
+                      name: item.productName,
+                      version: 'Premium',
+                      price: item.price,
+                      originalPrice: originalPrice,
+                      licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                      expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'), // 1 năm
+                    };
+                  }),
+                  couponDiscount: apiOrder.couponDiscount
+                };
+                allOrders.push(convertedOrder);
+              }
+            });
+            
+            // Sắp xếp theo ngày mới nhất
+            allOrders.sort((a, b) => new Date(b.date || b.createdAt).getTime() - new Date(a.date || a.createdAt).getTime());
+            
+            setPurchaseHistory(allOrders);
+            console.log('Combined orders:', allOrders);
+          } catch (err) {
+            console.error('Error fetching purchase history:', err);
+            // Fallback: chỉ đọc từ localStorage, vẫn cần fetch dữ liệu sản phẩm để tính originalPrice
+            try {
+              // Vẫn cần lấy dữ liệu sản phẩm cho fallback
+              const productsRes = await fetch('/api/products', { cache: 'no-store' });
+              let productsData = [];
+              if (productsRes.ok) {
+                const data = await productsRes.json();
+                productsData = data.products || [];
+              }
+
+              const localOrders = JSON.parse(localStorage.getItem(`orders_${session.user.email}`) || '[]');
+              const convertedOrders = localOrders.map((order: any) => ({
+                id: order.id,
+                date: new Date(order.createdAt).toLocaleDateString('vi-VN'),
+                total: order.totalAmount,
+                status: order.status,
+                items: order.items.map((item: any) => {
+                  // Tìm sản phẩm trong dữ liệu products để lấy originalPrice chính xác
+                  const productData = productsData.find((p: any) => p.id === item.productId);
+                  const originalPrice = productData?.versions?.[0]?.originalPrice || 
+                                      productData?.optionPrices?.[productData.defaultProductOption]?.originalPrice || 
+                                      item.originalPrice || // Giữ originalPrice từ localStorage nếu có
+                                      500000; // fallback cuối cùng
+
+                  return {
+                    id: item.productId,
+                    name: item.productName,
+                    version: 'Premium',
+                    price: item.price,
+                    originalPrice: originalPrice,
+                    licenseKey: `LIC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+                    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('vi-VN'),
+                  };
+                }),
+                couponDiscount: order.couponDiscount
+              }));
+              setPurchaseHistory(convertedOrders);
+            } catch (localErr) {
+              console.error('Error reading from localStorage:', localErr);
+              setPurchaseHistory([]);
+            }
+          } finally {
+            setIsLoading(false);
+          }
+        })();
+
+      } catch (error) {
+        console.error('Lỗi khi đọc từ localStorage:', error);
+        // Fallback to session data
+        setProfile(updatedProfile);
+        setIsLoading(false);
+      }
     }
   }, [status, router, session]);
 
   // Hàm xử lý khi thay đổi thông tin
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProfile(prev => ({ ...prev, [name]: value }));
+    setProfile(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setSaveSuccess(false);
   };
 
   // Hàm xử lý khi submit form cập nhật thông tin
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSaving(true);
-    
+
     try {
-      // Lưu vào localStorage
+      // Lưu thông tin vào localStorage
       if (session?.user?.email) {
-        localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify(profile));
-      }
-      
-      // Cập nhật session nếu cần (chỉ cập nhật name nếu có thay đổi)
-      if (session?.user && profile.name !== session.user.name) {
-        await updateSession({
-          ...session,
-          user: {
-            ...session.user,
+        localStorage.setItem(`user_profile_${session.user.email}`, JSON.stringify({
+          name: profile.name,
+          phone: profile.phone,
+          memberSince: profile.memberSince,
+          // Không lưu email và avatar vì sẽ lấy từ session
+        }));
+
+        // Cập nhật thông tin trong session (trong môi trường thực tế sẽ gọi API)
+        /* Trong thực tế, bạn cần gọi API để cập nhật thông tin người dùng:
+        const response = await fetch('/api/user/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: session.user.email,
             name: profile.name,
-            customName: true // Đánh dấu rằng user đã tùy chỉnh tên
-          }
+            phone: profile.phone 
+          })
+        });
+        const data = await response.json();
+        */
+
+        // Cập nhật session để khi refresh trang sẽ giữ nguyên thông tin
+        await updateSession({
+          name: profile.name,
+          phone: profile.phone
+        });
+
+        console.log('Đã lưu thông tin vào localStorage và cập nhật session:', {
+          name: profile.name,
+          phone: profile.phone
         });
       }
-      
-      setSaveSuccess(true);
-      
-      // Hide success message after 3 seconds
-      setTimeout(() => setSaveSuccess(false), 3000);
-    } catch (error) {
-      console.error('Lỗi khi cập nhật profile:', error);
-      alert('Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại.');
-    } finally {
+
       setSaving(false);
+      setSaveSuccess(true);
+
+      // Tự động ẩn thông báo thành công sau 3 giây
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Lỗi khi lưu thông tin:', error);
+      setSaving(false);
+      // Xử lý thông báo lỗi ở đây nếu cần
     }
   };
 
@@ -305,26 +329,23 @@ export default function AccountPage() {
     return dateString;
   };
 
+  // Thêm liên kết đến trang đơn hàng
+  const goToOrdersPage = () => {
+    router.push('/orders');
+  };
+
   // Tính tổng số tiền đã chi
-  const totalSpent = purchaseHistory.reduce((sum, order) => {
-    // Xử lý các trường hợp total có thể là totalAmount hoặc total
-    const orderTotal = order.total || order.totalAmount || 0;
-    // Đảm bảo giá trị là số và không phải NaN
-    const validTotal = typeof orderTotal === 'number' && !isNaN(orderTotal) ? orderTotal : 0;
-    return sum + validTotal;
-  }, 0);
+  const totalSpent = purchaseHistory.reduce((sum, order) => sum + order.total, 0);
 
   // Tính tổng số tiền đã tiết kiệm (bao gồm cả tiết kiệm từ giá sale và voucher)
   const totalSaved = purchaseHistory.reduce((sum, order) => {
     // Tiết kiệm từ giá sale (originalPrice - price)
     const saleSavings = order.items.reduce((itemSum, item) => {
-      const originalPrice = typeof item.originalPrice === 'number' && !isNaN(item.originalPrice) ? item.originalPrice : 0;
-      const currentPrice = typeof item.price === 'number' && !isNaN(item.price) ? item.price : 0;
-      return itemSum + Math.max(0, originalPrice - currentPrice);
+      return itemSum + (item.originalPrice - item.price);
     }, 0);
     
     // Tiết kiệm từ voucher/coupon
-    const voucherSavings = typeof order.couponDiscount === 'number' && !isNaN(order.couponDiscount) ? order.couponDiscount : 0;
+    const voucherSavings = order.couponDiscount || 0;
     
     return sum + saleSavings + voucherSavings;
   }, 0);
@@ -339,98 +360,6 @@ export default function AccountPage() {
   const handleSignOut = async () => {
     await signOut({ redirect: false });
     router.push('/');
-  };
-
-  // Hàm xóa sản phẩm đã mua
-  const handleDeletePurchase = (productId: string, orderId: string) => {
-    // Tìm tên sản phẩm để hiển thị trong thông báo
-    const order = purchaseHistory.find(o => o.id === orderId);
-    const product = order?.items.find(item => item.id === productId);
-    const productName = product?.name || 'sản phẩm này';
-    
-    if (window.confirm(`Bạn có chắc chắn muốn xóa "${productName}" khỏi danh sách đã mua?\n\nLưu ý: Thao tác này không thể hoàn tác.`)) {
-      // Xóa từ localStorage
-      if (session?.user?.email) {
-        const savedPurchases = localStorage.getItem(`orders_${session.user.email}`);
-        if (savedPurchases) {
-          try {
-            const parsedPurchases = JSON.parse(savedPurchases);
-            const updatedPurchases = parsedPurchases.map((order: any) => {
-              if (order.id === orderId) {
-                return {
-                  ...order,
-                  items: order.items.filter((item: any) => item.id !== productId)
-                };
-              }
-              return order;
-            }).filter((order: any) => order.items.length > 0); // Xóa đơn hàng nếu không còn item nào
-            
-            localStorage.setItem(`orders_${session.user.email}`, JSON.stringify(updatedPurchases));
-            
-            // Cập nhật state
-            const updatedHistory = purchaseHistory.map(order => {
-              if (order.id === orderId) {
-                return {
-                  ...order,
-                  items: order.items.filter(item => item.id !== productId)
-                };
-              }
-              return order;
-            }).filter(order => order.items.length > 0);
-            
-            setPurchaseHistory(updatedHistory);
-            
-            // Hiển thị thông báo thành công
-            alert(`Đã xóa "${productName}" khỏi danh sách sản phẩm đã mua thành công!`);
-          } catch (error) {
-            console.error('Lỗi khi xóa sản phẩm:', error);
-            alert('Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại.');
-          }
-        }
-      }
-    }
-  };
-
-  // Hàm xử lý form support
-  const handleSupportSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Reset form
-      setSupportProduct('');
-      setSupportTitle('');
-      setSupportDescription('');
-      setSupportSuccess(true);
-      
-      // Hide success message after 5 seconds
-      setTimeout(() => setSupportSuccess(false), 5000);
-    } catch (error) {
-      console.error('Lỗi khi gửi yêu cầu hỗ trợ:', error);
-      alert('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại.');
-    }
-  };
-
-  // Hàm xử lý cài đặt thông báo
-  const handleNotificationSettingsSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      // Lưu vào localStorage
-      if (session?.user?.email) {
-        localStorage.setItem(`notification_settings_${session.user.email}`, JSON.stringify(notificationSettings));
-      }
-      
-      setSettingsSaved(true);
-      
-      // Hide success message after 3 seconds
-      setTimeout(() => setSettingsSaved(false), 3000);
-    } catch (error) {
-      console.error('Lỗi khi lưu cài đặt:', error);
-      alert('Có lỗi xảy ra khi lưu cài đặt. Vui lòng thử lại.');
-    }
   };
 
   if (status === 'loading' || isLoading) {
@@ -450,11 +379,11 @@ export default function AccountPage() {
   return (
     <div>
       {/* Page Header */}
-      <section className="bg-teal-600 text-white py-16">
+      <section className="bg-primary-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Tài khoản của tôi</h1>
           <p className="text-xl max-w-3xl">
-            Quản lý thông tin cá nhân, sản phẩm đã mua và giấy phép của bạn.
+            Quản lý thông tin cá nhân, giấy phép và lịch sử mua hàng của bạn.
           </p>
         </div>
       </section>
@@ -522,7 +451,7 @@ export default function AccountPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Avatar
-                      src={profile.avatar || session?.user?.image}
+                      src={session?.user?.image}
                       alt={profile.name}
                       size="xl"
                       className=""
@@ -555,7 +484,7 @@ export default function AccountPage() {
                 </div>
 
                 <nav className="space-y-1">
-                  <a href="#profile" className="flex items-center px-4 py-2 bg-teal-50 text-teal-700 rounded-md">
+                  <a href="#profile" className="flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
@@ -573,11 +502,17 @@ export default function AccountPage() {
                     </svg>
                     Quản lý giấy phép
                   </a>
+                  <a href="#orders" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Lịch sử mua hàng
+                  </a>
                   <a href="#downloads" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    Tài xuống
+                    Tải xuống
                   </a>
                   <a href="#support" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -635,7 +570,7 @@ export default function AccountPage() {
                           <input
                             type="text"
                             name="name"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
                             value={profile.name}
                             onChange={handleProfileChange}
                           />
@@ -645,7 +580,7 @@ export default function AccountPage() {
                           <input
                             type="email"
                             name="email"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
                             value={profile.email}
                             disabled
                           />
@@ -654,7 +589,7 @@ export default function AccountPage() {
                           <label className="block text-sm font-medium text-gray-700 mb-1">Ngày tham gia</label>
                           <input
                             type="text"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500 bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
                             value={profile.memberSince}
                             disabled
                           />
@@ -664,7 +599,7 @@ export default function AccountPage() {
                           <input
                             type="text"
                             name="phone"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
                             placeholder="Chưa cập nhật"
                             value={profile.phone}
                             onChange={handleProfileChange}
@@ -676,7 +611,7 @@ export default function AccountPage() {
                         <button
                           type="submit"
                           disabled={isSaving}
-                          className={`px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
+                          className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
                         >
                           {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
                         </button>
@@ -707,21 +642,21 @@ export default function AccountPage() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu hiện tại</label>
-                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500" />
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu mới</label>
-                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500" />
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu mới</label>
-                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500" />
+                        <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500" />
                       </div>
                     </div>
 
                     <div className="mt-4 text-right">
                       <button 
-                        className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition"
+                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
                         onClick={(e) => {
                           e.preventDefault();
                           setPasswordMessage('Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.');
@@ -740,59 +675,61 @@ export default function AccountPage() {
                 <h2 className="text-2xl font-bold mb-6">Sản phẩm đã mua</h2>
 
                 {hasProducts ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {purchaseHistory.flatMap(order => 
-                      order.items.map((item, index) => (
-                        <div key={`${order.id}-${item.id}-${index}`} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-                          <div className="p-4">
-                            {/* Header của card với nút xóa */}
-                            <div className="flex justify-between items-start mb-4">
-                              <div className="flex-1">
-                                <h3 className="text-lg font-bold text-gray-800">{item.name}</h3>
-                                <p className="text-sm text-gray-600">{item.version}</p>
-                              </div>
-                              <button 
-                                onClick={() => handleDeletePurchase(item.id, order.id)}
-                                className="ml-2 p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
-                                title="Xóa sản phẩm"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                              </button>
-                            </div>
-                            
-                            <div className="space-y-2 mb-4">
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600">Giá</span>
-                                <span className="font-semibold">{formatCurrency(item.price)}</span>
-                              </div>
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                                <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
-                              </div>
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600">Ngày mua</span>
-                                <span className="font-semibold">{order.date || '--'}</span>
-                              </div>
-                              <div className="flex justify-between items-center text-sm">
-                                <span className="text-gray-600">Hạn giấy phép</span>
-                                <span className="font-semibold">{item.expiryDate || '--'}</span>
-                              </div>
-                            </div>
-
-                            <div className="flex space-x-2">
-                              <button className="flex-1 bg-teal-600 text-white px-3 py-2 rounded-md text-sm hover:bg-teal-700 transition">
-                                Tải xuống
-                              </button>
-                              <button className="flex-1 bg-gray-200 text-gray-800 px-3 py-2 rounded-md text-sm hover:bg-gray-300 transition">
-                                Xem chi tiết
-                              </button>
-                            </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                      <div key={index} className="border rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 p-4 border-b">
+                          <h3 className="font-bold">{item.name}</h3>
+                          <p className="text-sm text-gray-600">{item.version}</p>
+                        </div>
+                        <div className="p-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-gray-600">Giá</span>
+                            <span className="font-semibold">{formatCurrency(item.price)}</span>
+                          </div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-gray-600">Tiết kiệm từ giá sale</span>
+                            <span className="font-semibold text-green-600">{formatCurrency(item.originalPrice - item.price)}</span>
+                          </div>
+                          {/* Tìm order chứa item hiện tại để hiển thị ngày mua */}
+                          {purchaseHistory.map(order => {
+                            if (order.items.some(orderItem => orderItem.id === item.id)) {
+                              return (
+                                <div key={`purchase-date-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
+                                  <span className="text-gray-600">Ngày mua</span>
+                                  <span className="font-semibold">{order.date}</span>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                          {/* Tìm order chứa item hiện tại và hiển thị voucher discount */}
+                          {purchaseHistory.map(order => {
+                            if (order.items.some(orderItem => orderItem.id === item.id) && order.couponDiscount && order.couponDiscount > 0) {
+                              return (
+                                <div key={`voucher-${order.id}-${item.id}`} className="flex justify-between items-center mb-2">
+                                  <span className="text-gray-600">Tiết kiệm từ voucher</span>
+                                  <span className="font-semibold text-green-600">{formatCurrency(order.couponDiscount)}</span>
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-gray-600">Hạn giấy phép</span>
+                            <span className="font-semibold">{item.expiryDate}</span>
+                          </div>
+                          <div className="mt-4 flex space-x-2">
+                            <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm hover:bg-primary-700 transition">
+                              Tải xuống
+                            </button>
+                            <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition">
+                              Xem chi tiết
+                            </button>
                           </div>
                         </div>
-                      ))
-                    )}
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="text-center py-10 bg-gray-50 rounded-lg">
@@ -801,7 +738,7 @@ export default function AccountPage() {
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có sản phẩm nào</h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">Bạn chưa mua sản phẩm nào. Khám phá các sản phẩm của chúng tôi để bắt đầu.</p>
-                    <Link href="/products" className="inline-flex items-center bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition">
+                    <Link href="/products" className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
@@ -866,18 +803,6 @@ export default function AccountPage() {
                               <div className="flex space-x-2">
                                 <button className="text-primary-600 hover:text-primary-900">Sao chép</button>
                                 <button className="text-blue-600 hover:text-blue-900">Gia hạn</button>
-                                <button 
-                                  onClick={() => {
-                                    // Tìm order chứa item này
-                                    const order = purchaseHistory.find(o => o.items.some(i => i.id === item.id));
-                                    if (order) {
-                                      handleDeletePurchase(item.id, order.id);
-                                    }
-                                  }}
-                                  className="text-red-600 hover:text-red-900"
-                                >
-                                  Xóa
-                                </button>
                               </div>
                             </td>
                           </tr>
@@ -896,57 +821,170 @@ export default function AccountPage() {
                 )}
               </div>
 
-              {/* Phần Tài xuống */}
+              {/* Phần Lịch sử mua hàng */}
+              <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">
+                  Lịch sử mua hàng
+                  {hasProducts && (
+                    <button 
+                      onClick={goToOrdersPage}
+                      className="ml-4 text-sm font-medium text-primary-600 hover:text-primary-700"
+                    >
+                      Xem tất cả đơn hàng
+                    </button>
+                  )}
+                </h2>
+
+                {hasProducts ? (
+                  <div className="space-y-6">
+                    {purchaseHistory.map((order, orderIndex) => (
+                      <div key={orderIndex} className="border rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
+                          <div>
+                            <h3 className="font-bold">Đơn hàng #{order.id}</h3>
+                            <p className="text-sm text-gray-600">Ngày đặt: {order.date}</p>
+                          </div>
+                          <div>
+                            <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
+                              {order.status}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <div className="divide-y divide-gray-200">
+                            {order.items.map((item, itemIndex) => (
+                              <div key={itemIndex} className="py-3 flex flex-col md:flex-row md:justify-between md:items-center">
+                                <div className="mb-2 md:mb-0">
+                                  <div className="font-medium">{item.name}</div>
+                                  <div className="text-sm text-gray-600">{item.version}</div>
+                                </div>
+                                <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
+                                  <div className="text-sm">
+                                    <span className="text-gray-600">Giá: </span>
+                                    <span className="font-semibold">{formatCurrency(item.price)}</span>
+                                  </div>
+                                  <div className="text-sm">
+                                    <span className="text-gray-600">Hạn dùng: </span>
+                                    <span className="font-semibold">{item.expiryDate}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-4 border-t pt-4">
+                            {/* Hiển thị chi tiết tiết kiệm */}
+                            <div className="space-y-2 mb-4">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">Tiết kiệm từ giá sale:</span>
+                                <span className="font-semibold text-green-600">
+                                  {formatCurrency(order.items.reduce((sum, item) => sum + (item.originalPrice - item.price), 0))}
+                                </span>
+                              </div>
+                              {order.couponDiscount && order.couponDiscount > 0 && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">Tiết kiệm từ voucher:</span>
+                                  <span className="font-semibold text-green-600">
+                                    {formatCurrency(order.couponDiscount)}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="flex justify-between text-sm font-bold border-t pt-2">
+                                <span className="text-gray-800">Tổng tiết kiệm:</span>
+                                <span className="text-green-600">
+                                  {formatCurrency(
+                                    order.items.reduce((sum, item) => sum + (item.originalPrice - item.price), 0) +
+                                    (order.couponDiscount || 0)
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex justify-between items-center">
+                              <div className="text-lg font-semibold">
+                                Tổng thanh toán: {formatCurrency(order.total)}
+                              </div>
+                              <div className="flex space-x-3">
+                                <Link 
+                                  href={`/orders/${order.id}`}
+                                  className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm"
+                                >
+                                  Chi tiết đơn hàng
+                                </Link>
+                                <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
+                                  Tải hóa đơn PDF
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    <div className="text-center mt-6">
+                      <button 
+                        onClick={goToOrdersPage}
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Xem tất cả đơn hàng
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Chưa có đơn hàng nào</h3>
+                    <p className="text-gray-600 mb-6 max-w-md mx-auto">Bạn chưa thực hiện giao dịch nào. Hãy khám phá sản phẩm của chúng tôi.</p>
+                    <Link href="/products" className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      Mua sắm ngay
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Phần Tải xuống */}
               <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Tài xuống</h2>
+                <h2 className="text-2xl font-bold mb-6">Tải xuống</h2>
 
                 {hasProducts ? (
                   <div className="space-y-4">
-                    {purchaseHistory.flatMap(order => 
-                      order.items.map((item, index) => (
-                        <div key={`download-${order.id}-${item.id}-${index}`} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                          <div className="flex items-center justify-between mb-3">
-                            <div>
-                              <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-                              <p className="text-sm text-gray-600">{item.version}</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-sm text-gray-600">Ngày mua: {order.date}</p>
-                              <p className="text-sm text-gray-600">Hạn: {item.expiryDate}</p>
-                            </div>
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-2">
-                            <button className="bg-teal-600 text-white px-4 py-2 rounded-md text-sm hover:bg-teal-700 transition flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                              </svg>
-                              Tải Windows
-                            </button>
-                            <button className="bg-gray-600 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-700 transition flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                              </svg>
-                              Tải macOS
-                            </button>
-                            <button className="bg-teal-600 text-white px-4 py-2 rounded-md text-sm hover:bg-teal-700 transition flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                              Hướng dẫn
-                            </button>
-                          </div>
+                    {purchaseHistory.flatMap(order => order.items).map((item, index) => (
+                      <div key={index} className="border rounded-lg p-4 hover:shadow-md transition flex flex-col md:flex-row md:justify-between md:items-center">
+                        <div className="mb-3 md:mb-0">
+                          <h3 className="font-bold">{item.name} - {item.version}</h3>
+                          <p className="text-sm text-gray-600">Phiên bản: 2.1.0 (Cập nhật: 01/07/2023)</p>
                         </div>
-                      ))
-                    )}
+                        <div className="flex items-center space-x-3">
+                          <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            Xem lịch sử
+                          </button>
+                          <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Tải xuống
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="text-center py-10 bg-gray-50 rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Không có tệp tải xuống</h3>
-                    <p className="text-gray-600 mb-4 max-w-md mx-auto">Bạn chưa có sản phẩm nào để tải xuống. Hãy mua sản phẩm để có thể tải xuống.</p>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">Không có tệp nào để tải xuống</h3>
+                    <p className="text-gray-600 mb-4 max-w-md mx-auto">Bạn cần mua sản phẩm trước khi có thể tải xuống phần mềm.</p>
                   </div>
                 )}
               </div>
@@ -955,109 +993,90 @@ export default function AccountPage() {
               <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">Hỗ trợ kỹ thuật</h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Form yêu cầu hỗ trợ */}
-                  <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Gửi yêu cầu hỗ trợ</h3>
-                    
+                <div className="space-y-6">
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="font-semibold text-lg mb-2">Yêu cầu hỗ trợ mới</h3>
+                    <p className="text-gray-600 mb-4">Gửi yêu cầu hỗ trợ kỹ thuật cho sản phẩm bạn đã mua</p>
+
                     {supportSuccess && (
-                      <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
-                        Yêu cầu hỗ trợ đã được gửi thành công! Chúng tôi sẽ phản hồi trong vòng 24h.
+                      <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
+                        <div className="flex items-start">
+                          <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Yêu cầu hỗ trợ của bạn đã được gửi thành công! Chúng tôi sẽ phản hồi sớm nhất có thể.</span>
+                        </div>
+                        <button 
+                          onClick={() => setSupportSuccess(false)}
+                          className="text-green-400 hover:text-green-600"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
                       </div>
                     )}
 
-                    <form onSubmit={handleSupportSubmit} className="space-y-4">
+                    <div className="space-y-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Sản phẩm cần hỗ trợ</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Sản phẩm</label>
                         <select 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
                           value={supportProduct}
                           onChange={(e) => setSupportProduct(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
-                          required
                         >
-                          <option value="">Chọn sản phẩm</option>
+                          <option value="">Chọn sản phẩm cần hỗ trợ</option>
                           {purchaseHistory.flatMap(order => order.items).map((item, index) => (
-                            <option key={index} value={item.name}>{item.name} - {item.version}</option>
+                            <option key={index} value={item.id}>{item.name} - {item.version}</option>
                           ))}
-                          <option value="general">Vấn đề chung</option>
                         </select>
                       </div>
-                      
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề</label>
-                        <input
-                          type="text"
+                        <input 
+                          type="text" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          placeholder="Nhập tiêu đề vấn đề" 
                           value={supportTitle}
                           onChange={(e) => setSupportTitle(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
-                          placeholder="Mô tả ngắn gọn vấn đề"
-                          required
                         />
                       </div>
-                      
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả chi tiết</label>
-                        <textarea
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả vấn đề</label>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
+                          placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"
                           value={supportDescription}
                           onChange={(e) => setSupportDescription(e.target.value)}
-                          rows={4}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
-                          placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."
-                          required
-                        />
-                      </div>
-                      
-                      <button
-                        type="submit"
-                        className="w-full bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition"
-                      >
-                        Gửi yêu cầu hỗ trợ
-                      </button>
-                    </form>
-                  </div>
-
-                  {/* Thông tin liên hệ */}
-                  <div className="space-y-6">
-                    <div className="bg-teal-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-teal-800 mb-4">Liên hệ trực tiếp</h3>
-                      <div className="space-y-3">
-                        <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                          </svg>
-                          <span className="text-teal-700">xlab.rnd@gmail.com</span>
-                        </div>
-                        <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2z" />
-                          </svg>
-                          <span className="text-teal-700">1900.xxxx</span>
-                        </div>
-                        <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span className="text-teal-700">24/7 Support</span>
-                        </div>
+                        ></textarea>
                       </div>
                     </div>
 
-                    <div className="bg-teal-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-teal-800 mb-4">FAQ phổ biến</h3>
-                      <div className="space-y-2">
-                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
-                          • Cách kích hoạt giấy phép
-                        </Link>
-                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
-                          • Chuyển đổi thiết bị
-                        </Link>
-                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
-                          • Cài đặt và sử dụng
-                        </Link>
-                        <Link href="/support" className="block text-teal-700 hover:text-teal-900 hover:underline">
-                          • Khắc phục sự cố
-                        </Link>
-                      </div>
+                    <div className="mt-4 text-right">
+                      <button 
+                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          // Validate form
+                          if (!supportTitle || !supportDescription) {
+                            alert('Vui lòng nhập đầy đủ thông tin');
+                            return;
+                          }
+                          
+                          // Reset form
+                          setSupportProduct('');
+                          setSupportTitle('');
+                          setSupportDescription('');
+                          setSupportSuccess(true);
+                          
+                          // Tự động ẩn thông báo sau 5 giây
+                          setTimeout(() => {
+                            setSupportSuccess(false);
+                          }, 5000);
+                        }}
+                      >
+                        Gửi yêu cầu hỗ trợ
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1068,146 +1087,132 @@ export default function AccountPage() {
                 <h2 className="text-2xl font-bold mb-6">Cài đặt tài khoản</h2>
 
                 <div className="space-y-6">
-                  {/* Cài đặt thông báo */}
-                  <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Cài đặt thông báo</h3>
+                  <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="font-semibold text-lg mb-3">Thông báo</h3>
                     
                     {settingsSaved && (
-                      <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md">
-                        Cài đặt đã được lưu thành công!
+                      <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
+                        <div className="flex items-start">
+                          <svg className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>Cài đặt thông báo đã được lưu thành công!</span>
+                        </div>
+                        <button 
+                          onClick={() => setSettingsSaved(false)}
+                          className="text-green-400 hover:text-green-600"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
                       </div>
                     )}
-
-                    <form onSubmit={handleNotificationSettingsSubmit} className="space-y-4">
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex-1">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Email thông báo</label>
-                          <p className="text-sm text-gray-500">Nhận thông báo qua email</p>
-                        </div>
-                        <div className="flex-shrink-0 ml-4">
-                          <input
-                            type="checkbox"
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo qua email</span>
+                        <label className="inline-flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
                             checked={notificationSettings.email}
-                            onChange={(e) => setNotificationSettings({...notificationSettings, email: e.target.checked})}
-                            className="sr-only"
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              email: e.target.checked
+                            })}
                           />
-                          <div 
-                            onClick={() => setNotificationSettings({...notificationSettings, email: !notificationSettings.email})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.email ? 'bg-teal-600' : 'bg-gray-300'}`}
-                          >
-                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.email ? 'translate-x-6' : 'translate-x-1'}`}></div>
-                          </div>
-                        </div>
+                        </label>
                       </div>
-
-                      <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                        <div className="flex-1">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Cập nhật sản phẩm</label>
-                          <p className="text-sm text-gray-500">Thông báo về phiên bản mới</p>
-                        </div>
-                        <div className="flex-shrink-0 ml-4">
-                          <input
-                            type="checkbox"
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo cập nhật sản phẩm</span>
+                        <label className="inline-flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
                             checked={notificationSettings.productUpdates}
-                            onChange={(e) => setNotificationSettings({...notificationSettings, productUpdates: e.target.checked})}
-                            className="sr-only"
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              productUpdates: e.target.checked
+                            })}
                           />
-                          <div 
-                            onClick={() => setNotificationSettings({...notificationSettings, productUpdates: !notificationSettings.productUpdates})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.productUpdates ? 'bg-teal-600' : 'bg-gray-300'}`}
-                          >
-                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.productUpdates ? 'translate-x-6' : 'translate-x-1'}`}></div>
-                          </div>
-                        </div>
+                        </label>
                       </div>
-
-                      <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                        <div className="flex-1">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Khuyến mại</label>
-                          <p className="text-sm text-gray-500">Thông báo về ưu đãi đặc biệt</p>
-                        </div>
-                        <div className="flex-shrink-0 ml-4">
-                          <input
-                            type="checkbox"
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo khuyến mãi và ưu đãi</span>
+                        <label className="inline-flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
                             checked={notificationSettings.promotions}
-                            onChange={(e) => setNotificationSettings({...notificationSettings, promotions: e.target.checked})}
-                            className="sr-only"
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              promotions: e.target.checked
+                            })}
                           />
-                          <div 
-                            onClick={() => setNotificationSettings({...notificationSettings, promotions: !notificationSettings.promotions})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.promotions ? 'bg-teal-600' : 'bg-gray-300'}`}
-                          >
-                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.promotions ? 'translate-x-6' : 'translate-x-1'}`}></div>
-                          </div>
-                        </div>
+                        </label>
                       </div>
-
-                      <div className="flex items-center justify-between py-3 border-t border-gray-200">
-                        <div className="flex-1">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Nhắc nhở hết hạn</label>
-                          <p className="text-sm text-gray-500">Thông báo trước khi giấy phép hết hạn</p>
-                        </div>
-                        <div className="flex-shrink-0 ml-4">
-                          <input
-                            type="checkbox"
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700">Thông báo hết hạn giấy phép</span>
+                        <label className="inline-flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4" 
                             checked={notificationSettings.expiryReminders}
-                            onChange={(e) => setNotificationSettings({...notificationSettings, expiryReminders: e.target.checked})}
-                            className="sr-only"
+                            onChange={(e) => setNotificationSettings({
+                              ...notificationSettings,
+                              expiryReminders: e.target.checked
+                            })}
                           />
-                          <div 
-                            onClick={() => setNotificationSettings({...notificationSettings, expiryReminders: !notificationSettings.expiryReminders})}
-                            className={`cursor-pointer w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${notificationSettings.expiryReminders ? 'bg-teal-600' : 'bg-gray-300'}`}
-                          >
-                            <div className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out absolute top-1 ${notificationSettings.expiryReminders ? 'translate-x-6' : 'translate-x-1'}`}></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="pt-4 border-t border-gray-200">
-                        <button
-                          type="submit"
-                          className="w-full bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700 transition-colors duration-200"
-                        >
-                          Lưu cài đặt
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  {/* Quản lý tài khoản */}
-                  <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Quản lý tài khoản</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between py-3 border-b border-gray-200">
-                        <div>
-                          <span className="text-sm font-medium text-gray-700">Xuất dữ liệu tài khoản</span>
-                          <p className="text-sm text-gray-500">Tải xuống toàn bộ dữ liệu của bạn</p>
-                        </div>
-                        <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition text-sm">
-                          Xuất dữ liệu
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between py-3 border-b border-gray-200">
-                        <div>
-                          <span className="text-sm font-medium text-gray-700">Hủy kích hoạt tài khoản</span>
-                          <p className="text-sm text-gray-500">Vô hiệu hóa tạm thời tài khoản của bạn</p>
-                        </div>
-                        <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition text-sm">
-                          Hủy kích hoạt
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center justify-between py-3">
-                        <div>
-                          <span className="text-sm font-medium text-gray-700">Xóa tài khoản</span>
-                          <p className="text-sm text-gray-500">Xóa vĩnh viễn tài khoản và toàn bộ dữ liệu</p>
-                        </div>
-                        <button className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition text-sm">
-                          Xóa tài khoản
-                        </button>
+                        </label>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="mt-4 text-right">
+                    <button 
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        
+                        // Lưu cài đặt vào localStorage
+                        if (session?.user?.email) {
+                          localStorage.setItem(
+                            `notification_settings_${session.user.email}`, 
+                            JSON.stringify(notificationSettings)
+                          );
+                        }
+                        
+                        // Hiển thị thông báo thành công
+                        setSettingsSaved(true);
+                        
+                        // Tự động ẩn thông báo sau 3 giây
+                        setTimeout(() => {
+                          setSettingsSaved(false);
+                        }, 3000);
+                      }}
+                    >
+                      Lưu thay đổi
+                    </button>
+                  </div>
+                </div>
+
+                {/* Nút đăng xuất */}
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg text-gray-800">Đăng xuất</h3>
+                      <p className="text-sm text-gray-600 mt-1">Kết thúc phiên đăng nhập hiện tại của bạn</p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition flex items-center"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Đăng xuất
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1215,11 +1220,6 @@ export default function AccountPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer text */}
-      <div className="text-center text-gray-600 text-sm mt-8">
-        <p>Cần hỗ trợ? <Link href="/contact" className="text-teal-600 hover:underline">Liên hệ chúng tôi</Link></p>
-      </div>
     </div>
-  );
+  )
 } 

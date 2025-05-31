@@ -25,7 +25,7 @@ const NotificationDemo = () => {
         title: 'Đơn hàng mới',
         content: 'Đơn hàng của bạn đã được xử lý và đang trong quá trình vận chuyển.',
         type: 'order' as const,
-        link: '/account'
+        link: '/orders'
       },
       system: {
         title: 'Thông báo hệ thống',

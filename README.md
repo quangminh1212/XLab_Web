@@ -2,61 +2,6 @@
 
 Dự án web bán hàng và phân phối phần mềm XLab.
 
-## Quick Start (Khởi chạy nhanh)
-
-### Với Windows - Master Launcher
-
-Dự án đã tích hợp tất cả các script vào một file `run.bat` với menu lựa chọn:
-
-```bash
-run.bat
-```
-
-Menu sẽ hiển thị các tùy chọn:
-- **[1] Quick Start (default)**: Khởi chạy nhanh với kiểm tra và cài đặt dependencies
-- **[2] Fix and Run (clean install)**: Xóa cache và cài đặt lại từ đầu
-- **[3] Environment Setup only**: Chỉ tạo file `.env.local` 
-- **[4] Silent Quick Start**: Chạy nhanh không hiển thị chi tiết
-- **[5] PowerShell mode**: Chuyển sang chạy bằng PowerShell
-
-### Cách khác để chạy
-
-**PowerShell riêng biệt:**
-```powershell
-.\run.ps1
-```
-
-**Các file batch riêng (đã tích hợp vào run.bat):**
-- `quick-start.bat` - Khởi chạy đơn giản
-- `fix-and-run.bat` - Sửa lỗi và chạy lại
-- `setup-env.bat` - Chỉ setup environment
-
-Master Launcher sẽ tự động:
-- ✅ Tạo thư mục `logs` để lưu log
-- 🔧 Tạo file `.env.local` nếu chưa có
-- 📦 Kiểm tra và cài đặt `node_modules`
-- 🔄 Cập nhật dependencies
-- 🚀 Khởi chạy development server
-- 📝 Ghi log chi tiết vào `logs/install.log` và `logs/server.log`
-
-### Cách chạy thủ công
-
-Nếu muốn chạy từng bước:
-
-```bash
-# 1. Cài đặt dependencies
-npm install
-
-# 2. Chạy môi trường phát triển
-npm run dev
-
-# 3. Build cho production
-npm run build
-
-# 4. Chạy bản build
-npm start
-```
-
 ## Cấu trúc dự án
 
 Sau khi tái cấu trúc, dự án được tổ chức như sau:

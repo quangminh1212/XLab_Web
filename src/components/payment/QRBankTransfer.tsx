@@ -58,7 +58,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       const qrContent = qrPay.build();
       
       const qrUrl = await QRCode.toDataURL(qrContent, {
-        width: 384,
+        width: 320,
         margin: 2,
         color: {
           dark: '#0F766E', // teal-700
@@ -177,12 +177,12 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
           <div className="text-center mb-6">
             {qrCodeUrl ? (
               <div className="inline-block p-6 bg-white rounded-xl shadow-inner">
-                <div className="w-96 h-96 mx-auto bg-white rounded-xl flex items-center justify-center">
-                  <img src={qrCodeUrl} alt="QR Code" className="w-88 h-88" />
+                <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
+                  <img src={qrCodeUrl} alt="QR Code" className="w-72 h-72" />
                 </div>
               </div>
             ) : (
-              <div className="w-96 h-96 mx-auto bg-gray-100 rounded-xl flex items-center justify-center">
+              <div className="w-80 h-80 mx-auto bg-gray-100 rounded-xl flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
               </div>
             )}

@@ -94,10 +94,6 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-          {
-            key: 'Content-Security-Policy',
-            value: "img-src 'self' data: blob: https://*.googleusercontent.com https://*.google.com https: http:; default-src 'self';"
-          },
         ],
       },
     ];
