@@ -5,7 +5,8 @@ import {
   saveUserData, 
   createUserData, 
   updateUserSession, 
-  addUserActivity 
+  addUserActivity,
+  cleanupCorruptedFiles 
 } from './userDataManager';
 import { User } from '@/models/UserModel';
 import { NextRequest } from 'next/server';
@@ -33,9 +34,24 @@ function getClientIP(request: NextRequest): string {
   return 'unknown';
 }
 
+// Chạy cleanup mỗi giờ
+let lastCleanupTime = 0;
+const CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 giờ
+
+async function runPeriodicCleanup(): Promise<void> {
+  const now = Date.now();
+  if (now - lastCleanupTime > CLEANUP_INTERVAL) {
+    await cleanupCorruptedFiles();
+    lastCleanupTime = now;
+  }
+}
+
 // Theo dõi session user
 export async function trackUserSession(request?: NextRequest): Promise<void> {
   try {
+    // Chạy cleanup định kỳ
+    await runPeriodicCleanup();
+    
     const session = await getServerSession(authOptions);
     
     if (!session || !session.user || !session.user.email) {

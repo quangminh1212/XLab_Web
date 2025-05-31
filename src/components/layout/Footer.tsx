@@ -190,18 +190,7 @@ export default function Footer() {
               </li>
             </ul>
             
-            {/* Additional Links */}
-            <div className="space-y-3 text-center lg:text-left">
-              <Link href="/support" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-base transition-all duration-300 hover:translate-x-1">
-                <span className="w-0 group-hover:w-1.5 h-0.5 bg-orange-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                Hỗ trợ
-              </Link>
-              <br />
-              <Link href="/contact" className="group inline-flex items-center text-slate-400 hover:text-orange-400 text-base transition-all duration-300 hover:translate-x-1">
-                <span className="w-0 group-hover:w-1.5 h-0.5 bg-orange-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                Liên hệ ngay
-              </Link>
-            </div>
+
           </div>
         </div>
 

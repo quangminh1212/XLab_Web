@@ -154,20 +154,41 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
     userData.metadata.checksum = createDataChecksum(userData);
     
     const filePath = getUserFilePath(email);
-    const dataString = JSON.stringify(userData, null, 2);
-    const { encrypted, iv, tag } = encryptData(dataString);
+    const tempFilePath = `${filePath}.tmp.${Date.now()}`;
     
-    const encryptedData = {
-      email: email,
-      data: encrypted,
-      iv: iv,
-      tag: tag,
-      lastModified: new Date().toISOString(),
-      checksum: userData.metadata.checksum
-    };
-    
-    await fs.writeFile(filePath, JSON.stringify(encryptedData, null, 2), 'utf8');
-    console.log(`✅ User data saved securely for: ${email}`);
+    try {
+      const dataString = JSON.stringify(userData, null, 2);
+      const { encrypted, iv, tag } = encryptData(dataString);
+      
+      const encryptedData = {
+        email: email,
+        data: encrypted,
+        iv: iv,
+        tag: tag,
+        lastModified: new Date().toISOString(),
+        checksum: userData.metadata.checksum
+      };
+      
+      // Ghi vào file tạm thời trước
+      await fs.writeFile(tempFilePath, JSON.stringify(encryptedData, null, 2), 'utf8');
+      
+      // Kiểm tra file tạm thời có đúng không
+      const tempContent = await fs.readFile(tempFilePath, 'utf8');
+      JSON.parse(tempContent); // Test parse để chắc chắn JSON hợp lệ
+      
+      // Atomic rename - di chuyển file tạm thời thành file chính
+      await fs.rename(tempFilePath, filePath);
+      
+      console.log(`✅ User data saved securely for: ${email}`);
+    } catch (writeError) {
+      // Xóa file tạm thời nếu có lỗi
+      try {
+        await fs.unlink(tempFilePath);
+      } catch (unlinkError) {
+        // Ignore unlink errors
+      }
+      throw writeError;
+    }
   } catch (error) {
     console.error(`❌ Error saving user data for ${email}:`, error);
     throw error;
@@ -186,20 +207,62 @@ export async function getUserData(email: string): Promise<UserData | null> {
     }
     
     const fileContent = await fs.readFile(filePath, 'utf8');
-    const encryptedData = JSON.parse(fileContent);
     
-    const decryptedString = decryptData(
-      encryptedData.data,
-      encryptedData.iv,
-      encryptedData.tag
-    );
+    // Kiểm tra nội dung file có hợp lệ không
+    if (!fileContent || fileContent.trim() === '') {
+      console.warn(`⚠️ Empty or invalid file content for user: ${email}, creating new data`);
+      return null;
+    }
     
-    const userData: UserData = JSON.parse(decryptedString);
+    // Kiểm tra xem có phải JSON hợp lệ không
+    let encryptedData;
+    try {
+      encryptedData = JSON.parse(fileContent);
+    } catch (parseError) {
+      console.error(`❌ Invalid JSON in user data file for ${email}:`, parseError);
+      // Thử tạo backup của file bị lỗi
+      try {
+        const corruptedBackupPath = `${filePath}.corrupted.${Date.now()}`;
+        await fs.copyFile(filePath, corruptedBackupPath);
+        console.log(`📁 Corrupted file backed up to: ${corruptedBackupPath}`);
+      } catch (backupError) {
+        console.error('Failed to backup corrupted file:', backupError);
+      }
+      return null;
+    }
     
-    // Kiểm tra checksum
-    const currentChecksum = createDataChecksum(userData);
-    if (currentChecksum !== userData.metadata.checksum) {
-      console.warn(`⚠️ Data integrity warning for user: ${email}`);
+    // Kiểm tra cấu trúc dữ liệu
+    if (!encryptedData.data || !encryptedData.iv || !encryptedData.tag) {
+      console.error(`❌ Invalid encrypted data structure for user: ${email}`);
+      return null;
+    }
+    
+    let decryptedString;
+    try {
+      decryptedString = decryptData(
+        encryptedData.data,
+        encryptedData.iv,
+        encryptedData.tag
+      );
+    } catch (decryptError) {
+      console.error(`❌ Decryption failed for user ${email}:`, decryptError);
+      return null;
+    }
+    
+    let userData: UserData;
+    try {
+      userData = JSON.parse(decryptedString);
+    } catch (parseError) {
+      console.error(`❌ Invalid JSON in decrypted data for user ${email}:`, parseError);
+      return null;
+    }
+    
+    // Kiểm tra checksum nếu có
+    if (userData.metadata && userData.metadata.checksum) {
+      const currentChecksum = createDataChecksum(userData);
+      if (currentChecksum !== userData.metadata.checksum) {
+        console.warn(`⚠️ Data integrity warning for user: ${email}`);
+      }
     }
     
     return userData;
@@ -339,6 +402,42 @@ export async function verifyDataIntegrity(email: string): Promise<boolean> {
   } catch (error) {
     console.error(`❌ Error verifying data integrity for ${email}:`, error);
     return false;
+  }
+}
+
+// Dọn dẹp files tạm thời và corrupt
+export async function cleanupCorruptedFiles(): Promise<void> {
+  try {
+    await ensureDirectoryExists(USER_DATA_DIR);
+    const files = await fs.readdir(USER_DATA_DIR);
+    
+    const filesToClean = files.filter(file => 
+      file.endsWith('.tmp') || 
+      file.includes('.corrupted.') ||
+      file.endsWith('.temp')
+    );
+    
+    if (filesToClean.length > 0) {
+      console.log(`🧹 Cleaning up ${filesToClean.length} temporary/corrupted files...`);
+      
+      for (const file of filesToClean) {
+        try {
+          const filePath = path.join(USER_DATA_DIR, file);
+          const stats = await fs.stat(filePath);
+          
+          // Chỉ xóa files cũ hơn 1 giờ
+          const oneHourAgo = Date.now() - (60 * 60 * 1000);
+          if (stats.mtime.getTime() < oneHourAgo) {
+            await fs.unlink(filePath);
+            console.log(`🗑️ Deleted old temporary file: ${file}`);
+          }
+        } catch (error) {
+          console.error(`❌ Error deleting file ${file}:`, error);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('❌ Error during cleanup:', error);
   }
 }
 
