@@ -48,6 +48,11 @@ next-env.d.ts
 /data/users.json
 /data/transactions.json
 
+# Secure user data - NEVER commit these!
+/data/users/
+/data/backups/
+*.user_*.json
+
 # Generated product images with UUID patterns
 /public/images/products/chatgpt/*-*-*-*-*.png
 /public/images/products/grok/*-*-*-*-*.png

@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
+import UserDataViewer from '@/components/admin/UserDataViewer';
 
 function AdminDashboard() {
   const { data: session } = useSession();
@@ -191,6 +192,12 @@ function AdminDashboard() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* User Data Management Section */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-bold mb-4">🔒 Quản lý dữ liệu người dùng bảo mật</h2>
+        <UserDataViewer />
       </div>
     </div>
   );

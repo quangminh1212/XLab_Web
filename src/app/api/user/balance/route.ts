@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
+import { getUserData } from '@/lib/userDataManager';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -39,8 +40,16 @@ export async function GET() {
       );
     }
 
-    // Get balance from file
-    const balance = await getUserBalance(session.user.email);
+    // Get balance from secure user data first, fallback to old system
+    const userData = await getUserData(session.user.email);
+    let balance = 0;
+    
+    if (userData) {
+      balance = userData.profile.balance;
+    } else {
+      // Fallback to old balance system
+      balance = await getUserBalance(session.user.email);
+    }
 
     return NextResponse.json({
       balance: balance

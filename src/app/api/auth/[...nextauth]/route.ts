@@ -72,6 +72,13 @@ export const authOptions: NextAuthOptions = {
         } else {
           session.user.isAdmin = false;
         }
+        
+        // Track user session (import async để tránh circular dependency)
+        if (session.user.email) {
+          import('@/lib/sessionTracker').then(({ trackUserSession }) => {
+            trackUserSession().catch(console.error);
+          });
+        }
       }
       return session;
     },
