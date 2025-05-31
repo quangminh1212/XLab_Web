@@ -129,6 +129,7 @@ export default function AccountPage() {
     }
 
     console.log('User is authenticated, loading profile data:', session.user);
+    console.log('Session user image:', session.user.image);
     
     // Khởi tạo thông tin cơ bản từ session
     const updatedProfile = {
@@ -169,6 +170,7 @@ export default function AccountPage() {
         // Nếu không có thông tin trong localStorage, sử dụng thông tin từ session
         setProfile(updatedProfile);
         console.log('Đã tải thông tin từ session');
+        console.log('Profile avatar set to:', updatedProfile.avatar);
       }
 
       // Tải cài đặt thông báo từ localStorage
@@ -520,7 +522,7 @@ export default function AccountPage() {
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative w-24 h-24 mb-4">
                     <Avatar
-                      src={session?.user?.image}
+                      src={profile.avatar || session?.user?.image}
                       alt={profile.name}
                       size="xl"
                       className=""

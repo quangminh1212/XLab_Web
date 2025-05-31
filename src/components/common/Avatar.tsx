@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React from 'react';
 
 interface AvatarProps {
   src?: string | null;
@@ -17,46 +16,41 @@ const sizeClasses = {
   xl: 'w-24 h-24'
 };
 
-const sizePixels = {
-  sm: { width: 24, height: 24 },
-  md: { width: 32, height: 32 },
-  lg: { width: 48, height: 48 },
-  xl: { width: 96, height: 96 }
-};
-
 const Avatar: React.FC<AvatarProps> = ({ 
   src, 
   alt, 
   size = 'md', 
   className = '' 
 }) => {
-  const [imageError, setImageError] = useState(false);
-  const { width, height } = sizePixels[size];
-  
-  const handleImageError = () => {
-    console.log('Avatar image failed to load:', src);
-    setImageError(true);
-  };
+  console.log('🔍 Avatar render - src:', src);
 
-  const handleImageLoad = () => {
-    setImageError(false);
-  };
-
-  // Determine which image to show
-  const imageSrc = !imageError && src ? src : '/images/avatar-placeholder.svg';
-
-  return (
-    <div className={`${sizeClasses[size]} ${className}`}>
-      <Image
-        src={imageSrc}
-        alt={alt}
-        width={width}
-        height={height}
-        className="rounded-full object-cover w-full h-full"
-        onError={handleImageError}
-        onLoad={handleImageLoad}
-        unoptimized={true}
+  // If we have a valid source, use background-image
+  if (src && src.trim() !== '') {
+    return (
+      <div 
+        className={`${sizeClasses[size]} ${className} relative overflow-hidden rounded-full bg-gray-100`}
+        style={{
+          backgroundImage: `url(${src})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+        title={alt}
       />
+    );
+  }
+
+  // Fallback to placeholder
+  return (
+    <div className={`${sizeClasses[size]} ${className} relative overflow-hidden rounded-full bg-gray-100 flex items-center justify-center`}>
+      <svg 
+        className="w-2/3 h-2/3 text-gray-400" 
+        viewBox="0 0 24 24" 
+        fill="currentColor"
+      >
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
     </div>
   );
 };
