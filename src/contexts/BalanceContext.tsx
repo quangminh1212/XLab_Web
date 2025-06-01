@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 
 interface BalanceContextType {
@@ -13,34 +13,38 @@ interface BalanceContextType {
 
 const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 
-// Cache để tránh gọi API quá nhiều
+// Cache để tránh gọi API quá nhiều - tăng thời gian cache
 let lastFetchTime = 0;
 let cachedBalance = 0;
 let isCurrentlyFetching = false;
-const CACHE_DURATION = 30000; // 30 seconds
+const CACHE_DURATION = 60000; // 60 seconds (tăng từ 30s lên 60s)
+const AUTO_REFRESH_INTERVAL = 300000; // 5 minutes (tăng từ 2 phút lên 5 phút)
 
 interface BalanceProviderProps {
   children: ReactNode;
 }
 
 export function BalanceProvider({ children }: BalanceProviderProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const isMountedRef = useRef(true);
 
-  const fetchBalance = async (force = false): Promise<void> => {
-    if (!session?.user?.email) {
-      setLoading(false);
+  const fetchBalance = useCallback(async (force = false): Promise<void> => {
+    if (!session?.user?.email || status !== 'authenticated') {
+      if (status === 'unauthenticated') setLoading(false);
       return;
     }
 
     // Kiểm tra cache nếu không force
     const now = Date.now();
-    if (!force && (now - lastFetchTime) < CACHE_DURATION && cachedBalance > 0) {
-      setBalance(cachedBalance);
-      setLoading(false);
+    if (!force && (now - lastFetchTime) < CACHE_DURATION && cachedBalance >= 0) {
+      if (isMountedRef.current) {
+        setBalance(cachedBalance);
+        setLoading(false);
+      }
       return;
     }
 
@@ -52,58 +56,102 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
     isCurrentlyFetching = true;
 
     try {
-      setError(null);
-      const response = await fetch('/api/user/balance');
+      if (isMountedRef.current) {
+        setError(null);
+      }
+      
+      const response = await fetch('/api/user/balance', {
+        cache: 'no-cache', // Đảm bảo không cache ở browser level
+      });
       
       if (response.ok) {
         const data = await response.json();
         const newBalance = data.balance || 0;
         
-        setBalance(newBalance);
+        // Chỉ update state nếu component vẫn mounted
+        if (isMountedRef.current) {
+          setBalance(newBalance);
+          setLastUpdated(new Date());
+        }
+        
         cachedBalance = newBalance;
         lastFetchTime = now;
-        setLastUpdated(new Date());
         
-        console.log(`💰 Balance updated: ${newBalance} VND (cached: ${data.cached || false})`);
+        // Chỉ log khi không phải cached để giảm spam log
+        if (!data.cached) {
+          console.log(`💰 Balance updated: ${newBalance.toLocaleString('vi-VN')} VND`);
+        }
       } else {
         throw new Error('Failed to fetch balance');
       }
     } catch (err) {
       console.error('Error fetching balance:', err);
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      if (isMountedRef.current) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      }
     } finally {
-      setLoading(false);
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
       isCurrentlyFetching = false;
     }
-  };
+  }, [session?.user?.email, status]);
 
-  const refreshBalance = async (): Promise<void> => {
-    setLoading(true);
+  const refreshBalance = useCallback(async (): Promise<void> => {
+    if (isMountedRef.current) {
+      setLoading(true);
+    }
     await fetchBalance(true); // Force refresh
-  };
+  }, [fetchBalance]);
+
+  // Cleanup khi component unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Initial fetch khi user login
   useEffect(() => {
-    if (session?.user) {
+    if (session?.user?.email && status === 'authenticated') {
       fetchBalance();
-    } else {
+    } else if (status === 'unauthenticated') {
       setBalance(0);
       setLoading(false);
       cachedBalance = 0;
       lastFetchTime = 0;
+      setError(null);
     }
-  }, [session?.user?.email]);
+  }, [session?.user?.email, status, fetchBalance]);
 
-  // Auto refresh every 2 minutes (chỉ 1 lần cho toàn app)
+  // Auto refresh với tần suất thấp hơn và chỉ khi user active
   useEffect(() => {
-    if (!session?.user) return;
+    if (!session?.user?.email || status !== 'authenticated') return;
 
     const interval = setInterval(() => {
-      fetchBalance(); // Sẽ dùng cache nếu chưa hết hạn
-    }, 120000); // 2 minutes
+      // Chỉ refresh khi đã hết cache và user đang active
+      if (document.visibilityState === 'visible' && isMountedRef.current) {
+        fetchBalance(); // Sẽ dùng cache nếu chưa hết hạn
+      }
+    }, AUTO_REFRESH_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [session?.user?.email]);
+  }, [session?.user?.email, status, fetchBalance]);
+
+  // Refresh khi user quay lại tab (nếu cache đã hết hạn)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && session?.user?.email && isMountedRef.current) {
+        const now = Date.now();
+        if ((now - lastFetchTime) > CACHE_DURATION) {
+          fetchBalance();
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [session?.user?.email, fetchBalance]);
 
   const value: BalanceContextType = {
     balance,

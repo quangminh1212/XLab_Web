@@ -2,23 +2,24 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { memo, useMemo } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 
 interface BalanceDisplayProps {
   className?: string;
 }
 
-export default function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
+function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading } = useBalance();
 
-  const formatCurrency = (amount: number) => {
+  const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       maximumFractionDigits: 0
-    }).format(amount);
-  };
+    }).format(balance);
+  }, [balance]);
 
   if (!session?.user) {
     return null;
@@ -46,10 +47,12 @@ export default function BalanceDisplay({ className = '' }: BalanceDisplayProps) 
           </div>
         ) : (
           <span className="text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">
-            {formatCurrency(balance)}
+            {formattedBalance}
           </span>
         )}
       </div>
     </Link>
   );
-} 
+}
+
+export default memo(BalanceDisplay); 

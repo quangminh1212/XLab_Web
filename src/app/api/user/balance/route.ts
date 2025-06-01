@@ -3,9 +3,19 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { syncUserBalance } from '@/lib/userService';
 
-// Balance cache với timeout 60s để giảm spam requests
+// Balance cache với timeout 2 phút để giảm spam requests
 const balanceCache = new Map<string, { balance: number; timestamp: number }>();
-const CACHE_TIMEOUT = 60 * 1000; // 60 seconds
+const CACHE_TIMEOUT = 120 * 1000; // 120 seconds (2 minutes)
+
+// Cleanup cache mỗi 10 phút để tránh memory leak
+setInterval(() => {
+  const now = Date.now();
+  balanceCache.forEach((cache, email) => {
+    if (now - cache.timestamp > CACHE_TIMEOUT * 2) { // Remove after 4 minutes
+      balanceCache.delete(email);
+    }
+  });
+}, 10 * 60 * 1000); // 10 minutes
 
 export async function GET() {
   try {
