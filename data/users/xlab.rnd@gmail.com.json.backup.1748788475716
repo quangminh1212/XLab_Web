@@ -1,0 +1,44 @@
+{
+  "profile": {
+    "id": "1748549819995",
+    "name": "Lab X",
+    "email": "xlab.rnd@gmail.com",
+    "image": "https://lh3.googleusercontent.com/a/ACg8ocJClU3-7WgpDY2Q3_bvnD7NxBZr4ncLn8pQgjgCVlPY1k-QGDk=s96-c",
+    "isAdmin": false,
+    "isActive": true,
+    "balance": 2000,
+    "createdAt": "2025-05-29T20:16:59.995Z",
+    "updatedAt": "2025-06-01T11:38:59.304Z",
+    "lastLogin": "2025-05-29T20:16:59.995Z"
+  },
+  "transactions": [],
+  "cart": [
+    {
+      "id": "grok",
+      "name": "Grok",
+      "price": 149000,
+      "quantity": 5,
+      "image": "/images/products/grok/grok-1.png",
+      "version": "default",
+      "uniqueKey": "grok_default_"
+    },
+    {
+      "id": "grok",
+      "name": "Grok",
+      "price": 149000,
+      "quantity": 1,
+      "image": "/images/products/grok/grok-1.png",
+      "version": "full",
+      "uniqueKey": "grok_full_"
+    }
+  ],
+  "settings": {
+    "notifications": true,
+    "language": "vi",
+    "theme": "light"
+  },
+  "metadata": {
+    "lastUpdated": "2025-06-01T14:34:35.715Z",
+    "version": "1.0"
+  }
+}

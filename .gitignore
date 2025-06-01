@@ -48,7 +48,6 @@ next-env.d.ts
 /data/transactions.json
 
 # Secure user data - NEVER commit these!
-/data/users/
 /data/backups/
 *.user_*.json
 
