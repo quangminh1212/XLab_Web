@@ -8,7 +8,7 @@
     "isActive": true,
     "balance": 2000,
     "createdAt": "2025-05-29T20:16:59.995Z",
-    "updatedAt": "2025-06-01T19:56:32.080Z",
+    "updatedAt": "2025-06-01T20:46:37.750Z",
     "lastLogin": "2025-05-29T20:16:59.995Z"
   },
   "transactions": [],
@@ -35,7 +35,7 @@
       "id": "chatgpt",
       "name": "ChatGPT",
       "price": 149000,
-      "quantity": 1,
+      "quantity": 3,
       "image": "http://localhost:3000/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png",
       "uniqueKey": "chatgpt_default_"
     }
@@ -47,7 +47,7 @@
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-01T19:56:32.081Z",
+    "lastUpdated": "2025-06-01T20:46:37.804Z",
     "version": "1.0"
   }
 }

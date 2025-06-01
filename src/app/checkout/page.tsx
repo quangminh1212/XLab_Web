@@ -8,6 +8,7 @@ import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils'
 import { useSession } from 'next-auth/react'
+import products from '@/data/products.json'
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart()
@@ -34,10 +35,27 @@ export default function CheckoutPage() {
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
   
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
-  const cart = cartItems.map(item => ({
-    ...item,
-    image: item.image || '/images/product-placeholder.svg'
-  }));
+  const cart = cartItems.map(item => {
+    // Tìm sản phẩm tương ứng trong danh sách products
+    const productDetail = products.find((p: any) => {
+      const productId = String(p.id).toLowerCase();
+      const itemId = String(item.id).toLowerCase();
+      const productName = String(p.name).toLowerCase();
+      const itemName = String(item.name).toLowerCase();
+      return productId === itemId || productId === itemName || productName === itemId || productName === itemName || p.slug === itemId || p.slug === itemName;
+    });
+    let imageUrl = '/images/placeholder/product-placeholder.svg';
+    if (productDetail?.images && Array.isArray(productDetail.images) && productDetail.images.length > 0) {
+      const imagesArr = productDetail.images as string[];
+      imageUrl = imagesArr[0];
+    } else if (item.image && !item.image.includes('placeholder')) {
+      imageUrl = item.image;
+    }
+    return {
+      ...item,
+      image: imageUrl
+    };
+  });
   
   // Calculate cart totals
   const { subtotal, tax, total } = calculateCartTotals(cart);
@@ -426,7 +444,7 @@ export default function CheckoutPage() {
                 <div className="space-y-4 mb-6">
                   {cart.map((item, index) => (
                     <div key={index} className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-gray-200 rounded flex-shrink-0 flex items-center justify-center">
+                      <div className="w-12 h-12 bg-white rounded flex-shrink-0 flex items-center justify-center">
                         <Image
                           src={item.image || '/images/product-placeholder.svg'}
                           alt={item.name}
