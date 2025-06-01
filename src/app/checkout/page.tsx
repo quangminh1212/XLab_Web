@@ -503,14 +503,14 @@ export default function CheckoutPage() {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      className="border rounded px-3 py-2 text-sm w-full"
+                      className="border rounded px-3 py-2 text-sm flex-grow min-w-0"
                       placeholder="Nhập mã giảm giá"
                       value={coupon}
                       onChange={e => setCoupon(e.target.value)}
                       disabled={isApplyingCoupon}
                     />
                     <button
-                      className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded text-sm font-medium"
+                      className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap"
                       onClick={handleApplyCoupon}
                       disabled={isApplyingCoupon}
                     >
