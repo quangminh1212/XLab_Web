@@ -8,6 +8,7 @@ import {
   addUserActivity,
   cleanupCorruptedFiles 
 } from './userDataManager';
+import { syncAllUserData } from './userService';
 import { User } from '@/models/UserModel';
 import { NextRequest } from 'next/server';
 
@@ -96,25 +97,33 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
       userData = await createUserData(newUser);
       await saveUserData(userEmail, userData);
       
+      // Trigger comprehensive sync for new user
+      await syncAllUserData(userEmail);
+      
       // Chỉ log khi tạo user mới
       if (process.env.NODE_ENV === 'development') {
         console.log(`✅ Created new user data for: ${userEmail}`);
       }
     } else {
-      // Cập nhật thông tin user (im lặng)
-      userData.profile.lastLogin = new Date().toISOString();
-      userData.profile.updatedAt = new Date().toISOString();
+      // Cập nhật thông tin user với sync toàn diện
+      const updateData: Partial<User> = {
+        lastLogin: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
       
       // Cập nhật thông tin từ session nếu có thay đổi
       if (session.user.name && session.user.name !== userData.profile.name) {
-        userData.profile.name = session.user.name;
+        updateData.name = session.user.name;
       }
       if (session.user.image && session.user.image !== userData.profile.image) {
-        userData.profile.image = session.user.image;
+        updateData.image = session.user.image;
       }
       if (session.user.isAdmin !== undefined) {
-        userData.profile.isAdmin = session.user.isAdmin;
+        updateData.isAdmin = session.user.isAdmin;
       }
+      
+      // Sync với all systems
+      await syncAllUserData(userEmail, updateData);
     }
 
     // Tạo thông tin session

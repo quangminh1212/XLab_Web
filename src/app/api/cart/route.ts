@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { getUserCart, updateUserCart, addToUserCart, removeFromUserCart, clearUserCart } from '@/lib/userService';
+import { getUserCart, updateUserCart, updateUserCartSync, addToUserCart, removeFromUserCart, clearUserCart } from '@/lib/userService';
 
 export interface CartItem {
   id: string;
@@ -52,7 +52,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
     }
 
-    await updateUserCart(session.user.email, cart);
+    await updateUserCartSync(session.user.email, cart);
     
     return NextResponse.json({ 
       success: true, 

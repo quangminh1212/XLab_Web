@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import { getUserByEmail, updateUserBalance, createTransaction, syncUserBalance } from '@/lib/userService';
+import { getUserByEmail, updateUserBalance, createTransaction, syncUserBalance, syncAllUserData } from '@/lib/userService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,8 +54,9 @@ export async function POST(request: NextRequest) {
     // Cập nhật số dư người dùng với simplified system
     await updateUserBalance(session.user.email, amount);
     
-    // Sync và lấy balance mới
-    const newBalance = await syncUserBalance(session.user.email);
+    // Sync toàn diện tất cả dữ liệu user
+    const updatedUser = await syncAllUserData(session.user.email);
+    const newBalance = updatedUser?.balance || 0;
 
     return NextResponse.json({
       success: true,

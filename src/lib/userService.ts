@@ -61,7 +61,7 @@ async function ensureUsersDir(): Promise<void> {
 }
 
 // Đọc dữ liệu user từ file riêng lẻ
-async function getUserDataFromFile(email: string): Promise<UserData | null> {
+export async function getUserDataFromFile(email: string): Promise<UserData | null> {
   try {
     await ensureUsersDir();
     const fileName = getFileNameFromEmail(email);
@@ -256,21 +256,10 @@ export async function getUserCart(email: string): Promise<CartItem[]> {
   return userData?.cart || [];
 }
 
-// Cập nhật giỏ hàng của user
+// Cập nhật giỏ hàng của user (legacy - sử dụng updateUserCartSync thay thế)
 export async function updateUserCart(email: string, cart: CartItem[]): Promise<void> {
-  let userData = await getUserDataFromFile(email);
-  
-  if (!userData) {
-    // Tạo user data mới nếu chưa có
-    const user = await getUserByEmail(email);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    userData = createDefaultUserData(user);
-  }
-  
-  userData.cart = cart;
-  await saveUserDataToFile(email, userData);
+  console.log(`⚠️  Using legacy updateUserCart - consider using updateUserCartSync for better sync`);
+  await updateUserCartSync(email, cart);
 }
 
 // Thêm sản phẩm vào giỏ hàng
@@ -544,4 +533,127 @@ export async function getUserStats(email: string): Promise<any> {
     lastActivity: userData.metadata.lastUpdated,
     settings: userData.settings
   };
+}
+
+// Cập nhật thông tin user và đảm bảo đồng bộ toàn diện
+export async function syncAllUserData(email: string, updateData?: Partial<User>): Promise<User | null> {
+  try {
+    console.log(`🔄 Starting comprehensive sync for user: ${email}`);
+    
+    // 1. Lấy dữ liệu từ file riêng (nguồn chính)
+    let userData = await getUserDataFromFile(email);
+    let user: User | null = null;
+    
+    if (userData) {
+      user = userData.profile;
+      
+      // Apply updates if provided
+      if (updateData) {
+        user = {
+          ...user,
+          ...updateData,
+          email: email, // Ensure email consistency
+          updatedAt: new Date().toISOString()
+        };
+        userData.profile = user;
+        userData.metadata.lastUpdated = new Date().toISOString();
+      }
+    } else {
+      // 2. Nếu không có file riêng, tìm từ users.json
+      const users = await getUsers();
+      const existingUser = users.find(u => u.email === email);
+      
+      if (existingUser) {
+        user = existingUser;
+        if (updateData) {
+          user = {
+            ...user,
+            ...updateData,
+            updatedAt: new Date().toISOString()
+          };
+        }
+        // Tạo file riêng từ dữ liệu cũ
+        userData = createDefaultUserData(user);
+      } else if (updateData) {
+        // 3. Tạo user mới nếu cần
+        user = {
+          id: Date.now().toString(),
+          name: updateData.name || '',
+          email: email,
+          image: updateData.image,
+          isAdmin: updateData.isAdmin || false,
+          isActive: updateData.isActive !== undefined ? updateData.isActive : true,
+          balance: updateData.balance || 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          lastLogin: updateData.lastLogin || new Date().toISOString()
+        };
+        userData = createDefaultUserData(user);
+      }
+    }
+    
+    if (!user || !userData) {
+      console.log(`❌ No user data to sync for: ${email}`);
+      return null;
+    }
+    
+    // 4. Lưu vào file riêng (nguồn chính)
+    await saveUserDataToFile(email, userData);
+    
+    // 5. Đồng bộ với users.json
+    const allUsers = await getUsers();
+    const userIndex = allUsers.findIndex(u => u.email === email);
+    
+    if (userIndex >= 0) {
+      allUsers[userIndex] = user;
+    } else {
+      allUsers.push(user);
+    }
+    await saveUsers(allUsers);
+    
+    // 6. Đồng bộ với balances.json
+    await updateBalanceInBalancesFile(email, user.balance);
+    
+    console.log(`✅ Comprehensive sync completed for user: ${email}`);
+    return user;
+    
+  } catch (error) {
+    console.error(`❌ Error in comprehensive sync for ${email}:`, error);
+    throw error;
+  }
+}
+
+// Cập nhật wrapper functions để sử dụng sync toàn diện
+export async function updateUserProfileData(email: string, profileData: Partial<User>): Promise<User | null> {
+  return await syncAllUserData(email, profileData);
+}
+
+// Cập nhật cart và đảm bảo metadata được cập nhật
+export async function updateUserCartSync(email: string, cart: CartItem[]): Promise<void> {
+  try {
+    let userData = await getUserDataFromFile(email);
+    
+    if (!userData) {
+      // Tạo user data mới nếu chưa có
+      const user = await getUserByEmail(email);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      userData = createDefaultUserData(user);
+    }
+    
+    userData.cart = cart;
+    userData.metadata.lastUpdated = new Date().toISOString();
+    userData.profile.updatedAt = new Date().toISOString();
+    
+    await saveUserDataToFile(email, userData);
+    
+    // Trigger sync để đảm bảo consistency
+    await syncAllUserData(email);
+    
+    console.log(`✅ Cart updated and synced for user: ${email}`);
+  } catch (error) {
+    console.error(`❌ Error updating cart for ${email}:`, error);
+    throw error;
+  }
 } 
