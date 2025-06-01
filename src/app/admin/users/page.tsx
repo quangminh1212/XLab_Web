@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import withAdminAuth from '@/components/withAdminAuth';
 import { User, UserStats } from '@/models/UserModel';
 
@@ -203,37 +202,7 @@ function UsersPage() {
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-12 w-12 relative">
-                          {user.image ? (
-                            <Image
-                              src={user.image}
-                              alt={user.name}
-                              width={48}
-                              height={48}
-                              className="rounded-full object-cover border-2 border-gray-200 shadow-sm"
-                              onError={(e) => {
-                                // Fallback nếu ảnh không load được
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                                const fallback = target.nextElementSibling as HTMLElement;
-                                if (fallback) fallback.style.display = 'flex';
-                              }}
-                            />
-                          ) : null}
-                          <div 
-                            className={`h-12 w-12 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-sm ${
-                              user.image ? 'hidden' : 'flex'
-                            } ${
-                              user.isAdmin 
-                                ? 'bg-gradient-to-br from-purple-500 to-purple-600' 
-                                : 'bg-gradient-to-br from-blue-500 to-blue-600'
-                            }`}
-                            style={{ display: user.image ? 'none' : 'flex' }}
-                          >
-                            {user.name.charAt(0).toUpperCase()}
-                          </div>
-                        </div>
-                        <div className="ml-4">
+                        <div className="ml-0">
                           <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
                             {user.name}
                             {user.isAdmin && (
