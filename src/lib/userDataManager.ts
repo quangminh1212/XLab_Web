@@ -260,7 +260,10 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
               // Ignore cleanup errors
             }
             
-            console.log(`✅ User data saved securely for: ${email}`);
+            // Chỉ log trong development mode
+            if (process.env.NODE_ENV === 'development') {
+              console.log(`✅ User data saved securely for: ${email}`);
+            }
           } catch (renameError) {
             // Khôi phục file cũ nếu rename failed
             try {
@@ -506,7 +509,9 @@ export async function getUserData(email: string): Promise<UserData | null> {
         
         // Kiểm tra nội dung file có hợp lệ không
         if (!fileContent || fileContent.trim() === '') {
-          console.warn(`⚠️ Empty or invalid file content for user: ${email}, creating new data`);
+          if (process.env.NODE_ENV === 'development') {
+            console.warn(`⚠️ Empty or invalid file content for user: ${email}, creating new data`);
+          }
           return null;
         }
         

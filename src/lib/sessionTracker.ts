@@ -34,22 +34,37 @@ function getClientIP(request: NextRequest): string {
   return 'unknown';
 }
 
-// Chạy cleanup mỗi giờ
+// Cache để tránh chạy cleanup quá thường xuyên
 let lastCleanupTime = 0;
-const CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 giờ
+const CLEANUP_INTERVAL = 30 * 60 * 1000; // 30 phút
 
+// Cleanup định kỳ nhưng không quá thường xuyên
 async function runPeriodicCleanup(): Promise<void> {
   const now = Date.now();
-  if (now - lastCleanupTime > CLEANUP_INTERVAL) {
+  if (now - lastCleanupTime < CLEANUP_INTERVAL) {
+    return; // Skip cleanup nếu vừa chạy gần đây
+  }
+  
+  lastCleanupTime = now;
+  
+  try {
     await cleanupCorruptedFiles();
-    lastCleanupTime = now;
+    
+    // Chỉ log trong development mode
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🧹 Periodic cleanup completed');
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Cleanup error:', error);
+    }
   }
 }
 
 // Theo dõi session user
 export async function trackUserSession(request?: NextRequest): Promise<void> {
   try {
-    // Chạy cleanup định kỳ
+    // Chạy cleanup định kỳ nhưng không log mỗi lần
     await runPeriodicCleanup();
     
     const session = await getServerSession(authOptions);
@@ -69,7 +84,7 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
         id: session.user.id || Date.now().toString(),
         name: session.user.name || '',
         email: userEmail,
-                 image: session.user.image || undefined,
+        image: session.user.image || undefined,
         isAdmin: session.user.isAdmin || false,
         isActive: true,
         balance: 0,
@@ -81,9 +96,12 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
       userData = await createUserData(newUser);
       await saveUserData(userEmail, userData);
       
-      console.log(`✅ Created new user data for: ${userEmail}`);
+      // Chỉ log khi tạo user mới
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`✅ Created new user data for: ${userEmail}`);
+      }
     } else {
-      // Cập nhật thông tin user
+      // Cập nhật thông tin user (im lặng)
       userData.profile.lastLogin = new Date().toISOString();
       userData.profile.updatedAt = new Date().toISOString();
       
@@ -108,24 +126,33 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
       isActive: true
     };
 
-    // Cập nhật session
+    // Cập nhật session (im lặng)
     await updateUserSession(userEmail, sessionInfo);
     
-    // Thêm activity log
-    await addUserActivity(
-      userEmail,
-      'login',
-      'Đăng nhập vào hệ thống',
-      {
-        sessionId: sessionInfo.id,
-        ip: sessionInfo.ipAddress,
-        userAgent: sessionInfo.userAgent
-      }
-    );
+    // Chỉ log activity trong development hoặc khi user mới
+    if (process.env.NODE_ENV === 'development' || !userData) {
+      // Thêm activity log
+      await addUserActivity(
+        userEmail,
+        'login',
+        'Đăng nhập vào hệ thống',
+        {
+          sessionId: sessionInfo.id,
+          ip: sessionInfo.ipAddress,
+          userAgent: sessionInfo.userAgent
+        }
+      );
+    }
 
-    console.log(`✅ Session tracked for user: ${userEmail}`);
+    // Giảm log spam - chỉ log trong development mode
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`✅ Session tracked for user: ${userEmail}`);
+    }
   } catch (error) {
-    console.error('❌ Error tracking user session:', error);
+    // Chỉ log errors trong development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Error tracking user session:', error);
+    }
   }
 }
 

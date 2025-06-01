@@ -41,6 +41,9 @@ if ((!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) && process.env.NODE_ENV !== 'de
   console.warn('Google OAuth credentials are not set. Using fallback for development only.');
 }
 
+// Throttling cache for session tracking
+const sessionTrackingCache = new Map<string, number>();
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -61,11 +64,7 @@ export const authOptions: NextAuthOptions = {
         if (token.picture) {
           session.user.image = token.picture as string;
         }
-        // Remove sensitive logging in production
-        if (process.env.NODE_ENV === 'development') {
-          console.log("AUTH SESSION IMAGE:", session.user.image);
-          console.log("AUTH TOKEN PICTURE:", token.picture);
-        }
+        
         // Kiểm tra email có trong danh sách admin không
         if (token.email && ADMIN_EMAILS.includes(token.email as string)) {
           session.user.isAdmin = true;
@@ -73,11 +72,24 @@ export const authOptions: NextAuthOptions = {
           session.user.isAdmin = false;
         }
         
-        // Track user session (import async để tránh circular dependency)
+        // Track user session với throttling để tránh spam
         if (session.user.email) {
-          import('@/lib/sessionTracker').then(({ trackUserSession }) => {
-            trackUserSession().catch(console.error);
-          });
+          // Chỉ track session mỗi 5 phút để tránh spam
+          const lastTrackTime = sessionTrackingCache.get(session.user.email) || 0;
+          const now = Date.now();
+          const trackInterval = 5 * 60 * 1000; // 5 minutes
+          
+          if (now - lastTrackTime > trackInterval) {
+            sessionTrackingCache.set(session.user.email, now);
+            import('@/lib/sessionTracker').then(({ trackUserSession }) => {
+              trackUserSession().catch(err => {
+                // Chỉ log error trong development
+                if (process.env.NODE_ENV === 'development') {
+                  console.error('Session tracking error:', err);
+                }
+              });
+            });
+          }
         }
       }
       return session;
@@ -86,13 +98,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
       }
-      // Lưu thông tin avatar từ Google vào token (token.picture đã được tự động thêm bởi NextAuth)
-      if (process.env.NODE_ENV === 'development') {
-        console.log("AUTH JWT TOKEN:", token);
-        if (account && account.provider === 'google' && account.id_token) {
-          console.log("AUTH GOOGLE ACCOUNT:", account);
-        }
-      }
+      // Remove excessive logging - chỉ log khi cần thiết
       return token;
     },
   },
