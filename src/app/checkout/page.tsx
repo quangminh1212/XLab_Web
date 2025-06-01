@@ -27,6 +27,7 @@ export default function CheckoutPage() {
     country: 'vietnam',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'balance' | 'bank' | 'momo' | 'zalopay'>('balance');
   
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map(item => ({
@@ -43,14 +44,6 @@ export default function CheckoutPage() {
       setStep(2);
     }
   }, [skipInfo]);
-
-  // Redirect to deposit page for payment
-  useEffect(() => {
-    if (step === 2) {
-      const productNames = cart.map(item => item.name).join(', ');
-      router.push(`/account/deposit?amount=${total}`);
-    }
-  }, [step, total, cart, router]);
 
   const validateShippingInfo = () => {
     const newErrors: Record<string, string> = {};
@@ -101,17 +94,18 @@ export default function CheckoutPage() {
     }
   };
 
-  // If on payment step, component will redirect to deposit page
-  if (step === 2) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Đang chuyển hướng đến trang thanh toán...</p>
-        </div>
-      </div>
-    );
-  }
+  const handlePayment = () => {
+    if (selectedPaymentMethod === 'balance') {
+      // Chuyển đến trang nạp tiền/thanh toán bằng số dư
+      router.push(`/account/deposit?amount=${total}&redirect=checkout`);
+    } else if (selectedPaymentMethod === 'bank') {
+      // Chuyển đến trang chuyển khoản ngân hàng  
+      router.push(`/account/deposit?amount=${total}&method=bank&redirect=checkout`);
+    } else {
+      // Các phương thức khác
+      router.push(`/account/deposit?amount=${total}&method=${selectedPaymentMethod}&redirect=checkout`);
+    }
+  };
 
   return (
     <div>
@@ -150,138 +144,249 @@ export default function CheckoutPage() {
           )}
 
           <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
-            {/* Billing Information */}
+            {/* Left Column - Information or Payment Methods */}
             <div className="lg:w-2/3">
-              <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
-                <h2 className="text-xl font-bold mb-4">Thông tin thanh toán</h2>
-                
-                <form onSubmit={handleSubmitShippingInfo} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="firstName" className="block mb-1 font-medium text-sm">
-                        Họ <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        value={shippingInfo.firstName}
-                        onChange={handleShippingInfoChange}
-                        className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.firstName ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {errors.firstName && (
-                        <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
-                      )}
+              {step === 1 ? (
+                /* Billing Information */
+                <div className="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
+                  <h2 className="text-xl font-bold mb-4">Thông tin thanh toán</h2>
+                  
+                  <form onSubmit={handleSubmitShippingInfo} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="firstName" className="block mb-1 font-medium text-sm">
+                          Họ <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="firstName"
+                          name="firstName"
+                          value={shippingInfo.firstName}
+                          onChange={handleShippingInfoChange}
+                          className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.firstName ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.firstName && (
+                          <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="lastName" className="block mb-1 font-medium text-sm">
+                          Tên <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="lastName"
+                          name="lastName"
+                          value={shippingInfo.lastName}
+                          onChange={handleShippingInfoChange}
+                          className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.lastName ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.lastName && (
+                          <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block mb-1 font-medium text-sm">
+                          Email <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={shippingInfo.email}
+                          onChange={handleShippingInfoChange}
+                          className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.email && (
+                          <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="block mb-1 font-medium text-sm">
+                          Số điện thoại <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          value={shippingInfo.phone}
+                          onChange={handleShippingInfoChange}
+                          className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.phone && (
+                          <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+                        )}
+                      </div>
+                      <div className="md:col-span-2">
+                        <label htmlFor="address" className="block mb-1 font-medium text-sm">
+                          Địa chỉ <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="address"
+                          name="address"
+                          value={shippingInfo.address}
+                          onChange={handleShippingInfoChange}
+                          className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.address ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.address && (
+                          <p className="mt-1 text-sm text-red-600">{errors.address}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="city" className="block mb-1 font-medium text-sm">
+                          Thành phố <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="city"
+                          name="city"
+                          value={shippingInfo.city}
+                          onChange={handleShippingInfoChange}
+                          className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
+                        />
+                        {errors.city && (
+                          <p className="mt-1 text-sm text-red-600">{errors.city}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="country" className="block mb-1 font-medium text-sm">
+                          Quốc gia
+                        </label>
+                        <select
+                          id="country"
+                          name="country"
+                          value={shippingInfo.country}
+                          onChange={handleShippingInfoChange}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600"
+                        >
+                          <option value="vietnam">Việt Nam</option>
+                          <option value="singapore">Singapore</option>
+                          <option value="thailand">Thái Lan</option>
+                          <option value="malaysia">Malaysia</option>
+                        </select>
+                      </div>
                     </div>
-                    <div>
-                      <label htmlFor="lastName" className="block mb-1 font-medium text-sm">
-                        Tên <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        value={shippingInfo.lastName}
-                        onChange={handleShippingInfoChange}
-                        className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.lastName ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {errors.lastName && (
-                        <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block mb-1 font-medium text-sm">
-                        Email <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={shippingInfo.email}
-                        onChange={handleShippingInfoChange}
-                        className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {errors.email && (
-                        <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="phone" className="block mb-1 font-medium text-sm">
-                        Số điện thoại <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={shippingInfo.phone}
-                        onChange={handleShippingInfoChange}
-                        className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {errors.phone && (
-                        <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
-                      )}
-                    </div>
-                    <div className="md:col-span-2">
-                      <label htmlFor="address" className="block mb-1 font-medium text-sm">
-                        Địa chỉ <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        value={shippingInfo.address}
-                        onChange={handleShippingInfoChange}
-                        className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.address ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {errors.address && (
-                        <p className="mt-1 text-sm text-red-600">{errors.address}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="city" className="block mb-1 font-medium text-sm">
-                        Thành phố <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="city"
-                        name="city"
-                        value={shippingInfo.city}
-                        onChange={handleShippingInfoChange}
-                        className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600 ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
-                      />
-                      {errors.city && (
-                        <p className="mt-1 text-sm text-red-600">{errors.city}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label htmlFor="country" className="block mb-1 font-medium text-sm">
-                        Quốc gia
-                      </label>
-                      <select
-                        id="country"
-                        name="country"
-                        value={shippingInfo.country}
-                        onChange={handleShippingInfoChange}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-teal-600"
+
+                    <div className="mt-4">
+                      <button
+                        type="submit"
+                        className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded font-medium transition-colors"
                       >
-                        <option value="vietnam">Việt Nam</option>
-                        <option value="singapore">Singapore</option>
-                        <option value="thailand">Thái Lan</option>
-                        <option value="malaysia">Malaysia</option>
-                      </select>
+                        Tiếp tục thanh toán
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              ) : (
+                /* Payment Methods */
+                <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+                  <h2 className="text-xl font-bold mb-6">Chọn phương thức thanh toán</h2>
+                  
+                  <div className="space-y-4">
+                    {/* Thanh toán bằng số dư tài khoản */}
+                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'balance' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
+                         onClick={() => setSelectedPaymentMethod('balance')}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'balance' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
+                            {selectedPaymentMethod === 'balance' && (
+                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Số dư tài khoản</h3>
+                            <p className="text-sm text-gray-600">Thanh toán bằng số dư hiện có</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-2xl">💰</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Chuyển khoản ngân hàng */}
+                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'bank' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
+                         onClick={() => setSelectedPaymentMethod('bank')}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'bank' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
+                            {selectedPaymentMethod === 'bank' && (
+                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Chuyển khoản ngân hàng</h3>
+                            <p className="text-sm text-gray-600">Thanh toán qua QR Code VietQR</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Image src="/images/payment/bank.svg" alt="Bank" width={32} height={32} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Ví MoMo */}
+                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'momo' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
+                         onClick={() => setSelectedPaymentMethod('momo')}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'momo' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
+                            {selectedPaymentMethod === 'momo' && (
+                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">Ví MoMo</h3>
+                            <p className="text-sm text-gray-600">Thanh toán qua ứng dụng MoMo</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Image src="/images/payment/momo.svg" alt="MoMo" width={32} height={32} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* ZaloPay */}
+                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'zalopay' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
+                         onClick={() => setSelectedPaymentMethod('zalopay')}>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'zalopay' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
+                            {selectedPaymentMethod === 'zalopay' && (
+                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">ZaloPay</h3>
+                            <p className="text-sm text-gray-600">Thanh toán qua ứng dụng ZaloPay</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={32} height={32} />
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="mt-4">
+                  <div className="mt-6 flex space-x-4">
+                    {!skipInfo && (
+                      <button
+                        onClick={() => setStep(1)}
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded font-medium transition-colors"
+                      >
+                        Quay lại
+                      </button>
+                    )}
                     <button
-                      type="submit"
-                      className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded font-medium transition-colors"
+                      onClick={handlePayment}
+                      className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded font-medium transition-colors"
                     >
-                      Tiếp tục thanh toán
+                      Thanh toán {formatCurrency(total)}
                     </button>
                   </div>
-                </form>
-              </div>
+                </div>
+              )}
             </div>
             
             {/* Order Summary */}
