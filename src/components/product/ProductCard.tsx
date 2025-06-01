@@ -60,11 +60,18 @@ export default function ProductCard({
     
     // Nếu đường dẫn không tồn tại hoặc không hợp lệ, sử dụng placeholder
     try {
+      // Kiểm tra nếu là đường dẫn tương đối
+      if (imgUrl.startsWith('/')) {
+        // Thêm domain nếu cần
+        return imgUrl;
+      }
+      
+      // Kiểm tra nếu là URL đầy đủ
       const url = new URL(imgUrl, window.location.origin);
       return url.toString();
     } catch (e) {
-      // Nếu không phải URL đầy đủ, giữ nguyên giá trị
-      return imgUrl;
+      // Nếu không phải URL hợp lệ, sử dụng placeholder
+      return '/images/placeholder/product-placeholder.jpg';
     }
   }
   
