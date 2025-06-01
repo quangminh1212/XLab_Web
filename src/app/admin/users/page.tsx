@@ -203,24 +203,54 @@ function UsersPage() {
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 relative">
+                        <div className="flex-shrink-0 h-12 w-12 relative">
                           {user.image ? (
                             <Image
                               src={user.image}
                               alt={user.name}
-                              width={40}
-                              height={40}
-                              className="rounded-full"
+                              width={48}
+                              height={48}
+                              className="rounded-full object-cover border-2 border-gray-200 shadow-sm"
+                              onError={(e) => {
+                                // Fallback nếu ảnh không load được
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                const fallback = target.nextElementSibling as HTMLElement;
+                                if (fallback) fallback.style.display = 'flex';
+                              }}
                             />
-                          ) : (
-                            <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                              {user.name.charAt(0)}
-                            </div>
-                          )}
+                          ) : null}
+                          <div 
+                            className={`h-12 w-12 rounded-full flex items-center justify-center text-white font-semibold text-lg shadow-sm ${
+                              user.image ? 'hidden' : 'flex'
+                            } ${
+                              user.isAdmin 
+                                ? 'bg-gradient-to-br from-purple-500 to-purple-600' 
+                                : 'bg-gradient-to-br from-blue-500 to-blue-600'
+                            }`}
+                            style={{ display: user.image ? 'none' : 'flex' }}
+                          >
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                          <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                            {user.name}
+                            {user.isAdmin && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clipRule="evenodd" />
+                                </svg>
+                                Admin
+                              </span>
+                            )}
+                          </div>
                           <div className="text-sm text-gray-500">{user.email}</div>
+                          {user.balance > 0 && (
+                            <div className="text-xs text-green-600 font-medium">
+                              Số dư: {user.balance.toLocaleString('vi-VN')} VNĐ
+                            </div>
+                          )}
                         </div>
                       </div>
                     </td>
