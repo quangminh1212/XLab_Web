@@ -34,22 +34,27 @@ function UsersPage() {
         const data = await response.json();
         setUsers(data.users || []);
         
-        // Tính toán số liệu thống kê
-        const totalUsers = data.users ? data.users.length : 0;
-        const activeUsers = data.users ? data.users.filter((user: User) => user.isActive).length : 0;
-        const inactiveUsers = totalUsers - activeUsers;
-        
-        // Tính người dùng mới trong tháng này
-        const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const newUsers = data.users ? data.users.filter((user: User) => new Date(user.createdAt) >= startOfMonth).length : 0;
-        
-        setStats({
-          total: totalUsers,
-          active: activeUsers,
-          inactive: inactiveUsers,
-          newThisMonth: newUsers
-        });
+        // Sử dụng stats từ API nếu có, nếu không thì tính toán
+        if (data.stats) {
+          setStats(data.stats);
+        } else {
+          // Fallback: Tính toán số liệu thống kê nếu API không trả về
+          const totalUsers = data.users ? data.users.length : 0;
+          const activeUsers = data.users ? data.users.filter((user: User) => user.isActive).length : 0;
+          const inactiveUsers = totalUsers - activeUsers;
+          
+          // Tính người dùng mới trong tháng này
+          const now = new Date();
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+          const newUsers = data.users ? data.users.filter((user: User) => new Date(user.createdAt) >= startOfMonth).length : 0;
+          
+          setStats({
+            total: totalUsers,
+            active: activeUsers,
+            inactive: inactiveUsers,
+            newThisMonth: newUsers
+          });
+        }
       } catch (error) {
         console.error("Error fetching users:", error);
         // Hiển thị thông báo lỗi nếu cần
