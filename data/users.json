@@ -4,7 +4,7 @@
     "name": "Lab X",
     "email": "xlab.rnd@gmail.com",
     "image": "https://lh3.googleusercontent.com/a/ACg8ocJClU3-7WgpDY2Q3_bvnD7NxBZr4ncLn8pQgjgCVlPY1k-QGDk=s96-c",
-    "isAdmin": false,
+    "isAdmin": true,
     "isActive": true,
     "balance": 2000,
     "createdAt": "2025-05-29T20:16:59.995Z",
