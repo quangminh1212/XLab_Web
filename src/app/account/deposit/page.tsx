@@ -6,20 +6,18 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
+import { useBalance } from '@/contexts/BalanceContext';
 
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { balance, refreshBalance } = useBalance();
   
   // States
-  const [balance, setBalance] = useState<number>(0);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [transactionId, setTransactionId] = useState<string>('');
   const [isChecking, setIsChecking] = useState(false);
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
-
-  // Refs for intervals
-  const balanceIntervalRef = useRef<NodeJS.Timeout>();
 
   // Bank info constants
   const BANK_INFO = {
@@ -32,34 +30,9 @@ export default function DepositPage() {
     if (status === 'unauthenticated') {
       router.push('/login');
     } else if (session?.user) {
-      fetchBalance();
       generateTransactionCode();
     }
   }, [session, status, router]);
-
-  useEffect(() => {
-    if (session?.user) {
-      // Auto-refresh balance every 30 seconds (reduced frequency)
-      balanceIntervalRef.current = setInterval(fetchBalance, 30000);
-
-      // Cleanup interval on unmount
-      return () => {
-        if (balanceIntervalRef.current) clearInterval(balanceIntervalRef.current);
-      };
-    }
-  }, [session]);
-
-  const fetchBalance = async () => {
-    try {
-      const response = await fetch('/api/user/balance');
-      if (response.ok) {
-        const data = await response.json();
-        setBalance(data.balance || 0);
-      }
-    } catch (error) {
-      console.error('Error fetching balance:', error);
-    }
-  };
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -87,8 +60,8 @@ export default function DepositPage() {
       if (response.ok && data.success) {
         console.log('✅ Transaction found and processed!', data);
         
-        // Refresh balance
-        await fetchBalance();
+        // Refresh balance từ context
+        await refreshBalance();
         
         // Show success message
         alert(`Giao dịch thành công! Đã nạp ${data.transaction.amount.toLocaleString('vi-VN')} VND vào tài khoản.`);

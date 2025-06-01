@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useBalance } from '@/contexts/BalanceContext';
 
 interface BalanceDisplayProps {
   className?: string;
@@ -10,29 +10,7 @@ interface BalanceDisplayProps {
 
 export default function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
-  const [balance, setBalance] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (session?.user) {
-      fetchBalance();
-    }
-  }, [session]);
-
-  const fetchBalance = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/user/balance');
-      if (response.ok) {
-        const data = await response.json();
-        setBalance(data.balance || 0);
-      }
-    } catch (error) {
-      console.error('Error fetching balance:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { balance, loading } = useBalance();
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {

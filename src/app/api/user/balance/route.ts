@@ -3,9 +3,9 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { syncUserBalance } from '@/lib/userService';
 
-// Balance cache với timeout 10s
+// Balance cache với timeout 60s để giảm spam requests
 const balanceCache = new Map<string, { balance: number; timestamp: number }>();
-const CACHE_TIMEOUT = 10 * 1000; // 10 seconds
+const CACHE_TIMEOUT = 60 * 1000; // 60 seconds
 
 export async function GET() {
   try {
@@ -24,7 +24,8 @@ export async function GET() {
     const cached = balanceCache.get(userEmail);
     if (cached && (Date.now() - cached.timestamp) < CACHE_TIMEOUT) {
       return NextResponse.json({
-        balance: cached.balance
+        balance: cached.balance,
+        cached: true
       });
     }
 
@@ -35,7 +36,8 @@ export async function GET() {
     balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
     return NextResponse.json({
-      balance: balance
+      balance: balance,
+      cached: false
     });
     
   } catch (error) {
