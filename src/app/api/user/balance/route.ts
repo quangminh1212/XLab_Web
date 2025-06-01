@@ -1,33 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import { getUserData } from '@/lib/userDataManager';
-import fs from 'fs/promises';
-import path from 'path';
+import { syncUserBalance } from '@/lib/userService';
 
-// User balance interface
-interface UserBalance {
-  [email: string]: number;
-}
-
-// Function to get user balance from file
-const getUserBalance = async (userEmail: string): Promise<number> => {
-  try {
-    const balancePath = path.join(process.cwd(), 'data', 'balances.json');
-    
-    try {
-      const balanceData = await fs.readFile(balancePath, 'utf-8');
-      const balances: UserBalance = JSON.parse(balanceData);
-      return balances[userEmail] || 0;
-    } catch (error) {
-      // File doesn't exist, return 0
-      return 0;
-    }
-  } catch (error) {
-    console.error('Error reading balance:', error);
-    return 0;
-  }
-};
+// Balance cache với timeout 10s
+const balanceCache = new Map<string, { balance: number; timestamp: number }>();
+const CACHE_TIMEOUT = 10 * 1000; // 10 seconds
 
 export async function GET() {
   try {
@@ -40,16 +18,21 @@ export async function GET() {
       );
     }
 
-    // Get balance from secure user data first, fallback to old system
-    const userData = await getUserData(session.user.email);
-    let balance = 0;
-    
-    if (userData) {
-      balance = userData.profile.balance;
-    } else {
-      // Fallback to old balance system
-      balance = await getUserBalance(session.user.email);
+    const userEmail = session.user.email;
+
+    // Check cache first
+    const cached = balanceCache.get(userEmail);
+    if (cached && (Date.now() - cached.timestamp) < CACHE_TIMEOUT) {
+      return NextResponse.json({
+        balance: cached.balance
+      });
     }
+
+    // Get synchronized balance from both systems
+    const balance = await syncUserBalance(userEmail);
+    
+    // Cache the result
+    balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
     return NextResponse.json({
       balance: balance

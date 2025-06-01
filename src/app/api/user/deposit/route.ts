@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import { getUserByEmail, updateUserBalance, createTransaction } from '@/lib/userService';
-import { updateUserDataBalance, trackUserActivity } from '@/lib/sessionTracker';
-import { addUserTransaction } from '@/lib/userDataManager';
+import { getUserByEmail, updateUserBalance, createTransaction, syncUserBalance } from '@/lib/userService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -53,23 +51,11 @@ export async function POST(request: NextRequest) {
       orderId: undefined
     });
 
-    // Cập nhật số dư người dùng (old system)
-    const updatedUser = await updateUserBalance(session.user.email, amount);
+    // Cập nhật số dư người dùng với simplified system
+    await updateUserBalance(session.user.email, amount);
     
-    // Cập nhật secure user data system
-    const newBalance = updatedUser?.balance || 0;
-    await updateUserDataBalance(session.user.email, newBalance);
-    
-    // Lưu transaction vào secure system
-    await addUserTransaction(session.user.email, transaction);
-    
-    // Track activity
-    await trackUserActivity(
-      session.user.email,
-      'deposit',
-      `Nạp tiền thành công: ${amount.toLocaleString('vi-VN')} VND qua ${method}`,
-      { amount, method, transactionId: transaction.id }
-    );
+    // Sync và lấy balance mới
+    const newBalance = await syncUserBalance(session.user.email);
 
     return NextResponse.json({
       success: true,
