@@ -121,7 +121,7 @@ function NotificationsPage() {
         setSuccessMessage('Thông báo đã được tạo thành công!');
         resetForm();
         fetchNotifications(); // Refresh list
-        setTimeout(() => setActiveTab('list'), 2000);
+        setActiveTab('list'); // Quay về danh sách ngay lập tức
       } else {
         setErrorMessage(data.error || 'Đã xảy ra lỗi khi tạo thông báo');
       }
@@ -168,7 +168,7 @@ function NotificationsPage() {
         resetForm();
         setIsEditing(null);
         fetchNotifications();
-        setTimeout(() => setActiveTab('list'), 2000);
+        setActiveTab('list'); // Quay về danh sách ngay lập tức
       } else {
         setErrorMessage(data.error || 'Đã xảy ra lỗi khi cập nhật thông báo');
       }
@@ -301,12 +301,6 @@ function NotificationsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Quản lý thông báo</h1>
-        <button
-          onClick={() => setActiveTab('create')}
-                            className="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2 rounded-md hover:from-primary-700 hover:to-primary-800 transition-colors"
-        >
-          Tạo thông báo mới
-        </button>
       </div>
 
       {/* Messages */}
@@ -335,20 +329,6 @@ function NotificationsPage() {
               }`}
             >
               Danh sách thông báo ({notifications.length})
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('create');
-                resetForm();
-                setIsEditing(null);
-              }}
-              className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
-                activeTab === 'create'
-                  ? 'border-primary-600 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Tạo thông báo
             </button>
             {isEditing && (
               <button
@@ -379,6 +359,23 @@ function NotificationsPage() {
           {/* Danh sách thông báo */}
           {activeTab === 'list' && (
             <div className="space-y-4">
+              {/* Nút tạo thông báo mới */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-primary-400 transition-colors">
+                <button
+                  onClick={() => {
+                    setActiveTab('create');
+                    resetForm();
+                    setIsEditing(null);
+                  }}
+                  className="w-full flex items-center justify-center space-x-3 text-gray-500 hover:text-primary-600 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span className="text-lg font-medium">Tạo thông báo mới</span>
+                </button>
+              </div>
+              
               {notifications.length > 0 ? (
                 notifications.map((notification) => (
                   <div key={notification.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
