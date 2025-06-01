@@ -95,16 +95,8 @@ export default function CheckoutPage() {
   };
 
   const handlePayment = () => {
-    if (selectedPaymentMethod === 'balance') {
-      // Chuyển đến trang nạp tiền/thanh toán bằng số dư
-      router.push(`/account/deposit?amount=${total}&redirect=checkout`);
-    } else if (selectedPaymentMethod === 'bank') {
-      // Chuyển đến trang chuyển khoản ngân hàng  
-      router.push(`/account/deposit?amount=${total}&method=bank&redirect=checkout`);
-    } else {
-      // Các phương thức khác
-      router.push(`/account/deposit?amount=${total}&method=${selectedPaymentMethod}&redirect=checkout`);
-    }
+    // Chỉ hỗ trợ thanh toán bằng số dư tài khoản
+    router.push(`/account/deposit?amount=${total}&redirect=checkout`);
   };
 
   return (
@@ -284,15 +276,12 @@ export default function CheckoutPage() {
                   <h2 className="text-xl font-bold mb-6">Chọn phương thức thanh toán</h2>
                   
                   <div className="space-y-4">
-                    {/* Thanh toán bằng số dư tài khoản */}
-                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'balance' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
-                         onClick={() => setSelectedPaymentMethod('balance')}>
+                    {/* Thanh toán bằng số dư tài khoản - PHƯƠNG THỨC DUY NHẤT */}
+                    <div className="border-2 border-teal-600 bg-teal-50 rounded-lg p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'balance' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
-                            {selectedPaymentMethod === 'balance' && (
-                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
-                            )}
+                          <div className="w-4 h-4 rounded-full border-2 border-teal-600 bg-teal-600">
+                            <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
                           </div>
                           <div>
                             <h3 className="font-semibold">Số dư tài khoản</h3>
@@ -305,65 +294,20 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    {/* Chuyển khoản ngân hàng */}
-                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'bank' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
-                         onClick={() => setSelectedPaymentMethod('bank')}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'bank' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
-                            {selectedPaymentMethod === 'bank' && (
-                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">Chuyển khoản ngân hàng</h3>
-                            <p className="text-sm text-gray-600">Thanh toán qua QR Code VietQR</p>
-                          </div>
+                    {/* Thông báo phương thức thanh toán */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0">
+                          <svg className="w-5 h-5 text-blue-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          </svg>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Image src="/images/payment/bank.svg" alt="Bank" width={32} height={32} />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Ví MoMo */}
-                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'momo' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
-                         onClick={() => setSelectedPaymentMethod('momo')}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'momo' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
-                            {selectedPaymentMethod === 'momo' && (
-                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">Ví MoMo</h3>
-                            <p className="text-sm text-gray-600">Thanh toán qua ứng dụng MoMo</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Image src="/images/payment/momo.svg" alt="MoMo" width={32} height={32} />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* ZaloPay */}
-                    <div className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${selectedPaymentMethod === 'zalopay' ? 'border-teal-600 bg-teal-50' : 'border-gray-200 hover:border-gray-300'}`}
-                         onClick={() => setSelectedPaymentMethod('zalopay')}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-4 h-4 rounded-full border-2 ${selectedPaymentMethod === 'zalopay' ? 'border-teal-600 bg-teal-600' : 'border-gray-300'}`}>
-                            {selectedPaymentMethod === 'zalopay' && (
-                              <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
-                            )}
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">ZaloPay</h3>
-                            <p className="text-sm text-gray-600">Thanh toán qua ứng dụng ZaloPay</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Image src="/images/payment/zalopay.svg" alt="ZaloPay" width={32} height={32} />
+                        <div>
+                          <h4 className="text-sm font-medium text-blue-800">Thanh toán đơn giản và an toàn</h4>
+                          <p className="text-sm text-blue-700 mt-1">
+                            Hiện tại chúng tôi chỉ hỗ trợ thanh toán bằng số dư tài khoản để đảm bảo tính bảo mật và xử lý nhanh chóng. 
+                            Bạn có thể nạp tiền vào tài khoản thông qua các phương thức chuyển khoản ngân hàng.
+                          </p>
                         </div>
                       </div>
                     </div>
