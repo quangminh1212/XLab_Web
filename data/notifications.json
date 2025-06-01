@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "title": "Khuyến mãi đặc biệt",
+    "content": "Giảm 50% tất cả sản phẩm phần mềm trong tuần này!",
+    "type": "promotion",
+    "isRead": {},
+    "createdAt": "2025-05-29T18:06:10.590Z",
+    "link": "/products",
+    "priority": "high",
+    "expiresAt": "2025-06-05T19:06:10.590Z"
+  },
+  {
+    "id": "2",
+    "title": "Cập nhật mới",
+    "content": "Phiên bản 2.0 đã ra mắt với nhiều tính năng mới",
+    "type": "update",
+    "isRead": {},
+    "createdAt": "2025-05-28T19:06:10.590Z",
+    "link": "/products/1",
+    "priority": "medium"
+  },
+  {
+    "id": "3",
+    "title": "Thông báo hệ thống",
+    "content": "Hệ thống sẽ bảo trì vào lúc 22:00 tối nay. Xin lỗi vì sự bất tiện này.",
+    "type": "system",
+    "isRead": {},
+    "createdAt": "2025-05-27T19:06:10.590Z",
+    "priority": "high"
+  }
+]
