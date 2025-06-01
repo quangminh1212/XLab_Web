@@ -46,7 +46,7 @@ export default function ProductCard({
   const [imageError, setImageError] = useState(false)
   const [showAddedEffect, setShowAddedEffect] = useState(false)
   const router = useRouter()
-  const { addItem } = useCart()
+  const { addItem, clearCart } = useCart()
   
   // Log the image URL for debugging
   console.log(`ProductCard image URL for ${name}:`, image)
@@ -339,7 +339,17 @@ export default function ProductCard({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                handleAddToCart(e);
+                // Clear cart and add only this product
+                clearCart();
+                addItem({
+                  id,
+                  name,
+                  price,
+                  quantity: 1,
+                  image,
+                  version: '',
+                  uniqueKey: `${id}_default_`
+                });
                 router.push('/checkout?skipInfo=true');
               }}
               className={`bg-gradient-to-r ${currentColor.button} text-white px-5 py-2.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20`}

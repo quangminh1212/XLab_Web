@@ -8,7 +8,7 @@
     "isActive": true,
     "balance": 2000,
     "createdAt": "2025-05-29T20:16:59.995Z",
-    "updatedAt": "2025-06-01T20:46:37.750Z",
+    "updatedAt": "2025-06-01T20:58:50.787Z",
     "lastLogin": "2025-05-29T20:16:59.995Z"
   },
   "transactions": [],
@@ -17,27 +17,9 @@
       "id": "grok",
       "name": "Grok",
       "price": 149000,
-      "quantity": 5,
-      "image": "/images/products/grok/grok-1.png",
-      "version": "default",
-      "uniqueKey": "grok_default_"
-    },
-    {
-      "id": "grok",
-      "name": "Grok",
-      "price": 149000,
       "quantity": 1,
-      "image": "/images/products/grok/grok-1.png",
-      "version": "full",
-      "uniqueKey": "grok_full_"
-    },
-    {
-      "id": "chatgpt",
-      "name": "ChatGPT",
-      "price": 149000,
-      "quantity": 3,
-      "image": "http://localhost:3000/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png",
-      "uniqueKey": "chatgpt_default_"
+      "image": "/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png",
+      "uniqueKey": "grok_default_"
     }
   ],
   "orders": [],
@@ -47,7 +29,7 @@
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-01T20:46:37.804Z",
+    "lastUpdated": "2025-06-01T20:58:50.800Z",
     "version": "1.0"
   }
 }
