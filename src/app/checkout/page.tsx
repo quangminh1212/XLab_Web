@@ -7,12 +7,14 @@ import Image from 'next/image'
 import { useCart } from '@/components/cart/CartContext'
 import { calculateCartTotals, formatCurrency } from '@/lib/utils'
 import { generateDetailedOrderId } from '@/shared/utils/orderUtils'
+import { useSession } from 'next-auth/react'
 
 export default function CheckoutPage() {
   const { items: cartItems, clearCart } = useCart()
   const router = useRouter()
   const searchParams = useSearchParams()
   const skipInfo = searchParams?.get('skipInfo') === 'true'
+  const { data: session } = useSession()
   
   // Mặc định là bước 1 (thông tin), nhưng nếu có tham số skipInfo=true thì chuyển thẳng bước 2 (thanh toán)
   const [step, setStep] = useState(skipInfo ? 2 : 1);
@@ -28,6 +30,8 @@ export default function CheckoutPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'balance' | 'bank' | 'momo' | 'zalopay'>('balance');
+  const [userBalance, setUserBalance] = useState(0);
+  const [isLoadingBalance, setIsLoadingBalance] = useState(true);
   
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map(item => ({
@@ -44,6 +48,31 @@ export default function CheckoutPage() {
       setStep(2);
     }
   }, [skipInfo]);
+
+  // Lấy số dư người dùng
+  useEffect(() => {
+    const fetchUserBalance = async () => {
+      if (!session?.user?.email) {
+        setIsLoadingBalance(false);
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/user/balance');
+        if (response.ok) {
+          const data = await response.json();
+          setUserBalance(data.balance || 0);
+        }
+      } catch (error) {
+        console.error('Error fetching user balance:', error);
+        setUserBalance(0);
+      } finally {
+        setIsLoadingBalance(false);
+      }
+    };
+
+    fetchUserBalance();
+  }, [session]);
 
   const validateShippingInfo = () => {
     const newErrors: Record<string, string> = {};
@@ -277,21 +306,48 @@ export default function CheckoutPage() {
                   
                   <div className="space-y-4">
                     {/* Thanh toán bằng số dư tài khoản - PHƯƠNG THỨC DUY NHẤT */}
-                    <div className="border-2 border-teal-600 bg-teal-50 rounded-lg p-4">
+                    <div className={`border-2 rounded-lg p-4 ${userBalance >= total ? 'border-teal-600 bg-teal-50' : 'border-orange-400 bg-orange-50'}`}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="w-4 h-4 rounded-full border-2 border-teal-600 bg-teal-600">
+                          <div className={`w-4 h-4 rounded-full border-2 ${userBalance >= total ? 'border-teal-600 bg-teal-600' : 'border-orange-400 bg-orange-400'}`}>
                             <div className="w-2 h-2 bg-white rounded-full mx-auto mt-0.5"></div>
                           </div>
                           <div>
                             <h3 className="font-semibold">Số dư tài khoản</h3>
-                            <p className="text-sm text-gray-600">Thanh toán bằng số dư hiện có</p>
+                            <p className="text-sm text-gray-600">
+                              {isLoadingBalance ? (
+                                'Đang tải số dư...'
+                              ) : (
+                                <>
+                                  Số dư hiện tại: <span className="font-semibold">{formatCurrency(userBalance)}</span>
+                                </>
+                              )}
+                            </p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className="text-2xl">💰</span>
                         </div>
                       </div>
+                      
+                      {/* Thông báo số dư không đủ */}
+                      {!isLoadingBalance && userBalance < total && (
+                        <div className="mt-4 p-3 bg-orange-100 border border-orange-300 rounded-lg">
+                          <div className="flex items-start space-x-3">
+                            <div className="flex-shrink-0">
+                              <svg className="w-5 h-5 text-orange-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="text-sm font-medium text-orange-800">Số dư không đủ</h4>
+                              <p className="text-sm text-orange-700 mt-1">
+                                Bạn cần thêm <span className="font-semibold">{formatCurrency(total - userBalance)}</span> để hoàn tất đơn hàng này.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Thông báo phương thức thanh toán */}
@@ -322,12 +378,41 @@ export default function CheckoutPage() {
                         Quay lại
                       </button>
                     )}
-                    <button
-                      onClick={handlePayment}
-                      className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded font-medium transition-colors"
-                    >
-                      Thanh toán {formatCurrency(total)}
-                    </button>
+                    
+                    {/* Hiển thị nút khác nhau tùy theo số dư */}
+                    {isLoadingBalance ? (
+                      <button
+                        disabled
+                        className="flex-1 bg-gray-400 text-white px-6 py-3 rounded font-medium cursor-not-allowed"
+                      >
+                        Đang kiểm tra số dư...
+                      </button>
+                    ) : userBalance >= total ? (
+                      <button
+                        onClick={handlePayment}
+                        className="flex-1 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded font-medium transition-colors"
+                      >
+                        Thanh toán {formatCurrency(total)}
+                      </button>
+                    ) : (
+                      <div className="flex-1 space-y-3">
+                        <button
+                          onClick={() => router.push(`/account/deposit?amount=${total}&redirect=checkout`)}
+                          className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded font-medium transition-colors flex items-center justify-center space-x-2"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                          <span>Nạp tiền ({formatCurrency(total - userBalance)})</span>
+                        </button>
+                        <button
+                          disabled
+                          className="w-full bg-gray-300 text-gray-500 px-6 py-2 rounded font-medium cursor-not-allowed text-sm"
+                        >
+                          Thanh toán sẽ khả dụng sau khi nạp tiền
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -372,6 +457,24 @@ export default function CheckoutPage() {
                     <span>Tổng cộng:</span>
                     <span className="text-teal-600">{formatCurrency(total)}</span>
                   </div>
+                  
+                  {/* Hiển thị thông tin số dư */}
+                  {session?.user && (
+                    <div className="border-t pt-3 mt-3">
+                      <div className="flex justify-between text-sm">
+                        <span>Số dư tài khoản:</span>
+                        <span className={isLoadingBalance ? 'text-gray-500' : userBalance >= total ? 'text-green-600' : 'text-orange-600'}>
+                          {isLoadingBalance ? 'Đang tải...' : formatCurrency(userBalance)}
+                        </span>
+                      </div>
+                      {!isLoadingBalance && userBalance < total && (
+                        <div className="flex justify-between text-sm mt-1">
+                          <span className="text-orange-600">Cần nạp thêm:</span>
+                          <span className="text-orange-600 font-semibold">{formatCurrency(total - userBalance)}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 
                 <div className="mt-6 text-center">

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
@@ -11,7 +11,12 @@ import { useBalance } from '@/contexts/BalanceContext';
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { balance, refreshBalance } = useBalance();
+  
+  // Lấy thông tin từ URL params
+  const suggestedAmount = searchParams?.get('amount');
+  const redirectPath = searchParams?.get('redirect');
   
   // States
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
@@ -66,8 +71,13 @@ export default function DepositPage() {
         // Show success message
         alert(`Giao dịch thành công! Đã nạp ${data.transaction.amount.toLocaleString('vi-VN')} VND vào tài khoản.`);
         
-        // Generate new transaction code
-        generateTransactionCode();
+        // Redirect về checkout nếu có tham số redirect
+        if (redirectPath === 'checkout') {
+          router.push('/checkout?skipInfo=true');
+        } else {
+          // Generate new transaction code nếu không redirect
+          generateTransactionCode();
+        }
       } else {
         console.log('⏳ Transaction not found yet');
         alert('Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.');
@@ -157,14 +167,24 @@ export default function DepositPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <Link href="/account" className="text-gray-600 hover:text-gray-800">
+            <Link href={redirectPath === 'checkout' ? '/checkout' : '/account'} className="text-gray-600 hover:text-gray-800">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
             <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
           </div>
-          <p className="text-gray-600">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
+          <div>
+            <p className="text-gray-600">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
+            {suggestedAmount && (
+              <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm bg-orange-100 text-orange-800">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Số tiền cần nạp: {formatCurrency(parseInt(suggestedAmount))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
