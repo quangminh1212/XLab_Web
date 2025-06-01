@@ -20,7 +20,6 @@ interface BankInfo {
 const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [transactionId, setTransactionId] = useState<string>('');
-  const [manualTransactionId, setManualTransactionId] = useState<string>('');
   const [isChecking, setIsChecking] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
@@ -73,8 +72,8 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
     }
   };
 
-  const checkTransactionStatus = async (checkTransactionId = transactionId) => {
-    if (!checkTransactionId || isChecking) return;
+  const checkTransactionStatus = async () => {
+    if (!transactionId || isChecking) return;
 
     setIsChecking(true);
     setLastCheckTime(new Date());
@@ -86,7 +85,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          transactionId: checkTransactionId,
+          transactionId,
           amount,
           bankCode: bankInfo.bankCode,
           accountNumber: bankInfo.accountNumber
@@ -98,7 +97,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       if (response.ok && data.success) {
         // Giao dịch thành công
         clearInterval(intervalRef.current);
-        onSuccess?.(checkTransactionId);
+        onSuccess?.(transactionId);
       } else {
         // Hiển thị thông báo nếu chưa tìm thấy giao dịch
         alert('Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.');
@@ -108,14 +107,6 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
       alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
     } finally {
       setIsChecking(false);
-    }
-  };
-
-  const handleManualCheck = () => {
-    if (manualTransactionId.trim()) {
-      checkTransactionStatus(manualTransactionId.trim());
-    } else {
-      alert('Vui lòng nhập mã giao dịch.');
     }
   };
 
@@ -191,7 +182,7 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
                 </div>
               </div>
             ) : (
-              <div className="w-80 h-80 mx-auto bg-white rounded-xl flex items-center justify-center">
+              <div className="w-80 h-80 mx-auto bg-gray-100 rounded-xl flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-600"></div>
               </div>
             )}
@@ -244,32 +235,10 @@ const QRBankTransfer = ({ amount, onSuccess, onError }: QRBankTransferProps) => 
             </div>
           </div>
 
-          {/* Manual Transaction ID Entry */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <h4 className="font-semibold text-gray-800 mb-3">Nhập mã giao dịch</h4>
-            <p className="text-sm text-gray-600 mb-3">Nếu bạn đã chuyển khoản nhưng không có mã QR, hãy nhập mã giao dịch ở đây:</p>
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                value={manualTransactionId}
-                onChange={(e) => setManualTransactionId(e.target.value)}
-                placeholder="Ví dụ: 1698765432XLABRND" 
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none font-mono text-sm"
-              />
-              <button
-                onClick={handleManualCheck}
-                disabled={isChecking || !manualTransactionId.trim()}
-                className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Kiểm tra
-              </button>
-            </div>
-          </div>
-
           {/* Check Transaction Button */}
           <div className="text-center mb-6">
             <button
-              onClick={() => checkTransactionStatus()}
+              onClick={checkTransactionStatus}
               disabled={isChecking}
               className="w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold py-4 px-6 rounded-lg hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-lg"
             >

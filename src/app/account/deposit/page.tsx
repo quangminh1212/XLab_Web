@@ -21,7 +21,6 @@ export default function DepositPage() {
   // States
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [transactionId, setTransactionId] = useState<string>('');
-  const [manualTransactionId, setManualTransactionId] = useState<string>('');
   const [isChecking, setIsChecking] = useState(false);
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
 
@@ -40,14 +39,14 @@ export default function DepositPage() {
     }
   }, [session, status, router]);
 
-  const checkTransactionStatus = async (checkTransactionId = transactionId) => {
-    if (!checkTransactionId || isChecking) return;
+  const checkTransactionStatus = async () => {
+    if (!transactionId || isChecking) return;
 
     setIsChecking(true);
     setLastCheckTime(new Date());
 
     try {
-      console.log(`🔍 Checking transaction: ${checkTransactionId}`);
+      console.log(`🔍 Checking transaction: ${transactionId}`);
       
       const response = await fetch('/api/payment/check-bank-transfer', {
         method: 'POST',
@@ -55,7 +54,7 @@ export default function DepositPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          transactionId: checkTransactionId,
+          transactionId,
           bankCode: 'MB',
           accountNumber: BANK_INFO.accountNumber
         })
@@ -88,14 +87,6 @@ export default function DepositPage() {
       alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
     } finally {
       setIsChecking(false);
-    }
-  };
-
-  const handleManualCheck = () => {
-    if (manualTransactionId.trim()) {
-      checkTransactionStatus(manualTransactionId.trim());
-    } else {
-      alert('Vui lòng nhập mã giao dịch.');
     }
   };
 
@@ -222,32 +213,10 @@ export default function DepositPage() {
                   </div>
                 )}
                 
-                {/* Manual Transaction ID Entry */}
-                <div className="mt-6 mb-4 bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-800 mb-3 text-left">Nhập mã giao dịch</h4>
-                  <p className="text-sm text-gray-600 mb-3 text-left">Nếu bạn đã chuyển khoản nhưng không có mã QR, hãy nhập mã giao dịch ở đây:</p>
-                  <div className="flex gap-2">
-                    <input 
-                      type="text" 
-                      value={manualTransactionId}
-                      onChange={(e) => setManualTransactionId(e.target.value)}
-                      placeholder="Ví dụ: 1698765432XLABRND" 
-                      className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none font-mono text-sm"
-                    />
-                    <button
-                      onClick={handleManualCheck}
-                      disabled={isChecking || !manualTransactionId.trim()}
-                      className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Kiểm tra
-                    </button>
-                  </div>
-                </div>
-                
                 {/* Check Button */}
                 <div className="mt-6">
                   <button
-                    onClick={() => checkTransactionStatus()}
+                    onClick={checkTransactionStatus}
                     disabled={isChecking}
                     className="w-full bg-gradient-to-r from-teal-600 to-teal-700 text-white font-semibold py-4 px-6 rounded-lg hover:from-teal-700 hover:to-teal-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-lg"
                   >
