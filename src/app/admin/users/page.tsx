@@ -106,35 +106,12 @@ function UsersPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Quản lý người dùng</h1>
-        <div className="flex gap-3">
-          <button
-            onClick={async () => {
-              try {
-                const response = await fetch('/api/admin/users/update-avatars', {
-                  method: 'POST'
-                });
-                const result = await response.json();
-                if (result.success) {
-                  alert('Đã cập nhật ảnh đại diện cho users! Ảnh sẽ được hiển thị khi users đăng nhập lại.');
-                  window.location.reload();
-                } else {
-                  alert('Có lỗi xảy ra: ' + result.error);
-                }
-              } catch (error) {
-                alert('Có lỗi xảy ra khi cập nhật ảnh đại diện');
-              }
-            }}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm transition-colors"
-          >
-            🔄 Refresh Avatar
-          </button>
-          <Link
-            href="/admin"
-            className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
-          >
-            ← Quay lại Dashboard
-          </Link>
-        </div>
+        <Link
+          href="/admin"
+          className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
+        >
+          ← Quay lại Dashboard
+        </Link>
       </div>
       
       {/* Thống kê */}

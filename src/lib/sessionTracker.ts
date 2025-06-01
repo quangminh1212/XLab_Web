@@ -115,15 +115,9 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
       if (session.user.name && session.user.name !== userData.profile.name) {
         updateData.name = session.user.name;
       }
-      
-      // Luôn cập nhật ảnh đại diện nếu có từ Google OAuth
-      if (session.user.image) {
-        if (!userData.profile.image || session.user.image !== userData.profile.image) {
-          updateData.image = session.user.image;
-          console.log(`📸 Updating avatar for user: ${userEmail}`);
-        }
+      if (session.user.image && session.user.image !== userData.profile.image) {
+        updateData.image = session.user.image;
       }
-      
       if (session.user.isAdmin !== undefined) {
         updateData.isAdmin = session.user.isAdmin;
       }
