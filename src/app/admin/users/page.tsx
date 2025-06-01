@@ -5,8 +5,13 @@ import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { User, UserStats } from '@/models/UserModel';
 
+interface UserWithOrderStats extends User {
+  purchasedProducts?: number;
+  totalSpent?: number;
+}
+
 function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserWithOrderStats[]>([]);
   const [stats, setStats] = useState<UserStats>({
     total: 0,
     active: 0,
@@ -16,6 +21,25 @@ function UsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive' | 'admin'>('all');
+
+  // Hàm tính số sản phẩm đã mua từ localStorage
+  const calculateUserOrderStats = (email: string) => {
+    try {
+      if (typeof window !== 'undefined') {
+        const orders = JSON.parse(localStorage.getItem(`orders_${email}`) || '[]');
+        const purchasedProducts = orders.reduce((total: number, order: any) => {
+          return total + (order.items?.length || 0);
+        }, 0);
+        const totalSpent = orders.reduce((total: number, order: any) => {
+          return total + (order.totalAmount || 0);
+        }, 0);
+        return { purchasedProducts, totalSpent };
+      }
+    } catch (error) {
+      console.error('Error calculating order stats for', email, error);
+    }
+    return { purchasedProducts: 0, totalSpent: 0 };
+  };
 
   // Giả lập dữ liệu người dùng
   useEffect(() => {
@@ -31,21 +55,32 @@ function UsersPage() {
         }
         
         const data = await response.json();
-        setUsers(data.users || []);
+        const usersData = data.users || [];
+        
+        // Thêm thống kê đơn hàng cho mỗi user
+        const usersWithStats = usersData.map((user: User) => {
+          const orderStats = calculateUserOrderStats(user.email);
+          return {
+            ...user,
+            ...orderStats
+          };
+        });
+        
+        setUsers(usersWithStats);
         
         // Sử dụng stats từ API nếu có, nếu không thì tính toán
         if (data.stats) {
           setStats(data.stats);
         } else {
           // Fallback: Tính toán số liệu thống kê nếu API không trả về
-          const totalUsers = data.users ? data.users.length : 0;
-          const activeUsers = data.users ? data.users.filter((user: User) => user.isActive).length : 0;
+          const totalUsers = usersWithStats.length;
+          const activeUsers = usersWithStats.filter((user: User) => user.isActive).length;
           const inactiveUsers = totalUsers - activeUsers;
           
           // Tính người dùng mới trong tháng này
           const now = new Date();
           const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-          const newUsers = data.users ? data.users.filter((user: User) => new Date(user.createdAt) >= startOfMonth).length : 0;
+          const newUsers = usersWithStats.filter((user: User) => new Date(user.createdAt) >= startOfMonth).length;
           
           setStats({
             total: totalUsers,
@@ -187,6 +222,12 @@ function UsersPage() {
                     Vai trò
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Số dư
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    SP đã mua
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Ngày tạo
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -215,11 +256,6 @@ function UsersPage() {
                             )}
                           </div>
                           <div className="text-sm text-gray-500">{user.email}</div>
-                          {user.balance > 0 && (
-                            <div className="text-xs text-green-600 font-medium">
-                              Số dư: {user.balance.toLocaleString('vi-VN')} VNĐ
-                            </div>
-                          )}
                         </div>
                       </div>
                     </td>
@@ -240,6 +276,21 @@ function UsersPage() {
                       ) : (
                         <span>Người dùng</span>
                       )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <div className="font-medium text-gray-900">
+                        {user.balance.toLocaleString('vi-VN')} VNĐ
+                      </div>
+                      {user.totalSpent && user.totalSpent > 0 && (
+                        <div className="text-xs text-gray-500">
+                          Đã chi: {user.totalSpent.toLocaleString('vi-VN')} VNĐ
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <div className="font-medium">
+                        {user.purchasedProducts || 0} sản phẩm
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(user.createdAt)}
