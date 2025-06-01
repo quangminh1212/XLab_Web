@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Avatar from '@/components/common/Avatar'
-import UserSyncStatus from '@/components/common/UserSyncStatus'
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -1218,8 +1217,7 @@ export default function AccountPage() {
                 </div>
               </div>
 
-              {/* Phần Đồng bộ dữ liệu */}
-              <UserSyncStatus />
+
             </div>
           </div>
         </div>
