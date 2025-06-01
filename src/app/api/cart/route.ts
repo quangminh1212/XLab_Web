@@ -1,16 +1,35 @@
 import { NextResponse } from 'next/server';
-import { CartItem } from '@/lib/utils';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { getUserCart, updateUserCart, addToUserCart, removeFromUserCart, clearUserCart } from '@/lib/userService';
 
-// Get cart items from request cookie or session
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string;
+  options?: string[];
+  version?: string;
+  uniqueKey?: string;
+}
+
+// Get cart items từ user data
 export async function GET(request: Request) {
   try {
-    // Trong ứng dụng thực tế, đây là nơi bạn sẽ lấy giỏ hàng từ 
-    // session hoặc database nếu người dùng đã đăng nhập
+    const session = await getServerSession(authOptions);
     
-    // Vì chúng ta đang xử lý giỏ hàng ở phía client với localStorage,
-    // API này chỉ mang tính chất minh họa
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const cart = await getUserCart(session.user.email);
     
-    return NextResponse.json({ success: true, message: 'Cart retrieved successfully', cart: [] });
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Cart retrieved successfully', 
+      cart: cart 
+    });
   } catch (error: any) {
     console.error('Error getting cart:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
@@ -20,6 +39,12 @@ export async function GET(request: Request) {
 // Update cart (overwrite entire cart)
 export async function PUT(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const data = await request.json();
     const { cart } = data;
 
@@ -27,8 +52,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Invalid cart data' }, { status: 400 });
     }
 
-    // Trong ứng dụng thực tế, đây là nơi bạn sẽ lưu giỏ hàng vào
-    // session hoặc database của người dùng
+    await updateUserCart(session.user.email, cart);
     
     return NextResponse.json({ 
       success: true, 
@@ -41,11 +65,46 @@ export async function PUT(request: Request) {
   }
 }
 
+// Add item to cart
+export async function POST(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const data = await request.json();
+    const { item } = data;
+
+    if (!item || !item.id) {
+      return NextResponse.json({ error: 'Invalid item data' }, { status: 400 });
+    }
+
+    await addToUserCart(session.user.email, item);
+    const updatedCart = await getUserCart(session.user.email);
+    
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Item added to cart successfully',
+      cart: updatedCart 
+    });
+  } catch (error: any) {
+    console.error('Error adding to cart:', error);
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+  }
+}
+
 // Clear the cart
 export async function DELETE(request: Request) {
   try {
-    // Trong ứng dụng thực tế, đây là nơi bạn sẽ xóa giỏ hàng khỏi
-    // session hoặc database của người dùng
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    await clearUserCart(session.user.email);
     
     return NextResponse.json({ 
       success: true, 

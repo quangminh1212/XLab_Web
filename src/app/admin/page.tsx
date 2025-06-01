@@ -190,6 +190,22 @@ function AdminDashboard() {
                 </div>
               </div>
             </Link>
+
+            <Link
+              href="/admin/user-data"
+              className="block p-3 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-lg transition"
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z" />
+                </svg>
+                <div>
+                  <h3 className="font-medium">📁 Dữ liệu người dùng</h3>
+                  <p className="text-sm">Quản lý file riêng lẻ và giỏ hàng</p>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
