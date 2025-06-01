@@ -111,6 +111,46 @@ function createDefaultUserData(user: User): UserData {
   };
 }
 
+// Helper function để tự động tạo user mới từ email
+async function createNewUserFromEmail(email: string): Promise<User> {
+  console.log(`Creating new user from email: ${email}`);
+  const newUser: User = {
+    id: Date.now().toString(),
+    name: email.split('@')[0],
+    email: email,
+    image: undefined,
+    isAdmin: false,
+    isActive: true,
+    balance: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    lastLogin: new Date().toISOString()
+  };
+  
+  // Lưu user mới vào hệ thống
+  const allUsers = await getUsers();
+  allUsers.push(newUser);
+  await saveUsers(allUsers);
+  
+  return newUser;
+}
+
+// Helper function để đảm bảo user data tồn tại (tạo mới nếu cần)
+async function ensureUserDataExists(email: string): Promise<UserData> {
+  let userData = await getUserDataFromFile(email);
+  
+  if (!userData) {
+    let user = await getUserByEmail(email);
+    if (!user) {
+      user = await createNewUserFromEmail(email);
+    }
+    userData = createDefaultUserData(user);
+    await saveUserDataToFile(email, userData);
+  }
+  
+  return userData;
+}
+
 // Đọc dữ liệu người dùng (fallback từ hệ thống cũ)
 export async function getUsers(): Promise<User[]> {
   try {
@@ -252,8 +292,8 @@ export async function updateUserBalance(email: string, amount: number): Promise<
 
 // Lấy giỏ hàng của user
 export async function getUserCart(email: string): Promise<CartItem[]> {
-  const userData = await getUserDataFromFile(email);
-  return userData?.cart || [];
+  const userData = await ensureUserDataExists(email);
+  return userData.cart || [];
 }
 
 // Cập nhật giỏ hàng của user (legacy - sử dụng updateUserCartSync thay thế)
@@ -354,17 +394,8 @@ export async function createTransaction(transactionData: Omit<Transaction, 'id' 
 
 // Lấy giao dịch của người dùng
 export async function getUserTransactions(userEmail: string): Promise<Transaction[]> {
-  const userData = await getUserDataFromFile(userEmail);
-  if (userData) {
-    return userData.transactions;
-  }
-  
-  // Fallback về hệ thống cũ - tìm bằng userId
-  const user = await getUserByEmail(userEmail);
-  if (!user) return [];
-  
-  const transactions = await getTransactions();
-  return transactions.filter(transaction => transaction.userId === user.id);
+  const userData = await ensureUserDataExists(userEmail);
+  return userData.transactions || [];
 }
 
 // Sync balance between users.json and balances.json
@@ -376,15 +407,16 @@ export async function syncUserBalance(email: string): Promise<number> {
     let balanceFromUserFile = 0;
     
     // Get from user's individual file
-    const userData = await getUserDataFromFile(email);
+    let userData = await getUserDataFromFile(email);
     if (userData) {
       balanceFromUserFile = userData.profile.balance || 0;
     }
     
     // Get from users.json
+    let user: User | null = null;
     try {
       const users = await getUsers();
-      const user = users.find(u => u.email === email);
+      user = users.find(u => u.email === email) || null;
       balanceFromUsers = user?.balance || 0;
     } catch (error) {
       console.log('Could not read from users.json:', error);
@@ -397,6 +429,15 @@ export async function syncUserBalance(email: string): Promise<number> {
       balanceFromBalances = balances[email] || 0;
     } catch (error) {
       console.log('Could not read from balances.json:', error);
+    }
+    
+    // If no user data exists anywhere, create new user
+    if (!userData && !user) {
+      user = await createNewUserFromEmail(email);
+      userData = createDefaultUserData(user);
+      await saveUserDataToFile(email, userData);
+      
+      return 0; // New user has 0 balance
     }
     
     // Use the highest balance and sync
@@ -412,7 +453,14 @@ export async function syncUserBalance(email: string): Promise<number> {
     }
     
     if (balanceFromUserFile !== finalBalance) {
-      let userData = await getUserDataFromFile(email);
+      if (!userData) {
+        // Create user data if it doesn't exist
+        const users = await getUsers();
+        const existingUser = users.find(u => u.email === email);
+        if (existingUser) {
+          userData = createDefaultUserData(existingUser);
+        }
+      }
       if (userData) {
         userData.profile.balance = finalBalance;
         await saveUserDataToFile(email, userData);
@@ -631,16 +679,7 @@ export async function updateUserProfileData(email: string, profileData: Partial<
 // Cập nhật cart và đảm bảo metadata được cập nhật
 export async function updateUserCartSync(email: string, cart: CartItem[]): Promise<void> {
   try {
-    let userData = await getUserDataFromFile(email);
-    
-    if (!userData) {
-      // Tạo user data mới nếu chưa có
-      const user = await getUserByEmail(email);
-      if (!user) {
-        throw new Error('User not found');
-      }
-      userData = createDefaultUserData(user);
-    }
+    const userData = await ensureUserDataExists(email);
     
     userData.cart = cart;
     userData.metadata.lastUpdated = new Date().toISOString();
