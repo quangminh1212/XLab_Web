@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import { getUsers, getAllUserEmails, getUserDataFromFile } from '@/lib/userService';
+import { getUsers, getAllUserEmails, getUserDataFromFile, getUserOrderStats } from '@/lib/userService';
 
 export async function GET() {
   try {
@@ -40,12 +40,28 @@ export async function GET() {
       // Ưu tiên lấy từ file riêng
       const userData = await getUserDataFromFile(email);
       if (userData) {
-        users.push(userData.profile);
+        // Lấy thống kê đơn hàng từ file
+        const orderStats = await getUserOrderStats(email);
+        
+        const userWithStats = {
+          ...userData.profile,
+          purchasedProducts: orderStats.totalProducts,
+          totalSpent: orderStats.totalSpent,
+          totalOrders: orderStats.totalOrders
+        };
+        
+        users.push(userWithStats);
       } else {
         // Fallback từ users.json
         const userFromJson = usersFromJson.find(u => u.email === email);
         if (userFromJson) {
-          users.push(userFromJson);
+          const userWithStats = {
+            ...userFromJson,
+            purchasedProducts: 0,
+            totalSpent: 0,
+            totalOrders: 0
+          };
+          users.push(userWithStats);
         }
       }
     }

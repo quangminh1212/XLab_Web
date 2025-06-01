@@ -24,11 +24,36 @@ interface CartItem {
   uniqueKey?: string;
 }
 
+// Interface cho đơn hàng
+interface OrderItem {
+  productId: string;
+  productName: string;
+  quantity: number;
+  price: number;
+  originalPrice?: number;
+  image?: string;
+  version?: string;
+}
+
+interface Order {
+  id: string;
+  items: OrderItem[];
+  totalAmount: number;
+  couponDiscount?: number;
+  status: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  createdAt: string;
+  updatedAt: string;
+  transactionId?: string;
+}
+
 // Interface cho dữ liệu user complete
 interface UserData {
   profile: User;
   transactions: Transaction[];
   cart: CartItem[];
+  orders: Order[];
   settings: {
     notifications: boolean;
     language: string;
@@ -99,6 +124,7 @@ function createDefaultUserData(user: User): UserData {
     profile: user,
     transactions: [],
     cart: [],
+    orders: [],
     settings: {
       notifications: true,
       language: 'vi',
@@ -529,6 +555,7 @@ export async function migrateToIndividualFiles(): Promise<void> {
         profile: user,
         transactions: userTransactions,
         cart: [], // Giỏ hàng trống ban đầu
+        orders: [], // Đơn hàng trống ban đầu
         settings: {
           notifications: true,
           language: 'vi',
@@ -694,5 +721,156 @@ export async function updateUserCartSync(email: string, cart: CartItem[]): Promi
   } catch (error) {
     console.error(`❌ Error updating cart for ${email}:`, error);
     throw error;
+  }
+}
+
+// Migrate dữ liệu đơn hàng từ localStorage vào file user data
+export async function migrateOrdersFromLocalStorage(email: string): Promise<void> {
+  try {
+    console.log(`🔄 Migrating orders from localStorage for: ${email}`);
+    
+    // Chỉ chạy trên client side
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
+    const userData = await ensureUserDataExists(email);
+    
+    // Lấy dữ liệu từ localStorage
+    const localOrders = JSON.parse(localStorage.getItem(`orders_${email}`) || '[]');
+    
+    if (localOrders.length > 0) {
+      // Convert localStorage orders to our Order format
+      const migratedOrders: Order[] = localOrders.map((localOrder: any) => ({
+        id: localOrder.id || `ORDER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        items: localOrder.items?.map((item: any) => ({
+          productId: item.productId || item.id,
+          productName: item.productName || item.name,
+          quantity: item.quantity || 1,
+          price: item.price || 0,
+          originalPrice: item.originalPrice,
+          image: item.image,
+          version: item.version || 'default'
+        })) || [],
+        totalAmount: localOrder.totalAmount || 0,
+        couponDiscount: localOrder.couponDiscount || 0,
+        status: localOrder.status || 'completed',
+        paymentMethod: localOrder.paymentMethod || 'unknown',
+        paymentStatus: localOrder.paymentStatus || 'paid',
+        createdAt: localOrder.createdAt || new Date().toISOString(),
+        updatedAt: localOrder.updatedAt || new Date().toISOString(),
+        transactionId: localOrder.transactionId
+      }));
+      
+      // Merge với orders hiện có (tránh duplicate)
+      const existingOrderIds = userData.orders.map(o => o.id);
+      const newOrders = migratedOrders.filter(o => !existingOrderIds.includes(o.id));
+      
+      if (newOrders.length > 0) {
+        userData.orders.push(...newOrders);
+        userData.metadata.lastUpdated = new Date().toISOString();
+        
+        await saveUserDataToFile(email, userData);
+        console.log(`✅ Migrated ${newOrders.length} orders for: ${email}`);
+      } else {
+        console.log(`ℹ️ No new orders to migrate for: ${email}`);
+      }
+    }
+    
+  } catch (error) {
+    console.error(`❌ Error migrating orders for ${email}:`, error);
+  }
+}
+
+// ===== ORDER MANAGEMENT FUNCTIONS =====
+
+// Lấy danh sách đơn hàng của user
+export async function getUserOrders(email: string): Promise<Order[]> {
+  try {
+    const userData = await getUserDataFromFile(email);
+    return userData?.orders || [];
+  } catch (error) {
+    console.error(`Error getting orders for ${email}:`, error);
+    return [];
+  }
+}
+
+// Thêm đơn hàng mới cho user
+export async function addUserOrder(email: string, order: Order): Promise<void> {
+  try {
+    const userData = await ensureUserDataExists(email);
+    
+    userData.orders.push(order);
+    userData.metadata.lastUpdated = new Date().toISOString();
+    userData.profile.updatedAt = new Date().toISOString();
+    
+    await saveUserDataToFile(email, userData);
+    console.log(`✅ Order ${order.id} added for user: ${email}`);
+  } catch (error) {
+    console.error(`❌ Error adding order for ${email}:`, error);
+    throw error;
+  }
+}
+
+// Cập nhật đơn hàng của user
+export async function updateUserOrder(email: string, orderId: string, updates: Partial<Order>): Promise<void> {
+  try {
+    const userData = await ensureUserDataExists(email);
+    
+    const orderIndex = userData.orders.findIndex(order => order.id === orderId);
+    if (orderIndex >= 0) {
+      userData.orders[orderIndex] = {
+        ...userData.orders[orderIndex],
+        ...updates,
+        updatedAt: new Date().toISOString()
+      };
+      
+      userData.metadata.lastUpdated = new Date().toISOString();
+      userData.profile.updatedAt = new Date().toISOString();
+      
+      await saveUserDataToFile(email, userData);
+      console.log(`✅ Order ${orderId} updated for user: ${email}`);
+    } else {
+      console.log(`❌ Order ${orderId} not found for user: ${email}`);
+    }
+  } catch (error) {
+    console.error(`❌ Error updating order for ${email}:`, error);
+    throw error;
+  }
+}
+
+// Lấy thống kê đơn hàng của user
+export async function getUserOrderStats(email: string): Promise<{
+  totalOrders: number;
+  completedOrders: number;
+  totalSpent: number;
+  totalProducts: number;
+}> {
+  try {
+    const orders = await getUserOrders(email);
+    
+    const totalOrders = orders.length;
+    const completedOrders = orders.filter(o => o.status === 'completed').length;
+    const totalSpent = orders
+      .filter(o => o.status === 'completed')
+      .reduce((sum, o) => sum + o.totalAmount, 0);
+    const totalProducts = orders
+      .filter(o => o.status === 'completed')
+      .reduce((sum, o) => sum + o.items.length, 0);
+    
+    return {
+      totalOrders,
+      completedOrders,
+      totalSpent,
+      totalProducts
+    };
+  } catch (error) {
+    console.error(`Error getting order stats for ${email}:`, error);
+    return {
+      totalOrders: 0,
+      completedOrders: 0,
+      totalSpent: 0,
+      totalProducts: 0
+    };
   }
 } 

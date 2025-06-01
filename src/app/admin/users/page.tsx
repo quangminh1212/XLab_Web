@@ -8,6 +8,7 @@ import { User, UserStats } from '@/models/UserModel';
 interface UserWithOrderStats extends User {
   purchasedProducts?: number;
   totalSpent?: number;
+  totalOrders?: number;
 }
 
 function UsersPage() {
@@ -22,32 +23,11 @@ function UsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive' | 'admin'>('all');
 
-  // Hàm tính số sản phẩm đã mua từ localStorage
-  const calculateUserOrderStats = (email: string) => {
-    try {
-      if (typeof window !== 'undefined') {
-        const orders = JSON.parse(localStorage.getItem(`orders_${email}`) || '[]');
-        const purchasedProducts = orders.reduce((total: number, order: any) => {
-          return total + (order.items?.length || 0);
-        }, 0);
-        const totalSpent = orders.reduce((total: number, order: any) => {
-          return total + (order.totalAmount || 0);
-        }, 0);
-        return { purchasedProducts, totalSpent };
-      }
-    } catch (error) {
-      console.error('Error calculating order stats for', email, error);
-    }
-    return { purchasedProducts: 0, totalSpent: 0 };
-  };
-
-  // Giả lập dữ liệu người dùng
+  // Lấy dữ liệu người dùng từ API
   useEffect(() => {
-    // Lấy dữ liệu người dùng từ API
     const fetchUsers = async () => {
       try {
         setIsLoading(true);
-        // Thay thế với API endpoint thực tế khi có
         const response = await fetch('/api/admin/users');
         
         if (!response.ok) {
@@ -55,43 +35,16 @@ function UsersPage() {
         }
         
         const data = await response.json();
-        const usersData = data.users || [];
         
-        // Thêm thống kê đơn hàng cho mỗi user
-        const usersWithStats = usersData.map((user: User) => {
-          const orderStats = calculateUserOrderStats(user.email);
-          return {
-            ...user,
-            ...orderStats
-          };
-        });
+        // API đã trả về dữ liệu với thống kê đơn hàng
+        setUsers(data.users || []);
         
-        setUsers(usersWithStats);
-        
-        // Sử dụng stats từ API nếu có, nếu không thì tính toán
+        // Sử dụng stats từ API
         if (data.stats) {
           setStats(data.stats);
-        } else {
-          // Fallback: Tính toán số liệu thống kê nếu API không trả về
-          const totalUsers = usersWithStats.length;
-          const activeUsers = usersWithStats.filter((user: User) => user.isActive).length;
-          const inactiveUsers = totalUsers - activeUsers;
-          
-          // Tính người dùng mới trong tháng này
-          const now = new Date();
-          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-          const newUsers = usersWithStats.filter((user: User) => new Date(user.createdAt) >= startOfMonth).length;
-          
-          setStats({
-            total: totalUsers,
-            active: activeUsers,
-            inactive: inactiveUsers,
-            newThisMonth: newUsers
-          });
         }
       } catch (error) {
         console.error("Error fetching users:", error);
-        // Hiển thị thông báo lỗi nếu cần
       } finally {
         setIsLoading(false);
       }
