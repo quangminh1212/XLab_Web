@@ -33,6 +33,10 @@ export default function CheckoutPage() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'balance' | 'bank' | 'momo' | 'zalopay'>('balance');
   const [userBalance, setUserBalance] = useState(0);
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
+  const [coupon, setCoupon] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponError, setCouponError] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map(item => {
@@ -58,7 +62,8 @@ export default function CheckoutPage() {
   });
   
   // Calculate cart totals
-  const { subtotal, tax, total } = calculateCartTotals(cart);
+  const { subtotal, tax } = calculateCartTotals(cart);
+  const total = Math.max(subtotal - couponDiscount, 0);
 
   // Cập nhật step khi tham số URL thay đổi
   useEffect(() => {
@@ -144,6 +149,37 @@ export default function CheckoutPage() {
   const handlePayment = () => {
     // Chỉ hỗ trợ thanh toán bằng số dư tài khoản
     router.push(`/account/deposit?amount=${total}&redirect=checkout`);
+  };
+
+  // Hàm áp dụng mã giảm giá
+  const handleApplyCoupon = async () => {
+    setIsApplyingCoupon(true);
+    setCouponError('');
+    setCouponDiscount(0);
+    if (!coupon.trim()) {
+      setCouponError('Vui lòng nhập mã giảm giá');
+      setIsApplyingCoupon(false);
+      return;
+    }
+    try {
+      const res = await fetch('/api/cart/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: coupon })
+      });
+      const data = await res.json();
+      if (res.ok && data.discount) {
+        setCouponDiscount(data.discount);
+        setCouponError('');
+      } else {
+        setCouponDiscount(0);
+        setCouponError(data.message || 'Mã giảm giá không hợp lệ');
+      }
+    } catch (err) {
+      setCouponDiscount(0);
+      setCouponError('Có lỗi xảy ra, thử lại sau.');
+    }
+    setIsApplyingCoupon(false);
   };
 
   return (
@@ -462,11 +498,40 @@ export default function CheckoutPage() {
                   ))}
                 </div>
                 
+                {/* Nhập mã giảm giá */}
+                <div className="mb-4">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      className="border rounded px-3 py-2 text-sm w-full"
+                      placeholder="Nhập mã giảm giá"
+                      value={coupon}
+                      onChange={e => setCoupon(e.target.value)}
+                      disabled={isApplyingCoupon}
+                    />
+                    <button
+                      className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded text-sm font-medium"
+                      onClick={handleApplyCoupon}
+                      disabled={isApplyingCoupon}
+                    >
+                      Áp dụng
+                    </button>
+                  </div>
+                  {couponError && <div className="text-red-500 text-xs mt-1">{couponError}</div>}
+                  {couponDiscount > 0 && <div className="text-green-600 text-xs mt-1">Đã áp dụng mã, giảm {formatCurrency(couponDiscount)}</div>}
+                </div>
+                
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Tạm tính:</span>
                     <span>{formatCurrency(subtotal)}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Giảm giá:</span>
+                      <span>-{formatCurrency(couponDiscount)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm">
                     <span>Thuế VAT:</span>
                     <span>{formatCurrency(tax)}</span>
