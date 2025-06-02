@@ -532,10 +532,6 @@ export default function CheckoutPage() {
                       <span>-{formatCurrency(couponDiscount)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm">
-                    <span>Thuế VAT:</span>
-                    <span>{formatCurrency(tax)}</span>
-                  </div>
                   <div className="flex justify-between font-bold text-base pt-2 border-t">
                     <span>Tổng cộng:</span>
                     <span className="text-teal-600">{formatCurrency(total)}</span>

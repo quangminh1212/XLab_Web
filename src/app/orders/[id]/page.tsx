@@ -316,10 +316,6 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
                   <dd className="text-gray-900 font-medium">{formatCurrency(order.total)}</dd>
                 </div>
                 <div className="flex justify-between py-1 text-sm">
-                  <dt className="text-gray-500">Thuế VAT</dt>
-                  <dd className="text-gray-900 font-medium">Đã bao gồm</dd>
-                </div>
-                <div className="flex justify-between py-1 text-sm">
                   <dt className="text-gray-500">Giảm giá</dt>
                   <dd className="text-gray-900 font-medium">0 ₫</dd>
                 </div>

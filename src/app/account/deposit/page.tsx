@@ -249,6 +249,9 @@ export default function DepositPage() {
                     </svg>
                     <span className="text-sm font-medium">Nhấn "Kiểm tra thanh toán" sau khi chuyển khoản</span>
                   </div>
+                  <div className="mt-2 text-center text-xs text-teal-700">
+                    Nếu lỗi, liên hệ Zalo <b>0866 528 014</b> để được hỗ trợ nhanh nhất.
+                  </div>
                 </div>
               </div>
             </div>
