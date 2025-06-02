@@ -27,6 +27,22 @@ interface Order {
   couponDiscount?: number; // Thêm field để lưu số tiền giảm từ voucher
 }
 
+interface Coupon {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrder?: number;
+  maxDiscount?: number;
+  usageLimit?: number;
+  usedCount: number;
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+}
+
 // This would normally come from a database or API
 const userProfile = {
   name: 'Nguyễn Văn A',
@@ -59,10 +75,28 @@ export default function AccountPage() {
     expiryReminders: true
   });
   const [settingsSaved, setSettingsSaved] = useState(false);
+  const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
 
   const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
   const formatCurrency = (amount: number) => {
     return currencyFormatter.format(amount);
+  };
+
+  // Hàm lấy danh sách mã giảm giá
+  const fetchAvailableCoupons = async () => {
+    try {
+      const res = await fetch('/api/cart/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: 'ALL' }) // code đặc biệt để trả về tất cả mã
+      });
+      const data = await res.json();
+      if (data.allCoupons) {
+        setAvailableCoupons(data.allCoupons);
+      }
+    } catch (error) {
+      console.error('Error fetching available coupons:', error);
+    }
   };
 
   useEffect(() => {
@@ -248,6 +282,8 @@ export default function AccountPage() {
             setIsLoading(false);
           }
         })();
+
+        fetchAvailableCoupons(); // Thêm dòng này để lấy danh sách mã giảm giá
 
       } catch (error) {
         console.error('Lỗi khi đọc từ localStorage:', error);
@@ -495,6 +531,13 @@ export default function AccountPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                     Sản phẩm của tôi
+                  </a>
+                  <a href="#coupons" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7a1 1 0 011-1h4.586a1 1 0 01.707.293l6.414 6.414a2 2 0 010 2.828l-5.586 5.586a2 2 0 01-2.828 0l-6.414-6.414A1 1 0 013 11.586V7a1 1 0 011-1h3z" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                    </svg>
+                    Quản lý mã giảm giá
                   </a>
                   <a href="#licenses" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1217,6 +1260,81 @@ export default function AccountPage() {
                 </div>
               </div>
 
+              {/* Thêm section mã giảm giá */}
+              <div id="coupons" className="bg-white rounded-lg shadow p-6 mt-6">
+                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
+                {availableCoupons.length > 0 ? (
+                  <div className="space-y-4">
+                    {availableCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border border-teal-200 rounded-lg p-4 bg-teal-50">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold text-teal-800">{coupon.name}</h3>
+                            <p className="text-sm text-teal-600 mt-1">{coupon.description}</p>
+                            <div className="mt-2 flex items-center gap-2">
+                              <span className="font-mono text-teal-700 bg-white border border-teal-200 rounded px-2 py-0.5 text-sm">
+                                {coupon.code}
+                              </span>
+                              <span className="text-sm text-teal-700">
+                                {coupon.type === 'percentage' ? `Giảm ${coupon.value}%` : `Giảm ${formatCurrency(coupon.value)}`}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-xs text-teal-600">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} - {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>Bạn chưa có mã giảm giá nào</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6 mt-6">
+                <h2 className="text-xl font-semibold mb-4">Thông tin tài khoản</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Họ và tên</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={profile.name}
+                      onChange={handleProfileChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <input
+                      type="email"
+                      value={profile.email}
+                      disabled
+                      className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Số điện thoại</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={profile.phone}
+                      onChange={handleProfileChange}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                    />
+                  </div>
+                </div>
+              </div>
 
             </div>
           </div>
