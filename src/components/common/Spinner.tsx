@@ -1,28 +1,35 @@
 interface SpinnerProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  color?: 'blue' | 'gray' | 'white';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  color?: 'primary' | 'blue' | 'gray' | 'white';
+  className?: string;
 }
 
-const Spinner = ({ size = 'md', color = 'blue' }: SpinnerProps) => {
+const Spinner = ({ size = 'md', color = 'primary', className = '' }: SpinnerProps) => {
   // Set sizes based on the size prop
   const getSizeClass = () => {
     switch (size) {
+      case 'xs':
+        return 'h-3 w-3 sm:h-4 sm:w-4';
       case 'sm':
-        return 'h-4 w-4';
+        return 'h-4 w-4 sm:h-5 sm:w-5';
       case 'md':
-        return 'h-6 w-6';
+        return 'h-5 w-5 sm:h-6 sm:w-6';
       case 'lg':
-        return 'h-8 w-8';
+        return 'h-6 w-6 sm:h-8 sm:w-8';
       case 'xl':
-        return 'h-12 w-12';
+        return 'h-8 w-8 sm:h-10 sm:w-10';
+      case '2xl':
+        return 'h-10 w-10 sm:h-12 sm:w-12';
       default:
-        return 'h-6 w-6';
+        return 'h-5 w-5 sm:h-6 sm:w-6';
     }
   };
 
   // Set color based on the color prop
   const getColorClass = () => {
     switch (color) {
+      case 'primary':
+        return 'text-primary-500';
       case 'blue':
         return 'text-blue-500';
       case 'gray':
@@ -30,13 +37,13 @@ const Spinner = ({ size = 'md', color = 'blue' }: SpinnerProps) => {
       case 'white':
         return 'text-white';
       default:
-        return 'text-blue-500';
+        return 'text-primary-500';
     }
   };
 
   return (
     <svg
-      className={`animate-spin ${getSizeClass()} ${getColorClass()}`}
+      className={`animate-spin ${getSizeClass()} ${getColorClass()} ${className}`}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

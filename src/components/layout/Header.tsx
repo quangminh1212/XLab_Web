@@ -119,30 +119,30 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-            <Link href="/" className={`${isActive('/')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}>
+            <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}>
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`${isActive('/products')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
+              className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
             >
               Sản phẩm
             </Link>
             <Link
               href="/about"
-              className={`${isActive('/about')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
+              className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className={`${isActive('/contact')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
+              className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-xs md:text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md`}
+              className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
             >
               Bảo hành
             </Link>
@@ -368,96 +368,75 @@ const Header = () => {
               )}
             </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile Menu Button */}
             <button
               onClick={toggleMenu}
-              className="md:hidden text-gray-700 hover:text-primary-600 focus:outline-none p-1"
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              aria-label="Toggle menu"
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 sm:h-6 sm:w-6"
+                className="h-6 w-6 text-gray-700"
                 fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                />
+                {isOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <nav className="md:hidden mt-2 py-3 border-t border-gray-200 bg-white rounded-b-lg shadow-lg">
-            {/* Hiển thị số dư trên mobile nếu đã đăng nhập */}
-            {session && (
-              <div className="px-4 py-3 mb-2 text-center">
-                <BalanceDisplay className="justify-center" />
-              </div>
-            )}
-            
+        {/* Mobile Menu */}
+        <div
+          className={`${
+            isOpen ? 'block' : 'hidden'
+          } md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2`}
+        >
+          <nav className="container mx-auto px-4 py-2 space-y-1">
             <Link
               href="/"
-              className={`block py-2 px-4 text-base font-medium hover:bg-gray-50 transition-colors ${isActive('/')}`}
+              className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Trang chủ
             </Link>
             <Link
               href="/products"
-              className={`block py-2 px-4 text-base font-medium hover:bg-gray-50 transition-colors ${isActive('/products')}`}
+              className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Sản phẩm
             </Link>
             <Link
-              href="/services"
-              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
-              onClick={() => setIsOpen(false)}
-            >
-              Dịch vụ
-            </Link>
-            <Link
               href="/about"
-              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Giới thiệu
             </Link>
             <Link
               href="/contact"
-              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
-              className="block py-3 px-4 text-lg font-medium hover:bg-gray-50"
+              className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Bảo hành
             </Link>
-            {!session && (
-              <div className="mt-3 px-4">
-                <button
-                  onClick={() => {
-                    signIn();
-                    setIsOpen(false);
-                  }}
-                  className="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-3 rounded-lg text-lg tracking-wide font-medium transition-colors"
-                >
-                  Đăng nhập
-                </button>
-              </div>
-            )}
           </nav>
-        )}
+        </div>
       </div>
     </header>
   );
