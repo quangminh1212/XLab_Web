@@ -1,9 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
+import fs from 'fs';
+import path from 'path';
 
-// Mock data store - trong thực tế sẽ dùng database
-let coupons: any[] = [
+// Tạo đường dẫn đến file lưu dữ liệu
+const dataDir = path.join(process.cwd(), 'data');
+const couponsFilePath = path.join(dataDir, 'coupons.json');
+
+// Đảm bảo thư mục tồn tại
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+// Định nghĩa interface cho Coupon
+interface Coupon {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrder?: number;
+  maxDiscount?: number;
+  usageLimit?: number;
+  usedCount: number;
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  updatedAt?: string;
+  applicableProducts?: string[];
+  isPublic: boolean;
+}
+
+// Dữ liệu mẫu ban đầu
+let initialCoupons: Coupon[] = [
   {
     id: '1',
     code: 'SUMMER2024',
@@ -41,6 +73,84 @@ let coupons: any[] = [
   }
 ];
 
+// Hàm đọc dữ liệu từ file hoặc sử dụng dữ liệu mẫu nếu file không tồn tại
+function loadCoupons(): Coupon[] {
+  try {
+    if (fs.existsSync(couponsFilePath)) {
+      const data = fs.readFileSync(couponsFilePath, 'utf8');
+      try {
+        return JSON.parse(data);
+      } catch (parseError) {
+        console.error('Error parsing JSON from coupons file:', parseError);
+        // Backup the corrupted file
+        const backupDir = path.join(dataDir, 'backups');
+        if (!fs.existsSync(backupDir)) {
+          fs.mkdirSync(backupDir, { recursive: true });
+        }
+        const timestamp = new Date().toISOString().replace(/:/g, '-');
+        const backupPath = path.join(backupDir, `coupons-corrupt-${timestamp}.bak`);
+        fs.writeFileSync(backupPath, data);
+        console.log(`Corrupted file backed up to ${backupPath}`);
+        
+        // Create a new empty coupons file
+        fs.writeFileSync(couponsFilePath, JSON.stringify(initialCoupons, null, 2), 'utf8');
+        return initialCoupons;
+      }
+    }
+    // Nếu file không tồn tại, lưu dữ liệu mẫu vào file
+    fs.writeFileSync(couponsFilePath, JSON.stringify(initialCoupons, null, 2), 'utf8');
+    return initialCoupons;
+  } catch (error) {
+    console.error('Error loading coupons:', error);
+    return initialCoupons;
+  }
+}
+
+// Hàm lưu dữ liệu vào file
+function saveCoupons(data: Coupon[]): boolean {
+  try {
+    // Đảm bảo thư mục tồn tại
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    // Validate data là mảng trước khi lưu
+    if (!Array.isArray(data)) {
+      console.error('Invalid coupon data format - expected array');
+      return false;
+    }
+    
+    // Tạo backup trước khi ghi đè
+    if (fs.existsSync(couponsFilePath)) {
+      const backupDir = path.join(dataDir, 'backups');
+      if (!fs.existsSync(backupDir)) {
+        fs.mkdirSync(backupDir, { recursive: true });
+      }
+      const timestamp = new Date().toISOString().replace(/:/g, '-');
+      const backupPath = path.join(backupDir, `coupons-${timestamp}.bak`);
+      fs.copyFileSync(couponsFilePath, backupPath);
+    }
+    
+    // Convert to string once to verify it can be serialized
+    const jsonString = JSON.stringify(data, null, 2);
+    
+    // Write atomic by using a temporary file
+    const tempFilePath = `${couponsFilePath}.temp`;
+    fs.writeFileSync(tempFilePath, jsonString, 'utf8');
+    
+    // Rename temp file to actual file (atomic operation)
+    fs.renameSync(tempFilePath, couponsFilePath);
+    
+    return true;
+  } catch (error) {
+    console.error('Error saving coupons:', error);
+    return false;
+  }
+}
+
+// Mock data store - đọc từ file nếu có, nếu không sử dụng dữ liệu mẫu
+let coupons: Coupon[] = loadCoupons();
+
 // GET - Lấy danh sách mã giảm giá
 export async function GET(request: NextRequest) {
   try {
@@ -53,40 +163,18 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Lọc theo query params nếu có
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
-    const search = searchParams.get('search');
-
-    let filteredCoupons = [...coupons];
-
-    if (status === 'active') {
-      filteredCoupons = filteredCoupons.filter(coupon => coupon.isActive);
-    } else if (status === 'inactive') {
-      filteredCoupons = filteredCoupons.filter(coupon => !coupon.isActive);
-    }
-
-    if (search) {
-      const searchLower = search.toLowerCase();
-      filteredCoupons = filteredCoupons.filter(coupon => 
-        coupon.code.toLowerCase().includes(searchLower) ||
-        coupon.name.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Sắp xếp theo ngày tạo mới nhất
-    filteredCoupons.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
+    // Đọc lại dữ liệu từ file để đảm bảo lấy phiên bản mới nhất
+    coupons = loadCoupons();
+    
     return NextResponse.json({
       success: true,
-      coupons: filteredCoupons,
-      total: filteredCoupons.length
+      coupons
     });
 
   } catch (error) {
     console.error('Error fetching coupons:', error);
     return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi tải mã giảm giá' },
+      { error: 'Đã xảy ra lỗi khi tải danh sách mã giảm giá' },
       { status: 500 }
     );
   }
@@ -104,6 +192,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Đọc lại dữ liệu từ file để đảm bảo dữ liệu mới nhất
+    coupons = loadCoupons();
+    
     const body = await request.json();
     const {
       code,
@@ -129,7 +220,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Kiểm tra mã giảm giá đã tồn tại
-    const existingCoupon = coupons.find(coupon => coupon.code === code.toUpperCase());
+    const existingCoupon = coupons.find(coupon => 
+      coupon.code === code.toUpperCase()
+    );
     if (existingCoupon) {
       return NextResponse.json(
         { error: 'Mã giảm giá đã tồn tại' },
@@ -162,9 +255,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Tạo ID mới
+    const newId = (coupons.length > 0 
+      ? Math.max(...coupons.map(c => parseInt(c.id))) + 1 
+      : 1).toString();
+
     // Tạo mã giảm giá mới
-    const newCoupon = {
-      id: Date.now().toString(),
+    const newCoupon: Coupon = {
+      id: newId,
       code: code.toUpperCase(),
       name,
       description: description || '',
@@ -175,20 +273,24 @@ export async function POST(request: NextRequest) {
       usageLimit: usageLimit ? Number(usageLimit) : undefined,
       usedCount: 0,
       isActive: true,
-      isPublic: typeof isPublic === 'boolean' ? isPublic : true,
-      startDate: start.toISOString(),
-      endDate: end.toISOString(),
+      startDate: startDate.includes('T') ? startDate : `${startDate}T00:00:00.000Z`,
+      endDate: endDate.includes('T') ? endDate : `${endDate}T23:59:59.999Z`,
       createdAt: new Date().toISOString(),
-      applicableProducts: applicableProducts || []
+      applicableProducts: applicableProducts || [],
+      isPublic: typeof isPublic === 'boolean' ? isPublic : true
     };
 
+    // Thêm mã giảm giá mới vào danh sách
     coupons.push(newCoupon);
+    
+    // Lưu thay đổi vào file
+    saveCoupons(coupons);
 
     return NextResponse.json({
       success: true,
       message: 'Mã giảm giá đã được tạo thành công',
       coupon: newCoupon
-    }, { status: 201 });
+    });
 
   } catch (error) {
     console.error('Error creating coupon:', error);

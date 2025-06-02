@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "code": "SUMMER2024",
+    "name": "Giảm giá mùa hè",
+    "description": "Mã giảm giá đặc biệt cho mùa hè 2024",
+    "type": "percentage",
+    "value": 20,
+    "minOrder": 100000,
+    "maxDiscount": 500000,
+    "usageLimit": 100,
+    "usedCount": 15,
+    "isActive": true,
+    "startDate": "2024-06-01T00:00:00Z",
+    "endDate": "2025-06-02T23:59:59.999Z",
+    "createdAt": "2024-05-01T00:00:00Z",
+    "applicableProducts": [],
+    "isPublic": true,
+    "updatedAt": "2025-06-02T10:59:32.668Z"
+  },
+  {
+    "id": "2",
+    "code": "WELCOME50",
+    "name": "Chào mừng thành viên mới",
+    "description": "Ưu đãi cho khách hàng đăng ký mới",
+    "type": "fixed",
+    "value": 50000,
+    "minOrder": 200000,
+    "usedCount": 8,
+    "isActive": true,
+    "startDate": "2024-01-01T00:00:00Z",
+    "endDate": "2026-12-31T23:59:59.999Z",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "applicableProducts": [],
+    "isPublic": true,
+    "updatedAt": "2025-06-02T10:59:56.442Z"
+  }
+]

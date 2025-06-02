@@ -1,48 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../auth/[...nextauth]/route';
+import fs from 'fs';
+import path from 'path';
 
-// Mock data store - trong thực tế sẽ dùng database
-let coupons: any[] = [
-  {
-    id: '1',
-    code: 'SUMMER2024',
-    name: 'Giảm giá mùa hè',
-    description: 'Mã giảm giá đặc biệt cho mùa hè 2024',
-    type: 'percentage',
-    value: 20,
-    minOrder: 100000,
-    maxDiscount: 500000,
-    usageLimit: 100,
-    usedCount: 15,
-    isActive: true,
-    startDate: '2024-06-01T00:00:00Z',
-    endDate: '2024-08-31T23:59:59Z',
-    createdAt: '2024-05-01T00:00:00Z',
-    applicableProducts: []
-  },
-  {
-    id: '2',
-    code: 'WELCOME50',
-    name: 'Chào mừng thành viên mới',
-    description: 'Ưu đãi cho khách hàng đăng ký mới',
-    type: 'fixed',
-    value: 50000,
-    minOrder: 200000,
-    usageLimit: 0,
-    usedCount: 8,
-    isActive: true,
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2024-12-31T23:59:59Z',
-    createdAt: '2024-01-01T00:00:00Z',
-    applicableProducts: []
+// Tạo đường dẫn đến file lưu dữ liệu
+const dataDir = path.join(process.cwd(), 'data');
+const couponsFilePath = path.join(dataDir, 'coupons.json');
+
+// Định nghĩa interface cho Coupon
+interface Coupon {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrder?: number;
+  maxDiscount?: number;
+  usageLimit?: number;
+  usedCount: number;
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  updatedAt?: string;
+  applicableProducts?: string[];
+  isPublic: boolean;
+}
+
+// Hàm đọc dữ liệu từ file
+function loadCoupons(): Coupon[] {
+  try {
+    if (fs.existsSync(couponsFilePath)) {
+      const data = fs.readFileSync(couponsFilePath, 'utf8');
+      return JSON.parse(data);
+    }
+    return [];
+  } catch (error) {
+    console.error('Error loading coupons:', error);
+    return [];
   }
-];
+}
 
-// PATCH - Toggle trạng thái mã giảm giá
+// Hàm lưu dữ liệu vào file
+function saveCoupons(data: Coupon[]): boolean {
+  try {
+    // Đảm bảo thư mục tồn tại
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    fs.writeFileSync(couponsFilePath, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (error) {
+    console.error('Error saving coupons:', error);
+    return false;
+  }
+}
+
+// PATCH - Bật/tắt trạng thái mã giảm giá
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -54,7 +73,12 @@ export async function PATCH(
       );
     }
 
-    const couponIndex = coupons.findIndex(c => c.id === params.id);
+    const awaitedParams = await params;
+    const id = awaitedParams.id;
+    
+    // Đọc dữ liệu từ file
+    const coupons = loadCoupons();
+    const couponIndex = coupons.findIndex(c => c.id === id);
     
     if (couponIndex === -1) {
       return NextResponse.json(
@@ -68,17 +92,17 @@ export async function PATCH(
 
     if (typeof isActive !== 'boolean') {
       return NextResponse.json(
-        { error: 'Giá trị isActive phải là boolean' },
+        { error: 'Dữ liệu không hợp lệ' },
         { status: 400 }
       );
     }
 
     // Cập nhật trạng thái
-    coupons[couponIndex] = {
-      ...coupons[couponIndex],
-      isActive,
-      updatedAt: new Date().toISOString()
-    };
+    coupons[couponIndex].isActive = isActive;
+    coupons[couponIndex].updatedAt = new Date().toISOString();
+    
+    // Lưu thay đổi vào file
+    saveCoupons(coupons);
 
     return NextResponse.json({
       success: true,

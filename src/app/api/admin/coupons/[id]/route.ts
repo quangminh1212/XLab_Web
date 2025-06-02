@@ -1,46 +1,141 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../auth/[...nextauth]/route';
+import fs from 'fs';
+import path from 'path';
 
-// Mock data store - trong thực tế sẽ dùng database
-// Import từ file route cha để có cùng data
-let coupons: any[] = [
-  {
-    id: '1',
-    code: 'SUMMER2024',
-    name: 'Giảm giá mùa hè',
-    description: 'Mã giảm giá đặc biệt cho mùa hè 2024',
-    type: 'percentage',
-    value: 20,
-    minOrder: 100000,
-    maxDiscount: 500000,
-    usageLimit: 100,
-    usedCount: 15,
-    isActive: true,
-    startDate: '2024-06-01T00:00:00Z',
-    endDate: '2024-08-31T23:59:59Z',
-    createdAt: '2024-05-01T00:00:00Z',
-    applicableProducts: [],
-    isPublic: true
-  },
-  {
-    id: '2',
-    code: 'WELCOME50',
-    name: 'Chào mừng thành viên mới',
-    description: 'Ưu đãi cho khách hàng đăng ký mới',
-    type: 'fixed',
-    value: 50000,
-    minOrder: 200000,
-    usageLimit: 0,
-    usedCount: 8,
-    isActive: true,
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2024-12-31T23:59:59Z',
-    createdAt: '2024-01-01T00:00:00Z',
-    applicableProducts: [],
-    isPublic: true
+// Tạo đường dẫn đến file lưu dữ liệu
+const dataDir = path.join(process.cwd(), 'data');
+const couponsFilePath = path.join(dataDir, 'coupons.json');
+
+// Kiểm tra và tạo file coupons.json nếu chưa tồn tại
+(() => {
+  try {
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    if (!fs.existsSync(couponsFilePath)) {
+      fs.writeFileSync(couponsFilePath, '[]', 'utf8');
+      console.log('Created empty coupons.json file');
+    } else {
+      // Kiểm tra tính hợp lệ của file JSON
+      try {
+        const data = fs.readFileSync(couponsFilePath, 'utf8');
+        JSON.parse(data);
+      } catch (error) {
+        console.error('Corrupted coupons.json file detected, creating backup and resetting');
+        // Backup file hỏng
+        const backupDir = path.join(dataDir, 'backups');
+        if (!fs.existsSync(backupDir)) {
+          fs.mkdirSync(backupDir, { recursive: true });
+        }
+        const timestamp = new Date().toISOString().replace(/:/g, '-');
+        const backupPath = path.join(backupDir, `coupons-corrupt-${timestamp}.bak`);
+        fs.copyFileSync(couponsFilePath, backupPath);
+        
+        // Tạo file mới
+        fs.writeFileSync(couponsFilePath, '[]', 'utf8');
+      }
+    }
+  } catch (error) {
+    console.error('Error initializing coupons.json:', error);
   }
-];
+})();
+
+// Định nghĩa interface cho Coupon
+interface Coupon {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrder?: number;
+  maxDiscount?: number;
+  usageLimit?: number;
+  usedCount: number;
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  updatedAt?: string;
+  applicableProducts?: string[];
+  isPublic: boolean;
+}
+
+// Hàm đọc dữ liệu từ file
+function loadCoupons(): Coupon[] {
+  try {
+    if (fs.existsSync(couponsFilePath)) {
+      const data = fs.readFileSync(couponsFilePath, 'utf8');
+      try {
+        return JSON.parse(data);
+      } catch (parseError) {
+        console.error('Error parsing JSON from coupons file:', parseError);
+        // Backup the corrupted file
+        const backupDir = path.join(dataDir, 'backups');
+        if (!fs.existsSync(backupDir)) {
+          fs.mkdirSync(backupDir, { recursive: true });
+        }
+        const timestamp = new Date().toISOString().replace(/:/g, '-');
+        const backupPath = path.join(backupDir, `coupons-corrupt-${timestamp}.bak`);
+        fs.writeFileSync(backupPath, data);
+        console.log(`Corrupted file backed up to ${backupPath}`);
+        
+        // Create a new empty coupons file
+        fs.writeFileSync(couponsFilePath, '[]', 'utf8');
+        return [];
+      }
+    }
+    return [];
+  } catch (error) {
+    console.error('Error loading coupons:', error);
+    return [];
+  }
+}
+
+// Hàm lưu dữ liệu vào file
+function saveCoupons(data: Coupon[]): boolean {
+  try {
+    // Đảm bảo thư mục tồn tại
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    // Validate data là mảng trước khi lưu
+    if (!Array.isArray(data)) {
+      console.error('Invalid coupon data format - expected array');
+      return false;
+    }
+    
+    // Tạo backup trước khi ghi đè
+    if (fs.existsSync(couponsFilePath)) {
+      const backupDir = path.join(dataDir, 'backups');
+      if (!fs.existsSync(backupDir)) {
+        fs.mkdirSync(backupDir, { recursive: true });
+      }
+      const timestamp = new Date().toISOString().replace(/:/g, '-');
+      const backupPath = path.join(backupDir, `coupons-${timestamp}.bak`);
+      fs.copyFileSync(couponsFilePath, backupPath);
+    }
+    
+    // Convert to string once to verify it can be serialized
+    const jsonString = JSON.stringify(data, null, 2);
+    
+    // Write atomic by using a temporary file
+    const tempFilePath = `${couponsFilePath}.temp`;
+    fs.writeFileSync(tempFilePath, jsonString, 'utf8');
+    
+    // Rename temp file to actual file (atomic operation)
+    fs.renameSync(tempFilePath, couponsFilePath);
+    
+    return true;
+  } catch (error) {
+    console.error('Error saving coupons:', error);
+    return false;
+  }
+}
 
 // GET - Lấy thông tin mã giảm giá theo ID
 export async function GET(
@@ -60,6 +155,8 @@ export async function GET(
     const awaitedParams = await params;
     const id = awaitedParams.id;
     
+    // Đọc dữ liệu từ file
+    const coupons = loadCoupons();
     const coupon = coupons.find(c => c.id === id);
     
     if (!coupon) {
@@ -89,6 +186,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    console.log('PUT request received for coupon with params:', params);
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.isAdmin) {
@@ -100,10 +198,17 @@ export async function PUT(
 
     const awaitedParams = await params;
     const id = awaitedParams.id;
+    console.log('Processing update for coupon ID:', id);
+    
+    // Đọc dữ liệu từ file
+    const coupons = loadCoupons();
+    console.log('Loaded coupons:', coupons.length);
     
     const couponIndex = coupons.findIndex(c => c.id === id);
+    console.log('Coupon index in array:', couponIndex);
     
     if (couponIndex === -1) {
+      console.log('Coupon not found for ID:', id);
       return NextResponse.json(
         { error: 'Không tìm thấy mã giảm giá' },
         { status: 404 }
@@ -111,6 +216,8 @@ export async function PUT(
     }
 
     const body = await request.json();
+    console.log('Update body:', body);
+    
     const {
       code,
       name,
@@ -189,6 +296,9 @@ export async function PUT(
     };
 
     coupons[couponIndex] = updatedCoupon;
+    
+    // Lưu thay đổi vào file
+    saveCoupons(coupons);
 
     return NextResponse.json({
       success: true,
@@ -223,6 +333,8 @@ export async function DELETE(
     const awaitedParams = await params;
     const id = awaitedParams.id;
     
+    // Đọc dữ liệu từ file
+    const coupons = loadCoupons();
     const couponIndex = coupons.findIndex(c => c.id === id);
     
     if (couponIndex === -1) {
@@ -244,6 +356,9 @@ export async function DELETE(
 
     // Xóa mã giảm giá
     coupons.splice(couponIndex, 1);
+    
+    // Lưu thay đổi vào file
+    saveCoupons(coupons);
 
     return NextResponse.json({
       success: true,

@@ -97,3 +97,8 @@ run-fixed.bat
 # Generated images
 /images/products/*
 !/images/products/.gitkeep
+
+# Generated files
+/data/backups/
+*.bak
+*.temp

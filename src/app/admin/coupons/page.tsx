@@ -343,10 +343,15 @@ function CouponsPage() {
   const saveInlineEdit = async (couponId: string, field: string) => {
     const editKey = `${couponId}-${field}`;
     const newValue = editValues[editKey];
+    console.log(`Saving inline edit for coupon ${couponId}, field ${field}, value:`, newValue);
     
     try {
       const coupon = coupons.find(c => c.id === couponId);
-      if (!coupon) return;
+      if (!coupon) {
+        console.error('Could not find coupon with ID:', couponId);
+        return;
+      }
+      console.log('Found coupon to update:', coupon);
 
       // Tạo bản sao sâu của coupon để chỉnh sửa
       const updateData: Record<string, any> = { ...coupon };
@@ -369,6 +374,9 @@ function CouponsPage() {
         updateData[field] = newValue;
       }
       
+      console.log(`Sending update request to /api/admin/coupons/${couponId} with data:`, updateData);
+      console.log('API URL:', `/api/admin/coupons/${couponId}`);
+      
       const response = await fetch(`/api/admin/coupons/${couponId}`, {
         method: 'PUT',
         headers: {
@@ -376,6 +384,9 @@ function CouponsPage() {
         },
         body: JSON.stringify(updateData),
       });
+
+      const responseData = await response.json();
+      console.log('API response:', responseData, 'Status:', response.status);
 
       if (response.ok) {
         setCoupons(prev => prev.map(c => {
@@ -392,7 +403,7 @@ function CouponsPage() {
         // Làm mới dữ liệu sau khi cập nhật
         fetchCoupons();
       } else {
-        setErrorMessage('Có lỗi xảy ra khi cập nhật');
+        setErrorMessage(`Có lỗi xảy ra khi cập nhật: ${responseData.error || 'Lỗi không xác định'}`);
         setTimeout(() => setErrorMessage(''), 3000);
       }
     } catch (error) {
