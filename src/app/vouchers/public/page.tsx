@@ -212,21 +212,28 @@ export default function PublicVouchersPage() {
                     </div>
                   )}
                   
-                  {voucher.userLimit && (
+                  {voucher.userLimit ? (
                     <div className="flex items-center text-xs text-gray-600">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                       <span>{voucher.userLimit} lần/người</span>
                     </div>
+                  ) : (
+                    <div className="flex items-center text-xs text-gray-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span>Vô hạn lần/người</span>
+                    </div>
                   )}
                 </div>
                 
                 {/* Usage bar if applicable */}
-                {voucher.usageLimit && (
+                {voucher.usageLimit ? (
                   <div className="mb-3">
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1">
-                      <span className="font-medium">Còn lại: {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit}</span>
+                      <span className="font-medium">Còn lại: {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit} ({voucher.usedCount} đã dùng)</span>
                       <span className={`${voucher.usageLimit - voucher.usedCount < 10 ? 'text-red-600 font-medium' : ''}`}>
                         {calculateUsagePercentage(voucher.usedCount, voucher.usageLimit)}%
                       </span>
@@ -240,6 +247,15 @@ export default function PublicVouchersPage() {
                         }`}
                         style={{ width: `${calculateUsagePercentage(voucher.usedCount, voucher.usageLimit)}%` }}
                       ></div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mb-3 text-xs text-gray-600">
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                      </svg>
+                      <span>Số lượng: Vô hạn ({voucher.usedCount} đã dùng)</span>
                     </div>
                   </div>
                 )}

@@ -18,7 +18,7 @@
     "createdAt": "2024-05-01T00:00:00Z",
     "applicableProducts": [],
     "isPublic": true,
-    "updatedAt": "2025-06-02T11:00:27.334Z"
+    "updatedAt": "2025-06-02T17:11:02.569Z"
   },
   {
     "id": "2",
@@ -59,7 +59,9 @@
     "createdAt": "2024-06-01T00:00:00Z",
     "applicableProducts": [],
     "isPublic": false,
-    "forUsers": ["xlab.rnd@gmail.com"]
+    "forUsers": [
+      "xlab.rnd@gmail.com"
+    ]
   },
   {
     "id": "4",
@@ -79,6 +81,8 @@
     "createdAt": "2024-05-15T00:00:00Z",
     "applicableProducts": [],
     "isPublic": false,
-    "forUsers": ["xlab.rnd@gmail.com"]
+    "forUsers": [
+      "xlab.rnd@gmail.com"
+    ]
   }
 ]
