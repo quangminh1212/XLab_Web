@@ -601,184 +601,84 @@ function CouponsPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="space-y-1.5">
-                            <div className="bg-gray-50 border border-gray-200 rounded p-2 text-center">
-                              <div className="text-xs text-gray-500 font-medium uppercase">Bắt đầu</div>
-                              {inlineEditing[`${coupon.id}-startDate`] ? (
-                                <div className="flex flex-col items-center space-y-1">
-                                  <input
-                                    type="date"
-                                    value={editValues[`${coupon.id}-startDate`] || ''}
-                                    onChange={(e) => setEditValues(prev => ({
-                                      ...prev,
-                                      [`${coupon.id}-startDate`]: e.target.value
-                                    }))}
-                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-28"
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        saveInlineEdit(coupon.id, 'startDate');
-                                      } else if (e.key === 'Escape') {
-                                        cancelInlineEdit(coupon.id, 'startDate');
-                                      }
-                                    }}
-                                    autoFocus
-                                  />
-                                  <div className="flex space-x-1">
-                                    <button
-                                      onClick={() => saveInlineEdit(coupon.id, 'startDate')}
-                                      className="text-green-600 hover:text-green-800 text-xs"
-                                    >
-                                      ✓
-                                    </button>
-                                    <button
-                                      onClick={() => cancelInlineEdit(coupon.id, 'startDate')}
-                                      className="text-red-600 hover:text-red-800 text-xs"
-                                    >
-                                      ✕
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div
-                                  onClick={() => startInlineEdit(coupon.id, 'startDate', coupon.startDate.split('T')[0])}
-                                  className="text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                  title="Click để chỉnh sửa"
-                                >
-                                  {formatDate(coupon.startDate)}
-                                </div>
-                              )}
-                            </div>
-                            <div className="bg-gray-50 border border-gray-200 rounded p-2 text-center">
-                              <div className="text-xs text-gray-500 font-medium uppercase">Kết thúc</div>
-                              {inlineEditing[`${coupon.id}-endDate`] ? (
-                                <div className="flex flex-col items-center space-y-1">
-                                  <input
-                                    type="date"
-                                    value={editValues[`${coupon.id}-endDate`] || ''}
-                                    onChange={(e) => setEditValues(prev => ({
-                                      ...prev,
-                                      [`${coupon.id}-endDate`]: e.target.value
-                                    }))}
-                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-28"
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        saveInlineEdit(coupon.id, 'endDate');
-                                      } else if (e.key === 'Escape') {
-                                        cancelInlineEdit(coupon.id, 'endDate');
-                                      }
-                                    }}
-                                    autoFocus
-                                  />
-                                  <div className="flex space-x-1">
-                                    <button
-                                      onClick={() => saveInlineEdit(coupon.id, 'endDate')}
-                                      className="text-green-600 hover:text-green-800 text-xs"
-                                    >
-                                      ✓
-                                    </button>
-                                    <button
-                                      onClick={() => cancelInlineEdit(coupon.id, 'endDate')}
-                                      className="text-red-600 hover:text-red-800 text-xs"
-                                    >
-                                      ✕
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div
-                                  onClick={() => startInlineEdit(coupon.id, 'endDate', coupon.endDate.split('T')[0])}
-                                  className="text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                  title="Click để chỉnh sửa"
-                                >
-                                  {formatDate(coupon.endDate)}
-                                </div>
-                              )}
-                            </div>
-                          </div>
+                          {inlineEditing[`${coupon.id}-startDate`] ? (
+                            <input
+                              type="date"
+                              value={editValues[`${coupon.id}-startDate`] || coupon.startDate.split('T')[0]}
+                              onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-startDate`]: e.target.value }))}
+                              onBlur={() => saveInlineEdit(coupon.id, 'startDate')}
+                              onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'startDate'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'startDate'); }}
+                              className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
+                              autoFocus
+                            />
+                          ) : (
+                            <span className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'startDate', coupon.startDate.split('T')[0])}>
+                              {formatDate(coupon.startDate)}
+                            </span>
+                          )}
+                          <span className="mx-1">-</span>
+                          {inlineEditing[`${coupon.id}-endDate`] ? (
+                            <input
+                              type="date"
+                              value={editValues[`${coupon.id}-endDate`] || coupon.endDate.split('T')[0]}
+                              onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-endDate`]: e.target.value }))}
+                              onBlur={() => saveInlineEdit(coupon.id, 'endDate')}
+                              onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'endDate'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'endDate'); }}
+                              className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
+                              autoFocus
+                            />
+                          ) : (
+                            <span className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'endDate', coupon.endDate.split('T')[0])}>
+                              {formatDate(coupon.endDate)}
+                            </span>
+                          )}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="bg-gray-50 border border-gray-200 rounded p-3 text-center">
-                            <div className="text-xl font-bold text-gray-700">{coupon.usedCount}</div>
-                            <div className="text-sm text-gray-500 font-medium">
-                              {inlineEditing[`${coupon.id}-usageLimit`] ? (
-                                <div className="flex items-center justify-center space-x-1">
-                                  <span>/</span>
-                                  <input
-                                    type="number"
-                                    value={editValues[`${coupon.id}-usageLimit`] || ''}
-                                    onChange={(e) => setEditValues(prev => ({
-                                      ...prev,
-                                      [`${coupon.id}-usageLimit`]: parseInt(e.target.value) || 0
-                                    }))}
-                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-12 text-center"
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        saveInlineEdit(coupon.id, 'usageLimit');
-                                      } else if (e.key === 'Escape') {
-                                        cancelInlineEdit(coupon.id, 'usageLimit');
-                                      }
-                                    }}
-                                    autoFocus
-                                  />
-                                  <span>lần</span>
-                                  <button
-                                    onClick={() => saveInlineEdit(coupon.id, 'usageLimit')}
-                                    className="text-green-600 hover:text-green-800 text-xs"
-                                  >
-                                    ✓
-                                  </button>
-                                  <button
-                                    onClick={() => cancelInlineEdit(coupon.id, 'usageLimit')}
-                                    className="text-red-600 hover:text-red-800 text-xs"
-                                  >
-                                    ✕
-                                  </button>
-                                </div>
-                              ) : (
-                                <span
-                                  onClick={() => startInlineEdit(coupon.id, 'usageLimit', coupon.usageLimit || 0)}
-                                  className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                  title="Click để chỉnh sửa"
-                                >
-                                  {coupon.usageLimit ? `/ ${coupon.usageLimit} lần` : '/ ∞ lần'}
-                                </span>
-                              )}
-                            </div>
-                            <div className="mt-1.5">
-                              <div className={`w-full bg-gray-200 rounded-full h-1.5 ${coupon.usageLimit ? 'block' : 'hidden'}`}>
-                                <div 
-                                  className="bg-primary-500 h-1.5 rounded-full transition-all duration-300" 
-                                  style={{ 
-                                    width: coupon.usageLimit ? `${Math.min((coupon.usedCount / coupon.usageLimit) * 100, 100)}%` : '0%' 
-                                  }}
-                                ></div>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex flex-col gap-1">
-                            {coupon.isPublic ? (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-green-50 border border-green-200 text-green-700 text-xs font-medium w-fit">Công khai</span>
+                          <span className="text-lg font-bold text-gray-700">{coupon.usedCount}</span>
+                          <span className="text-sm text-gray-500 font-medium ml-1">
+                            /
+                            {inlineEditing[`${coupon.id}-usageLimit`] ? (
+                              <input
+                                type="number"
+                                value={editValues[`${coupon.id}-usageLimit`] || coupon.usageLimit || 0}
+                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-usageLimit`]: e.target.value }))}
+                                onBlur={() => saveInlineEdit(coupon.id, 'usageLimit')}
+                                onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'usageLimit'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'usageLimit'); }}
+                                className="border border-gray-300 rounded px-1 py-0.5 text-xs w-12 text-center ml-1"
+                                min="0"
+                                autoFocus
+                              />
                             ) : (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-yellow-50 border border-yellow-200 text-yellow-700 text-xs font-medium w-fit">Riêng tư</span>
+                              <span className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'usageLimit', coupon.usageLimit || 0)}>
+                                {coupon.usageLimit ? coupon.usageLimit : '∞'}
+                              </span>
+                            )} lần
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <div className="flex flex-row gap-2 items-center">
+                            {inlineEditing[`${coupon.id}-isPublic`] ? (
+                              <select
+                                value={editValues[`${coupon.id}-isPublic`] !== undefined ? (editValues[`${coupon.id}-isPublic`] ? 'public' : 'private') : (coupon.isPublic ? 'public' : 'private')}
+                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-isPublic`]: e.target.value === 'public' }))}
+                                onBlur={() => saveInlineEdit(coupon.id, 'isPublic')}
+                                className="border border-gray-300 rounded px-2 py-1 text-xs"
+                                autoFocus
+                              >
+                                <option value="public">Công khai</option>
+                                <option value="private">Riêng tư</option>
+                              </select>
+                            ) : (
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover:bg-gray-100 ${coupon.isPublic ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-yellow-50 border border-yellow-200 text-yellow-700'}`} onClick={() => startInlineEdit(coupon.id, 'isPublic', coupon.isPublic)}>
+                                {coupon.isPublic ? 'Công khai' : 'Riêng tư'}
+                              </span>
                             )}
-                            {/* Trạng thái hoạt động/hết hạn */}
                             {isExpired(coupon.endDate) ? (
-                              <div className="inline-flex items-center px-3 py-1.5 rounded border bg-red-50 border-red-200 text-red-700 mt-1">
-                                <div className="w-2 h-2 rounded-full bg-red-400 mr-2"></div>
-                                <span className="text-sm font-medium uppercase tracking-wide">Đã hết hạn</span>
-                              </div>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 text-xs font-medium">Đã hết hạn</span>
                             ) : coupon.isActive ? (
-                              <div className="inline-flex items-center px-3 py-1.5 rounded border bg-primary-50 border-primary-200 text-primary-700 mt-1">
-                                <div className="w-2 h-2 rounded-full bg-primary-500 mr-2"></div>
-                                <span className="text-sm font-medium uppercase tracking-wide">Đang hoạt động</span>
-                              </div>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-primary-50 border border-primary-200 text-primary-700 text-xs font-medium">Đang hoạt động</span>
                             ) : (
-                              <div className="inline-flex items-center px-3 py-1.5 rounded border bg-gray-50 border-gray-200 text-gray-600 mt-1">
-                                <div className="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
-                                <span className="text-sm font-medium uppercase tracking-wide">Tạm dừng</span>
-                              </div>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium">Tạm dừng</span>
                             )}
                           </div>
                         </td>
