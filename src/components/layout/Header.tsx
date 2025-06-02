@@ -324,13 +324,6 @@ const Header = () => {
               </div>
             )}
             
-            {/* Welcome Text - Show only for logged in users */}
-            {session && (
-              <div className="hidden sm:flex items-center">
-                <span className="text-xs sm:text-sm font-medium text-teal-600">WELCOME</span>
-              </div>
-            )}
-            
             {/* Voucher Icon */}
             <div className="relative" ref={voucherRef}>
               <button
