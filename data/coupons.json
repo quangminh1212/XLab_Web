@@ -8,7 +8,7 @@
     "value": 50000,
     "minOrder": 200000,
     "userLimit": 1,
-    "usedCount": 8,
+    "usedCount": 8800,
     "userUsage": {},
     "isActive": true,
     "startDate": "2024-01-01T00:00:00Z",
@@ -16,7 +16,7 @@
     "createdAt": "2024-01-01T00:00:00Z",
     "applicableProducts": [],
     "isPublic": true,
-    "updatedAt": "2025-06-02T19:50:35.108Z"
+    "updatedAt": "2025-06-02T19:57:06.508Z"
   },
   {
     "id": "3",

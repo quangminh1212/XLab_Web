@@ -351,18 +351,6 @@ function CouponsPage() {
     const newValue = editValues[editKey];
     console.log(`Saving inline edit for coupon ${couponId}, field ${field}, value:`, newValue);
     
-    // Xác nhận khi thay đổi số lượt sử dụng
-    if (field === 'usedCount') {
-      const coupon = coupons.find(c => c.id === couponId);
-      if (coupon && Number(newValue) !== coupon.usedCount) {
-        const confirmMessage = `Bạn có chắc chắn muốn thay đổi số lượt đã sử dụng từ ${coupon.usedCount} thành ${newValue} không? Điều này có thể ảnh hưởng đến dữ liệu người dùng.`;
-        if (!confirm(confirmMessage)) {
-          cancelInlineEdit(couponId, field);
-          return;
-        }
-      }
-    }
-    
     try {
       const coupon = coupons.find(c => c.id === couponId);
       if (!coupon) {
