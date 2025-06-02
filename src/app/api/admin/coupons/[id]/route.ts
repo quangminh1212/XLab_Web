@@ -57,7 +57,7 @@ export async function GET(
       );
     }
 
-    const coupon = coupons.find(c => c.id === params.id);
+    const coupon = coupons.find(c => c.id === String(params.id));
     
     if (!coupon) {
       return NextResponse.json(
@@ -95,7 +95,7 @@ export async function PUT(
       );
     }
 
-    const couponIndex = coupons.findIndex(c => c.id === params.id);
+    const couponIndex = coupons.findIndex(c => c.id === String(params.id));
     
     if (couponIndex === -1) {
       return NextResponse.json(
@@ -130,7 +130,7 @@ export async function PUT(
 
     // Kiểm tra mã giảm giá đã tồn tại (trừ mã hiện tại)
     const existingCoupon = coupons.find(coupon => 
-      coupon.code === code.toUpperCase() && coupon.id !== params.id
+      coupon.code === code.toUpperCase() && coupon.id !== String(params.id)
     );
     if (existingCoupon) {
       return NextResponse.json(
@@ -214,7 +214,7 @@ export async function DELETE(
       );
     }
 
-    const couponIndex = coupons.findIndex(c => c.id === params.id);
+    const couponIndex = coupons.findIndex(c => c.id === String(params.id));
     
     if (couponIndex === -1) {
       return NextResponse.json(

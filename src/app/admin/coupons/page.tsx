@@ -550,9 +550,36 @@ function CouponsPage() {
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div className="space-y-1.5">
                             <div className="inline-flex items-center px-3 py-1.5 rounded bg-gray-50 border border-gray-200 text-gray-700">
-                              <span className="text-sm font-medium mr-2">
-                                {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
-                              </span>
+                              {inlineEditing[`${coupon.id}-type`] ? (
+                                <div className="flex items-center space-x-1">
+                                  <select
+                                    value={editValues[`${coupon.id}-type`] || coupon.type}
+                                    onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-type`]: e.target.value }))}
+                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
+                                    onBlur={() => saveInlineEdit(coupon.id, 'type')}
+                                    autoFocus
+                                  >
+                                    <option value="percentage">Phần trăm (%)</option>
+                                    <option value="fixed">Cố định (VNĐ)</option>
+                                  </select>
+                                  <button
+                                    onClick={() => saveInlineEdit(coupon.id, 'type')}
+                                    className="text-green-600 hover:text-green-800 text-xs"
+                                  >✓</button>
+                                  <button
+                                    onClick={() => cancelInlineEdit(coupon.id, 'type')}
+                                    className="text-red-600 hover:text-red-800 text-xs"
+                                  >✕</button>
+                                </div>
+                              ) : (
+                                <span 
+                                  className="text-sm font-medium mr-2 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                  onClick={() => startInlineEdit(coupon.id, 'type', coupon.type)}
+                                  title="Click để chỉnh sửa loại giảm giá"
+                                >
+                                  {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
+                                </span>
+                              )}
                               {inlineEditing[`${coupon.id}-value`] ? (
                                 <div className="flex items-center space-x-1">
                                   <input
