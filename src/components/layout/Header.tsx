@@ -19,6 +19,7 @@ interface PublicCoupon {
   type: "percentage" | "fixed";
   value: number;
   endDate: string;
+  isPublic?: boolean;
 }
 
 const Header = () => {
@@ -29,6 +30,7 @@ const Header = () => {
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
   const [isVoucherOpen, setIsVoucherOpen] = React.useState(false); 
   const [publicCoupons, setPublicCoupons] = React.useState<PublicCoupon[]>([]);
+  const [userCoupons, setUserCoupons] = React.useState<PublicCoupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = React.useState(false);
   
   // Lấy thông tin giỏ hàng
@@ -43,18 +45,31 @@ const Header = () => {
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
-  // Thêm useEffect để fetch vouchers công khai
+  // Thêm useEffect để fetch vouchers công khai và vouchers của người dùng
   useEffect(() => {
-    const fetchPublicCoupons = async () => {
+    const fetchCoupons = async () => {
       try {
         setLoadingCoupons(true);
-        const response = await fetch('/api/coupons/public');
-        const data = await response.json();
-        if (data.success && data.coupons) {
-          setPublicCoupons(data.coupons);
+        
+        // Fetch public coupons for all users
+        const publicResponse = await fetch('/api/coupons/public');
+        const publicData = await publicResponse.json();
+        
+        if (publicData.success && publicData.coupons) {
+          setPublicCoupons(publicData.coupons);
+        }
+        
+        // If user is logged in, fetch their specific vouchers
+        if (session?.user) {
+          const userResponse = await fetch('/api/user/vouchers');
+          const userData = await userResponse.json();
+          
+          if (userData.success && userData.vouchers) {
+            setUserCoupons(userData.vouchers);
+          }
         }
       } catch (error) {
-        console.error('Error fetching public coupons:', error);
+        console.error('Error fetching coupons:', error);
       } finally {
         setLoadingCoupons(false);
       }
@@ -62,9 +77,9 @@ const Header = () => {
 
     // Chỉ fetch khi voucher dropdown được mở
     if (isVoucherOpen) {
-      fetchPublicCoupons();
+      fetchCoupons();
     }
-  }, [isVoucherOpen]);
+  }, [isVoucherOpen, session]);
 
   // Xử lý đóng dropdown khi click bên ngoài
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -176,6 +191,25 @@ const Header = () => {
     alert(`Đã copy mã: ${code}`);
   };
 
+  // Sắp xếp và lọc các vouchers để hiển thị
+  const getDisplayVouchers = () => {
+    if (!session?.user) {
+      // Nếu không đăng nhập, chỉ hiển thị vouchers công khai
+      return publicCoupons;
+    }
+    
+    // Nếu đã đăng nhập, hiển thị cả vouchers công khai và voucher riêng
+    // Loại bỏ trùng lặp giữa vouchers công khai và vouchers của người dùng
+    const userVoucherIds = new Set(userCoupons.filter(v => !v.isPublic).map(v => v.id));
+    const uniquePublicCoupons = publicCoupons.filter(v => !userVoucherIds.has(v.id));
+    
+    // Sắp xếp: vouchers cá nhân trước, sau đó là vouchers công khai
+    return [
+      ...userCoupons.filter(v => !v.isPublic), // Voucher riêng của người dùng
+      ...uniquePublicCoupons // Voucher công khai
+    ];
+  };
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
@@ -256,6 +290,11 @@ const Header = () => {
                     d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                   />
                 </svg>
+                {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                    {userCoupons.filter(v => !v.isPublic).length}
+                  </span>
+                )}
               </button>
 
               {/* Voucher Dropdown */}
@@ -282,34 +321,48 @@ const Header = () => {
                         <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
                         <p className="text-xs sm:text-sm text-gray-500 mt-2">Đang tải...</p>
                       </div>
-                    ) : publicCoupons.length > 0 ? (
-                      publicCoupons.map((coupon) => (
-                        <div 
-                          key={coupon.id} 
-                          className="p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
-                          role="menuitem"
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span 
-                                className="bg-primary-500 text-white font-mono text-xs font-bold px-2 py-1 rounded select-all cursor-pointer" 
-                                onClick={() => handleCopyVoucher(coupon.code)}
-                                title="Nhấn để copy mã"
-                              >
-                                {coupon.code}
-                              </span>
-                              <span className="text-xs text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5">
-                                {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
-                              </span>
-                            </div>
-                            <span className="text-xs text-gray-500">HSD: {formatDate(coupon.endDate)}</span>
+                    ) : getDisplayVouchers().length > 0 ? (
+                      <>
+                        {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
+                          <div className="px-4 py-1 bg-gray-50">
+                            <h4 className="text-xs font-medium text-gray-500">Voucher của bạn</h4>
                           </div>
-                          <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
-                          {coupon.description && (
-                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
-                          )}
-                        </div>
-                      ))
+                        )}
+                        
+                        {getDisplayVouchers().map((coupon, index) => (
+                          <div key={coupon.id}>
+                            {session && index === userCoupons.filter(v => !v.isPublic).length && publicCoupons.length > 0 && (
+                              <div className="px-4 py-1 bg-gray-50">
+                                <h4 className="text-xs font-medium text-gray-500">Voucher công khai</h4>
+                              </div>
+                            )}
+                            <div 
+                              className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-green-50' : ''}`}
+                              role="menuitem"
+                            >
+                              <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span 
+                                    className={`${!coupon.isPublic ? 'bg-green-600' : 'bg-primary-500'} text-white font-mono text-xs font-bold px-2 py-1 rounded select-all cursor-pointer`}
+                                    onClick={() => handleCopyVoucher(coupon.code)}
+                                    title="Nhấn để copy mã"
+                                  >
+                                    {coupon.code}
+                                  </span>
+                                  <span className="text-xs text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5">
+                                    {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
+                                  </span>
+                                </div>
+                                <span className="text-xs text-gray-500">HSD: {formatDate(coupon.endDate)}</span>
+                              </div>
+                              <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
+                              {coupon.description && (
+                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </>
                     ) : (
                       <div className="px-4 py-6 text-center">
                         <p className="text-xs sm:text-sm text-gray-500">Không có mã giảm giá nào</p>
