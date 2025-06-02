@@ -83,7 +83,6 @@ export default function DepositPage() {
         setNotFound(false);
       } else {
         console.log('⏳ Transaction not found yet');
-        alert('Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.');
         setNotFound(true);
       }
     } catch (error) {
