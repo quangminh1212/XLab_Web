@@ -122,7 +122,6 @@ export default function PublicVouchersPage() {
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 min-h-screen">
       <div className="text-center mb-10">
-        <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600 mb-3">Mã giảm giá công khai</h1>
         <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full mb-4"></div>
         <p className="text-gray-600 max-w-2xl mx-auto mb-8">
           Các mã giảm giá hiện có và còn hiệu lực mà bạn có thể sử dụng khi thanh toán
