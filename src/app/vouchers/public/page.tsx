@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface Voucher {
   id: string;
@@ -18,6 +19,10 @@ interface Voucher {
   usedCount: number;
   userLimit?: number;
   applicableProducts?: string[];
+  userUsage?: {
+    current: number;
+    limit: number;
+  };
 }
 
 const formatCurrency = (amount: number) => {
@@ -46,10 +51,29 @@ const calculateUsagePercentage = (used: number, total: number) => {
   return Math.min(100, Math.round((used / total) * 100));
 };
 
+// Kiểm tra xem voucher đã hết hạn chưa
+const isExpired = (endDate: string) => {
+  try {
+    const end = new Date(endDate);
+    const now = new Date();
+    return end < now;
+  } catch (error) {
+    return false;
+  }
+};
+
+// Kiểm tra xem voucher đã được người dùng sử dụng hết chưa
+const isFullyUsedByUser = (voucher: Voucher) => {
+  if (!voucher.userUsage) return false;
+  return voucher.userUsage.current >= voucher.userUsage.limit;
+};
+
 export default function PublicVouchersPage() {
+  const { data: session } = useSession();
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState<{[key: string]: boolean}>({});
+  const [activeTab, setActiveTab] = useState<"available" | "used" | "expired">("available");
 
   useEffect(() => {
     const fetchVouchers = async () => {
@@ -84,14 +108,61 @@ export default function PublicVouchersPage() {
     }, 2000);
   };
 
+  // Lọc voucher theo tab đang active
+  const filteredVouchers = vouchers.filter(voucher => {
+    if (activeTab === "expired") {
+      return isExpired(voucher.endDate);
+    } else if (activeTab === "used") {
+      return !isExpired(voucher.endDate) && isFullyUsedByUser(voucher);
+    } else { // available
+      return !isExpired(voucher.endDate) && !isFullyUsedByUser(voucher);
+    }
+  });
+
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 min-h-screen">
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600 mb-3">Mã giảm giá công khai</h1>
         <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full mb-4"></div>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <p className="text-gray-600 max-w-2xl mx-auto mb-8">
           Các mã giảm giá hiện có và còn hiệu lực mà bạn có thể sử dụng khi thanh toán
         </p>
+
+        {/* Tab navigation */}
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex rounded-md shadow-sm bg-gray-100 p-1">
+            <button
+              onClick={() => setActiveTab("available")}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                activeTab === "available" 
+                  ? 'bg-white text-teal-700 shadow-sm' 
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Có thể dùng
+            </button>
+            <button
+              onClick={() => setActiveTab("used")}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                activeTab === "used" 
+                  ? 'bg-white text-teal-700 shadow-sm' 
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Đã dùng
+            </button>
+            <button
+              onClick={() => setActiveTab("expired")}
+              className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                activeTab === "expired" 
+                  ? 'bg-white text-teal-700 shadow-sm' 
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Đã hết hạn
+            </button>
+          </div>
+        </div>
       </div>
       
       {isLoading ? (
@@ -104,7 +175,7 @@ export default function PublicVouchersPage() {
           </div>
           <p className="ml-4 text-gray-600 font-medium">Đang tải mã giảm giá...</p>
         </div>
-      ) : vouchers.length === 0 ? (
+      ) : filteredVouchers.length === 0 ? (
         <div className="text-center max-w-lg mx-auto">
           <div className="bg-gradient-to-br from-white to-teal-50 rounded-xl p-8 shadow-sm border border-teal-100">
             <div className="w-16 h-16 mx-auto bg-teal-50 rounded-full flex items-center justify-center mb-4">
@@ -122,9 +193,15 @@ export default function PublicVouchersPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Không có mã giảm giá nào</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              {activeTab === "available" && "Không có mã giảm giá nào có thể sử dụng"}
+              {activeTab === "used" && "Bạn chưa sử dụng mã giảm giá nào"}
+              {activeTab === "expired" && "Không có mã giảm giá nào đã hết hạn"}
+            </h3>
             <p className="text-gray-600 mb-5">
-              Hiện chưa có mã giảm giá công khai nào. Vui lòng quay lại sau.
+              {activeTab === "available" && "Hiện chưa có mã giảm giá công khai nào có thể sử dụng. Vui lòng quay lại sau."}
+              {activeTab === "used" && "Bạn chưa sử dụng mã giảm giá nào hoặc bạn chưa đăng nhập."}
+              {activeTab === "expired" && "Không có mã giảm giá nào đã hết hạn. Các mã hiện tại vẫn còn hiệu lực."}
             </p>
             <Link 
               href="/" 
@@ -139,13 +216,20 @@ export default function PublicVouchersPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {vouchers.map((voucher) => (
+          {filteredVouchers.map((voucher) => (
             <div 
               key={voucher.id} 
-              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all"
+              className={`bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition-all ${
+                activeTab === "expired" ? "border-gray-300 opacity-80" : 
+                activeTab === "used" ? "border-orange-200" : "border-gray-200"
+              }`}
             >
-              {/* Coupon header with color based on type */}
+              {/* Coupon header with color based on type and status */}
               <div className={`px-5 py-3 flex justify-between items-center border-b ${
+                activeTab === "expired" 
+                  ? 'bg-gradient-to-r from-gray-400 to-gray-500' : 
+                activeTab === "used" 
+                  ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
                 voucher.type === "percentage" 
                   ? 'bg-gradient-to-r from-teal-500 to-teal-600' 
                   : 'bg-gradient-to-r from-emerald-500 to-emerald-600'
@@ -154,27 +238,34 @@ export default function PublicVouchersPage() {
                   <span className="text-white font-mono font-bold text-lg mr-3">
                     {voucher.code}
                   </span>
-                  <button
-                    onClick={() => handleCopyVoucher(voucher.code)}
-                    className="text-white hover:text-teal-100 transition-colors"
-                    title="Sao chép mã"
-                  >
-                    {isCopied[voucher.code] ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    )}
-                  </button>
+                  {activeTab === "available" && (
+                    <button
+                      onClick={() => handleCopyVoucher(voucher.code)}
+                      className="text-white hover:text-teal-100 transition-colors"
+                      title="Sao chép mã"
+                    >
+                      {isCopied[voucher.code] ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
                 </div>
-                <div className="bg-white rounded-full text-sm font-medium px-3 py-1 shadow-sm">
+                <div className={`rounded-full text-sm font-medium px-3 py-1 shadow-sm ${
+                  activeTab === "expired" ? "bg-gray-100 text-gray-700" : 
+                  activeTab === "used" ? "bg-orange-50 text-orange-700" : "bg-white"
+                }`}>
                   {voucher.type === "percentage" 
                     ? `Giảm ${voucher.value}%` 
                     : `Giảm ${formatCurrency(voucher.value)}`
                   }
+                  {activeTab === "expired" && " (Hết hạn)"}
+                  {activeTab === "used" && " (Đã dùng)"}
                 </div>
               </div>
               
@@ -241,6 +332,8 @@ export default function PublicVouchersPage() {
                     <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                       <div 
                         className={`h-full rounded-full ${
+                          activeTab === "expired" ? "bg-gray-400" :
+                          activeTab === "used" ? "bg-orange-400" :
                           voucher.usageLimit - voucher.usedCount < 10
                             ? 'bg-red-500' 
                             : 'bg-teal-500'
@@ -267,21 +360,51 @@ export default function PublicVouchersPage() {
                     {voucher.applicableProducts.join(', ')}
                   </div>
                 )}
+
+                {/* User usage if available */}
+                {voucher.userUsage && (
+                  <div className="mt-3 text-xs px-3 py-2 bg-gray-50 rounded-md">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-gray-700">Bạn đã dùng:</span>
+                      <span className={`font-medium ${voucher.userUsage.current >= voucher.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
+                        {voucher.userUsage.current}/{voucher.userUsage.limit}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
               
               {/* Button */}
-              <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
-                <button
-                  className={`w-full py-2 px-4 rounded-md font-medium text-sm text-white transition-all ${
-                    isCopied[voucher.code]
-                      ? 'bg-green-600 hover:bg-green-700'
-                      : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700'
-                  }`}
-                  onClick={() => handleCopyVoucher(voucher.code)}
-                >
-                  {isCopied[voucher.code] ? 'Đã sao chép mã' : 'Sao chép mã'}
-                </button>
-              </div>
+              {activeTab === "available" && (
+                <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                  <button
+                    className={`w-full py-2 px-4 rounded-md font-medium text-sm text-white transition-all ${
+                      isCopied[voucher.code]
+                        ? 'bg-green-600 hover:bg-green-700'
+                        : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700'
+                    }`}
+                    onClick={() => handleCopyVoucher(voucher.code)}
+                  >
+                    {isCopied[voucher.code] ? 'Đã sao chép mã' : 'Sao chép mã'}
+                  </button>
+                </div>
+              )}
+
+              {activeTab === "used" && (
+                <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                  <div className="w-full py-2 px-4 rounded-md font-medium text-sm text-center text-orange-700 bg-orange-50">
+                    Đã sử dụng hết số lần cho phép
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "expired" && (
+                <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                  <div className="w-full py-2 px-4 rounded-md font-medium text-sm text-center text-gray-500 bg-gray-100">
+                    Đã hết hạn vào {formatDate(voucher.endDate)}
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
