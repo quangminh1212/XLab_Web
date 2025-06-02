@@ -351,6 +351,18 @@ function CouponsPage() {
     const newValue = editValues[editKey];
     console.log(`Saving inline edit for coupon ${couponId}, field ${field}, value:`, newValue);
     
+    // Xác nhận khi thay đổi số lượt sử dụng
+    if (field === 'usedCount') {
+      const coupon = coupons.find(c => c.id === couponId);
+      if (coupon && Number(newValue) !== coupon.usedCount) {
+        const confirmMessage = `Bạn có chắc chắn muốn thay đổi số lượt đã sử dụng từ ${coupon.usedCount} thành ${newValue} không? Điều này có thể ảnh hưởng đến dữ liệu người dùng.`;
+        if (!confirm(confirmMessage)) {
+          cancelInlineEdit(couponId, field);
+          return;
+        }
+      }
+    }
+    
     try {
       const coupon = coupons.find(c => c.id === couponId);
       if (!coupon) {
@@ -376,7 +388,12 @@ function CouponsPage() {
         }
         
         updateData[field] = date.toISOString();
-      } else {
+      } 
+      // Xử lý các trường số
+      else if (field === 'usedCount' || field === 'usageLimit' || field === 'value' || field === 'minOrder' || field === 'maxDiscount' || field === 'userLimit') {
+        updateData[field] = Number(newValue);
+      } 
+      else {
         updateData[field] = newValue;
       }
       
@@ -558,7 +575,8 @@ function CouponsPage() {
                         Thời gian
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                        Sử dụng
+                        Sử dụng 
+                        <span className="text-xs ml-1 text-primary-500 font-normal normal-case">(có thể chỉnh sửa)</span>
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
                         Trạng thái
@@ -750,7 +768,40 @@ function CouponsPage() {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div>
-                            <span className="text-lg font-bold text-gray-700">{coupon.usedCount}</span>
+                            {inlineEditing[`${coupon.id}-usedCount`] ? (
+                              <div className="flex items-center space-x-1">
+                                <input
+                                  type="number"
+                                  value={editValues[`${coupon.id}-usedCount`] || coupon.usedCount}
+                                  onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-usedCount`]: e.target.value }))}
+                                  onBlur={() => saveInlineEdit(coupon.id, 'usedCount')}
+                                  onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'usedCount'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'usedCount'); }}
+                                  className="border border-gray-300 rounded px-1 py-0.5 text-xs w-16 text-center"
+                                  min="0"
+                                  autoFocus
+                                />
+                                <button
+                                  onClick={() => saveInlineEdit(coupon.id, 'usedCount')}
+                                  className="text-green-600 hover:text-green-800 text-xs px-1 py-0.5 bg-green-50 border border-green-200 rounded"
+                                >
+                                  ✓
+                                </button>
+                                <button
+                                  onClick={() => cancelInlineEdit(coupon.id, 'usedCount')}
+                                  className="text-red-600 hover:text-red-800 text-xs px-1 py-0.5 bg-red-50 border border-red-200 rounded"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ) : (
+                              <span 
+                                className="text-lg font-bold text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" 
+                                onClick={() => startInlineEdit(coupon.id, 'usedCount', coupon.usedCount)}
+                                title="Click để chỉnh sửa số lượt đã sử dụng"
+                              >
+                                {coupon.usedCount}
+                              </span>
+                            )}
                             <span className="text-sm text-gray-500 font-medium ml-1">
                               /
                               {inlineEditing[`${coupon.id}-usageLimit`] ? (
