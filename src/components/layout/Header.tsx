@@ -10,12 +10,26 @@ import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 
+// Thêm interface cho voucher
+interface PublicCoupon {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: "percentage" | "fixed";
+  value: number;
+  endDate: string;
+}
+
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
+  const [isVoucherOpen, setIsVoucherOpen] = React.useState(false); 
+  const [publicCoupons, setPublicCoupons] = React.useState<PublicCoupon[]>([]);
+  const [loadingCoupons, setLoadingCoupons] = React.useState(false);
   
   // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
@@ -24,9 +38,33 @@ const Header = () => {
   const profileRef = useRef<HTMLDivElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
+  const voucherRef = useRef<HTMLDivElement>(null);
 
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+
+  // Thêm useEffect để fetch vouchers công khai
+  useEffect(() => {
+    const fetchPublicCoupons = async () => {
+      try {
+        setLoadingCoupons(true);
+        const response = await fetch('/api/coupons/public');
+        const data = await response.json();
+        if (data.success && data.coupons) {
+          setPublicCoupons(data.coupons);
+        }
+      } catch (error) {
+        console.error('Error fetching public coupons:', error);
+      } finally {
+        setLoadingCoupons(false);
+      }
+    };
+
+    // Chỉ fetch khi voucher dropdown được mở
+    if (isVoucherOpen) {
+      fetchPublicCoupons();
+    }
+  }, [isVoucherOpen]);
 
   // Xử lý đóng dropdown khi click bên ngoài
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -49,7 +87,16 @@ const Header = () => {
     ) {
       setIsNotificationOpen(false);
     }
-  }, [isProfileOpen, isNotificationOpen]);
+
+    // Đóng voucher dropdown khi click ra ngoài
+    if (
+      isVoucherOpen && 
+      voucherRef.current && 
+      !voucherRef.current.contains(event.target as Node)
+    ) {
+      setIsVoucherOpen(false);
+    }
+  }, [isProfileOpen, isNotificationOpen, isVoucherOpen]);
 
   // Thêm event listener khi component được mount
   useEffect(() => {
@@ -68,6 +115,7 @@ const Header = () => {
       if (event.key === 'Escape') {
         if (isProfileOpen) setIsProfileOpen(false);
         if (isNotificationOpen) setIsNotificationOpen(false);
+        if (isVoucherOpen) setIsVoucherOpen(false);
         if (isOpen) setIsOpen(false);
       }
     };
@@ -76,7 +124,7 @@ const Header = () => {
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
-  }, [isProfileOpen, isNotificationOpen, isOpen]);
+  }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isOpen]);
 
   const isActive = (path: string) => {
     return pathname === path ? 'text-primary-600 font-medium' : 'text-gray-700 hover:text-primary-600';
@@ -86,18 +134,46 @@ const Header = () => {
     setIsOpen(!isOpen);
     if (isProfileOpen) setIsProfileOpen(false);
     if (isNotificationOpen) setIsNotificationOpen(false);
+    if (isVoucherOpen) setIsVoucherOpen(false);
   };
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen);
     if (isOpen) setIsOpen(false);
     if (isNotificationOpen) setIsNotificationOpen(false);
+    if (isVoucherOpen) setIsVoucherOpen(false);
   };
 
   const toggleNotification = () => {
     setIsNotificationOpen(!isNotificationOpen);
     if (isOpen) setIsOpen(false);
     if (isProfileOpen) setIsProfileOpen(false);
+    if (isVoucherOpen) setIsVoucherOpen(false);
+  };
+
+  const toggleVoucher = () => {
+    setIsVoucherOpen(!isVoucherOpen);
+    if (isOpen) setIsOpen(false);
+    if (isProfileOpen) setIsProfileOpen(false);
+    if (isNotificationOpen) setIsNotificationOpen(false);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN");
+  };
+
+  const handleCopyVoucher = (code: string) => {
+    navigator.clipboard.writeText(code);
+    alert(`Đã copy mã: ${code}`);
   };
 
   return (
@@ -156,6 +232,93 @@ const Header = () => {
                 <BalanceDisplay />
               </div>
             )}
+            
+            {/* Voucher Icon */}
+            <div className="relative" ref={voucherRef}>
+              <button
+                onClick={toggleVoucher}
+                className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                aria-label="Voucher"
+                aria-expanded={isVoucherOpen}
+                aria-haspopup="true"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 sm:h-5 sm:w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                  />
+                </svg>
+              </button>
+
+              {/* Voucher Dropdown */}
+              {isVoucherOpen && (
+                <div 
+                  className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10" 
+                  tabIndex={0}
+                  role="menu"
+                  aria-orientation="vertical"
+                >
+                  <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
+                    <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
+                    <Link
+                      href="/vouchers"
+                      className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
+                    >
+                      Xem tất cả
+                    </Link>
+                  </div>
+                  
+                  <div className="max-h-80 overflow-y-auto">
+                    {loadingCoupons ? (
+                      <div className="py-6 text-center">
+                        <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-2">Đang tải...</p>
+                      </div>
+                    ) : publicCoupons.length > 0 ? (
+                      publicCoupons.map((coupon) => (
+                        <div 
+                          key={coupon.id} 
+                          className="p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors"
+                          role="menuitem"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span 
+                                className="bg-primary-500 text-white font-mono text-xs font-bold px-2 py-1 rounded select-all cursor-pointer" 
+                                onClick={() => handleCopyVoucher(coupon.code)}
+                                title="Nhấn để copy mã"
+                              >
+                                {coupon.code}
+                              </span>
+                              <span className="text-xs text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5">
+                                {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
+                              </span>
+                            </div>
+                            <span className="text-xs text-gray-500">HSD: {formatDate(coupon.endDate)}</span>
+                          </div>
+                          <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
+                          {coupon.description && (
+                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-6 text-center">
+                        <p className="text-xs sm:text-sm text-gray-500">Không có mã giảm giá nào</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             
             {/* Notification Icon */}
             {session && (
