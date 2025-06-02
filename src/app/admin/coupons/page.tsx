@@ -277,7 +277,14 @@ function CouponsPage() {
 
   // Format date
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('vi-VN');
+    // Tạo date object từ chuỗi ISO và xác định rõ là UTC
+    const date = new Date(dateString);
+    // Format date theo định dạng Việt Nam và đảm bảo sử dụng ngày tháng của múi giờ địa phương
+    return new Date(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate()
+    ).toLocaleDateString('vi-VN');
   };
 
   // Check if coupon is expired
@@ -318,7 +325,20 @@ function CouponsPage() {
       const coupon = coupons.find(c => c.id === couponId);
       if (!coupon) return;
 
-      const updateData = { ...coupon, [field]: newValue };
+      // Create a deep copy of the coupon to modify
+      const updateData: Record<string, any> = { ...coupon };
+      
+      // Specially handle date fields
+      if (field === 'startDate' || field === 'endDate') {
+        // Convert date string to ISO format with time portion
+        const date = new Date(newValue);
+        const isoDate = field === 'startDate' 
+          ? new Date(date.setHours(0, 0, 0, 0)).toISOString()
+          : new Date(date.setHours(23, 59, 59, 999)).toISOString();
+        updateData[field] = isoDate;
+      } else {
+        updateData[field] = newValue;
+      }
       
       const response = await fetch(`/api/admin/coupons/${couponId}`, {
         method: 'PUT',
@@ -329,9 +349,14 @@ function CouponsPage() {
       });
 
       if (response.ok) {
-        setCoupons(prev => prev.map(c => 
-          c.id === couponId ? { ...c, [field]: newValue } : c
-        ));
+        setCoupons(prev => prev.map(c => {
+          if (c.id === couponId) {
+            const updatedCoupon = { ...c };
+            (updatedCoupon as Record<string, any>)[field] = updateData[field];
+            return updatedCoupon;
+          }
+          return c;
+        }));
         setSuccessMessage('Cập nhật thành công!');
         setTimeout(() => setSuccessMessage(''), 3000);
       } else {
