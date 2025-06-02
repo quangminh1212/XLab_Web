@@ -16,6 +16,7 @@ interface Coupon {
   usageLimit?: number;
   userLimit?: number;
   usedCount: number;
+  userUsage?: { [email: string]: number };
   isActive: boolean;
   startDate: string;
   endDate: string;
@@ -748,26 +749,42 @@ function CouponsPage() {
                           )}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          <span className="text-lg font-bold text-gray-700">{coupon.usedCount}</span>
-                          <span className="text-sm text-gray-500 font-medium ml-1">
-                            /
-                            {inlineEditing[`${coupon.id}-usageLimit`] ? (
-                              <input
-                                type="number"
-                                value={editValues[`${coupon.id}-usageLimit`] || coupon.usageLimit || 0}
-                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-usageLimit`]: e.target.value }))}
-                                onBlur={() => saveInlineEdit(coupon.id, 'usageLimit')}
-                                onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'usageLimit'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'usageLimit'); }}
-                                className="border border-gray-300 rounded px-1 py-0.5 text-xs w-12 text-center ml-1"
-                                min="0"
-                                autoFocus
-                              />
-                            ) : (
-                              <span className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'usageLimit', coupon.usageLimit || 0)}>
-                                {coupon.usageLimit ? coupon.usageLimit : '∞'}
-                              </span>
-                            )} lần
-                          </span>
+                          <div>
+                            <span className="text-lg font-bold text-gray-700">{coupon.usedCount}</span>
+                            <span className="text-sm text-gray-500 font-medium ml-1">
+                              /
+                              {inlineEditing[`${coupon.id}-usageLimit`] ? (
+                                <input
+                                  type="number"
+                                  value={editValues[`${coupon.id}-usageLimit`] || coupon.usageLimit || 0}
+                                  onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-usageLimit`]: e.target.value }))}
+                                  onBlur={() => saveInlineEdit(coupon.id, 'usageLimit')}
+                                  onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'usageLimit'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'usageLimit'); }}
+                                  className="border border-gray-300 rounded px-1 py-0.5 text-xs w-12 text-center ml-1"
+                                  min="0"
+                                  autoFocus
+                                />
+                              ) : (
+                                <span className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'usageLimit', coupon.usageLimit || 0)}>
+                                  {coupon.usageLimit ? coupon.usageLimit : '∞'}
+                                </span>
+                              )} lần
+                            </span>
+                            
+                            {coupon.userUsage && Object.keys(coupon.userUsage).length > 0 && (
+                              <div className="mt-2">
+                                <div className="text-xs font-medium text-gray-600 mb-1">Lượt sử dụng theo người dùng:</div>
+                                <div className="max-h-32 overflow-y-auto bg-gray-50 rounded border border-gray-200 p-1">
+                                  {Object.entries(coupon.userUsage).map(([email, count]) => (
+                                    <div key={email} className="flex justify-between items-center py-1 px-2 text-xs border-b border-gray-100 last:border-b-0">
+                                      <span className="font-medium truncate max-w-[150px]" title={email}>{email}</span>
+                                      <span className="font-bold text-gray-700">{count} lần</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div className="flex flex-row gap-2 items-center">

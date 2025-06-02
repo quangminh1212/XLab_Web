@@ -24,7 +24,9 @@ interface Coupon {
   minOrder?: number;
   maxDiscount?: number;
   usageLimit?: number;
+  userLimit?: number;
   usedCount: number;
+  userUsage?: { [email: string]: number };
   isActive: boolean;
   startDate: string;
   endDate: string;
