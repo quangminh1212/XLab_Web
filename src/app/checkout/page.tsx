@@ -113,7 +113,6 @@ export default function CheckoutPage() {
         } else {
           // fallback: hardcode các mã mẫu nếu API chưa hỗ trợ
           setAvailableCoupons([
-            { code: 'SUMMER2024', name: 'Giảm giá mùa hè', description: 'Giảm 20% cho đơn từ 100.000đ', type: 'percentage', value: 20 },
             { code: 'WELCOME50', name: 'Chào mừng thành viên mới', description: 'Giảm 50.000đ cho đơn từ 200.000đ', type: 'fixed', value: 50000 },
             { code: 'WELCOME10', name: 'Giảm 10% cho đơn hàng đầu tiên', description: 'Ưu đãi cho khách hàng mới', type: 'percentage', value: 10 },
             { code: 'FREESHIP', name: 'Miễn phí vận chuyển', description: 'Miễn phí vận chuyển (30.000đ)', type: 'fixed', value: 30000 },
@@ -122,7 +121,6 @@ export default function CheckoutPage() {
         }
       } catch (err) {
         setAvailableCoupons([
-          { code: 'SUMMER2024', name: 'Giảm giá mùa hè', description: 'Giảm 20% cho đơn từ 100.000đ', type: 'percentage', value: 20 },
           { code: 'WELCOME50', name: 'Chào mừng thành viên mới', description: 'Giảm 50.000đ cho đơn từ 200.000đ', type: 'fixed', value: 50000 },
           { code: 'WELCOME10', name: 'Giảm 10% cho đơn hàng đầu tiên', description: 'Ưu đãi cho khách hàng mới', type: 'percentage', value: 10 },
           { code: 'FREESHIP', name: 'Miễn phí vận chuyển', description: 'Miễn phí vận chuyển (30.000đ)', type: 'fixed', value: 30000 },

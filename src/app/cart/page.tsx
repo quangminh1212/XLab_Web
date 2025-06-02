@@ -407,10 +407,6 @@ export default function CartPage() {
                           <p className="font-medium">Mã khuyến mãi có sẵn:</p>
                           <div className="space-y-1">
                             <div className="flex justify-between">
-                              <span className="font-mono text-primary-700">SUMMER2024</span>
-                              <span>Giảm 20% (tối thiểu 100.000đ)</span>
-                            </div>
-                            <div className="flex justify-between">
                               <span className="font-mono text-primary-700">WELCOME50</span>
                               <span>Giảm 50.000đ (tối thiểu 200.000đ)</span>
                             </div>

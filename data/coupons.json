@@ -1,26 +1,5 @@
 [
   {
-    "id": "1",
-    "code": "SUMMER2024",
-    "name": "Giảm giá mùa hè",
-    "description": "Mã giảm giá đặc biệt cho mùa hè 2024",
-    "type": "percentage",
-    "value": 20,
-    "minOrder": 100000,
-    "maxDiscount": 500000,
-    "usageLimit": 100,
-    "userLimit": 1,
-    "usedCount": 15,
-    "userUsage": {},
-    "isActive": true,
-    "startDate": "2024-06-01T00:00:00Z",
-    "endDate": "2025-06-30T23:59:59Z",
-    "createdAt": "2024-05-01T00:00:00Z",
-    "applicableProducts": [],
-    "isPublic": true,
-    "updatedAt": "2025-06-02T17:11:02.569Z"
-  },
-  {
     "id": "2",
     "code": "WELCOME50",
     "name": "Chào mừng thành viên mới",
