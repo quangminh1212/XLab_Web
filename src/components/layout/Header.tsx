@@ -381,47 +381,47 @@ const Header = () => {
                     ) : getDisplayVouchers().length > 0 ? (
                       <>
                         {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
-                          <div className="px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
-                            <h4 className="text-xs font-medium text-blue-700">Voucher của bạn</h4>
+                          <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
+                            <h4 className="text-xs font-medium text-teal-700">Voucher của bạn</h4>
                           </div>
                         )}
                         
                         {getDisplayVouchers().map((coupon, index) => (
                           <div key={coupon.id}>
                             {session && index === userCoupons.filter(v => !v.isPublic).length && publicCoupons.length > 0 && (
-                              <div className="px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border-b border-purple-100">
-                                <h4 className="text-xs font-medium text-purple-700">Voucher công khai</h4>
+                              <div className="px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100">
+                                <h4 className="text-xs font-medium text-emerald-700">Voucher công khai</h4>
                               </div>
                             )}
-                            <div 
-                              className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-blue-50' : ''}`}
+                                                          <div 
+                              className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
                               role="menuitem"
                             >
                               <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-2 mb-1">
                                   <span 
-                                    className={`${!coupon.isPublic ? 'bg-blue-600' : 'bg-indigo-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:shadow-md transition-all`}
+                                    className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:shadow-md transition-all`}
                                     onClick={() => handleCopyVoucher(coupon.code)}
                                     title="Nhấn để copy mã"
                                   >
                                     {coupon.code}
                                   </span>
-                                  <span className={`text-xs font-medium ${coupon.type === "percentage" ? 'text-purple-700 bg-purple-50 border border-purple-200' : 'text-amber-700 bg-amber-50 border border-amber-200'} rounded-full px-2 py-0.5`}>
+                                  <span className={`text-xs font-medium ${coupon.type === "percentage" ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}>
                                     {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
                                   </span>
                                 </div>
-                                <span className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-full">HSD: {formatDate(coupon.endDate)}</span>
+                                <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">HSD: {formatDate(coupon.endDate)}</span>
                               </div>
                               <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
                               {coupon.description && (
                                 <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
                               )}
                               <div className="mt-2 flex justify-between items-center">
-                                <span className="text-xs font-medium px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full border border-blue-100">
+                                <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                   {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
                                 </span>
                                 {coupon.userLimit && coupon.userLimit > 0 && (
-                                  <span className="text-xs font-medium px-2 py-0.5 bg-amber-50 text-amber-700 rounded-full border border-amber-100">
+                                  <span className="text-xs font-medium px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
                                     Giới hạn: {coupon.userLimit} lần/người
                                   </span>
                                 )}
@@ -430,7 +430,7 @@ const Header = () => {
                                 <div className="mt-2">
                                   <div className="flex justify-between items-center text-xs text-gray-600 bg-gray-50 rounded-md px-2 py-1.5">
                                     <span className="font-medium">Đã dùng: {coupon.userUsage.current}/{coupon.userUsage.limit}</span>
-                                    <span className={`font-medium ${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-blue-600'}`}>
+                                    <span className={`font-medium ${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
                                       {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
                                     </span>
                                   </div>
@@ -439,7 +439,7 @@ const Header = () => {
                                       className={`h-2 rounded-full ${
                                         coupon.userUsage.current >= coupon.userUsage.limit 
                                           ? 'bg-gradient-to-r from-red-500 to-red-600' 
-                                          : 'bg-gradient-to-r from-blue-500 to-indigo-600'
+                                          : 'bg-gradient-to-r from-teal-500 to-emerald-600'
                                       }`}
                                       style={{ width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%` }}
                                     ></div>

@@ -62,8 +62,8 @@ export default function PublicVouchersPage() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 min-h-screen">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-3">Mã giảm giá công khai</h1>
-        <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 mx-auto rounded-full mb-4"></div>
+        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600 mb-3">Mã giảm giá công khai</h1>
+        <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full mb-4"></div>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Các mã giảm giá hiện có và còn hiệu lực mà bạn có thể sử dụng khi thanh toán
         </p>
@@ -71,7 +71,7 @@ export default function PublicVouchersPage() {
       
       {isLoading ? (
         <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
         </div>
       ) : vouchers.length === 0 ? (
         <div className="text-center">
@@ -96,7 +96,7 @@ export default function PublicVouchersPage() {
             <div className="mt-6">
               <Link 
                 href="/" 
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
+                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700"
               >
                 Quay lại trang chủ
               </Link>
@@ -108,19 +108,19 @@ export default function PublicVouchersPage() {
           {vouchers.map((voucher) => (
             <div 
               key={voucher.id} 
-              className="bg-gradient-to-br from-white to-blue-50 border border-blue-200 rounded-lg shadow-sm p-4 hover:shadow-lg transition-all"
+              className="bg-gradient-to-br from-white to-teal-50 border border-teal-200 rounded-lg shadow-sm p-4 hover:shadow-lg transition-all"
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-3">
                     <span 
-                      className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-mono font-bold px-3 py-2 rounded-md shadow cursor-pointer select-all text-lg hover:shadow-md transition-all" 
+                      className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-mono font-bold px-3 py-2 rounded-md shadow cursor-pointer select-all text-lg hover:shadow-md transition-all" 
                       onClick={() => handleCopyVoucher(voucher.code)} 
                       title="Nhấn để sao chép mã"
                     >
                       {voucher.code}
                     </span>
-                    <span className={`text-sm font-medium ${voucher.type === "percentage" ? 'text-purple-700 bg-purple-50 border border-purple-200' : 'text-amber-700 bg-amber-50 border border-amber-200'} rounded-full px-3 py-1 ml-2 shadow-sm`}>
+                    <span className={`text-sm font-medium ${voucher.type === "percentage" ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-3 py-1 ml-2 shadow-sm`}>
                       {voucher.type === "percentage" ? `${voucher.value}%` : formatCurrency(voucher.value)}
                     </span>
                   </div>
@@ -131,7 +131,7 @@ export default function PublicVouchersPage() {
                   <div className="text-xs font-medium text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded-full">Hiệu lực đến: {formatDate(voucher.endDate)}</div>
                 </div>
                 <button
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2 rounded-md font-medium text-sm shadow transition-all hover:shadow-md"
+                  className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-4 py-2 rounded-md font-medium text-sm shadow transition-all hover:shadow-md"
                   onClick={() => handleCopyVoucher(voucher.code)}
                 >
                   Sao chép
