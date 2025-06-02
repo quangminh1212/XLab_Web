@@ -23,6 +23,7 @@ export default function DepositPage() {
   const [transactionId, setTransactionId] = useState<string>('');
   const [isChecking, setIsChecking] = useState(false);
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
+  const [notFound, setNotFound] = useState(false);
 
   // Bank info constants
   const BANK_INFO = {
@@ -44,6 +45,7 @@ export default function DepositPage() {
 
     setIsChecking(true);
     setLastCheckTime(new Date());
+    setNotFound(false);
 
     try {
       console.log(`🔍 Checking transaction: ${transactionId}`);
@@ -78,9 +80,11 @@ export default function DepositPage() {
           // Generate new transaction code nếu không redirect
           generateTransactionCode();
         }
+        setNotFound(false);
       } else {
         console.log('⏳ Transaction not found yet');
         alert('Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản.');
+        setNotFound(true);
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
@@ -239,6 +243,11 @@ export default function DepositPage() {
                     <p className="text-gray-500 text-sm mt-2">
                       Lần kiểm tra cuối: {lastCheckTime.toLocaleTimeString('vi-VN')}
                     </p>
+                  )}
+                  {notFound && (
+                    <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded p-2">
+                      Chưa tìm thấy giao dịch. Vui lòng kiểm tra lại sau khi hoàn tất chuyển khoản hoặc liên hệ hỗ trợ.
+                    </div>
                   )}
                 </div>
                 
