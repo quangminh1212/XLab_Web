@@ -181,8 +181,8 @@ export async function PUT(
       minOrder: minOrder ? Number(minOrder) : undefined,
       maxDiscount: maxDiscount ? Number(maxDiscount) : undefined,
       usageLimit: usageLimit ? Number(usageLimit) : undefined,
-      startDate: start.toISOString(),
-      endDate: end.toISOString(),
+      startDate: startDate.includes('T') ? startDate : `${startDate}T00:00:00.000Z`,
+      endDate: endDate.includes('T') ? endDate : `${endDate}T23:59:59.999Z`,
       applicableProducts: applicableProducts || [],
       isPublic: typeof isPublic === 'boolean' ? isPublic : true,
       updatedAt: new Date().toISOString()

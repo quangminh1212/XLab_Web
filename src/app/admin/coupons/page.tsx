@@ -115,6 +115,25 @@ function CouponsPage() {
     }
   };
 
+  // Thêm helper function để chuẩn hóa ngày tháng
+  const formatDateForAPI = (dateString: string, isEndDate: boolean = false) => {
+    // Nếu ngày đã có định dạng ISO, giữ nguyên
+    if (dateString.includes('T')) return dateString;
+    
+    // Phân tách các phần của ngày
+    const parts = dateString.split('-').map(Number);
+    const date = new Date(Date.UTC(parts[0], parts[1]-1, parts[2]));
+    
+    // Đặt giờ cho ngày: 00:00:00 cho ngày bắt đầu và 23:59:59 cho ngày kết thúc
+    if (isEndDate) {
+      date.setUTCHours(23, 59, 59, 999);
+    } else {
+      date.setUTCHours(0, 0, 0, 0);
+    }
+    
+    return date.toISOString();
+  };
+
   // Create coupon
   const handleCreateCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,6 +144,8 @@ function CouponsPage() {
     try {
       const requestData = {
         ...form,
+        startDate: formatDateForAPI(form.startDate),
+        endDate: formatDateForAPI(form.endDate, true),
         applicableProducts: form.applicableProducts ? form.applicableProducts.split(',').map(id => id.trim()).filter(id => id) : []
       };
 
@@ -166,6 +187,8 @@ function CouponsPage() {
     try {
       const requestData = {
         ...form,
+        startDate: formatDateForAPI(form.startDate),
+        endDate: formatDateForAPI(form.endDate, true),
         applicableProducts: form.applicableProducts ? form.applicableProducts.split(',').map(id => id.trim()).filter(id => id) : []
       };
 
@@ -325,17 +348,23 @@ function CouponsPage() {
       const coupon = coupons.find(c => c.id === couponId);
       if (!coupon) return;
 
-      // Create a deep copy of the coupon to modify
+      // Tạo bản sao sâu của coupon để chỉnh sửa
       const updateData: Record<string, any> = { ...coupon };
       
-      // Specially handle date fields
+      // Xử lý đặc biệt các trường ngày tháng
       if (field === 'startDate' || field === 'endDate') {
-        // Convert date string to ISO format with time portion
-        const date = new Date(newValue);
-        const isoDate = field === 'startDate' 
-          ? new Date(date.setHours(0, 0, 0, 0)).toISOString()
-          : new Date(date.setHours(23, 59, 59, 999)).toISOString();
-        updateData[field] = isoDate;
+        // Giữ ngày và đặt giờ cụ thể để tránh vấn đề múi giờ
+        const parts = newValue.split('-').map(Number);
+        const date = new Date(Date.UTC(parts[0], parts[1]-1, parts[2]));
+        
+        // Đảm bảo rằng startDate là đầu ngày và endDate là cuối ngày trong UTC
+        if (field === 'startDate') {
+          date.setUTCHours(0, 0, 0, 0);
+        } else {
+          date.setUTCHours(23, 59, 59, 999);
+        }
+        
+        updateData[field] = date.toISOString();
       } else {
         updateData[field] = newValue;
       }
@@ -359,6 +388,9 @@ function CouponsPage() {
         }));
         setSuccessMessage('Cập nhật thành công!');
         setTimeout(() => setSuccessMessage(''), 3000);
+        
+        // Làm mới dữ liệu sau khi cập nhật
+        fetchCoupons();
       } else {
         setErrorMessage('Có lỗi xảy ra khi cập nhật');
         setTimeout(() => setErrorMessage(''), 3000);
@@ -644,15 +676,27 @@ function CouponsPage() {
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
                           {inlineEditing[`${coupon.id}-startDate`] ? (
-                            <input
-                              type="date"
-                              value={editValues[`${coupon.id}-startDate`] || coupon.startDate.split('T')[0]}
-                              onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-startDate`]: e.target.value }))}
-                              onBlur={() => saveInlineEdit(coupon.id, 'startDate')}
-                              onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'startDate'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'startDate'); }}
-                              className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
-                              autoFocus
-                            />
+                            <div className="flex items-center space-x-1">
+                              <input
+                                type="date"
+                                value={editValues[`${coupon.id}-startDate`] || coupon.startDate.split('T')[0]}
+                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-startDate`]: e.target.value }))}
+                                className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
+                                autoFocus
+                              />
+                              <button
+                                onClick={() => saveInlineEdit(coupon.id, 'startDate')}
+                                className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
+                              >
+                                ✓ Lưu
+                              </button>
+                              <button
+                                onClick={() => cancelInlineEdit(coupon.id, 'startDate')}
+                                className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
+                              >
+                                ✕ Hủy
+                              </button>
+                            </div>
                           ) : (
                             <span className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'startDate', coupon.startDate.split('T')[0])}>
                               {formatDate(coupon.startDate)}
@@ -660,15 +704,27 @@ function CouponsPage() {
                           )}
                           <span className="mx-1">-</span>
                           {inlineEditing[`${coupon.id}-endDate`] ? (
-                            <input
-                              type="date"
-                              value={editValues[`${coupon.id}-endDate`] || coupon.endDate.split('T')[0]}
-                              onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-endDate`]: e.target.value }))}
-                              onBlur={() => saveInlineEdit(coupon.id, 'endDate')}
-                              onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'endDate'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'endDate'); }}
-                              className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
-                              autoFocus
-                            />
+                            <div className="flex items-center space-x-1">
+                              <input
+                                type="date"
+                                value={editValues[`${coupon.id}-endDate`] || coupon.endDate.split('T')[0]}
+                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-endDate`]: e.target.value }))}
+                                className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
+                                autoFocus
+                              />
+                              <button
+                                onClick={() => saveInlineEdit(coupon.id, 'endDate')}
+                                className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
+                              >
+                                ✓ Lưu
+                              </button>
+                              <button
+                                onClick={() => cancelInlineEdit(coupon.id, 'endDate')}
+                                className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
+                              >
+                                ✕ Hủy
+                              </button>
+                            </div>
                           ) : (
                             <span className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'endDate', coupon.endDate.split('T')[0])}>
                               {formatDate(coupon.endDate)}
