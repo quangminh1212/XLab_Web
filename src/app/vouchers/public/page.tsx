@@ -235,22 +235,22 @@ export default function PublicVouchersPage() {
                   : 'bg-gradient-to-r from-emerald-500 to-emerald-600'
               }`}>
                 <div className="flex items-center">
-                  <span className="text-white font-mono font-bold text-lg mr-3">
+                  <span className="text-white font-mono font-bold text-lg select-all">
                     {voucher.code}
                   </span>
                   {activeTab === "available" && (
                     <button
                       onClick={() => handleCopyVoucher(voucher.code)}
-                      className="text-white hover:text-teal-100 transition-colors"
+                      className="ml-2 text-white bg-white/25 hover:bg-white/40 p-1.5 rounded-md flex items-center justify-center transition-all"
                       title="Sao chép mã"
                     >
                       {isCopied[voucher.code] ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
                       )}
                     </button>
