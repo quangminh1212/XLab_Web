@@ -45,7 +45,7 @@ let coupons: any[] = [
 // GET - Lấy thông tin mã giảm giá theo ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -57,7 +57,9 @@ export async function GET(
       );
     }
 
-    const id = params.id;
+    const awaitedParams = await params;
+    const id = awaitedParams.id;
+    
     const coupon = coupons.find(c => c.id === id);
     
     if (!coupon) {
@@ -84,7 +86,7 @@ export async function GET(
 // PUT - Cập nhật mã giảm giá
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -96,7 +98,9 @@ export async function PUT(
       );
     }
 
-    const id = params.id;
+    const awaitedParams = await params;
+    const id = awaitedParams.id;
+    
     const couponIndex = coupons.findIndex(c => c.id === id);
     
     if (couponIndex === -1) {
@@ -204,7 +208,7 @@ export async function PUT(
 // DELETE - Xóa mã giảm giá
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -216,7 +220,9 @@ export async function DELETE(
       );
     }
 
-    const id = params.id;
+    const awaitedParams = await params;
+    const id = awaitedParams.id;
+    
     const couponIndex = coupons.findIndex(c => c.id === id);
     
     if (couponIndex === -1) {
