@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
           
           {/* Logo và social icons - Cột riêng bên trái */}
-          <div className="flex flex-col items-center sm:items-start">
+          <div className="flex flex-col items-center">
             <Link href="/" className="flex items-center justify-center group mb-6 sm:mb-8">
               <div className="relative overflow-hidden rounded-lg">
                 <Image
@@ -38,7 +38,7 @@ export default function Footer() {
             </Link>
             
             {/* Social icons */}
-            <div className="flex justify-center sm:justify-start space-x-3">
+            <div className="flex justify-center space-x-3 mt-2">
               <a 
                 href={siteConfig.social.facebook} 
                 target="_blank" 
