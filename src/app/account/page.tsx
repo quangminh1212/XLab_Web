@@ -533,9 +533,21 @@ export default function AccountPage() {
                     Sản phẩm của tôi
                   </a>
                   <a href="#coupons" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7a1 1 0 011-1h4.586a1 1 0 01.707.293l6.414 6.414a2 2 0 010 2.828l-5.586 5.586a2 2 0 01-2.828 0l-6.414-6.414A1 1 0 013 11.586V7a1 1 0 011-1h3z" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      style={{ verticalAlign: '-0.125em' }}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.293 10.293l-7.586-7.586A1 1 0 008.586 2H4a2 2 0 00-2 2v4.586a1 1 0 00.293.707l7.586 7.586a1 1 0 001.414 0l6-6a1 1 0 000-1.414z"
+                      />
+                      <circle cx="6.5" cy="6.5" r="1.5" />
                     </svg>
                     Quản lý mã giảm giá
                   </a>
@@ -711,6 +723,47 @@ export default function AccountPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Section mã giảm giá chuyển lên ngay sau hồ sơ cá nhân */}
+              <div id="coupons" className="bg-white rounded-lg shadow p-6 mb-8">
+                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
+                {availableCoupons.length > 0 ? (
+                  <div className="space-y-4">
+                    {availableCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border border-teal-200 rounded-lg p-4 bg-teal-50">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold text-teal-800">{coupon.name}</h3>
+                            <p className="text-sm text-teal-600 mt-1">{coupon.description}</p>
+                            <div className="mt-2 flex items-center gap-2">
+                              <span className="font-mono text-teal-700 bg-white border border-teal-200 rounded px-2 py-0.5 text-sm">
+                                {coupon.code}
+                              </span>
+                              <span className="text-sm text-teal-700">
+                                {coupon.type === 'percentage' ? `Giảm ${coupon.value}%` : `Giảm ${formatCurrency(coupon.value)}`}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-xs text-teal-600">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} - {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>Bạn chưa có mã giảm giá nào</p>
+                  </div>
+                )}
               </div>
 
               {/* Phần Sản phẩm đã mua */}
