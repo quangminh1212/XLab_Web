@@ -1,95 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/route';
+import fs from 'fs';
+import path from 'path';
 
-// Import coupons data từ admin coupons route (trong thực tế sẽ dùng database)
-let coupons: any[] = [
-  {
-    id: '1',
-    code: 'SUMMER2024',
-    name: 'Giảm giá mùa hè',
-    description: 'Mã giảm giá đặc biệt cho mùa hè 2024',
-    type: 'percentage',
-    value: 20,
-    minOrder: 100000,
-    maxDiscount: 500000,
-    usageLimit: 100,
-    usedCount: 15,
-    isActive: true,
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2025-12-31T23:59:59Z',
-    createdAt: '2024-05-01T00:00:00Z',
-    applicableProducts: []
-  },
-  {
-    id: '2',
-    code: 'WELCOME50',
-    name: 'Chào mừng thành viên mới',
-    description: 'Ưu đãi cho khách hàng đăng ký mới',
-    type: 'fixed',
-    value: 50000,
-    minOrder: 200000,
-    usageLimit: 0,
-    usedCount: 8,
-    isActive: true,
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2025-12-31T23:59:59Z',
-    createdAt: '2024-01-01T00:00:00Z',
-    applicableProducts: []
-  },
-  // Thêm các mã cũ để tương thích
-  {
-    id: '3',
-    code: 'WELCOME10',
-    name: 'Giảm 10% cho đơn hàng đầu tiên',
-    description: 'Ưu đãi cho khách hàng mới',
-    type: 'percentage',
-    value: 10,
-    minOrder: 50000,
-    usageLimit: 0,
-    usedCount: 0,
-    isActive: true,
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2025-12-31T23:59:59Z',
-    createdAt: '2024-01-01T00:00:00Z',
-    applicableProducts: []
-  },
-  {
-    id: '4',
-    code: 'FREESHIP',
-    name: 'Miễn phí vận chuyển',
-    description: 'Miễn phí vận chuyển (30.000đ)',
-    type: 'fixed',
-    value: 30000,
-    minOrder: 0,
-    usageLimit: 0,
-    usedCount: 0,
-    isActive: true,
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2025-12-31T23:59:59Z',
-    createdAt: '2024-01-01T00:00:00Z',
-    applicableProducts: []
-  },
-  {
-    id: '5',
-    code: 'XLAB20',
-    name: 'Giảm 20% cho sản phẩm XLab',
-    description: 'Giảm 20% cho các sản phẩm XLab',
-    type: 'percentage',
-    value: 20,
-    minOrder: 100000,
-    usageLimit: 0,
-    usedCount: 0,
-    isActive: true,
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2025-12-31T23:59:59Z',
-    createdAt: '2024-01-01T00:00:00Z',
-    applicableProducts: []
+// Tạo đường dẫn đến file lưu dữ liệu
+const dataDir = path.join(process.cwd(), 'data');
+const couponsFilePath = path.join(dataDir, 'coupons.json');
+
+// Định nghĩa interface cho Coupon
+interface Coupon {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+  minOrder?: number;
+  maxDiscount?: number;
+  usageLimit?: number;
+  userLimit?: number;
+  usedCount: number;
+  userUsage?: { [email: string]: number };
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  updatedAt?: string;
+  applicableProducts?: string[];
+  isPublic: boolean;
+  forUsers?: string[];
+}
+
+// Hàm đọc dữ liệu từ file
+function loadCoupons(): Coupon[] {
+  try {
+    if (fs.existsSync(couponsFilePath)) {
+      const data = fs.readFileSync(couponsFilePath, 'utf8');
+      try {
+        const coupons = JSON.parse(data);
+        return coupons;
+      } catch (parseError) {
+        console.error('Error parsing JSON from coupons file:', parseError);
+        return [];
+      }
+    }
+    console.log("Coupons file does not exist");
+    return [];
+  } catch (error) {
+    console.error('Error loading coupons:', error);
+    return [];
   }
-];
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { code, orderTotal } = body;
+    
+    // Lấy thông tin session của người dùng
+    const session = await getServerSession(authOptions);
+    const userEmail = session?.user?.email;
 
     if (!code) {
       return NextResponse.json(
@@ -98,8 +69,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Tải danh sách mã giảm giá từ file
+    const allCoupons = loadCoupons();
+
     // Tìm mã giảm giá
-    const coupon = coupons.find(c => 
+    const coupon = allCoupons.find(c => 
       c.code.toUpperCase() === code.toUpperCase() && c.isActive
     );
 
@@ -133,12 +107,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Kiểm tra số lần sử dụng
-    if (coupon.usageLimit && coupon.usedCount >= coupon.usageLimit) {
+    // Kiểm tra số lần sử dụng tổng cộng
+    if (coupon.usageLimit && coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) {
       return NextResponse.json(
         { success: false, error: 'Mã giảm giá đã hết lượt sử dụng' },
         { status: 400 }
       );
+    }
+    
+    // Kiểm tra số lần sử dụng của người dùng cụ thể
+    if (userEmail && coupon.userLimit && coupon.userLimit > 0) {
+      const userUsage = (coupon.userUsage || {})[userEmail] || 0;
+      
+      if (userUsage >= coupon.userLimit) {
+        return NextResponse.json(
+          { success: false, error: `Mỗi người chỉ được sử dụng mã này tối đa ${coupon.userLimit} lần` },
+          { status: 400 }
+        );
+      }
     }
 
     // Tính toán giảm giá
@@ -165,6 +151,7 @@ export async function POST(request: NextRequest) {
         description: coupon.description,
         type: coupon.type,
         value: coupon.value,
+        userLimit: coupon.userLimit,
         discountAmount
       }
     });

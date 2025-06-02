@@ -28,6 +28,8 @@ interface Coupon {
   applicableProducts?: string[];
   isPublic: boolean;
   forUsers?: string[]; // Danh sách email của người dùng được áp dụng
+  userLimit?: number;
+  userUsage?: Record<string, number>;
 }
 
 // Hàm đọc dữ liệu từ file
@@ -92,6 +94,12 @@ export async function GET() {
       value: coupon.value,
       endDate: coupon.endDate,
       isPublic: coupon.isPublic,
+      minOrder: coupon.minOrder,
+      userLimit: coupon.userLimit,
+      userUsage: userEmail ? { 
+        current: (coupon.userUsage && coupon.userUsage[userEmail]) || 0,
+        limit: coupon.userLimit || 0
+      } : undefined
     }));
     
     return NextResponse.json({

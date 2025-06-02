@@ -20,6 +20,12 @@ interface PublicCoupon {
   value: number;
   endDate: string;
   isPublic?: boolean;
+  minOrder?: number;
+  userLimit?: number;
+  userUsage?: { 
+    current: number;
+    limit: number;
+  };
 }
 
 const Header = () => {
@@ -32,6 +38,7 @@ const Header = () => {
   const [publicCoupons, setPublicCoupons] = React.useState<PublicCoupon[]>([]);
   const [userCoupons, setUserCoupons] = React.useState<PublicCoupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = React.useState(false);
+  const [lastCouponFetch, setLastCouponFetch] = React.useState<number>(0);
   
   // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
@@ -46,40 +53,86 @@ const Header = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
 
   // Thêm useEffect để fetch vouchers công khai và vouchers của người dùng
-  useEffect(() => {
-    const fetchCoupons = async () => {
-      try {
-        setLoadingCoupons(true);
-        
-        // Fetch public coupons for all users
-        const publicResponse = await fetch('/api/coupons/public');
-        const publicData = await publicResponse.json();
-        
-        if (publicData.success && publicData.coupons) {
-          setPublicCoupons(publicData.coupons);
+  const fetchCoupons = async () => {
+    try {
+      setLoadingCoupons(true);
+      
+      // Fetch public coupons for all users
+      const publicResponse = await fetch('/api/coupons/public', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
-        
-        // If user is logged in, fetch their specific vouchers
-        if (session?.user) {
-          const userResponse = await fetch('/api/user/vouchers');
-          const userData = await userResponse.json();
-          
-          if (userData.success && userData.vouchers) {
-            setUserCoupons(userData.vouchers);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching coupons:', error);
-      } finally {
-        setLoadingCoupons(false);
+      });
+      const publicData = await publicResponse.json();
+      
+      if (publicData.success && publicData.coupons) {
+        setPublicCoupons(publicData.coupons);
       }
-    };
+      
+      // If user is logged in, fetch their specific vouchers
+      if (session?.user) {
+        const userResponse = await fetch('/api/user/vouchers', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
+        });
+        const userData = await userResponse.json();
+        
+        if (userData.success && userData.vouchers) {
+          setUserCoupons(userData.vouchers);
+        }
+      }
+      
+      setLastCouponFetch(Date.now());
+    } catch (error) {
+      console.error('Error fetching coupons:', error);
+    } finally {
+      setLoadingCoupons(false);
+    }
+  };
 
-    // Chỉ fetch khi voucher dropdown được mở
-    if (isVoucherOpen) {
+  useEffect(() => {
+    // Chỉ fetch khi voucher dropdown được mở hoặc đã quá 5 phút kể từ lần fetch cuối
+    if (isVoucherOpen && (Date.now() - lastCouponFetch > 5 * 60 * 1000 || lastCouponFetch === 0)) {
       fetchCoupons();
     }
-  }, [isVoucherOpen, session]);
+  }, [isVoucherOpen, session, lastCouponFetch]);
+  
+  // Thêm effect để tự động refresh mỗi 5 phút khi dropdown đang mở
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+    
+    if (isVoucherOpen) {
+      intervalId = setInterval(() => {
+        fetchCoupons();
+      }, 5 * 60 * 1000); // 5 phút
+    }
+    
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isVoucherOpen]);
+  
+  // Thêm effect để refresh khi tab được kích hoạt lại
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && isVoucherOpen) {
+        fetchCoupons();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isVoucherOpen]);
 
   // Xử lý đóng dropdown khi click bên ngoài
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -183,7 +236,11 @@ const Header = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN");
+    return new Date(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate()
+    ).toLocaleDateString('vi-VN');
   };
 
   const handleCopyVoucher = (code: string) => {
@@ -358,6 +415,32 @@ const Header = () => {
                               <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
                               {coupon.description && (
                                 <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
+                              )}
+                              <div className="mt-1 flex justify-between items-center">
+                                <span className="text-xs text-primary-600">
+                                  {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
+                                </span>
+                                {coupon.userLimit && coupon.userLimit > 0 && (
+                                  <span className="text-xs text-orange-600 font-medium">
+                                    Giới hạn: {coupon.userLimit} lần/người
+                                  </span>
+                                )}
+                              </div>
+                              {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                <div className="mt-1.5">
+                                  <div className="flex justify-between items-center text-xs text-gray-500">
+                                    <span>Đã dùng: {coupon.userUsage.current}/{coupon.userUsage.limit}</span>
+                                    <span className={coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-green-600'}>
+                                      {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
+                                    </span>
+                                  </div>
+                                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                    <div 
+                                      className={`h-1.5 rounded-full ${coupon.userUsage.current >= coupon.userUsage.limit ? 'bg-red-600' : 'bg-green-600'}`}
+                                      style={{ width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
                               )}
                             </div>
                           </div>

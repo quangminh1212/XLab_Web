@@ -25,6 +25,7 @@ interface Coupon {
   updatedAt?: string;
   applicableProducts?: string[];
   isPublic: boolean;
+  userLimit?: number;
 }
 
 // Hàm đọc dữ liệu từ file
@@ -80,7 +81,9 @@ export async function GET() {
       description: coupon.description,
       type: coupon.type,
       value: coupon.value,
-      endDate: coupon.endDate
+      endDate: coupon.endDate,
+      minOrder: coupon.minOrder,
+      userLimit: coupon.userLimit
     }));
     
     return NextResponse.json(

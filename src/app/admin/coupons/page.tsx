@@ -14,6 +14,7 @@ interface Coupon {
   minOrder?: number;
   maxDiscount?: number;
   usageLimit?: number;
+  userLimit?: number;
   usedCount: number;
   isActive: boolean;
   startDate: string;
@@ -32,6 +33,7 @@ interface CouponForm {
   minOrder: number;
   maxDiscount: number;
   usageLimit: number;
+  userLimit: number;
   startDate: string;
   endDate: string;
   applicableProducts: string;
@@ -62,6 +64,7 @@ function CouponsPage() {
     minOrder: 0,
     maxDiscount: 0,
     usageLimit: 0,
+    userLimit: 1,
     startDate: '',
     endDate: '',
     applicableProducts: '',
@@ -79,6 +82,7 @@ function CouponsPage() {
       minOrder: 0,
       maxDiscount: 0,
       usageLimit: 0,
+      userLimit: 1,
       startDate: '',
       endDate: '',
       applicableProducts: '',
@@ -274,6 +278,7 @@ function CouponsPage() {
       minOrder: coupon.minOrder || 0,
       maxDiscount: coupon.maxDiscount || 0,
       usageLimit: coupon.usageLimit || 0,
+      userLimit: coupon.userLimit || 1,
       startDate: coupon.startDate.split('T')[0],
       endDate: coupon.endDate.split('T')[0],
       applicableProducts: coupon.applicableProducts?.join(', ') || '',
@@ -936,6 +941,40 @@ function CouponsPage() {
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     required
                   />
+                </div>
+
+                {/* Usage Limit */}
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Số lần sử dụng tối đa (0 = không giới hạn)
+                  </label>
+                  <input
+                    type="number"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Ví dụ: 100"
+                    name="usageLimit"
+                    value={form.usageLimit}
+                    onChange={(e) => setForm(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
+                    min="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Số lượt sử dụng được áp dụng cho toàn bộ mã giảm giá.</p>
+                </div>
+
+                {/* User Limit */}
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Số lần mỗi người có thể sử dụng (0 = không giới hạn)
+                  </label>
+                  <input
+                    type="number"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Ví dụ: 1"
+                    name="userLimit"
+                    value={form.userLimit}
+                    onChange={(e) => setForm(prev => ({ ...prev, userLimit: Number(e.target.value) }))}
+                    min="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Giới hạn số lần mỗi người dùng có thể sử dụng mã giảm giá này.</p>
                 </div>
 
                 {/* Trường công khai/riêng tư */}
