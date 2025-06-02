@@ -558,17 +558,11 @@ function CouponsPage() {
                                   <input
                                     type="number"
                                     value={editValues[`${coupon.id}-value`] || ''}
-                                    onChange={(e) => setEditValues(prev => ({
-                                      ...prev,
-                                      [`${coupon.id}-value`]: parseFloat(e.target.value) || 0
-                                    }))}
+                                    onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-value`]: e.target.value }))}
                                     className="border border-gray-300 rounded px-2 py-1 text-sm w-16"
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        saveInlineEdit(coupon.id, 'value');
-                                      } else if (e.key === 'Escape') {
-                                        cancelInlineEdit(coupon.id, 'value');
-                                      }
+                                    onKeyDown={e => {
+                                      if (e.key === 'Enter') saveInlineEdit(coupon.id, 'value');
+                                      else if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'value');
                                     }}
                                     autoFocus
                                   />
@@ -578,15 +572,11 @@ function CouponsPage() {
                                   <button
                                     onClick={() => saveInlineEdit(coupon.id, 'value')}
                                     className="text-green-600 hover:text-green-800 text-xs"
-                                  >
-                                    ✓
-                                  </button>
+                                  >✓</button>
                                   <button
                                     onClick={() => cancelInlineEdit(coupon.id, 'value')}
                                     className="text-red-600 hover:text-red-800 text-xs"
-                                  >
-                                    ✕
-                                  </button>
+                                  >✕</button>
                                 </div>
                               ) : (
                                 <span
