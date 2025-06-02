@@ -20,6 +20,7 @@ interface Coupon {
   endDate: string;
   createdAt: string;
   applicableProducts?: string[];
+  isPublic: boolean;
 }
 
 interface CouponForm {
@@ -34,6 +35,7 @@ interface CouponForm {
   startDate: string;
   endDate: string;
   applicableProducts: string;
+  isPublic: boolean;
 }
 
 function CouponsPage() {
@@ -62,7 +64,8 @@ function CouponsPage() {
     usageLimit: 0,
     startDate: '',
     endDate: '',
-    applicableProducts: ''
+    applicableProducts: '',
+    isPublic: true
   });
 
   // Reset form
@@ -78,7 +81,8 @@ function CouponsPage() {
       usageLimit: 0,
       startDate: '',
       endDate: '',
-      applicableProducts: ''
+      applicableProducts: '',
+      isPublic: true
     });
   };
 
@@ -249,7 +253,8 @@ function CouponsPage() {
       usageLimit: coupon.usageLimit || 0,
       startDate: coupon.startDate.split('T')[0],
       endDate: coupon.endDate.split('T')[0],
-      applicableProducts: coupon.applicableProducts?.join(', ') || ''
+      applicableProducts: coupon.applicableProducts?.join(', ') || '',
+      isPublic: coupon.isPublic ?? true
     });
     setEditingCoupon(coupon);
     setShowEditModal(true);
@@ -593,52 +598,6 @@ function CouponsPage() {
                                 </span>
                               )}
                             </div>
-                            {coupon.minOrder && (
-                              <div className="text-sm text-gray-500 bg-gray-50 px-2 py-1 rounded border border-gray-200">
-                                {inlineEditing[`${coupon.id}-minOrder`] ? (
-                                  <div className="flex items-center space-x-1">
-                                    <span>Tối thiểu:</span>
-                                    <input
-                                      type="number"
-                                      value={editValues[`${coupon.id}-minOrder`] || ''}
-                                      onChange={(e) => setEditValues(prev => ({
-                                        ...prev,
-                                        [`${coupon.id}-minOrder`]: parseFloat(e.target.value) || 0
-                                      }))}
-                                      className="border border-gray-300 rounded px-1 py-0.5 text-xs w-20"
-                                      onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                          saveInlineEdit(coupon.id, 'minOrder');
-                                        } else if (e.key === 'Escape') {
-                                          cancelInlineEdit(coupon.id, 'minOrder');
-                                        }
-                                      }}
-                                      autoFocus
-                                    />
-                                    <button
-                                      onClick={() => saveInlineEdit(coupon.id, 'minOrder')}
-                                      className="text-green-600 hover:text-green-800 text-xs"
-                                    >
-                                      ✓
-                                    </button>
-                                    <button
-                                      onClick={() => cancelInlineEdit(coupon.id, 'minOrder')}
-                                      className="text-red-600 hover:text-red-800 text-xs"
-                                    >
-                                      ✕
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <span
-                                    onClick={() => startInlineEdit(coupon.id, 'minOrder', coupon.minOrder)}
-                                    className="cursor-pointer hover:bg-gray-200 px-1 py-0.5 rounded"
-                                    title="Click để chỉnh sửa"
-                                  >
-                                    Tối thiểu: {formatCurrency(coupon.minOrder)}
-                                  </span>
-                                )}
-                              </div>
-                            )}
                           </div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
@@ -798,22 +757,30 @@ function CouponsPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap">
-                          {isExpired(coupon.endDate) ? (
-                            <div className="inline-flex items-center px-3 py-1.5 rounded border bg-red-50 border-red-200 text-red-700">
-                              <div className="w-2 h-2 rounded-full bg-red-400 mr-2"></div>
-                              <span className="text-sm font-medium uppercase tracking-wide">Đã hết hạn</span>
-                            </div>
-                          ) : coupon.isActive ? (
-                            <div className="inline-flex items-center px-3 py-1.5 rounded border bg-primary-50 border-primary-200 text-primary-700">
-                              <div className="w-2 h-2 rounded-full bg-primary-500 mr-2"></div>
-                              <span className="text-sm font-medium uppercase tracking-wide">Đang hoạt động</span>
-                            </div>
-                          ) : (
-                            <div className="inline-flex items-center px-3 py-1.5 rounded border bg-gray-50 border-gray-200 text-gray-600">
-                              <div className="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
-                              <span className="text-sm font-medium uppercase tracking-wide">Tạm dừng</span>
-                            </div>
-                          )}
+                          <div className="flex flex-col gap-1">
+                            {coupon.isPublic ? (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-green-50 border border-green-200 text-green-700 text-xs font-medium w-fit">Công khai</span>
+                            ) : (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-yellow-50 border border-yellow-200 text-yellow-700 text-xs font-medium w-fit">Riêng tư</span>
+                            )}
+                            {/* Trạng thái hoạt động/hết hạn */}
+                            {isExpired(coupon.endDate) ? (
+                              <div className="inline-flex items-center px-3 py-1.5 rounded border bg-red-50 border-red-200 text-red-700 mt-1">
+                                <div className="w-2 h-2 rounded-full bg-red-400 mr-2"></div>
+                                <span className="text-sm font-medium uppercase tracking-wide">Đã hết hạn</span>
+                              </div>
+                            ) : coupon.isActive ? (
+                              <div className="inline-flex items-center px-3 py-1.5 rounded border bg-primary-50 border-primary-200 text-primary-700 mt-1">
+                                <div className="w-2 h-2 rounded-full bg-primary-500 mr-2"></div>
+                                <span className="text-sm font-medium uppercase tracking-wide">Đang hoạt động</span>
+                              </div>
+                            ) : (
+                              <div className="inline-flex items-center px-3 py-1.5 rounded border bg-gray-50 border-gray-200 text-gray-600 mt-1">
+                                <div className="w-2 h-2 rounded-full bg-gray-400 mr-2"></div>
+                                <span className="text-sm font-medium uppercase tracking-wide">Tạm dừng</span>
+                              </div>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
@@ -934,56 +901,6 @@ function CouponsPage() {
                   </p>
                 </div>
 
-                {/* Đơn hàng tối thiểu */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Đơn hàng tối thiểu
-                  </label>
-                  <input
-                    type="number"
-                    value={form.minOrder}
-                    onChange={(e) => setForm(prev => ({ ...prev, minOrder: Number(e.target.value) }))}
-                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                    placeholder="VD: 100000"
-                    min="0"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Để trống nếu không có yêu cầu tối thiểu</p>
-                </div>
-
-                {/* Giảm tối đa */}
-                {form.type === 'percentage' && (
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Giảm tối đa
-                    </label>
-                    <input
-                      type="number"
-                      value={form.maxDiscount}
-                      onChange={(e) => setForm(prev => ({ ...prev, maxDiscount: Number(e.target.value) }))}
-                      className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                      placeholder="VD: 500000"
-                      min="0"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">Để trống nếu không giới hạn</p>
-                  </div>
-                )}
-
-                {/* Giới hạn sử dụng */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Giới hạn sử dụng
-                  </label>
-                  <input
-                    type="number"
-                    value={form.usageLimit}
-                    onChange={(e) => setForm(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
-                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                    placeholder="VD: 100"
-                    min="0"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Để trống hoặc 0 nếu không giới hạn</p>
-                </div>
-
                 {/* Ngày bắt đầu */}
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -1011,35 +928,20 @@ function CouponsPage() {
                     required
                   />
                 </div>
-              </div>
 
-              {/* Mô tả */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Mô tả
-                </label>
-                <textarea
-                  value={form.description}
-                  onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
-                  rows={2}
-                  className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                  placeholder="Mô tả chi tiết về mã giảm giá này..."
-                />
-              </div>
-
-              {/* Sản phẩm áp dụng */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  ID sản phẩm áp dụng
-                </label>
-                <input
-                  type="text"
-                  value={form.applicableProducts}
-                  onChange={(e) => setForm(prev => ({ ...prev, applicableProducts: e.target.value }))}
-                  className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                  placeholder="VD: prod1, prod2, prod3 (phân cách bằng dấu phẩy)"
-                />
-                <p className="text-xs text-gray-500 mt-1">Để trống nếu áp dụng cho tất cả sản phẩm</p>
+                {/* Trường công khai/riêng tư */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Trạng thái *</label>
+                  <select
+                    value={form.isPublic ? 'public' : 'private'}
+                    onChange={e => setForm(prev => ({ ...prev, isPublic: e.target.value === 'public' }))}
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                    required
+                  >
+                    <option value="public">Công khai</option>
+                    <option value="private">Riêng tư</option>
+                  </select>
+                </div>
               </div>
 
               {/* Buttons */}
@@ -1104,7 +1006,6 @@ function CouponsPage() {
                       required
                     />
                   </div>
-
                   {/* Tên mã giảm giá */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1119,7 +1020,6 @@ function CouponsPage() {
                       required
                     />
                   </div>
-
                   {/* Loại giảm giá */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1134,7 +1034,6 @@ function CouponsPage() {
                       <option value="fixed">Số tiền cố định (VNĐ)</option>
                     </select>
                   </div>
-
                   {/* Giá trị giảm */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1151,54 +1050,6 @@ function CouponsPage() {
                       required
                     />
                   </div>
-
-                  {/* Đơn hàng tối thiểu */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Đơn hàng tối thiểu
-                    </label>
-                    <input
-                      type="number"
-                      value={form.minOrder}
-                      onChange={(e) => setForm(prev => ({ ...prev, minOrder: Number(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      placeholder="VD: 100000"
-                      min="0"
-                    />
-                  </div>
-
-                  {/* Giảm tối đa */}
-                  {form.type === 'percentage' && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Giảm tối đa
-                      </label>
-                      <input
-                        type="number"
-                        value={form.maxDiscount}
-                        onChange={(e) => setForm(prev => ({ ...prev, maxDiscount: Number(e.target.value) }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                        placeholder="VD: 500000"
-                        min="0"
-                      />
-                    </div>
-                  )}
-
-                  {/* Giới hạn sử dụng */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Giới hạn sử dụng
-                    </label>
-                    <input
-                      type="number"
-                      value={form.usageLimit}
-                      onChange={(e) => setForm(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      placeholder="VD: 100"
-                      min="0"
-                    />
-                  </div>
-
                   {/* Ngày bắt đầu */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1212,7 +1063,6 @@ function CouponsPage() {
                       required
                     />
                   </div>
-
                   {/* Ngày kết thúc */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1226,37 +1076,20 @@ function CouponsPage() {
                       required
                     />
                   </div>
+                  {/* Trạng thái công khai/riêng tư */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái *</label>
+                    <select
+                      value={form.isPublic ? 'public' : 'private'}
+                      onChange={e => setForm(prev => ({ ...prev, isPublic: e.target.value === 'public' }))}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      required
+                    >
+                      <option value="public">Công khai</option>
+                      <option value="private">Riêng tư</option>
+                    </select>
+                  </div>
                 </div>
-
-                {/* Mô tả */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mô tả
-                  </label>
-                  <textarea
-                    value={form.description}
-                    onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
-                    rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Mô tả chi tiết về mã giảm giá này..."
-                  />
-                </div>
-
-                {/* Sản phẩm áp dụng */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ID sản phẩm áp dụng
-                  </label>
-                  <input
-                    type="text"
-                    value={form.applicableProducts}
-                    onChange={(e) => setForm(prev => ({ ...prev, applicableProducts: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="VD: prod1, prod2, prod3 (phân cách bằng dấu phẩy)"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">Để trống nếu áp dụng cho tất cả sản phẩm</p>
-                </div>
-
                 {/* Buttons */}
                 <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                   <button

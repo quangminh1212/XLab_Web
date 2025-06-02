@@ -19,7 +19,8 @@ let coupons: any[] = [
     startDate: '2024-06-01T00:00:00Z',
     endDate: '2024-08-31T23:59:59Z',
     createdAt: '2024-05-01T00:00:00Z',
-    applicableProducts: []
+    applicableProducts: [],
+    isPublic: true
   },
   {
     id: '2',
@@ -35,7 +36,8 @@ let coupons: any[] = [
     startDate: '2024-01-01T00:00:00Z',
     endDate: '2024-12-31T23:59:59Z',
     createdAt: '2024-01-01T00:00:00Z',
-    applicableProducts: []
+    applicableProducts: [],
+    isPublic: true
   }
 ];
 
@@ -114,7 +116,8 @@ export async function POST(request: NextRequest) {
       usageLimit,
       startDate,
       endDate,
-      applicableProducts
+      applicableProducts,
+      isPublic
     } = body;
 
     // Validation
@@ -172,6 +175,7 @@ export async function POST(request: NextRequest) {
       usageLimit: usageLimit ? Number(usageLimit) : undefined,
       usedCount: 0,
       isActive: true,
+      isPublic: typeof isPublic === 'boolean' ? isPublic : true,
       startDate: start.toISOString(),
       endDate: end.toISOString(),
       createdAt: new Date().toISOString(),
