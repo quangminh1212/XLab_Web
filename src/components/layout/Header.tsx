@@ -405,9 +405,6 @@ const Header = () => {
                                       className="ml-1.5 px-1.5 py-1 bg-white/30 hover:bg-white/50 rounded-md flex items-center justify-center transition-all"
                                       title="Sao chép mã"
                                     >
-                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                      </svg>
                                     </button>
                                   </div>
                                   <span className={`text-xs font-medium ${coupon.type === "percentage" ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}>
