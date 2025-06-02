@@ -308,7 +308,7 @@ const Header = () => {
                   <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
                     <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
                     <Link
-                      href="/vouchers"
+                      href="/vouchers/public"
                       className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                     >
                       Xem tất cả

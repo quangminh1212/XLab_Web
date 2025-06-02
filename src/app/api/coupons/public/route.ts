@@ -33,12 +33,16 @@ function loadCoupons(): Coupon[] {
     if (fs.existsSync(couponsFilePath)) {
       const data = fs.readFileSync(couponsFilePath, 'utf8');
       try {
-        return JSON.parse(data);
+        console.log("Loading coupons from file");
+        const coupons = JSON.parse(data);
+        console.log(`Found ${coupons.length} coupons total`);
+        return coupons;
       } catch (parseError) {
         console.error('Error parsing JSON from coupons file:', parseError);
         return [];
       }
     }
+    console.log("Coupons file does not exist");
     return [];
   } catch (error) {
     console.error('Error loading coupons:', error);
@@ -53,12 +57,20 @@ export async function GET() {
     
     // Lọc chỉ lấy mã giảm giá công khai và còn hiệu lực
     const now = new Date();
-    const publicCoupons = allCoupons.filter(coupon => 
-      coupon.isPublic &&
-      coupon.isActive &&
-      new Date(coupon.startDate) <= now &&
-      new Date(coupon.endDate) >= now
-    );
+    const publicCoupons = allCoupons.filter(coupon => {
+      const isPublic = coupon.isPublic === true;
+      const isActive = coupon.isActive === true;
+      const hasStarted = new Date(coupon.startDate) <= now;
+      const notEnded = new Date(coupon.endDate) >= now;
+      
+      const result = isPublic && isActive && hasStarted && notEnded;
+      if (!result) {
+        console.log(`Filtering out coupon ${coupon.code}: isPublic=${isPublic}, isActive=${isActive}, hasStarted=${hasStarted}, notEnded=${notEnded}`);
+      }
+      return result;
+    });
+    
+    console.log(`Returning ${publicCoupons.length} public active coupons`);
     
     // Chỉ trả về thông tin cần thiết để hiển thị trong dropdown
     const simplifiedCoupons = publicCoupons.map(coupon => ({
@@ -71,15 +83,27 @@ export async function GET() {
       endDate: coupon.endDate
     }));
     
-    return NextResponse.json({
-      success: true,
-      coupons: simplifiedCoupons
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        coupons: simplifiedCoupons
+      },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0'
+        }
+      }
+    );
   } catch (error) {
     console.error('Error fetching public coupons:', error);
     return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi tải danh sách mã giảm giá công khai' },
-      { status: 500 }
+      { error: 'Đã xảy ra lỗi khi tải danh sách mã giảm giá công khai', details: String(error) },
+      { 
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0'
+        }
+      }
     );
   }
 } 
