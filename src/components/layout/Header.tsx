@@ -388,12 +388,7 @@ const Header = () => {
                         
                         {getDisplayVouchers().map((coupon, index) => (
                           <div key={coupon.id}>
-                            {session && index === userCoupons.filter(v => !v.isPublic).length && publicCoupons.length > 0 && (
-                              <div className="px-4 py-2 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100">
-                                <h4 className="text-xs font-medium text-emerald-700">Voucher công khai</h4>
-                              </div>
-                            )}
-                                                          <div 
+                            <div 
                               className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
                               role="menuitem"
                             >

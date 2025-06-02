@@ -162,7 +162,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching public coupons:', error);
     return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi tải danh sách mã giảm giá công khai', details: String(error) },
+      { error: 'Đã xảy ra lỗi khi tải danh sách mã giảm giá', details: String(error) },
       { 
         status: 500,
         headers: {

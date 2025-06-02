@@ -79,13 +79,13 @@ export default function PublicCouponsPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-2 min-h-screen">
-      <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center">Mã giảm giá công khai</h1>
+      <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center">Mã giảm giá</h1>
       {isLoading ? (
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-600"></div>
         </div>
       ) : coupons.length === 0 ? (
-        <div className="text-center text-gray-500 py-12">Hiện chưa có mã giảm giá công khai nào.</div>
+        <div className="text-center text-gray-500 py-12">Hiện chưa có mã giảm giá nào.</div>
       ) : (
         <div className="space-y-4">
           {coupons.map((coupon) => (
