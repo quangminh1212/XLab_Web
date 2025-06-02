@@ -73,23 +73,28 @@ export async function GET() {
     
     console.log(`Returning ${publicCoupons.length} public active coupons`);
     
-    // Chỉ trả về thông tin cần thiết để hiển thị trong dropdown
-    const simplifiedCoupons = publicCoupons.map(coupon => ({
+    // Trả về thông tin đầy đủ để hiển thị trên trang public vouchers
+    const fullCoupons = publicCoupons.map(coupon => ({
       id: coupon.id,
       code: coupon.code,
       name: coupon.name,
       description: coupon.description,
       type: coupon.type,
       value: coupon.value,
+      startDate: coupon.startDate,
       endDate: coupon.endDate,
       minOrder: coupon.minOrder,
-      userLimit: coupon.userLimit
+      maxDiscount: coupon.maxDiscount,
+      usageLimit: coupon.usageLimit,
+      usedCount: coupon.usedCount,
+      userLimit: coupon.userLimit,
+      applicableProducts: coupon.applicableProducts
     }));
     
     return NextResponse.json(
       {
         success: true,
-        coupons: simplifiedCoupons
+        coupons: fullCoupons
       },
       {
         headers: {

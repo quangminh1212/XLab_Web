@@ -420,11 +420,6 @@ const Header = () => {
                                 <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                   {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
                                 </span>
-                                {coupon.userLimit && coupon.userLimit > 0 && (
-                                  <span className="text-xs font-medium px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
-                                    Giới hạn: {coupon.userLimit} lần/người
-                                  </span>
-                                )}
                               </div>
                               {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                 <div className="mt-2">

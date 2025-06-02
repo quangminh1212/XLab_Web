@@ -10,7 +10,14 @@ interface Voucher {
   description?: string;
   type: "percentage" | "fixed";
   value: number;
+  startDate: string;
   endDate: string;
+  minOrder?: number;
+  maxDiscount?: number;
+  usageLimit?: number;
+  usedCount: number;
+  userLimit?: number;
+  applicableProducts?: string[];
 }
 
 const formatCurrency = (amount: number) => {
@@ -128,7 +135,42 @@ export default function PublicVouchersPage() {
                   {voucher.description && (
                     <div className="text-gray-600 text-sm mb-2">{voucher.description}</div>
                   )}
-                  <div className="text-xs font-medium text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded-full">Hiệu lực đến: {formatDate(voucher.endDate)}</div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+                    <div className="text-xs font-medium text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded-full">
+                      Hiệu lực: {formatDate(voucher.startDate)} - {formatDate(voucher.endDate)}
+                    </div>
+                    
+                    {voucher.minOrder && (
+                      <div className="text-xs font-medium text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded-full">
+                        Đơn tối thiểu: {formatCurrency(voucher.minOrder)}
+                      </div>
+                    )}
+                    
+                    {voucher.maxDiscount && (
+                      <div className="text-xs font-medium text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded-full">
+                        Giảm tối đa: {formatCurrency(voucher.maxDiscount)}
+                      </div>
+                    )}
+                    
+                    {voucher.userLimit && (
+                      <div className="text-xs font-medium text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded-full">
+                        Giới hạn: {voucher.userLimit} lần/người
+                      </div>
+                    )}
+                    
+                    {voucher.usageLimit && (
+                      <div className="text-xs font-medium text-gray-600 bg-gray-100 inline-block px-2 py-1 rounded-full">
+                        Còn lại: {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit} lượt
+                      </div>
+                    )}
+                  </div>
+                  
+                  {voucher.applicableProducts && voucher.applicableProducts.length > 0 && (
+                    <div className="text-xs text-gray-500 mt-1">
+                      <span className="font-medium">Áp dụng cho sản phẩm:</span> {voucher.applicableProducts.join(', ')}
+                    </div>
+                  )}
                 </div>
                 <button
                   className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-4 py-2 rounded-md font-medium text-sm shadow transition-all hover:shadow-md"
