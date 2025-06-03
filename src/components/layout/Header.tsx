@@ -472,15 +472,14 @@ const Header = () => {
                                 </div>
                                 {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                   <div className="mt-2">
-                                    <div className={`text-xs text-right font-medium ${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
-                                      {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
+                                    <div className="flex justify-between items-center text-xs mb-1">
+                                      <span className={`${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'} font-medium`}>
+                                        {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
+                                      </span>
+                                      <span className="text-gray-500">
+                                        {Math.min(100, Math.round((coupon.userUsage.current / coupon.userUsage.limit) * 100))}%
+                                      </span>
                                     </div>
-                                  </div>
-                                )}
-                                
-                                {/* Usage bar - more visible */}
-                                {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                  <div className="mt-2">
                                     <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                                       <div 
                                         className={`h-full rounded-full ${

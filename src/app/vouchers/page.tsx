@@ -140,7 +140,29 @@ export default function PublicCouponsPage() {
                 <div className="font-semibold text-gray-800 mb-1">{coupon.name}</div>
                 {coupon.description && <div className="text-gray-600 text-sm mb-1">{coupon.description}</div>}
                 <div className="text-xs text-gray-500">Hiệu lực: {formatDate(coupon.startDate)} - {formatDate(coupon.endDate)}</div>
-                <div className="text-xs text-gray-500">Số lượt dùng còn lại: {coupon.usageLimit ? coupon.usageLimit - coupon.usedCount : 'Không giới hạn'}</div>
+                
+                {coupon.usageLimit ? (
+                  <div className="mt-2">
+                    <div className="flex justify-between items-center text-xs text-gray-600 mb-1">
+                      <span>Đã dùng: {coupon.usedCount}/{coupon.usageLimit}</span>
+                      <span className={coupon.usageLimit - coupon.usedCount < 5 ? 'text-red-600 font-medium' : ''}>
+                        Còn {coupon.usageLimit - coupon.usedCount} lượt
+                      </span>
+                    </div>
+                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                      <div 
+                        className={`h-full rounded-full ${
+                          coupon.usageLimit - coupon.usedCount < 5
+                            ? 'bg-gradient-to-r from-red-500 to-red-600' 
+                            : 'bg-gradient-to-r from-teal-500 to-emerald-500'
+                        }`}
+                        style={{ width: `${Math.min(100, (coupon.usedCount / coupon.usageLimit) * 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-green-600 font-medium mt-2">Không giới hạn số lượt sử dụng</div>
+                )}
               </div>
             </div>
           ))}
