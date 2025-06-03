@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import withAdminAuth from '@/components/withAdminAuth';
+import VoucherUsageList from '@/components/admin/VoucherUsageList';
 
 interface Coupon {
   id: string;
@@ -810,17 +811,7 @@ function CouponsPage() {
                             </span>
                             
                             {coupon.userUsage && Object.keys(coupon.userUsage).length > 0 && (
-                              <div className="mt-2">
-                                <div className="text-xs font-medium text-gray-600 mb-1">Lượt sử dụng theo người dùng:</div>
-                                <div className="max-h-32 overflow-y-auto bg-gray-50 rounded border border-gray-200 p-1">
-                                  {Object.entries(coupon.userUsage).map(([email, count]) => (
-                                    <div key={email} className="flex justify-between items-center py-1 px-2 text-xs border-b border-gray-100 last:border-b-0">
-                                      <span className="font-medium truncate max-w-[150px]" title={email}>{email}</span>
-                                      <span className="font-bold text-gray-700">{count} lần</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
+                              <VoucherUsageList userUsage={coupon.userUsage} />
                             )}
                           </div>
                         </td>
