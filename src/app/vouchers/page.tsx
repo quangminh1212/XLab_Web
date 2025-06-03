@@ -80,6 +80,16 @@ export default function PublicCouponsPage() {
   return (
     <div className="max-w-2xl mx-auto py-8 px-2 min-h-screen">
       <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center">Mã giảm giá</h1>
+      
+      <div className="mb-4 flex justify-end">
+        <a 
+          href="/vouchers/used" 
+          className="text-primary-600 hover:text-primary-800 transition-colors text-sm"
+        >
+          Xem voucher đã sử dụng &rarr;
+        </a>
+      </div>
+      
       {isLoading ? (
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary-600"></div>

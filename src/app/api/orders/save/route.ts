@@ -173,6 +173,37 @@ async function saveOrderToUserFile(orderData: OrderData): Promise<boolean> {
     // Thêm đơn hàng mới vào mảng
     userData.orders.push(orderData);
     
+    // Nếu đơn hàng có sử dụng mã giảm giá, cập nhật vào danh sách vouchers đã dùng
+    if (orderData.couponCode) {
+      // Khởi tạo mảng vouchers nếu chưa có
+      if (!userData.vouchers) {
+        userData.vouchers = [];
+      }
+      
+      // Tìm thông tin mã giảm giá
+      const coupons = loadCoupons();
+      const usedCoupon = coupons.find(c => c.code === orderData.couponCode);
+      
+      if (usedCoupon) {
+        // Kiểm tra xem voucher đã tồn tại trong danh sách của user chưa
+        const existingVoucher = userData.vouchers.find((v: any) => v.code === orderData.couponCode);
+        
+        if (existingVoucher) {
+          // Nếu đã tồn tại, tăng số lần sử dụng
+          existingVoucher.usedCount = (existingVoucher.usedCount || 0) + 1;
+          existingVoucher.lastUsed = new Date().toISOString();
+        } else {
+          // Nếu chưa tồn tại, thêm mới
+          userData.vouchers.push({
+            code: usedCoupon.code,
+            name: usedCoupon.name,
+            usedCount: 1,
+            lastUsed: new Date().toISOString()
+          });
+        }
+      }
+    }
+    
     // Cập nhật thời gian chỉnh sửa
     if (!userData.metadata) {
       userData.metadata = {};

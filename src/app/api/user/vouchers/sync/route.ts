@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
-import { syncAllUserData, getUserDataFromFile } from '@/lib/userService';
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../../auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
 
@@ -126,87 +125,80 @@ function saveUserData(email: string, userData: UserData): boolean {
   }
 }
 
-export async function POST(request: NextRequest) {
+// API để đồng bộ voucher đã dùng với dữ liệu người dùng
+export async function GET() {
   try {
+    // Kiểm tra xác thực và quyền admin
     const session = await getServerSession(authOptions);
     
-    if (!session || !session.user || !session.user.email) {
+    if (!session?.user?.email) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Bạn cần đăng nhập để sử dụng tính năng này' },
         { status: 401 }
       );
     }
-
-    const userEmail = session.user.email;
-
-    // Force sync toàn bộ dữ liệu user
-    const syncedUser = await syncAllUserData(userEmail);
     
-    if (!syncedUser) {
+    const userEmail = session.user.email;
+    
+    // Tải dữ liệu của người dùng
+    const userData = loadUserData(userEmail);
+    if (!userData) {
       return NextResponse.json(
-        { error: 'Không thể đồng bộ dữ liệu user' },
-        { status: 500 }
+        { error: 'Không tìm thấy dữ liệu người dùng' },
+        { status: 404 }
       );
     }
-
-    // Lấy dữ liệu user đầy đủ sau khi sync
-    const userData = await getUserDataFromFile(userEmail);
-
+    
+    // Tải danh sách mã giảm giá
+    const coupons = loadCoupons();
+    
+    // Tạo mảng vouchers nếu chưa có
+    if (!userData.vouchers) {
+      userData.vouchers = [];
+    }
+    
+    // Đồng bộ thông tin voucher đã dùng
+    let updatedCount = 0;
+    
+    for (const coupon of coupons) {
+      if (coupon.userUsage && coupon.userUsage[userEmail] && coupon.userUsage[userEmail] > 0) {
+        // Kiểm tra xem voucher đã có trong dữ liệu người dùng chưa
+        const existingVoucher = userData.vouchers.find(v => v.code === coupon.code);
+        
+        if (existingVoucher) {
+          // Cập nhật thông tin nếu đã tồn tại
+          if (existingVoucher.usedCount !== coupon.userUsage[userEmail]) {
+            existingVoucher.usedCount = coupon.userUsage[userEmail];
+            existingVoucher.lastUsed = new Date().toISOString();
+            updatedCount++;
+          }
+        } else {
+          // Thêm mới nếu chưa tồn tại
+          userData.vouchers.push({
+            code: coupon.code,
+            name: coupon.name,
+            usedCount: coupon.userUsage[userEmail],
+            lastUsed: new Date().toISOString()
+          });
+          updatedCount++;
+        }
+      }
+    }
+    
+    // Lưu lại dữ liệu người dùng nếu có sự thay đổi
+    if (updatedCount > 0) {
+      saveUserData(userEmail, userData);
+    }
+    
     return NextResponse.json({
       success: true,
-      message: 'Dữ liệu đã được đồng bộ thành công',
-      user: syncedUser,
-      syncTime: new Date().toISOString(),
-      dataIntegrity: {
-        hasUserFile: !!userData,
-        cartItems: userData?.cart?.length || 0,
-        transactionCount: userData?.transactions?.length || 0,
-        lastUpdated: userData?.metadata?.lastUpdated
-      }
+      message: `Đã đồng bộ ${updatedCount} voucher với dữ liệu người dùng`,
+      vouchers: userData.vouchers
     });
-    
   } catch (error) {
-    console.error('Error syncing user data:', error);
+    console.error('Error syncing user vouchers:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session || !session.user || !session.user.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const userEmail = session.user.email;
-
-    // Kiểm tra trạng thái đồng bộ
-    const userData = await getUserDataFromFile(userEmail);
-    
-    return NextResponse.json({
-      email: userEmail,
-      syncStatus: {
-        hasUserFile: !!userData,
-        lastUpdated: userData?.metadata?.lastUpdated,
-        version: userData?.metadata?.version,
-        cartItems: userData?.cart?.length || 0,
-        balance: userData?.profile?.balance || 0,
-        transactionCount: userData?.transactions?.length || 0
-      },
-      recommendations: userData ? [] : ['Dữ liệu user chưa được khởi tạo, cần sync']
-    });
-    
-  } catch (error) {
-    console.error('Error checking sync status:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Đã xảy ra lỗi khi đồng bộ dữ liệu voucher' },
       { status: 500 }
     );
   }

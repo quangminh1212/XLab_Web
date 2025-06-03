@@ -642,6 +642,14 @@ const Header = () => {
                   >
                     Đơn hàng của tôi
                   </Link>
+                  <Link
+                    href="/vouchers/used"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                    role="menuitem"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
+                    Voucher đã dùng
+                  </Link>
                   {/* Admin link if user has admin role */}
                   {session.user?.isAdmin && (
                     <Link
