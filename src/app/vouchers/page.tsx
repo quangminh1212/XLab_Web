@@ -134,13 +134,6 @@ export default function PublicCouponsPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
                       </svg>
                     </span>
-                    <button 
-                      onClick={() => handleCopy(coupon.code)}
-                      className="ml-2 bg-primary-200 text-primary-700 hover:bg-primary-300 p-1.5 rounded-md flex items-center justify-center transition-all"
-                      title="Sao chép mã"
-                    >
-                      <span className="text-xs font-medium">Sao chép</span>
-                    </button>
                   </div>
                   <span className="text-xs text-green-700 bg-green-50 border border-green-200 rounded px-2 py-0.5">{coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}</span>
                 </div>

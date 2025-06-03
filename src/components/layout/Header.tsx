@@ -494,13 +494,10 @@ const Header = () => {
                                   </div>
                                 )}
                                 
-                                {/* Add copy button at bottom */}
-                                <button
-                                  onClick={() => handleCopyVoucher(coupon.code)}
-                                  className="mt-3 w-full py-1.5 px-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded text-xs font-medium transition-colors flex items-center justify-center"
-                                >
-                                  <span>Sao chép mã</span>
-                                </button>
+                                {/* Replace copy button with note */}
+                                <div className="mt-3 text-xs text-gray-500 text-center">
+                                  Nhấn vào mã để sao chép
+                                </div>
                               </div>
                             </div>
                           ))}
