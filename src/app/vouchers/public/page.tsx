@@ -238,19 +238,6 @@ export default function PublicVouchersPage() {
                   <span className="text-white font-mono font-bold text-lg select-all">
                     {voucher.code}
                   </span>
-                  {activeTab === "available" && (
-                    <button
-                      onClick={() => handleCopyVoucher(voucher.code)}
-                      className="ml-2 text-white bg-white/25 hover:bg-white/40 p-1.5 rounded-md flex items-center justify-center transition-all"
-                      title="Sao chép mã"
-                    >
-                      {isCopied[voucher.code] ? (
-                        <span className="text-xs font-medium">✓</span>
-                      ) : (
-                        <span className="text-xs font-medium">Sao chép</span>
-                      )}
-                    </button>
-                  )}
                 </div>
                 <div className={`rounded-full text-sm font-medium px-3 py-1 shadow-sm ${
                   activeTab === "expired" ? "bg-gray-100 text-gray-700" : 
@@ -365,49 +352,38 @@ export default function PublicVouchersPage() {
                     {voucher.applicableProducts.join(', ')}
                   </div>
                 )}
-
-                {/* Remove the separate user usage section since we've moved it above */}
-                {voucher.userUsage && voucher.userUsage.current >= voucher.userUsage.limit && (
-                  <div className="mt-3 text-xs px-3 py-2 bg-red-50 rounded-md text-center text-red-600 font-medium">
-                    Bạn đã sử dụng hết lượt
-                  </div>
-                )}
               </div>
               
-              {/* Button */}
-              {activeTab === "available" && (
-                <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+              {/* Button area */}
+              <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                {activeTab === "available" && (
                   <button
+                    onClick={() => handleCopyVoucher(voucher.code)}
                     className={`w-full py-2 px-4 rounded-md font-medium text-sm text-white transition-all ${
                       isCopied[voucher.code]
                         ? 'bg-green-600 hover:bg-green-700'
                         : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700'
                     }`}
-                    onClick={() => handleCopyVoucher(voucher.code)}
                   >
                     {isCopied[voucher.code] ? 'Đã sao chép mã' : 'Sao chép mã'}
                   </button>
-                </div>
-              )}
-
-              {activeTab === "used" && (
-                <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                )}
+                
+                {activeTab === "used" && (
                   <div className="w-full py-2 px-4 rounded-md font-medium text-sm text-center text-orange-700 bg-orange-50">
                     Đã sử dụng hết số lần cho phép
                   </div>
-                </div>
-              )}
-
-              {activeTab === "expired" && (
-                <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+                )}
+                
+                {activeTab === "expired" && (
                   <div className="w-full py-2 px-4 rounded-md font-medium text-sm text-center text-gray-500 bg-gray-100">
                     {voucher.usageLimit !== undefined && voucher.usageLimit <= voucher.usedCount 
                       ? "Đã hết lượt sử dụng" 
                       : `Đã hết hạn vào ${formatDate(voucher.endDate)}`
                     }
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ))}
         </div>
