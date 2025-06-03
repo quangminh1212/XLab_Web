@@ -168,20 +168,35 @@ function AdminDashboard() {
             </Link>
 
             <Link
-              href="/admin/users"
+              href="/admin/notifications"
               className="block p-3 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg transition"
             >
               <div className="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
                 <div>
-                  <h3 className="font-medium">Quản lý người dùng</h3>
-                  <p className="text-sm">Xem và quản lý tài khoản người dùng</p>
+                  <h3 className="font-medium">Thêm thông báo</h3>
+                  <p className="text-sm">Tạo thông báo mới cho người dùng</p>
                 </div>
               </div>
             </Link>
-
+            
+            <Link
+              href="/admin/coupons"
+              className="block p-3 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg transition"
+            >
+              <div className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                <div>
+                  <h3 className="font-medium">Thêm mã giảm giá</h3>
+                  <p className="text-sm">Tạo mã giảm giá mới cho hệ thống</p>
+                </div>
+              </div>
+            </Link>
+            
             <Link
               href="/admin/orders"
               className="block p-3 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg transition"
@@ -197,36 +212,6 @@ function AdminDashboard() {
               </div>
             </Link>
 
-            <Link
-              href="/admin/notifications"
-              className="block p-3 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg transition"
-            >
-              <div className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                <div>
-                  <h3 className="font-medium">Quản lý thông báo</h3>
-                  <p className="text-sm">Xem và quản lý thông báo hệ thống</p>
-                </div>
-              </div>
-            </Link>
-            
-            <Link
-              href="/admin/coupons"
-              className="block p-3 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg transition"
-            >
-              <div className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-                <div>
-                  <h3 className="font-medium">Quản lý mã giảm giá</h3>
-                  <p className="text-sm">Xem và quản lý mã giảm giá</p>
-                </div>
-              </div>
-            </Link>
-            
             <Link
               href="/admin/settings"
               className="block p-3 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg transition"
