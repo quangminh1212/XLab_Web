@@ -111,11 +111,11 @@ export default function PublicVouchersPage() {
   // Lọc voucher theo tab đang active
   const filteredVouchers = vouchers.filter(voucher => {
     if (activeTab === "expired") {
-      return isExpired(voucher.endDate);
+      return isExpired(voucher.endDate) || (voucher.usageLimit !== undefined && voucher.usageLimit <= voucher.usedCount);
     } else if (activeTab === "used") {
-      return !isExpired(voucher.endDate) && isFullyUsedByUser(voucher);
+      return !isExpired(voucher.endDate) && voucher.usageLimit !== undefined && voucher.usageLimit > voucher.usedCount && isFullyUsedByUser(voucher);
     } else { // available
-      return !isExpired(voucher.endDate) && !isFullyUsedByUser(voucher);
+      return !isExpired(voucher.endDate) && (!voucher.usageLimit || voucher.usageLimit > voucher.usedCount) && !isFullyUsedByUser(voucher);
     }
   });
 
@@ -196,12 +196,12 @@ export default function PublicVouchersPage() {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               {activeTab === "available" && "Không có mã giảm giá nào có thể sử dụng"}
               {activeTab === "used" && "Bạn chưa sử dụng mã giảm giá nào"}
-              {activeTab === "expired" && "Không có mã giảm giá nào đã hết hạn"}
+              {activeTab === "expired" && "Không có mã giảm giá nào đã hết hạn hoặc hết lượt"}
             </h3>
             <p className="text-gray-600 mb-5">
               {activeTab === "available" && "Hiện chưa có mã giảm giá nào có thể sử dụng. Vui lòng quay lại sau."}
               {activeTab === "used" && "Bạn chưa sử dụng mã giảm giá nào hoặc bạn chưa đăng nhập."}
-              {activeTab === "expired" && "Không có mã giảm giá nào đã hết hạn. Các mã hiện tại vẫn còn hiệu lực."}
+              {activeTab === "expired" && "Không có mã giảm giá nào đã hết hạn hoặc hết lượt sử dụng. Các mã hiện tại vẫn còn hiệu lực và còn lượt sử dụng."}
             </p>
             <Link 
               href="/" 
@@ -397,7 +397,10 @@ export default function PublicVouchersPage() {
               {activeTab === "expired" && (
                 <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
                   <div className="w-full py-2 px-4 rounded-md font-medium text-sm text-center text-gray-500 bg-gray-100">
-                    Đã hết hạn vào {formatDate(voucher.endDate)}
+                    {voucher.usageLimit !== undefined && voucher.usageLimit <= voucher.usedCount 
+                      ? "Đã hết lượt sử dụng" 
+                      : `Đã hết hạn vào ${formatDate(voucher.endDate)}`
+                    }
                   </div>
                 </div>
               )}
