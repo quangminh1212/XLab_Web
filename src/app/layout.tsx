@@ -2,13 +2,8 @@ import '@/styles/globals.css'
 import '../styles/app-layout.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
-import { Header, Footer } from '@/components/layout'
-import { Analytics, CompileIndicator, StyleLoader, CssErrorHandler } from '@/components/common'
 import { siteConfig } from '@/config/siteConfig'
-import { SessionProvider } from '@/components/auth'
-import { CartProvider } from '@/components/cart'
-import { NotificationProvider } from '@/contexts/NotificationContext'
-import { BalanceProvider } from '@/contexts/BalanceContext'
+import { ClientLayoutWrapper } from '@/components/layout'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -93,38 +88,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-        {/* Prevent 404 errors for missing CSS files */}
-        <style jsx global>{`
-          /* Critical CSS for immediate render */
-          body {
-            font-family: var(--font-inter, ui-sans-serif, system-ui);
-            background-color: rgb(249, 250, 251);
-          }
-          
-          /* Custom CSS fallback for CSS files that might be missing */
-          .vendors-css-fallback, .app-layout-css-fallback {
-            display: block;
-          }
-        `}</style>
       </head>
       <body className="font-sans antialiased">
-        <SessionProvider>
-          <NotificationProvider>
-            <BalanceProvider>
-              <CartProvider>
-                <div className="flex flex-col min-h-screen">
-                  <Header />
-                  <main className="flex-grow">{children}</main>
-                  <Footer />
-                </div>
-                <Analytics />
-                <CompileIndicator />
-                <StyleLoader />
-                <CssErrorHandler />
-              </CartProvider>
-            </BalanceProvider>
-          </NotificationProvider>
-        </SessionProvider>
+        <ClientLayoutWrapper>
+          {children}
+        </ClientLayoutWrapper>
       </body>
     </html>
   )
