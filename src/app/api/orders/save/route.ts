@@ -7,6 +7,7 @@ import path from 'path';
 // Tạo đường dẫn đến file lưu dữ liệu
 const dataDir = path.join(process.cwd(), 'data');
 const couponsFilePath = path.join(dataDir, 'coupons.json');
+const usersDir = path.join(dataDir, 'users');
 
 interface OrderItem {
   productId: string;
@@ -143,6 +144,51 @@ async function updateCouponUsage(couponCode: string, userEmail: string): Promise
   }
 }
 
+// Hàm lưu đơn hàng vào file JSON của người dùng
+async function saveOrderToUserFile(orderData: OrderData): Promise<boolean> {
+  try {
+    if (!fs.existsSync(usersDir)) {
+      fs.mkdirSync(usersDir, { recursive: true });
+    }
+    
+    const userFilePath = path.join(usersDir, `${orderData.userEmail}.json`);
+    let userData: any = {};
+    
+    // Kiểm tra xem file đã tồn tại chưa
+    if (fs.existsSync(userFilePath)) {
+      const fileContent = fs.readFileSync(userFilePath, 'utf8');
+      try {
+        userData = JSON.parse(fileContent);
+      } catch (parseError) {
+        console.error(`Error parsing JSON from user file ${orderData.userEmail}:`, parseError);
+        return false;
+      }
+    }
+    
+    // Khởi tạo mảng orders nếu chưa có
+    if (!userData.orders) {
+      userData.orders = [];
+    }
+    
+    // Thêm đơn hàng mới vào mảng
+    userData.orders.push(orderData);
+    
+    // Cập nhật thời gian chỉnh sửa
+    if (!userData.metadata) {
+      userData.metadata = {};
+    }
+    userData.metadata.lastUpdated = new Date().toISOString();
+    
+    // Lưu lại dữ liệu
+    fs.writeFileSync(userFilePath, JSON.stringify(userData, null, 2), 'utf8');
+    console.log(`Order ${orderData.id} saved to user file: ${orderData.userEmail}`);
+    return true;
+  } catch (error) {
+    console.error(`Error saving order to user file ${orderData.userEmail}:`, error);
+    return false;
+  }
+}
+
 export async function POST(request: Request) {
   try {
     // Kiểm tra xác thực
@@ -173,23 +219,12 @@ export async function POST(request: Request) {
       }
     }
 
-    // Trong môi trường production, đây sẽ là nơi lưu vào database
-    // Ví dụ: MongoDB, PostgreSQL, etc.
-    console.log('Saving order to database:', orderData);
-
-    // Mô phỏng lưu vào database thành công
-    // Trong thực tế, bạn sẽ sử dụng ORM hoặc truy vấn database
-    /*
-    Example with MongoDB:
-    const db = await connectToDatabase();
-    const result = await db.collection('orders').insertOne(orderData);
-    
-    Example with PostgreSQL:
-    const result = await db.query(
-      'INSERT INTO orders (id, user_email, items, total_amount, status, created_at) VALUES ($1, $2, $3, $4, $5, $6)',
-      [orderData.id, orderData.userEmail, JSON.stringify(orderData.items), orderData.totalAmount, orderData.status, orderData.createdAt]
-    );
-    */
+    // Lưu đơn hàng vào file JSON của người dùng
+    const orderSaved = await saveOrderToUserFile(orderData);
+    if (!orderSaved) {
+      console.error(`Failed to save order ${orderData.id} to user file ${orderData.userEmail}`);
+      return NextResponse.json({ error: 'Failed to save order' }, { status: 500 });
+    }
 
     // Trả về phản hồi thành công
     return NextResponse.json({ 
