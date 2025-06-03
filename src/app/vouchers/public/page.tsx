@@ -400,9 +400,6 @@ export default function PublicVouchersPage() {
                         style={{ width: `${voucher.userUsage ? (voucher.userUsage.current / voucher.userUsage.limit) * 100 : 0}%` }}
                       ></div>
                     </div>
-                    <div className="text-xs text-gray-500 text-center mt-2">
-                      Nhấn vào mã để sao chép
-                    </div>
                   </div>
                 ) : activeTab === "available" && (
                   <div>
@@ -415,9 +412,6 @@ export default function PublicVouchersPage() {
                         className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-500"
                         style={{ width: `${voucher.userUsage ? (voucher.userUsage.current / voucher.userUsage.limit) * 100 : 0}%` }}
                       ></div>
-                    </div>
-                    <div className="text-xs text-gray-500 text-center mt-2">
-                      Nhấn vào mã để sao chép
                     </div>
                   </div>
                 )}

@@ -493,10 +493,7 @@ const Header = () => {
                                   </div>
                                 )}
                                 
-                                {/* Replace copy button with note */}
-                                <div className="mt-3 text-xs text-gray-500 text-center">
-                                  Nhấn vào mã để sao chép
-                                </div>
+                                {/* Note section removed */}
                               </div>
                             </div>
                           ))}
