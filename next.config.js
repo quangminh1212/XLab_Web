@@ -12,6 +12,7 @@ const nextConfig = {
       allowedOrigins: ["localhost:3000", "localhost:3001", "localhost:3002"]
     }
   },
+  cssModules: false,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
     remotePatterns: [
@@ -53,22 +54,28 @@ const nextConfig = {
     };
     
     if (!isServer) {
-      config.optimization.splitChunks = {
-        chunks: 'all',
-        cacheGroups: {
-          default: {
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true,
+      const optimization = config.optimization;
+      if (optimization && optimization.splitChunks) {
+        const splitChunks = optimization.splitChunks;
+        
+        optimization.splitChunks = {
+          ...splitChunks,
+          cacheGroups: {
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
+            vendors: false,
+            commons: {
+              name: 'commons',
+              chunks: 'all',
+              minChunks: 2,
+              priority: -30,
+            },
           },
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: -10,
-            chunks: 'all',
-          },
-        },
-      };
+        };
+      }
     }
     
     return config;

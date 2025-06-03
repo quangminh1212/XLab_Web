@@ -1,8 +1,9 @@
 import '@/styles/globals.css'
+import '../styles/app-layout.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components/layout'
-import { Analytics, CompileIndicator } from '@/components/common'
+import { Analytics, CompileIndicator, StyleLoader } from '@/components/common'
 import { siteConfig } from '@/config/siteConfig'
 import { SessionProvider } from '@/components/auth'
 import { CartProvider } from '@/components/cart'
@@ -92,6 +93,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+        <style jsx global>{`
+          .vendors-css-loaded, .app-layout-css-loaded {
+            display: block;
+          }
+        `}</style>
       </head>
       <body className="font-sans antialiased">
         <SessionProvider>
@@ -105,6 +111,7 @@ export default function RootLayout({
                 </div>
                 <Analytics />
                 <CompileIndicator />
+                <StyleLoader />
               </CartProvider>
             </BalanceProvider>
           </NotificationProvider>

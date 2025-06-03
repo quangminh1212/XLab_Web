@@ -1,0 +1,16 @@
+/* 
+ * This file is used to ensure CSS is loaded directly in the layout
+ * without relying on CSS code splitting which causes 404 errors
+ */
+
+/* Common vendor styles that might be used */
+.vendor-styles {
+  display: block;
+}
+
+/* Layout styles */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+} 
