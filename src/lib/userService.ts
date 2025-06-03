@@ -54,12 +54,6 @@ interface UserData {
   transactions: Transaction[];
   cart: CartItem[];
   orders: Order[];
-  usedCoupons?: {
-    code: string;
-    usedAt: string;
-    orderId?: string;
-    discount: number;
-  }[];
   settings: {
     notifications: boolean;
     language: string;
@@ -131,7 +125,6 @@ function createDefaultUserData(user: User): UserData {
     transactions: [],
     cart: [],
     orders: [],
-    usedCoupons: [],
     settings: {
       notifications: true,
       language: 'vi',
@@ -629,12 +622,6 @@ export async function syncAllUserData(email: string, updateData?: Partial<User>)
     if (userData) {
       user = userData.profile;
       
-      // Đảm bảo có mảng usedCoupons
-      if (!userData.usedCoupons) {
-        userData.usedCoupons = [];
-        userData.metadata.lastUpdated = new Date().toISOString();
-      }
-      
       // Apply updates if provided
       if (updateData) {
         user = {
@@ -885,67 +872,5 @@ export async function getUserOrderStats(email: string): Promise<{
       totalSpent: 0,
       totalProducts: 0
     };
-  }
-}
-
-// Lưu thông tin mã giảm giá đã sử dụng vào dữ liệu người dùng
-export async function addUsedCouponToUser(email: string, couponData: {
-  code: string;
-  discount: number;
-  orderId?: string;
-}): Promise<boolean> {
-  try {
-    const userData = await ensureUserDataExists(email);
-    
-    // Khởi tạo mảng usedCoupons nếu chưa có
-    if (!userData.usedCoupons) {
-      userData.usedCoupons = [];
-    }
-    
-    // Thêm thông tin mã giảm giá đã sử dụng
-    userData.usedCoupons.push({
-      code: couponData.code,
-      usedAt: new Date().toISOString(),
-      orderId: couponData.orderId,
-      discount: couponData.discount
-    });
-    
-    // Cập nhật thời gian chỉnh sửa
-    userData.metadata.lastUpdated = new Date().toISOString();
-    
-    // Lưu dữ liệu
-    await saveUserDataToFile(email, userData);
-    console.log(`✅ Added used coupon ${couponData.code} for user: ${email}`);
-    return true;
-  } catch (error) {
-    console.error(`❌ Error adding used coupon for ${email}:`, error);
-    return false;
-  }
-}
-
-// Lấy danh sách mã giảm giá đã sử dụng của người dùng
-export async function getUserUsedCoupons(email: string): Promise<{
-  code: string;
-  usedAt: string;
-  orderId?: string;
-  discount: number;
-}[]> {
-  try {
-    const userData = await getUserDataFromFile(email);
-    return userData?.usedCoupons || [];
-  } catch (error) {
-    console.error(`Error getting used coupons for ${email}:`, error);
-    return [];
-  }
-}
-
-// Kiểm tra xem người dùng đã sử dụng mã giảm giá nào chưa
-export async function hasUserUsedCoupon(email: string, couponCode: string): Promise<boolean> {
-  try {
-    const usedCoupons = await getUserUsedCoupons(email);
-    return usedCoupons.some(coupon => coupon.code.toUpperCase() === couponCode.toUpperCase());
-  } catch (error) {
-    console.error(`Error checking if user has used coupon for ${email}:`, error);
-    return false;
   }
 } 

@@ -3,7 +3,6 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { getServerSession } from 'next-auth/next';
 import fs from 'fs';
 import path from 'path';
-import { addUsedCouponToUser } from '@/lib/userService';
 
 // Tạo đường dẫn đến file lưu dữ liệu
 const dataDir = path.join(process.cwd(), 'data');
@@ -212,20 +211,12 @@ export async function POST(request: Request) {
 
     // Cập nhật số lần sử dụng mã giảm giá nếu có
     if (orderData.couponCode) {
-      // Cập nhật trong file coupons.json
       const couponUpdated = await updateCouponUsage(orderData.couponCode, orderData.userEmail);
       if (!couponUpdated) {
         console.warn(`Failed to update usage for coupon: ${orderData.couponCode}`);
       } else {
         console.log(`Successfully updated usage for coupon ${orderData.couponCode} by user ${orderData.userEmail}`);
       }
-      
-      // Lưu thông tin mã giảm giá đã sử dụng vào dữ liệu người dùng
-      await addUsedCouponToUser(orderData.userEmail, {
-        code: orderData.couponCode,
-        discount: orderData.couponDiscount || 0,
-        orderId: orderData.id
-      });
     }
 
     // Lưu đơn hàng vào file JSON của người dùng

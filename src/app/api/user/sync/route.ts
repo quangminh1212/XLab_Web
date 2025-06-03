@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
-import { syncAllUserData, getUserDataFromFile, getUserUsedCoupons } from '@/lib/userService';
+import { syncAllUserData, getUserDataFromFile } from '@/lib/userService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
 
     // Lấy dữ liệu user đầy đủ sau khi sync
     const userData = await getUserDataFromFile(userEmail);
-    const usedCoupons = await getUserUsedCoupons(userEmail);
 
     return NextResponse.json({
       success: true,
@@ -39,7 +38,6 @@ export async function POST(request: NextRequest) {
         hasUserFile: !!userData,
         cartItems: userData?.cart?.length || 0,
         transactionCount: userData?.transactions?.length || 0,
-        usedCouponsCount: usedCoupons.length,
         lastUpdated: userData?.metadata?.lastUpdated
       }
     });
@@ -68,7 +66,6 @@ export async function GET(request: NextRequest) {
 
     // Kiểm tra trạng thái đồng bộ
     const userData = await getUserDataFromFile(userEmail);
-    const usedCoupons = await getUserUsedCoupons(userEmail);
     
     return NextResponse.json({
       email: userEmail,
@@ -78,8 +75,7 @@ export async function GET(request: NextRequest) {
         version: userData?.metadata?.version,
         cartItems: userData?.cart?.length || 0,
         balance: userData?.profile?.balance || 0,
-        transactionCount: userData?.transactions?.length || 0,
-        usedCoupons: usedCoupons.length
+        transactionCount: userData?.transactions?.length || 0
       },
       recommendations: userData ? [] : ['Dữ liệu user chưa được khởi tạo, cần sync']
     });
