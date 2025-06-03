@@ -58,6 +58,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { code, orderTotal } = body;
     
+    console.log("Validating coupon:", code, "for orderTotal:", orderTotal);
+    
     // Lấy thông tin session của người dùng
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email;
@@ -69,8 +71,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (orderTotal === undefined || orderTotal === null || isNaN(orderTotal)) {
+      return NextResponse.json(
+        { success: false, error: 'Tổng giá trị đơn hàng không hợp lệ' },
+        { status: 400 }
+      );
+    }
+
     // Tải danh sách mã giảm giá từ file
     const allCoupons = loadCoupons();
+    console.log("Loaded coupons:", allCoupons.length);
 
     // Tìm mã giảm giá
     const coupon = allCoupons.find(c => 
@@ -89,7 +99,16 @@ export async function POST(request: NextRequest) {
     const startDate = new Date(coupon.startDate);
     const endDate = new Date(coupon.endDate);
 
-    if (now < startDate || now > endDate) {
+    console.log("Coupon dates - Now:", now, "Start:", startDate, "End:", endDate);
+
+    if (now < startDate) {
+      return NextResponse.json(
+        { success: false, error: 'Mã giảm giá chưa có hiệu lực' },
+        { status: 400 }
+      );
+    }
+
+    if (now > endDate) {
       return NextResponse.json(
         { success: false, error: 'Mã giảm giá đã hết hạn' },
         { status: 400 }
@@ -127,6 +146,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Kiểm tra nếu coupon chỉ dành riêng cho một số người dùng
+    if (coupon.forUsers && coupon.forUsers.length > 0) {
+      if (!userEmail || !coupon.forUsers.includes(userEmail)) {
+        return NextResponse.json(
+          { success: false, error: 'Mã giảm giá này không áp dụng cho tài khoản của bạn' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Tính toán giảm giá
     let discountAmount = 0;
     if (coupon.type === 'percentage') {
@@ -141,6 +170,8 @@ export async function POST(request: NextRequest) {
 
     // Đảm bảo giảm giá không vượt quá tổng đơn hàng
     discountAmount = Math.min(discountAmount, orderTotal);
+
+    console.log("Coupon validated successfully. Discount amount:", discountAmount);
 
     return NextResponse.json({
       success: true,

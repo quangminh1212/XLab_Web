@@ -132,7 +132,15 @@ export default function CartPage() {
       return;
     }
     
+    // Validate subtotal to ensure it's a valid number
+    if (subtotal === undefined || subtotal === null || isNaN(subtotal) || subtotal <= 0) {
+      setCouponError('Tổng giá trị giỏ hàng không hợp lệ');
+      return;
+    }
+    
     try {
+      console.log('Applying coupon:', couponCode, 'with orderTotal:', subtotal);
+      
       const response = await fetch('/api/cart/validate-coupon', {
         method: 'POST',
         headers: {
@@ -140,7 +148,7 @@ export default function CartPage() {
         },
         body: JSON.stringify({
           code: couponCode.toUpperCase(),
-          orderTotal: subtotal
+          orderTotal: Number(subtotal)
         })
       });
       
