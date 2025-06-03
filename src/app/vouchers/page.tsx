@@ -46,6 +46,8 @@ const isValidNow = (startDate: string, endDate: string) => {
 export default function PublicCouponsPage() {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
 
   useEffect(() => {
     const fetchCoupons = async () => {
@@ -73,8 +75,24 @@ export default function PublicCouponsPage() {
   }, []);
 
   const handleCopy = (code: string) => {
-    navigator.clipboard.writeText(code);
-    alert("Đã copy mã: " + code);
+    navigator.clipboard.writeText(code)
+      .then(() => {
+        setShowNotification(true);
+        setNotificationMessage(`Đã sao chép mã: ${code}`);
+        
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Copy failed:', err);
+        setShowNotification(true);
+        setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
+        
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 2000);
+      });
   };
 
   return (
@@ -106,7 +124,16 @@ export default function PublicCouponsPage() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="flex items-center">
-                    <span className="bg-primary-500 text-white font-mono font-bold px-3 py-1.5 rounded select-all text-lg">{coupon.code}</span>
+                    <span 
+                      onClick={() => handleCopy(coupon.code)}
+                      className="bg-primary-500 text-white font-mono font-bold px-3 py-1.5 rounded select-all text-lg cursor-pointer hover:bg-primary-600 transition-colors flex items-center"
+                      title="Nhấn để sao chép mã"
+                    >
+                      {coupon.code}
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    </span>
                     <button 
                       onClick={() => handleCopy(coupon.code)}
                       className="ml-2 bg-primary-200 text-primary-700 hover:bg-primary-300 p-1.5 rounded-md flex items-center justify-center transition-all"
@@ -124,6 +151,21 @@ export default function PublicCouponsPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Add notification toast */}
+      {showNotification && (
+        <div className="fixed bottom-4 right-4 bg-teal-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 flex items-center">
+          <span>{notificationMessage}</span>
+          <button 
+            onClick={() => setShowNotification(false)} 
+            className="ml-3 text-white hover:text-teal-100"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       )}
     </div>

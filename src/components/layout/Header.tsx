@@ -39,6 +39,8 @@ const Header = () => {
   const [userCoupons, setUserCoupons] = React.useState<PublicCoupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = React.useState(false);
   const [lastCouponFetch, setLastCouponFetch] = React.useState<number>(0);
+  const [showNotification, setShowNotification] = React.useState(false);
+  const [notificationMessage, setNotificationMessage] = React.useState('');
   
   // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
@@ -244,8 +246,26 @@ const Header = () => {
   };
 
   const handleCopyVoucher = (code: string) => {
-    navigator.clipboard.writeText(code);
-    alert(`Đã copy mã: ${code}`);
+    navigator.clipboard.writeText(code)
+      .then(() => {
+        // Use a more elegant notification method instead of alert
+        setShowNotification(true);
+        setNotificationMessage(`Đã sao chép mã: ${code}`);
+        
+        // Hide notification after 2 seconds
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Copy failed:', err);
+        setShowNotification(true);
+        setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
+        
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 2000);
+      });
   };
 
   // Sắp xếp và lọc các vouchers để hiển thị
@@ -291,212 +311,70 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center justify-center">
-              <Image
-                src="/images/logo.jpg"
-                alt="XLab Logo"
-                width={100}
-                height={60}
-                className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
-              />
-            </Link>
-          </div>
+    <>
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
+          <div className="flex justify-between items-center">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center justify-center">
+                <Image
+                  src="/images/logo.jpg"
+                  alt="XLab Logo"
+                  width={100}
+                  height={60}
+                  className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
+                />
+              </Link>
+            </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-            <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}>
-              Trang chủ
-            </Link>
-            <Link
-              href="/products"
-              className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-            >
-              Sản phẩm
-            </Link>
-            <Link
-              href="/about"
-              className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-            >
-              Giới thiệu
-            </Link>
-            <Link
-              href="/contact"
-              className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-            >
-              Liên hệ
-            </Link>
-            <Link
-              href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-            >
-              Bảo hành
-            </Link>
-          </nav>
-
-          {/* Right Side - Balance + Auth + Cart */}
-          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
-            {/* Balance Display */}
-            {session && (
-              <div className="hidden sm:block">
-                <BalanceDisplay />
-              </div>
-            )}
-            
-            {/* Voucher Icon */}
-            <div className="relative" ref={voucherRef}>
-              <button
-                onClick={toggleVoucher}
-                className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
-                aria-label="Voucher"
-                aria-expanded={isVoucherOpen}
-                aria-haspopup="true"
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
+              <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}>
+                Trang chủ
+              </Link>
+              <Link
+                href="/products"
+                className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 sm:h-5 sm:w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
-                  />
-                </svg>
-                {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                    {userCoupons.filter(v => !v.isPublic).length}
-                  </span>
-                )}
-              </button>
+                Sản phẩm
+              </Link>
+              <Link
+                href="/about"
+                className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+              >
+                Giới thiệu
+              </Link>
+              <Link
+                href="/contact"
+                className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+              >
+                Liên hệ
+              </Link>
+              <Link
+                href="/bao-hanh"
+                className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+              >
+                Bảo hành
+              </Link>
+            </nav>
 
-              {/* Voucher Dropdown */}
-              {isVoucherOpen && (
-                <div 
-                  className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10" 
-                  tabIndex={0}
-                  role="menu"
-                  aria-orientation="vertical"
-                >
-                  <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                    <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
-                    <Link
-                      href="/vouchers/public"
-                      className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
-                    >
-                      Xem tất cả
-                    </Link>
-                  </div>
-                  
-                  <div className="max-h-80 overflow-y-auto">
-                    {loadingCoupons ? (
-                      <div className="py-6 text-center">
-                        <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
-                        <p className="text-xs sm:text-sm text-gray-500 mt-2">Đang tải...</p>
-                      </div>
-                    ) : getDisplayVouchers().length > 0 ? (
-                      <>
-                        {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
-                          <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
-                            <h4 className="text-xs font-medium text-teal-700">Voucher của bạn</h4>
-                          </div>
-                        )}
-                        
-                        {getDisplayVouchers().map((coupon, index) => (
-                          <div key={coupon.id}>
-                            <div 
-                              className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
-                              role="menuitem"
-                            >
-                              <div className="flex justify-between items-start">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <div className="flex items-center">
-                                    <span 
-                                      className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all`}
-                                    >
-                                      {coupon.code}
-                                    </span>
-                                  </div>
-                                  <span className={`text-xs font-medium ${coupon.type === "percentage" ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}>
-                                    {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
-                                  </span>
-                                </div>
-                                <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">HSD: {formatDate(coupon.endDate)}</span>
-                              </div>
-                              <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
-                              {coupon.description && (
-                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
-                              )}
-                              <div className="mt-2 flex justify-between items-center">
-                                <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
-                                  {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
-                                </span>
-                                {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                  <span className="text-xs font-medium px-2 py-0.5 bg-gray-50 text-gray-700 rounded-full border border-gray-100">
-                                    Đã dùng: {coupon.userUsage.current}/{coupon.userUsage.limit}
-                                  </span>
-                                )}
-                              </div>
-                              {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                <div className="mt-2">
-                                  <div className={`text-xs text-right font-medium ${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
-                                    {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {/* Usage bar - more visible */}
-                              {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                <div className="mt-2">
-                                  <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-                                    <div 
-                                      className={`h-full rounded-full ${
-                                        coupon.userUsage.current >= coupon.userUsage.limit 
-                                          ? 'bg-gradient-to-r from-red-500 to-red-600' 
-                                          : 'bg-gradient-to-r from-teal-500 to-emerald-600'
-                                      }`}
-                                      style={{ width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%` }}
-                                    ></div>
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {/* Add copy button at bottom */}
-                              <button
-                                onClick={() => handleCopyVoucher(coupon.code)}
-                                className="mt-3 w-full py-1.5 px-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded text-xs font-medium transition-colors flex items-center justify-center"
-                              >
-                                <span>Sao chép mã</span>
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </>
-                    ) : (
-                      <div className="px-4 py-6 text-center">
-                        <p className="text-xs sm:text-sm text-gray-500">Không có mã giảm giá nào</p>
-                      </div>
-                    )}
-                  </div>
+            {/* Right Side - Balance + Auth + Cart */}
+            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+              {/* Balance Display */}
+              {session && (
+                <div className="hidden sm:block">
+                  <BalanceDisplay />
                 </div>
               )}
-            </div>
-            
-            {/* Notification Icon */}
-            {session && (
-              <div className="relative" ref={notificationRef}>
+              
+              {/* Voucher Icon */}
+              <div className="relative" ref={voucherRef}>
                 <button
-                  onClick={toggleNotification}
+                  onClick={toggleVoucher}
                   className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
-                  aria-label="Thông báo"
-                  aria-expanded={isNotificationOpen}
+                  aria-label="Voucher"
+                  aria-expanded={isVoucherOpen}
                   aria-haspopup="true"
                 >
                   <svg
@@ -510,18 +388,18 @@ const Header = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                     />
                   </svg>
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                      {unreadCount}
+                  {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                      {userCoupons.filter(v => !v.isPublic).length}
                     </span>
                   )}
                 </button>
 
-                {/* Notification Dropdown */}
-                {isNotificationOpen && (
+                {/* Voucher Dropdown */}
+                {isVoucherOpen && (
                   <div 
                     className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10" 
                     tabIndex={0}
@@ -529,207 +407,356 @@ const Header = () => {
                     aria-orientation="vertical"
                   >
                     <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                      <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
-                      {unreadCount > 0 && (
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            markAllAsRead();
-                          }}
-                          className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
-                        >
-                          Đánh dấu tất cả đã đọc
-                        </button>
-                      )}
+                      <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
+                      <Link
+                        href="/vouchers/public"
+                        className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
+                      >
+                        Xem tất cả
+                      </Link>
                     </div>
                     
                     <div className="max-h-80 overflow-y-auto">
-                      {notifications.length > 0 ? (
-                        notifications.slice(0, 5).map((notification) => (
-                          <div 
-                            key={notification.id} 
-                            className={`p-2 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
-                            onClick={() => markAsRead(notification.id)}
-                            role="menuitem"
-                          >
-                            <div className="flex justify-between items-start">
-                              <h4 className="text-xs sm:text-sm font-medium text-gray-900">{notification.title}</h4>
-                              <span className="text-xs text-gray-500">{notification.time}</span>
+                      {loadingCoupons ? (
+                        <div className="py-6 text-center">
+                          <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
+                          <p className="text-xs sm:text-sm text-gray-500 mt-2">Đang tải...</p>
+                        </div>
+                      ) : getDisplayVouchers().length > 0 ? (
+                        <>
+                          {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
+                            <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
+                              <h4 className="text-xs font-medium text-teal-700">Voucher của bạn</h4>
                             </div>
-                            <p className="text-xs text-gray-600 mt-1">{notification.content}</p>
-                          </div>
-                        ))
+                          )}
+                          
+                          {getDisplayVouchers().map((coupon, index) => (
+                            <div key={coupon.id}>
+                              <div 
+                                className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
+                                role="menuitem"
+                              >
+                                <div className="flex justify-between items-start">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <div className="flex items-center">
+                                      <span 
+                                        onClick={() => handleCopyVoucher(coupon.code)}
+                                        className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
+                                        title="Nhấn để sao chép mã"
+                                      >
+                                        {coupon.code}
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                        </svg>
+                                      </span>
+                                    </div>
+                                    <span className={`text-xs font-medium ${coupon.type === "percentage" ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}>
+                                      {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
+                                    </span>
+                                  </div>
+                                  <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">HSD: {formatDate(coupon.endDate)}</span>
+                                </div>
+                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
+                                {coupon.description && (
+                                  <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
+                                )}
+                                <div className="mt-2 flex justify-between items-center">
+                                  <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
+                                    {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
+                                  </span>
+                                  {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                    <span className="text-xs font-medium px-2 py-0.5 bg-gray-50 text-gray-700 rounded-full border border-gray-100">
+                                      Đã dùng: {coupon.userUsage.current}/{coupon.userUsage.limit}
+                                    </span>
+                                  )}
+                                </div>
+                                {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                  <div className="mt-2">
+                                    <div className={`text-xs text-right font-medium ${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
+                                      {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {/* Usage bar - more visible */}
+                                {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                  <div className="mt-2">
+                                    <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                                      <div 
+                                        className={`h-full rounded-full ${
+                                          coupon.userUsage.current >= coupon.userUsage.limit 
+                                            ? 'bg-gradient-to-r from-red-500 to-red-600' 
+                                            : 'bg-gradient-to-r from-teal-500 to-emerald-600'
+                                        }`}
+                                        style={{ width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%` }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {/* Add copy button at bottom */}
+                                <button
+                                  onClick={() => handleCopyVoucher(coupon.code)}
+                                  className="mt-3 w-full py-1.5 px-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded text-xs font-medium transition-colors flex items-center justify-center"
+                                >
+                                  <span>Sao chép mã</span>
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </>
                       ) : (
                         <div className="px-4 py-6 text-center">
-                          <p className="text-xs sm:text-sm text-gray-500">Không có thông báo nào</p>
+                          <p className="text-xs sm:text-sm text-gray-500">Không có mã giảm giá nào</p>
                         </div>
                       )}
-                    </div>
-                    
-                    <div className="px-4 py-2 border-t border-gray-100 text-center">
-                      <Link
-                        href="/notifications"
-                        className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
-                        onClick={() => setIsNotificationOpen(false)}
-                        role="menuitem"
-                      >
-                        Xem tất cả thông báo
-                      </Link>
                     </div>
                   </div>
                 )}
               </div>
-            )}
-
-            {/* Cart Icon */}
-            <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 sm:h-5 sm:w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
-                {itemCount}
-              </span>
-            </Link>
-
-            {/* User Profile */}
-            <div className="relative" ref={profileRef}>
-              {session ? (
-                <button
-                  ref={profileButtonRef}
-                  onClick={toggleProfile}
-                  className="flex items-center text-gray-700 hover:text-primary-600 focus:outline-none"
-                  aria-expanded={isProfileOpen}
-                  aria-haspopup="true"
-                >
-                  <Avatar
-                    src={session.user?.image}
-                    alt={session.user?.name || "User"}
-                    size="md"
-                    className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
-                  />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={`h-3 w-3 ml-1 transform ${
-                      isProfileOpen ? "rotate-180" : ""
-                    } transition-transform`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+              
+              {/* Notification Icon */}
+              {session && (
+                <div className="relative" ref={notificationRef}>
+                  <button
+                    onClick={toggleNotification}
+                    className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                    aria-label="Thông báo"
+                    aria-expanded={isNotificationOpen}
+                    aria-haspopup="true"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-              ) : (
-                <button
-                  onClick={() => signIn()}
-                  className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
-                >
-                  Đăng nhập
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      />
+                    </svg>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Notification Dropdown */}
+                  {isNotificationOpen && (
+                    <div 
+                      className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10" 
+                      tabIndex={0}
+                      role="menu"
+                      aria-orientation="vertical"
+                    >
+                      <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
+                        <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
+                        {unreadCount > 0 && (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              markAllAsRead();
+                            }}
+                            className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
+                          >
+                            Đánh dấu tất cả đã đọc
+                          </button>
+                        )}
+                      </div>
+                      
+                      <div className="max-h-80 overflow-y-auto">
+                        {notifications.length > 0 ? (
+                          notifications.slice(0, 5).map((notification) => (
+                            <div 
+                              key={notification.id} 
+                              className={`p-2 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
+                              onClick={() => markAsRead(notification.id)}
+                              role="menuitem"
+                            >
+                              <div className="flex justify-between items-start">
+                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">{notification.title}</h4>
+                                <span className="text-xs text-gray-500">{notification.time}</span>
+                              </div>
+                              <p className="text-xs text-gray-600 mt-1">{notification.content}</p>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-6 text-center">
+                            <p className="text-xs sm:text-sm text-gray-500">Không có thông báo nào</p>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="px-4 py-2 border-t border-gray-100 text-center">
+                        <Link
+                          href="/notifications"
+                          className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
+                          onClick={() => setIsNotificationOpen(false)}
+                          role="menuitem"
+                        >
+                          Xem tất cả thông báo
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
 
-              {/* Profile Dropdown */}
-              {isProfileOpen && session && (
-                <div 
-                  className="absolute right-0 mt-2 w-48 md:w-52 bg-white rounded-lg shadow-xl py-2 z-10"
-                  tabIndex={0}
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="user-menu"
+              {/* Cart Icon */}
+              <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 sm:h-5 sm:w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm md:text-base font-semibold">{session.user?.name}</p>
-                    <p className="text-xs md:text-sm text-gray-500 truncate">
-                      {session.user?.email}
-                    </p>
-                  </div>
-                  <Link
-                    href="/account"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
-                    role="menuitem"
-                    onClick={() => setIsProfileOpen(false)}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+                <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
+                  {itemCount}
+                </span>
+              </Link>
+
+              {/* User Profile */}
+              <div className="relative" ref={profileRef}>
+                {session ? (
+                  <button
+                    ref={profileButtonRef}
+                    onClick={toggleProfile}
+                    className="flex items-center text-gray-700 hover:text-primary-600 focus:outline-none"
+                    aria-expanded={isProfileOpen}
+                    aria-haspopup="true"
                   >
-                    Tài khoản của tôi
-                  </Link>
-                  <Link
-                    href="/orders/history"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
-                    role="menuitem"
-                    onClick={() => setIsProfileOpen(false)}
+                    <Avatar
+                      src={session.user?.image}
+                      alt={session.user?.name || "User"}
+                      size="md"
+                      className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
+                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`h-3 w-3 ml-1 transform ${
+                        isProfileOpen ? "rotate-180" : ""
+                      } transition-transform`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => signIn()}
+                    className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    Đơn hàng của tôi
-                  </Link>
-                  <Link
-                    href="/vouchers/used"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
-                    role="menuitem"
-                    onClick={() => setIsProfileOpen(false)}
+                    Đăng nhập
+                  </button>
+                )}
+
+                {/* Profile Dropdown */}
+                {isProfileOpen && session && (
+                  <div 
+                    className="absolute right-0 mt-2 w-48 md:w-52 bg-white rounded-lg shadow-xl py-2 z-10"
+                    tabIndex={0}
+                    role="menu"
+                    aria-orientation="vertical"
+                    aria-labelledby="user-menu"
                   >
-                    Voucher đã dùng
-                  </Link>
-                  {/* Admin link if user has admin role */}
-                  {session.user?.isAdmin && (
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm md:text-base font-semibold">{session.user?.name}</p>
+                      <p className="text-xs md:text-sm text-gray-500 truncate">
+                        {session.user?.email}
+                      </p>
+                    </div>
                     <Link
-                      href="/admin"
+                      href="/account"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Quản trị viên
+                      Tài khoản của tôi
                     </Link>
-                  )}
-                  <button
-                    onClick={() => {
-                      signOut();
-                      setIsProfileOpen(false);
-                    }}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
-                    role="menuitem"
-                  >
-                    Đăng xuất
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={toggleMenu}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              aria-label="Toggle menu"
-            >
-              <svg
-                className="h-6 w-6 text-gray-700"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {isOpen ? (
-                  <path d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path d="M4 6h16M4 12h16M4 18h16" />
+                    <Link
+                      href="/orders/history"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                      role="menuitem"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      Đơn hàng của tôi
+                    </Link>
+                    <Link
+                      href="/vouchers/used"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                      role="menuitem"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      Voucher đã dùng
+                    </Link>
+                    {/* Admin link if user has admin role */}
+                    {session.user?.isAdmin && (
+                      <Link
+                        href="/admin"
+                        className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                        role="menuitem"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Quản trị viên
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => {
+                        signOut();
+                        setIsProfileOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
+                      role="menuitem"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
                 )}
-              </svg>
-            </button>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={toggleMenu}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="h-6 w-6 text-gray-700"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {isOpen ? (
+                    <path d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -777,8 +804,23 @@ const Header = () => {
             </Link>
           </nav>
         </div>
-      </div>
-    </header>
+      </header>
+      
+      {/* Notification toast */}
+      {showNotification && (
+        <div className="fixed bottom-4 right-4 bg-teal-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 flex items-center">
+          <span>{notificationMessage}</span>
+          <button 
+            onClick={() => setShowNotification(false)} 
+            className="ml-3 text-white hover:text-teal-100"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </>
   );
 };
 

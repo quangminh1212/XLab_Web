@@ -100,12 +100,18 @@ export default function PublicVouchersPage() {
   }, []);
 
   const handleCopyVoucher = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setIsCopied({...isCopied, [code]: true});
-    
-    setTimeout(() => {
-      setIsCopied({...isCopied, [code]: false});
-    }, 2000);
+    navigator.clipboard.writeText(code)
+      .then(() => {
+        setIsCopied({...isCopied, [code]: true});
+        
+        setTimeout(() => {
+          setIsCopied({...isCopied, [code]: false});
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Copy failed:', err);
+        alert('Không thể sao chép mã. Vui lòng thử lại.');
+      });
   };
 
   // Lọc voucher theo tab đang active
@@ -250,8 +256,19 @@ export default function PublicVouchersPage() {
                   : 'bg-gradient-to-r from-emerald-500 to-emerald-600'
               }`}>
                 <div className="flex items-center">
-                  <span className="text-white font-mono font-bold text-lg select-all">
+                  <span 
+                    onClick={() => activeTab === "available" && handleCopyVoucher(voucher.code)}
+                    className={`text-white font-mono font-bold text-lg select-all ${
+                      activeTab === "available" ? "cursor-pointer hover:bg-white/20 transition-colors rounded-sm px-1 py-0.5 flex items-center" : ""
+                    }`}
+                    title={activeTab === "available" ? "Nhấn để sao chép mã" : ""}
+                  >
                     {voucher.code}
+                    {activeTab === "available" && (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 ml-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                    )}
                   </span>
                 </div>
                 <div className={`rounded-full text-sm font-medium px-3 py-1 shadow-sm ${
@@ -381,16 +398,9 @@ export default function PublicVouchersPage() {
               {/* Button area - always same height regardless of content */}
               <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 mt-auto">
                 {activeTab === "available" && (
-                  <button
-                    onClick={() => handleCopyVoucher(voucher.code)}
-                    className={`w-full py-2.5 px-4 rounded-md font-medium text-sm text-white transition-all ${
-                      isCopied[voucher.code]
-                        ? 'bg-green-600 hover:bg-green-700'
-                        : 'bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700'
-                    }`}
-                  >
-                    {isCopied[voucher.code] ? 'Đã sao chép mã' : 'Sao chép mã'}
-                  </button>
+                  <div className="text-xs text-gray-500 text-center">
+                    Nhấn vào mã để sao chép
+                  </div>
                 )}
                 
                 {activeTab === "used" && (
