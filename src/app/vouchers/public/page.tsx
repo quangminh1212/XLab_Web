@@ -281,6 +281,15 @@ export default function PublicVouchersPage() {
                     <span>HSD: {formatDate(voucher.endDate)}</span>
                   </div>
                   
+                  {voucher.userUsage && (
+                    <div className="flex items-center text-xs text-gray-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span>Đã dùng: {voucher.userUsage.current}/{voucher.userUsage.limit}</span>
+                    </div>
+                  )}
+                  
                   {voucher.minOrder && (
                     <div className="flex items-center text-xs text-gray-600">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -357,15 +366,10 @@ export default function PublicVouchersPage() {
                   </div>
                 )}
 
-                {/* User usage if available */}
-                {voucher.userUsage && (
-                  <div className="mt-3 text-xs px-3 py-2 bg-gray-50 rounded-md">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-700">Bạn đã dùng:</span>
-                      <span className={`font-medium ${voucher.userUsage.current >= voucher.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
-                        {voucher.userUsage.current}/{voucher.userUsage.limit}
-                      </span>
-                    </div>
+                {/* Remove the separate user usage section since we've moved it above */}
+                {voucher.userUsage && voucher.userUsage.current >= voucher.userUsage.limit && (
+                  <div className="mt-3 text-xs px-3 py-2 bg-red-50 rounded-md text-center text-red-600 font-medium">
+                    Bạn đã sử dụng hết lượt
                   </div>
                 )}
               </div>

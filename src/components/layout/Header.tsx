@@ -444,24 +444,16 @@ const Header = () => {
                                 <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                   {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
                                 </span>
+                                {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                  <span className="text-xs font-medium px-2 py-0.5 bg-gray-50 text-gray-700 rounded-full border border-gray-100">
+                                    Đã dùng: {coupon.userUsage.current}/{coupon.userUsage.limit}
+                                  </span>
+                                )}
                               </div>
                               {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                 <div className="mt-2">
-                                  <div className="flex justify-between items-center text-xs text-gray-600 bg-gray-50 rounded-md px-2 py-1.5">
-                                    <span className="font-medium">Đã dùng: {coupon.userUsage.current}/{coupon.userUsage.limit}</span>
-                                    <span className={`font-medium ${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
-                                      {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
-                                    </span>
-                                  </div>
-                                  <div className="w-full bg-gray-200 rounded-full h-2 mt-1.5 overflow-hidden shadow-inner">
-                                    <div 
-                                      className={`h-2 rounded-full ${
-                                        coupon.userUsage.current >= coupon.userUsage.limit 
-                                          ? 'bg-gradient-to-r from-red-500 to-red-600' 
-                                          : 'bg-gradient-to-r from-teal-500 to-emerald-600'
-                                      }`}
-                                      style={{ width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%` }}
-                                    ></div>
+                                  <div className={`text-xs text-right font-medium ${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'}`}>
+                                    {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
                                   </div>
                                 </div>
                               )}

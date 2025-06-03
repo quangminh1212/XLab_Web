@@ -38,11 +38,11 @@
     "endDate": "2025-06-03T23:59:59.999Z",
     "createdAt": "2024-06-01T00:00:00Z",
     "applicableProducts": [],
-    "isPublic": false,
+    "isPublic": true,
     "forUsers": [
       "xlab.rnd@gmail.com"
     ],
-    "updatedAt": "2025-06-03T09:15:57.825Z"
+    "updatedAt": "2025-06-03T12:39:22.017Z"
   },
   {
     "id": "4",
