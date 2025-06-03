@@ -388,11 +388,27 @@ export default function PublicVouchersPage() {
               
               {/* Button area - always same height regardless of content */}
               <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 mt-auto">
-                {activeTab === "available" && (
+                {activeTab === "available" && voucher.description && voucher.description.includes("Ưu đãi cho khách hàng đăng ký mới") ? (
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
-                      <span>{voucher.minOrder ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)} | ` : ""}Đã dùng: {voucher.userUsage ? `${voucher.userUsage.current}/${voucher.userUsage.limit}` : '0/1'}</span>
-                      <span>Còn {(voucher.userUsage ? voucher.userUsage.limit - voucher.userUsage.current : 1)} lượt</span>
+                      <span>Đơn tối thiểu: {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} | Còn {(voucher.userUsage ? voucher.userUsage.limit - voucher.userUsage.current : 1)} lượt</span>
+                      <span className="text-gray-500">{calculateUsagePercentage(voucher.userUsage ? voucher.userUsage.current : 0, voucher.userUsage ? voucher.userUsage.limit : 1)}%</span>
+                    </div>
+                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                      <div 
+                        className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-500"
+                        style={{ width: `${voucher.userUsage ? (voucher.userUsage.current / voucher.userUsage.limit) * 100 : 0}%` }}
+                      ></div>
+                    </div>
+                    <div className="text-xs text-gray-500 text-center mt-2">
+                      Nhấn vào mã để sao chép
+                    </div>
+                  </div>
+                ) : activeTab === "available" && (
+                  <div>
+                    <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
+                      <span>{voucher.minOrder ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)}` : ""}{voucher.minOrder ? " | " : ""}Đã dùng: {voucher.userUsage ? `${voucher.userUsage.current}/${voucher.userUsage.limit}` : '0/1'} | Còn {(voucher.userUsage ? voucher.userUsage.limit - voucher.userUsage.current : 1)} lượt</span>
+                      <span className="text-gray-500">{calculateUsagePercentage(voucher.userUsage ? voucher.userUsage.current : 0, voucher.userUsage ? voucher.userUsage.limit : 1)}%</span>
                     </div>
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                       <div 
@@ -409,8 +425,8 @@ export default function PublicVouchersPage() {
                 {activeTab === "used" && (
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
-                      <span>{voucher.minOrder ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)} | ` : ""}Đã dùng: {voucher.userUsage ? `${voucher.userUsage.current}/${voucher.userUsage.limit}` : '1/1'}</span>
-                      <span className="text-orange-600 font-medium">Hết lượt dùng</span>
+                      <span>{voucher.minOrder ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)}` : ""}{voucher.minOrder ? " | " : ""}Đã dùng: {voucher.userUsage ? `${voucher.userUsage.current}/${voucher.userUsage.limit}` : '1/1'} | <span className="text-orange-600 font-medium">Hết lượt dùng</span></span>
+                      <span className="text-orange-600">100%</span>
                     </div>
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                       <div 
@@ -427,8 +443,8 @@ export default function PublicVouchersPage() {
                 {activeTab === "expired" && (
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
-                      <span>{voucher.minOrder ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)} | ` : ""}Trạng thái: </span>
-                      <span className="text-gray-600 font-medium">Hết hạn</span>
+                      <span>{voucher.minOrder ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)}` : ""}{voucher.minOrder ? " | " : ""}Trạng thái: <span className="text-gray-600 font-medium">Hết hạn</span></span>
+                      <span className="text-gray-500">100%</span>
                     </div>
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                       <div 
