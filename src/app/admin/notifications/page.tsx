@@ -182,8 +182,6 @@ function NotificationsPage() {
 
   // Xóa thông báo
   const handleDeleteNotification = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa thông báo này?')) return;
-
     try {
       const response = await fetch(`/api/admin/notifications/${id}`, {
         method: 'DELETE',

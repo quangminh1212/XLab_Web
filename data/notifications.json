@@ -1,16 +1,5 @@
 [
   {
-    "id": "1",
-    "title": "Khuyến mãi đặc biệt",
-    "content": "Giảm 50% tất cả sản phẩm phần mềm trong tuần này!",
-    "type": "promotion",
-    "isRead": {},
-    "createdAt": "2025-05-29T18:06:10.590Z",
-    "link": "/products",
-    "priority": "high",
-    "expiresAt": "2025-06-05T19:06:10.590Z"
-  },
-  {
     "id": "2",
     "title": "Cập nhật mới",
     "content": "Phiên bản 2.0 đã ra mắt với nhiều tính năng mới",
