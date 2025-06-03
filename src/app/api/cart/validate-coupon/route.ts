@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import fs from 'fs';
 import path from 'path';
+import { hasUserUsedCoupon } from '@/lib/userService';
 
 // Tạo đường dẫn đến file lưu dữ liệu
 const dataDir = path.join(process.cwd(), 'data');
@@ -134,8 +135,9 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Kiểm tra số lần sử dụng của người dùng cụ thể
+    // Kiểm tra xem người dùng đã sử dụng mã giảm giá này chưa
     if (userEmail && coupon.userLimit && coupon.userLimit > 0) {
+      // Kiểm tra từ dữ liệu trong userUsage của coupon
       const userUsage = (coupon.userUsage || {})[userEmail] || 0;
       
       if (userUsage >= coupon.userLimit) {
@@ -143,6 +145,17 @@ export async function POST(request: NextRequest) {
           { success: false, error: `Mỗi người chỉ được sử dụng mã này tối đa ${coupon.userLimit} lần` },
           { status: 400 }
         );
+      }
+      
+      // Kiểm tra từ dữ liệu người dùng nếu đây là coupon chỉ dùng 1 lần
+      if (coupon.userLimit === 1 && userEmail) {
+        const hasUsed = await hasUserUsedCoupon(userEmail, code);
+        if (hasUsed) {
+          return NextResponse.json(
+            { success: false, error: 'Bạn đã sử dụng mã giảm giá này rồi' },
+            { status: 400 }
+          );
+        }
       }
     }
 
