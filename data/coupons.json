@@ -30,7 +30,9 @@
     "usageLimit": 5,
     "userLimit": 2,
     "usedCount": 3,
-    "userUsage": {},
+    "userUsage": {
+      "xlab.rnd@gmail.com": 1
+    },
     "isActive": true,
     "startDate": "2024-01-01T00:00:00Z",
     "endDate": "2024-12-31T23:59:59Z",
@@ -40,7 +42,7 @@
     "forUsers": [
       "xlab.rnd@gmail.com"
     ],
-    "updatedAt": "2025-06-02T19:50:43.322Z"
+    "updatedAt": "2025-06-03T16:28:45.321Z"
   },
   {
     "id": "4",
@@ -53,7 +55,9 @@
     "usageLimit": 1,
     "userLimit": 1,
     "usedCount": 1,
-    "userUsage": {},
+    "userUsage": {
+      "xlab.rnd@gmail.com": 1
+    },
     "isActive": true,
     "startDate": "2024-05-01T00:00:00Z",
     "endDate": "2024-12-31T23:59:59Z",
@@ -63,6 +67,6 @@
     "forUsers": [
       "xlab.rnd@gmail.com"
     ],
-    "updatedAt": "2025-06-02T19:51:15.196Z"
+    "updatedAt": "2025-06-03T16:28:45.321Z"
   }
 ]

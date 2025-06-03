@@ -23,13 +23,27 @@
     }
   ],
   "orders": [],
+  "vouchers": [
+    {
+      "code": "XLABRND10",
+      "name": "Ưu đãi riêng 10%",
+      "usedCount": 1,
+      "lastUsed": "2025-06-03T16:28:45.321Z"
+    },
+    {
+      "code": "MEMBER100K",
+      "name": "Giảm 100K cho thành viên",
+      "usedCount": 1,
+      "lastUsed": "2025-06-03T16:28:45.321Z"
+    }
+  ],
   "settings": {
     "notifications": true,
     "language": "vi",
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-03T04:14:18.430Z",
+    "lastUpdated": "2025-06-03T16:28:45.321Z",
     "version": "1.0"
   }
 }
