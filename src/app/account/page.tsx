@@ -76,6 +76,8 @@ export default function AccountPage() {
   });
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
+  const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
+  const [loadingCoupons, setLoadingCoupons] = useState(true);
 
   const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
   const formatCurrency = (amount: number) => {
@@ -96,6 +98,22 @@ export default function AccountPage() {
       }
     } catch (error) {
       console.error('Error fetching available coupons:', error);
+    }
+  };
+
+  // Hàm lấy danh sách mã giảm giá công khai
+  const fetchPublicCoupons = async () => {
+    try {
+      setLoadingCoupons(true);
+      const res = await fetch('/api/coupons/public');
+      const data = await res.json();
+      if (data.success && data.coupons) {
+        setPublicCoupons(data.coupons);
+      }
+    } catch (error) {
+      console.error('Error fetching public coupons:', error);
+    } finally {
+      setLoadingCoupons(false);
     }
   };
 
@@ -284,6 +302,7 @@ export default function AccountPage() {
         })();
 
         fetchAvailableCoupons(); // Thêm dòng này để lấy danh sách mã giảm giá
+        fetchPublicCoupons(); // Thêm dòng này để lấy danh sách mã giảm giá công khai
 
       } catch (error) {
         console.error('Lỗi khi đọc từ localStorage:', error);
@@ -728,25 +747,27 @@ export default function AccountPage() {
               {/* Section mã giảm giá chuyển lên ngay sau hồ sơ cá nhân */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mb-8">
                 <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
-                {availableCoupons.length > 0 ? (
-                  <div className="space-y-4">
+                
+                {loadingCoupons ? (
+                  <div className="flex justify-center py-8">
+                    <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                ) : availableCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {availableCoupons.map((coupon) => (
-                      <div key={coupon.id} className="border border-teal-200 rounded-lg p-4 bg-teal-50">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold text-teal-800">{coupon.name}</h3>
-                            <p className="text-sm text-teal-600 mt-1">{coupon.description}</p>
-                            <div className="mt-2 flex items-center gap-2">
-                              <span className="font-mono text-teal-700 bg-white border border-teal-200 rounded px-2 py-0.5 text-sm">
-                                {coupon.code}
-                              </span>
-                              <span className="text-sm text-teal-700">
-                                {coupon.type === 'percentage' ? `Giảm ${coupon.value}%` : `Giảm ${formatCurrency(coupon.value)}`}
-                              </span>
-                            </div>
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-primary-100 p-3 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
                           </div>
-                          <div className="text-right">
-                            <div className="text-xs text-teal-600">
+                          <div>
+                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
                               {new Date(coupon.startDate).toLocaleDateString('vi-VN')} - {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
                             </div>
                             {coupon.minOrder && (
@@ -754,6 +775,39 @@ export default function AccountPage() {
                                 Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : publicCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {publicCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-green-100 p-3 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} - {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                              </div>
+                            )}
+                            <div className="text-xs font-medium text-green-600 mt-1">
+                              {coupon.type === 'percentage' 
+                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}` 
+                                : `Giảm ${formatCurrency(coupon.value)}`}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1316,25 +1370,27 @@ export default function AccountPage() {
               {/* Thêm section mã giảm giá */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mt-6">
                 <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
-                {availableCoupons.length > 0 ? (
-                  <div className="space-y-4">
+                
+                {loadingCoupons ? (
+                  <div className="flex justify-center py-8">
+                    <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                ) : availableCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {availableCoupons.map((coupon) => (
-                      <div key={coupon.id} className="border border-teal-200 rounded-lg p-4 bg-teal-50">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-semibold text-teal-800">{coupon.name}</h3>
-                            <p className="text-sm text-teal-600 mt-1">{coupon.description}</p>
-                            <div className="mt-2 flex items-center gap-2">
-                              <span className="font-mono text-teal-700 bg-white border border-teal-200 rounded px-2 py-0.5 text-sm">
-                                {coupon.code}
-                              </span>
-                              <span className="text-sm text-teal-700">
-                                {coupon.type === 'percentage' ? `Giảm ${coupon.value}%` : `Giảm ${formatCurrency(coupon.value)}`}
-                              </span>
-                            </div>
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-primary-100 p-3 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
                           </div>
-                          <div className="text-right">
-                            <div className="text-xs text-teal-600">
+                          <div>
+                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
                               {new Date(coupon.startDate).toLocaleDateString('vi-VN')} - {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
                             </div>
                             {coupon.minOrder && (
@@ -1342,6 +1398,39 @@ export default function AccountPage() {
                                 Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : publicCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {publicCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-green-100 p-3 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} - {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                              </div>
+                            )}
+                            <div className="text-xs font-medium text-green-600 mt-1">
+                              {coupon.type === 'percentage' 
+                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}` 
+                                : `Giảm ${formatCurrency(coupon.value)}`}
+                            </div>
                           </div>
                         </div>
                       </div>
