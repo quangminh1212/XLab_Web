@@ -90,17 +90,17 @@ export async function GET() {
     // Đọc dữ liệu từ file
     const allCoupons = loadCoupons();
     
-    // Lọc chỉ lấy mã giảm giá công khai và còn hiệu lực
+    // Lọc chỉ lấy mã giảm giá công khai (bao gồm cả đã hết hạn)
     const now = new Date();
     const publicCoupons = allCoupons.filter(coupon => {
       const isPublic = coupon.isPublic === true;
       const isActive = coupon.isActive === true;
       const hasStarted = new Date(coupon.startDate) <= now;
-      const notEnded = new Date(coupon.endDate) >= now;
       
-      const result = isPublic && isActive && hasStarted && notEnded;
+      // Không còn lọc những voucher đã hết hạn
+      const result = isPublic && isActive && hasStarted;
       if (!result) {
-        console.log(`Filtering out coupon ${coupon.code}: isPublic=${isPublic}, isActive=${isActive}, hasStarted=${hasStarted}, notEnded=${notEnded}`);
+        console.log(`Filtering out coupon ${coupon.code}: isPublic=${isPublic}, isActive=${isActive}, hasStarted=${hasStarted}`);
       }
       return result;
     });
