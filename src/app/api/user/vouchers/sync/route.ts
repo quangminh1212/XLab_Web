@@ -126,12 +126,13 @@ function saveUserData(email: string, userData: UserData): boolean {
 }
 
 // API để đồng bộ voucher đã dùng với dữ liệu người dùng
-export async function GET() {
+export async function GET(request: Request) {
   try {
     // Kiểm tra xác thực và quyền admin
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.email) {
+    if (!session || !session.user || !session.user.email) {
+      console.log("Unauthorized access attempt to /api/user/vouchers/sync - No valid session");
       return NextResponse.json(
         { error: 'Bạn cần đăng nhập để sử dụng tính năng này' },
         { status: 401 }
@@ -139,14 +140,37 @@ export async function GET() {
     }
     
     const userEmail = session.user.email;
+    console.log(`Processing voucher sync for user: ${userEmail}`);
     
     // Tải dữ liệu của người dùng
     const userData = loadUserData(userEmail);
     if (!userData) {
-      return NextResponse.json(
-        { error: 'Không tìm thấy dữ liệu người dùng' },
-        { status: 404 }
-      );
+      // Nếu không tìm thấy dữ liệu người dùng, tạo dữ liệu mới cơ bản
+      const newUserData: UserData = {
+        profile: {
+          id: session.user.id || "",
+          name: session.user.name || "",
+          email: userEmail,
+          image: session.user.image || "",
+          isAdmin: session.user.isAdmin || false,
+          isActive: true,
+          balance: 0,
+          createdAt: new Date().toISOString(),
+        },
+        vouchers: [],
+        metadata: {
+          lastUpdated: new Date().toISOString(),
+          version: "1.0"
+        }
+      };
+      
+      saveUserData(userEmail, newUserData);
+      
+      return NextResponse.json({
+        success: true,
+        message: `Đã tạo dữ liệu người dùng mới và chưa có voucher nào được sử dụng`,
+        vouchers: []
+      });
     }
     
     // Tải danh sách mã giảm giá

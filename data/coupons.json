@@ -35,14 +35,14 @@
     },
     "isActive": true,
     "startDate": "2024-01-01T00:00:00Z",
-    "endDate": "2024-12-31T23:59:59Z",
+    "endDate": "2025-06-03T23:59:59.999Z",
     "createdAt": "2024-06-01T00:00:00Z",
     "applicableProducts": [],
     "isPublic": false,
     "forUsers": [
       "xlab.rnd@gmail.com"
     ],
-    "updatedAt": "2025-06-03T16:28:45.321Z"
+    "updatedAt": "2025-06-03T09:15:57.825Z"
   },
   {
     "id": "4",
@@ -60,13 +60,13 @@
     },
     "isActive": true,
     "startDate": "2024-05-01T00:00:00Z",
-    "endDate": "2024-12-31T23:59:59Z",
+    "endDate": "2025-06-03T23:59:59.999Z",
     "createdAt": "2024-05-15T00:00:00Z",
     "applicableProducts": [],
     "isPublic": false,
     "forUsers": [
       "xlab.rnd@gmail.com"
     ],
-    "updatedAt": "2025-06-03T16:28:45.321Z"
+    "updatedAt": "2025-06-03T09:16:03.567Z"
   }
 ]

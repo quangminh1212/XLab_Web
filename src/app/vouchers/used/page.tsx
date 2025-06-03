@@ -35,7 +35,13 @@ export default function UsedVouchersPage() {
       
       try {
         setIsLoading(true);
-        const response = await fetch("/api/user/vouchers/sync");
+        const response = await fetch("/api/user/vouchers/sync", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
         
         if (!response.ok) {
           const errorData = await response.json();
@@ -90,12 +96,22 @@ export default function UsedVouchersPage() {
           onClick={async () => {
             setIsLoading(true);
             try {
-              const response = await fetch("/api/user/vouchers/sync");
-              if (!response.ok) throw new Error("Đồng bộ thất bại");
+              const response = await fetch("/api/user/vouchers/sync", {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json",
+                }
+              });
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Đồng bộ thất bại");
+              }
               const data = await response.json();
               setVouchers(data.vouchers || []);
             } catch (err) {
-              setError("Đồng bộ thất bại");
+              setError(err instanceof Error ? err.message : "Đồng bộ thất bại");
+              console.error("Error syncing vouchers:", err);
             } finally {
               setIsLoading(false);
             }
