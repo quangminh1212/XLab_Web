@@ -423,12 +423,6 @@ const Header = () => {
                                     >
                                       {coupon.code}
                                     </span>
-                                    <button
-                                      onClick={() => handleCopyVoucher(coupon.code)}
-                                      className="ml-1.5 px-1.5 py-1 bg-white/30 hover:bg-white/50 rounded-md flex items-center justify-center transition-all"
-                                      title="Sao chép mã"
-                                    >
-                                    </button>
                                   </div>
                                   <span className={`text-xs font-medium ${coupon.type === "percentage" ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}>
                                     {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
@@ -458,10 +452,26 @@ const Header = () => {
                                 </div>
                               )}
                               
+                              {/* Usage bar - more visible */}
+                              {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                <div className="mt-2">
+                                  <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                                    <div 
+                                      className={`h-full rounded-full ${
+                                        coupon.userUsage.current >= coupon.userUsage.limit 
+                                          ? 'bg-gradient-to-r from-red-500 to-red-600' 
+                                          : 'bg-gradient-to-r from-teal-500 to-emerald-600'
+                                      }`}
+                                      style={{ width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              )}
+                              
                               {/* Add copy button at bottom */}
                               <button
                                 onClick={() => handleCopyVoucher(coupon.code)}
-                                className="mt-3 w-full py-1.5 px-2 bg-teal-600 hover:bg-teal-700 text-white rounded text-xs font-medium transition-colors flex items-center justify-center"
+                                className="mt-3 w-full py-1.5 px-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded text-xs font-medium transition-colors flex items-center justify-center"
                               >
                                 <span>Sao chép mã</span>
                               </button>
