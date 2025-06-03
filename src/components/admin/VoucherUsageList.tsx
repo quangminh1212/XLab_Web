@@ -1,11 +1,5 @@
 import React from 'react';
 
-interface VoucherUsageItem {
-  email: string;
-  count: number;
-  index: number;
-}
-
 interface VoucherUsageListProps {
   userUsage: { [email: string]: number };
 }
@@ -15,18 +9,13 @@ const VoucherUsageList: React.FC<VoucherUsageListProps> = ({ userUsage }) => {
     return null;
   }
 
+  // Tính tổng số lần sử dụng
+  const totalUsages = Object.values(userUsage).reduce((sum, count) => sum + count, 0);
+  
   return (
     <div className="mt-2">
-      <div className="text-xs font-medium text-gray-600 mb-1">Lượt sử dụng:</div>
-      <div className="max-h-32 overflow-y-auto bg-gray-50 rounded border border-gray-200 p-1">
-        {Object.entries(userUsage).map(([email, count], index) => (
-          <div key={email} className="flex justify-between items-center py-1 px-2 text-xs border-b border-gray-100 last:border-b-0">
-            <span className="font-medium truncate max-w-[150px]">
-              Người dùng #{index + 1}
-            </span>
-            <span className="font-bold text-gray-700">{count} lần</span>
-          </div>
-        ))}
+      <div className="text-xs font-medium text-gray-600">
+        Tổng lượt sử dụng: <span className="font-bold text-gray-700">{totalUsages}</span>
       </div>
     </div>
   );
