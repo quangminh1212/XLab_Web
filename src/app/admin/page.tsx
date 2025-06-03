@@ -5,13 +5,19 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Product } from '@/models/ProductModel';
-import UserDataViewer from '@/components/admin/UserDataViewer';
+
+interface Stats {
+  products: number;
+  users: number;
+  orders: number;
+  revenue: number;
+}
 
 function AdminDashboard() {
   const { data: session } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<Stats>({
     products: 0,
     users: 0,
     orders: 0,
@@ -208,12 +214,6 @@ function AdminDashboard() {
             </Link>
           </div>
         </div>
-      </div>
-
-      {/* User Data Management Section */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-bold mb-4">🔒 Quản lý dữ liệu người dùng bảo mật</h2>
-        <UserDataViewer />
       </div>
     </div>
   );
