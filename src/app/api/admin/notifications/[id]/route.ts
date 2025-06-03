@@ -50,10 +50,11 @@ async function saveNotifications(notifications: Notification[]) {
 // GET - Lấy thông báo theo ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: paramsPromise }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const params = await paramsPromise;
     
     if (!session?.user?.isAdmin) {
       return NextResponse.json(
@@ -89,10 +90,11 @@ export async function GET(
 // PUT - Cập nhật thông báo
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: paramsPromise }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const params = await paramsPromise;
     
     if (!session?.user?.isAdmin) {
       return NextResponse.json(
@@ -164,10 +166,11 @@ export async function PUT(
 // DELETE - Xóa thông báo
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: paramsPromise }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const params = await paramsPromise;
     
     if (!session?.user?.isAdmin) {
       return NextResponse.json(
