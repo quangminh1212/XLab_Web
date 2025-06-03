@@ -260,10 +260,33 @@ const Header = () => {
     const userVoucherIds = new Set(userCoupons.filter(v => !v.isPublic).map(v => v.id));
     const uniquePublicCoupons = publicCoupons.filter(v => !userVoucherIds.has(v.id));
     
+    // Lọc các voucher đã hết hạn và hết lượt
+    const isExpired = (coupon: PublicCoupon): boolean => {
+      try {
+        const now = new Date();
+        const expireDate = new Date(coupon.endDate);
+        return expireDate < now;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    const isOutOfUses = (coupon: PublicCoupon): boolean => {
+      return coupon.userUsage !== undefined && coupon.userUsage.current >= coupon.userUsage.limit;
+    };
+    
+    // Lọc ra các voucher còn hiệu lực và còn lượt sử dụng
+    const filteredUserCoupons = userCoupons
+      .filter(v => !v.isPublic)
+      .filter(v => !isExpired(v) && !isOutOfUses(v));
+    
+    const filteredPublicCoupons = uniquePublicCoupons
+      .filter(v => !isExpired(v));
+    
     // Sắp xếp: vouchers cá nhân trước, sau đó là vouchers công khai
     return [
-      ...userCoupons.filter(v => !v.isPublic), // Voucher riêng của người dùng
-      ...uniquePublicCoupons // Voucher công khai
+      ...filteredUserCoupons, // Voucher riêng của người dùng
+      ...filteredPublicCoupons // Voucher công khai
     ];
   };
 
