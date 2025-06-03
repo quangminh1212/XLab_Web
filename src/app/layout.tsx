@@ -3,7 +3,7 @@ import '../styles/app-layout.css'
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Header, Footer } from '@/components/layout'
-import { Analytics, CompileIndicator, StyleLoader } from '@/components/common'
+import { Analytics, CompileIndicator, StyleLoader, CssErrorHandler } from '@/components/common'
 import { siteConfig } from '@/config/siteConfig'
 import { SessionProvider } from '@/components/auth'
 import { CartProvider } from '@/components/cart'
@@ -93,8 +93,16 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+        {/* Prevent 404 errors for missing CSS files */}
         <style jsx global>{`
-          .vendors-css-loaded, .app-layout-css-loaded {
+          /* Critical CSS for immediate render */
+          body {
+            font-family: var(--font-inter, ui-sans-serif, system-ui);
+            background-color: rgb(249, 250, 251);
+          }
+          
+          /* Custom CSS fallback for CSS files that might be missing */
+          .vendors-css-fallback, .app-layout-css-fallback {
             display: block;
           }
         `}</style>
@@ -112,6 +120,7 @@ export default function RootLayout({
                 <Analytics />
                 <CompileIndicator />
                 <StyleLoader />
+                <CssErrorHandler />
               </CartProvider>
             </BalanceProvider>
           </NotificationProvider>

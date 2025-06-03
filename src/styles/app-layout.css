@@ -3,8 +3,15 @@
  * without relying on CSS code splitting which causes 404 errors
  */
 
-/* Common vendor styles that might be used */
-.vendor-styles {
+/* Fix for missing vendor.css styles */
+.vendors-css {
+  /* Common vendor library styles */
+  display: block;
+}
+
+/* Fix for missing app/layout.css styles */
+.app-layout-css {
+  /* Layout specific styles */
   display: block;
 }
 

@@ -12,7 +12,6 @@ const nextConfig = {
       allowedOrigins: ["localhost:3000", "localhost:3001", "localhost:3002"]
     }
   },
-  cssModules: false,
   images: {
     domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
     remotePatterns: [
@@ -54,6 +53,7 @@ const nextConfig = {
     };
     
     if (!isServer) {
+      // Configure optimization to avoid CSS 404 errors
       const optimization = config.optimization;
       if (optimization && optimization.splitChunks) {
         const splitChunks = optimization.splitChunks;
@@ -66,13 +66,8 @@ const nextConfig = {
               priority: -20,
               reuseExistingChunk: true,
             },
-            vendors: false,
-            commons: {
-              name: 'commons',
-              chunks: 'all',
-              minChunks: 2,
-              priority: -30,
-            },
+            // Disable CSS splitting
+            styles: false
           },
         };
       }
