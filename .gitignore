@@ -50,7 +50,6 @@ next-env.d.ts
 # Secure user data - NEVER commit these!
 /data/backups/
 *.user_*.json
-/data/users/
 
 # Generated product images with UUID patterns
 /public/images/products/chatgpt/*-*-*-*-*.png
