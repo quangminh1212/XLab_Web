@@ -125,9 +125,9 @@ export async function GET() {
             }
           ],
           totalAmount: 149000,
-          status: 'completed' as 'completed',
-          paymentMethod: 'bank_transfer' as 'bank_transfer',
-          paymentStatus: 'paid' as 'paid',
+          status: 'completed' as const,
+          paymentMethod: 'bank_transfer' as const,
+          paymentStatus: 'paid' as const,
           createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
           updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
         },
@@ -146,9 +146,9 @@ export async function GET() {
             }
           ],
           totalAmount: 298000,
-          status: 'completed' as 'completed',
-          paymentMethod: 'momo' as 'momo',
-          paymentStatus: 'paid' as 'paid',
+          status: 'completed' as const,
+          paymentMethod: 'momo' as const,
+          paymentStatus: 'paid' as const,
           createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
           updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
         }

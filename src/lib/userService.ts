@@ -402,7 +402,7 @@ export async function createTransaction(transactionData: Omit<Transaction, 'id' 
     const users = await getUsers();
     const user = users.find(u => u.id === transactionData.userId);
     if (user) {
-      let userData = await getUserDataFromFile(user.email);
+      const userData = await getUserDataFromFile(user.email);
       if (userData) {
         userData.transactions.push(newTransaction);
         await saveUserDataToFile(user.email, userData);

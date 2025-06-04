@@ -37,7 +37,7 @@ interface Coupon {
 }
 
 // Dữ liệu mẫu ban đầu
-let initialCoupons: Coupon[] = [
+const initialCoupons: Coupon[] = [
   {
     id: '1',
     code: 'SUMMER2024',
