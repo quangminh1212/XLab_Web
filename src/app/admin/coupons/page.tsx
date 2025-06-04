@@ -54,8 +54,8 @@ function CouponsPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
-  const [inlineEditing, setInlineEditing] = useState<{[key: string]: boolean}>({});
-  const [editValues, setEditValues] = useState<{[key: string]: any}>({});
+  const [inlineEditing, setInlineEditing] = useState<{ [key: string]: boolean }>({});
+  const [editValues, setEditValues] = useState<{ [key: string]: any }>({});
 
   // Form state
   const [form, setForm] = useState<CouponForm>({
@@ -71,7 +71,7 @@ function CouponsPage() {
     startDate: '',
     endDate: '',
     applicableProducts: '',
-    isPublic: true
+    isPublic: true,
   });
 
   // Reset form
@@ -89,7 +89,7 @@ function CouponsPage() {
       startDate: '',
       endDate: '',
       applicableProducts: '',
-      isPublic: true
+      isPublic: true,
     });
   };
 
@@ -100,7 +100,7 @@ function CouponsPage() {
     for (let i = 0; i < 8; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setForm(prev => ({ ...prev, code: result }));
+    setForm((prev) => ({ ...prev, code: result }));
   };
 
   // Fetch coupons
@@ -126,18 +126,18 @@ function CouponsPage() {
   const formatDateForAPI = (dateString: string, isEndDate: boolean = false) => {
     // Nếu ngày đã có định dạng ISO, giữ nguyên
     if (dateString.includes('T')) return dateString;
-    
+
     // Phân tách các phần của ngày
     const parts = dateString.split('-').map(Number);
-    const date = new Date(Date.UTC(parts[0], parts[1]-1, parts[2]));
-    
+    const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+
     // Đặt giờ cho ngày: 00:00:00 cho ngày bắt đầu và 23:59:59 cho ngày kết thúc
     if (isEndDate) {
       date.setUTCHours(23, 59, 59, 999);
     } else {
       date.setUTCHours(0, 0, 0, 0);
     }
-    
+
     return date.toISOString();
   };
 
@@ -153,7 +153,12 @@ function CouponsPage() {
         ...form,
         startDate: formatDateForAPI(form.startDate),
         endDate: formatDateForAPI(form.endDate, true),
-        applicableProducts: form.applicableProducts ? form.applicableProducts.split(',').map(id => id.trim()).filter(id => id) : []
+        applicableProducts: form.applicableProducts
+          ? form.applicableProducts
+              .split(',')
+              .map((id) => id.trim())
+              .filter((id) => id)
+          : [],
       };
 
       const response = await fetch('/api/admin/coupons', {
@@ -196,7 +201,12 @@ function CouponsPage() {
         ...form,
         startDate: formatDateForAPI(form.startDate),
         endDate: formatDateForAPI(form.endDate, true),
-        applicableProducts: form.applicableProducts ? form.applicableProducts.split(',').map(id => id.trim()).filter(id => id) : []
+        applicableProducts: form.applicableProducts
+          ? form.applicableProducts
+              .split(',')
+              .map((id) => id.trim())
+              .filter((id) => id)
+          : [],
       };
 
       const response = await fetch(`/api/admin/coupons/${editingCoupon.id}`, {
@@ -258,7 +268,9 @@ function CouponsPage() {
       });
 
       if (response.ok) {
-        setSuccessMessage(`Mã giảm giá đã được ${!isActive ? 'kích hoạt' : 'vô hiệu hóa'} thành công!`);
+        setSuccessMessage(
+          `Mã giảm giá đã được ${!isActive ? 'kích hoạt' : 'vô hiệu hóa'} thành công!`,
+        );
         fetchCoupons();
       } else {
         const data = await response.json();
@@ -285,7 +297,7 @@ function CouponsPage() {
       startDate: coupon.startDate.split('T')[0],
       endDate: coupon.endDate.split('T')[0],
       applicableProducts: coupon.applicableProducts?.join(', ') || '',
-      isPublic: coupon.isPublic ?? true
+      isPublic: coupon.isPublic ?? true,
     });
     setEditingCoupon(coupon);
     setShowEditModal(true);
@@ -302,7 +314,7 @@ function CouponsPage() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
-      currency: 'VND'
+      currency: 'VND',
     }).format(amount);
   };
 
@@ -314,7 +326,7 @@ function CouponsPage() {
     return new Date(
       date.getUTCFullYear(),
       date.getUTCMonth(),
-      date.getUTCDate()
+      date.getUTCDate(),
     ).toLocaleDateString('vi-VN');
   };
 
@@ -331,17 +343,17 @@ function CouponsPage() {
 
   // Inline editing functions
   const startInlineEdit = (couponId: string, field: string, currentValue: any) => {
-    setInlineEditing(prev => ({ ...prev, [`${couponId}-${field}`]: true }));
-    setEditValues(prev => ({ ...prev, [`${couponId}-${field}`]: currentValue }));
+    setInlineEditing((prev) => ({ ...prev, [`${couponId}-${field}`]: true }));
+    setEditValues((prev) => ({ ...prev, [`${couponId}-${field}`]: currentValue }));
   };
 
   const cancelInlineEdit = (couponId: string, field: string) => {
-    setInlineEditing(prev => {
+    setInlineEditing((prev) => {
       const newState = { ...prev };
       delete newState[`${couponId}-${field}`];
       return newState;
     });
-    setEditValues(prev => {
+    setEditValues((prev) => {
       const newState = { ...prev };
       delete newState[`${couponId}-${field}`];
       return newState;
@@ -352,9 +364,9 @@ function CouponsPage() {
     const editKey = `${couponId}-${field}`;
     const newValue = editValues[editKey];
     console.log(`Saving inline edit for coupon ${couponId}, field ${field}, value:`, newValue);
-    
+
     try {
-      const coupon = coupons.find(c => c.id === couponId);
+      const coupon = coupons.find((c) => c.id === couponId);
       if (!coupon) {
         console.error('Could not find coupon with ID:', couponId);
         return;
@@ -363,33 +375,42 @@ function CouponsPage() {
 
       // Tạo bản sao sâu của coupon để chỉnh sửa
       const updateData: Record<string, any> = { ...coupon };
-      
+
       // Xử lý đặc biệt các trường ngày tháng
       if (field === 'startDate' || field === 'endDate') {
         // Giữ ngày và đặt giờ cụ thể để tránh vấn đề múi giờ
         const parts = newValue.split('-').map(Number);
-        const date = new Date(Date.UTC(parts[0], parts[1]-1, parts[2]));
-        
+        const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+
         // Đảm bảo rằng startDate là đầu ngày và endDate là cuối ngày trong UTC
         if (field === 'startDate') {
           date.setUTCHours(0, 0, 0, 0);
         } else {
           date.setUTCHours(23, 59, 59, 999);
         }
-        
+
         updateData[field] = date.toISOString();
-      } 
+      }
       // Xử lý các trường số
-      else if (field === 'usedCount' || field === 'usageLimit' || field === 'value' || field === 'minOrder' || field === 'maxDiscount' || field === 'userLimit') {
+      else if (
+        field === 'usedCount' ||
+        field === 'usageLimit' ||
+        field === 'value' ||
+        field === 'minOrder' ||
+        field === 'maxDiscount' ||
+        field === 'userLimit'
+      ) {
         updateData[field] = Number(newValue);
-      } 
-      else {
+      } else {
         updateData[field] = newValue;
       }
-      
-      console.log(`Sending update request to /api/admin/coupons/${couponId} with data:`, updateData);
+
+      console.log(
+        `Sending update request to /api/admin/coupons/${couponId} with data:`,
+        updateData,
+      );
       console.log('API URL:', `/api/admin/coupons/${couponId}`);
-      
+
       const response = await fetch(`/api/admin/coupons/${couponId}`, {
         method: 'PUT',
         headers: {
@@ -402,21 +423,25 @@ function CouponsPage() {
       console.log('API response:', responseData, 'Status:', response.status);
 
       if (response.ok) {
-        setCoupons(prev => prev.map(c => {
-          if (c.id === couponId) {
-            const updatedCoupon = { ...c };
-            (updatedCoupon as Record<string, any>)[field] = updateData[field];
-            return updatedCoupon;
-          }
-          return c;
-        }));
+        setCoupons((prev) =>
+          prev.map((c) => {
+            if (c.id === couponId) {
+              const updatedCoupon = { ...c };
+              (updatedCoupon as Record<string, any>)[field] = updateData[field];
+              return updatedCoupon;
+            }
+            return c;
+          }),
+        );
         setSuccessMessage('Cập nhật thành công!');
         setTimeout(() => setSuccessMessage(''), 3000);
-        
+
         // Làm mới dữ liệu sau khi cập nhật
         fetchCoupons();
       } else {
-        setErrorMessage(`Có lỗi xảy ra khi cập nhật: ${responseData.error || 'Lỗi không xác định'}`);
+        setErrorMessage(
+          `Có lỗi xảy ra khi cập nhật: ${responseData.error || 'Lỗi không xác định'}`,
+        );
         setTimeout(() => setErrorMessage(''), 3000);
       }
     } catch (error) {
@@ -444,11 +469,13 @@ function CouponsPage() {
   }, [successMessage, errorMessage]);
 
   // Separate coupons into active (not expired) and expired groups
-  const nonExpiredCoupons = coupons.filter(coupon => !isExpired(coupon.endDate));
-  const expiredCoupons = coupons.filter(coupon => isExpired(coupon.endDate));
-  
+  const nonExpiredCoupons = coupons.filter((coupon) => !isExpired(coupon.endDate));
+  const expiredCoupons = coupons.filter((coupon) => isExpired(coupon.endDate));
+
   // Các mã đang hoạt động thực sự (active và chưa hết hạn)
-  const actuallyActiveCoupons = coupons.filter(coupon => coupon.isActive && !isExpired(coupon.endDate));
+  const actuallyActiveCoupons = coupons.filter(
+    (coupon) => coupon.isActive && !isExpired(coupon.endDate),
+  );
 
   if (isLoading) {
     return (
@@ -460,7 +487,7 @@ function CouponsPage() {
 
   return (
     <div className="space-y-4">
-            {/* Header */}
+      {/* Header */}
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg shadow-md border border-primary-300 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -469,10 +496,12 @@ function CouponsPage() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Quản lý mã giảm giá</h1>
-              <p className="text-primary-100 text-sm">Tạo và quản lý các mã giảm giá cho khách hàng</p>
+              <p className="text-primary-100 text-sm">
+                Tạo và quản lý các mã giảm giá cho khách hàng
+              </p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-6">
             <div className="text-center">
               <div className="text-lg font-bold text-white">{coupons.length}</div>
@@ -483,12 +512,14 @@ function CouponsPage() {
               <div className="text-xs text-primary-100">Đang hoạt động</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-white">{coupons.filter(c => isExpired(c.endDate)).length}</div>
+              <div className="text-lg font-bold text-white">
+                {coupons.filter((c) => isExpired(c.endDate)).length}
+              </div>
               <div className="text-xs text-primary-100">Đã hết hạn</div>
             </div>
           </div>
         </div>
-        
+
         {/* Tabs */}
         <div className="mt-4 border-t border-white/20 pt-4">
           <nav className="flex justify-center space-x-2">
@@ -516,7 +547,6 @@ function CouponsPage() {
             >
               ➕ Tạo mã mới
             </button>
-
           </nav>
         </div>
       </div>
@@ -544,7 +574,7 @@ function CouponsPage() {
         <div className="bg-white rounded-lg shadow border border-gray-100">
           <div className="p-4">
             <h2 className="text-base font-medium text-gray-900 mb-3">Danh sách mã giảm giá</h2>
-            
+
             {/* Sub-tabs for active vs expired */}
             <div className="mb-4">
               <nav className="flex space-x-2">
@@ -567,7 +597,9 @@ function CouponsPage() {
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🏷️</div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có mã giảm giá nào</h3>
-                <p className="text-gray-500 mb-8">Tạo mã giảm giá đầu tiên để bắt đầu chương trình khuyến mãi cho khách hàng</p>
+                <p className="text-gray-500 mb-8">
+                  Tạo mã giảm giá đầu tiên để bắt đầu chương trình khuyến mãi cho khách hàng
+                </p>
                 <button
                   onClick={() => setActiveTab('create')}
                   className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg"
@@ -601,301 +633,424 @@ function CouponsPage() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {(filterTab === 'active' ? actuallyActiveCoupons : expiredCoupons).map((coupon) => (
-                      <tr key={coupon.id} className="hover:bg-gray-50 transition-colors duration-150">
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div>
-                            <div className="bg-primary-500 text-white font-mono font-bold text-sm px-3 py-1.5 rounded border border-primary-300">
-                              {coupon.code}
+                    {(filterTab === 'active' ? actuallyActiveCoupons : expiredCoupons).map(
+                      (coupon) => (
+                        <tr
+                          key={coupon.id}
+                          className="hover:bg-gray-50 transition-colors duration-150"
+                        >
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div>
+                              <div className="bg-primary-500 text-white font-mono font-bold text-sm px-3 py-1.5 rounded border border-primary-300">
+                                {coupon.code}
+                              </div>
+                              <div className="text-sm font-medium text-gray-700 mt-1.5">
+                                {inlineEditing[`${coupon.id}-name`] ? (
+                                  <div className="flex items-center space-x-1">
+                                    <input
+                                      type="text"
+                                      value={editValues[`${coupon.id}-name`] || ''}
+                                      onChange={(e) =>
+                                        setEditValues((prev) => ({
+                                          ...prev,
+                                          [`${coupon.id}-name`]: e.target.value,
+                                        }))
+                                      }
+                                      className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                          saveInlineEdit(coupon.id, 'name');
+                                        } else if (e.key === 'Escape') {
+                                          cancelInlineEdit(coupon.id, 'name');
+                                        }
+                                      }}
+                                      autoFocus
+                                    />
+                                    <button
+                                      onClick={() => saveInlineEdit(coupon.id, 'name')}
+                                      className="text-green-600 hover:text-green-800 text-xs"
+                                    >
+                                      ✓
+                                    </button>
+                                    <button
+                                      onClick={() => cancelInlineEdit(coupon.id, 'name')}
+                                      className="text-red-600 hover:text-red-800 text-xs"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span
+                                    onClick={() => startInlineEdit(coupon.id, 'name', coupon.name)}
+                                    className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                    title="Click để chỉnh sửa"
+                                  >
+                                    {coupon.name}
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                            <div className="text-sm font-medium text-gray-700 mt-1.5">
-                              {inlineEditing[`${coupon.id}-name`] ? (
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div className="space-y-1.5">
+                              <div className="inline-flex items-center px-3 py-1.5 rounded bg-gray-50 border border-gray-200 text-gray-700">
+                                {inlineEditing[`${coupon.id}-type`] ? (
+                                  <div className="flex items-center space-x-1">
+                                    <select
+                                      value={editValues[`${coupon.id}-type`] || coupon.type}
+                                      onChange={(e) =>
+                                        setEditValues((prev) => ({
+                                          ...prev,
+                                          [`${coupon.id}-type`]: e.target.value,
+                                        }))
+                                      }
+                                      className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
+                                      onBlur={() => saveInlineEdit(coupon.id, 'type')}
+                                      autoFocus
+                                    >
+                                      <option value="percentage">Phần trăm (%)</option>
+                                      <option value="fixed">Cố định (VNĐ)</option>
+                                    </select>
+                                    <button
+                                      onClick={() => saveInlineEdit(coupon.id, 'type')}
+                                      className="text-green-600 hover:text-green-800 text-xs"
+                                    >
+                                      ✓
+                                    </button>
+                                    <button
+                                      onClick={() => cancelInlineEdit(coupon.id, 'type')}
+                                      className="text-red-600 hover:text-red-800 text-xs"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span
+                                    className="text-sm font-medium mr-2 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                    onClick={() => startInlineEdit(coupon.id, 'type', coupon.type)}
+                                    title="Click để chỉnh sửa loại giảm giá"
+                                  >
+                                    {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
+                                  </span>
+                                )}
+                                {inlineEditing[`${coupon.id}-value`] ? (
+                                  <div className="flex items-center space-x-1">
+                                    <input
+                                      type="number"
+                                      value={editValues[`${coupon.id}-value`] || ''}
+                                      onChange={(e) =>
+                                        setEditValues((prev) => ({
+                                          ...prev,
+                                          [`${coupon.id}-value`]: e.target.value,
+                                        }))
+                                      }
+                                      className="border border-gray-300 rounded px-2 py-1 text-sm w-16"
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') saveInlineEdit(coupon.id, 'value');
+                                        else if (e.key === 'Escape')
+                                          cancelInlineEdit(coupon.id, 'value');
+                                      }}
+                                      autoFocus
+                                    />
+                                    <span className="text-sm font-bold">
+                                      {coupon.type === 'percentage' ? '%' : 'đ'}
+                                    </span>
+                                    <button
+                                      onClick={() => saveInlineEdit(coupon.id, 'value')}
+                                      className="text-green-600 hover:text-green-800 text-xs"
+                                    >
+                                      ✓
+                                    </button>
+                                    <button
+                                      onClick={() => cancelInlineEdit(coupon.id, 'value')}
+                                      className="text-red-600 hover:text-red-800 text-xs"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span
+                                    onClick={() =>
+                                      startInlineEdit(coupon.id, 'value', coupon.value)
+                                    }
+                                    className="text-sm font-bold cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                    title="Click để chỉnh sửa"
+                                  >
+                                    {coupon.type === 'percentage'
+                                      ? `${coupon.value}%`
+                                      : formatCurrency(coupon.value)}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            {inlineEditing[`${coupon.id}-startDate`] ? (
+                              <div className="flex items-center space-x-1">
+                                <input
+                                  type="date"
+                                  value={
+                                    editValues[`${coupon.id}-startDate`] ||
+                                    coupon.startDate.split('T')[0]
+                                  }
+                                  onChange={(e) =>
+                                    setEditValues((prev) => ({
+                                      ...prev,
+                                      [`${coupon.id}-startDate`]: e.target.value,
+                                    }))
+                                  }
+                                  className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
+                                  autoFocus
+                                />
+                                <button
+                                  onClick={() => saveInlineEdit(coupon.id, 'startDate')}
+                                  className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
+                                >
+                                  ✓ Lưu
+                                </button>
+                                <button
+                                  onClick={() => cancelInlineEdit(coupon.id, 'startDate')}
+                                  className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
+                                >
+                                  ✕ Hủy
+                                </button>
+                              </div>
+                            ) : (
+                              <span
+                                className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                onClick={() =>
+                                  startInlineEdit(
+                                    coupon.id,
+                                    'startDate',
+                                    coupon.startDate.split('T')[0],
+                                  )
+                                }
+                              >
+                                {formatDate(coupon.startDate)}
+                              </span>
+                            )}
+                            <span className="mx-1">-</span>
+                            {inlineEditing[`${coupon.id}-endDate`] ? (
+                              <div className="flex items-center space-x-1">
+                                <input
+                                  type="date"
+                                  value={
+                                    editValues[`${coupon.id}-endDate`] ||
+                                    coupon.endDate.split('T')[0]
+                                  }
+                                  onChange={(e) =>
+                                    setEditValues((prev) => ({
+                                      ...prev,
+                                      [`${coupon.id}-endDate`]: e.target.value,
+                                    }))
+                                  }
+                                  className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
+                                  autoFocus
+                                />
+                                <button
+                                  onClick={() => saveInlineEdit(coupon.id, 'endDate')}
+                                  className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
+                                >
+                                  ✓ Lưu
+                                </button>
+                                <button
+                                  onClick={() => cancelInlineEdit(coupon.id, 'endDate')}
+                                  className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
+                                >
+                                  ✕ Hủy
+                                </button>
+                              </div>
+                            ) : (
+                              <span
+                                className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                onClick={() =>
+                                  startInlineEdit(
+                                    coupon.id,
+                                    'endDate',
+                                    coupon.endDate.split('T')[0],
+                                  )
+                                }
+                              >
+                                {formatDate(coupon.endDate)}
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div>
+                              {inlineEditing[`${coupon.id}-usedCount`] ? (
                                 <div className="flex items-center space-x-1">
                                   <input
-                                    type="text"
-                                    value={editValues[`${coupon.id}-name`] || ''}
-                                    onChange={(e) => setEditValues(prev => ({
-                                      ...prev,
-                                      [`${coupon.id}-name`]: e.target.value
-                                    }))}
-                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
+                                    type="number"
+                                    value={editValues[`${coupon.id}-usedCount`] || coupon.usedCount}
+                                    onChange={(e) =>
+                                      setEditValues((prev) => ({
+                                        ...prev,
+                                        [`${coupon.id}-usedCount`]: e.target.value,
+                                      }))
+                                    }
+                                    onBlur={() => saveInlineEdit(coupon.id, 'usedCount')}
                                     onKeyDown={(e) => {
-                                      if (e.key === 'Enter') {
-                                        saveInlineEdit(coupon.id, 'name');
-                                      } else if (e.key === 'Escape') {
-                                        cancelInlineEdit(coupon.id, 'name');
-                                      }
+                                      if (e.key === 'Enter') saveInlineEdit(coupon.id, 'usedCount');
+                                      if (e.key === 'Escape')
+                                        cancelInlineEdit(coupon.id, 'usedCount');
                                     }}
+                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-16 text-center"
+                                    min="0"
                                     autoFocus
                                   />
                                   <button
-                                    onClick={() => saveInlineEdit(coupon.id, 'name')}
-                                    className="text-green-600 hover:text-green-800 text-xs"
+                                    onClick={() => saveInlineEdit(coupon.id, 'usedCount')}
+                                    className="text-green-600 hover:text-green-800 text-xs px-1 py-0.5 bg-green-50 border border-green-200 rounded"
                                   >
                                     ✓
                                   </button>
                                   <button
-                                    onClick={() => cancelInlineEdit(coupon.id, 'name')}
-                                    className="text-red-600 hover:text-red-800 text-xs"
+                                    onClick={() => cancelInlineEdit(coupon.id, 'usedCount')}
+                                    className="text-red-600 hover:text-red-800 text-xs px-1 py-0.5 bg-red-50 border border-red-200 rounded"
                                   >
                                     ✕
                                   </button>
                                 </div>
                               ) : (
                                 <span
-                                  onClick={() => startInlineEdit(coupon.id, 'name', coupon.name)}
-                                  className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                  title="Click để chỉnh sửa"
+                                  className="text-lg font-bold text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                  onClick={() =>
+                                    startInlineEdit(coupon.id, 'usedCount', coupon.usedCount)
+                                  }
+                                  title="Click để chỉnh sửa số lượt đã sử dụng"
                                 >
-                                  {coupon.name}
+                                  {coupon.usedCount}
                                 </span>
                               )}
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="space-y-1.5">
-                            <div className="inline-flex items-center px-3 py-1.5 rounded bg-gray-50 border border-gray-200 text-gray-700">
-                              {inlineEditing[`${coupon.id}-type`] ? (
-                                <div className="flex items-center space-x-1">
-                                  <select
-                                    value={editValues[`${coupon.id}-type`] || coupon.type}
-                                    onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-type`]: e.target.value }))}
-                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
-                                    onBlur={() => saveInlineEdit(coupon.id, 'type')}
-                                    autoFocus
-                                  >
-                                    <option value="percentage">Phần trăm (%)</option>
-                                    <option value="fixed">Cố định (VNĐ)</option>
-                                  </select>
-                                  <button
-                                    onClick={() => saveInlineEdit(coupon.id, 'type')}
-                                    className="text-green-600 hover:text-green-800 text-xs"
-                                  >✓</button>
-                                  <button
-                                    onClick={() => cancelInlineEdit(coupon.id, 'type')}
-                                    className="text-red-600 hover:text-red-800 text-xs"
-                                  >✕</button>
-                                </div>
-                              ) : (
-                                <span 
-                                  className="text-sm font-medium mr-2 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                  onClick={() => startInlineEdit(coupon.id, 'type', coupon.type)}
-                                  title="Click để chỉnh sửa loại giảm giá"
-                                >
-                                  {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
-                                </span>
-                              )}
-                              {inlineEditing[`${coupon.id}-value`] ? (
-                                <div className="flex items-center space-x-1">
+                              <span className="text-sm text-gray-500 font-medium ml-1">
+                                /
+                                {inlineEditing[`${coupon.id}-usageLimit`] ? (
                                   <input
                                     type="number"
-                                    value={editValues[`${coupon.id}-value`] || ''}
-                                    onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-value`]: e.target.value }))}
-                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-16"
-                                    onKeyDown={e => {
-                                      if (e.key === 'Enter') saveInlineEdit(coupon.id, 'value');
-                                      else if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'value');
+                                    value={
+                                      editValues[`${coupon.id}-usageLimit`] ||
+                                      coupon.usageLimit ||
+                                      0
+                                    }
+                                    onChange={(e) =>
+                                      setEditValues((prev) => ({
+                                        ...prev,
+                                        [`${coupon.id}-usageLimit`]: e.target.value,
+                                      }))
+                                    }
+                                    onBlur={() => saveInlineEdit(coupon.id, 'usageLimit')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter')
+                                        saveInlineEdit(coupon.id, 'usageLimit');
+                                      if (e.key === 'Escape')
+                                        cancelInlineEdit(coupon.id, 'usageLimit');
                                     }}
+                                    className="border border-gray-300 rounded px-1 py-0.5 text-xs w-12 text-center ml-1"
+                                    min="0"
                                     autoFocus
                                   />
-                                  <span className="text-sm font-bold">
-                                    {coupon.type === 'percentage' ? '%' : 'đ'}
+                                ) : (
+                                  <span
+                                    className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
+                                    onClick={() =>
+                                      startInlineEdit(
+                                        coupon.id,
+                                        'usageLimit',
+                                        coupon.usageLimit || 0,
+                                      )
+                                    }
+                                  >
+                                    {coupon.usageLimit ? coupon.usageLimit : '∞'}
                                   </span>
-                                  <button
-                                    onClick={() => saveInlineEdit(coupon.id, 'value')}
-                                    className="text-green-600 hover:text-green-800 text-xs"
-                                  >✓</button>
-                                  <button
-                                    onClick={() => cancelInlineEdit(coupon.id, 'value')}
-                                    className="text-red-600 hover:text-red-800 text-xs"
-                                  >✕</button>
-                                </div>
+                                )}{' '}
+                                lần
+                              </span>
+
+                              {coupon.userUsage && Object.keys(coupon.userUsage).length > 0 && (
+                                <VoucherUsageList userUsage={coupon.userUsage} />
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div className="flex flex-row gap-2 items-center">
+                              {inlineEditing[`${coupon.id}-isPublic`] ? (
+                                <select
+                                  value={
+                                    editValues[`${coupon.id}-isPublic`] !== undefined
+                                      ? editValues[`${coupon.id}-isPublic`]
+                                        ? 'public'
+                                        : 'private'
+                                      : coupon.isPublic
+                                        ? 'public'
+                                        : 'private'
+                                  }
+                                  onChange={(e) =>
+                                    setEditValues((prev) => ({
+                                      ...prev,
+                                      [`${coupon.id}-isPublic`]: e.target.value === 'public',
+                                    }))
+                                  }
+                                  onBlur={() => saveInlineEdit(coupon.id, 'isPublic')}
+                                  className="border border-gray-300 rounded px-2 py-1 text-xs"
+                                  autoFocus
+                                >
+                                  <option value="public">Công khai</option>
+                                  <option value="private">Riêng tư</option>
+                                </select>
                               ) : (
                                 <span
-                                  onClick={() => startInlineEdit(coupon.id, 'value', coupon.value)}
-                                  className="text-sm font-bold cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                  title="Click để chỉnh sửa"
+                                  className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover:bg-gray-100 ${coupon.isPublic ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-yellow-50 border border-yellow-200 text-yellow-700'}`}
+                                  onClick={() =>
+                                    startInlineEdit(coupon.id, 'isPublic', coupon.isPublic)
+                                  }
                                 >
-                                  {coupon.type === 'percentage' ? `${coupon.value}%` : formatCurrency(coupon.value)}
+                                  {coupon.isPublic ? 'Công khai' : 'Riêng tư'}
+                                </span>
+                              )}
+                              {isExpired(coupon.endDate) ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
+                                  Đã hết hạn
+                                </span>
+                              ) : coupon.isActive ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded bg-primary-50 border border-primary-200 text-primary-700 text-xs font-medium">
+                                  Đang hoạt động
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium">
+                                  Tạm dừng
                                 </span>
                               )}
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          {inlineEditing[`${coupon.id}-startDate`] ? (
-                            <div className="flex items-center space-x-1">
-                              <input
-                                type="date"
-                                value={editValues[`${coupon.id}-startDate`] || coupon.startDate.split('T')[0]}
-                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-startDate`]: e.target.value }))}
-                                className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
-                                autoFocus
-                              />
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                            <div className="flex space-x-2">
                               <button
-                                onClick={() => saveInlineEdit(coupon.id, 'startDate')}
-                                className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
+                                onClick={() => handleEditCoupon(coupon)}
+                                className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors duration-150 text-sm font-medium border border-gray-200"
                               >
-                                ✓ Lưu
+                                Sửa
                               </button>
                               <button
-                                onClick={() => cancelInlineEdit(coupon.id, 'startDate')}
-                                className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
+                                onClick={() => handleToggleStatus(coupon.id, coupon.isActive)}
+                                className={`px-3 py-1.5 rounded transition-colors duration-150 text-sm font-medium border ${
+                                  coupon.isActive
+                                    ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-200'
+                                    : 'bg-primary-100 text-primary-600 hover:bg-primary-200 border-primary-200'
+                                }`}
                               >
-                                ✕ Hủy
-                              </button>
-                            </div>
-                          ) : (
-                            <span className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'startDate', coupon.startDate.split('T')[0])}>
-                              {formatDate(coupon.startDate)}
-                            </span>
-                          )}
-                          <span className="mx-1">-</span>
-                          {inlineEditing[`${coupon.id}-endDate`] ? (
-                            <div className="flex items-center space-x-1">
-                              <input
-                                type="date"
-                                value={editValues[`${coupon.id}-endDate`] || coupon.endDate.split('T')[0]}
-                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-endDate`]: e.target.value }))}
-                                className="border border-gray-300 rounded px-2 py-1 text-sm w-32"
-                                autoFocus
-                              />
-                              <button
-                                onClick={() => saveInlineEdit(coupon.id, 'endDate')}
-                                className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
-                              >
-                                ✓ Lưu
+                                {coupon.isActive ? 'Dừng' : 'Hoạt động'}
                               </button>
                               <button
-                                onClick={() => cancelInlineEdit(coupon.id, 'endDate')}
-                                className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
+                                onClick={() => handleDeleteCoupon(coupon.id)}
+                                className="px-3 py-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors duration-150 text-sm font-medium border border-red-200"
                               >
-                                ✕ Hủy
+                                Xóa
                               </button>
                             </div>
-                          ) : (
-                            <span className="text-sm text-gray-700 font-medium cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'endDate', coupon.endDate.split('T')[0])}>
-                              {formatDate(coupon.endDate)}
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div>
-                            {inlineEditing[`${coupon.id}-usedCount`] ? (
-                              <div className="flex items-center space-x-1">
-                                <input
-                                  type="number"
-                                  value={editValues[`${coupon.id}-usedCount`] || coupon.usedCount}
-                                  onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-usedCount`]: e.target.value }))}
-                                  onBlur={() => saveInlineEdit(coupon.id, 'usedCount')}
-                                  onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'usedCount'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'usedCount'); }}
-                                  className="border border-gray-300 rounded px-1 py-0.5 text-xs w-16 text-center"
-                                  min="0"
-                                  autoFocus
-                                />
-                                <button
-                                  onClick={() => saveInlineEdit(coupon.id, 'usedCount')}
-                                  className="text-green-600 hover:text-green-800 text-xs px-1 py-0.5 bg-green-50 border border-green-200 rounded"
-                                >
-                                  ✓
-                                </button>
-                                <button
-                                  onClick={() => cancelInlineEdit(coupon.id, 'usedCount')}
-                                  className="text-red-600 hover:text-red-800 text-xs px-1 py-0.5 bg-red-50 border border-red-200 rounded"
-                                >
-                                  ✕
-                                </button>
-                              </div>
-                            ) : (
-                              <span 
-                                className="text-lg font-bold text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" 
-                                onClick={() => startInlineEdit(coupon.id, 'usedCount', coupon.usedCount)}
-                                title="Click để chỉnh sửa số lượt đã sử dụng"
-                              >
-                                {coupon.usedCount}
-                              </span>
-                            )}
-                            <span className="text-sm text-gray-500 font-medium ml-1">
-                              /
-                              {inlineEditing[`${coupon.id}-usageLimit`] ? (
-                                <input
-                                  type="number"
-                                  value={editValues[`${coupon.id}-usageLimit`] || coupon.usageLimit || 0}
-                                  onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-usageLimit`]: e.target.value }))}
-                                  onBlur={() => saveInlineEdit(coupon.id, 'usageLimit')}
-                                  onKeyDown={e => { if (e.key === 'Enter') saveInlineEdit(coupon.id, 'usageLimit'); if (e.key === 'Escape') cancelInlineEdit(coupon.id, 'usageLimit'); }}
-                                  className="border border-gray-300 rounded px-1 py-0.5 text-xs w-12 text-center ml-1"
-                                  min="0"
-                                  autoFocus
-                                />
-                              ) : (
-                                <span className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded" onClick={() => startInlineEdit(coupon.id, 'usageLimit', coupon.usageLimit || 0)}>
-                                  {coupon.usageLimit ? coupon.usageLimit : '∞'}
-                                </span>
-                              )} lần
-                            </span>
-                            
-                            {coupon.userUsage && Object.keys(coupon.userUsage).length > 0 && (
-                              <VoucherUsageList userUsage={coupon.userUsage} />
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex flex-row gap-2 items-center">
-                            {inlineEditing[`${coupon.id}-isPublic`] ? (
-                              <select
-                                value={editValues[`${coupon.id}-isPublic`] !== undefined ? (editValues[`${coupon.id}-isPublic`] ? 'public' : 'private') : (coupon.isPublic ? 'public' : 'private')}
-                                onChange={e => setEditValues(prev => ({ ...prev, [`${coupon.id}-isPublic`]: e.target.value === 'public' }))}
-                                onBlur={() => saveInlineEdit(coupon.id, 'isPublic')}
-                                className="border border-gray-300 rounded px-2 py-1 text-xs"
-                                autoFocus
-                              >
-                                <option value="public">Công khai</option>
-                                <option value="private">Riêng tư</option>
-                              </select>
-                            ) : (
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover:bg-gray-100 ${coupon.isPublic ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-yellow-50 border border-yellow-200 text-yellow-700'}`} onClick={() => startInlineEdit(coupon.id, 'isPublic', coupon.isPublic)}>
-                                {coupon.isPublic ? 'Công khai' : 'Riêng tư'}
-                              </span>
-                            )}
-                            {isExpired(coupon.endDate) ? (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 text-xs font-medium">Đã hết hạn</span>
-                            ) : coupon.isActive ? (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-primary-50 border border-primary-200 text-primary-700 text-xs font-medium">Đang hoạt động</span>
-                            ) : (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium">Tạm dừng</span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleEditCoupon(coupon)}
-                              className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors duration-150 text-sm font-medium border border-gray-200"
-                            >
-                              Sửa
-                            </button>
-                            <button
-                              onClick={() => handleToggleStatus(coupon.id, coupon.isActive)}
-                              className={`px-3 py-1.5 rounded transition-colors duration-150 text-sm font-medium border ${
-                                coupon.isActive 
-                                  ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-200' 
-                                  : 'bg-primary-100 text-primary-600 hover:bg-primary-200 border-primary-200'
-                              }`}
-                            >
-                              {coupon.isActive ? 'Dừng' : 'Hoạt động'}
-                            </button>
-                            <button
-                              onClick={() => handleDeleteCoupon(coupon.id)}
-                              className="px-3 py-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors duration-150 text-sm font-medium border border-red-200"
-                            >
-                              Xóa
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                        </tr>
+                      ),
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -907,10 +1062,8 @@ function CouponsPage() {
       {activeTab === 'create' && (
         <div className="bg-white rounded-lg shadow border border-gray-100 max-w-4xl mx-auto">
           <div className="p-3">
-            <h2 className="text-base font-medium text-gray-900 mb-2">
-              Tạo mã giảm giá mới
-            </h2>
-            
+            <h2 className="text-base font-medium text-gray-900 mb-2">Tạo mã giảm giá mới</h2>
+
             <form onSubmit={handleCreateCoupon} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Mã giảm giá */}
@@ -922,7 +1075,9 @@ function CouponsPage() {
                     <input
                       type="text"
                       value={form.code}
-                      onChange={(e) => setForm(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, code: e.target.value.toUpperCase() }))
+                      }
                       className="flex-1 px-2 py-1.5 border border-gray-300 rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       placeholder="VD: SUMMER2024"
                       required
@@ -945,7 +1100,7 @@ function CouponsPage() {
                   <input
                     type="text"
                     value={form.name}
-                    onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     placeholder="VD: Giảm giá mùa hè"
                     required
@@ -959,7 +1114,12 @@ function CouponsPage() {
                   </label>
                   <select
                     value={form.type}
-                    onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as 'percentage' | 'fixed' }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        type: e.target.value as 'percentage' | 'fixed',
+                      }))
+                    }
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                   >
                     <option value="percentage">Phần trăm (%)</option>
@@ -975,7 +1135,9 @@ function CouponsPage() {
                   <input
                     type="number"
                     value={form.value}
-                    onChange={(e) => setForm(prev => ({ ...prev, value: Number(e.target.value) }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, value: Number(e.target.value) }))
+                    }
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     placeholder={form.type === 'percentage' ? 'VD: 10' : 'VD: 50000'}
                     min="0"
@@ -983,18 +1145,22 @@ function CouponsPage() {
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    {form.type === 'percentage' ? 'Nhập số phần trăm (0-100)' : 'Nhập số tiền (VNĐ)'}
+                    {form.type === 'percentage'
+                      ? 'Nhập số phần trăm (0-100)'
+                      : 'Nhập số tiền (VNĐ)'}
                   </p>
                 </div>
 
                 {/* Thời gian hiệu lực */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Thời gian hiệu lực *</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Thời gian hiệu lực *
+                  </label>
                   <div className="flex space-x-2">
                     <input
                       type="date"
                       value={form.startDate}
-                      onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
+                      onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
                       className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       required
                     />
@@ -1002,7 +1168,7 @@ function CouponsPage() {
                     <input
                       type="date"
                       value={form.endDate}
-                      onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
+                      onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
                       className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       required
                     />
@@ -1017,7 +1183,9 @@ function CouponsPage() {
                   <input
                     type="number"
                     value={form.minOrder}
-                    onChange={(e) => setForm(prev => ({ ...prev, minOrder: Number(e.target.value) }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, minOrder: Number(e.target.value) }))
+                    }
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     placeholder="Ví dụ: 200000"
                     min="0"
@@ -1038,10 +1206,14 @@ function CouponsPage() {
                     placeholder="Ví dụ: 100"
                     name="usageLimit"
                     value={form.usageLimit}
-                    onChange={(e) => setForm(prev => ({ ...prev, usageLimit: Number(e.target.value) }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, usageLimit: Number(e.target.value) }))
+                    }
                     min="0"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Số lượt sử dụng được áp dụng cho toàn bộ mã giảm giá.</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Số lượt sử dụng được áp dụng cho toàn bộ mã giảm giá.
+                  </p>
                 </div>
 
                 {/* User Limit */}
@@ -1055,18 +1227,26 @@ function CouponsPage() {
                     placeholder="Ví dụ: 1"
                     name="userLimit"
                     value={form.userLimit}
-                    onChange={(e) => setForm(prev => ({ ...prev, userLimit: Number(e.target.value) }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, userLimit: Number(e.target.value) }))
+                    }
                     min="0"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Giới hạn số lần mỗi người dùng có thể sử dụng mã giảm giá này.</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Giới hạn số lần mỗi người dùng có thể sử dụng mã giảm giá này.
+                  </p>
                 </div>
 
                 {/* Trường công khai/riêng tư */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Trạng thái *</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Trạng thái *
+                  </label>
                   <select
                     value={form.isPublic ? 'public' : 'private'}
-                    onChange={e => setForm(prev => ({ ...prev, isPublic: e.target.value === 'public' }))}
+                    onChange={(e) =>
+                      setForm((prev) => ({ ...prev, isPublic: e.target.value === 'public' }))
+                    }
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     required
                   >
@@ -1115,12 +1295,17 @@ function CouponsPage() {
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
             </div>
-            
+
             <div className="p-4">
               <form onSubmit={handleUpdateCoupon} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1132,7 +1317,9 @@ function CouponsPage() {
                     <input
                       type="text"
                       value={form.code}
-                      onChange={(e) => setForm(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, code: e.target.value.toUpperCase() }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       placeholder="VD: SUMMER2024"
                       required
@@ -1146,7 +1333,7 @@ function CouponsPage() {
                     <input
                       type="text"
                       value={form.name}
-                      onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
+                      onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       placeholder="VD: Giảm giá mùa hè"
                       required
@@ -1159,7 +1346,12 @@ function CouponsPage() {
                     </label>
                     <select
                       value={form.type}
-                      onChange={(e) => setForm(prev => ({ ...prev, type: e.target.value as 'percentage' | 'fixed' }))}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          type: e.target.value as 'percentage' | 'fixed',
+                        }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value="percentage">Phần trăm (%)</option>
@@ -1174,7 +1366,9 @@ function CouponsPage() {
                     <input
                       type="number"
                       value={form.value}
-                      onChange={(e) => setForm(prev => ({ ...prev, value: Number(e.target.value) }))}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, value: Number(e.target.value) }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       placeholder={form.type === 'percentage' ? 'VD: 10' : 'VD: 50000'}
                       min="0"
@@ -1184,12 +1378,16 @@ function CouponsPage() {
                   </div>
                   {/* Thời gian hiệu lực */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Thời gian hiệu lực *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Thời gian hiệu lực *
+                    </label>
                     <div className="flex space-x-2">
                       <input
                         type="date"
                         value={form.startDate}
-                        onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
+                        onChange={(e) =>
+                          setForm((prev) => ({ ...prev, startDate: e.target.value }))
+                        }
                         className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                         required
                       />
@@ -1197,7 +1395,7 @@ function CouponsPage() {
                       <input
                         type="date"
                         value={form.endDate}
-                        onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
+                        onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
                         className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                         required
                       />
@@ -1205,10 +1403,14 @@ function CouponsPage() {
                   </div>
                   {/* Trạng thái công khai/riêng tư */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Trạng thái *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Trạng thái *
+                    </label>
                     <select
                       value={form.isPublic ? 'public' : 'private'}
-                      onChange={e => setForm(prev => ({ ...prev, isPublic: e.target.value === 'public' }))}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, isPublic: e.target.value === 'public' }))
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       required
                     >
@@ -1244,4 +1446,4 @@ function CouponsPage() {
   );
 }
 
-export default withAdminAuth(CouponsPage); 
+export default withAdminAuth(CouponsPage);

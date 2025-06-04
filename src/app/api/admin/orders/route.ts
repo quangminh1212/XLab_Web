@@ -12,7 +12,7 @@ function loadUserData() {
     return [];
   }
 
-  const userFiles = fs.readdirSync(dataDir).filter(file => file.endsWith('.json'));
+  const userFiles = fs.readdirSync(dataDir).filter((file) => file.endsWith('.json'));
   const userData = [];
 
   for (const file of userFiles) {
@@ -40,15 +40,15 @@ function calculateOrderStats(userData: any[]): OrderStats {
     cancelled: 0,
     refunded: 0,
     revenue: 0,
-    averageOrderValue: 0
+    averageOrderValue: 0,
   };
 
   // Process all users' orders
-  userData.forEach(user => {
+  userData.forEach((user) => {
     if (user.orders && Array.isArray(user.orders)) {
       // Count orders
       stats.total += user.orders.length;
-      
+
       // Process each order
       user.orders.forEach((order: any) => {
         // Count by status
@@ -57,7 +57,7 @@ function calculateOrderStats(userData: any[]): OrderStats {
         else if (order.status === 'completed') stats.completed++;
         else if (order.status === 'cancelled') stats.cancelled++;
         else if (order.status === 'refunded') stats.refunded++;
-        
+
         // Add to revenue if order is completed and paid
         if (order.status === 'completed' && order.paymentStatus === 'paid') {
           stats.revenue += order.totalAmount;
@@ -88,16 +88,16 @@ export async function GET() {
 
     // Load all user data from JSON files
     const userData = loadUserData();
-    
+
     // Extract all orders from user data
     const orders: Order[] = [];
-    userData.forEach(user => {
+    userData.forEach((user) => {
       if (user.orders && Array.isArray(user.orders)) {
         // Add user information to each order
         const userOrders = user.orders.map((order: any) => ({
           ...order,
           userName: user.profile?.name || 'Unknown',
-          userEmail: user.profile?.email || 'unknown@example.com'
+          userEmail: user.profile?.email || 'unknown@example.com',
         }));
         orders.push(...userOrders);
       }
@@ -121,15 +121,15 @@ export async function GET() {
               productName: 'ChatGPT',
               quantity: 1,
               price: 149000,
-              image: '/images/products/chatgpt/thumbnail.png'
-            }
+              image: '/images/products/chatgpt/thumbnail.png',
+            },
           ],
           totalAmount: 149000,
           status: 'completed' as const,
           paymentMethod: 'bank_transfer' as const,
           paymentStatus: 'paid' as const,
           createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+          updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
         },
         {
           id: 'XL-' + Math.floor(100000 + Math.random() * 900000).toString(),
@@ -142,18 +142,18 @@ export async function GET() {
               productName: 'Grok',
               quantity: 2,
               price: 149000,
-              image: '/images/products/grok/thumbnail.png'
-            }
+              image: '/images/products/grok/thumbnail.png',
+            },
           ],
           totalAmount: 298000,
           status: 'completed' as const,
           paymentMethod: 'momo' as const,
           paymentStatus: 'paid' as const,
           createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
-        }
+          updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        },
       ];
-      
+
       // Update stats with mock data
       if (stats.total === 0) {
         stats.total = mockOrders.length;
@@ -161,19 +161,19 @@ export async function GET() {
         stats.revenue = mockOrders.reduce((sum, order) => sum + order.totalAmount, 0);
         stats.averageOrderValue = Math.round(stats.revenue / stats.total);
       }
-      
+
       // Add mock orders to the response if no real orders exist
       if (orders.length === 0) {
         orders.push(...mockOrders);
       }
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       orders: orders,
-      stats: stats
+      stats: stats,
     });
   } catch (error) {
     console.error('Error fetching orders:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-} 
+}

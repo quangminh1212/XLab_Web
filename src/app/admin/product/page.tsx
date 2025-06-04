@@ -23,4 +23,4 @@ function AdminProductRedirectPage() {
   );
 }
 
-export default withAdminAuth(AdminProductRedirectPage); 
+export default withAdminAuth(AdminProductRedirectPage);

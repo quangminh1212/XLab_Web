@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { getUserCart, updateUserCart, updateUserCartSync, addToUserCart, removeFromUserCart, clearUserCart } from '@/lib/userService';
+import {
+  getUserCart,
+  updateUserCart,
+  updateUserCartSync,
+  addToUserCart,
+  removeFromUserCart,
+  clearUserCart,
+} from '@/lib/userService';
 
 export interface CartItem {
   id: string;
@@ -18,17 +25,17 @@ export interface CartItem {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const cart = await getUserCart(session.user.email);
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Cart retrieved successfully', 
-      cart: cart 
+
+    return NextResponse.json({
+      success: true,
+      message: 'Cart retrieved successfully',
+      cart: cart,
     });
   } catch (error: any) {
     console.error('Error getting cart:', error);
@@ -40,7 +47,7 @@ export async function GET(request: Request) {
 export async function PUT(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -53,11 +60,11 @@ export async function PUT(request: Request) {
     }
 
     await updateUserCartSync(session.user.email, cart);
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       message: 'Cart updated successfully',
-      cart: cart 
+      cart: cart,
     });
   } catch (error: any) {
     console.error('Error updating cart:', error);
@@ -69,7 +76,7 @@ export async function PUT(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -83,11 +90,11 @@ export async function POST(request: Request) {
 
     await addToUserCart(session.user.email, item);
     const updatedCart = await getUserCart(session.user.email);
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       message: 'Item added to cart successfully',
-      cart: updatedCart 
+      cart: updatedCart,
     });
   } catch (error: any) {
     console.error('Error adding to cart:', error);
@@ -99,19 +106,19 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await clearUserCart(session.user.email);
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Cart cleared successfully' 
+
+    return NextResponse.json({
+      success: true,
+      message: 'Cart cleared successfully',
     });
   } catch (error: any) {
     console.error('Error clearing cart:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
-} 
+}

@@ -7,12 +7,9 @@ import { getUserStats } from '@/lib/sessionTracker';
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user || !session.user.isAdmin) {
-      return NextResponse.json(
-        { error: 'Unauthorized - Admin access required' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized - Admin access required' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -20,20 +17,14 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get('action') || 'info';
 
     if (!userEmail) {
-      return NextResponse.json(
-        { error: 'Email parameter is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Email parameter is required' }, { status: 400 });
     }
 
     switch (action) {
       case 'info':
         const userData = await getUserData(userEmail);
         if (!userData) {
-          return NextResponse.json(
-            { error: 'User data not found' },
-            { status: 404 }
-          );
+          return NextResponse.json({ error: 'User data not found' }, { status: 404 });
         }
 
         const stats = await getUserStats(userEmail);
@@ -51,8 +42,8 @@ export async function GET(request: NextRequest) {
           stats: stats,
           metadata: {
             ...userData.metadata,
-            dataIntegrity: isValid
-          }
+            dataIntegrity: isValid,
+          },
         });
 
       case 'integrity':
@@ -60,28 +51,21 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({
           email: userEmail,
           isValid: integrityResult,
-          checkedAt: new Date().toISOString()
+          checkedAt: new Date().toISOString(),
         });
 
       case 'stats':
         const userStats = await getUserStats(userEmail);
         return NextResponse.json({
           email: userEmail,
-          stats: userStats
+          stats: userStats,
         });
 
       default:
-        return NextResponse.json(
-          { error: 'Invalid action parameter' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: 'Invalid action parameter' }, { status: 400 });
     }
-    
   } catch (error) {
     console.error('Error in admin user-data API:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-} 
+}

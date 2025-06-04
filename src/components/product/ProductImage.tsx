@@ -1,34 +1,36 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface ProductImageProps {
-  images: string[] | undefined
-  name: string
-  aspectRatio?: string
+  images: string[] | undefined;
+  name: string;
+  aspectRatio?: string;
 }
 
-const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProps) => {
+const ProductImage = ({ images, name, aspectRatio = 'square' }: ProductImageProps) => {
   // Validate image URLs
   const validateImageUrl = (url: string): string => {
-    if (!url) return '/images/placeholder/product-placeholder.jpg'
-    if (url.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg'
-    if (url.includes('undefined')) return '/images/placeholder/product-placeholder.jpg'
-    if (url.trim() === '') return '/images/placeholder/product-placeholder.jpg'
-    
+    if (!url) return '/images/placeholder/product-placeholder.jpg';
+    if (url.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg';
+    if (url.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
+    if (url.trim() === '') return '/images/placeholder/product-placeholder.jpg';
+
     return url;
-  }
-  
+  };
+
   // Process the image array
-  const processedImages = images?.map(validateImageUrl) || ['/images/placeholder/product-placeholder.jpg'];
-  
-  const [mainImage, setMainImage] = useState(processedImages[0])
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isZoomed, setIsZoomed] = useState(false)
-  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 })
-  const [imageFailed, setImageFailed] = useState(false)
+  const processedImages = images?.map(validateImageUrl) || [
+    '/images/placeholder/product-placeholder.jpg',
+  ];
+
+  const [mainImage, setMainImage] = useState(processedImages[0]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [imageFailed, setImageFailed] = useState(false);
 
   // Update main image when images prop changes
   useEffect(() => {
@@ -41,55 +43,57 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
   }, [images]);
 
   // Fallback array if images is undefined
-  const imageArray = processedImages.length ? processedImages : ['/images/placeholder/product-placeholder.jpg']
+  const imageArray = processedImages.length
+    ? processedImages
+    : ['/images/placeholder/product-placeholder.jpg'];
 
   const handleThumbnailClick = (image: string, index: number) => {
-    setMainImage(image)
-    setSelectedIndex(index)
-    setIsLoading(true)
-    setImageFailed(false)
-  }
+    setMainImage(image);
+    setSelectedIndex(index);
+    setIsLoading(true);
+    setImageFailed(false);
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isZoomed) return
+    if (!isZoomed) return;
 
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect()
-    const x = ((e.clientX - left) / width) * 100
-    const y = ((e.clientY - top) / height) * 100
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
 
-    setZoomPosition({ x, y })
-  }
+    setZoomPosition({ x, y });
+  };
 
   const handleMouseEnter = () => {
-    setIsZoomed(true)
-  }
+    setIsZoomed(true);
+  };
 
   const handleMouseLeave = () => {
-    setIsZoomed(false)
-  }
+    setIsZoomed(false);
+  };
 
   // Handle image error
   const handleImageError = () => {
     console.error(`Không thể tải hình ảnh: ${mainImage}`);
     setImageFailed(true);
     setIsLoading(false);
-  }
+  };
 
   // Pick aspect ratio classes based on the prop
   const getAspectRatioClass = () => {
     switch (aspectRatio) {
       case 'square':
-        return 'pt-[100%]' // 1:1
+        return 'pt-[100%]'; // 1:1
       case 'landscape':
-        return 'pt-[75%]' // 4:3
+        return 'pt-[75%]'; // 4:3
       case 'portrait':
-        return 'pt-[133.33%]' // 3:4
+        return 'pt-[133.33%]'; // 3:4
       case 'widescreen':
-        return 'pt-[56.25%]' // 16:9
+        return 'pt-[56.25%]'; // 16:9
       default:
-        return 'pt-[100%]' // Default to square
+        return 'pt-[100%]'; // Default to square
     }
-  }
+  };
 
   // Determine which image to show
   const displayImage = imageFailed ? '/images/placeholder/product-placeholder.jpg' : mainImage;
@@ -157,7 +161,8 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
                 onError={(e) => {
                   console.error(`Không thể tải thumbnail: ${image}`);
                   // Replace with placeholder image
-                  (e.target as HTMLImageElement).src = '/images/placeholder/product-placeholder.jpg';
+                  (e.target as HTMLImageElement).src =
+                    '/images/placeholder/product-placeholder.jpg';
                 }}
               />
             </button>
@@ -165,7 +170,7 @@ const ProductImage = ({ images, name, aspectRatio = "square" }: ProductImageProp
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProductImage 
+export default ProductImage;

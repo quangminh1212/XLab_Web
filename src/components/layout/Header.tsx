@@ -16,13 +16,13 @@ interface PublicCoupon {
   code: string;
   name: string;
   description?: string;
-  type: "percentage" | "fixed";
+  type: 'percentage' | 'fixed';
   value: number;
   endDate: string;
   isPublic?: boolean;
   minOrder?: number;
   userLimit?: number;
-  userUsage?: { 
+  userUsage?: {
     current: number;
     limit: number;
   };
@@ -34,17 +34,17 @@ const Header = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
-  const [isVoucherOpen, setIsVoucherOpen] = React.useState(false); 
+  const [isVoucherOpen, setIsVoucherOpen] = React.useState(false);
   const [publicCoupons, setPublicCoupons] = React.useState<PublicCoupon[]>([]);
   const [userCoupons, setUserCoupons] = React.useState<PublicCoupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = React.useState(false);
   const [lastCouponFetch, setLastCouponFetch] = React.useState<number>(0);
   const [showNotification, setShowNotification] = React.useState(false);
   const [notificationMessage, setNotificationMessage] = React.useState('');
-  
+
   // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
-  
+
   // Tạo ref để tham chiếu đến phần tử dropdown profile
   const profileRef = useRef<HTMLDivElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
@@ -58,39 +58,39 @@ const Header = () => {
   const fetchCoupons = async () => {
     try {
       setLoadingCoupons(true);
-      
+
       // Fetch public coupons for all users
       const publicResponse = await fetch('/api/coupons/public', {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
       });
       const publicData = await publicResponse.json();
-      
+
       if (publicData.success && publicData.coupons) {
         setPublicCoupons(publicData.coupons);
       }
-      
+
       // If user is logged in, fetch their specific vouchers
       if (session?.user) {
         const userResponse = await fetch('/api/user/vouchers', {
           cache: 'no-store',
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
+            Pragma: 'no-cache',
+            Expires: '0',
+          },
         });
         const userData = await userResponse.json();
-        
+
         if (userData.success && userData.vouchers) {
           setUserCoupons(userData.vouchers);
         }
       }
-      
+
       setLastCouponFetch(Date.now());
     } catch (error) {
       console.error('Error fetching coupons:', error);
@@ -105,22 +105,25 @@ const Header = () => {
       fetchCoupons();
     }
   }, [isVoucherOpen, session, lastCouponFetch]);
-  
+
   // Thêm effect để tự động refresh mỗi 5 phút khi dropdown đang mở
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
-    
+
     if (isVoucherOpen) {
-      intervalId = setInterval(() => {
-        fetchCoupons();
-      }, 5 * 60 * 1000); // 5 phút
+      intervalId = setInterval(
+        () => {
+          fetchCoupons();
+        },
+        5 * 60 * 1000,
+      ); // 5 phút
     }
-    
+
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
   }, [isVoucherOpen]);
-  
+
   // Thêm effect để refresh khi tab được kích hoạt lại
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -128,51 +131,54 @@ const Header = () => {
         fetchCoupons();
       }
     };
-    
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [isVoucherOpen]);
 
   // Xử lý đóng dropdown khi click bên ngoài
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    // Đóng profile dropdown khi click ra ngoài
-    if (
-      isProfileOpen && 
-      profileRef.current && 
-      profileButtonRef.current &&
-      !profileRef.current.contains(event.target as Node) && 
-      !profileButtonRef.current.contains(event.target as Node)
-    ) {
-      setIsProfileOpen(false);
-    }
-    
-    // Đóng notification dropdown khi click ra ngoài
-    if (
-      isNotificationOpen && 
-      notificationRef.current && 
-      !notificationRef.current.contains(event.target as Node)
-    ) {
-      setIsNotificationOpen(false);
-    }
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      // Đóng profile dropdown khi click ra ngoài
+      if (
+        isProfileOpen &&
+        profileRef.current &&
+        profileButtonRef.current &&
+        !profileRef.current.contains(event.target as Node) &&
+        !profileButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
 
-    // Đóng voucher dropdown khi click ra ngoài
-    if (
-      isVoucherOpen && 
-      voucherRef.current && 
-      !voucherRef.current.contains(event.target as Node)
-    ) {
-      setIsVoucherOpen(false);
-    }
-  }, [isProfileOpen, isNotificationOpen, isVoucherOpen]);
+      // Đóng notification dropdown khi click ra ngoài
+      if (
+        isNotificationOpen &&
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        setIsNotificationOpen(false);
+      }
+
+      // Đóng voucher dropdown khi click ra ngoài
+      if (
+        isVoucherOpen &&
+        voucherRef.current &&
+        !voucherRef.current.contains(event.target as Node)
+      ) {
+        setIsVoucherOpen(false);
+      }
+    },
+    [isProfileOpen, isNotificationOpen, isVoucherOpen],
+  );
 
   // Thêm event listener khi component được mount
   useEffect(() => {
     // Thêm event listener cho document để bắt sự kiện click bên ngoài
     document.addEventListener('mousedown', handleClickOutside);
-    
+
     // Dọn dẹp event listener khi component bị unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -189,7 +195,7 @@ const Header = () => {
         if (isOpen) setIsOpen(false);
       }
     };
-    
+
     document.addEventListener('keydown', handleEscKey);
     return () => {
       document.removeEventListener('keydown', handleEscKey);
@@ -197,7 +203,9 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isOpen]);
 
   const isActive = (path: string) => {
-    return pathname === path ? 'text-primary-600 font-medium' : 'text-gray-700 hover:text-primary-600';
+    return pathname === path
+      ? 'text-primary-600 font-medium'
+      : 'text-gray-700 hover:text-primary-600';
   };
 
   const toggleMenu = () => {
@@ -229,9 +237,9 @@ const Header = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
       maximumFractionDigits: 0,
     }).format(amount);
   };
@@ -241,27 +249,28 @@ const Header = () => {
     return new Date(
       date.getUTCFullYear(),
       date.getUTCMonth(),
-      date.getUTCDate()
+      date.getUTCDate(),
     ).toLocaleDateString('vi-VN');
   };
 
   const handleCopyVoucher = (code: string) => {
-    navigator.clipboard.writeText(code)
+    navigator.clipboard
+      .writeText(code)
       .then(() => {
         // Use a more elegant notification method instead of alert
         setShowNotification(true);
         setNotificationMessage(`Đã sao chép mã: ${code}`);
-        
+
         // Hide notification after 2 seconds
         setTimeout(() => {
           setShowNotification(false);
         }, 2000);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Copy failed:', err);
         setShowNotification(true);
         setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
-        
+
         setTimeout(() => {
           setShowNotification(false);
         }, 2000);
@@ -274,12 +283,12 @@ const Header = () => {
       // Nếu không đăng nhập, chỉ hiển thị vouchers công khai
       return publicCoupons;
     }
-    
+
     // Nếu đã đăng nhập, hiển thị cả vouchers công khai và voucher riêng
     // Loại bỏ trùng lặp giữa vouchers công khai và vouchers của người dùng
-    const userVoucherIds = new Set(userCoupons.filter(v => !v.isPublic).map(v => v.id));
-    const uniquePublicCoupons = publicCoupons.filter(v => !userVoucherIds.has(v.id));
-    
+    const userVoucherIds = new Set(userCoupons.filter((v) => !v.isPublic).map((v) => v.id));
+    const uniquePublicCoupons = publicCoupons.filter((v) => !userVoucherIds.has(v.id));
+
     // Lọc các voucher đã hết hạn và hết lượt
     const isExpired = (coupon: PublicCoupon): boolean => {
       try {
@@ -294,19 +303,18 @@ const Header = () => {
     const isOutOfUses = (coupon: PublicCoupon): boolean => {
       return coupon.userUsage !== undefined && coupon.userUsage.current >= coupon.userUsage.limit;
     };
-    
+
     // Lọc ra các voucher còn hiệu lực và còn lượt sử dụng
     const filteredUserCoupons = userCoupons
-      .filter(v => !v.isPublic)
-      .filter(v => !isExpired(v) && !isOutOfUses(v));
-    
-    const filteredPublicCoupons = uniquePublicCoupons
-      .filter(v => !isExpired(v));
-    
+      .filter((v) => !v.isPublic)
+      .filter((v) => !isExpired(v) && !isOutOfUses(v));
+
+    const filteredPublicCoupons = uniquePublicCoupons.filter((v) => !isExpired(v));
+
     // Sắp xếp: vouchers cá nhân trước, sau đó là vouchers công khai
     return [
       ...filteredUserCoupons, // Voucher riêng của người dùng
-      ...filteredPublicCoupons // Voucher công khai
+      ...filteredPublicCoupons, // Voucher công khai
     ];
   };
 
@@ -330,7 +338,10 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-              <Link href="/" className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}>
+              <Link
+                href="/"
+                className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+              >
                 Trang chủ
               </Link>
               <Link
@@ -367,7 +378,7 @@ const Header = () => {
                   <BalanceDisplay />
                 </div>
               )}
-              
+
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
                 <button
@@ -391,17 +402,17 @@ const Header = () => {
                       d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                     />
                   </svg>
-                  {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
+                  {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
                     <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
-                      {userCoupons.filter(v => !v.isPublic).length}
+                      {userCoupons.filter((v) => !v.isPublic).length}
                     </span>
                   )}
                 </button>
 
                 {/* Voucher Dropdown */}
                 {isVoucherOpen && (
-                  <div 
-                    className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10" 
+                  <div
+                    className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10"
                     tabIndex={0}
                     role="menu"
                     aria-orientation="vertical"
@@ -415,7 +426,7 @@ const Header = () => {
                         Xem tất cả
                       </Link>
                     </div>
-                    
+
                     <div className="max-h-80 overflow-y-auto">
                       {loadingCoupons ? (
                         <div className="py-6 text-center">
@@ -424,22 +435,22 @@ const Header = () => {
                         </div>
                       ) : getDisplayVouchers().length > 0 ? (
                         <>
-                          {session && userCoupons.filter(v => !v.isPublic).length > 0 && (
+                          {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
                             <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
                               <h4 className="text-xs font-medium text-teal-700">Voucher của bạn</h4>
                             </div>
                           )}
-                          
+
                           {getDisplayVouchers().map((coupon, index) => (
                             <div key={coupon.id}>
-                              <div 
+                              <div
                                 className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
                                 role="menuitem"
                               >
                                 <div className="flex justify-between items-start">
                                   <div className="flex items-center gap-2 mb-1">
                                     <div className="flex items-center">
-                                      <span 
+                                      <span
                                         onClick={() => handleCopyVoucher(coupon.code)}
                                         className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
                                         title="Nhấn để sao chép mã"
@@ -447,44 +458,66 @@ const Header = () => {
                                         {coupon.code}
                                       </span>
                                     </div>
-                                    <span className={`text-xs font-medium ${coupon.type === "percentage" ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}>
-                                      {coupon.type === "percentage" ? `${coupon.value}%` : formatCurrency(coupon.value)}
+                                    <span
+                                      className={`text-xs font-medium ${coupon.type === 'percentage' ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}
+                                    >
+                                      {coupon.type === 'percentage'
+                                        ? `${coupon.value}%`
+                                        : formatCurrency(coupon.value)}
                                     </span>
                                   </div>
-                                  <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">HSD: {formatDate(coupon.endDate)}</span>
+                                  <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
+                                    HSD: {formatDate(coupon.endDate)}
+                                  </span>
                                 </div>
-                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
+                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">
+                                  {coupon.name}
+                                </h4>
                                 {coupon.description && (
                                   <div className="flex justify-between items-center mt-1">
-                                    <p className="text-xs text-gray-600 line-clamp-2">{coupon.description}</p>
+                                    <p className="text-xs text-gray-600 line-clamp-2">
+                                      {coupon.description}
+                                    </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                      <span className="text-xs font-medium text-teal-600">Còn {coupon.userUsage.limit - coupon.userUsage.current} lượt</span>
+                                      <span className="text-xs font-medium text-teal-600">
+                                        Còn {coupon.userUsage.limit - coupon.userUsage.current} lượt
+                                      </span>
                                     )}
                                   </div>
                                 )}
                                 <div className="mt-2 flex justify-between items-center text-xs mb-1">
                                   <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
-                                    {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
+                                    {coupon.minOrder
+                                      ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}`
+                                      : 'Không giới hạn đơn'}
                                   </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                     <span className="text-gray-500">
-                                      {Math.min(100, Math.round((coupon.userUsage.current / coupon.userUsage.limit) * 100))}%
+                                      {Math.min(
+                                        100,
+                                        Math.round(
+                                          (coupon.userUsage.current / coupon.userUsage.limit) * 100,
+                                        ),
+                                      )}
+                                      %
                                     </span>
                                   )}
                                 </div>
                                 {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                   <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-                                    <div 
+                                    <div
                                       className={`h-full rounded-full ${
-                                        coupon.userUsage.current >= coupon.userUsage.limit 
-                                          ? 'bg-gradient-to-r from-red-500 to-red-600' 
+                                        coupon.userUsage.current >= coupon.userUsage.limit
+                                          ? 'bg-gradient-to-r from-red-500 to-red-600'
                                           : 'bg-gradient-to-r from-teal-500 to-emerald-600'
                                       }`}
-                                      style={{ width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%` }}
+                                      style={{
+                                        width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%`,
+                                      }}
                                     ></div>
                                   </div>
                                 )}
-                                
+
                                 {/* Note section removed */}
                               </div>
                             </div>
@@ -492,14 +525,16 @@ const Header = () => {
                         </>
                       ) : (
                         <div className="px-4 py-6 text-center">
-                          <p className="text-xs sm:text-sm text-gray-500">Không có mã giảm giá nào</p>
+                          <p className="text-xs sm:text-sm text-gray-500">
+                            Không có mã giảm giá nào
+                          </p>
                         </div>
                       )}
                     </div>
                   </div>
                 )}
               </div>
-              
+
               {/* Notification Icon */}
               {session && (
                 <div className="relative" ref={notificationRef}>
@@ -533,8 +568,8 @@ const Header = () => {
 
                   {/* Notification Dropdown */}
                   {isNotificationOpen && (
-                    <div 
-                      className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10" 
+                    <div
+                      className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white rounded-lg shadow-xl py-2 z-10"
                       tabIndex={0}
                       role="menu"
                       aria-orientation="vertical"
@@ -542,7 +577,7 @@ const Header = () => {
                       <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
                         <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
                         {unreadCount > 0 && (
-                          <button 
+                          <button
                             onClick={(e) => {
                               e.stopPropagation();
                               markAllAsRead();
@@ -553,18 +588,20 @@ const Header = () => {
                           </button>
                         )}
                       </div>
-                      
+
                       <div className="max-h-80 overflow-y-auto">
                         {notifications.length > 0 ? (
                           notifications.slice(0, 5).map((notification) => (
-                            <div 
-                              key={notification.id} 
+                            <div
+                              key={notification.id}
                               className={`p-2 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-primary-50' : ''}`}
                               onClick={() => markAsRead(notification.id)}
                               role="menuitem"
                             >
                               <div className="flex justify-between items-start">
-                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">{notification.title}</h4>
+                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">
+                                  {notification.title}
+                                </h4>
                                 <span className="text-xs text-gray-500">{notification.time}</span>
                               </div>
                               <p className="text-xs text-gray-600 mt-1">{notification.content}</p>
@@ -572,11 +609,13 @@ const Header = () => {
                           ))
                         ) : (
                           <div className="px-4 py-6 text-center">
-                            <p className="text-xs sm:text-sm text-gray-500">Không có thông báo nào</p>
+                            <p className="text-xs sm:text-sm text-gray-500">
+                              Không có thông báo nào
+                            </p>
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="px-4 py-2 border-t border-gray-100 text-center">
                         <Link
                           href="/notifications"
@@ -625,14 +664,14 @@ const Header = () => {
                   >
                     <Avatar
                       src={session.user?.image}
-                      alt={session.user?.name || "User"}
+                      alt={session.user?.name || 'User'}
                       size="md"
                       className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className={`h-3 w-3 ml-1 transform ${
-                        isProfileOpen ? "rotate-180" : ""
+                        isProfileOpen ? 'rotate-180' : ''
                       } transition-transform`}
                       fill="none"
                       viewBox="0 0 24 24"
@@ -657,7 +696,7 @@ const Header = () => {
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && session && (
-                  <div 
+                  <div
                     className="absolute right-0 mt-2 w-48 md:w-52 bg-white rounded-lg shadow-xl py-2 z-10"
                     tabIndex={0}
                     role="menu"
@@ -790,17 +829,22 @@ const Header = () => {
           </nav>
         </div>
       </header>
-      
+
       {/* Notification toast */}
       {showNotification && (
         <div className="fixed bottom-4 right-4 bg-teal-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 flex items-center">
           <span>{notificationMessage}</span>
-          <button 
-            onClick={() => setShowNotification(false)} 
+          <button
+            onClick={() => setShowNotification(false)}
             className="ml-3 text-white hover:text-teal-100"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -809,4 +853,4 @@ const Header = () => {
   );
 };
 
-export default Header; 
+export default Header;

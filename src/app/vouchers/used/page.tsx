@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
+import React, { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 interface UserVoucher {
   code: string;
@@ -12,14 +12,14 @@ interface UserVoucher {
 }
 
 const formatDate = (dateString: string) => {
-  if (!dateString) return "N/A";
+  if (!dateString) return 'N/A';
   const date = new Date(dateString);
-  return date.toLocaleDateString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
+  return date.toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 };
 
@@ -31,28 +31,28 @@ export default function UsedVouchersPage() {
 
   useEffect(() => {
     const fetchVouchers = async () => {
-      if (status !== "authenticated") return;
-      
+      if (status !== 'authenticated') return;
+
       try {
         setIsLoading(true);
-        const response = await fetch("/api/user/vouchers/sync", {
-          method: "GET",
-          credentials: "include",
+        const response = await fetch('/api/user/vouchers/sync', {
+          method: 'GET',
+          credentials: 'include',
           headers: {
-            "Content-Type": "application/json",
-          }
+            'Content-Type': 'application/json',
+          },
         });
-        
+
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Không thể tải dữ liệu voucher");
+          throw new Error(errorData.error || 'Không thể tải dữ liệu voucher');
         }
-        
+
         const data = await response.json();
         setVouchers(data.vouchers || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Đã xảy ra lỗi khi tải voucher");
-        console.error("Error fetching vouchers:", err);
+        setError(err instanceof Error ? err.message : 'Đã xảy ra lỗi khi tải voucher');
+        console.error('Error fetching vouchers:', err);
       } finally {
         setIsLoading(false);
       }
@@ -61,7 +61,7 @@ export default function UsedVouchersPage() {
     fetchVouchers();
   }, [status]);
 
-  if (status === "loading") {
+  if (status === 'loading') {
     return (
       <div className="max-w-2xl mx-auto py-8 px-4 min-h-screen">
         <div className="flex justify-center items-center h-40">
@@ -71,12 +71,17 @@ export default function UsedVouchersPage() {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (status === 'unauthenticated') {
     return (
       <div className="max-w-2xl mx-auto py-8 px-4 min-h-screen">
         <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-4">Bạn cần đăng nhập để xem voucher đã sử dụng</h2>
-          <Link href="/login" className="inline-block bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors">
+          <h2 className="text-xl font-semibold mb-4">
+            Bạn cần đăng nhập để xem voucher đã sử dụng
+          </h2>
+          <Link
+            href="/login"
+            className="inline-block bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
+          >
             Đăng nhập
           </Link>
         </div>
@@ -87,31 +92,34 @@ export default function UsedVouchersPage() {
   return (
     <div className="max-w-2xl mx-auto py-8 px-4 min-h-screen">
       <h1 className="text-2xl font-bold text-primary-700 mb-6 text-center">Voucher đã sử dụng</h1>
-      
+
       <div className="mb-4 flex justify-between items-center">
-        <Link href="/vouchers" className="text-primary-600 hover:text-primary-800 transition-colors">
+        <Link
+          href="/vouchers"
+          className="text-primary-600 hover:text-primary-800 transition-colors"
+        >
           &larr; Xem voucher hiện có
         </Link>
-        <button 
+        <button
           onClick={async () => {
             setIsLoading(true);
             try {
-              const response = await fetch("/api/user/vouchers/sync", {
-                method: "GET",
-                credentials: "include",
+              const response = await fetch('/api/user/vouchers/sync', {
+                method: 'GET',
+                credentials: 'include',
                 headers: {
-                  "Content-Type": "application/json",
-                }
+                  'Content-Type': 'application/json',
+                },
               });
               if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || "Đồng bộ thất bại");
+                throw new Error(errorData.error || 'Đồng bộ thất bại');
               }
               const data = await response.json();
               setVouchers(data.vouchers || []);
             } catch (err) {
-              setError(err instanceof Error ? err.message : "Đồng bộ thất bại");
-              console.error("Error syncing vouchers:", err);
+              setError(err instanceof Error ? err.message : 'Đồng bộ thất bại');
+              console.error('Error syncing vouchers:', err);
             } finally {
               setIsLoading(false);
             }
@@ -119,7 +127,7 @@ export default function UsedVouchersPage() {
           className="text-sm bg-primary-50 text-primary-700 px-3 py-1 rounded-md hover:bg-primary-100 transition-colors"
           disabled={isLoading}
         >
-          {isLoading ? "Đang đồng bộ..." : "Đồng bộ dữ liệu"}
+          {isLoading ? 'Đang đồng bộ...' : 'Đồng bộ dữ liệu'}
         </button>
       </div>
 
@@ -145,21 +153,33 @@ export default function UsedVouchersPage() {
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 text-sm text-gray-600">
             Danh sách các voucher mà bạn đã sử dụng trong quá trình mua hàng.
           </div>
-          
+
           <div className="overflow-hidden rounded-lg border border-gray-200">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Mã voucher
                   </th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Tên
                   </th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Số lần sử dụng
                   </th>
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Lần cuối sử dụng
                   </th>
                 </tr>
@@ -177,7 +197,7 @@ export default function UsedVouchersPage() {
                       {voucher.usedCount}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(voucher.lastUsed || "")}
+                      {formatDate(voucher.lastUsed || '')}
                     </td>
                   </tr>
                 ))}
@@ -188,4 +208,4 @@ export default function UsedVouchersPage() {
       )}
     </div>
   );
-} 
+}

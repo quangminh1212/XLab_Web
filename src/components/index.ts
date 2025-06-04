@@ -14,4 +14,4 @@ export * from './cart';
 export * from './payment';
 
 // Common components
-export * from './common'; 
+export * from './common';

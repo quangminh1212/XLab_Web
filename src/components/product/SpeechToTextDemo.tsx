@@ -80,11 +80,12 @@ const SpeechToTextDemo = () => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(transcript)
+    navigator.clipboard
+      .writeText(transcript)
       .then(() => {
         alert('Đã sao chép vào clipboard!');
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Không thể sao chép: ', err);
       });
   };
@@ -100,11 +101,11 @@ const SpeechToTextDemo = () => {
           <p>Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.</p>
           <p>Vui lòng sử dụng Chrome, Edge hoặc Safari phiên bản mới nhất.</p>
         </div>
-        <Image 
-          src="/images/speech-to-text/microphone.svg" 
-          alt="Speech Recognition" 
-          width={200} 
-          height={200} 
+        <Image
+          src="/images/speech-to-text/microphone.svg"
+          alt="Speech Recognition"
+          width={200}
+          height={200}
           className="mx-auto opacity-50"
         />
       </div>
@@ -114,7 +115,7 @@ const SpeechToTextDemo = () => {
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
       <h2 className="text-xl font-semibold mb-4 text-center">Demo Nhận Dạng Giọng Nói</h2>
-      
+
       <div className="flex justify-center mb-6">
         <button
           onClick={toggleListening}
@@ -124,16 +125,16 @@ const SpeechToTextDemo = () => {
               : 'bg-blue-500 text-white hover:bg-blue-600'
           }`}
         >
-          <Image 
-            src="/images/speech-to-text/microphone.svg" 
-            alt="Microphone" 
-            width={48} 
-            height={48} 
+          <Image
+            src="/images/speech-to-text/microphone.svg"
+            alt="Microphone"
+            width={48}
+            height={48}
             className="w-12 h-12 object-contain"
           />
         </button>
       </div>
-      
+
       <div className="text-center mb-2">
         {isListening ? (
           <p className="text-red-500 font-medium">Đang lắng nghe...</p>
@@ -141,7 +142,7 @@ const SpeechToTextDemo = () => {
           <p className="text-gray-600">Nhấn nút micro để bắt đầu</p>
         )}
       </div>
-      
+
       <div className="border border-gray-200 rounded-lg p-4 mb-4 min-h-40 max-h-60 overflow-y-auto bg-gray-50">
         {transcript ? (
           <p className="whitespace-pre-wrap">{transcript}</p>
@@ -149,7 +150,7 @@ const SpeechToTextDemo = () => {
           <p className="text-gray-400 italic text-center">Nói điều gì đó...</p>
         )}
       </div>
-      
+
       <div className="flex justify-between">
         <button
           onClick={clearTranscript}
@@ -158,7 +159,7 @@ const SpeechToTextDemo = () => {
         >
           Xóa
         </button>
-        
+
         <button
           onClick={copyToClipboard}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
@@ -167,7 +168,7 @@ const SpeechToTextDemo = () => {
           Sao chép
         </button>
       </div>
-      
+
       <div className="mt-6 border-t pt-4 border-gray-200">
         <h3 className="text-sm font-medium mb-2">Chức năng của VoiceTyping:</h3>
         <ul className="text-sm text-gray-600 space-y-1 list-disc pl-5">
@@ -181,4 +182,4 @@ const SpeechToTextDemo = () => {
   );
 };
 
-export default SpeechToTextDemo; 
+export default SpeechToTextDemo;

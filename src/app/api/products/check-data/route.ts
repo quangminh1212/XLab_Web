@@ -24,28 +24,33 @@ function getProducts(): Product[] {
 export async function GET(request: NextRequest) {
   try {
     const products = getProducts();
-    
+
     // Kiểm tra có bao nhiêu sản phẩm có weeklyPurchases > 0
-    const productsWithPurchases = products.filter(p => p.weeklyPurchases && p.weeklyPurchases > 0);
-    
+    const productsWithPurchases = products.filter(
+      (p) => p.weeklyPurchases && p.weeklyPurchases > 0,
+    );
+
     // Tạo một mảng thông tin ngắn gọn về sản phẩm
-    const simplifiedProducts = products.map(p => ({
+    const simplifiedProducts = products.map((p) => ({
       id: p.id,
       name: p.name,
       weeklyPurchases: p.weeklyPurchases || 0,
-      rating: p.rating || 0
+      rating: p.rating || 0,
     }));
-    
+
     return NextResponse.json({
       totalProducts: products.length,
       productsWithPurchases: productsWithPurchases.length,
-      products: simplifiedProducts
+      products: simplifiedProducts,
     });
   } catch (error: any) {
     console.error('Error checking product data:', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: error.message || 'Internal server error' 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Internal server error',
+      },
+      { status: 500 },
+    );
   }
-} 
+}

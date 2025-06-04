@@ -59,62 +59,49 @@ function saveCoupons(data: Coupon[]): boolean {
 }
 
 // PATCH - Bật/tắt trạng thái mã giảm giá
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.isAdmin) {
-      return NextResponse.json(
-        { error: 'Không có quyền truy cập' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Không có quyền truy cập' }, { status: 403 });
     }
 
     const awaitedParams = await params;
     const id = awaitedParams.id;
-    
+
     // Đọc dữ liệu từ file
     const coupons = loadCoupons();
-    const couponIndex = coupons.findIndex(c => c.id === id);
-    
+    const couponIndex = coupons.findIndex((c) => c.id === id);
+
     if (couponIndex === -1) {
-      return NextResponse.json(
-        { error: 'Không tìm thấy mã giảm giá' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Không tìm thấy mã giảm giá' }, { status: 404 });
     }
 
     const body = await request.json();
     const { isActive } = body;
 
     if (typeof isActive !== 'boolean') {
-      return NextResponse.json(
-        { error: 'Dữ liệu không hợp lệ' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Dữ liệu không hợp lệ' }, { status: 400 });
     }
 
     // Cập nhật trạng thái
     coupons[couponIndex].isActive = isActive;
     coupons[couponIndex].updatedAt = new Date().toISOString();
-    
+
     // Lưu thay đổi vào file
     saveCoupons(coupons);
 
     return NextResponse.json({
       success: true,
       message: `Mã giảm giá đã được ${isActive ? 'kích hoạt' : 'vô hiệu hóa'} thành công`,
-      coupon: coupons[couponIndex]
+      coupon: coupons[couponIndex],
     });
-
   } catch (error) {
     console.error('Error toggling coupon status:', error);
     return NextResponse.json(
       { error: 'Đã xảy ra lỗi khi cập nhật trạng thái mã giảm giá' },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

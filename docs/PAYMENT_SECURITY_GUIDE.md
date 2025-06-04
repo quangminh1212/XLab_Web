@@ -3,10 +3,11 @@
 ## 🔍 Đánh giá Hệ thống Hiện tại
 
 ### ❌ Hiện tại: XÁC THỰC GIẢ
+
 Hệ thống hiện tại sử dụng **mock authentication** với các đặc điểm:
 
 - **Không có API thật**: Chỉ sử dụng `setTimeout` để giả lập
-- **Transaction ID giả**: Được tạo từ timestamp + số ngẫu nhiên  
+- **Transaction ID giả**: Được tạo từ timestamp + số ngẫu nhiên
 - **Không xác thực thật**: Chấp nhận bất kỳ mã nào >= 6 ký tự
 - **Không kết nối ngân hàng**: Không có API call thật
 
@@ -17,12 +18,14 @@ Hệ thống hiện tại sử dụng **mock authentication** với các đặc 
 ### 1. **Tích hợp API Ngân hàng Thật**
 
 #### **VietQR API** (Khuyến nghị)
+
 ```bash
 # Đăng ký tại: https://vietqr.io
 # API Documentation: https://docs.vietqr.io
 ```
 
 **Cấu hình cần thiết:**
+
 ```env
 VIETQR_API_URL=https://api.vietqr.io/v2/verify
 VIETQR_API_KEY=your_api_key_here
@@ -30,12 +33,14 @@ VIETQR_CLIENT_ID=your_client_id_here
 ```
 
 #### **MBBank Partnership API**
+
 ```bash
 # Cần partnership agreement với MBBank
 # Contact: developer@mbbank.com.vn
 ```
 
 #### **Các ngân hàng khác**
+
 - **VCB**: API Corporate Banking
 - **TCB**: TechcomBank Open API
 - **ACB**: ACB Digital API
@@ -46,6 +51,7 @@ VIETQR_CLIENT_ID=your_client_id_here
 #### **Khuyến nghị các nhà cung cấp:**
 
 1. **Twilio** (Quốc tế)
+
    ```env
    TWILIO_ACCOUNT_SID=your_account_sid
    TWILIO_AUTH_TOKEN=your_auth_token
@@ -53,6 +59,7 @@ VIETQR_CLIENT_ID=your_client_id_here
    ```
 
 2. **AWS SNS** (Đáng tin cậy)
+
    ```env
    AWS_ACCESS_KEY_ID=your_access_key
    AWS_SECRET_ACCESS_KEY=your_secret_key
@@ -60,6 +67,7 @@ VIETQR_CLIENT_ID=your_client_id_here
    ```
 
 3. **CMC Telecom** (Việt Nam)
+
    ```env
    CMC_SMS_URL=http://api.cmctelecom.vn
    CMC_USERNAME=your_username
@@ -75,11 +83,13 @@ VIETQR_CLIENT_ID=your_client_id_here
 ### 3. **Webhook Configuration**
 
 #### **Cấu hình Webhook URL:**
+
 ```
 https://yourdomain.com/api/payment/webhook
 ```
 
 #### **Security Headers:**
+
 - `X-Webhook-Signature`: HMAC-SHA256 signature
 - `X-Timestamp`: Unix timestamp
 - `X-Source`: Bank identifier
@@ -105,20 +115,23 @@ CREATE TABLE payment_transactions (
 ### 5. **Security Implementation**
 
 #### **Rate Limiting**
+
 - Max 5 lần thử / 5 phút / IP
 - Max 10 lần thử / giờ / user
 - Lockout tài khoản sau 20 lần thử sai
 
 #### **Input Validation**
+
 ```typescript
 // Validation patterns đã được implement trong bankAPI.ts
-SMS_OTP: /^[0-9]{6,8}$/
-BANK_TXN_ID: /^[A-Z0-9]{6,20}$/i  
-BANK_REF: /^(FT|MB|VCB|TCB|ACB)[0-9]{10,15}$/i
-QR_CODE: /^QR[0-9]{12,16}$/i
+SMS_OTP: /^[0-9]{6,8}$/;
+BANK_TXN_ID: /^[A-Z0-9]{6,20}$/i;
+BANK_REF: /^(FT|MB|VCB|TCB|ACB)[0-9]{10,15}$/i;
+QR_CODE: /^QR[0-9]{12,16}$/i;
 ```
 
 #### **Encryption & Security**
+
 - Mã hóa API keys với AES-256
 - Sử dụng HTTPS cho tất cả requests
 - Validate webhook signatures
@@ -127,6 +140,7 @@ QR_CODE: /^QR[0-9]{12,16}$/i
 ### 6. **Testing Strategy**
 
 #### **Development Environment**
+
 ```env
 NODE_ENV=development
 # Sử dụng sandbox/test APIs
@@ -134,6 +148,7 @@ VIETQR_API_URL=https://sandbox.vietqr.io/v2/verify
 ```
 
 #### **Test Cases**
+
 1. **Valid OTP**: 123456
 2. **Invalid OTP**: 000000
 3. **Expired OTP**: Test timeout
@@ -141,6 +156,7 @@ VIETQR_API_URL=https://sandbox.vietqr.io/v2/verify
 5. **Invalid Format**: abc123, 12345
 
 #### **Load Testing**
+
 - Concurrent users: 100+
 - Response time: < 3 seconds
 - Success rate: > 99%
@@ -148,12 +164,14 @@ VIETQR_API_URL=https://sandbox.vietqr.io/v2/verify
 ### 7. **Monitoring & Alerts**
 
 #### **Metrics to Track**
+
 - Verification success rate
 - Average response time
 - Failed attempts by IP/user
 - API errors from banking partners
 
 #### **Alert Conditions**
+
 - Success rate < 95%
 - Response time > 5 seconds
 - Error rate > 1%
@@ -162,12 +180,14 @@ VIETQR_API_URL=https://sandbox.vietqr.io/v2/verify
 ### 8. **Legal & Compliance**
 
 #### **Required Agreements**
+
 - **Banking Partnership**: Official agreement with banks
 - **SMS Provider**: Service level agreement
 - **PCI Compliance**: If handling card data
 - **GDPR/PDPA**: Data protection compliance
 
 #### **Documentation**
+
 - Terms of Service updates
 - Privacy Policy updates
 - User consent for SMS
@@ -176,30 +196,35 @@ VIETQR_API_URL=https://sandbox.vietqr.io/v2/verify
 ## 🔧 Implementation Checklist
 
 ### Phase 1: Foundation (Week 1)
+
 - [ ] Set up development environment
 - [ ] Implement rate limiting
 - [ ] Add input validation
 - [ ] Create database schema
 
 ### Phase 2: Banking Integration (Week 2-3)
+
 - [ ] Register with VietQR/Banking APIs
 - [ ] Implement verification endpoints
 - [ ] Add webhook handlers
 - [ ] Test with sandbox APIs
 
 ### Phase 3: SMS Integration (Week 4)
+
 - [ ] Choose SMS provider
 - [ ] Implement OTP generation
 - [ ] Add OTP verification
 - [ ] Test SMS delivery
 
 ### Phase 4: Security & Testing (Week 5)
+
 - [ ] Security audit
 - [ ] Load testing
 - [ ] Error handling
 - [ ] Monitoring setup
 
 ### Phase 5: Production (Week 6)
+
 - [ ] Production environment setup
 - [ ] Go-live checklist
 - [ ] User training
@@ -208,14 +233,16 @@ VIETQR_API_URL=https://sandbox.vietqr.io/v2/verify
 ## 💰 Cost Estimation
 
 ### API Costs (Monthly)
+
 - **VietQR API**: ~$50-200/month
 - **SMS Provider**: ~$0.05-0.10/SMS
 - **Banking APIs**: ~$100-500/month
 - **Monitoring Tools**: ~$50-100/month
 
 ### Development Time
+
 - **Implementation**: 4-6 weeks
-- **Testing**: 2-3 weeks  
+- **Testing**: 2-3 weeks
 - **Documentation**: 1 week
 - **Total**: 7-10 weeks
 
@@ -235,4 +262,5 @@ VIETQR_API_URL=https://sandbox.vietqr.io/v2/verify
 - **Technical Issues**: Create GitHub issues
 
 ---
-*Tài liệu này sẽ được cập nhật khi có thêm thông tin mới về các API và nhà cung cấp.* 
+
+_Tài liệu này sẽ được cập nhật khi có thêm thông tin mới về các API và nhà cung cấp._

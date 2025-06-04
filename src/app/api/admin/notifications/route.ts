@@ -47,7 +47,7 @@ async function getNotifications(): Promise<Notification[]> {
         createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 giờ trước
         link: '/products',
         priority: 'high',
-        expiresAt: new Date(Date.now() + 7 * 24 * 3600000).toISOString() // 7 ngày sau
+        expiresAt: new Date(Date.now() + 7 * 24 * 3600000).toISOString(), // 7 ngày sau
       },
       {
         id: '2',
@@ -57,7 +57,7 @@ async function getNotifications(): Promise<Notification[]> {
         isRead: {},
         createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 ngày trước
         link: '/products/1',
-        priority: 'medium'
+        priority: 'medium',
       },
       {
         id: '3',
@@ -66,8 +66,8 @@ async function getNotifications(): Promise<Notification[]> {
         type: 'system',
         isRead: {},
         createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), // 2 ngày trước
-        priority: 'high'
-      }
+        priority: 'high',
+      },
     ];
     await saveNotifications(defaultNotifications);
     return defaultNotifications;
@@ -96,13 +96,13 @@ export async function GET(request: Request) {
     const notifications = await getNotifications();
 
     // Sắp xếp theo thời gian tạo (mới nhất trước)
-    const sortedNotifications = notifications.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    const sortedNotifications = notifications.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       notifications: sortedNotifications,
-      total: notifications.length
+      total: notifications.length,
     });
   } catch (error) {
     console.error('Error fetching admin notifications:', error);
@@ -127,27 +127,33 @@ export async function DELETE(request: Request) {
     const notificationId = searchParams.get('id');
 
     if (!notificationId) {
-      return NextResponse.json({ 
-        error: 'Missing notification ID' 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: 'Missing notification ID',
+        },
+        { status: 400 },
+      );
     }
 
     const notifications = await getNotifications();
-    const filteredNotifications = notifications.filter(n => n.id !== notificationId);
+    const filteredNotifications = notifications.filter((n) => n.id !== notificationId);
 
     if (filteredNotifications.length === notifications.length) {
-      return NextResponse.json({ 
-        error: 'Notification not found' 
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          error: 'Notification not found',
+        },
+        { status: 404 },
+      );
     }
 
     await saveNotifications(filteredNotifications);
 
-    return NextResponse.json({ 
-      message: 'Notification deleted successfully' 
+    return NextResponse.json({
+      message: 'Notification deleted successfully',
     });
   } catch (error) {
     console.error('Error deleting notification:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-} 
+}

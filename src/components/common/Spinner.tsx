@@ -65,4 +65,4 @@ const Spinner = ({ size = 'md', color = 'primary', className = '' }: SpinnerProp
   );
 };
 
-export default Spinner; 
+export default Spinner;

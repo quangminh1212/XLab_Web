@@ -46,16 +46,25 @@ export default function AuthErrorPage() {
         <div className="bg-white shadow-lg rounded-lg p-8">
           <div className="flex justify-center mb-8">
             <div className="h-16 w-16 bg-red-100 flex items-center justify-center rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-10 w-10 text-red-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
           </div>
-          
-          <h2 className="text-center text-2xl font-bold text-gray-900 mb-3">
-            Lỗi xác thực
-          </h2>
-          
+
+          <h2 className="text-center text-2xl font-bold text-gray-900 mb-3">Lỗi xác thực</h2>
+
           <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
             <div className="flex">
               <div className="ml-3">
@@ -63,12 +72,12 @@ export default function AuthErrorPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="text-center space-y-4">
             <p className="text-gray-600">
               Bạn có thể thử lại việc đăng nhập hoặc quay lại trang chủ.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/login"
@@ -85,7 +94,7 @@ export default function AuthErrorPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="text-center text-sm text-gray-500">
           <p>
             Nếu bạn vẫn gặp vấn đề, vui lòng{' '}
@@ -98,4 +107,4 @@ export default function AuthErrorPage() {
       </div>
     </div>
   );
-} 
+}

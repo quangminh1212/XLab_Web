@@ -17,7 +17,7 @@ function UsersPage() {
     total: 0,
     active: 0,
     inactive: 0,
-    newThisMonth: 0
+    newThisMonth: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,22 +29,22 @@ function UsersPage() {
       try {
         setIsLoading(true);
         const response = await fetch('/api/admin/users');
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch users');
         }
-        
+
         const data = await response.json();
-        
+
         // API đã trả về dữ liệu với thống kê đơn hàng
         setUsers(data.users || []);
-        
+
         // Sử dụng stats từ API
         if (data.stats) {
           setStats(data.stats);
         }
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error('Error fetching users:', error);
       } finally {
         setIsLoading(false);
       }
@@ -54,12 +54,12 @@ function UsersPage() {
   }, []);
 
   // Lọc người dùng theo tìm kiếm và bộ lọc
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = users.filter((user) => {
     // Lọc theo từ khóa tìm kiếm
-    const matchesSearch = 
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     // Lọc theo trạng thái
     let matchesFilter = true;
     switch (filter) {
@@ -75,7 +75,7 @@ function UsersPage() {
       default:
         matchesFilter = true;
     }
-    
+
     return matchesSearch && matchesFilter;
   });
 
@@ -85,10 +85,10 @@ function UsersPage() {
     return new Intl.DateTimeFormat('vi-VN', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     }).format(date);
   };
-  
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -100,7 +100,7 @@ function UsersPage() {
           ← Quay lại Dashboard
         </Link>
       </div>
-      
+
       {/* Thống kê */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow p-4">
@@ -120,7 +120,7 @@ function UsersPage() {
           <p className="mt-2 text-3xl font-bold text-blue-600">{stats.newThisMonth}</p>
         </div>
       </div>
-      
+
       {/* Bộ lọc và tìm kiếm */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex flex-col sm:flex-row gap-4 justify-between">
@@ -133,12 +133,22 @@ function UsersPage() {
               className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="h-5 w-5 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
           </div>
-          
+
           <div className="flex gap-2">
             <select
               value={filter}
@@ -153,7 +163,7 @@ function UsersPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Danh sách người dùng */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {isLoading ? (
@@ -165,28 +175,52 @@ function UsersPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Người dùng
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Trạng thái
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Vai trò
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Số dư
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     SP đã mua
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Ngày tạo
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Đăng nhập cuối
                   </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
                     Tác vụ
                   </th>
                 </tr>
@@ -201,8 +235,16 @@ function UsersPage() {
                             {user.name}
                             {user.isAdmin && (
                               <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fillRule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clipRule="evenodd" />
+                                <svg
+                                  className="w-3 h-3 mr-1"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
+                                    clipRule="evenodd"
+                                  />
                                 </svg>
                                 Admin
                               </span>
@@ -213,11 +255,13 @@ function UsersPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.isActive 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          user.isActive
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
                         {user.isActive ? 'Hoạt động' : 'Không hoạt động'}
                       </span>
                     </td>
@@ -241,9 +285,7 @@ function UsersPage() {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="font-medium">
-                        {user.purchasedProducts || 0} sản phẩm
-                      </div>
+                      <div className="font-medium">{user.purchasedProducts || 0} sản phẩm</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(user.createdAt)}
@@ -255,11 +297,13 @@ function UsersPage() {
                       <button className="text-indigo-600 hover:text-indigo-900 mr-3">
                         Chi tiết
                       </button>
-                      <button className={`${
-                        user.isActive 
-                          ? 'text-red-600 hover:text-red-900' 
-                          : 'text-green-600 hover:text-green-900'
-                      }`}>
+                      <button
+                        className={`${
+                          user.isActive
+                            ? 'text-red-600 hover:text-red-900'
+                            : 'text-green-600 hover:text-green-900'
+                        }`}
+                      >
                         {user.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
                       </button>
                     </td>
@@ -267,7 +311,7 @@ function UsersPage() {
                 ))}
               </tbody>
             </table>
-            
+
             {filteredUsers.length === 0 && (
               <div className="py-12 text-center text-gray-500">
                 <p>Không tìm thấy người dùng phù hợp.</p>
@@ -280,4 +324,4 @@ function UsersPage() {
   );
 }
 
-export default withAdminAuth(UsersPage); 
+export default withAdminAuth(UsersPage);

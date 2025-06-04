@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import { formatCurrency } from '@/lib/utils';
 import { useSession } from 'next-auth/react';
 
@@ -11,16 +11,16 @@ export default function CheckoutPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { data: session } = useSession();
-  const productName = searchParams.get("product") || "Sản phẩm không xác định";
-  const amountString = searchParams.get("amount") || "0";
+  const productName = searchParams.get('product') || 'Sản phẩm không xác định';
+  const amountString = searchParams.get('amount') || '0';
   const amount = parseInt(amountString, 10);
-  const image = searchParams.get("image") || "/images/placeholder/product-placeholder.svg";
+  const image = searchParams.get('image') || '/images/placeholder/product-placeholder.svg';
 
   const [userBalance, setUserBalance] = useState(0);
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
-  const [coupon, setCoupon] = useState("");
+  const [coupon, setCoupon] = useState('');
   const [couponDiscount, setCouponDiscount] = useState(0);
-  const [couponError, setCouponError] = useState("");
+  const [couponError, setCouponError] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   const total = Math.max(amount - couponDiscount, 0);
@@ -48,7 +48,7 @@ export default function CheckoutPage() {
 
   const handleApplyCoupon = async () => {
     setIsApplyingCoupon(true);
-    setCouponError("");
+    setCouponError('');
     setCouponDiscount(0);
     if (!coupon.trim()) {
       setCouponError('Vui lòng nhập mã giảm giá');
@@ -59,7 +59,7 @@ export default function CheckoutPage() {
       const res = await fetch('/api/cart/validate-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: coupon })
+        body: JSON.stringify({ code: coupon }),
       });
       const data = await res.json();
       if (res.ok && data.discount) {
@@ -84,9 +84,11 @@ export default function CheckoutPage() {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
         <h1 className="text-3xl font-bold mb-6">Thông tin thanh toán không hợp lệ</h1>
-        <p className="mb-6">Không tìm thấy thông tin sản phẩm hoặc số tiền thanh toán không chính xác.</p>
-        <Link 
-          href="/payment" 
+        <p className="mb-6">
+          Không tìm thấy thông tin sản phẩm hoặc số tiền thanh toán không chính xác.
+        </p>
+        <Link
+          href="/payment"
           className="inline-block px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-md transition-colors"
         >
           Quay lại trang thanh toán
@@ -119,20 +121,34 @@ export default function CheckoutPage() {
                 <div className="border border-teal-300 rounded-lg p-4 bg-teal-50">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold text-teal-800">Số dư tài khoản</span>
-                    <span className="text-teal-700 font-bold">Số dư hiện tại: {formatCurrency(userBalance)}</span>
+                    <span className="text-teal-700 font-bold">
+                      Số dư hiện tại: {formatCurrency(userBalance)}
+                    </span>
                   </div>
                   {userBalance < total && !isLoadingBalance && (
                     <div className="mt-2 p-3 bg-teal-100 border border-teal-300 rounded-lg">
                       <div className="flex items-start space-x-3">
                         <div className="flex-shrink-0">
-                          <svg className="w-5 h-5 text-teal-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                          <svg
+                            className="w-5 h-5 text-teal-500 mt-0.5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                         </div>
                         <div className="flex-1">
                           <h4 className="text-sm font-medium text-teal-800">Số dư không đủ</h4>
                           <p className="text-sm text-teal-700 mt-1">
-                            Bạn cần thêm <span className="font-semibold">{formatCurrency(total - userBalance)}</span> để hoàn tất đơn hàng này.
+                            Bạn cần thêm{' '}
+                            <span className="font-semibold">
+                              {formatCurrency(total - userBalance)}
+                            </span>{' '}
+                            để hoàn tất đơn hàng này.
                           </p>
                         </div>
                       </div>
@@ -140,16 +156,27 @@ export default function CheckoutPage() {
                   )}
                 </div>
                 <div className="bg-teal-50 border border-teal-200 rounded-lg p-4 text-teal-800 text-sm">
-                  Hiện tại chúng tôi chỉ hỗ trợ thanh toán bằng số dư tài khoản để đảm bảo tính bảo mật và xử lý nhanh chóng. Bạn có thể nạp tiền vào tài khoản thông qua các phương thức chuyển khoản ngân hàng.
+                  Hiện tại chúng tôi chỉ hỗ trợ thanh toán bằng số dư tài khoản để đảm bảo tính bảo
+                  mật và xử lý nhanh chóng. Bạn có thể nạp tiền vào tài khoản thông qua các phương
+                  thức chuyển khoản ngân hàng.
                 </div>
                 <button
                   onClick={handlePayment}
                   className="w-full bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded font-medium transition-colors flex items-center justify-center space-x-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
                   </svg>
-                  <span>{userBalance < total ? `Nạp tiền (${formatCurrency(total - userBalance)})` : `Thanh toán ${formatCurrency(total)}`}</span>
+                  <span>
+                    {userBalance < total
+                      ? `Nạp tiền (${formatCurrency(total - userBalance)})`
+                      : `Thanh toán ${formatCurrency(total)}`}
+                  </span>
                 </button>
                 {userBalance < total && (
                   <button
@@ -166,7 +193,13 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
             <h3 className="text-lg font-bold mb-4">Tóm tắt đơn hàng</h3>
             <div className="flex items-center mb-4">
-              <Image src={image} alt={productName} width={56} height={56} className="rounded mr-3" />
+              <Image
+                src={image}
+                alt={productName}
+                width={56}
+                height={56}
+                className="rounded mr-3"
+              />
               <div>
                 <div className="font-semibold">{productName}</div>
                 <div className="text-sm text-gray-500">Số lượng: 1</div>
@@ -178,7 +211,7 @@ export default function CheckoutPage() {
                 type="text"
                 placeholder="Nhập mã giảm giá"
                 value={coupon}
-                onChange={e => setCoupon(e.target.value)}
+                onChange={(e) => setCoupon(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm mb-2"
               />
               <button
@@ -213,11 +246,19 @@ export default function CheckoutPage() {
               </div>
             )}
             <p className="text-xs text-gray-500 mt-2">
-              Bằng cách đặt hàng, bạn đồng ý với <Link href="/terms" className="underline">Điều khoản dịch vụ</Link> và <Link href="/privacy" className="underline">Chính sách bảo mật</Link> của chúng tôi.
+              Bằng cách đặt hàng, bạn đồng ý với{' '}
+              <Link href="/terms" className="underline">
+                Điều khoản dịch vụ
+              </Link>{' '}
+              và{' '}
+              <Link href="/privacy" className="underline">
+                Chính sách bảo mật
+              </Link>{' '}
+              của chúng tôi.
             </p>
           </div>
         </div>
       </section>
     </div>
   );
-} 
+}

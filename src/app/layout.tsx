@@ -1,9 +1,9 @@
-import '@/styles/globals.css'
-import '../styles/app-layout.css'
-import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
-import { siteConfig } from '@/config/siteConfig'
-import { ClientLayoutWrapper } from '@/components/layout'
+import '@/styles/globals.css';
+import '../styles/app-layout.css';
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
+import { siteConfig } from '@/config/siteConfig';
+import { ClientLayoutWrapper } from '@/components/layout';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -11,7 +11,7 @@ const inter = Inter({
   variable: '--font-inter',
   preload: true,
   display: 'swap',
-})
+});
 
 export const metadata: Metadata = {
   title: {
@@ -21,7 +21,13 @@ export const metadata: Metadata = {
   description: siteConfig.seo.defaultDescription,
   applicationName: siteConfig.name,
   authors: [{ name: siteConfig.legal.companyName, url: siteConfig.url }],
-  keywords: ['phần mềm', 'dịch vụ CNTT', 'giải pháp doanh nghiệp', 'phát triển phần mềm', 'cloud services'],
+  keywords: [
+    'phần mềm',
+    'dịch vụ CNTT',
+    'giải pháp doanh nghiệp',
+    'phát triển phần mềm',
+    'cloud services',
+  ],
   category: 'technology',
   robots: {
     index: true,
@@ -58,42 +64,35 @@ export const metadata: Metadata = {
       { url: '/images/topup.png', sizes: '16x16', type: 'image/png' },
       { url: '/images/topup.png', sizes: '32x32', type: 'image/png' },
     ],
-    apple: [
-      { url: '/images/topup.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      { rel: 'mask-icon', url: '/images/topup.png', color: '#2563EB' },
-    ],
+    apple: [{ url: '/images/topup.png', sizes: '180x180', type: 'image/png' }],
+    other: [{ rel: 'mask-icon', url: '/images/topup.png', color: '#2563EB' }],
   },
   other: {
     'msapplication-TileColor': '#00A19A',
     'theme-color': '#ffffff',
   },
-}
+};
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   themeColor: '#00A19A',
-}
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="font-sans antialiased">
-        <ClientLayoutWrapper>
-          {children}
-        </ClientLayoutWrapper>
+        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>
-  )
-} 
+  );
+}

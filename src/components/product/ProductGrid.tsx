@@ -27,7 +27,7 @@ interface Product {
   totalSold?: number;
   isAccount?: boolean;
   versions?: ProductVersion[];
-  optionPrices?: {[key: string]: OptionPrice};
+  optionPrices?: { [key: string]: OptionPrice };
 }
 
 interface ProductGridProps {
@@ -62,49 +62,49 @@ const ProductGrid = ({
         return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
     }
   };
-  
+
   // Tính giá thấp nhất từ các phiên bản và tùy chọn
   const calculateMinPrice = (product: Product): number => {
     let minPrice = Infinity;
-    
+
     // Kiểm tra các phiên bản
     if (product.versions && product.versions.length > 0) {
-      product.versions.forEach(version => {
+      product.versions.forEach((version) => {
         if (version.price < minPrice) {
           minPrice = version.price;
         }
       });
     }
-    
+
     // Kiểm tra các tùy chọn sản phẩm
     if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
-      Object.values(product.optionPrices).forEach(option => {
+      Object.values(product.optionPrices).forEach((option) => {
         if (option.price < minPrice) {
           minPrice = option.price;
         }
       });
     }
-    
+
     // Nếu có giá cố định
     if (product.price !== undefined && product.price < minPrice) {
       minPrice = product.price;
     }
-    
+
     return minPrice === Infinity ? 0 : minPrice;
   };
-  
+
   // Tính giá gốc tương ứng với giá thấp nhất
   const calculateOriginalPrice = (product: Product, minPrice: number): number | undefined => {
     let correspondingOriginalPrice;
-    
+
     // Nếu giá thấp nhất từ version
     if (product.versions && product.versions.length > 0) {
-      const version = product.versions.find(v => v.price === minPrice);
+      const version = product.versions.find((v) => v.price === minPrice);
       if (version) {
         return version.originalPrice;
       }
     }
-    
+
     // Nếu giá thấp nhất từ optionPrice
     if (product.optionPrices && Object.keys(product.optionPrices).length > 0) {
       for (const key in product.optionPrices) {
@@ -113,7 +113,7 @@ const ProductGrid = ({
         }
       }
     }
-    
+
     // Sử dụng giá gốc cố định nếu có
     return product.originalPrice;
   };
@@ -131,7 +131,7 @@ const ProductGrid = ({
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
-          
+
           // Validate và đảm bảo tất cả props đều là primitive values
           const safeProps = {
             key: String(product.id || ''),
@@ -147,11 +147,11 @@ const ProductGrid = ({
             totalSold: product.totalSold ? Number(product.totalSold) : undefined,
             isAccount: Boolean(product.isAccount),
             onAddToCart: onAddToCart,
-            onView: onProductView
+            onView: onProductView,
           };
-          
+
           console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
-          
+
           return (
             <ProductCard
               key={safeProps.key}
@@ -176,4 +176,4 @@ const ProductGrid = ({
   );
 };
 
-export default ProductGrid; 
+export default ProductGrid;

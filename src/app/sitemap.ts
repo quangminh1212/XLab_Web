@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://xlab.com';
-  
+
   // Danh sách các trang tĩnh
   const staticPages = [
     {
@@ -63,7 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // TODO: Thêm các trang động từ API hoặc database ở đây
   // Ví dụ: /products/[id], etc.
-  
+
   // Có thể fetch dữ liệu từ API hoặc sử dụng dữ liệu tĩnh
   const dynamicPages = [] as MetadataRoute.Sitemap;
   /* Ví dụ:
@@ -77,4 +77,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Gộp tất cả URL
   return [...staticPages, ...dynamicPages];
-} 
+}

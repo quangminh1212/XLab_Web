@@ -112,10 +112,10 @@ function saveUserData(email: string, userData: UserData): boolean {
     if (!fs.existsSync(usersDir)) {
       fs.mkdirSync(usersDir, { recursive: true });
     }
-    
+
     // Cập nhật thời gian chỉnh sửa
     userData.metadata.lastUpdated = new Date().toISOString();
-    
+
     const userFilePath = path.join(usersDir, `${email}.json`);
     fs.writeFileSync(userFilePath, JSON.stringify(userData, null, 2), 'utf8');
     return true;
@@ -130,28 +130,28 @@ export async function GET(request: Request) {
   try {
     // Kiểm tra xác thực và quyền admin
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user || !session.user.email) {
-      console.log("Unauthorized access attempt to /api/user/vouchers/sync - No valid session");
+      console.log('Unauthorized access attempt to /api/user/vouchers/sync - No valid session');
       return NextResponse.json(
         { error: 'Bạn cần đăng nhập để sử dụng tính năng này' },
-        { status: 401 }
+        { status: 401 },
       );
     }
-    
+
     const userEmail = session.user.email;
     console.log(`Processing voucher sync for user: ${userEmail}`);
-    
+
     // Tải dữ liệu của người dùng
     const userData = loadUserData(userEmail);
     if (!userData) {
       // Nếu không tìm thấy dữ liệu người dùng, tạo dữ liệu mới cơ bản
       const newUserData: UserData = {
         profile: {
-          id: session.user.id || "",
-          name: session.user.name || "",
+          id: session.user.id || '',
+          name: session.user.name || '',
           email: userEmail,
-          image: session.user.image || "",
+          image: session.user.image || '',
           isAdmin: session.user.isAdmin || false,
           isActive: true,
           balance: 0,
@@ -160,35 +160,35 @@ export async function GET(request: Request) {
         vouchers: [],
         metadata: {
           lastUpdated: new Date().toISOString(),
-          version: "1.0"
-        }
+          version: '1.0',
+        },
       };
-      
+
       saveUserData(userEmail, newUserData);
-      
+
       return NextResponse.json({
         success: true,
         message: `Đã tạo dữ liệu người dùng mới và chưa có voucher nào được sử dụng`,
-        vouchers: []
+        vouchers: [],
       });
     }
-    
+
     // Tải danh sách mã giảm giá
     const coupons = loadCoupons();
-    
+
     // Tạo mảng vouchers nếu chưa có
     if (!userData.vouchers) {
       userData.vouchers = [];
     }
-    
+
     // Đồng bộ thông tin voucher đã dùng
     let updatedCount = 0;
-    
+
     for (const coupon of coupons) {
       if (coupon.userUsage && coupon.userUsage[userEmail] && coupon.userUsage[userEmail] > 0) {
         // Kiểm tra xem voucher đã có trong dữ liệu người dùng chưa
-        const existingVoucher = userData.vouchers.find(v => v.code === coupon.code);
-        
+        const existingVoucher = userData.vouchers.find((v) => v.code === coupon.code);
+
         if (existingVoucher) {
           // Cập nhật thông tin nếu đã tồn tại
           if (existingVoucher.usedCount !== coupon.userUsage[userEmail]) {
@@ -202,28 +202,28 @@ export async function GET(request: Request) {
             code: coupon.code,
             name: coupon.name,
             usedCount: coupon.userUsage[userEmail],
-            lastUsed: new Date().toISOString()
+            lastUsed: new Date().toISOString(),
           });
           updatedCount++;
         }
       }
     }
-    
+
     // Lưu lại dữ liệu người dùng nếu có sự thay đổi
     if (updatedCount > 0) {
       saveUserData(userEmail, userData);
     }
-    
+
     return NextResponse.json({
       success: true,
       message: `Đã đồng bộ ${updatedCount} voucher với dữ liệu người dùng`,
-      vouchers: userData.vouchers
+      vouchers: userData.vouchers,
     });
   } catch (error) {
     console.error('Error syncing user vouchers:', error);
     return NextResponse.json(
       { error: 'Đã xảy ra lỗi khi đồng bộ dữ liệu voucher' },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

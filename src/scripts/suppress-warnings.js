@@ -22,10 +22,8 @@ const suppressPatterns = [
 console.error = function (...args) {
   // Kiểm tra xem thông báo lỗi có khớp với bất kỳ mẫu nào cần lọc
   const errorMessage = args.length > 0 ? String(args[0]) : '';
-  
-  const shouldSuppressError = suppressPatterns.some(pattern => 
-    pattern.test(errorMessage)
-  );
+
+  const shouldSuppressError = suppressPatterns.some((pattern) => pattern.test(errorMessage));
 
   // Nếu không cần lọc, ghi log bình thường
   if (!shouldSuppressError) {
@@ -37,10 +35,8 @@ console.error = function (...args) {
 console.warn = function (...args) {
   // Kiểm tra xem thông báo cảnh báo có khớp với bất kỳ mẫu nào cần lọc
   const warnMessage = args.length > 0 ? String(args[0]) : '';
-  
-  const shouldSuppressWarning = suppressPatterns.some(pattern => 
-    pattern.test(warnMessage)
-  );
+
+  const shouldSuppressWarning = suppressPatterns.some((pattern) => pattern.test(warnMessage));
 
   // Nếu không cần lọc, ghi log bình thường
   if (!shouldSuppressWarning) {
@@ -51,16 +47,14 @@ console.warn = function (...args) {
 // Ghi đè xử lý lỗi không bắt được để ngăn chặn crash
 process.on('unhandledRejection', (reason, promise) => {
   const errorMessage = reason ? String(reason) : '';
-  
+
   // Kiểm tra xem có nên lọc lỗi này không
-  const shouldSuppressError = suppressPatterns.some(pattern => 
-    pattern.test(errorMessage)
-  );
-  
+  const shouldSuppressError = suppressPatterns.some((pattern) => pattern.test(errorMessage));
+
   // Nếu không cần lọc, log lỗi để debug
   if (!shouldSuppressError) {
     originalConsoleError('Unhandled Rejection at Promise:', promise, 'Reason:', reason);
   }
 });
 
-console.log('[Next.js] Warning suppression active'); 
+console.log('[Next.js] Warning suppression active');

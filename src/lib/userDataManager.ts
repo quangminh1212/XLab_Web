@@ -54,31 +54,37 @@ function encryptData(data: string): { encrypted: string; iv: string; tag: string
   const iv = crypto.randomBytes(IV_LENGTH);
   const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest('hex').slice(0, 32);
   const cipher = crypto.createCipher(ALGORITHM, key);
-  
+
   let encrypted = cipher.update(data, 'utf8', 'hex');
   encrypted += cipher.final('hex');
-  
+
   return {
     encrypted,
     iv: iv.toString('hex'),
-    tag: crypto.createHash('sha256').update(encrypted + iv.toString('hex')).digest('hex')
+    tag: crypto
+      .createHash('sha256')
+      .update(encrypted + iv.toString('hex'))
+      .digest('hex'),
   };
 }
 
 // Giải mã dữ liệu
 function decryptData(encryptedData: string, iv: string, tag: string): string {
   // Kiểm tra tính toàn vẹn
-  const expectedTag = crypto.createHash('sha256').update(encryptedData + iv).digest('hex');
+  const expectedTag = crypto
+    .createHash('sha256')
+    .update(encryptedData + iv)
+    .digest('hex');
   if (expectedTag !== tag) {
     throw new Error('Data integrity check failed');
   }
-  
+
   const key = crypto.createHash('sha256').update(ENCRYPTION_KEY).digest('hex').slice(0, 32);
   const decipher = crypto.createDecipher(ALGORITHM, key);
-  
+
   let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
-  
+
   return decrypted;
 }
 
@@ -115,20 +121,20 @@ const fileLocks = new Map<string, Promise<void>>();
 
 async function withFileLock<T>(filePath: string, operation: () => Promise<T>): Promise<T> {
   const lockKey = path.resolve(filePath);
-  
+
   // Wait for any existing lock on this file
   if (fileLocks.has(lockKey)) {
     await fileLocks.get(lockKey);
   }
-  
+
   // Create new lock
   let resolveLock: () => void;
   const lockPromise = new Promise<void>((resolve) => {
     resolveLock = resolve;
   });
-  
+
   fileLocks.set(lockKey, lockPromise);
-  
+
   try {
     const result = await operation();
     return result;
@@ -143,28 +149,28 @@ async function withFileLock<T>(filePath: string, operation: () => Promise<T>): P
 async function retryOperation<T>(
   operation: () => Promise<T>,
   maxRetries: number = 5,
-  delayMs: number = 100
+  delayMs: number = 100,
 ): Promise<T> {
   let lastError: Error;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await operation();
     } catch (error: any) {
       lastError = error;
-      
+
       // Retry on file system errors
       if (error.code === 'EPERM' || error.code === 'EBUSY' || error.code === 'ENOENT') {
         if (i < maxRetries - 1) {
-          await new Promise(resolve => setTimeout(resolve, delayMs * (i + 1)));
+          await new Promise((resolve) => setTimeout(resolve, delayMs * (i + 1)));
           continue;
         }
       }
-      
+
       throw error;
     }
   }
-  
+
   throw lastError!;
 }
 
@@ -172,22 +178,22 @@ async function retryOperation<T>(
 async function createBackup(email: string, userData: UserData): Promise<void> {
   try {
     await ensureDirectoryExists(BACKUP_DIR);
-    
+
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupPath = getBackupFilePath(email, timestamp);
-    
+
     const dataString = JSON.stringify(userData, null, 2);
     const { encrypted, iv, tag } = encryptData(dataString);
-    
+
     const backupData = {
       email: email,
       timestamp: timestamp,
       data: encrypted,
       iv: iv,
       tag: tag,
-      checksum: createDataChecksum(userData)
+      checksum: createDataChecksum(userData),
     };
-    
+
     await fs.writeFile(backupPath, JSON.stringify(backupData, null, 2), 'utf8');
     console.log(`✅ Backup created for user: ${email} at ${backupPath}`);
   } catch (error) {
@@ -198,49 +204,49 @@ async function createBackup(email: string, userData: UserData): Promise<void> {
 // Lưu dữ liệu user
 export async function saveUserData(email: string, userData: UserData): Promise<void> {
   const filePath = getUserFilePath(email);
-  
+
   return withFileLock(filePath, async () => {
     await retryOperation(async () => {
       try {
         // Đảm bảo thư mục tồn tại
         const userDir = path.dirname(filePath);
         await ensureDirectoryExists(userDir);
-        
+
         // Tạo backup trước khi ghi file mới
         const existingData = await getUserData(email);
         if (existingData) {
           await createBackup(email, existingData);
         }
-        
+
         // Update metadata trước khi mã hóa
         userData.metadata.lastBackup = new Date().toISOString();
         userData.metadata.checksum = createDataChecksum(userData);
-        
+
         // Mã hóa dữ liệu
         const dataString = JSON.stringify(userData);
         const { encrypted, iv, tag } = encryptData(dataString);
-        
+
         const encryptedData = {
           data: encrypted,
           iv: iv,
           tag: tag,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
-        
+
         // Tạo file name duy nhất cho temp file
         const tempFilePath = `${filePath}.tmp.${Date.now()}.${Math.random().toString(36).substr(2, 9)}`;
-        
+
         try {
           // Ghi vào file tạm thời trước
           await fs.writeFile(tempFilePath, JSON.stringify(encryptedData, null, 2), 'utf8');
-          
+
           // Kiểm tra file tạm thời có đúng không
           const tempContent = await fs.readFile(tempFilePath, 'utf8');
           JSON.parse(tempContent); // Test parse để chắc chắn JSON hợp lệ
-          
+
           // Windows-safe file replace
           const backupPath = `${filePath}.backup.${Date.now()}`;
-          
+
           // Nếu file cũ tồn tại, rename nó thành backup
           try {
             await fs.access(filePath);
@@ -248,18 +254,18 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
           } catch (accessError) {
             // File cũ không tồn tại, không cần backup
           }
-          
+
           try {
             // Rename file tạm thời thành file chính
             await fs.rename(tempFilePath, filePath);
-            
+
             // Xóa backup file nếu thành công
             try {
               await fs.unlink(backupPath);
             } catch (unlinkError) {
               // Ignore cleanup errors
             }
-            
+
             // Chỉ log trong development mode
             if (process.env.NODE_ENV === 'development') {
               console.log(`✅ User data saved securely for: ${email}`);
@@ -273,7 +279,6 @@ export async function saveUserData(email: string, userData: UserData): Promise<v
             }
             throw renameError;
           }
-          
         } catch (writeError) {
           // Xóa file tạm thời nếu có lỗi
           try {
@@ -297,52 +302,54 @@ export async function createUserData(user: User): Promise<UserData> {
     profile: user,
     transactions: [],
     sessions: [],
-    activities: [{
-      id: Date.now().toString(),
-      type: 'account_created',
-      description: 'Tài khoản được tạo',
-      timestamp: new Date().toISOString()
-    }],
+    activities: [
+      {
+        id: Date.now().toString(),
+        type: 'account_created',
+        description: 'Tài khoản được tạo',
+        timestamp: new Date().toISOString(),
+      },
+    ],
     settings: {
       notifications: true,
       emailAlerts: true,
-      twoFactorAuth: false
+      twoFactorAuth: false,
     },
     metadata: {
       lastBackup: new Date().toISOString(),
       dataVersion: '1.0',
-      checksum: ''
-    }
+      checksum: '',
+    },
   };
-  
+
   userData.metadata.checksum = createDataChecksum(userData);
   return userData;
 }
 
 // Cập nhật hoạt động user
 export async function addUserActivity(
-  email: string, 
-  type: string, 
-  description: string, 
-  metadata?: any
+  email: string,
+  type: string,
+  description: string,
+  metadata?: any,
 ): Promise<void> {
   try {
     const userData = await getUserData(email);
     if (!userData) return;
-    
+
     userData.activities.push({
       id: Date.now().toString(),
       type: type,
       description: description,
       timestamp: new Date().toISOString(),
-      metadata: metadata
+      metadata: metadata,
     });
-    
+
     // Giới hạn số lượng activities (giữ 1000 hoạt động gần nhất)
     if (userData.activities.length > 1000) {
       userData.activities = userData.activities.slice(-1000);
     }
-    
+
     await saveUserData(email, userData);
   } catch (error) {
     console.error(`❌ Error adding activity for ${email}:`, error);
@@ -358,25 +365,25 @@ export async function updateUserSession(
     ipAddress?: string;
     userAgent?: string;
     isActive: boolean;
-  }
+  },
 ): Promise<void> {
   try {
     const userData = await getUserData(email);
     if (!userData) return;
-    
+
     // Cập nhật hoặc thêm session mới
-    const existingSessionIndex = userData.sessions.findIndex(s => s.id === sessionData.id);
+    const existingSessionIndex = userData.sessions.findIndex((s) => s.id === sessionData.id);
     if (existingSessionIndex >= 0) {
       userData.sessions[existingSessionIndex] = sessionData;
     } else {
       userData.sessions.push(sessionData);
     }
-    
+
     // Giới hạn số lượng sessions (giữ 100 sessions gần nhất)
     if (userData.sessions.length > 100) {
       userData.sessions = userData.sessions.slice(-100);
     }
-    
+
     await saveUserData(email, userData);
   } catch (error) {
     console.error(`❌ Error updating session for ${email}:`, error);
@@ -388,22 +395,22 @@ export async function addUserTransaction(email: string, transaction: Transaction
   try {
     const userData = await getUserData(email);
     if (!userData) return;
-    
+
     userData.transactions.push(transaction);
-    
+
     // Sắp xếp theo thời gian mới nhất trước
-    userData.transactions.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    userData.transactions.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
-    
+
     await saveUserData(email, userData);
-    
+
     // Thêm activity log
     await addUserActivity(
       email,
       'transaction',
       `Giao dịch ${transaction.type}: ${transaction.amount.toLocaleString('vi-VN')} VND`,
-      { transactionId: transaction.id, amount: transaction.amount, type: transaction.type }
+      { transactionId: transaction.id, amount: transaction.amount, type: transaction.type },
     );
   } catch (error) {
     console.error(`❌ Error adding transaction for ${email}:`, error);
@@ -415,7 +422,7 @@ export async function verifyDataIntegrity(email: string): Promise<boolean> {
   try {
     const userData = await getUserData(email);
     if (!userData) return false;
-    
+
     const currentChecksum = createDataChecksum(userData);
     return currentChecksum === userData.metadata.checksum;
   } catch (error) {
@@ -429,23 +436,21 @@ export async function cleanupCorruptedFiles(): Promise<void> {
   try {
     await ensureDirectoryExists(USER_DATA_DIR);
     const files = await fs.readdir(USER_DATA_DIR);
-    
-    const filesToClean = files.filter(file => 
-      file.endsWith('.tmp') || 
-      file.includes('.corrupted.') ||
-      file.endsWith('.temp')
+
+    const filesToClean = files.filter(
+      (file) => file.endsWith('.tmp') || file.includes('.corrupted.') || file.endsWith('.temp'),
     );
-    
+
     if (filesToClean.length > 0) {
       console.log(`🧹 Cleaning up ${filesToClean.length} temporary/corrupted files...`);
-      
+
       for (const file of filesToClean) {
         try {
           const filePath = path.join(USER_DATA_DIR, file);
           const stats = await fs.stat(filePath);
-          
+
           // Chỉ xóa files cũ hơn 1 giờ
-          const oneHourAgo = Date.now() - (60 * 60 * 1000);
+          const oneHourAgo = Date.now() - 60 * 60 * 1000;
           if (stats.mtime.getTime() < oneHourAgo) {
             await fs.unlink(filePath);
             console.log(`🗑️ Deleted old temporary file: ${file}`);
@@ -464,25 +469,21 @@ export async function cleanupCorruptedFiles(): Promise<void> {
 export async function restoreFromBackup(email: string, backupTimestamp: string): Promise<boolean> {
   try {
     const backupPath = getBackupFilePath(email, backupTimestamp);
-    
+
     const backupContent = await fs.readFile(backupPath, 'utf8');
     const backupData = JSON.parse(backupContent);
-    
-    const decryptedString = decryptData(
-      backupData.data,
-      backupData.iv,
-      backupData.tag
-    );
-    
+
+    const decryptedString = decryptData(backupData.data, backupData.iv, backupData.tag);
+
     const userData: UserData = JSON.parse(decryptedString);
-    
+
     // Kiểm tra checksum
     const currentChecksum = createDataChecksum(userData);
     if (currentChecksum !== backupData.checksum) {
       console.error(`❌ Backup data integrity check failed for ${email}`);
       return false;
     }
-    
+
     await saveUserData(email, userData);
     console.log(`✅ Successfully restored data from backup for ${email}`);
     return true;
@@ -495,7 +496,7 @@ export async function restoreFromBackup(email: string, backupTimestamp: string):
 // Lấy dữ liệu user
 export async function getUserData(email: string): Promise<UserData | null> {
   const filePath = getUserFilePath(email);
-  
+
   return withFileLock(filePath, async () => {
     return retryOperation(async () => {
       try {
@@ -504,9 +505,9 @@ export async function getUserData(email: string): Promise<UserData | null> {
         } catch {
           return null; // File không tồn tại
         }
-        
+
         const fileContent = await fs.readFile(filePath, 'utf8');
-        
+
         // Kiểm tra nội dung file có hợp lệ không
         if (!fileContent || fileContent.trim() === '') {
           if (process.env.NODE_ENV === 'development') {
@@ -514,7 +515,7 @@ export async function getUserData(email: string): Promise<UserData | null> {
           }
           return null;
         }
-        
+
         // Kiểm tra xem có phải JSON hợp lệ không
         let encryptedData;
         try {
@@ -531,25 +532,21 @@ export async function getUserData(email: string): Promise<UserData | null> {
           }
           return null;
         }
-        
+
         // Kiểm tra cấu trúc dữ liệu
         if (!encryptedData.data || !encryptedData.iv || !encryptedData.tag) {
           console.error(`❌ Invalid encrypted data structure for user: ${email}`);
           return null;
         }
-        
+
         let decryptedString;
         try {
-          decryptedString = decryptData(
-            encryptedData.data,
-            encryptedData.iv,
-            encryptedData.tag
-          );
+          decryptedString = decryptData(encryptedData.data, encryptedData.iv, encryptedData.tag);
         } catch (decryptError) {
           console.error(`❌ Decryption failed for user ${email}:`, decryptError);
           return null;
         }
-        
+
         let userData: UserData;
         try {
           userData = JSON.parse(decryptedString);
@@ -557,7 +554,7 @@ export async function getUserData(email: string): Promise<UserData | null> {
           console.error(`❌ Invalid JSON in decrypted data for user ${email}:`, parseError);
           return null;
         }
-        
+
         // Kiểm tra checksum nếu có
         if (userData.metadata && userData.metadata.checksum) {
           const currentChecksum = createDataChecksum(userData);
@@ -565,7 +562,7 @@ export async function getUserData(email: string): Promise<UserData | null> {
             console.warn(`⚠️ Data integrity warning for user: ${email}`);
           }
         }
-        
+
         return userData;
       } catch (error) {
         console.error(`❌ Error loading user data for ${email}:`, error);
@@ -580,13 +577,13 @@ export async function cleanupOldFiles(): Promise<void> {
   try {
     const userDir = path.dirname(getUserFilePath('dummy'));
     const backupDir = path.dirname(getBackupFilePath('dummy', ''));
-    
+
     // Cleanup user directory
     try {
       const userFiles = await fs.readdir(userDir);
       const now = Date.now();
       const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-      
+
       for (const file of userFiles) {
         if (file.includes('.tmp.') || file.includes('.backup.') || file.includes('.corrupted.')) {
           const filePath = path.join(userDir, file);
@@ -604,13 +601,13 @@ export async function cleanupOldFiles(): Promise<void> {
     } catch (error) {
       console.error('Error cleaning user directory:', error);
     }
-    
+
     // Cleanup backup directory
     try {
       const backupFiles = await fs.readdir(backupDir);
       const now = Date.now();
       const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
-      
+
       for (const file of backupFiles) {
         if (file.includes('.tmp.')) {
           const filePath = path.join(backupDir, file);
@@ -628,7 +625,7 @@ export async function cleanupOldFiles(): Promise<void> {
     } catch (error) {
       console.error('Error cleaning backup directory:', error);
     }
-    
+
     console.log('✅ File cleanup completed');
   } catch (error) {
     console.error('❌ Error during file cleanup:', error);
@@ -639,4 +636,4 @@ export async function cleanupOldFiles(): Promise<void> {
 if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
   // Run cleanup on startup, but don't wait for it
   cleanupOldFiles().catch(console.error);
-} 
+}

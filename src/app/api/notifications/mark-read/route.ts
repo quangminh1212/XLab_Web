@@ -57,12 +57,13 @@ export async function POST(request: Request) {
 
     if (markAll) {
       // Đánh dấu tất cả thông báo đã đọc
-      notifications.forEach(notification => {
+      notifications.forEach((notification) => {
         // Chỉ đánh dấu thông báo mà user có thể thấy
-        const canSee = !notification.targetUsers || 
-                      notification.targetUsers.length === 0 || 
-                      notification.targetUsers.includes(userId);
-        
+        const canSee =
+          !notification.targetUsers ||
+          notification.targetUsers.length === 0 ||
+          notification.targetUsers.includes(userId);
+
         if (canSee && !notification.isRead[userId]) {
           notification.isRead[userId] = true;
           updated = true;
@@ -70,34 +71,38 @@ export async function POST(request: Request) {
       });
     } else if (notificationId) {
       // Đánh dấu một thông báo cụ thể đã đọc
-      const notification = notifications.find(n => n.id === notificationId);
+      const notification = notifications.find((n) => n.id === notificationId);
       if (notification) {
         // Kiểm tra user có thể thấy thông báo này không
-        const canSee = !notification.targetUsers || 
-                      notification.targetUsers.length === 0 || 
-                      notification.targetUsers.includes(userId);
-        
+        const canSee =
+          !notification.targetUsers ||
+          notification.targetUsers.length === 0 ||
+          notification.targetUsers.includes(userId);
+
         if (canSee && !notification.isRead[userId]) {
           notification.isRead[userId] = true;
           updated = true;
         }
       }
     } else {
-      return NextResponse.json({ 
-        error: 'Missing required field: notificationId or markAll' 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: 'Missing required field: notificationId or markAll',
+        },
+        { status: 400 },
+      );
     }
 
     if (updated) {
       await saveNotifications(notifications);
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: markAll ? 'All notifications marked as read' : 'Notification marked as read',
-      success: true
+      success: true,
     });
   } catch (error) {
     console.error('Error marking notification as read:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-} 
+}

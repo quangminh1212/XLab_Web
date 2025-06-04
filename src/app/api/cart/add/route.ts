@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     }
 
     // Find the product by ID or slug
-    const product = products.find(p => p.id === id || p.slug === id);
+    const product = products.find((p) => p.id === id || p.slug === id);
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
@@ -24,20 +24,20 @@ export async function GET(request: Request) {
 
     // In a real application, we would add the product to the user's cart
     // For this demo, we'll just return success with the product details
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       message: 'Product added to cart successfully',
       product: {
         id: product.id,
         name: product.name,
         price: product.salePrice || product.price,
         quantity: quantity,
-        image: product.imageUrl
-      }
+        image: product.imageUrl,
+      },
     });
   } catch (error: any) {
     console.error('Error adding to cart:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
-} 
+}

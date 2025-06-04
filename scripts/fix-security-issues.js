@@ -21,7 +21,7 @@ UPDATE_PURCHASES_AUTH_KEY=update-purchases-secure-key
 
 # Development Settings
 NODE_ENV=development`;
-  
+
   fs.writeFileSync(envLocalPath, envContent);
   console.log('✅ Created .env.local file');
 } else {
@@ -34,7 +34,7 @@ if (fs.existsSync(productsPath)) {
   try {
     const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
     let hasChanges = false;
-    
+
     // Kiểm tra và sửa categories corrupted
     productsData.forEach((product, index) => {
       if (product.categories && Array.isArray(product.categories)) {
@@ -43,16 +43,16 @@ if (fs.existsSync(productsPath)) {
           if (category.id && typeof category.id === 'object') {
             console.log(`🔧 Fixing corrupted category in product ${product.name}`);
             productsData[index].categories[catIndex] = {
-              id: "ai-tools",
-              name: "AI Tools",
-              slug: "ai-tools"
+              id: 'ai-tools',
+              name: 'AI Tools',
+              slug: 'ai-tools',
             };
             hasChanges = true;
           }
         });
       }
     });
-    
+
     if (hasChanges) {
       fs.writeFileSync(productsPath, JSON.stringify(productsData, null, 2));
       console.log('✅ Fixed corrupted data in products.json');
@@ -68,11 +68,11 @@ if (fs.existsSync(productsPath)) {
 const nextConfigPath = path.join(process.cwd(), 'next.config.js');
 if (fs.existsSync(nextConfigPath)) {
   let nextConfig = fs.readFileSync(nextConfigPath, 'utf8');
-  
+
   // Kiểm tra xem đã có security headers chưa
   if (!nextConfig.includes('headers()')) {
     console.log('🔧 Adding security headers to next.config.js...');
-    
+
     // Thêm security headers
     const headersConfig = `
   async headers() {
@@ -100,22 +100,19 @@ if (fs.existsSync(nextConfigPath)) {
       },
     ];
   },`;
-    
+
     // Thêm vào trước module.exports
     nextConfig = nextConfig.replace(
       'module.exports = nextConfig;',
       `${headersConfig}
 };
 
-module.exports = nextConfig;`
+module.exports = nextConfig;`,
     );
-    
+
     // Thêm headers vào nextConfig object
-    nextConfig = nextConfig.replace(
-      'const nextConfig = {',
-      'const nextConfig = {'
-    );
-    
+    nextConfig = nextConfig.replace('const nextConfig = {', 'const nextConfig = {');
+
     fs.writeFileSync(nextConfigPath, nextConfig);
     console.log('✅ Added security headers to next.config.js');
   } else {
@@ -164,4 +161,4 @@ console.log('1. Replace Google OAuth credentials with production values');
 console.log('2. Generate new NEXTAUTH_SECRET for production');
 console.log('3. Migrate from JSON files to proper database');
 console.log('4. Set up proper monitoring and logging');
-console.log('5. Review and test all security measures before deployment'); 
+console.log('5. Review and test all security measures before deployment');

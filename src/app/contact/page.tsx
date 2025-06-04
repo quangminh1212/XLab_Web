@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { siteConfig } from '@/config/siteConfig'
+import { useState } from 'react';
+import { siteConfig } from '@/config/siteConfig';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -11,29 +11,31 @@ export default function ContactPage() {
     company: '',
     message: '',
     service: '',
-  })
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitError('')
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError('');
 
     try {
       // Mô phỏng gửi form thành công
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      setSubmitSuccess(true)
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setSubmitSuccess(true);
       setFormData({
         name: '',
         email: '',
@@ -41,14 +43,14 @@ export default function ContactPage() {
         company: '',
         message: '',
         service: '',
-      })
+      });
     } catch (error) {
-      setSubmitError('Có lỗi xảy ra khi gửi form. Vui lòng thử lại sau.')
-      console.error('Form submission error:', error)
+      setSubmitError('Có lỗi xảy ra khi gửi form. Vui lòng thử lại sau.');
+      console.error('Form submission error:', error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div>
@@ -57,7 +59,8 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Liên hệ với chúng tôi</h1>
           <p className="text-xl max-w-3xl">
-            Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của bạn.
+            Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của
+            bạn.
           </p>
         </div>
       </section>
@@ -83,7 +86,10 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Họ và tên <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -98,7 +104,10 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Email <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -115,7 +124,10 @@ export default function ContactPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Số điện thoại
                       </label>
                       <input
@@ -129,7 +141,10 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="company"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Công ty
                       </label>
                       <input
@@ -144,7 +159,10 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="service" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="service"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Dịch vụ bạn quan tâm
                     </label>
                     <select
@@ -164,7 +182,10 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Tin nhắn <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -388,5 +409,5 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
-  )
-} 
+  );
+}

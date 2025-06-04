@@ -24,20 +24,20 @@ export async function GET(request: Request) {
 
     // In a real application, we would handle authorization, check if the user has purchased the product,
     // and serve the actual download file. For this example, we'll just return success.
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       message: 'Download initiated successfully',
       product: {
         id: product.id,
         name: product.name,
         version: product.version,
         size: product.size,
-        downloadCount: product.downloadCount
-      }
+        downloadCount: product.downloadCount,
+      },
     });
   } catch (error: any) {
     console.error('Error in download API:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
-} 
+}

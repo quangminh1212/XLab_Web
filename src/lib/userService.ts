@@ -91,7 +91,7 @@ export async function getUserDataFromFile(email: string): Promise<UserData | nul
     await ensureUsersDir();
     const fileName = getFileNameFromEmail(email);
     const filePath = path.join(USERS_DIR, fileName);
-    
+
     const data = await fs.readFile(filePath, 'utf8');
     return JSON.parse(data);
   } catch (error) {
@@ -106,10 +106,10 @@ async function saveUserDataToFile(email: string, userData: UserData): Promise<vo
     await ensureUsersDir();
     const fileName = getFileNameFromEmail(email);
     const filePath = path.join(USERS_DIR, fileName);
-    
+
     userData.metadata.lastUpdated = new Date().toISOString();
     userData.metadata.version = '1.0';
-    
+
     await fs.writeFile(filePath, JSON.stringify(userData, null, 2), 'utf8');
     console.log(`✅ User data saved for: ${email}`);
   } catch (error) {
@@ -128,12 +128,12 @@ function createDefaultUserData(user: User): UserData {
     settings: {
       notifications: true,
       language: 'vi',
-      theme: 'light'
+      theme: 'light',
     },
     metadata: {
       lastUpdated: new Date().toISOString(),
-      version: '1.0'
-    }
+      version: '1.0',
+    },
   };
 }
 
@@ -150,21 +150,21 @@ async function createNewUserFromEmail(email: string): Promise<User> {
     balance: 0,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    lastLogin: new Date().toISOString()
+    lastLogin: new Date().toISOString(),
   };
-  
+
   // Lưu user mới vào hệ thống
   const allUsers = await getUsers();
   allUsers.push(newUser);
   await saveUsers(allUsers);
-  
+
   return newUser;
 }
 
 // Helper function để đảm bảo user data tồn tại (tạo mới nếu cần)
 async function ensureUserDataExists(email: string): Promise<UserData> {
   let userData = await getUserDataFromFile(email);
-  
+
   if (!userData) {
     let user = await getUserByEmail(email);
     if (!user) {
@@ -173,7 +173,7 @@ async function ensureUserDataExists(email: string): Promise<UserData> {
     userData = createDefaultUserData(user);
     await saveUserDataToFile(email, userData);
   }
-  
+
   return userData;
 }
 
@@ -205,34 +205,36 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   if (userData) {
     return userData.profile;
   }
-  
+
   // Fallback về hệ thống cũ
   const users = await getUsers();
-  return users.find(user => user.email === email) || null;
+  return users.find((user) => user.email === email) || null;
 }
 
 // Tạo hoặc cập nhật người dùng
-export async function createOrUpdateUser(userData: Partial<User> & { email: string }): Promise<User> {
+export async function createOrUpdateUser(
+  userData: Partial<User> & { email: string },
+): Promise<User> {
   const existingUserData = await getUserDataFromFile(userData.email);
-  
+
   if (existingUserData) {
     // Cập nhật user data hiện có
-    const updatedUser: User = { 
-      ...existingUserData.profile, 
+    const updatedUser: User = {
+      ...existingUserData.profile,
       ...userData,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
-    
+
     const updatedUserData: UserData = {
       ...existingUserData,
-      profile: updatedUser
+      profile: updatedUser,
     };
-    
+
     await saveUserDataToFile(userData.email, updatedUserData);
-    
+
     // Cập nhật hệ thống cũ để tương thích
     await updateUserInOldSystem(updatedUser);
-    
+
     return updatedUser;
   } else {
     // Tạo user mới
@@ -246,15 +248,15 @@ export async function createOrUpdateUser(userData: Partial<User> & { email: stri
       balance: userData.balance || 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString()
+      lastLogin: new Date().toISOString(),
     };
-    
+
     const newUserData = createDefaultUserData(newUser);
     await saveUserDataToFile(userData.email, newUserData);
-    
+
     // Cập nhật hệ thống cũ để tương thích
     await updateUserInOldSystem(newUser);
-    
+
     return newUser;
   }
 }
@@ -263,14 +265,14 @@ export async function createOrUpdateUser(userData: Partial<User> & { email: stri
 async function updateUserInOldSystem(user: User): Promise<void> {
   try {
     const users = await getUsers();
-    const existingUserIndex = users.findIndex(u => u.email === user.email);
-    
+    const existingUserIndex = users.findIndex((u) => u.email === user.email);
+
     if (existingUserIndex >= 0) {
       users[existingUserIndex] = user;
     } else {
       users.push(user);
     }
-    
+
     await saveUsers(users);
   } catch (error) {
     console.error('Error updating old system:', error);
@@ -280,37 +282,37 @@ async function updateUserInOldSystem(user: User): Promise<void> {
 // Cập nhật số dư người dùng
 export async function updateUserBalance(email: string, amount: number): Promise<User | null> {
   const userData = await getUserDataFromFile(email);
-  
+
   if (userData) {
     // Cập nhật trong file riêng
     userData.profile.balance = (userData.profile.balance || 0) + amount;
     userData.profile.updatedAt = new Date().toISOString();
-    
+
     await saveUserDataToFile(email, userData);
-    
+
     // Cập nhật hệ thống cũ để tương thích
     await updateUserInOldSystem(userData.profile);
     await updateBalanceInBalancesFile(email, userData.profile.balance);
-    
+
     return userData.profile;
   } else {
     // Fallback về hệ thống cũ
     const users = await getUsers();
-    const userIndex = users.findIndex(user => user.email === email);
-    
+    const userIndex = users.findIndex((user) => user.email === email);
+
     if (userIndex >= 0) {
       users[userIndex].balance = (users[userIndex].balance || 0) + amount;
       users[userIndex].updatedAt = new Date().toISOString();
       await saveUsers(users);
-      
+
       // Tạo file riêng cho user này
       const newUserData = createDefaultUserData(users[userIndex]);
       await saveUserDataToFile(email, newUserData);
-      
+
       return users[userIndex];
     }
   }
-  
+
   return null;
 }
 
@@ -324,20 +326,23 @@ export async function getUserCart(email: string): Promise<CartItem[]> {
 
 // Cập nhật giỏ hàng của user (legacy - sử dụng updateUserCartSync thay thế)
 export async function updateUserCart(email: string, cart: CartItem[]): Promise<void> {
-  console.log(`⚠️  Using legacy updateUserCart - consider using updateUserCartSync for better sync`);
+  console.log(
+    `⚠️  Using legacy updateUserCart - consider using updateUserCartSync for better sync`,
+  );
   await updateUserCartSync(email, cart);
 }
 
 // Thêm sản phẩm vào giỏ hàng
 export async function addToUserCart(email: string, item: CartItem): Promise<void> {
   const currentCart = await getUserCart(email);
-  
+
   // Tìm sản phẩm đã tồn tại
-  const existingItemIndex = currentCart.findIndex(cartItem => 
-    cartItem.uniqueKey === item.uniqueKey || 
-    (cartItem.id === item.id && cartItem.version === item.version)
+  const existingItemIndex = currentCart.findIndex(
+    (cartItem) =>
+      cartItem.uniqueKey === item.uniqueKey ||
+      (cartItem.id === item.id && cartItem.version === item.version),
   );
-  
+
   if (existingItemIndex > -1) {
     // Cập nhật số lượng
     currentCart[existingItemIndex].quantity += item.quantity || 1;
@@ -345,17 +350,17 @@ export async function addToUserCart(email: string, item: CartItem): Promise<void
     // Thêm mới
     currentCart.push({
       ...item,
-      uniqueKey: item.uniqueKey || `${item.id}_${item.version || 'default'}_${Date.now()}`
+      uniqueKey: item.uniqueKey || `${item.id}_${item.version || 'default'}_${Date.now()}`,
     });
   }
-  
+
   await updateUserCart(email, currentCart);
 }
 
 // Xóa sản phẩm khỏi giỏ hàng
 export async function removeFromUserCart(email: string, uniqueKey: string): Promise<void> {
   const currentCart = await getUserCart(email);
-  const updatedCart = currentCart.filter(item => item.uniqueKey !== uniqueKey);
+  const updatedCart = currentCart.filter((item) => item.uniqueKey !== uniqueKey);
   await updateUserCart(email, updatedCart);
 }
 
@@ -388,19 +393,21 @@ export async function saveTransactions(transactions: Transaction[]): Promise<voi
 }
 
 // Tạo giao dịch mới
-export async function createTransaction(transactionData: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Transaction> {
+export async function createTransaction(
+  transactionData: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>,
+): Promise<Transaction> {
   const newTransaction: Transaction = {
     ...transactionData,
     id: Date.now().toString(),
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   };
-  
+
   // Lưu vào file riêng của user (tìm user bằng userId)
   if (transactionData.userId) {
     // Tìm email từ userId
     const users = await getUsers();
-    const user = users.find(u => u.id === transactionData.userId);
+    const user = users.find((u) => u.id === transactionData.userId);
     if (user) {
       const userData = await getUserDataFromFile(user.email);
       if (userData) {
@@ -409,12 +416,12 @@ export async function createTransaction(transactionData: Omit<Transaction, 'id' 
       }
     }
   }
-  
+
   // Lưu vào hệ thống cũ để tương thích
   const transactions = await getTransactions();
   transactions.push(newTransaction);
   await saveTransactions(transactions);
-  
+
   return newTransaction;
 }
 
@@ -431,23 +438,23 @@ export async function syncUserBalance(email: string): Promise<number> {
     let balanceFromUsers = 0;
     let balanceFromBalances = 0;
     let balanceFromUserFile = 0;
-    
+
     // Get from user's individual file
     let userData = await getUserDataFromFile(email);
     if (userData) {
       balanceFromUserFile = userData.profile.balance || 0;
     }
-    
+
     // Get from users.json
     let user: User | null = null;
     try {
       const users = await getUsers();
-      user = users.find(u => u.email === email) || null;
+      user = users.find((u) => u.email === email) || null;
       balanceFromUsers = user?.balance || 0;
     } catch (error) {
       console.log('Could not read from users.json:', error);
     }
-    
+
     // Get from balances.json
     try {
       const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
@@ -456,33 +463,33 @@ export async function syncUserBalance(email: string): Promise<number> {
     } catch (error) {
       console.log('Could not read from balances.json:', error);
     }
-    
+
     // If no user data exists anywhere, create new user
     if (!userData && !user) {
       user = await createNewUserFromEmail(email);
       userData = createDefaultUserData(user);
       await saveUserDataToFile(email, userData);
-      
+
       return 0; // New user has 0 balance
     }
-    
+
     // Use the highest balance and sync
     const finalBalance = Math.max(balanceFromUsers, balanceFromBalances, balanceFromUserFile);
-    
+
     // Update all systems with the final balance
     if (balanceFromUsers !== finalBalance) {
       await updateUserBalanceInFile(email, finalBalance - balanceFromUsers);
     }
-    
+
     if (balanceFromBalances !== finalBalance) {
       await updateBalanceInBalancesFile(email, finalBalance);
     }
-    
+
     if (balanceFromUserFile !== finalBalance) {
       if (!userData) {
         // Create user data if it doesn't exist
         const users = await getUsers();
-        const existingUser = users.find(u => u.email === email);
+        const existingUser = users.find((u) => u.email === email);
         if (existingUser) {
           userData = createDefaultUserData(existingUser);
         }
@@ -492,7 +499,7 @@ export async function syncUserBalance(email: string): Promise<number> {
         await saveUserDataToFile(email, userData);
       }
     }
-    
+
     return finalBalance;
   } catch (error) {
     console.error('Error syncing balance:', error);
@@ -504,14 +511,14 @@ export async function syncUserBalance(email: string): Promise<number> {
 async function updateBalanceInBalancesFile(email: string, newBalance: number): Promise<void> {
   try {
     let balances: UserBalance = {};
-    
+
     try {
       const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
       balances = JSON.parse(balanceData);
     } catch (error) {
       // File doesn't exist, create new
     }
-    
+
     balances[email] = newBalance;
     await fs.writeFile(BALANCES_FILE, JSON.stringify(balances, null, 2), 'utf8');
   } catch (error) {
@@ -523,8 +530,8 @@ async function updateBalanceInBalancesFile(email: string, newBalance: number): P
 async function updateUserBalanceInFile(email: string, amount: number): Promise<void> {
   try {
     const users = await getUsers();
-    const userIndex = users.findIndex(user => user.email === email);
-    
+    const userIndex = users.findIndex((user) => user.email === email);
+
     if (userIndex >= 0) {
       users[userIndex].balance = (users[userIndex].balance || 0) + amount;
       users[userIndex].updatedAt = new Date().toISOString();
@@ -540,17 +547,17 @@ async function updateUserBalanceInFile(email: string, amount: number): Promise<v
 // Migrate dữ liệu từ hệ thống cũ sang file riêng lẻ
 export async function migrateToIndividualFiles(): Promise<void> {
   console.log('🚀 Starting migration to individual user files...');
-  
+
   try {
     const users = await getUsers();
     const transactions = await getTransactions();
-    
+
     for (const user of users) {
       console.log(`Migrating user: ${user.email}`);
-      
+
       // Tạo dữ liệu user đầy đủ
-      const userTransactions = transactions.filter(t => t.userId === user.id);
-      
+      const userTransactions = transactions.filter((t) => t.userId === user.id);
+
       const userData: UserData = {
         profile: user,
         transactions: userTransactions,
@@ -559,17 +566,17 @@ export async function migrateToIndividualFiles(): Promise<void> {
         settings: {
           notifications: true,
           language: 'vi',
-          theme: 'light'
+          theme: 'light',
         },
         metadata: {
           lastUpdated: new Date().toISOString(),
-          version: '1.0'
-        }
+          version: '1.0',
+        },
       };
-      
+
       await saveUserDataToFile(user.email, userData);
     }
-    
+
     console.log('✅ Migration completed successfully!');
   } catch (error) {
     console.error('❌ Migration failed:', error);
@@ -583,8 +590,8 @@ export async function getAllUserEmails(): Promise<string[]> {
     await ensureUsersDir();
     const files = await fs.readdir(USERS_DIR);
     return files
-      .filter(file => file.endsWith('.json'))
-      .map(file => file.replace('.json', '').replace(/_/g, '@')); // Chuyển đổi ngược từ tên file
+      .filter((file) => file.endsWith('.json'))
+      .map((file) => file.replace('.json', '').replace(/_/g, '@')); // Chuyển đổi ngược từ tên file
   } catch (error) {
     console.error('Error reading users directory:', error);
     return [];
@@ -597,38 +604,41 @@ export async function getUserStats(email: string): Promise<any> {
   if (!userData) {
     return null;
   }
-  
+
   return {
     profile: userData.profile,
     transactionCount: userData.transactions.length,
     cartItemCount: userData.cart.length,
     totalSpent: userData.transactions
-      .filter(t => t.type === 'purchase' && t.status === 'completed')
+      .filter((t) => t.type === 'purchase' && t.status === 'completed')
       .reduce((sum, t) => sum + t.amount, 0),
     lastActivity: userData.metadata.lastUpdated,
-    settings: userData.settings
+    settings: userData.settings,
   };
 }
 
 // Cập nhật thông tin user và đảm bảo đồng bộ toàn diện
-export async function syncAllUserData(email: string, updateData?: Partial<User>): Promise<User | null> {
+export async function syncAllUserData(
+  email: string,
+  updateData?: Partial<User>,
+): Promise<User | null> {
   try {
     console.log(`🔄 Starting comprehensive sync for user: ${email}`);
-    
+
     // 1. Lấy dữ liệu từ file riêng (nguồn chính)
     let userData = await getUserDataFromFile(email);
     let user: User | null = null;
-    
+
     if (userData) {
       user = userData.profile;
-      
+
       // Apply updates if provided
       if (updateData) {
         user = {
           ...user,
           ...updateData,
           email: email, // Ensure email consistency
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
         userData.profile = user;
         userData.metadata.lastUpdated = new Date().toISOString();
@@ -636,15 +646,15 @@ export async function syncAllUserData(email: string, updateData?: Partial<User>)
     } else {
       // 2. Nếu không có file riêng, tìm từ users.json
       const users = await getUsers();
-      const existingUser = users.find(u => u.email === email);
-      
+      const existingUser = users.find((u) => u.email === email);
+
       if (existingUser) {
         user = existingUser;
         if (updateData) {
           user = {
             ...user,
             ...updateData,
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           };
         }
         // Tạo file riêng từ dữ liệu cũ
@@ -661,37 +671,36 @@ export async function syncAllUserData(email: string, updateData?: Partial<User>)
           balance: updateData.balance || 0,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          lastLogin: updateData.lastLogin || new Date().toISOString()
+          lastLogin: updateData.lastLogin || new Date().toISOString(),
         };
         userData = createDefaultUserData(user);
       }
     }
-    
+
     if (!user || !userData) {
       console.log(`❌ No user data to sync for: ${email}`);
       return null;
     }
-    
+
     // 4. Lưu vào file riêng (nguồn chính)
     await saveUserDataToFile(email, userData);
-    
+
     // 5. Đồng bộ với users.json
     const allUsers = await getUsers();
-    const userIndex = allUsers.findIndex(u => u.email === email);
-    
+    const userIndex = allUsers.findIndex((u) => u.email === email);
+
     if (userIndex >= 0) {
       allUsers[userIndex] = user;
     } else {
       allUsers.push(user);
     }
     await saveUsers(allUsers);
-    
+
     // 6. Đồng bộ với balances.json
     await updateBalanceInBalancesFile(email, user.balance);
-    
+
     console.log(`✅ Comprehensive sync completed for user: ${email}`);
     return user;
-    
   } catch (error) {
     console.error(`❌ Error in comprehensive sync for ${email}:`, error);
     throw error;
@@ -699,7 +708,10 @@ export async function syncAllUserData(email: string, updateData?: Partial<User>)
 }
 
 // Cập nhật wrapper functions để sử dụng sync toàn diện
-export async function updateUserProfileData(email: string, profileData: Partial<User>): Promise<User | null> {
+export async function updateUserProfileData(
+  email: string,
+  profileData: Partial<User>,
+): Promise<User | null> {
   return await syncAllUserData(email, profileData);
 }
 
@@ -707,16 +719,16 @@ export async function updateUserProfileData(email: string, profileData: Partial<
 export async function updateUserCartSync(email: string, cart: CartItem[]): Promise<void> {
   try {
     const userData = await ensureUserDataExists(email);
-    
+
     userData.cart = cart;
     userData.metadata.lastUpdated = new Date().toISOString();
     userData.profile.updatedAt = new Date().toISOString();
-    
+
     await saveUserDataToFile(email, userData);
-    
+
     // Trigger sync để đảm bảo consistency
     await syncAllUserData(email);
-    
+
     console.log(`✅ Cart updated and synced for user: ${email}`);
   } catch (error) {
     console.error(`❌ Error updating cart for ${email}:`, error);
@@ -728,30 +740,31 @@ export async function updateUserCartSync(email: string, cart: CartItem[]): Promi
 export async function migrateOrdersFromLocalStorage(email: string): Promise<void> {
   try {
     console.log(`🔄 Migrating orders from localStorage for: ${email}`);
-    
+
     // Chỉ chạy trên client side
     if (typeof window === 'undefined') {
       return;
     }
-    
+
     const userData = await ensureUserDataExists(email);
-    
+
     // Lấy dữ liệu từ localStorage
     const localOrders = JSON.parse(localStorage.getItem(`orders_${email}`) || '[]');
-    
+
     if (localOrders.length > 0) {
       // Convert localStorage orders to our Order format
       const migratedOrders: Order[] = localOrders.map((localOrder: any) => ({
         id: localOrder.id || `ORDER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        items: localOrder.items?.map((item: any) => ({
-          productId: item.productId || item.id,
-          productName: item.productName || item.name,
-          quantity: item.quantity || 1,
-          price: item.price || 0,
-          originalPrice: item.originalPrice,
-          image: item.image,
-          version: item.version || 'default'
-        })) || [],
+        items:
+          localOrder.items?.map((item: any) => ({
+            productId: item.productId || item.id,
+            productName: item.productName || item.name,
+            quantity: item.quantity || 1,
+            price: item.price || 0,
+            originalPrice: item.originalPrice,
+            image: item.image,
+            version: item.version || 'default',
+          })) || [],
         totalAmount: localOrder.totalAmount || 0,
         couponDiscount: localOrder.couponDiscount || 0,
         status: localOrder.status || 'completed',
@@ -759,24 +772,23 @@ export async function migrateOrdersFromLocalStorage(email: string): Promise<void
         paymentStatus: localOrder.paymentStatus || 'paid',
         createdAt: localOrder.createdAt || new Date().toISOString(),
         updatedAt: localOrder.updatedAt || new Date().toISOString(),
-        transactionId: localOrder.transactionId
+        transactionId: localOrder.transactionId,
       }));
-      
+
       // Merge với orders hiện có (tránh duplicate)
-      const existingOrderIds = userData.orders.map(o => o.id);
-      const newOrders = migratedOrders.filter(o => !existingOrderIds.includes(o.id));
-      
+      const existingOrderIds = userData.orders.map((o) => o.id);
+      const newOrders = migratedOrders.filter((o) => !existingOrderIds.includes(o.id));
+
       if (newOrders.length > 0) {
         userData.orders.push(...newOrders);
         userData.metadata.lastUpdated = new Date().toISOString();
-        
+
         await saveUserDataToFile(email, userData);
         console.log(`✅ Migrated ${newOrders.length} orders for: ${email}`);
       } else {
         console.log(`ℹ️ No new orders to migrate for: ${email}`);
       }
     }
-    
   } catch (error) {
     console.error(`❌ Error migrating orders for ${email}:`, error);
   }
@@ -799,11 +811,11 @@ export async function getUserOrders(email: string): Promise<Order[]> {
 export async function addUserOrder(email: string, order: Order): Promise<void> {
   try {
     const userData = await ensureUserDataExists(email);
-    
+
     userData.orders.push(order);
     userData.metadata.lastUpdated = new Date().toISOString();
     userData.profile.updatedAt = new Date().toISOString();
-    
+
     await saveUserDataToFile(email, userData);
     console.log(`✅ Order ${order.id} added for user: ${email}`);
   } catch (error) {
@@ -813,21 +825,25 @@ export async function addUserOrder(email: string, order: Order): Promise<void> {
 }
 
 // Cập nhật đơn hàng của user
-export async function updateUserOrder(email: string, orderId: string, updates: Partial<Order>): Promise<void> {
+export async function updateUserOrder(
+  email: string,
+  orderId: string,
+  updates: Partial<Order>,
+): Promise<void> {
   try {
     const userData = await ensureUserDataExists(email);
-    
-    const orderIndex = userData.orders.findIndex(order => order.id === orderId);
+
+    const orderIndex = userData.orders.findIndex((order) => order.id === orderId);
     if (orderIndex >= 0) {
       userData.orders[orderIndex] = {
         ...userData.orders[orderIndex],
         ...updates,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
-      
+
       userData.metadata.lastUpdated = new Date().toISOString();
       userData.profile.updatedAt = new Date().toISOString();
-      
+
       await saveUserDataToFile(email, userData);
       console.log(`✅ Order ${orderId} updated for user: ${email}`);
     } else {
@@ -848,21 +864,21 @@ export async function getUserOrderStats(email: string): Promise<{
 }> {
   try {
     const orders = await getUserOrders(email);
-    
+
     const totalOrders = orders.length;
-    const completedOrders = orders.filter(o => o.status === 'completed').length;
+    const completedOrders = orders.filter((o) => o.status === 'completed').length;
     const totalSpent = orders
-      .filter(o => o.status === 'completed')
+      .filter((o) => o.status === 'completed')
       .reduce((sum, o) => sum + o.totalAmount, 0);
     const totalProducts = orders
-      .filter(o => o.status === 'completed')
+      .filter((o) => o.status === 'completed')
       .reduce((sum, o) => sum + o.items.length, 0);
-    
+
     return {
       totalOrders,
       completedOrders,
       totalSpent,
-      totalProducts
+      totalProducts,
     };
   } catch (error) {
     console.error(`Error getting order stats for ${email}:`, error);
@@ -870,7 +886,7 @@ export async function getUserOrderStats(email: string): Promise<{
       totalOrders: 0,
       completedOrders: 0,
       totalSpent: 0,
-      totalProducts: 0
+      totalProducts: 0,
     };
   }
-} 
+}

@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function ServicesPage() {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     // Redirect về trang products với filter dịch vụ
-    router.replace('/products?filter=service')
-  }, [router])
+    router.replace('/products?filter=service');
+  }, [router]);
 
   return (
     <div className="py-12 flex justify-center">
@@ -18,5 +18,5 @@ export default function ServicesPage() {
         <p className="text-gray-600">Đang chuyển hướng...</p>
       </div>
     </div>
-  )
-} 
+  );
+}

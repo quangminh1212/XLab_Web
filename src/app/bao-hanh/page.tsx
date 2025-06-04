@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { siteConfig } from '@/config/siteConfig'
-import Link from 'next/link'
+import { useState } from 'react';
+import { siteConfig } from '@/config/siteConfig';
+import Link from 'next/link';
 
 export default function WarrantyPage() {
   const [formData, setFormData] = useState({
@@ -12,29 +12,31 @@ export default function WarrantyPage() {
     orderCode: '',
     accountName: '',
     problem: '',
-  })
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitError('')
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError('');
 
     try {
       // Mô phỏng gửi form thành công
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      setSubmitSuccess(true)
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setSubmitSuccess(true);
       setFormData({
         name: '',
         email: '',
@@ -42,14 +44,14 @@ export default function WarrantyPage() {
         orderCode: '',
         accountName: '',
         problem: '',
-      })
+      });
     } catch (error) {
-      setSubmitError('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.')
-      console.error('Form submission error:', error)
+      setSubmitError('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
+      console.error('Form submission error:', error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div>
@@ -73,21 +75,23 @@ export default function WarrantyPage() {
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
-                    <span className="font-medium block mb-1">Thời gian bảo hành</span> 
-                    XLab cam kết bảo hành cho tất cả các tài khoản và phần mềm trong thời hạn <strong>365 ngày</strong> kể từ ngày mua.
+                    <span className="font-medium block mb-1">Thời gian bảo hành</span>
+                    XLab cam kết bảo hành cho tất cả các tài khoản và phần mềm trong thời hạn{' '}
+                    <strong>365 ngày</strong> kể từ ngày mua.
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">Quy trình bảo hành</span>
-                    Khi tài khoản gặp sự cố, quý khách vui lòng gửi yêu cầu hỗ trợ thông qua form bên cạnh hoặc liên hệ trực tiếp qua Zalo, Email.
+                    Khi tài khoản gặp sự cố, quý khách vui lòng gửi yêu cầu hỗ trợ thông qua form
+                    bên cạnh hoặc liên hệ trực tiếp qua Zalo, Email.
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white border border-gray-200 p-5 rounded-lg">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
@@ -97,7 +101,7 @@ export default function WarrantyPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Chính sách đổi trả */}
             <div>
               <h2 className="text-2xl font-bold mb-6">Chính sách đổi trả</h2>
@@ -105,11 +109,12 @@ export default function WarrantyPage() {
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">Thời gian đổi trả</span>
-                    Trong vòng <strong>7 ngày</strong> kể từ ngày mua, quý khách có thể yêu cầu hoàn tiền nếu sản phẩm không đáp ứng được nhu cầu sử dụng.
+                    Trong vòng <strong>7 ngày</strong> kể từ ngày mua, quý khách có thể yêu cầu hoàn
+                    tiền nếu sản phẩm không đáp ứng được nhu cầu sử dụng.
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
@@ -118,12 +123,13 @@ export default function WarrantyPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white border border-gray-200 p-5 rounded-lg">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">Quy trình hoàn tiền</span>
-                    Sau khi xác nhận yêu cầu hợp lệ, chúng tôi sẽ hoàn tiền qua phương thức thanh toán ban đầu trong vòng 3-5 ngày làm việc.
+                    Sau khi xác nhận yêu cầu hợp lệ, chúng tôi sẽ hoàn tiền qua phương thức thanh
+                    toán ban đầu trong vòng 3-5 ngày làm việc.
                   </p>
                 </div>
               </div>
@@ -153,7 +159,10 @@ export default function WarrantyPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Họ và tên <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -168,7 +177,10 @@ export default function WarrantyPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Email <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -185,7 +197,10 @@ export default function WarrantyPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Số điện thoại <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -200,7 +215,10 @@ export default function WarrantyPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="orderCode" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="orderCode"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Mã đơn hàng
                       </label>
                       <input
@@ -215,7 +233,10 @@ export default function WarrantyPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="accountName" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="accountName"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Tên tài khoản
                     </label>
                     <input
@@ -229,7 +250,10 @@ export default function WarrantyPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="problem" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="problem"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Mô tả vấn đề <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -263,14 +287,16 @@ export default function WarrantyPage() {
 
               <div className="bg-gray-50 p-6 rounded-lg mb-8">
                 <p className="text-gray-700 mb-4">
-                  XLab hỗ trợ tư vấn mua hàng hoặc bảo hành từ <strong>8h00 đến 21h00 hàng ngày (kể cả ngày lễ)</strong>. 
-                  Chúng tôi xử lý rất nhiều đơn hàng mỗi ngày và sẽ xử lý từng yêu cầu theo thứ tự. Chúng tôi sẽ hỗ trợ 
+                  XLab hỗ trợ tư vấn mua hàng hoặc bảo hành từ{' '}
+                  <strong>8h00 đến 21h00 hàng ngày (kể cả ngày lễ)</strong>. Chúng tôi xử lý rất
+                  nhiều đơn hàng mỗi ngày và sẽ xử lý từng yêu cầu theo thứ tự. Chúng tôi sẽ hỗ trợ
                   <strong> nhanh chóng trong vòng 24h</strong> sau khi nhận được yêu cầu.
                 </p>
-                
+
                 <p className="text-gray-700 mb-6">
-                  Để được hỗ trợ bảo hành nhanh chóng, bạn vui lòng điền vấn đề cụ thể vào form yêu cầu hỗ trợ. 
-                  Chúng tôi sẽ kiểm tra, hướng dẫn cách sửa lỗi hoặc gửi tài khoản mới tự động qua Email/Zalo của bạn.
+                  Để được hỗ trợ bảo hành nhanh chóng, bạn vui lòng điền vấn đề cụ thể vào form yêu
+                  cầu hỗ trợ. Chúng tôi sẽ kiểm tra, hướng dẫn cách sửa lỗi hoặc gửi tài khoản mới
+                  tự động qua Email/Zalo của bạn.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -381,13 +407,20 @@ export default function WarrantyPage() {
               <div className="bg-primary-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold mb-4 text-gray-800">Sứ mệnh của chúng tôi</h3>
                 <p className="text-gray-700 mb-4">
-                  Sứ mệnh của XLab là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
+                  Sứ mệnh của XLab là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ
+                  làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
                 </p>
                 <div className="flex space-x-4 mt-4">
-                  <Link href="/contact" className="text-primary-600 hover:text-primary-800 font-medium">
+                  <Link
+                    href="/contact"
+                    className="text-primary-600 hover:text-primary-800 font-medium"
+                  >
                     Liên hệ ngay
                   </Link>
-                  <Link href="/faqs" className="text-primary-600 hover:text-primary-800 font-medium">
+                  <Link
+                    href="/faqs"
+                    className="text-primary-600 hover:text-primary-800 font-medium"
+                  >
                     Câu hỏi thường gặp
                   </Link>
                 </div>
@@ -397,5 +430,5 @@ export default function WarrantyPage() {
         </div>
       </section>
     </div>
-  )
-} 
+  );
+}

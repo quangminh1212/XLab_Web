@@ -1,11 +1,11 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { JWT } from "next-auth/jwt";
-import { Session } from "next-auth";
-import { SessionStrategy } from "next-auth/core/types";
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import { JWT } from 'next-auth/jwt';
+import { Session } from 'next-auth';
+import { SessionStrategy } from 'next-auth/core/types';
 
 // Extend the Session interface
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       id?: string;
@@ -16,7 +16,7 @@ declare module "next-auth" {
       memberSince?: string | null;
       customName?: boolean;
       isAdmin?: boolean;
-    }
+    };
   }
 }
 
@@ -47,14 +47,14 @@ const sessionTrackingCache = new Map<string, number>();
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: GOOGLE_CLIENT_ID || "fallback-client-id",
-      clientSecret: GOOGLE_CLIENT_SECRET || "fallback-client-secret",
+      clientId: GOOGLE_CLIENT_ID || 'fallback-client-id',
+      clientSecret: GOOGLE_CLIENT_SECRET || 'fallback-client-secret',
     }),
   ],
   pages: {
-    signIn: "/login",
-    error: "/auth/error",
-    signOut: "/",
+    signIn: '/login',
+    error: '/auth/error',
+    signOut: '/',
   },
   callbacks: {
     async session({ session, token }: { session: Session; token: JWT }) {
@@ -64,25 +64,25 @@ export const authOptions: NextAuthOptions = {
         if (token.picture) {
           session.user.image = token.picture as string;
         }
-        
+
         // Kiểm tra email có trong danh sách admin không
         if (token.email && ADMIN_EMAILS.includes(token.email as string)) {
           session.user.isAdmin = true;
         } else {
           session.user.isAdmin = false;
         }
-        
+
         // Track user session với throttling để tránh spam
         if (session.user.email) {
           // Chỉ track session mỗi 5 phút để tránh spam
           const lastTrackTime = sessionTrackingCache.get(session.user.email) || 0;
           const now = Date.now();
           const trackInterval = 5 * 60 * 1000; // 5 minutes
-          
+
           if (now - lastTrackTime > trackInterval) {
             sessionTrackingCache.set(session.user.email, now);
             import('@/lib/sessionTracker').then(({ trackUserSession }) => {
-              trackUserSession().catch(err => {
+              trackUserSession().catch((err) => {
                 // Chỉ log error trong development
                 if (process.env.NODE_ENV === 'development') {
                   console.error('Session tracking error:', err);
@@ -102,44 +102,53 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  secret: AUTH_SECRET || "fallback-secret-for-build",
+  secret: AUTH_SECRET || 'fallback-secret-for-build',
   session: {
-    strategy: "jwt" as SessionStrategy,
+    strategy: 'jwt' as SessionStrategy,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   debug: false, // Force debug always off to prevent warnings
   cookies: {
     sessionToken: {
-      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.session-token` : `next-auth.session-token`,
+      name:
+        process.env.NODE_ENV === 'production'
+          ? `__Secure-next-auth.session-token`
+          : `next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 30 * 24 * 60 * 60 // 30 days
-      }
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
     },
     callbackUrl: {
-      name: process.env.NODE_ENV === "production" ? `__Secure-next-auth.callback-url` : `next-auth.callback-url`,
+      name:
+        process.env.NODE_ENV === 'production'
+          ? `__Secure-next-auth.callback-url`
+          : `next-auth.callback-url`,
       options: {
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      }
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
     },
     csrfToken: {
-      name: process.env.NODE_ENV === "production" ? `__Host-next-auth.csrf-token` : `next-auth.csrf-token`,
+      name:
+        process.env.NODE_ENV === 'production'
+          ? `__Host-next-auth.csrf-token`
+          : `next-auth.csrf-token`,
       options: {
         httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      }
-    }
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
   },
   jwt: {
     maxAge: 60 * 60 * 24 * 30, // 30 days
-  }
+  },
 };
 
 const handler = NextAuth(authOptions);

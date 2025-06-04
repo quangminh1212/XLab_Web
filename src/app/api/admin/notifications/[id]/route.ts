@@ -50,86 +50,62 @@ async function saveNotifications(notifications: Notification[]) {
 // GET - Lấy thông báo theo ID
 export async function GET(
   request: NextRequest,
-  { params: paramsPromise }: { params: Promise<{ id: string }> }
+  { params: paramsPromise }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
     const params = await paramsPromise;
-    
+
     if (!session?.user?.isAdmin) {
-      return NextResponse.json(
-        { error: 'Không có quyền truy cập' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Không có quyền truy cập' }, { status: 403 });
     }
 
     const notifications = await getNotifications();
-    const notification = notifications.find(n => n.id === params.id);
-    
+    const notification = notifications.find((n) => n.id === params.id);
+
     if (!notification) {
-      return NextResponse.json(
-        { error: 'Không tìm thấy thông báo' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Không tìm thấy thông báo' }, { status: 404 });
     }
 
     return NextResponse.json({
       success: true,
-      notification
+      notification,
     });
-
   } catch (error) {
     console.error('Error fetching notification:', error);
-    return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi tải thông báo' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Đã xảy ra lỗi khi tải thông báo' }, { status: 500 });
   }
 }
 
 // PUT - Cập nhật thông báo
 export async function PUT(
   request: NextRequest,
-  { params: paramsPromise }: { params: Promise<{ id: string }> }
+  { params: paramsPromise }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
     const params = await paramsPromise;
-    
+
     if (!session?.user?.isAdmin) {
-      return NextResponse.json(
-        { error: 'Không có quyền truy cập' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Không có quyền truy cập' }, { status: 403 });
     }
 
     const body = await request.json();
-    const {
-      title,
-      content,
-      type,
-      link,
-      priority,
-      expiresAt,
-      targetUsers
-    } = body;
+    const { title, content, type, link, priority, expiresAt, targetUsers } = body;
 
     // Validation
     if (!title || !content || !type || !priority) {
       return NextResponse.json(
         { error: 'Vui lòng điền đầy đủ thông tin bắt buộc' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const notifications = await getNotifications();
-    const notificationIndex = notifications.findIndex(n => n.id === params.id);
-    
+    const notificationIndex = notifications.findIndex((n) => n.id === params.id);
+
     if (notificationIndex === -1) {
-      return NextResponse.json(
-        { error: 'Không tìm thấy thông báo' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Không tìm thấy thông báo' }, { status: 404 });
     }
 
     // Cập nhật thông báo
@@ -142,7 +118,7 @@ export async function PUT(
       priority,
       expiresAt: expiresAt || undefined,
       targetUsers: targetUsers || [],
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     notifications[notificationIndex] = updatedNotification;
@@ -151,42 +127,32 @@ export async function PUT(
     return NextResponse.json({
       success: true,
       message: 'Thông báo đã được cập nhật thành công',
-      notification: updatedNotification
+      notification: updatedNotification,
     });
-
   } catch (error) {
     console.error('Error updating notification:', error);
-    return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi cập nhật thông báo' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Đã xảy ra lỗi khi cập nhật thông báo' }, { status: 500 });
   }
 }
 
 // DELETE - Xóa thông báo
 export async function DELETE(
   request: NextRequest,
-  { params: paramsPromise }: { params: Promise<{ id: string }> }
+  { params: paramsPromise }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
     const params = await paramsPromise;
-    
+
     if (!session?.user?.isAdmin) {
-      return NextResponse.json(
-        { error: 'Không có quyền truy cập' },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Không có quyền truy cập' }, { status: 403 });
     }
 
     const notifications = await getNotifications();
-    const notificationIndex = notifications.findIndex(n => n.id === params.id);
-    
+    const notificationIndex = notifications.findIndex((n) => n.id === params.id);
+
     if (notificationIndex === -1) {
-      return NextResponse.json(
-        { error: 'Không tìm thấy thông báo' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Không tìm thấy thông báo' }, { status: 404 });
     }
 
     // Xóa thông báo
@@ -196,14 +162,10 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'Thông báo đã được xóa thành công'
+      message: 'Thông báo đã được xóa thành công',
     });
-
   } catch (error) {
     console.error('Error deleting notification:', error);
-    return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi xóa thông báo' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Đã xảy ra lỗi khi xóa thông báo' }, { status: 500 });
   }
-} 
+}

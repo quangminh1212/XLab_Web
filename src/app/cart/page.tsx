@@ -1,13 +1,20 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import Image from 'next/image'
-import { useCart } from '@/components/cart/CartContext'
-import { calculateCartTotals, formatCurrency } from '@/lib/utils'
-import { useState, useEffect } from 'react'
+import Link from 'next/link';
+import Image from 'next/image';
+import { useCart } from '@/components/cart/CartContext';
+import { calculateCartTotals, formatCurrency } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 // import { products } from '@/data/mockData' // Sử dụng API thay vì mock data
-import { AiOutlineShoppingCart, AiOutlinePlus, AiOutlineMinus, AiOutlineDelete, AiOutlineTag, AiOutlineInfoCircle } from 'react-icons/ai'
-import { motion } from 'framer-motion'
+import {
+  AiOutlineShoppingCart,
+  AiOutlinePlus,
+  AiOutlineMinus,
+  AiOutlineDelete,
+  AiOutlineTag,
+  AiOutlineInfoCircle,
+} from 'react-icons/ai';
+import { motion } from 'framer-motion';
 
 // Kết hợp interface CartItem từ CartContext và utils
 interface CartItemWithVersion {
@@ -24,9 +31,19 @@ interface CartItemWithVersion {
 // Danh sách mã giảm giá sẽ được lấy từ API
 
 export default function CartPage() {
-  const { items: cartItems, removeItem: removeItemFromCart, updateQuantity: updateItemQuantity, clearCart, addItem: addItemToCart } = useCart();
+  const {
+    items: cartItems,
+    removeItem: removeItemFromCart,
+    updateQuantity: updateItemQuantity,
+    clearCart,
+    addItem: addItemToCart,
+  } = useCart();
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; name: string } | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discount: number;
+    name: string;
+  } | null>(null);
   const [couponError, setCouponError] = useState('');
   const [showCouponInfo, setShowCouponInfo] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
@@ -38,7 +55,7 @@ export default function CartPage() {
       try {
         const response = await fetch('/api/products');
         const result = await response.json();
-        
+
         if (result.success && result.data) {
           setProducts(result.data);
         } else {
@@ -53,69 +70,79 @@ export default function CartPage() {
 
     fetchProducts();
   }, []);
-  
+
   // Enrich cart items with image and description from product data
-  const cart = cartItems.map(item => {
-    // Find product with multiple matching strategies 
+  const cart = cartItems.map((item) => {
+    // Find product with multiple matching strategies
     const productDetail = products.find((p: any) => {
       const productId = String(p.id).toLowerCase();
       const itemId = String(item.id).toLowerCase();
       const productName = String(p.name).toLowerCase();
       const itemName = String(item.name).toLowerCase();
-      
-      return productId === itemId || 
-             productId === itemName ||
-             productName === itemId ||
-             productName === itemName ||
-             p.slug === itemId ||
-             p.slug === itemName;
+
+      return (
+        productId === itemId ||
+        productId === itemName ||
+        productName === itemId ||
+        productName === itemName ||
+        p.slug === itemId ||
+        p.slug === itemName
+      );
     });
-    
+
     // Get image URL - priority: product.images[0], item.image, fallback
     let imageUrl = '/images/placeholder/product-placeholder.svg';
-    
-    if (productDetail?.images && Array.isArray(productDetail.images) && productDetail.images.length > 0) {
+
+    if (
+      productDetail?.images &&
+      Array.isArray(productDetail.images) &&
+      productDetail.images.length > 0
+    ) {
       imageUrl = productDetail.images[0];
     } else if (item.image && !item.image.includes('placeholder')) {
       imageUrl = item.image;
     }
-    
+
     // Get description from product data
     let description = '';
     if (productDetail?.shortDescription) {
       // Clean HTML tags from description
       description = productDetail.shortDescription.replace(/<[^>]*>/g, '').trim();
     } else if (productDetail?.description) {
-      // Clean HTML tags and limit length  
-      description = productDetail.description.replace(/<[^>]*>/g, '').trim().substring(0, 150) + '...';
+      // Clean HTML tags and limit length
+      description =
+        productDetail.description
+          .replace(/<[^>]*>/g, '')
+          .trim()
+          .substring(0, 150) + '...';
     }
-    
+
     return {
       ...item,
       image: imageUrl,
-      description: description
+      description: description,
     };
   });
-  
+
   // Tính tổng giá trị giỏ hàng
   const { subtotal, tax } = calculateCartTotals(cart);
-  
+
   // Tính giảm giá từ mã coupon
   const calculateCouponDiscount = () => {
     if (!appliedCoupon) return 0;
-    
+
     // Với API mới, discountAmount đã được tính sẵn
     return appliedCoupon.discount;
   };
-  
+
   const couponDiscount = calculateCouponDiscount();
-  
+
   // Tính tổng cộng (đã trừ giảm giá)
   const total = subtotal + tax - couponDiscount;
-  
+
   // Lấy sản phẩm được đề xuất (đánh dấu là featured)
   const featuredProducts = products.filter((product: any) => product.isFeatured).slice(0, 3);
-  
+
   // Handle quantity change
   const handleQuantityChange = (uniqueKey: string, newQuantity: number) => {
     if (newQuantity >= 1) {
@@ -126,21 +153,21 @@ export default function CartPage() {
   // Áp dụng mã giảm giá
   const applyPromoCode = async () => {
     setCouponError('');
-    
+
     if (!couponCode.trim()) {
       setCouponError('Vui lòng nhập mã giảm giá');
       return;
     }
-    
+
     // Validate subtotal to ensure it's a valid number
     if (subtotal === undefined || subtotal === null || isNaN(subtotal) || subtotal <= 0) {
       setCouponError('Tổng giá trị giỏ hàng không hợp lệ');
       return;
     }
-    
+
     try {
       console.log('Applying coupon:', couponCode, 'with orderTotal:', subtotal);
-      
+
       const response = await fetch('/api/cart/validate-coupon', {
         method: 'POST',
         headers: {
@@ -148,17 +175,17 @@ export default function CartPage() {
         },
         body: JSON.stringify({
           code: couponCode.toUpperCase(),
-          orderTotal: Number(subtotal)
-        })
+          orderTotal: Number(subtotal),
+        }),
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         setAppliedCoupon({
           code: result.coupon.code,
           discount: result.coupon.discountAmount,
-          name: result.coupon.name
+          name: result.coupon.name,
         });
         setCouponCode('');
       } else {
@@ -169,12 +196,12 @@ export default function CartPage() {
       setCouponError('Đã xảy ra lỗi khi áp dụng mã giảm giá');
     }
   };
-  
+
   // Biểu tượng giỏ hàng trống
   const EmptyCartIcon = () => (
     <div className="relative w-32 h-32 mx-auto mb-6 text-gray-300">
       <AiOutlineShoppingCart className="w-full h-full stroke-1" />
-      <motion.div 
+      <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.3, duration: 0.5 }}
@@ -184,27 +211,27 @@ export default function CartPage() {
       </motion.div>
     </div>
   );
-  
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        when: "beforeChildren",
-        staggerChildren: 0.1
-      }
-    }
+        when: 'beforeChildren',
+        staggerChildren: 0.1,
+      },
+    },
   };
-  
+
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
-      opacity: 1
-    }
+      opacity: 1,
+    },
   };
-  
+
   // Show loading state when fetching products
   if (loading) {
     return (
@@ -243,7 +270,8 @@ export default function CartPage() {
           >
             <h1 className="text-3xl md:text-4xl font-bold">Giỏ hàng của bạn</h1>
             <p className="text-base md:text-lg max-w-3xl opacity-90 whitespace-nowrap">
-              Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng tôi.
+              Xem lại và hoàn tất đơn hàng để bắt đầu trải nghiệm các sản phẩm tuyệt vời của chúng
+              tôi.
             </p>
           </motion.div>
         </div>
@@ -255,7 +283,7 @@ export default function CartPage() {
           {cart.length > 0 ? (
             <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
               {/* Cart Items */}
-              <motion.div 
+              <motion.div
                 className="lg:w-3/5"
                 variants={containerVariants}
                 initial="hidden"
@@ -263,16 +291,18 @@ export default function CartPage() {
               >
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 mb-4">
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg md:text-xl font-semibold text-gray-800">Sản phẩm trong giỏ</h2>
+                    <h2 className="text-lg md:text-xl font-semibold text-gray-800">
+                      Sản phẩm trong giỏ
+                    </h2>
                     <span className="px-2.5 py-1 bg-primary-50 text-primary-700 rounded-full text-xs font-medium">
                       {cart.length} sản phẩm
                     </span>
                   </div>
-                  
+
                   <div className="space-y-3">
                     {cart.map((item) => (
-                      <motion.div 
-                        key={item.uniqueKey || item.id} 
+                      <motion.div
+                        key={item.uniqueKey || item.id}
                         className="flex items-start gap-3 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
                         variants={itemVariants}
                         whileHover={{ scale: 1.005, transition: { duration: 0.2 } }}
@@ -293,22 +323,24 @@ export default function CartPage() {
                             unoptimized={true}
                           />
                         </div>
-                        
+
                         {/* Thông tin sản phẩm */}
                         <div className="flex-1 min-w-0 px-3">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                             <div className="flex-1 min-w-0">
                               <h3 className="text-base md:text-lg font-semibold text-gray-800 hover:text-primary-600 transition-colors truncate">
-                                <Link href={`/products/${item.id}`}>
-                                  {item.name}
-                                </Link>
+                                <Link href={`/products/${item.id}`}>{item.name}</Link>
                               </h3>
                               {item.version && (
-                                <span className="text-xs text-gray-500 block mt-0.5">Phiên bản: {item.version}</span>
+                                <span className="text-xs text-gray-500 block mt-0.5">
+                                  Phiên bản: {item.version}
+                                </span>
                               )}
                               {item.description && (
                                 <p className="text-xs text-gray-600 mt-1 line-clamp-1 leading-relaxed">
-                                  {item.description.length > 80 ? item.description.substring(0, 80) + '...' : item.description}
+                                  {item.description.length > 80
+                                    ? item.description.substring(0, 80) + '...'
+                                    : item.description}
                                 </p>
                               )}
                             </div>
@@ -319,9 +351,14 @@ export default function CartPage() {
                               {/* Quantity controls - Compact */}
                               <div className="flex items-center gap-2">
                                 <div className="flex items-center border rounded border-gray-300 overflow-hidden">
-                                  <button 
+                                  <button
                                     className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
-                                    onClick={() => handleQuantityChange(item.uniqueKey || item.id, item.quantity - 1)}
+                                    onClick={() =>
+                                      handleQuantityChange(
+                                        item.uniqueKey || item.id,
+                                        item.quantity - 1,
+                                      )
+                                    }
                                     aria-label="Giảm số lượng"
                                   >
                                     <AiOutlineMinus className="w-3 h-3" />
@@ -332,15 +369,20 @@ export default function CartPage() {
                                     readOnly
                                     className="w-10 h-7 text-center text-sm border-x border-gray-300 focus:outline-none"
                                   />
-                                  <button 
+                                  <button
                                     className="w-7 h-7 flex items-center justify-center text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors"
-                                    onClick={() => handleQuantityChange(item.uniqueKey || item.id, item.quantity + 1)}
+                                    onClick={() =>
+                                      handleQuantityChange(
+                                        item.uniqueKey || item.id,
+                                        item.quantity + 1,
+                                      )
+                                    }
                                     aria-label="Tăng số lượng"
                                   >
                                     <AiOutlinePlus className="w-3 h-3" />
                                   </button>
                                 </div>
-                                <button 
+                                <button
                                   className="text-red-500 hover:text-red-700 transition-colors p-1"
                                   onClick={() => removeItemFromCart(item.uniqueKey || item.id)}
                                   aria-label="Xóa sản phẩm"
@@ -363,7 +405,7 @@ export default function CartPage() {
                   >
                     Tiếp tục mua sắm
                   </Link>
-                  <button 
+                  <button
                     className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-4 py-2 rounded text-xs font-medium transition-colors flex items-center justify-center"
                     onClick={() => clearCart()}
                   >
@@ -372,23 +414,27 @@ export default function CartPage() {
                   </button>
                 </div>
               </motion.div>
-              
+
               {/* Order Summary */}
-              <motion.div 
+              <motion.div
                 className="lg:w-2/5"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
                 <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 md:p-5 sticky top-20">
-                  <h2 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-100 text-gray-800">Tóm tắt đơn hàng</h2>
-                  
+                  <h2 className="text-lg font-semibold mb-4 pb-3 border-b border-gray-100 text-gray-800">
+                    Tóm tắt đơn hàng
+                  </h2>
+
                   <div className="space-y-3 mb-5">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Tạm tính ({cart.reduce((total, item) => total + item.quantity, 0)} sản phẩm)</span>
+                      <span className="text-gray-600">
+                        Tạm tính ({cart.reduce((total, item) => total + item.quantity, 0)} sản phẩm)
+                      </span>
                       <span className="font-medium">{formatCurrency(subtotal)}</span>
                     </div>
-                    
+
                     {/* Coupon code input */}
                     <div className="pt-2 border-t border-gray-50">
                       <div className="flex items-center justify-between mb-2">
@@ -396,7 +442,7 @@ export default function CartPage() {
                           <AiOutlineTag className="mr-2" />
                           Mã khuyến mãi
                         </label>
-                        <button 
+                        <button
                           className="text-xs text-primary-600 hover:text-primary-700 flex items-center"
                           onClick={() => setShowCouponInfo(!showCouponInfo)}
                         >
@@ -404,9 +450,9 @@ export default function CartPage() {
                           Mã khuyến mãi
                         </button>
                       </div>
-                      
+
                       {showCouponInfo && (
-                        <motion.div 
+                        <motion.div
                           className="bg-gray-50 p-3 rounded-md mb-3 text-xs space-y-1.5"
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
@@ -433,11 +479,13 @@ export default function CartPage() {
                           </div>
                         </motion.div>
                       )}
-                      
+
                       {appliedCoupon ? (
                         <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-3 flex justify-between items-center">
                           <div>
-                            <p className="font-medium text-green-700 text-sm">{appliedCoupon.name}</p>
+                            <p className="font-medium text-green-700 text-sm">
+                              {appliedCoupon.name}
+                            </p>
                             <p className="text-green-600 text-xs mt-1">Mã: {appliedCoupon.code}</p>
                           </div>
                           <button
@@ -457,7 +505,7 @@ export default function CartPage() {
                             value={couponCode}
                             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                           />
-                          <button 
+                          <button
                             className="bg-primary-600 text-white px-4 py-2.5 rounded-r-md text-sm whitespace-nowrap hover:bg-primary-700 transition-colors"
                             onClick={applyPromoCode}
                           >
@@ -465,13 +513,11 @@ export default function CartPage() {
                           </button>
                         </div>
                       )}
-                      
-                      {couponError && (
-                        <p className="text-red-500 text-xs mt-1">{couponError}</p>
-                      )}
+
+                      {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 text-sm">Tạm tính</span>
@@ -480,18 +526,22 @@ export default function CartPage() {
                     {appliedCoupon && (
                       <div className="flex justify-between items-center text-green-600">
                         <span className="text-sm">Giảm giá</span>
-                        <span className="whitespace-nowrap text-sm">-{formatCurrency(couponDiscount)}</span>
+                        <span className="whitespace-nowrap text-sm">
+                          -{formatCurrency(couponDiscount)}
+                        </span>
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="border-t border-b border-gray-100 py-3 mb-4">
                     <div className="flex justify-between items-center">
                       <span className="text-base font-semibold">Tổng cộng</span>
-                      <span className="text-lg font-bold text-primary-600 whitespace-nowrap">{formatCurrency(total)}</span>
+                      <span className="text-lg font-bold text-primary-600 whitespace-nowrap">
+                        {formatCurrency(total)}
+                      </span>
                     </div>
                   </div>
-                  
+
                   <Link
                     href="/checkout?skipInfo=true"
                     className="bg-primary-600 hover:bg-primary-700 text-white w-full mb-4 block text-center py-4 rounded-lg text-base font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -503,7 +553,7 @@ export default function CartPage() {
             </div>
           ) : (
             /* Thiết kế mới cho giỏ hàng trống */
-            <motion.div 
+            <motion.div
               className="max-w-xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -511,18 +561,21 @@ export default function CartPage() {
             >
               <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 md:p-8 mb-4 text-center">
                 <EmptyCartIcon />
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">Giỏ hàng của bạn đang trống</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
+                  Giỏ hàng của bạn đang trống
+                </h2>
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                  Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá các sản phẩm của chúng tôi và bắt đầu mua sắm ngay.
+                  Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá các sản phẩm của chúng tôi
+                  và bắt đầu mua sắm ngay.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link 
+                  <Link
                     href="/accounts"
                     className="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded text-sm font-medium transition-colors shadow-sm"
                   >
                     Xem danh sách sản phẩm
                   </Link>
-                  <Link 
+                  <Link
                     href="/categories"
                     className="bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 px-5 py-2.5 rounded text-sm font-medium transition-colors"
                   >
@@ -541,16 +594,16 @@ export default function CartPage() {
           <h2 className="text-xl md:text-2xl font-bold mb-6 md:mb-8">
             {cart.length > 0 ? 'Sản phẩm bạn có thể quan tâm' : 'Sản phẩm đề xuất cho bạn'}
           </h2>
-          
-          <motion.div 
+
+          <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
             {featuredProducts.map((product) => (
-              <motion.div 
-                key={product.id} 
+              <motion.div
+                key={product.id}
                 className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full"
                 variants={itemVariants}
               >
@@ -560,8 +613,8 @@ export default function CartPage() {
                   <div className="w-full h-full flex items-center justify-center p-4">
                     <Image
                       src={
-                        (product.images && Array.isArray(product.images) && product.images.length > 0) 
-                          ? product.images[0] 
+                        product.images && Array.isArray(product.images) && product.images.length > 0
+                          ? product.images[0]
                           : product.imageUrl || '/images/placeholder/product-placeholder.jpg'
                       }
                       alt={product.name}
@@ -582,10 +635,12 @@ export default function CartPage() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="p-4 flex-grow flex flex-col">
                   <Link href={`/products/${product.id}`} className="group">
-                    <h3 className="text-base font-bold mb-1 text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">{product.name}</h3>
+                    <h3 className="text-base font-bold mb-1 text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">
+                      {product.name}
+                    </h3>
                   </Link>
                   <p className="text-gray-600 text-xs mb-2 line-clamp-2 flex-grow">
                     {product.description}
@@ -594,13 +649,15 @@ export default function CartPage() {
                     <div>
                       {(() => {
                         // Xác định giá hiển thị từ versions hoặc fallback
-                        const displayPrice = (product.versions && product.versions.length > 0)
-                          ? product.versions[0].price 
-                          : product.salePrice || product.price;
-                        const originalPrice = (product.versions && product.versions.length > 0)
-                          ? product.versions[0].originalPrice 
-                          : product.price;
-                        
+                        const displayPrice =
+                          product.versions && product.versions.length > 0
+                            ? product.versions[0].price
+                            : product.salePrice || product.price;
+                        const originalPrice =
+                          product.versions && product.versions.length > 0
+                            ? product.versions[0].originalPrice
+                            : product.price;
+
                         if (originalPrice && originalPrice > displayPrice) {
                           return (
                             <div className="flex items-center gap-2">
@@ -621,21 +678,25 @@ export default function CartPage() {
                         }
                       })()}
                     </div>
-                    <button 
+                    <button
                       className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-2 py-1 rounded text-xs font-medium transition-colors border border-primary-200 flex items-center"
-                      onClick={() => addItemToCart({
-                        id: product.id.toString(),
-                        name: product.name,
-                        price: 
-                          (product.versions && product.versions.length > 0) 
-                            ? product.versions[0].price 
-                            : product.salePrice || product.price,
-                        quantity: 1,
-                        image: 
-                          (product.images && Array.isArray(product.images) && product.images.length > 0) 
-                            ? product.images[0] 
-                            : product.imageUrl || '/images/placeholder/product-placeholder.svg'
-                      })}
+                      onClick={() =>
+                        addItemToCart({
+                          id: product.id.toString(),
+                          name: product.name,
+                          price:
+                            product.versions && product.versions.length > 0
+                              ? product.versions[0].price
+                              : product.salePrice || product.price,
+                          quantity: 1,
+                          image:
+                            product.images &&
+                            Array.isArray(product.images) &&
+                            product.images.length > 0
+                              ? product.images[0]
+                              : product.imageUrl || '/images/placeholder/product-placeholder.svg',
+                        })
+                      }
                     >
                       <AiOutlinePlus className="mr-1 w-3 h-3" />
                       Thêm
@@ -648,5 +709,5 @@ export default function CartPage() {
         </div>
       </section>
     </div>
-  )
-} 
+  );
+}

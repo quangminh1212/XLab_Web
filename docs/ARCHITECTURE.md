@@ -47,18 +47,21 @@ src/
 ## 🎯 Architecture Principles
 
 ### 1. **Clean Architecture Layers**
+
 - **Domain Layer**: Core business logic, entities, and rules
 - **Application Layer**: Use cases and application services
 - **Infrastructure Layer**: External concerns (DB, APIs, frameworks)
 - **Presentation Layer**: UI components and pages
 
 ### 2. **Domain-Driven Design**
+
 - **Aggregates**: Product, Order, User, Cart
 - **Value Objects**: Money, Email, Address
 - **Domain Events**: OrderCreated, ProductUpdated
 - **Repositories**: Data access abstraction
 
 ### 3. **Feature-based Organization**
+
 - Each feature contains its own components, hooks, and logic
 - Promotes modularity and maintainability
 - Easy to scale and test
@@ -66,6 +69,7 @@ src/
 ## 🔧 Development Guidelines
 
 ### Component Organization
+
 ```
 features/products/
 ├── components/           # Feature-specific components
@@ -76,6 +80,7 @@ features/products/
 ```
 
 ### Naming Conventions
+
 - **Components**: PascalCase (e.g., `ProductCard`)
 - **Files**: kebab-case (e.g., `product-card.tsx`)
 - **Folders**: kebab-case (e.g., `user-profile`)
@@ -83,21 +88,22 @@ features/products/
 - **Constants**: SCREAMING_SNAKE_CASE (e.g., `MAX_ITEMS_PER_PAGE`)
 
 ### Import Organization
+
 ```typescript
 // 1. React imports
-import React from 'react'
+import React from 'react';
 
 // 2. Third-party libraries
-import { NextPage } from 'next'
-import { z } from 'zod'
+import { NextPage } from 'next';
+import { z } from 'zod';
 
 // 3. Internal imports (absolute paths)
-import { Button } from '@/shared/components/ui'
-import { useAuth } from '@/features/auth/hooks'
-import { ProductService } from '@/features/products/services'
+import { Button } from '@/shared/components/ui';
+import { useAuth } from '@/features/auth/hooks';
+import { ProductService } from '@/features/products/services';
 
 // 4. Relative imports
-import './component.css'
+import './component.css';
 ```
 
 ## 🚀 Benefits
@@ -115,4 +121,4 @@ import './component.css'
 2. **Phase 2**: Organize features into separate modules
 3. **Phase 3**: Implement clean architecture layers
 4. **Phase 4**: Add comprehensive testing structure
-5. **Phase 5**: Optimize build and deployment processes 
+5. **Phase 5**: Optimize build and deployment processes

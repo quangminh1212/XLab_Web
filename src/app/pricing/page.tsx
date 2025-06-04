@@ -6,8 +6,8 @@ export default function PricingPage() {
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Báo giá dịch vụ</h1>
           <p className="text-xl max-w-3xl">
-            Chúng tôi cung cấp các gói dịch vụ với giá cả linh hoạt, 
-            phù hợp với quy mô và nhu cầu của doanh nghiệp bạn
+            Chúng tôi cung cấp các gói dịch vụ với giá cả linh hoạt, phù hợp với quy mô và nhu cầu
+            của doanh nghiệp bạn
           </p>
         </div>
       </section>
@@ -32,48 +32,111 @@ export default function PricingPage() {
                   <span className="text-xl text-gray-500 ml-2">VND/tháng</span>
                 </div>
                 <p className="text-gray-600 mb-8">
-                  Giải pháp phù hợp cho các doanh nghiệp nhỏ và vừa, 
-                  mới bắt đầu ứng dụng công nghệ vào quản lý.
+                  Giải pháp phù hợp cho các doanh nghiệp nhỏ và vừa, mới bắt đầu ứng dụng công nghệ
+                  vào quản lý.
                 </p>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Quản lý khách hàng cơ bản</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Quản lý đơn hàng & kho hàng</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Báo cáo kinh doanh cơ bản</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Hỗ trợ kỹ thuật trong giờ hành chính</span>
                   </li>
                   <li className="flex items-start text-gray-400">
-                    <svg className="h-6 w-6 text-gray-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="h-6 w-6 text-gray-300 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                     <span>Tích hợp thanh toán online</span>
                   </li>
                   <li className="flex items-start text-gray-400">
-                    <svg className="h-6 w-6 text-gray-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="h-6 w-6 text-gray-300 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                     <span>Phân tích dữ liệu nâng cao</span>
                   </li>
                 </ul>
-                <a href="/contact" className="block w-full text-center py-3 px-6 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium transition duration-300">
+                <a
+                  href="/contact"
+                  className="block w-full text-center py-3 px-6 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium transition duration-300"
+                >
                   Liên hệ tư vấn
                 </a>
               </div>
@@ -91,48 +154,111 @@ export default function PricingPage() {
                   <span className="text-xl text-gray-500 ml-2">VND/tháng</span>
                 </div>
                 <p className="text-gray-600 mb-8">
-                  Giải pháp toàn diện cho doanh nghiệp đang phát triển,
-                  cần quản lý hiệu quả và tối ưu hóa quy trình.
+                  Giải pháp toàn diện cho doanh nghiệp đang phát triển, cần quản lý hiệu quả và tối
+                  ưu hóa quy trình.
                 </p>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Tất cả tính năng của gói Cơ bản</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Quản lý nhân sự & chấm công</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Quản lý tài chính & kế toán</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Tích hợp thanh toán online</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Hỗ trợ kỹ thuật 24/7</span>
                   </li>
                   <li className="flex items-start text-gray-400">
-                    <svg className="h-6 w-6 text-gray-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="h-6 w-6 text-gray-300 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                     <span>Tùy chỉnh theo yêu cầu</span>
                   </li>
                 </ul>
-                <a href="/contact" className="block w-full text-center py-3 px-6 rounded-md bg-primary-600 hover:bg-primary-700 text-white font-medium transition duration-300">
+                <a
+                  href="/contact"
+                  className="block w-full text-center py-3 px-6 rounded-md bg-primary-600 hover:bg-primary-700 text-white font-medium transition duration-300"
+                >
                   Liên hệ tư vấn
                 </a>
               </div>
@@ -146,48 +272,111 @@ export default function PricingPage() {
                   <span className="text-3xl font-extrabold text-gray-900">Liên hệ báo giá</span>
                 </div>
                 <p className="text-gray-600 mb-8">
-                  Giải pháp tùy chỉnh cho doanh nghiệp lớn, 
-                  có nhu cầu đặc thù và quy trình phức tạp.
+                  Giải pháp tùy chỉnh cho doanh nghiệp lớn, có nhu cầu đặc thù và quy trình phức
+                  tạp.
                 </p>
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Tất cả tính năng của gói Chuyên nghiệp</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Phân tích dữ liệu nâng cao</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Tích hợp hệ thống hiện có</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Tùy chỉnh theo yêu cầu</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Quản lý dự án chuyên biệt</span>
                   </li>
                   <li className="flex items-start">
-                    <svg className="h-6 w-6 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-6 w-6 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Ưu tiên hỗ trợ 24/7</span>
                   </li>
                 </ul>
-                <a href="/contact" className="block w-full text-center py-3 px-6 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium transition duration-300">
+                <a
+                  href="/contact"
+                  className="block w-full text-center py-3 px-6 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium transition duration-300"
+                >
                   Liên hệ tư vấn
                 </a>
               </div>
@@ -232,10 +421,12 @@ export default function PricingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-500 mb-6">
-                * Giá trên chỉ áp dụng cho dự án có khối lượng công việc tối thiểu 40 giờ.
-                Vui lòng liên hệ để được tư vấn chi tiết.
+                * Giá trên chỉ áp dụng cho dự án có khối lượng công việc tối thiểu 40 giờ. Vui lòng
+                liên hệ để được tư vấn chi tiết.
               </p>
-              <a href="/contact" className="btn btn-primary">Nhận báo giá chi tiết</a>
+              <a href="/contact" className="btn btn-primary">
+                Nhận báo giá chi tiết
+              </a>
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-md">
@@ -263,10 +454,12 @@ export default function PricingPage() {
                 </div>
               </div>
               <p className="text-sm text-gray-500 mb-6">
-                * Chi phí có thể thay đổi tùy thuộc vào quy mô dự án, yêu cầu kỹ thuật và thời gian triển khai.
-                Vui lòng liên hệ để được tư vấn chi tiết.
+                * Chi phí có thể thay đổi tùy thuộc vào quy mô dự án, yêu cầu kỹ thuật và thời gian
+                triển khai. Vui lòng liên hệ để được tư vấn chi tiết.
               </p>
-              <a href="/contact" className="btn btn-primary">Nhận báo giá chi tiết</a>
+              <a href="/contact" className="btn btn-primary">
+                Nhận báo giá chi tiết
+              </a>
             </div>
           </div>
         </div>
@@ -284,47 +477,59 @@ export default function PricingPage() {
 
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-3">Các gói dịch vụ có ràng buộc về thời hạn không?</h3>
+              <h3 className="text-lg font-bold mb-3">
+                Các gói dịch vụ có ràng buộc về thời hạn không?
+              </h3>
               <p className="text-gray-600">
-                Các gói dịch vụ của chúng tôi thường có hợp đồng tối thiểu 12 tháng để đảm bảo 
-                sự ổn định và hiệu quả của giải pháp. Tuy nhiên, chúng tôi cũng có những lựa chọn 
-                linh hoạt hơn tùy theo nhu cầu cụ thể của doanh nghiệp.
+                Các gói dịch vụ của chúng tôi thường có hợp đồng tối thiểu 12 tháng để đảm bảo sự ổn
+                định và hiệu quả của giải pháp. Tuy nhiên, chúng tôi cũng có những lựa chọn linh
+                hoạt hơn tùy theo nhu cầu cụ thể của doanh nghiệp.
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-3">Chi phí triển khai ban đầu có được bao gồm trong giá gói dịch vụ không?</h3>
+              <h3 className="text-lg font-bold mb-3">
+                Chi phí triển khai ban đầu có được bao gồm trong giá gói dịch vụ không?
+              </h3>
               <p className="text-gray-600">
-                Chi phí triển khai ban đầu thường không bao gồm trong giá gói dịch vụ hàng tháng 
-                và sẽ được tính riêng. Chi phí này phụ thuộc vào quy mô triển khai, yêu cầu tích hợp 
-                và đào tạo. Chúng tôi sẽ cung cấp báo giá chi tiết sau khi tìm hiểu nhu cầu cụ thể của bạn.
+                Chi phí triển khai ban đầu thường không bao gồm trong giá gói dịch vụ hàng tháng và
+                sẽ được tính riêng. Chi phí này phụ thuộc vào quy mô triển khai, yêu cầu tích hợp và
+                đào tạo. Chúng tôi sẽ cung cấp báo giá chi tiết sau khi tìm hiểu nhu cầu cụ thể của
+                bạn.
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-3">Có thể nâng cấp hoặc hạ cấp gói dịch vụ giữa chừng không?</h3>
+              <h3 className="text-lg font-bold mb-3">
+                Có thể nâng cấp hoặc hạ cấp gói dịch vụ giữa chừng không?
+              </h3>
               <p className="text-gray-600">
-                Có, bạn có thể nâng cấp gói dịch vụ bất kỳ lúc nào trong thời gian hợp đồng. 
-                Việc hạ cấp gói dịch vụ thường có thể được thực hiện khi kết thúc thời hạn hợp đồng hiện tại. 
-                Trong một số trường hợp đặc biệt, chúng tôi có thể xem xét điều chỉnh giữa chừng.
+                Có, bạn có thể nâng cấp gói dịch vụ bất kỳ lúc nào trong thời gian hợp đồng. Việc hạ
+                cấp gói dịch vụ thường có thể được thực hiện khi kết thúc thời hạn hợp đồng hiện
+                tại. Trong một số trường hợp đặc biệt, chúng tôi có thể xem xét điều chỉnh giữa
+                chừng.
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-3">Có hỗ trợ kỹ thuật sau khi triển khai không?</h3>
+              <h3 className="text-lg font-bold mb-3">
+                Có hỗ trợ kỹ thuật sau khi triển khai không?
+              </h3>
               <p className="text-gray-600">
-                Tất cả các gói dịch vụ của chúng tôi đều bao gồm hỗ trợ kỹ thuật, khác nhau về mức độ ưu tiên 
-                và thời gian phản hồi. Gói Cơ bản có hỗ trợ trong giờ hành chính, gói Chuyên nghiệp và 
-                Doanh nghiệp có hỗ trợ 24/7 với thời gian phản hồi nhanh hơn.
+                Tất cả các gói dịch vụ của chúng tôi đều bao gồm hỗ trợ kỹ thuật, khác nhau về mức
+                độ ưu tiên và thời gian phản hồi. Gói Cơ bản có hỗ trợ trong giờ hành chính, gói
+                Chuyên nghiệp và Doanh nghiệp có hỗ trợ 24/7 với thời gian phản hồi nhanh hơn.
               </p>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-bold mb-3">Doanh nghiệp có thể yêu cầu tính năng tùy chỉnh không có trong gói cơ bản không?</h3>
+              <h3 className="text-lg font-bold mb-3">
+                Doanh nghiệp có thể yêu cầu tính năng tùy chỉnh không có trong gói cơ bản không?
+              </h3>
               <p className="text-gray-600">
-                Có, chúng tôi cung cấp dịch vụ phát triển tùy chỉnh cho tất cả các gói. 
-                Chi phí phát triển tùy chỉnh sẽ được tính riêng và phụ thuộc vào độ phức tạp 
-                của tính năng yêu cầu. Gói Doanh nghiệp có mức ưu đãi lớn hơn cho các tính năng tùy chỉnh.
+                Có, chúng tôi cung cấp dịch vụ phát triển tùy chỉnh cho tất cả các gói. Chi phí phát
+                triển tùy chỉnh sẽ được tính riêng và phụ thuộc vào độ phức tạp của tính năng yêu
+                cầu. Gói Doanh nghiệp có mức ưu đãi lớn hơn cho các tính năng tùy chỉnh.
               </p>
             </div>
           </div>
@@ -337,15 +542,18 @@ export default function PricingPage() {
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold mb-6">Không tìm thấy gói phù hợp?</h2>
             <p className="text-xl mb-8">
-              Chúng tôi hiểu rằng mỗi doanh nghiệp có nhu cầu riêng biệt.
-              Hãy liên hệ với chúng tôi để nhận được tư vấn và báo giá phù hợp nhất.
+              Chúng tôi hiểu rằng mỗi doanh nghiệp có nhu cầu riêng biệt. Hãy liên hệ với chúng tôi
+              để nhận được tư vấn và báo giá phù hợp nhất.
             </p>
-            <a href="/contact" className="btn bg-white text-primary-600 hover:bg-gray-100 text-lg px-8 py-3">
+            <a
+              href="/contact"
+              className="btn bg-white text-primary-600 hover:bg-gray-100 text-lg px-8 py-3"
+            >
               Liên hệ tư vấn
             </a>
           </div>
         </div>
       </section>
     </div>
-  )
-} 
+  );
+}

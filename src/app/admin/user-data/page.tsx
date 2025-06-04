@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 interface UserStats {
   profile: {
@@ -33,70 +33,70 @@ interface MigrationData {
 }
 
 export default function UserDataPage() {
-  const { data: session } = useSession()
-  const [migrationData, setMigrationData] = useState<MigrationData | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [isMigrating, setIsMigrating] = useState(false)
+  const { data: session } = useSession();
+  const [migrationData, setMigrationData] = useState<MigrationData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [isMigrating, setIsMigrating] = useState(false);
 
   // Load migration status on page load
   useEffect(() => {
-    loadMigrationStatus()
-  }, [])
+    loadMigrationStatus();
+  }, []);
 
   const loadMigrationStatus = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const response = await fetch('/api/migrate')
-      const data = await response.json()
-      
+      const response = await fetch('/api/migrate');
+      const data = await response.json();
+
       if (data.success) {
-        setMigrationData(data)
+        setMigrationData(data);
       } else {
-        setError(data.error || 'Failed to load migration status')
+        setError(data.error || 'Failed to load migration status');
       }
     } catch (error) {
-      setError('Network error')
-      console.error('Error loading migration status:', error)
+      setError('Network error');
+      console.error('Error loading migration status:', error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const runMigration = async () => {
-    setIsMigrating(true)
-    setError('')
-    
+    setIsMigrating(true);
+    setError('');
+
     try {
       const response = await fetch('/api/migrate', {
-        method: 'POST'
-      })
-      const data = await response.json()
-      
+        method: 'POST',
+      });
+      const data = await response.json();
+
       if (data.success) {
-        alert('Migration completed successfully!')
-        await loadMigrationStatus() // Reload data
+        alert('Migration completed successfully!');
+        await loadMigrationStatus(); // Reload data
       } else {
-        setError(data.error || 'Migration failed')
+        setError(data.error || 'Migration failed');
       }
     } catch (error) {
-      setError('Network error during migration')
-      console.error('Migration error:', error)
+      setError('Network error during migration');
+      console.error('Migration error:', error);
     } finally {
-      setIsMigrating(false)
+      setIsMigrating(false);
     }
-  }
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
-      currency: 'VND'
-    }).format(amount)
-  }
+      currency: 'VND',
+    }).format(amount);
+  };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('vi-VN')
-  }
+    return new Date(dateString).toLocaleString('vi-VN');
+  };
 
   if (!session?.user) {
     return (
@@ -106,7 +106,7 @@ export default function UserDataPage() {
           <p className="text-gray-600">Please login to access this page.</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -116,22 +116,18 @@ export default function UserDataPage() {
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                📁 Quản lý dữ liệu người dùng
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Hệ thống lưu trữ dữ liệu theo từng file riêng lẻ
-              </p>
+              <h1 className="text-2xl font-bold text-gray-900">📁 Quản lý dữ liệu người dùng</h1>
+              <p className="text-gray-600 mt-1">Hệ thống lưu trữ dữ liệu theo từng file riêng lẻ</p>
             </div>
-            
+
             <div className="flex space-x-3">
-              <Link 
+              <Link
                 href="/admin"
                 className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
               >
                 ← Quay lại Admin
               </Link>
-              
+
               <button
                 onClick={runMigration}
                 disabled={isMigrating}
@@ -139,7 +135,7 @@ export default function UserDataPage() {
               >
                 {isMigrating ? '🔄 Đang migrate...' : '🚀 Chạy Migration'}
               </button>
-              
+
               <button
                 onClick={loadMigrationStatus}
                 disabled={isLoading}
@@ -198,7 +194,9 @@ export default function UserDataPage() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Tổng số dư</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {formatCurrency(migrationData.stats.reduce((sum, stat) => sum + stat.profile.balance, 0))}
+                    {formatCurrency(
+                      migrationData.stats.reduce((sum, stat) => sum + stat.profile.balance, 0),
+                    )}
                   </p>
                 </div>
               </div>
@@ -214,7 +212,7 @@ export default function UserDataPage() {
                 📊 Thống kê chi tiết từng User
               </h2>
             </div>
-            
+
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -270,7 +268,9 @@ export default function UserDataPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{stat.transactionCount} giao dịch</div>
+                        <div className="text-sm text-gray-900">
+                          {stat.transactionCount} giao dịch
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">{stat.cartItemCount} sản phẩm</div>
@@ -281,9 +281,7 @@ export default function UserDataPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {formatDate(stat.lastActivity)}
-                        </div>
+                        <div className="text-sm text-gray-900">{formatDate(stat.lastActivity)}</div>
                       </td>
                     </tr>
                   ))}
@@ -297,22 +295,15 @@ export default function UserDataPage() {
         {migrationData && migrationData.userEmails.length > 0 && (
           <div className="bg-white rounded-lg shadow-sm border mt-6">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
-                📧 Danh sách Files User
-              </h2>
+              <h2 className="text-lg font-semibold text-gray-900">📧 Danh sách Files User</h2>
             </div>
-            
+
             <div className="px-6 py-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {migrationData.userEmails.map((email, index) => (
-                  <div 
-                    key={index}
-                    className="flex items-center p-3 bg-gray-50 rounded-lg"
-                  >
+                  <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
                     <span className="text-green-500 mr-2">📁</span>
-                    <span className="text-sm font-mono text-gray-700">
-                      {email}.json
-                    </span>
+                    <span className="text-sm font-mono text-gray-700">{email}.json</span>
                   </div>
                 ))}
               </div>
@@ -335,9 +326,7 @@ export default function UserDataPage() {
           <div className="bg-white rounded-lg shadow-sm border p-8">
             <div className="text-center">
               <span className="text-6xl mb-4 block">📁</span>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Chưa có dữ liệu
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có dữ liệu</h3>
               <p className="text-gray-600 mb-4">
                 Chạy migration để chuyển đổi dữ liệu sang hệ thống file riêng lẻ
               </p>
@@ -352,5 +341,5 @@ export default function UserDataPage() {
         )}
       </div>
     </div>
-  )
-} 
+  );
+}

@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -14,14 +14,14 @@ export default function withAdminAuth(WrappedComponent) {
     const { data: session, status } = useSession();
     const router = useRouter();
     const loading = status === 'loading';
-    
+
     useEffect(() => {
       // Nếu người dùng chưa đăng nhập hoặc không phải admin, chuyển hướng đến trang đăng nhập
       if (!loading && (!session || session.user.role !== 'admin')) {
         router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
       }
     }, [session, loading, router]);
-    
+
     // Nếu đang tải hoặc chưa đăng nhập hoặc không phải admin, hiển thị giao diện tải
     if (loading || !session || session.user.role !== 'admin') {
       return (
@@ -33,7 +33,7 @@ export default function withAdminAuth(WrappedComponent) {
         </div>
       );
     }
-    
+
     // Nếu đã đăng nhập và là admin, hiển thị component đã được bảo vệ
     return <WrappedComponent {...props} />;
   };

@@ -6,7 +6,7 @@ export interface Product {
   shortDescription?: string;
   longDescription?: string;
   imageUrl?: string;
-  images?: string[] | { url: string; alt: string; }[];
+  images?: string[] | { url: string; alt: string }[];
   descriptionImages?: string[];
   price: number;
   salePrice?: number;
@@ -36,7 +36,13 @@ export interface Product {
   isAccount?: boolean;
   type?: string;
   options?: { name: string; price: number }[];
-  versions?: { name: string; description?: string; price: number; originalPrice: number; features: string[] }[];
+  versions?: {
+    name: string;
+    description?: string;
+    price: number;
+    originalPrice: number;
+    features: string[];
+  }[];
 }
 
 export interface Category {
@@ -71,4 +77,4 @@ export interface User {
 export interface Session {
   user?: User;
   expires: string;
-} 
+}

@@ -7,7 +7,7 @@ import { removeFromUserCart, getUserCart } from '@/lib/userService';
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -21,14 +21,14 @@ export async function POST(request: Request) {
 
     await removeFromUserCart(session.user.email, uniqueKey);
     const updatedCart = await getUserCart(session.user.email);
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       message: 'Item removed from cart successfully',
-      cart: updatedCart 
+      cart: updatedCart,
     });
   } catch (error: any) {
     console.error('Error removing from cart:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
-} 
+}

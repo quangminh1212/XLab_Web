@@ -9,15 +9,15 @@ import React from 'react';
 export function handleError(error: unknown, context?: string): Error {
   // Convert unknown error to Error object
   const errorObject = error instanceof Error ? error : new Error(String(error));
-  
+
   // Log lỗi với context
   console.error(`[Error${context ? ` in ${context}` : ''}]:`, errorObject);
-  
+
   // Nếu trong môi trường development, log stack trace đầy đủ
   if (process.env.NODE_ENV === 'development') {
     console.error('Stack trace:', errorObject.stack);
   }
-  
+
   return errorObject;
 }
 
@@ -28,7 +28,7 @@ export function handleError(error: unknown, context?: string): Error {
  */
 export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
   fn: T,
-  context?: string
+  context?: string,
 ): (...args: Parameters<T>) => Promise<ReturnType<T>> {
   return async (...args: Parameters<T>): Promise<ReturnType<T>> => {
     try {
@@ -45,7 +45,7 @@ export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
  */
 export function createErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
-  FallbackComponent: React.ComponentType<{ error: Error; reset: () => void }>
+  FallbackComponent: React.ComponentType<{ error: Error; reset: () => void }>,
 ): React.ComponentType<P> {
   return function ErrorBoundaryWrapper(props: P) {
     // Trong Next.js, sử dụng error.js hoặc error boundary chính trong app directory
@@ -54,4 +54,4 @@ export function createErrorBoundary<P extends object>(
   };
 }
 
-export default handleError; 
+export default handleError;

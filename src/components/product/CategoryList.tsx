@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -89,9 +89,7 @@ const CategoryList = ({
                         {category.name}
                       </h3>
                       {category.count !== undefined && (
-                        <span className="text-white/80 text-xs">
-                          {category.count} sản phẩm
-                        </span>
+                        <span className="text-white/80 text-xs">{category.count} sản phẩm</span>
                       )}
                     </div>
                   </div>
@@ -109,10 +107,7 @@ const CategoryList = ({
                 }}
               >
                 {carouselItems.map((category, index) => (
-                  <div
-                    key={`${category.id}-${index}`}
-                    className="w-full flex-shrink-0 px-2"
-                  >
+                  <div key={`${category.id}-${index}`} className="w-full flex-shrink-0 px-2">
                     <Link
                       href={`/categories/${category.slug}`}
                       onClick={() => handleCategoryClick(category.slug)}
@@ -127,9 +122,7 @@ const CategoryList = ({
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4">
                           <div>
-                            <h3 className="text-white font-semibold text-xl">
-                              {category.name}
-                            </h3>
+                            <h3 className="text-white font-semibold text-xl">{category.name}</h3>
                             {category.description && (
                               <p className="text-white/80 text-sm mt-1 line-clamp-2">
                                 {category.description}
@@ -205,4 +198,4 @@ const CategoryList = ({
   );
 };
 
-export default CategoryList; 
+export default CategoryList;

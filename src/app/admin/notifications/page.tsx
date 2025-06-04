@@ -45,7 +45,7 @@ function NotificationsPage() {
     targetUsers: '',
     link: '',
     priority: 'medium',
-    expiresAt: ''
+    expiresAt: '',
   });
 
   // Settings state
@@ -54,7 +54,7 @@ function NotificationsPage() {
     autoSendPromotions: true,
     autoSendUpdates: true,
     emailNotifications: true,
-    retentionDays: 30
+    retentionDays: 30,
   });
 
   // Fetch thông báo từ API
@@ -85,7 +85,7 @@ function NotificationsPage() {
       targetUsers: '',
       link: '',
       priority: 'medium',
-      expiresAt: ''
+      expiresAt: '',
     });
   };
 
@@ -104,7 +104,7 @@ function NotificationsPage() {
         link: undefined,
         priority: 'medium',
         expiresAt: undefined,
-        targetUsers: []
+        targetUsers: [],
       };
 
       const response = await fetch('/api/notifications', {
@@ -150,7 +150,7 @@ function NotificationsPage() {
         link: undefined,
         priority: 'medium',
         expiresAt: undefined,
-        targetUsers: []
+        targetUsers: [],
       };
 
       const response = await fetch(`/api/admin/notifications/${isEditing}`, {
@@ -209,7 +209,7 @@ function NotificationsPage() {
       targetUsers: '',
       link: '',
       priority: 'medium',
-      expiresAt: ''
+      expiresAt: '',
     });
     setIsEditing(notification.id);
     setActiveTab('edit');
@@ -257,7 +257,7 @@ function NotificationsPage() {
 
   useEffect(() => {
     fetchNotifications();
-    
+
     // Load notification settings từ localStorage
     const savedSettings = localStorage.getItem('admin_notification_settings');
     if (savedSettings) {
@@ -367,29 +367,53 @@ function NotificationsPage() {
                   }}
                   className="w-full flex items-center justify-center space-x-3 text-gray-500 hover:text-primary-600 transition-colors"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
                   </svg>
                   <span className="text-lg font-medium">Tạo thông báo mới</span>
                 </button>
               </div>
-              
+
               {notifications.length > 0 ? (
                 notifications.map((notification) => (
-                  <div key={notification.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                  <div
+                    key={notification.id}
+                    className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+                  >
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-3">
                         <span className="text-2xl">{getTypeIcon(notification.type)}</span>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
                             <h3 className="font-semibold text-gray-900">{notification.title}</h3>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(notification.priority)}`}>
-                              {notification.priority === 'high' ? 'Cao' : notification.priority === 'medium' ? 'Trung bình' : 'Thấp'}
+                            <span
+                              className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(notification.priority)}`}
+                            >
+                              {notification.priority === 'high'
+                                ? 'Cao'
+                                : notification.priority === 'medium'
+                                  ? 'Trung bình'
+                                  : 'Thấp'}
                             </span>
                             <span className="px-2 py-1 text-xs font-medium bg-primary-100 text-primary-600 rounded-full">
-                              {notification.type === 'promotion' ? 'Khuyến mãi' : 
-                               notification.type === 'update' ? 'Cập nhật' :
-                               notification.type === 'order' ? 'Đơn hàng' : 'Hệ thống'}
+                              {notification.type === 'promotion'
+                                ? 'Khuyến mãi'
+                                : notification.type === 'update'
+                                  ? 'Cập nhật'
+                                  : notification.type === 'order'
+                                    ? 'Đơn hàng'
+                                    : 'Hệ thống'}
                             </span>
                           </div>
                           <p className="text-gray-600 mb-2">{notification.content}</p>
@@ -405,7 +429,10 @@ function NotificationsPage() {
                           </div>
                           {notification.link && (
                             <div className="mt-2">
-                              <a href={notification.link} className="text-primary-600 hover:text-primary-700 text-sm">
+                              <a
+                                href={notification.link}
+                                className="text-primary-600 hover:text-primary-700 text-sm"
+                              >
                                 Xem chi tiết →
                               </a>
                             </div>
@@ -419,11 +446,11 @@ function NotificationsPage() {
                         >
                           Chỉnh sửa
                         </button>
-                                                  <button
-                            onClick={() => handleDeleteNotification(notification.id)}
-                            className="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-                          >
-                            Xóa
+                        <button
+                          onClick={() => handleDeleteNotification(notification.id)}
+                          className="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                        >
+                          Xóa
                         </button>
                       </div>
                     </div>
@@ -443,7 +470,7 @@ function NotificationsPage() {
           {activeTab === 'create' && (
             <div className="max-w-2xl">
               <h2 className="text-lg font-semibold text-gray-900 mb-6">Tạo thông báo mới</h2>
-              
+
               <form onSubmit={handleCreateNotification} className="space-y-6">
                 <div>
                   <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
@@ -516,10 +543,13 @@ function NotificationsPage() {
           {activeTab === 'edit' && (
             <div className="max-w-2xl">
               <h2 className="text-lg font-semibold text-gray-900 mb-6">Chỉnh sửa thông báo</h2>
-              
+
               <form onSubmit={handleUpdateNotification} className="space-y-6">
                 <div>
-                  <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="edit-title"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Tiêu đề thông báo *
                   </label>
                   <input
@@ -534,7 +564,10 @@ function NotificationsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="edit-content" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="edit-content"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Nội dung thông báo *
                   </label>
                   <textarea
@@ -549,7 +582,10 @@ function NotificationsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="edit-type" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="edit-type"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Loại thông báo *
                   </label>
                   <select
@@ -593,11 +629,11 @@ function NotificationsPage() {
           {activeTab === 'settings' && (
             <div className="max-w-2xl">
               <h2 className="text-lg font-semibold text-gray-900 mb-6">Cài đặt thông báo</h2>
-              
+
               <div className="space-y-6">
                 <div className="space-y-4">
                   <h3 className="text-md font-medium text-gray-900">Thông báo tự động</h3>
-                  
+
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700">Thông báo đơn hàng tự động</span>
@@ -605,55 +641,63 @@ function NotificationsPage() {
                         <input
                           type="checkbox"
                           checked={notificationSettings.autoSendOrderNotifications}
-                          onChange={(e) => setNotificationSettings({
-                            ...notificationSettings,
-                            autoSendOrderNotifications: e.target.checked
-                          })}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              autoSendOrderNotifications: e.target.checked,
+                            })
+                          }
                           className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700">Thông báo khuyến mãi tự động</span>
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
                           checked={notificationSettings.autoSendPromotions}
-                          onChange={(e) => setNotificationSettings({
-                            ...notificationSettings,
-                            autoSendPromotions: e.target.checked
-                          })}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              autoSendPromotions: e.target.checked,
+                            })
+                          }
                           className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700">Thông báo cập nhật tự động</span>
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
                           checked={notificationSettings.autoSendUpdates}
-                          onChange={(e) => setNotificationSettings({
-                            ...notificationSettings,
-                            autoSendUpdates: e.target.checked
-                          })}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              autoSendUpdates: e.target.checked,
+                            })
+                          }
                           className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700">Thông báo qua email</span>
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
                           checked={notificationSettings.emailNotifications}
-                          onChange={(e) => setNotificationSettings({
-                            ...notificationSettings,
-                            emailNotifications: e.target.checked
-                          })}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              emailNotifications: e.target.checked,
+                            })
+                          }
                           className="rounded text-[#00A19A] focus:ring-[#00A19A] h-4 w-4"
                         />
                       </label>
@@ -662,17 +706,22 @@ function NotificationsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="retentionDays" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="retentionDays"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Số ngày lưu trữ thông báo
                   </label>
                   <input
                     type="number"
                     id="retentionDays"
                     value={notificationSettings.retentionDays}
-                    onChange={(e) => setNotificationSettings({
-                      ...notificationSettings,
-                      retentionDays: parseInt(e.target.value) || 30
-                    })}
+                    onChange={(e) =>
+                      setNotificationSettings({
+                        ...notificationSettings,
+                        retentionDays: parseInt(e.target.value) || 30,
+                      })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00A19A]"
                     min="1"
                     max="365"
@@ -699,4 +748,4 @@ function NotificationsPage() {
   );
 }
 
-export default withAdminAuth(NotificationsPage); 
+export default withAdminAuth(NotificationsPage);

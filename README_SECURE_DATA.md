@@ -43,19 +43,23 @@ data/
 ## Tính năng bảo mật
 
 ### 1. Mã hóa dữ liệu
+
 - Sử dụng AES-256-CBC encryption
 - Mỗi file có IV (Initialization Vector) riêng
 - Checksum SHA-256 để kiểm tra tính toàn vẹn
 
 ### 2. Tên file an toàn
+
 - Hash SHA-256 của email thành tên file
 - Không thể đoán được email từ tên file
 
 ### 3. Backup tự động
+
 - Tự động backup trước khi cập nhật
 - Lưu với timestamp để khôi phục
 
 ### 4. Kiểm tra tính toàn vẹn
+
 - Checksum validation
 - Detect data tampering
 
@@ -63,12 +67,13 @@ data/
 
 ```typescript
 interface UserData {
-  profile: User;                    // Thông tin cá nhân
-  transactions: Transaction[];      // Lịch sử giao dịch
-  sessions: UserSession[];          // Thông tin đăng nhập
-  activities: UserActivity[];       // Lịch sử hoạt động
-  settings: UserSettings;           // Cài đặt cá nhân
-  metadata: {                       // Metadata bảo mật
+  profile: User; // Thông tin cá nhân
+  transactions: Transaction[]; // Lịch sử giao dịch
+  sessions: UserSession[]; // Thông tin đăng nhập
+  activities: UserActivity[]; // Lịch sử hoạt động
+  settings: UserSettings; // Cài đặt cá nhân
+  metadata: {
+    // Metadata bảo mật
     lastBackup: string;
     dataVersion: string;
     checksum: string;
@@ -79,16 +84,19 @@ interface UserData {
 ## API Endpoints mới
 
 ### 1. Admin - Xem dữ liệu user
+
 ```
 GET /api/admin/user-data?email=user@example.com&action=info
 ```
 
 ### 2. Admin - Kiểm tra tính toàn vẹn
+
 ```
 GET /api/admin/user-data?email=user@example.com&action=integrity
 ```
 
 ### 3. Admin - Thống kê user
+
 ```
 GET /api/admin/user-data?email=user@example.com&action=stats
 ```
@@ -96,12 +104,14 @@ GET /api/admin/user-data?email=user@example.com&action=stats
 ## Session Tracking
 
 ### Tự động theo dõi:
+
 - ✅ Thông tin đăng nhập (IP, User-Agent)
 - ✅ Hoạt động user (login, logout, transactions)
 - ✅ Cập nhật balance tự động
 - ✅ Lưu transaction vào secure system
 
 ### Integration:
+
 - ✅ NextAuth session callback
 - ✅ API routes cập nhật
 - ✅ Fallback to old system
@@ -109,12 +119,14 @@ GET /api/admin/user-data?email=user@example.com&action=stats
 ## Bảo mật Production
 
 ### 1. Environment Variables
+
 ```bash
 DATA_ENCRYPTION_KEY=<strong-random-key>
 NEXTAUTH_SECRET=<nextauth-secret>
 ```
 
 ### 2. File Permissions
+
 ```bash
 chmod 600 data/users/*
 chmod 700 data/users/
@@ -122,6 +134,7 @@ chmod 700 data/backups/
 ```
 
 ### 3. Gitignore Protection
+
 ```gitignore
 # Secure user data - NEVER commit these!
 /data/users/
@@ -132,6 +145,7 @@ chmod 700 data/backups/
 ## Admin Interface
 
 ### Truy cập: `/admin`
+
 - 🔍 Tìm kiếm user data
 - 📊 Xem thống kê chi tiết
 - ✅ Kiểm tra tính toàn vẹn dữ liệu
@@ -142,6 +156,7 @@ chmod 700 data/backups/
 ## Migration từ hệ thống cũ
 
 Hệ thống mới tương thích ngược:
+
 1. Tự động tạo user data mới khi đăng nhập
 2. Sync balance từ hệ thống cũ
 3. Fallback đọc từ file cũ nếu không có data mới
@@ -149,22 +164,25 @@ Hệ thống mới tương thích ngược:
 ## Backup & Recovery
 
 ### Automatic Backup
+
 - Backup trước mỗi lần cập nhật
 - Lưu với timestamp
 - Mã hóa như dữ liệu gốc
 
 ### Manual Restore
+
 ```javascript
 // Từ admin interface hoặc API
-restoreFromBackup(email, timestamp)
+restoreFromBackup(email, timestamp);
 ```
 
 ## Monitoring
 
 ### Log Messages
+
 ```
 ✅ User data saved securely for: user@example.com
-✅ Session tracked for user: user@example.com  
+✅ Session tracked for user: user@example.com
 ✅ Balance updated for user: user@example.com
 ⚠️ Data integrity warning for user: user@example.com
 ❌ Error loading user data for user@example.com
@@ -189,7 +207,8 @@ restoreFromBackup(email, timestamp)
 ---
 
 **🚨 Cảnh báo bảo mật:** Hệ thống này lưu trữ dữ liệu nhạy cảm. Đảm bảo:
+
 - Backup thường xuyên
-- Giám sát access logs  
+- Giám sát access logs
 - Cập nhật security patches
-- Review quyền truy cập file system 
+- Review quyền truy cập file system

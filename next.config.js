@@ -9,11 +9,17 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ["localhost:3000", "localhost:3001", "localhost:3002"]
-    }
+      allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
+    },
   },
   images: {
-    domains: ['via.placeholder.com', 'placehold.co', 'i.pravatar.cc', 'images.unsplash.com', 'lh3.googleusercontent.com'],
+    domains: [
+      'via.placeholder.com',
+      'placehold.co',
+      'i.pravatar.cc',
+      'images.unsplash.com',
+      'lh3.googleusercontent.com',
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -22,7 +28,7 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: '**',
-      }
+      },
     ],
     unoptimized: true,
   },
@@ -45,13 +51,13 @@ const nextConfig = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
     };
-    
+
     if (!isServer) {
       // Configure optimization to avoid CSS 404 errors
       const optimization = config.optimization;
       if (optimization && optimization.splitChunks) {
         const splitChunks = optimization.splitChunks;
-        
+
         optimization.splitChunks = {
           ...splitChunks,
           cacheGroups: {
@@ -61,12 +67,12 @@ const nextConfig = {
               reuseExistingChunk: true,
             },
             // Disable CSS splitting
-            styles: false
+            styles: false,
           },
         };
       }
     }
-    
+
     return config;
   },
   async headers() {
@@ -93,7 +99,7 @@ const nextConfig = {
         ],
       },
     ];
-  }
+  },
 };
 
 module.exports = nextConfig;

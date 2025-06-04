@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { categories } from '@/data/mockData'
-import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
-import ProductImage from '@/components/product/ProductImage'
-import ProductCard from '@/components/product/ProductCard'
-import { Button } from '@/components/common/button'
+import { categories } from '@/data/mockData';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import ProductImage from '@/components/product/ProductImage';
+import ProductCard from '@/components/product/ProductCard';
+import { Button } from '@/components/common/button';
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -31,11 +31,11 @@ export default function ProductsPage() {
       try {
         setLoading(true);
         const response = await fetch('/api/products');
-        
+
         if (!response.ok) {
           throw new Error('Không thể tải sản phẩm');
         }
-        
+
         const result = await response.json();
         // Use the data property from the API response
         if (result.success && Array.isArray(result.data)) {
@@ -50,21 +50,21 @@ export default function ProductsPage() {
         setLoading(false);
       }
     };
-    
+
     fetchProducts();
   }, []);
 
   // Update title when component is rendered
   useEffect(() => {
-    document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ'
+    document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ';
   }, []);
 
   // Lọc tất cả sản phẩm (bao gồm phần mềm và dịch vụ)
   const allProducts = Array.isArray(products) ? products : [];
 
   // Lọc theo danh mục và tìm kiếm
-  const filteredProducts = Array.isArray(allProducts) 
-    ? allProducts.filter(product => {
+  const filteredProducts = Array.isArray(allProducts)
+    ? allProducts.filter((product) => {
         // Lọc theo loại sản phẩm
         if (filter === 'software') {
           if (product.isAccount || product.type === 'account') return false;
@@ -88,10 +88,13 @@ export default function ProductsPage() {
     : [];
 
   // Sắp xếp sản phẩm
-  const sortedProducts = Array.isArray(filteredProducts) 
+  const sortedProducts = Array.isArray(filteredProducts)
     ? [...filteredProducts].sort((a, b) => {
         if (sort === 'newest') {
-          return new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime();
+          return (
+            new Date(b.createdAt || Date.now()).getTime() -
+            new Date(a.createdAt || Date.now()).getTime()
+          );
         } else if (sort === 'price-low') {
           return (a.salePrice || a.price || 0) - (b.salePrice || b.price || 0);
         } else if (sort === 'price-high') {
@@ -106,40 +109,52 @@ export default function ProductsPage() {
     : [];
 
   // Lọc các loại sản phẩm đặc biệt
-  const featuredProducts = Array.isArray(allProducts) 
-    ? allProducts.filter(product => product.isFeatured)
+  const featuredProducts = Array.isArray(allProducts)
+    ? allProducts.filter((product) => product.isFeatured)
     : [];
-    
-  const newProducts = Array.isArray(allProducts) 
-    ? allProducts.slice().sort((a, b) =>
-        new Date(b.createdAt || Date.now()).getTime() - new Date(a.createdAt || Date.now()).getTime()
-      ).slice(0, 6)
+
+  const newProducts = Array.isArray(allProducts)
+    ? allProducts
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt || Date.now()).getTime() -
+            new Date(a.createdAt || Date.now()).getTime(),
+        )
+        .slice(0, 6)
     : [];
-    
-  const popularProducts = Array.isArray(allProducts) 
-    ? allProducts.slice().sort((a, b) =>
-        (b.downloadCount || 0) - (a.downloadCount || 0)
-      ).slice(0, 6)
+
+  const popularProducts = Array.isArray(allProducts)
+    ? allProducts
+        .slice()
+        .sort((a, b) => (b.downloadCount || 0) - (a.downloadCount || 0))
+        .slice(0, 6)
     : [];
 
   // Danh mục sản phẩm
   const productCategories = [
     { id: 'all', name: 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
-    { id: 'software', name: 'Phần mềm', count: Array.isArray(allProducts) 
-        ? allProducts.filter(p => !p.isAccount && (p.type === 'software' || !p.type)).length
-        : 0 
+    {
+      id: 'software',
+      name: 'Phần mềm',
+      count: Array.isArray(allProducts)
+        ? allProducts.filter((p) => !p.isAccount && (p.type === 'software' || !p.type)).length
+        : 0,
     },
-    { id: 'service', name: 'Dịch vụ', count: Array.isArray(allProducts) 
-        ? allProducts.filter(p => p.isAccount || p.type === 'account').length
-        : 0 
+    {
+      id: 'service',
+      name: 'Dịch vụ',
+      count: Array.isArray(allProducts)
+        ? allProducts.filter((p) => p.isAccount || p.type === 'account').length
+        : 0,
     },
-    ...categories.map(cat => ({
+    ...categories.map((cat) => ({
       id: cat.id,
       name: cat.name,
-      count: Array.isArray(allProducts) 
-        ? allProducts.filter(p => p.categoryId === cat.id).length
-        : 0
-    }))
+      count: Array.isArray(allProducts)
+        ? allProducts.filter((p) => p.categoryId === cat.id).length
+        : 0,
+    })),
   ];
 
   // Helper to safely get a valid image URL
@@ -147,9 +162,9 @@ export default function ProductsPage() {
     if (!product.images || !product.images.length) {
       return '/images/placeholder/product-placeholder.jpg';
     }
-    
+
     const firstImage = product.images[0];
-    
+
     // Handle different image formats
     if (typeof firstImage === 'string') {
       if (firstImage.startsWith('blob:')) {
@@ -167,7 +182,7 @@ export default function ProductsPage() {
         return firstImage.url;
       }
     }
-    
+
     return '/images/placeholder/product-placeholder.jpg';
   };
 
@@ -187,20 +202,40 @@ export default function ProductsPage() {
     return (
       <div className="py-12 flex justify-center">
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-16 w-16 mx-auto text-red-500 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải sản phẩm</h2>
-          <p className="text-gray-600 mb-6">
-            {error}
-          </p>
+          <p className="text-gray-600 mb-6">{error}</p>
           <div className="flex justify-center gap-4">
             <button
               onClick={() => window.location.reload()}
               className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
               </svg>
               Thử lại
             </button>
@@ -208,8 +243,19 @@ export default function ProductsPage() {
               href="/"
               className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center justify-center"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7m-7-7v14" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
+                />
               </svg>
               Về trang chủ
             </Link>
@@ -228,7 +274,7 @@ export default function ProductsPage() {
             Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
           </p>
         </div>
-        
+
         {/* Filter tabs */}
         <div className="border-b border-gray-200 mb-4">
           <div className="flex space-x-4">
@@ -237,8 +283,19 @@ export default function ProductsPage() {
               className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
             >
               <div className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 md:h-5 md:w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                  />
                 </svg>
                 Tất cả
               </div>
@@ -248,8 +305,19 @@ export default function ProductsPage() {
               className={`py-2 px-2 ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
             >
               <div className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 md:h-5 md:w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
                 Phần mềm
               </div>
@@ -259,15 +327,26 @@ export default function ProductsPage() {
               className={`py-2 px-2 ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
             >
               <div className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 md:h-5 md:w-5 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
                 </svg>
                 Dịch vụ
               </div>
             </button>
           </div>
         </div>
-        
+
         <div className="flex flex-col md:flex-row gap-4">
           {/* Main content */}
           <div className="w-full">
@@ -277,8 +356,10 @@ export default function ProductsPage() {
                 Hiển thị {sortedProducts.length} kết quả
               </div>
               <div className="flex items-center space-x-2">
-                <label htmlFor="sort" className="text-sm md:text-base text-gray-700">Sắp xếp:</label>
-                <select 
+                <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
+                  Sắp xếp:
+                </label>
+                <select
                   id="sort"
                   className="text-sm md:text-base border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
                   value={sort}
@@ -291,30 +372,32 @@ export default function ProductsPage() {
                 </select>
               </div>
             </div>
-            
+
             {/* Product grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
               {sortedProducts.map((product) => {
                 // Log the product data for debugging
                 console.log(`Product ${product.id} image data:`, product.images);
-                
+
                 // Xác định giá hiển thị - kiểm tra versions trước
-                const displayPrice = product.versions && product.versions.length > 0
-                  ? product.versions[0].price || 0
-                  : product.price || 0;
-                
+                const displayPrice =
+                  product.versions && product.versions.length > 0
+                    ? product.versions[0].price || 0
+                    : product.price || 0;
+
                 // Xác định giá gốc - kiểm tra versions trước
-                const originalPrice = product.versions && product.versions.length > 0
-                  ? product.versions[0].originalPrice || 0
-                  : product.salePrice || 0;
-                  
+                const originalPrice =
+                  product.versions && product.versions.length > 0
+                    ? product.versions[0].originalPrice || 0
+                    : product.salePrice || 0;
+
                 // Lấy ảnh sản phẩm (sử dụng helper function)
                 const imageUrl = getValidImageUrl(product);
-                
+
                 console.log(`Processed image URL for ${product.name}:`, imageUrl);
-                
+
                 return (
-                  <ProductCard 
+                  <ProductCard
                     key={product.id}
                     id={product.id.toString()}
                     name={product.name}
@@ -322,7 +405,7 @@ export default function ProductsPage() {
                     price={displayPrice}
                     originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
                     image={imageUrl}
-                    category={categories.find(c => c.id === product.categoryId)?.name}
+                    category={categories.find((c) => c.id === product.categoryId)?.name}
                     rating={product.rating}
                     reviewCount={product.reviewCount}
                     weeklyPurchases={product.weeklyPurchases}
@@ -337,7 +420,7 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // Helper function to format currency
@@ -346,6 +429,6 @@ function formatCurrency(value: number): string {
     style: 'currency',
     currency: 'VND',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   }).format(value);
-} 
+}

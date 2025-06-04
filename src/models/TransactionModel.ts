@@ -16,4 +16,4 @@ export interface DepositRequest {
   amount: number;
   method: 'bank_transfer' | 'momo' | 'zalopay' | 'credit_card';
   note?: string;
-} 
+}

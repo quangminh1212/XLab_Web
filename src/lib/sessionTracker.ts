@@ -1,12 +1,12 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { 
-  getUserData, 
-  saveUserData, 
-  createUserData, 
-  updateUserSession, 
+import {
+  getUserData,
+  saveUserData,
+  createUserData,
+  updateUserSession,
   addUserActivity,
-  cleanupCorruptedFiles 
+  cleanupCorruptedFiles,
 } from './userDataManager';
 import { syncAllUserData } from './userService';
 import { User } from '@/models/UserModel';
@@ -25,7 +25,7 @@ interface SessionInfo {
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
   const realIP = request.headers.get('x-real-ip');
-  
+
   if (forwarded) {
     return forwarded.split(',')[0].trim();
   }
@@ -45,12 +45,12 @@ async function runPeriodicCleanup(): Promise<void> {
   if (now - lastCleanupTime < CLEANUP_INTERVAL) {
     return; // Skip cleanup nếu vừa chạy gần đây
   }
-  
+
   lastCleanupTime = now;
-  
+
   try {
     await cleanupCorruptedFiles();
-    
+
     // Chỉ log trong development mode
     if (process.env.NODE_ENV === 'development') {
       console.log('🧹 Periodic cleanup completed');
@@ -67,18 +67,18 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
   try {
     // Chạy cleanup định kỳ nhưng không log mỗi lần
     await runPeriodicCleanup();
-    
+
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user || !session.user.email) {
       return;
     }
 
     const userEmail = session.user.email;
-    
+
     // Lấy hoặc tạo dữ liệu user
     let userData = await getUserData(userEmail);
-    
+
     if (!userData) {
       // Tạo user mới
       const newUser: User = {
@@ -91,15 +91,15 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
         balance: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        lastLogin: new Date().toISOString()
+        lastLogin: new Date().toISOString(),
       };
-      
+
       userData = await createUserData(newUser);
       await saveUserData(userEmail, userData);
-      
+
       // Trigger comprehensive sync for new user
       await syncAllUserData(userEmail);
-      
+
       // Chỉ log khi tạo user mới
       if (process.env.NODE_ENV === 'development') {
         console.log(`✅ Created new user data for: ${userEmail}`);
@@ -108,9 +108,9 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
       // Cập nhật thông tin user với sync toàn diện
       const updateData: Partial<User> = {
         lastLogin: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
-      
+
       // Cập nhật thông tin từ session nếu có thay đổi
       if (session.user.name && session.user.name !== userData.profile.name) {
         updateData.name = session.user.name;
@@ -121,7 +121,7 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
       if (session.user.isAdmin !== undefined) {
         updateData.isAdmin = session.user.isAdmin;
       }
-      
+
       // Sync với all systems
       await syncAllUserData(userEmail, updateData);
     }
@@ -132,25 +132,20 @@ export async function trackUserSession(request?: NextRequest): Promise<void> {
       loginTime: new Date().toISOString(),
       ipAddress: request ? getClientIP(request) : undefined,
       userAgent: request ? request.headers.get('user-agent') || undefined : undefined,
-      isActive: true
+      isActive: true,
     };
 
     // Cập nhật session (im lặng)
     await updateUserSession(userEmail, sessionInfo);
-    
+
     // Chỉ log activity trong development hoặc khi user mới
     if (process.env.NODE_ENV === 'development' || !userData) {
       // Thêm activity log
-      await addUserActivity(
-        userEmail,
-        'login',
-        'Đăng nhập vào hệ thống',
-        {
-          sessionId: sessionInfo.id,
-          ip: sessionInfo.ipAddress,
-          userAgent: sessionInfo.userAgent
-        }
-      );
+      await addUserActivity(userEmail, 'login', 'Đăng nhập vào hệ thống', {
+        sessionId: sessionInfo.id,
+        ip: sessionInfo.ipAddress,
+        userAgent: sessionInfo.userAgent,
+      });
     }
 
     // Giảm log spam - chỉ log trong development mode
@@ -170,7 +165,7 @@ export async function trackUserActivity(
   email: string,
   type: string,
   description: string,
-  metadata?: any
+  metadata?: any,
 ): Promise<void> {
   try {
     await addUserActivity(email, type, description, metadata);
@@ -184,21 +179,21 @@ export async function updateUserDataBalance(email: string, newBalance: number): 
   try {
     const userData = await getUserData(email);
     if (!userData) return;
-    
+
     const oldBalance = userData.profile.balance;
     userData.profile.balance = newBalance;
     userData.profile.updatedAt = new Date().toISOString();
-    
+
     await saveUserData(email, userData);
-    
+
     // Thêm activity log
     await addUserActivity(
       email,
       'balance_update',
       `Số dư được cập nhật từ ${oldBalance.toLocaleString('vi-VN')} VND thành ${newBalance.toLocaleString('vi-VN')} VND`,
-      { oldBalance, newBalance, difference: newBalance - oldBalance }
+      { oldBalance, newBalance, difference: newBalance - oldBalance },
     );
-    
+
     console.log(`✅ Balance updated for user: ${email} - New balance: ${newBalance}`);
   } catch (error) {
     console.error('❌ Error updating user balance:', error);
@@ -210,24 +205,21 @@ export async function endUserSession(email: string, sessionId?: string): Promise
   try {
     const userData = await getUserData(email);
     if (!userData) return;
-    
+
     // Đánh dấu tất cả session hoặc session cụ thể là không hoạt động
-    userData.sessions.forEach(session => {
+    userData.sessions.forEach((session) => {
       if (!sessionId || session.id === sessionId) {
         session.isActive = false;
       }
     });
-    
+
     await saveUserData(email, userData);
-    
+
     // Thêm activity log
-    await addUserActivity(
-      email,
-      'logout',
-      'Đăng xuất khỏi hệ thống',
-      { sessionId: sessionId || 'all' }
-    );
-    
+    await addUserActivity(email, 'logout', 'Đăng xuất khỏi hệ thống', {
+      sessionId: sessionId || 'all',
+    });
+
     console.log(`✅ Session ended for user: ${email}`);
   } catch (error) {
     console.error('❌ Error ending user session:', error);
@@ -239,22 +231,22 @@ export async function getUserStats(email: string): Promise<any> {
   try {
     const userData = await getUserData(email);
     if (!userData) return null;
-    
-    const activeSessions = userData.sessions.filter(s => s.isActive).length;
+
+    const activeSessions = userData.sessions.filter((s) => s.isActive).length;
     const totalActivities = userData.activities.length;
     const totalTransactions = userData.transactions.length;
     const lastLogin = userData.profile.lastLogin;
-    
+
     return {
       activeSessions,
       totalActivities,
       totalTransactions,
       lastLogin,
       memberSince: userData.profile.createdAt,
-      currentBalance: userData.profile.balance
+      currentBalance: userData.profile.balance,
     };
   } catch (error) {
     console.error('❌ Error getting user stats:', error);
     return null;
   }
-} 
+}

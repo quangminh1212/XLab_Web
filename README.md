@@ -27,6 +27,7 @@ src/
 ## Các module chính
 
 ### Components
+
 Các component được tổ chức theo module chức năng:
 
 - `auth`: Xác thực và phân quyền
@@ -166,12 +167,14 @@ Products in the system use automatically generated IDs based on their names. Thi
 3. **Consistency**: All products follow the same naming convention
 
 The ID generation follows these rules:
+
 - Convert name to lowercase
 - Remove special characters
 - Replace spaces with hyphens
 - Handle duplicates by adding a numeric suffix (e.g., "product-name-1")
 
 For example:
+
 - "Product Name" becomes "product-name"
 - "Product Name (Special)" becomes "product-name-special"
 
@@ -186,11 +189,14 @@ node utils/update-product-ids.js
 # Hướng dẫn thiết lập Authentication
 
 ## Vấn đề hiện tại
+
 Dự án đang gặp lỗi 401 Unauthorized khi:
+
 - Truy cập `/api/notifications`
 - Cố gắng đăng nhập với Google OAuth
 
 ## Nguyên nhân
+
 - Thiếu file `.env.local` chứa credentials cho Google OAuth
 - Chưa thiết lập Google OAuth Application
 
@@ -261,20 +267,24 @@ npm run dev
 ## Giải pháp tạm thời cho Development
 
 Hiện tại trong development mode:
+
 - API `/api/notifications` sẽ trả về thông báo demo nếu chưa đăng nhập
 - Điều này tránh lỗi 401 khi chưa thiết lập OAuth credentials
 
 ## Lỗi thường gặp
 
 ### 1. Error: redirect_uri_mismatch
+
 - Kiểm tra Authorized redirect URIs trong Google Cloud Console
 - Đảm bảo URL khớp chính xác (bao gồm http/https)
 
 ### 2. Error: invalid_client
+
 - Kiểm tra GOOGLE_CLIENT_ID và GOOGLE_CLIENT_SECRET
 - Đảm bảo credentials đúng và ứng dụng đã được enable
 
 ### 3. Session không persist
+
 - Kiểm tra NEXTAUTH_SECRET có được set đúng không
 - Xóa cookies browser và thử lại
 
@@ -302,6 +312,7 @@ Hiện tại trong development mode:
 - NextAuth secret được tạo an toàn với crypto.randomBytes(32)
 
 ### Test URLs:
+
 - Trang chính: http://localhost:3000
 - Debug auth: http://localhost:3000/debug-auth
 - API notifications: http://localhost:3000/api/notifications
@@ -317,6 +328,7 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 ## ✅ Tính năng đã hoàn thành
 
 ### 🎨 **Giao diện (UI/UX)**
+
 - **Header gradient đẹp mắt** với thống kê tổng số mã
 - **Tab navigation hiện đại** với icons và hiệu ứng hover
 - **Messages system** với icons và border-left đẹp mắt
@@ -326,6 +338,7 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 - **Transitions mượt mà** trên toàn bộ interface
 
 ### 📊 **Quản lý dữ liệu**
+
 - **Hiển thị danh sách** mã giảm giá với đầy đủ thông tin
 - **Tạo mã mới** với form validation đầy đủ
 - **Chỉnh sửa mã** existing với pre-fill data
@@ -334,13 +347,15 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 - **Auto-generated codes** với button "Tạo tự động"
 
 ### 🔐 **Bảo mật & Validation**
+
 - **Admin authentication** required cho tất cả actions
 - **Input validation** đầy đủ (required fields, number ranges, date logic)
-- **Duplicate code prevention** 
+- **Duplicate code prevention**
 - **Error handling** comprehensive với user-friendly messages
 - **Success feedback** với auto-clear messages
 
 ### 🏷️ **Loại mã giảm giá**
+
 - **Percentage discount** (%) với max discount limit
 - **Fixed amount discount** (VNĐ)
 - **Minimum order requirement**
@@ -351,6 +366,7 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 ## 🛠️ Cấu trúc kỹ thuật
 
 ### **Frontend** (`src/app/admin/coupons/page.tsx`)
+
 - React Hooks cho state management
 - TypeScript interfaces đầy đủ
 - Form handling với validation
@@ -358,13 +374,15 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 - Responsive design với Tailwind CSS
 
 ### **Backend APIs**
+
 - `GET /api/admin/coupons` - Lấy danh sách
-- `POST /api/admin/coupons` - Tạo mã mới  
+- `POST /api/admin/coupons` - Tạo mã mới
 - `PUT /api/admin/coupons/[id]` - Cập nhật mã
 - `DELETE /api/admin/coupons/[id]` - Xóa mã
 - `PATCH /api/admin/coupons/[id]/toggle` - Toggle trạng thái
 
 ### **Mock Data**
+
 - 2 mã mẫu: `SUMMER2024` (20%) và `WELCOME50` (50,000 VNĐ)
 - Đầy đủ fields và realistic data
 - Consistent across tất cả API endpoints
@@ -372,6 +390,7 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 ## 📈 Trạng thái hoạt động
 
 ### ✅ **Đã test thành công**
+
 - [x] Load danh sách mã giảm giá
 - [x] Hiển thị giao diện đẹp mắt
 - [x] Authentication hoạt động
@@ -379,6 +398,7 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 - [x] Responsive design
 
 ### 🧪 **Cần test thêm** (Có thể test trên UI)
+
 - [ ] Tạo mã giảm giá mới
 - [ ] Chỉnh sửa mã existing
 - [ ] Xóa mã giảm giá
@@ -388,11 +408,13 @@ Hệ thống quản lý mã giảm giá đã được **hoàn thiện và đang 
 ## 🚀 Hướng dẫn test
 
 ### **Truy cập trang quản lý:**
+
 ```
 http://localhost:3000/admin/coupons
 ```
 
 ### **Test sequence đề xuất:**
+
 1. **View danh sách** - Kiểm tra 2 mã mẫu hiển thị
 2. **Tạo mã mới** - Click "➕ Tạo mã mới", điền form, submit
 3. **Chỉnh sửa** - Click "✏️ Sửa" trên mã bất kỳ
@@ -411,11 +433,12 @@ http://localhost:3000/admin/coupons
 
 - Giao diện đẹp mắt, hiện đại với UX tốt
 - Tất cả CRUD operations đã implement
-- Validation và error handling đầy đủ  
+- Validation và error handling đầy đủ
 - Security với admin authentication
 - Code structure clean và maintainable
 
 **🔧 Để chuyển sang production:**
+
 - Thay mock data bằng database thực
 - Add more comprehensive logging
 - Implement email notifications cho khách hàng
@@ -426,6 +449,7 @@ http://localhost:3000/admin/coupons
 # ✅ BÁO CÁO CÁC VẤN ĐỀ ĐÃ ĐƯỢC SỬA
 
 ## 📌 TÓM TẮT
+
 Đã thực hiện sửa chữa **CÁC VẤN ĐỀ BẢO MẬT VÀ LOGIC NGHIÊM TRỌNG** trong dự án.
 
 ## ✅ CÁC VẤN ĐỀ ĐÃ ĐƯỢC SỬA
@@ -433,17 +457,20 @@ http://localhost:3000/admin/coupons
 ### 1. **Security Issues Fixed**
 
 #### 🔒 **Hardcoded Credentials**
+
 - ✅ Tạo file `.env.local` để lưu environment variables
 - ✅ Xóa hardcoded fallback values trong production
 - ✅ Thêm validation cho required environment variables
 - ✅ Thêm warning messages khi thiếu credentials
 
 #### 🔒 **Information Disclosure**
+
 - ✅ Wrap tất cả console.log nhạy cảm trong `if (process.env.NODE_ENV === 'development')`
 - ✅ Ngăn chặn JWT tokens và session data bị leak trong production
 - ✅ Chỉ hiển thị debug info trong development mode
 
 #### 🔒 **Security Headers**
+
 - ✅ Thêm security headers vào `next.config.js`:
   - `X-Frame-Options: DENY`
   - `X-Content-Type-Options: nosniff`
@@ -453,6 +480,7 @@ http://localhost:3000/admin/coupons
 ### 2. **Data Integrity Issues Fixed**
 
 #### 📊 **Corrupted JSON Data**
+
 - ✅ Sửa nested objects bị lỗi trong `products.json`
 - ✅ Khôi phục cấu trúc categories đúng format:
   ```json
@@ -466,11 +494,13 @@ http://localhost:3000/admin/coupons
 ### 3. **Build and Configuration Issues Fixed**
 
 #### ⚙️ **Next.js Configuration**
+
 - ✅ Sửa syntax error trong `next.config.js`
 - ✅ Đảm bảo project build thành công
 - ✅ Thêm fallback values để tránh build errors
 
 #### 📝 **Environment Variables**
+
 - ✅ Đảm bảo `.env.local` được gitignore
 - ✅ Tạo template environment variables
 - ✅ Thêm validation và warning messages
@@ -478,12 +508,14 @@ http://localhost:3000/admin/coupons
 ## 🛠️ SCRIPTS VÀ TOOLS ĐÃ TẠO
 
 ### 1. **Security Fix Script**
+
 - 📁 `scripts/fix-security-issues.js`
 - 🎯 Tự động fix các vấn đề bảo mật
 - 📋 Kiểm tra và tạo file cần thiết
 - ⚡ Chạy bằng: `npm run fix:security`
 
 ### 2. **Documentation**
+
 - 📄 `SECURITY.md` - Hướng dẫn bảo mật
 - 📄 `SECURITY_ISSUES_REPORT.md` - Báo cáo vấn đề ban đầu
 - 📄 `SECURITY_FIXES_COMPLETED.md` - Báo cáo này
@@ -491,6 +523,7 @@ http://localhost:3000/admin/coupons
 ## 🎯 TÌNH TRẠNG HIỆN TẠI
 
 ### ✅ **Đã Hoàn Thành**
+
 - [x] Remove hardcoded credentials
 - [x] Set up environment variables
 - [x] Fix corrupted JSON data
@@ -500,6 +533,7 @@ http://localhost:3000/admin/coupons
 - [x] Create security documentation
 
 ### ⚠️ **VẪN CẦN LÀM (Cho Production)**
+
 - [ ] Replace development credentials with production values
 - [ ] Migrate from JSON files to proper database
 - [ ] Implement rate limiting
@@ -511,6 +545,7 @@ http://localhost:3000/admin/coupons
 ## 🚀 HƯỚNG DẪN TRIỂN KHAI
 
 ### 1. **Development**
+
 ```bash
 # Đảm bảo có file .env.local
 npm run fix:security
@@ -520,12 +555,15 @@ npm run dev
 ```
 
 ### 2. **Production Preparation**
+
 1. **Tạo credentials mới:**
+
    - Generate new `NEXTAUTH_SECRET`
    - Create production Google OAuth app
    - Generate strong API keys
 
 2. **Cập nhật .env.local:**
+
    ```env
    NEXTAUTH_SECRET=your-production-secret
    GOOGLE_CLIENT_ID=your-production-client-id
@@ -539,6 +577,7 @@ npm run dev
    - Update API routes to use database
 
 ### 3. **Security Checklist**
+
 - [ ] All credentials are production-ready
 - [ ] Database is properly secured
 - [ ] HTTPS is enforced
@@ -549,6 +588,7 @@ npm run dev
 ## 📊 BUILD STATUS
 
 ✅ **Build Successful**
+
 - Project builds without errors
 - All TypeScript issues resolved
 - Security warnings addressed
@@ -557,12 +597,15 @@ npm run dev
 ## 🔍 TESTING
 
 ### Manual Testing Required:
+
 1. **Authentication Flow**
+
    - Google OAuth login
    - Session management
    - Admin access control
 
 2. **API Security**
+
    - Environment variable validation
    - Error handling
    - Security headers
@@ -577,55 +620,71 @@ npm run dev
 # 🚨 BÁO CÁO CÁC VẤN ĐỀ BẢO MẬT VÀ LOGIC TIỀM ẨN
 
 ## 📌 TÓM TẮT TÌNH TRẠNG
+
 Dự án có **NHIỀU VẤN ĐỀ NGHIÊM TRỌNG** cần được xử lý ngay lập tức trước khi triển khai production.
 
 ## 🔴 VẤN ĐỀ BẢO MẬT NGHIÊM TRỌNG
 
 ### 1. **Credentials Hardcoded**
+
 ❌ **Vấn đề:** Thông tin đăng nhập nhạy cảm được hardcode trong source code
+
 ```typescript
 // src/app/api/auth/[...nextauth]/route.ts
-const AUTH_SECRET = process.env.NEXTAUTH_SECRET || "voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=";
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "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";
+const AUTH_SECRET = process.env.NEXTAUTH_SECRET || 'voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=';
+const GOOGLE_CLIENT_ID =
+  process.env.GOOGLE_CLIENT_ID ||
+  '909905227025-qtk1u8jr6qj93qg9hu99qfrh27rtd2np.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET =
+  process.env.GOOGLE_CLIENT_SECRET || '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';
 ```
 
-⚠️ **Rủi ro:** 
+⚠️ **Rủi ro:**
+
 - Credentials có thể bị lộ trong git history
 - Ai cũng có thể truy cập vào tài khoản Google OAuth
 - Session có thể bị giả mạo
 
 ✅ **Giải pháp:**
+
 - Tạo file `.env.local` và không commit
 - Xóa tất cả fallback values
 - Regenerate tất cả credentials
 
 ### 2. **Weak API Authentication**
+
 ❌ **Vấn đề:** API key yếu và được hardcode
+
 ```typescript
 const validAuthKey = process.env.UPDATE_PURCHASES_AUTH_KEY || 'update-purchases-secure-key';
 ```
 
 ⚠️ **Rủi ro:**
+
 - API có thể bị truy cập bởi bất kỳ ai biết key
 - Key quá đơn giản, dễ đoán
 
 ### 3. **Information Disclosure**
+
 ❌ **Vấn đề:** Console.log trong production
+
 ```typescript
-console.log("AUTH SESSION IMAGE:", session.user.image);
-console.log("AUTH TOKEN PICTURE:", token.picture);
-console.log("AUTH JWT TOKEN:", token);
+console.log('AUTH SESSION IMAGE:', session.user.image);
+console.log('AUTH TOKEN PICTURE:', token.picture);
+console.log('AUTH JWT TOKEN:', token);
 ```
 
 ⚠️ **Rủi ro:**
+
 - Thông tin nhạy cảm bị leak trong browser console
 - JWT tokens có thể bị đánh cắp
 
 ## 🟡 VẤN ĐỀ LOGIC VÀ ARCHITECTURE
 
 ### 1. **Dữ liệu Corrupted**
+
 ❌ **Vấn đề:** File `products.json` có nested objects bị lỗi
+
 ```json
 "categories": [
   {
@@ -651,36 +710,46 @@ console.log("AUTH JWT TOKEN:", token);
 ```
 
 ⚠️ **Rủi ro:**
+
 - Infinite recursion khi render
 - Performance degradation
 - Application crashes
 
 ### 2. **No Real Database**
+
 ❌ **Vấn đề:** Sử dụng file JSON thay vì database thực
+
 - Không atomic transactions
 - Không concurrent access control
 - Data loss risk khi server restart
 - Không scalable
 
 ### 3. **File System Operations trong API Routes**
+
 ❌ **Vấn đề:** Đọc/ghi file sync trong API routes
+
 ```typescript
 fs.writeFileSync(dataFilePath, JSON.stringify(products, null, 2), 'utf8');
 ```
 
 ⚠️ **Rủi ro:**
+
 - Block event loop
 - Poor performance
 - Race conditions
 
 ### 4. **Weak Error Handling**
+
 ❌ **Vấn đề:** Không xử lý errors properly
+
 - Catch blocks chỉ log và return generic errors
 - Không validate input đầy đủ
 - Sensitive error messages leak
 
 ### 5. **Client-Side Security Issues**
-❌ **Vấn đề:** 
+
+❌ **Vấn đề:**
+
 - Middleware debug logs trong production
 - Admin check chỉ dựa vào email hardcoded
 - No CSRF protection
@@ -689,39 +758,46 @@ fs.writeFileSync(dataFilePath, JSON.stringify(products, null, 2), 'utf8');
 ## 🟠 VẤN ĐỀ PERFORMANCE
 
 ### 1. **Redundant File Operations**
+
 - Mỗi API call đều đọc file JSON từ disk
 - Không cache data
 - No indexing
 
 ### 2. **Large Bundle Size**
+
 - TypeScript compilation errors ignored
-- ESLint errors ignored  
+- ESLint errors ignored
 - No tree shaking optimization
 
 ### 3. **Images Not Optimized**
+
 - `unoptimized: true` trong next.config.js
 - Không sử dụng Next.js Image optimization
 
 ## 🔧 HÀNH ĐỘNG KHẨN CẤP CẦN THỰC HIỆN
 
 ### 1. **Immediate Security Fixes**
+
 1. Tạo `.env.local` và di chuyển tất cả secrets
 2. Regenerate Google OAuth credentials
 3. Xóa tất cả hardcoded secrets
 4. Remove/disable console.log trong production
 
 ### 2. **Data Integrity**
+
 1. Fix corrupted JSON data
 2. Migrate to proper database (PostgreSQL/MySQL)
 3. Implement proper data validation
 
 ### 3. **Architecture Improvements**
+
 1. Implement proper error boundaries
 2. Add input validation/sanitization
 3. Add rate limiting
 4. Implement proper logging system
 
 ### 4. **Security Enhancements**
+
 1. Add CSRF protection
 2. Implement proper session management
 3. Add API rate limiting
@@ -754,26 +830,31 @@ fs.writeFileSync(dataFilePath, JSON.stringify(products, null, 2), 'utf8');
 # Security Guidelines
 
 ## Environment Variables
+
 - Never commit `.env.local` to git
 - Regenerate all credentials before production deployment
 - Use strong, unique secrets for production
 
 ## Authentication
+
 - Google OAuth credentials are for development only
 - Replace with production credentials before deployment
 - Use proper session management in production
 
 ## API Security
+
 - All API routes should validate input
 - Implement rate limiting for production
 - Use HTTPS only in production
 
 ## Data Security
+
 - Migrate from JSON files to proper database
 - Implement proper data validation
 - Use parameterized queries to prevent injection
 
 ## Monitoring
+
 - Set up error tracking (Sentry)
 - Monitor API usage and performance
 - Set up alerts for security incidents
