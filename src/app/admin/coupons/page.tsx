@@ -961,32 +961,26 @@ function CouponsPage() {
                   </p>
                 </div>
 
-                {/* Ngày bắt đầu */}
+                {/* Thời gian hiệu lực */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Ngày bắt đầu *
-                  </label>
-                  <input
-                    type="date"
-                    value={form.startDate}
-                    onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
-                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                    required
-                  />
-                </div>
-
-                {/* Ngày kết thúc */}
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Ngày kết thúc *
-                  </label>
-                  <input
-                    type="date"
-                    value={form.endDate}
-                    onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                    required
-                  />
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Thời gian hiệu lực *</label>
+                  <div className="flex space-x-2">
+                    <input
+                      type="date"
+                      value={form.startDate}
+                      onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
+                      className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                      required
+                    />
+                    <span className="self-center text-sm text-gray-500">đến</span>
+                    <input
+                      type="date"
+                      value={form.endDate}
+                      onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
+                      className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                      required
+                    />
+                  </div>
                 </div>
 
                 {/* Đơn hàng tối thiểu có thể sử dụng */}
@@ -1162,31 +1156,26 @@ function CouponsPage() {
                       required
                     />
                   </div>
-                  {/* Ngày bắt đầu */}
+                  {/* Thời gian hiệu lực */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ngày bắt đầu *
-                    </label>
-                    <input
-                      type="date"
-                      value={form.startDate}
-                      onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      required
-                    />
-                  </div>
-                  {/* Ngày kết thúc */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ngày kết thúc *
-                    </label>
-                    <input
-                      type="date"
-                      value={form.endDate}
-                      onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      required
-                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Thời gian hiệu lực *</label>
+                    <div className="flex space-x-2">
+                      <input
+                        type="date"
+                        value={form.startDate}
+                        onChange={(e) => setForm(prev => ({ ...prev, startDate: e.target.value }))}
+                        className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                        required
+                      />
+                      <span className="self-center text-sm text-gray-500">đến</span>
+                      <input
+                        type="date"
+                        value={form.endDate}
+                        onChange={(e) => setForm(prev => ({ ...prev, endDate: e.target.value }))}
+                        className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                        required
+                      />
+                    </div>
                   </div>
                   {/* Trạng thái công khai/riêng tư */}
                   <div>
