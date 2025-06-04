@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface AvatarProps {
   src?: string | null;
@@ -36,18 +37,24 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', className = '' }
     setImageError(true);
   };
 
+  const handleImageLoad = () => {
+    setImageError(false);
+  };
+
   // Determine which image to show
   const imageSrc = !imageError && src ? src : '/images/avatar-placeholder.svg';
 
   return (
-    <div className={`relative ${sizeClasses[size]} ${className}`}>  
-      <img
+    <div className={`relative ${sizeClasses[size]} ${className}`}>
+      <Image
         src={imageSrc}
         alt={alt}
         width={width}
         height={height}
         className="rounded-full object-cover w-full h-full transition-transform duration-300 hover:scale-105"
         onError={handleImageError}
+        onLoad={handleImageLoad}
+        unoptimized={true}
       />
     </div>
   );
