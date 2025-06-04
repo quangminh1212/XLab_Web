@@ -293,7 +293,7 @@ export default function ProductsPage() {
             </div>
             
             {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 auto-rows-fr">
               {sortedProducts.map((product) => {
                 // Log the product data for debugging
                 console.log(`Product ${product.id} image data:`, product.images);
