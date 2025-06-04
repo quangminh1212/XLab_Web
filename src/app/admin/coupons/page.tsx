@@ -49,6 +49,7 @@ function CouponsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'list' | 'create' | 'edit'>('list');
+  const [filterTab, setFilterTab] = useState<'active' | 'expired'>('active');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
@@ -442,6 +443,10 @@ function CouponsPage() {
     }
   }, [successMessage, errorMessage]);
 
+  // Separate coupons into active (not expired) and expired groups
+  const nonExpiredCoupons = coupons.filter(coupon => !isExpired(coupon.endDate));
+  const expiredCoupons = coupons.filter(coupon => isExpired(coupon.endDate));
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -537,6 +542,24 @@ function CouponsPage() {
           <div className="p-4">
             <h2 className="text-base font-medium text-gray-900 mb-3">Danh sách mã giảm giá</h2>
             
+            {/* Sub-tabs for active vs expired */}
+            <div className="mb-4">
+              <nav className="flex space-x-2">
+                <button
+                  onClick={() => setFilterTab('active')}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium ${filterTab === 'active' ? 'bg-primary-100 text-primary-700' : 'text-gray-600 hover:bg-gray-50'}`}
+                >
+                  Đang hoạt động ({nonExpiredCoupons.length})
+                </button>
+                <button
+                  onClick={() => setFilterTab('expired')}
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium ${filterTab === 'expired' ? 'bg-primary-100 text-primary-700' : 'text-gray-600 hover:bg-gray-50'}`}
+                >
+                  Đã hết hạn ({expiredCoupons.length})
+                </button>
+              </nav>
+            </div>
+
             {coupons.length === 0 ? (
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🏷️</div>
@@ -575,7 +598,7 @@ function CouponsPage() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {coupons.map((coupon) => (
+                    {(filterTab === 'active' ? nonExpiredCoupons : expiredCoupons).map((coupon) => (
                       <tr key={coupon.id} className="hover:bg-gray-50 transition-colors duration-150">
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div>
