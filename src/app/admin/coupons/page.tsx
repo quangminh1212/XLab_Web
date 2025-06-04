@@ -961,6 +961,24 @@ function CouponsPage() {
                   </p>
                 </div>
 
+                {/* Đơn hàng tối thiểu có thể sử dụng */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                    Đơn hàng tối thiểu có thể sử dụng
+                  </label>
+                  <input
+                    type="number"
+                    value={form.minOrder}
+                    onChange={(e) => setForm(prev => ({ ...prev, minOrder: Number(e.target.value) }))}
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                    placeholder="Ví dụ: 200000"
+                    min="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Giá trị đơn hàng tối thiểu để áp dụng mã giảm giá.
+                  </p>
+                </div>
+
                 {/* Ngày bắt đầu */}
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
