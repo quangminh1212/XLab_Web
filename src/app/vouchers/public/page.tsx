@@ -391,7 +391,7 @@ export default function PublicVouchersPage() {
                 {activeTab === "available" && voucher.description && voucher.description.includes("Ưu đãi cho khách hàng đăng ký mới") ? (
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
-                      <span>Đơn tối thiểu: {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} | Còn {(voucher.userUsage ? voucher.userUsage.limit - voucher.userUsage.current : 1)} lượt</span>
+                      <span>Đơn tối thiểu: {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} đ | Đã dùng: {voucher.userUsage ? `${voucher.userUsage.current}/${voucher.userUsage.limit}` : '0/1'}</span>
                       <span className="text-gray-500">{calculateUsagePercentage(voucher.userUsage ? voucher.userUsage.current : 0, voucher.userUsage ? voucher.userUsage.limit : 1)}%</span>
                     </div>
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
