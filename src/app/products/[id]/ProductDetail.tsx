@@ -335,7 +335,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
 
   // Hook cart context
-  const { addItem } = useCart();
+  const { addItem, clearCart } = useCart();
 
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
@@ -609,7 +609,33 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 </button>
                 <Link
                   href="/checkout?skipInfo=true"
-                  onClick={handleAddToCart}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // Xóa giỏ hàng hiện tại trước
+                    clearCart();
+                    // Thêm sản phẩm hiện tại vào giỏ hàng
+                    let productImage = '/images/placeholder/product-placeholder.svg';
+                    if (product.images && product.images.length > 0) {
+                      const firstImage = product.images[0];
+                      if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
+                        productImage = firstImage;
+                      } else if (typeof firstImage !== 'string' && firstImage.url) {
+                        productImage = firstImage.url;
+                      }
+                    }
+                    // Thêm sản phẩm vào giỏ hàng
+                    addItem({
+                      id: product.id.toString(),
+                      name: product.name,
+                      price: calculateSelectedPrice(),
+                      quantity: quantity,
+                      image: productImage,
+                      version: selectedOption || selectedVersion,
+                      options: selectedOption ? [selectedOption] : selectedVersion ? [selectedVersion] : undefined,
+                    });
+                    // Chuyển hướng đến trang thanh toán
+                    window.location.href = '/checkout?skipInfo=true';
+                  }}
                   className="px-4 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 text-center transition-transform active:scale-95"
                 >
                   Mua ngay
