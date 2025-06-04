@@ -8,18 +8,22 @@
     "isActive": true,
     "balance": 57000,
     "createdAt": "2025-05-29T20:16:59.995Z",
-    "updatedAt": "2025-06-03T18:05:18.779Z",
+    "updatedAt": "2025-06-04T19:15:55.980Z",
     "lastLogin": "2025-05-29T20:16:59.995Z"
   },
   "transactions": [],
   "cart": [
     {
-      "id": "grok",
-      "name": "Grok",
+      "id": "chatgpt",
+      "name": "ChatGPT",
       "price": 149000,
-      "quantity": 2,
-      "image": "/images/products/grok/95828df2-efbf-4ddf-aed5-ed1584954d69.png",
-      "uniqueKey": "grok_default_"
+      "quantity": 1,
+      "image": "/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png",
+      "version": "Full - Dùng riêng - 1 Tháng",
+      "options": [
+        "Full - Dùng riêng - 1 Tháng"
+      ],
+      "uniqueKey": "chatgpt_Full - Dùng riêng - 1 Tháng_Full - Dùng riêng - 1 Tháng"
     }
   ],
   "orders": [],
@@ -43,7 +47,7 @@
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-03T18:05:18.782Z",
+    "lastUpdated": "2025-06-04T19:15:55.988Z",
     "version": "1.0"
   }
 }

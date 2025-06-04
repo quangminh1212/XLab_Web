@@ -331,7 +331,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   };
   
   // Hook cart context
-  const { addItem } = useCart();
+  const { addItem, clearCart } = useCart();
   
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = () => {
@@ -392,6 +392,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
       setQuantity(prev => prev - 1);
     }
   };
+
+  const router = useRouter();
 
   if (!product) {
     return (
@@ -584,7 +586,13 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 </button>
                 <Link 
                   href="/checkout?skipInfo=true" 
-                  onClick={handleAddToCart}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    clearCart();
+                    if (handleAddToCart()) {
+                      router.push('/checkout?skipInfo=true');
+                    }
+                  }}
                   className="px-4 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 text-center transition-transform active:scale-95"
                 >
                   Mua ngay
