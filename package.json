@@ -12,6 +12,8 @@
     "start": "next start",
     "start:export": "serve out -p 3000",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "format": "prettier --write .",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "fix": "node scripts/fix-next-errors.js",
     "fix:security": "node scripts/fix-security-issues.js",
