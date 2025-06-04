@@ -26,6 +26,7 @@ interface Product {
   reviewCount?: number;
   totalSold?: number;
   isAccount?: boolean;
+  slug?: string;
   versions?: ProductVersion[];
   optionPrices?: { [key: string]: OptionPrice };
 }
@@ -146,6 +147,7 @@ const ProductGrid = ({
             reviewCount: product.reviewCount ? Number(product.reviewCount) : undefined,
             totalSold: product.totalSold ? Number(product.totalSold) : undefined,
             isAccount: Boolean(product.isAccount),
+            slug: product.slug ? String(product.slug) : '',
             onAddToCart: onAddToCart,
             onView: onProductView,
           };
@@ -166,6 +168,7 @@ const ProductGrid = ({
               reviewCount={safeProps.reviewCount}
               totalSold={safeProps.totalSold}
               isAccount={safeProps.isAccount}
+              slug={safeProps.slug}
               onAddToCart={safeProps.onAddToCart}
               onView={safeProps.onView}
             />
