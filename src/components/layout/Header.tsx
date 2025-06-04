@@ -458,21 +458,21 @@ const Header = () => {
                                 </div>
                                 <h4 className="text-xs sm:text-sm font-medium text-gray-900">{coupon.name}</h4>
                                 {coupon.description && (
-                                  <p className="text-xs text-gray-600 mt-1 line-clamp-2">{coupon.description}</p>
+                                  <div className="flex justify-between items-center mt-1">
+                                    <p className="text-xs text-gray-600 line-clamp-2">{coupon.description}</p>
+                                    {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                      <span className="text-xs font-medium text-teal-600">Còn {coupon.userUsage.limit - coupon.userUsage.current} lượt</span>
+                                    )}
+                                  </div>
                                 )}
                                 <div className="mt-2 flex justify-between items-center text-xs mb-1">
                                   <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                     {coupon.minOrder ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}` : 'Không giới hạn đơn'}
                                   </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                    <>
-                                      <span className={`${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'} font-medium`}>
-                                        {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
-                                      </span>
-                                      <span className="text-gray-500">
-                                        {Math.min(100, Math.round((coupon.userUsage.current / coupon.userUsage.limit) * 100))}%
-                                      </span>
-                                    </>
+                                    <span className="text-gray-500">
+                                      {Math.min(100, Math.round((coupon.userUsage.current / coupon.userUsage.limit) * 100))}%
+                                    </span>
                                   )}
                                 </div>
                                 {coupon.userUsage && coupon.userUsage.limit > 0 && (
