@@ -466,9 +466,6 @@ const Header = () => {
                                   </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                     <>
-                                      <span className="text-xs font-medium px-2 py-0.5 bg-gray-50 text-gray-700 rounded-full border border-gray-100">
-                                        Đã dùng: {coupon.userUsage.current}/{coupon.userUsage.limit}
-                                      </span>
                                       <span className={`${coupon.userUsage.current >= coupon.userUsage.limit ? 'text-red-600' : 'text-teal-600'} font-medium`}>
                                         {coupon.userUsage.current >= coupon.userUsage.limit ? 'Đã hết lượt' : `Còn ${coupon.userUsage.limit - coupon.userUsage.current} lượt`}
                                       </span>
