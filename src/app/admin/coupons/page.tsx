@@ -446,6 +446,9 @@ function CouponsPage() {
   // Separate coupons into active (not expired) and expired groups
   const nonExpiredCoupons = coupons.filter(coupon => !isExpired(coupon.endDate));
   const expiredCoupons = coupons.filter(coupon => isExpired(coupon.endDate));
+  
+  // Các mã đang hoạt động thực sự (active và chưa hết hạn)
+  const actuallyActiveCoupons = coupons.filter(coupon => coupon.isActive && !isExpired(coupon.endDate));
 
   if (isLoading) {
     return (
@@ -476,7 +479,7 @@ function CouponsPage() {
               <div className="text-xs text-primary-100">Tổng số mã</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-white">{coupons.filter(c => c.isActive).length}</div>
+              <div className="text-lg font-bold text-white">{actuallyActiveCoupons.length}</div>
               <div className="text-xs text-primary-100">Đang hoạt động</div>
             </div>
             <div className="text-center">
@@ -549,7 +552,7 @@ function CouponsPage() {
                   onClick={() => setFilterTab('active')}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium ${filterTab === 'active' ? 'bg-primary-100 text-primary-700' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
-                  Đang hoạt động ({nonExpiredCoupons.length})
+                  Đang hoạt động ({actuallyActiveCoupons.length})
                 </button>
                 <button
                   onClick={() => setFilterTab('expired')}
@@ -598,7 +601,7 @@ function CouponsPage() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {(filterTab === 'active' ? nonExpiredCoupons : expiredCoupons).map((coupon) => (
+                    {(filterTab === 'active' ? actuallyActiveCoupons : expiredCoupons).map((coupon) => (
                       <tr key={coupon.id} className="hover:bg-gray-50 transition-colors duration-150">
                         <td className="px-4 py-3 whitespace-nowrap">
                           <div>
