@@ -264,11 +264,6 @@ export default function PublicVouchersPage() {
                     title={activeTab === "available" ? "Nhấn để sao chép mã" : ""}
                   >
                     {voucher.code}
-                    {activeTab === "available" && (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 ml-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
-                      </svg>
-                    )}
                   </span>
                 </div>
                 <div className={`rounded-full text-sm font-medium px-3 py-1 shadow-sm ${
