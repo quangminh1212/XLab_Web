@@ -35,11 +35,6 @@ export default function CheckoutPage() {
   >('balance');
   const [userBalance, setUserBalance] = useState(0);
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
-  const [coupon, setCoupon] = useState('');
-  const [couponDiscount, setCouponDiscount] = useState(0);
-  const [couponError, setCouponError] = useState('');
-  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
-  const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
 
   // Chuyển đổi items thành định dạng phù hợp với calculateCartTotals
   const cart = cartItems.map((item) => {
@@ -77,7 +72,7 @@ export default function CheckoutPage() {
 
   // Calculate cart totals
   const { subtotal, tax } = calculateCartTotals(cart);
-  const total = Math.max(subtotal - couponDiscount, 0);
+  const total = subtotal;
 
   // Cập nhật step khi tham số URL thay đổi
   useEffect(() => {
@@ -111,86 +106,7 @@ export default function CheckoutPage() {
     fetchUserBalance();
   }, [session]);
 
-  // Lấy danh sách mã giảm giá đang sở hữu (giả lập: lấy tất cả mã active)
-  useEffect(() => {
-    const fetchCoupons = async () => {
-      try {
-        const res = await fetch('/api/cart/validate-coupon', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: 'ALL' }), // code đặc biệt để trả về tất cả mã
-        });
-        const data = await res.json();
-        if (data.allCoupons) {
-          setAvailableCoupons(data.allCoupons);
-        } else {
-          // fallback: hardcode các mã mẫu nếu API chưa hỗ trợ
-          setAvailableCoupons([
-            {
-              code: 'WELCOME50',
-              name: 'Chào mừng thành viên mới',
-              description: 'Giảm 50.000đ cho đơn từ 200.000đ',
-              type: 'fixed',
-              value: 50000,
-            },
-            {
-              code: 'WELCOME10',
-              name: 'Giảm 10% cho đơn hàng đầu tiên',
-              description: 'Ưu đãi cho khách hàng mới',
-              type: 'percentage',
-              value: 10,
-            },
-            {
-              code: 'FREESHIP',
-              name: 'Miễn phí vận chuyển',
-              description: 'Miễn phí vận chuyển (30.000đ)',
-              type: 'fixed',
-              value: 30000,
-            },
-            {
-              code: 'XLAB20',
-              name: 'Giảm 20% cho sản phẩm XLab',
-              description: 'Giảm 20% cho các sản phẩm XLab',
-              type: 'percentage',
-              value: 20,
-            },
-          ]);
-        }
-      } catch (err) {
-        setAvailableCoupons([
-          {
-            code: 'WELCOME50',
-            name: 'Chào mừng thành viên mới',
-            description: 'Giảm 50.000đ cho đơn từ 200.000đ',
-            type: 'fixed',
-            value: 50000,
-          },
-          {
-            code: 'WELCOME10',
-            name: 'Giảm 10% cho đơn hàng đầu tiên',
-            description: 'Ưu đãi cho khách hàng mới',
-            type: 'percentage',
-            value: 10,
-          },
-          {
-            code: 'FREESHIP',
-            name: 'Miễn phí vận chuyển',
-            description: 'Miễn phí vận chuyển (30.000đ)',
-            type: 'fixed',
-            value: 30000,
-          },
-          {
-            code: 'XLAB20',
-            name: 'Giảm 20% cho sản phẩm XLab',
-            description: 'Giảm 20% cho các sản phẩm XLab',
-            type: 'percentage',
-            value: 20,
-          },
-        ]);
-      }
-    };
-    fetchCoupons();
-  }, []);
+
 
   const validateShippingInfo = () => {
     const newErrors: Record<string, string> = {};
@@ -246,36 +162,7 @@ export default function CheckoutPage() {
     router.push(`/account/deposit?amount=${total}&redirect=checkout`);
   };
 
-  // Hàm áp dụng mã giảm giá
-  const handleApplyCoupon = async () => {
-    setIsApplyingCoupon(true);
-    setCouponError('');
-    setCouponDiscount(0);
-    if (!coupon.trim()) {
-      setCouponError('Vui lòng nhập mã giảm giá');
-      setIsApplyingCoupon(false);
-      return;
-    }
-    try {
-      const res = await fetch('/api/cart/validate-coupon', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: coupon }),
-      });
-      const data = await res.json();
-      if (res.ok && data.discount) {
-        setCouponDiscount(data.discount);
-        setCouponError('');
-      } else {
-        setCouponDiscount(0);
-        setCouponError(data.message || 'Mã giảm giá không hợp lệ');
-      }
-    } catch (err) {
-      setCouponDiscount(0);
-      setCouponError('Có lỗi xảy ra, thử lại sau.');
-    }
-    setIsApplyingCoupon(false);
-  };
+
 
   return (
     <div>
@@ -645,75 +532,13 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                {/* Nhập mã giảm giá */}
-                <div className="mb-4">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      className="border rounded px-3 py-2 text-sm flex-grow min-w-0"
-                      placeholder="Nhập mã giảm giá"
-                      value={coupon}
-                      onChange={(e) => setCoupon(e.target.value)}
-                      disabled={isApplyingCoupon}
-                    />
-                    <button
-                      className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded text-sm font-medium whitespace-nowrap"
-                      onClick={handleApplyCoupon}
-                      disabled={isApplyingCoupon}
-                    >
-                      Áp dụng
-                    </button>
-                  </div>
-                  {couponError && <div className="text-red-500 text-xs mt-1">{couponError}</div>}
-                  {couponDiscount > 0 && (
-                    <div className="text-green-600 text-xs mt-1">
-                      Đã áp dụng mã, giảm {formatCurrency(couponDiscount)}
-                    </div>
-                  )}
-                  {availableCoupons.length > 0 && (
-                    <div className="mt-3 bg-teal-50 border border-teal-200 rounded p-3">
-                      <div className="font-semibold text-teal-800 mb-2 flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4 text-teal-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 14l2-2 4 4m0 0l-4-4m4 4V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2h6a2 2 0 002-2z"
-                          />
-                        </svg>
-                        Mã giảm giá đang sở hữu:
-                      </div>
-                      <ul className="space-y-1 text-sm">
-                        {availableCoupons.map((c) => (
-                          <li key={c.code} className="flex items-center gap-2">
-                            <span className="font-mono text-teal-700 bg-white border border-teal-200 rounded px-2 py-0.5 text-xs">
-                              {c.code}
-                            </span>
-                            <span className="font-medium text-teal-900">{c.name}</span>
-                            <span className="text-teal-700">- {c.description}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+
 
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Tạm tính:</span>
                     <span>{formatCurrency(subtotal)}</span>
                   </div>
-                  {couponDiscount > 0 && (
-                    <div className="flex justify-between text-sm text-green-600">
-                      <span>Giảm giá:</span>
-                      <span>-{formatCurrency(couponDiscount)}</span>
-                    </div>
-                  )}
                   <div className="flex justify-between font-bold text-base pt-2 border-t">
                     <span>Tổng cộng:</span>
                     <span className="text-teal-600">{formatCurrency(total)}</span>
