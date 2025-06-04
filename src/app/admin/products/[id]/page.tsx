@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect, useRef, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,7 +16,7 @@ const durationOptions = [
   { value: '6months', label: '6 Tháng' },
   { value: '1year', label: '1 Năm' },
   { value: '2years', label: '2 Năm' },
-  { value: 'lifetime', label: 'Vĩnh viễn' }
+  { value: 'lifetime', label: 'Vĩnh viễn' },
 ];
 
 interface AdminEditProductPageProps {
@@ -27,12 +27,12 @@ interface AdminEditProductPageProps {
 
 function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const router = useRouter();
-  
+
   // Unwrap params Promise với React.use() theo chuẩn Next.js mới
   const { id } = React.use(params);
   const productId = id;
   const isNew = productId === 'new';
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const featuredImageInputRef = useRef<HTMLInputElement>(null);
   const [product, setProduct] = useState<Product | null>(null);
@@ -53,13 +53,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     weeklyPurchases: 0,
     totalPurchases: 0,
     type: 'software' as 'software' | 'account',
-    isAccount: false
+    isAccount: false,
   });
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(true);
-  
+
   // Thêm state cho mô tả kỹ thuật
-  const [specifications, setSpecifications] = useState<{key: string, value: string}[]>([]);
+  const [specifications, setSpecifications] = useState<{ key: string; value: string }[]>([]);
   const [newSpecKey, setNewSpecKey] = useState('');
   const [newSpecValue, setNewSpecValue] = useState('');
   const [isEditingSpecs, setIsEditingSpecs] = useState(false);
@@ -70,26 +70,28 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const [productOptions, setProductOptions] = useState<string[]>([]);
   const [newProductOption, setNewProductOption] = useState('');
   const [defaultProductOption, setDefaultProductOption] = useState('');
-  
+
   // Thêm state cho quản lý giá theo từng tùy chọn sản phẩm
-  const [optionPrices, setOptionPrices] = useState<{[key: string]: {price: number, originalPrice: number}}>({});
+  const [optionPrices, setOptionPrices] = useState<{
+    [key: string]: { price: number; originalPrice: number };
+  }>({});
 
   // Thêm state cho quản lý thời hạn theo từng tùy chọn sản phẩm
-  const [optionDurations, setOptionDurations] = useState<{[key: string]: string}>({});
+  const [optionDurations, setOptionDurations] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
         const response = await fetch(`/api/admin/products/${productId}`);
-        
+
         if (!response.ok) {
           throw new Error('Không thể tải thông tin sản phẩm');
         }
-        
+
         const productData = await response.json();
         setProduct(productData);
-        
+
         // Populate form data
         setFormData({
           name: productData.name || '',
@@ -99,14 +101,18 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           price: productData.versions?.[0]?.price || 0,
           salePrice: productData.versions?.[0]?.originalPrice || 0,
           categories: productData.categories ? productData.categories.map((c: any) => c.id) : [],
-          specs: productData.specifications ? productData.specifications.map((spec: {key: string, value: string}) => spec.key + ': ' + spec.value).join('\n') : '',
+          specs: productData.specifications
+            ? productData.specifications
+                .map((spec: { key: string; value: string }) => spec.key + ': ' + spec.value)
+                .join('\n')
+            : '',
           rating: productData.rating !== undefined ? productData.rating : 5,
           weeklyPurchases: productData.weeklyPurchases || 0,
           totalPurchases: productData.totalPurchases || 0,
           type: productData.type || 'software',
-          isAccount: productData.isAccount || productData.type === 'account' || false
+          isAccount: productData.isAccount || productData.type === 'account' || false,
         });
-        
+
         // Tải thông tin tùy chọn sản phẩm nếu có
         if (productData.productOptions && Array.isArray(productData.productOptions)) {
           setProductOptions(productData.productOptions);
@@ -114,21 +120,21 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           // Không có tùy chọn ban đầu
           setProductOptions([]);
         }
-        
+
         // Tải giá cho từng tùy chọn sản phẩm nếu có
         if (productData.optionPrices && typeof productData.optionPrices === 'object') {
           setOptionPrices(productData.optionPrices);
         } else {
           setOptionPrices({});
         }
-        
+
         // Tải thời hạn cho từng tùy chọn sản phẩm nếu có
         if (productData.optionDurations && typeof productData.optionDurations === 'object') {
           setOptionDurations(productData.optionDurations);
         } else {
           setOptionDurations({});
         }
-        
+
         // Tải tùy chọn mặc định
         if (productData.defaultProductOption) {
           setDefaultProductOption(productData.defaultProductOption);
@@ -138,17 +144,17 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           // Không có tùy chọn mặc định
           setDefaultProductOption('');
         }
-        
+
         // Set description images if available
         if (productData.descriptionImages && Array.isArray(productData.descriptionImages)) {
           setDescriptionImages(productData.descriptionImages);
         }
-        
+
         // Set featured image if available
         if (productData.images && productData.images.length > 0) {
           setFeaturedImage(productData.images[0]);
         }
-        
+
         // Set specifications if available
         if (productData.specifications && Array.isArray(productData.specifications)) {
           setSpecifications(productData.specifications);
@@ -171,10 +177,12 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
   // Kiểm tra URL hình ảnh có hợp lệ không
   const isValidImageUrl = (url: string) => {
-    return url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null || 
-           url.startsWith('https://') || 
-           url.startsWith('http://') ||
-           url.startsWith('/images/');
+    return (
+      url.match(/\.(jpeg|jpg|gif|png|webp)$/) !== null ||
+      url.startsWith('https://') ||
+      url.startsWith('http://') ||
+      url.startsWith('/images/')
+    );
   };
 
   // Hàm lấy tên danh mục từ ID
@@ -187,8 +195,8 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       { id: 'design-software', name: 'Phần mềm thiết kế' },
       { id: 'ai-tools', name: 'Công cụ AI' },
     ];
-    
-    const category = categories.find(c => c.id === id);
+
+    const category = categories.find((c) => c.id === id);
     return category ? category.name : id;
   };
 
@@ -205,148 +213,148 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   // Xử lý upload hình ảnh
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    
+
     const file = e.target.files[0];
-    
+
     // Giới hạn kích thước file là 5MB
     if (file.size > 5 * 1024 * 1024) {
       setError('Kích thước file không được vượt quá 5MB');
       setTimeout(() => setError(null), 3000);
       return;
     }
-    
+
     // Chỉ cho phép các loại file ảnh
     if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
       setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
       setTimeout(() => setError(null), 3000);
       return;
     }
-    
+
     try {
       // Tạo form data để upload file
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
-      
+
       // Append productSlug and productName for uploads
       const slug = product?.slug || generateSlug(formData.name);
       uploadFormData.append('productSlug', slug);
       uploadFormData.append('productName', formData.name);
-      
+
       // Upload hình ảnh lên server
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: uploadFormData
+        body: uploadFormData,
       });
-      
+
       if (!response.ok) {
         throw new Error('Không thể tải lên hình ảnh');
       }
-      
+
       const data = await response.json();
       // Lấy URL thực từ server thay vì dùng blob URL
       const imageUrl = data.url || data.filepath || data.fileUrl;
-      
+
       if (!imageUrl) {
         throw new Error('URL hình ảnh không hợp lệ');
       }
-      
+
       setDescriptionImages([...descriptionImages, imageUrl]);
     } catch (err) {
       console.error('Lỗi khi upload hình ảnh:', err);
       setError((err as Error).message || 'Không thể tải lên hình ảnh');
       setTimeout(() => setError(null), 3000);
-      
+
       // Fallback to blob URL if server upload fails
       const imageUrl = URL.createObjectURL(file);
       setDescriptionImages([...descriptionImages, imageUrl]);
     }
-    
+
     // Reset input file
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
-  
+
   // Xử lý upload ảnh đại diện
   const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    
+
     const file = e.target.files[0];
-    console.log("Uploading featured image:", file.name);
-    
+    console.log('Uploading featured image:', file.name);
+
     // Giới hạn kích thước file là 5MB
     if (file.size > 5 * 1024 * 1024) {
       setError('Kích thước file không được vượt quá 5MB');
       setTimeout(() => setError(null), 3000);
       return;
     }
-    
+
     // Chỉ cho phép các loại file ảnh
     if (!file.type.match(/image\/(jpeg|jpg|png|gif|webp)/)) {
       setError('Chỉ chấp nhận file hình ảnh (JPEG, PNG, GIF, WEBP)');
       setTimeout(() => setError(null), 3000);
       return;
     }
-    
+
     try {
       // Tạo form data để upload file
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
-      
+
       // Append productSlug and productName for uploads
       const slug = product?.slug || generateSlug(formData.name);
       uploadFormData.append('productSlug', slug);
       uploadFormData.append('productName', formData.name);
-      
+
       // Upload hình ảnh lên server
-      console.log("Sending upload request to /api/upload");
+      console.log('Sending upload request to /api/upload');
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: uploadFormData
+        body: uploadFormData,
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Upload error:", errorData);
+        console.error('Upload error:', errorData);
         throw new Error('Không thể tải lên hình ảnh: ' + (errorData.error || response.statusText));
       }
-      
+
       const data = await response.json();
-      console.log("Upload response data:", data);
-      
+      console.log('Upload response data:', data);
+
       // Lấy URL thực từ server thay vì dùng blob URL
       const imageUrl = data.url || data.filepath || data.fileUrl;
-      
+
       if (!imageUrl) {
         throw new Error('URL hình ảnh không hợp lệ');
       }
-      
-      console.log("Setting featured image to:", imageUrl);
+
+      console.log('Setting featured image to:', imageUrl);
       setFeaturedImage(imageUrl);
     } catch (err) {
       console.error('Lỗi khi upload hình ảnh:', err);
       setError((err as Error).message || 'Không thể tải lên hình ảnh');
       setTimeout(() => setError(null), 3000);
-      
+
       // Fallback to blob URL if server upload fails
       const imageUrl = URL.createObjectURL(file);
-      console.log("Using fallback blob URL:", imageUrl);
+      console.log('Using fallback blob URL:', imageUrl);
       setFeaturedImage(imageUrl);
     }
-    
+
     // Reset input file
     if (featuredImageInputRef.current) {
       featuredImageInputRef.current.value = '';
     }
   };
-  
+
   // Xử lý xóa hình ảnh
   const handleRemoveImage = (index: number) => {
     const newImages = [...descriptionImages];
     newImages.splice(index, 1);
     setDescriptionImages(newImages);
   };
-  
+
   // Xử lý xóa ảnh đại diện
   const handleRemoveFeaturedImage = () => {
     setFeaturedImage(null);
@@ -354,14 +362,17 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       featuredImageInputRef.current.value = '';
     }
   };
-  
+
   // Xử lý thêm thông số kỹ thuật
   const handleAddSpecification = () => {
     if (newSpecKey.trim() && newSpecValue.trim()) {
-      setSpecifications([...specifications, {
-        key: newSpecKey.trim(),
-        value: newSpecValue.trim()
-      }]);
+      setSpecifications([
+        ...specifications,
+        {
+          key: newSpecKey.trim(),
+          value: newSpecValue.trim(),
+        },
+      ]);
       setNewSpecKey('');
       setNewSpecValue('');
     }
@@ -373,43 +384,46 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
     newSpecs.splice(index, 1);
     setSpecifications(newSpecs);
   };
-  
+
   // Xử lý chèn hình ảnh vào mô tả
   const handleInsertImageToDescription = (imageUrl: string) => {
     // Không cần chèn thủ công, vì rich text editor có chức năng chèn ảnh
     // Nhưng chúng ta có thể sao chép URL để dễ dàng dán vào editor
     navigator.clipboard.writeText(imageUrl).then(() => {
-      setSuccessMessage("Đã sao chép URL hình ảnh vào clipboard, bạn có thể dán vào editor");
+      setSuccessMessage('Đã sao chép URL hình ảnh vào clipboard, bạn có thể dán vào editor');
       setTimeout(() => setSuccessMessage(null), 3000);
     });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type } = e.target;
-    
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' 
-        ? (e.target as HTMLInputElement).checked 
-        : name === 'price' || name === 'salePrice' 
-          ? parseFloat(value) 
-          : value
+      [name]:
+        type === 'checkbox'
+          ? (e.target as HTMLInputElement).checked
+          : name === 'price' || name === 'salePrice'
+            ? parseFloat(value)
+            : value,
     }));
   };
-  
+
   // Xử lý thay đổi nội dung rich text
   const handleRichTextChange = (content: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      description: content
+      description: content,
     }));
   };
-  
+
   // Xử lý thay đổi nội dung mô tả ngắn rich text
   const handleShortDescRichTextChange = (content: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      shortDescription: content
+      shortDescription: content,
     }));
   };
 
@@ -419,50 +433,50 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       const newOption = newProductOption.trim();
       setProductOptions([...productOptions, newOption]);
       setNewProductOption('');
-      
+
       // Thêm giá mặc định cho tùy chọn mới
-      setOptionPrices(prev => ({
+      setOptionPrices((prev) => ({
         ...prev,
         [newOption]: {
           price: formData.price || 0,
-          originalPrice: formData.salePrice || 0
-        }
+          originalPrice: formData.salePrice || 0,
+        },
       }));
-      
+
       // Thêm thời hạn mặc định cho tùy chọn mới
-      setOptionDurations(prev => ({
+      setOptionDurations((prev) => ({
         ...prev,
-        [newOption]: '1month' // Mặc định là 1 tháng
+        [newOption]: '1month', // Mặc định là 1 tháng
       }));
-      
+
       // Nếu chưa có tùy chọn mặc định, đặt tùy chọn đầu tiên làm mặc định
       if (!defaultProductOption && productOptions.length === 0) {
         setDefaultProductOption(newOption);
       }
     }
   };
-  
+
   // Xử lý xóa tùy chọn
   const handleRemoveProductOption = (index: number) => {
     const option = productOptions[index];
     const newOptions = [...productOptions];
     newOptions.splice(index, 1);
     setProductOptions(newOptions);
-    
+
     // Xóa giá của tùy chọn
-    setOptionPrices(prev => {
-      const newPrices = {...prev};
+    setOptionPrices((prev) => {
+      const newPrices = { ...prev };
       delete newPrices[option];
       return newPrices;
     });
-    
+
     // Xóa thời hạn của tùy chọn
-    setOptionDurations(prev => {
-      const newDurations = {...prev};
+    setOptionDurations((prev) => {
+      const newDurations = { ...prev };
       delete newDurations[option];
       return newDurations;
     });
-    
+
     // Nếu xóa tùy chọn mặc định, chọn tùy chọn đầu tiên còn lại làm mặc định
     if (option === defaultProductOption) {
       if (newOptions.length > 0) {
@@ -472,7 +486,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       }
     }
   };
-  
+
   // Xử lý đặt tùy chọn mặc định
   const handleSetDefaultOption = (option: string) => {
     setDefaultProductOption(option);
@@ -480,19 +494,19 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
 
   const handleSaveProduct = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setIsSubmitting(true);
-      
+
       // Basic validation
       if (!formData.name.trim()) {
         setError('Vui lòng nhập tên sản phẩm');
         return;
       }
-      
+
       // Đảm bảo có ít nhất một giá hợp lệ (lớn hơn 0)
       let hasValidPrice = false;
-      
+
       // Kiểm tra giá trong các tùy chọn sản phẩm
       if (Object.keys(optionPrices).length > 0) {
         for (const option of Object.keys(optionPrices)) {
@@ -502,21 +516,21 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           }
         }
       }
-      
+
       // Kiểm tra giá cơ bản nếu vẫn chưa có giá hợp lệ
       if (!hasValidPrice && formData.price > 0) {
         hasValidPrice = true;
       }
-      
+
       if (!hasValidPrice) {
         setError('Sản phẩm cần có ít nhất một giá hợp lệ (lớn hơn 0)');
         setIsSubmitting(false);
         return;
       }
-      
+
       // Slug generation
       const slug = generateSlug(formData.name);
-      
+
       // Prepare product data to send to API
       const productData = {
         id: productId,
@@ -537,10 +551,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             description: 'Phiên bản mặc định',
             price: formData.price,
             originalPrice: formData.salePrice,
-            features: []
-          }
+            features: [],
+          },
         ],
-        categories: formData.categories.map(id => ({ id })),
+        categories: formData.categories.map((id) => ({ id })),
         descriptionImages: descriptionImages,
         images: featuredImage ? [featuredImage] : [],
         // Thêm dữ liệu tùy chọn sản phẩm
@@ -549,39 +563,40 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
         // Thêm giá cho từng tùy chọn
         optionPrices: optionPrices,
         // Thêm thời hạn cho từng tùy chọn
-        optionDurations: optionDurations
+        optionDurations: optionDurations,
       };
-      
-      console.log("Saving product data:", JSON.stringify(productData, null, 2));
-      
+
+      console.log('Saving product data:', JSON.stringify(productData, null, 2));
+
       // Send the request for create or update
       const url = isNew ? '/api/products/new' : `/api/admin/products/${productId}`;
       const method = isNew ? 'POST' : 'PUT';
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(productData)
+        body: JSON.stringify(productData),
       });
-      
+
       if (!response.ok) {
         throw new Error(isNew ? 'Không thể tạo sản phẩm' : 'Không thể cập nhật sản phẩm');
       }
-      
+
       const result = await response.json();
       // For update, set product state; for create, skip
       if (!isNew) {
         setProduct(result);
       }
-      setSuccessMessage(isNew ? 'Sản phẩm đã được tạo thành công!' : 'Sản phẩm đã được cập nhật thành công!');
+      setSuccessMessage(
+        isNew ? 'Sản phẩm đã được tạo thành công!' : 'Sản phẩm đã được cập nhật thành công!',
+      );
       // Redirect or hide message
       if (isNew) {
         setTimeout(() => router.push('/admin/products'), 2000);
       } else {
         setTimeout(() => setSuccessMessage(null), 3000);
       }
-      
     } catch (err) {
       setError((err as Error).message);
       console.error('Error updating product:', err);
@@ -594,14 +609,17 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const price = parseFloat(value);
-    
-    setFormData(prev => ({
-      ...prev, 
+
+    setFormData((prev) => ({
+      ...prev,
       price: isNaN(price) ? 0 : price,
       // Nếu giá gốc chưa được đặt hoặc bằng giá cũ, tự động cập nhật giá gốc
-      salePrice: (prev.salePrice === 0 || prev.salePrice === prev.price) 
-        ? (isNaN(price) ? 0 : price) 
-        : prev.salePrice
+      salePrice:
+        prev.salePrice === 0 || prev.salePrice === prev.price
+          ? isNaN(price)
+            ? 0
+            : price
+          : prev.salePrice,
     }));
   };
 
@@ -609,10 +627,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const handleSalePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const salePrice = parseFloat(value);
-    
-    setFormData(prev => ({
-      ...prev, 
-      salePrice: isNaN(salePrice) ? 0 : salePrice
+
+    setFormData((prev) => ({
+      ...prev,
+      salePrice: isNaN(salePrice) ? 0 : salePrice,
     }));
   };
 
@@ -620,48 +638,48 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const handlePasteImage = async (e: React.ClipboardEvent<HTMLDivElement>) => {
     const items = e.clipboardData?.items;
     if (!items) return;
-    
+
     // Tìm kiếm hình ảnh trong clipboard
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.indexOf('image') !== -1) {
         const file = items[i].getAsFile();
         if (!file) continue;
-        
+
         // Giới hạn kích thước file là 5MB
         if (file.size > 5 * 1024 * 1024) {
           setError('Kích thước file không được vượt quá 5MB');
           setTimeout(() => setError(null), 3000);
           return;
         }
-        
+
         try {
           // Tạo form data để upload file
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
-          
+
           // Append productSlug and productName for uploads
           const slug = product?.slug || generateSlug(formData.name);
           uploadFormData.append('productSlug', slug);
           uploadFormData.append('productName', formData.name);
-          
+
           // Upload hình ảnh lên server
           const response = await fetch('/api/upload', {
             method: 'POST',
-            body: uploadFormData
+            body: uploadFormData,
           });
-          
+
           if (!response.ok) {
             throw new Error('Không thể tải lên hình ảnh');
           }
-          
+
           const data = await response.json();
           // Lấy URL thực từ server
           const imageUrl = data.url || data.filepath || data.fileUrl;
-          
+
           if (!imageUrl) {
             throw new Error('URL hình ảnh không hợp lệ');
           }
-          
+
           setFeaturedImage(imageUrl);
           setSuccessMessage('Đã dán ảnh từ clipboard thành công');
           setTimeout(() => setSuccessMessage(null), 3000);
@@ -679,48 +697,48 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   const handlePasteDescriptionImage = async (e: React.ClipboardEvent<HTMLDivElement>) => {
     const items = e.clipboardData?.items;
     if (!items) return;
-    
+
     // Tìm kiếm hình ảnh trong clipboard
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.indexOf('image') !== -1) {
         const file = items[i].getAsFile();
         if (!file) continue;
-        
+
         // Giới hạn kích thước file là 5MB
         if (file.size > 5 * 1024 * 1024) {
           setError('Kích thước file không được vượt quá 5MB');
           setTimeout(() => setError(null), 3000);
           return;
         }
-        
+
         try {
           // Tạo form data để upload file
           const uploadFormData = new FormData();
           uploadFormData.append('file', file);
-          
+
           // Append productSlug and productName for uploads
           const slug = product?.slug || generateSlug(formData.name);
           uploadFormData.append('productSlug', slug);
           uploadFormData.append('productName', formData.name);
-          
+
           // Upload hình ảnh lên server
           const response = await fetch('/api/upload', {
             method: 'POST',
-            body: uploadFormData
+            body: uploadFormData,
           });
-          
+
           if (!response.ok) {
             throw new Error('Không thể tải lên hình ảnh');
           }
-          
+
           const data = await response.json();
           // Lấy URL thực từ server
           const imageUrl = data.url || data.filepath || data.fileUrl;
-          
+
           if (!imageUrl) {
             throw new Error('URL hình ảnh không hợp lệ');
           }
-          
+
           setDescriptionImages([...descriptionImages, imageUrl]);
           setSuccessMessage('Đã dán ảnh mô tả từ clipboard thành công');
           setTimeout(() => setSuccessMessage(null), 3000);
@@ -747,7 +765,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
       <div className="container">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           <p>{error || 'Không tìm thấy sản phẩm'}</p>
-          <button 
+          <button
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             onClick={() => router.push('/admin/products')}
           >
@@ -778,19 +796,19 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
           </button>
         </div>
       </div>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
           {error}
         </div>
       )}
-      
+
       {successMessage && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
           {successMessage}
         </div>
       )}
-      
+
       <form onSubmit={handleSaveProduct}>
         {/* Giao diện chính giống giao diện sản phẩm trong hình */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -807,7 +825,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 required
               />
             </div>
-            
+
             {/* Công khai sản phẩm */}
             <div className="flex items-center ml-4">
               <input
@@ -823,7 +841,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </label>
             </div>
           </div>
-          
+
           {/* Thông tin đánh giá và số lượng mua */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
             {/* Đánh giá sao */}
@@ -831,18 +849,20 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               <label className="block text-sm font-medium text-gray-700 mb-3">Đánh giá sao</label>
               <div className="flex items-center justify-center flex-col space-y-3">
                 <div className="text-center">
-                  <span className="text-3xl font-bold text-primary-600">{Number(formData.rating).toFixed(1)}</span>
+                  <span className="text-3xl font-bold text-primary-600">
+                    {Number(formData.rating).toFixed(1)}
+                  </span>
                 </div>
                 <div className="flex text-2xl justify-center">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
-                      onClick={() => setFormData(prev => ({...prev, rating: star}))}
+                      onClick={() => setFormData((prev) => ({ ...prev, rating: star }))}
                       className={`focus:outline-none transition-colors duration-200 ${
-                        star <= Math.round(formData.rating) 
-                          ? "text-yellow-400 hover:text-yellow-500" 
-                          : "text-gray-300 hover:text-gray-400"
+                        star <= Math.round(formData.rating)
+                          ? 'text-yellow-400 hover:text-yellow-500'
+                          : 'text-gray-300 hover:text-gray-400'
                       }`}
                     >
                       ★
@@ -850,13 +870,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   ))}
                 </div>
                 <div className="w-full">
-                  <input 
-                    type="range" 
+                  <input
+                    type="range"
                     name="rating"
                     value={formData.rating}
                     onChange={(e) => {
                       const value = parseFloat(e.target.value);
-                      setFormData(prev => ({...prev, rating: value}));
+                      setFormData((prev) => ({ ...prev, rating: value }));
                     }}
                     min="0"
                     max="5"
@@ -870,19 +890,32 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
               </div>
             </div>
-            
+
             {/* Số lượng mua trong tuần */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-              <label className="block text-sm font-medium text-gray-700 mb-3">Số lượng mua trong tuần</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Số lượng mua trong tuần
+              </label>
               <div className="flex items-center space-x-3 mb-3">
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                      />
                     </svg>
                   </div>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     name="weeklyPurchases"
                     value={formData.weeklyPurchases}
                     onChange={handleInputChange}
@@ -891,35 +924,63 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   />
                 </div>
                 <div className="flex rounded-lg overflow-hidden">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => {
                       if (formData.weeklyPurchases > 0) {
-                        setFormData(prev => ({...prev, weeklyPurchases: prev.weeklyPurchases - 1}));
+                        setFormData((prev) => ({
+                          ...prev,
+                          weeklyPurchases: prev.weeklyPurchases - 1,
+                        }));
                       }
                     }}
                     className="bg-gray-200 px-3 py-2 text-gray-600 hover:bg-gray-300 focus:outline-none"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20 12H4"
+                      />
                     </svg>
                   </button>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => {
-                      setFormData(prev => ({...prev, weeklyPurchases: prev.weeklyPurchases + 1}));
+                      setFormData((prev) => ({
+                        ...prev,
+                        weeklyPurchases: prev.weeklyPurchases + 1,
+                      }));
                     }}
                     className="bg-primary-100 px-3 py-2 text-primary-600 hover:bg-primary-200 focus:outline-none"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
                     </svg>
                   </button>
                 </div>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-primary-600 h-2.5 rounded-full transition-all duration-300" 
+                <div
+                  className="bg-primary-600 h-2.5 rounded-full transition-all duration-300"
                   style={{ width: `${Math.min(100, (formData.weeklyPurchases / 100) * 100)}%` }}
                 ></div>
               </div>
@@ -928,19 +989,32 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 <span>100+</span>
               </div>
             </div>
-            
+
             {/* Tổng số hàng đã mua */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
-              <label className="block text-sm font-medium text-gray-700 mb-3">Tổng số hàng đã mua</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Tổng số hàng đã mua
+              </label>
               <div className="flex items-center space-x-3 mb-3">
                 <div className="flex-1 relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                      />
                     </svg>
                   </div>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     name="totalPurchases"
                     value={formData.totalPurchases}
                     onChange={handleInputChange}
@@ -949,35 +1023,60 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   />
                 </div>
                 <div className="flex rounded-lg overflow-hidden">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => {
                       if (formData.totalPurchases > 0) {
-                        setFormData(prev => ({...prev, totalPurchases: prev.totalPurchases - 1}));
+                        setFormData((prev) => ({
+                          ...prev,
+                          totalPurchases: prev.totalPurchases - 1,
+                        }));
                       }
                     }}
                     className="bg-gray-200 px-3 py-2 text-gray-600 hover:bg-gray-300 focus:outline-none"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20 12H4"
+                      />
                     </svg>
                   </button>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => {
-                      setFormData(prev => ({...prev, totalPurchases: prev.totalPurchases + 1}));
+                      setFormData((prev) => ({ ...prev, totalPurchases: prev.totalPurchases + 1 }));
                     }}
                     className="bg-teal-100 px-3 py-2 text-teal-600 hover:bg-teal-200 focus:outline-none"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
                     </svg>
                   </button>
                 </div>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-teal-600 h-2.5 rounded-full transition-all duration-300" 
+                <div
+                  className="bg-teal-600 h-2.5 rounded-full transition-all duration-300"
                   style={{ width: `${Math.min(100, (formData.totalPurchases / 1000) * 100)}%` }}
                 ></div>
               </div>
@@ -986,11 +1085,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 <span>1000+</span>
               </div>
               <div className="mt-2 text-center">
-                <span className="text-2xl font-bold text-teal-600">{formData.totalPurchases.toLocaleString()}</span>
+                <span className="text-2xl font-bold text-teal-600">
+                  {formData.totalPurchases.toLocaleString()}
+                </span>
                 <div className="text-xs text-gray-500 mt-1">đơn hàng</div>
               </div>
             </div>
-            
+
             {/* Loại sản phẩm */}
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-200 hover:shadow-md">
               <label className="block text-sm font-medium text-gray-700 mb-3">Loại sản phẩm</label>
@@ -1002,10 +1103,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     value="software"
                     checked={formData.type === 'software'}
                     onChange={(e) => {
-                      setFormData(prev => ({
+                      setFormData((prev) => ({
                         ...prev,
                         type: 'software',
-                        isAccount: false
+                        isAccount: false,
                       }));
                     }}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
@@ -1019,10 +1120,10 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     value="account"
                     checked={formData.type === 'account'}
                     onChange={(e) => {
-                      setFormData(prev => ({
+                      setFormData((prev) => ({
                         ...prev,
                         type: 'account',
-                        isAccount: true
+                        isAccount: true,
                       }));
                     }}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
@@ -1032,24 +1133,25 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {/* Phần hình ảnh sản phẩm */}
             <div className="xl:col-span-1">
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 h-full">
                 <h3 className="text-lg font-medium mb-4 text-gray-900">Hình ảnh sản phẩm</h3>
                 <div className="flex justify-center mb-4">
-                  <div className="border rounded-lg overflow-hidden bg-white aspect-square w-full max-w-xs flex items-center justify-center relative"
-                    onPaste={handlePasteImage} 
+                  <div
+                    className="border rounded-lg overflow-hidden bg-white aspect-square w-full max-w-xs flex items-center justify-center relative"
+                    onPaste={handlePasteImage}
                     tabIndex={0}
                     style={{ outline: 'none' }}
                   >
                     {featuredImage ? (
                       <>
-                        <img 
-                          src={featuredImage} 
-                          alt={formData.name} 
-                          className="object-contain max-w-full max-h-full" 
+                        <img
+                          src={featuredImage}
+                          alt={formData.name}
+                          className="object-contain max-w-full max-h-full"
                         />
                         <button
                           type="button"
@@ -1068,7 +1170,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     )}
                   </div>
                 </div>
-                
+
                 <div>
                   <input
                     type="file"
@@ -1080,22 +1182,32 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                 </div>
               </div>
             </div>
-            
+
             {/* Phần tùy chọn và mô tả sản phẩm */}
             <div className="xl:col-span-2">
               <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 h-full">
                 {/* Tùy chọn sản phẩm */}
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                   <h3 className="text-lg font-medium mb-4 text-gray-900 flex items-center">
-                    <svg className="w-5 h-5 mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    <svg
+                      className="w-5 h-5 mr-2 text-teal-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                      />
                     </svg>
                     Tùy chọn sản phẩm
                     <span className="ml-2 bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded-full">
                       {productOptions.length} tùy chọn
                     </span>
                   </h3>
-                  
+
                   {/* Danh sách tùy chọn với form thêm mới tích hợp */}
                   <div className="bg-gray-50 rounded-lg min-h-[120px]">
                     <div className="p-3">
@@ -1109,12 +1221,22 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                             </span>
                           )}
                         </div>
-                        
+
                         {/* Form thêm tùy chọn mới - chuyển lên cùng dòng */}
                         <div className="flex gap-2 items-center">
                           <div className="flex items-center text-sm text-gray-600">
-                            <svg className="w-4 h-4 text-teal-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            <svg
+                              className="w-4 h-4 text-teal-600 mr-1"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                              />
                             </svg>
                             <span className="font-medium">Thêm:</span>
                           </div>
@@ -1146,7 +1268,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="space-y-3 max-h-48 overflow-y-auto">
                         {/* Danh sách tùy chọn hiện có */}
                         {productOptions.map((option, index) => (
@@ -1155,7 +1277,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                             {option === defaultProductOption && (
                               <div className="absolute -left-1 top-0 bottom-0 w-1 bg-teal-500 rounded-r"></div>
                             )}
-                            
+
                             <div className="p-3 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
                               {/* Header của tùy chọn */}
                               <div className="flex items-center justify-between mb-2">
@@ -1167,20 +1289,28 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                     </span>
                                   )}
                                   {/* Di chuyển phần giảm giá lên đây */}
-                                  {optionPrices[option]?.originalPrice > (optionPrices[option]?.price || 0) && (
+                                  {optionPrices[option]?.originalPrice >
+                                    (optionPrices[option]?.price || 0) && (
                                     <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium text-xs">
-                                      Giảm {Math.round(((optionPrices[option].originalPrice - optionPrices[option].price) / optionPrices[option].originalPrice) * 100)}%
+                                      Giảm{' '}
+                                      {Math.round(
+                                        ((optionPrices[option].originalPrice -
+                                          optionPrices[option].price) /
+                                          optionPrices[option].originalPrice) *
+                                          100,
+                                      )}
+                                      %
                                     </span>
                                   )}
                                 </div>
-                                
+
                                 <div className="flex items-center space-x-1">
                                   <button
                                     type="button"
                                     onClick={() => handleSetDefaultOption(option)}
                                     className={`px-2 py-1 rounded-lg transition-all duration-200 text-xs font-medium ${
-                                      option === defaultProductOption 
-                                        ? 'bg-teal-100 text-teal-700 border border-teal-200' 
+                                      option === defaultProductOption
+                                        ? 'bg-teal-100 text-teal-700 border border-teal-200'
                                         : 'text-gray-500 hover:text-teal-600 hover:bg-teal-50 border border-gray-200'
                                     }`}
                                     title="Đặt làm mặc định"
@@ -1197,23 +1327,35 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                   </button>
                                 </div>
                               </div>
-                              
+
                               {/* Thông tin chi tiết - Layout cải thiện */}
                               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                                 {/* Cột 1: Thời hạn */}
                                 <div className="bg-gray-50 p-2 rounded-lg">
                                   <div className="flex items-center mb-1">
-                                    <svg className="w-4 h-4 text-gray-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <svg
+                                      className="w-4 h-4 text-gray-600 mr-1"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                      />
                                     </svg>
-                                    <span className="text-xs font-semibold text-gray-700">Thời hạn</span>
+                                    <span className="text-xs font-semibold text-gray-700">
+                                      Thời hạn
+                                    </span>
                                   </div>
                                   <select
                                     value={optionDurations[option] || '1month'}
                                     onChange={(e) => {
-                                      setOptionDurations(prev => ({
+                                      setOptionDurations((prev) => ({
                                         ...prev,
-                                        [option]: e.target.value
+                                        [option]: e.target.value,
                                       }));
                                     }}
                                     className="w-full text-sm bg-white border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
@@ -1225,14 +1367,26 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                     ))}
                                   </select>
                                 </div>
-                                
+
                                 {/* Cột 2: Giá bán */}
                                 <div className="bg-green-50 p-2 rounded-lg">
                                   <div className="flex items-center mb-1">
-                                    <svg className="w-4 h-4 text-green-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                                    <svg
+                                      className="w-4 h-4 text-green-600 mr-1"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                                      />
                                     </svg>
-                                    <span className="text-xs font-semibold text-gray-700">Giá bán</span>
+                                    <span className="text-xs font-semibold text-gray-700">
+                                      Giá bán
+                                    </span>
                                   </div>
                                   <div className="relative">
                                     <input
@@ -1241,13 +1395,15 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       onChange={(e) => {
                                         const value = parseFloat(e.target.value);
                                         const price = isNaN(value) ? 0 : value;
-                                        setOptionPrices(prev => ({
+                                        setOptionPrices((prev) => ({
                                           ...prev,
                                           [option]: {
                                             ...prev[option],
                                             price: price,
-                                            originalPrice: !prev[option]?.originalPrice ? price : prev[option].originalPrice
-                                          }
+                                            originalPrice: !prev[option]?.originalPrice
+                                              ? price
+                                              : prev[option].originalPrice,
+                                          },
                                         }));
                                       }}
                                       className="w-full p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200 text-right font-semibold bg-white pr-6"
@@ -1255,17 +1411,31 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       step="1000"
                                       placeholder="0"
                                     />
-                                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-600">đ</span>
+                                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-600">
+                                      đ
+                                    </span>
                                   </div>
                                 </div>
-                                
+
                                 {/* Cột 3: Giá gốc & Giảm giá */}
                                 <div className="bg-blue-50 p-2 rounded-lg">
                                   <div className="flex items-center mb-1">
-                                    <svg className="w-4 h-4 text-blue-600 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z" />
+                                    <svg
+                                      className="w-4 h-4 text-blue-600 mr-1"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z"
+                                      />
                                     </svg>
-                                    <span className="text-xs font-semibold text-gray-700">Giá gốc</span>
+                                    <span className="text-xs font-semibold text-gray-700">
+                                      Giá gốc
+                                    </span>
                                   </div>
                                   <div className="relative">
                                     <input
@@ -1274,12 +1444,12 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       onChange={(e) => {
                                         const value = parseFloat(e.target.value);
                                         const originalPrice = isNaN(value) ? 0 : value;
-                                        setOptionPrices(prev => ({
+                                        setOptionPrices((prev) => ({
                                           ...prev,
                                           [option]: {
                                             ...prev[option],
-                                            originalPrice
-                                          }
+                                            originalPrice,
+                                          },
                                         }));
                                       }}
                                       className="w-full p-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 text-gray-600 transition-all duration-200 text-right font-semibold bg-white pr-6"
@@ -1287,11 +1457,13 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                       step="1000"
                                       placeholder="0"
                                     />
-                                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-600">đ</span>
+                                    <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-600">
+                                      đ
+                                    </span>
                                   </div>
                                 </div>
                               </div>
-                              
+
                               {/* Preview tóm tắt - Đơn giản hóa */}
                               <div className="mt-2 p-2 bg-gray-100 rounded border-l-2 border-teal-400">
                                 <div className="flex items-center justify-between text-xs">
@@ -1300,7 +1472,11 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                                     <span className="font-semibold text-gray-800">{option}</span>
                                     <span className="text-gray-400">•</span>
                                     <span className="text-teal-600 font-medium">
-                                      {durationOptions.find(d => d.value === (optionDurations[option] || '1month'))?.label}
+                                      {
+                                        durationOptions.find(
+                                          (d) => d.value === (optionDurations[option] || '1month'),
+                                        )?.label
+                                      }
                                     </span>
                                     <span className="text-gray-400">•</span>
                                     <span className="font-bold text-green-600">
@@ -1312,21 +1488,33 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                             </div>
                           </div>
                         ))}
-                        
+
                         {productOptions.length === 0 && (
                           <div className="text-gray-500 text-center p-8 bg-white rounded-xl border-2 border-dashed border-gray-200 mt-4">
-                            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            <svg
+                              className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                              />
                             </svg>
                             <p className="font-medium text-lg mb-2">Chưa có tùy chọn nào</p>
-                            <p className="text-sm text-gray-600">Sử dụng form bên trên để thêm tùy chọn đầu tiên</p>
+                            <p className="text-sm text-gray-600">
+                              Sử dụng form bên trên để thêm tùy chọn đầu tiên
+                            </p>
                           </div>
                         )}
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Mô tả ngắn */}
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                   <h3 className="text-lg font-medium mb-4 text-gray-900">Mô tả ngắn</h3>
@@ -1343,22 +1531,22 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             </div>
           </div>
         </div>
-        
+
         {showAdvancedOptions && (
           <>
             {/* Mô tả đầy đủ */}
             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Mô tả đầy đủ</h2>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsEditingDescription(!isEditingDescription)}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   {isEditingDescription ? 'Xong' : 'Chỉnh sửa'}
                 </button>
               </div>
-              
+
               {isEditingDescription && (
                 <RichTextEditor
                   value={formData.description}
@@ -1367,37 +1555,42 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                   className="mb-4"
                 />
               )}
-              
+
               {/* Xem trước mô tả đầy đủ */}
               <div className="mt-6">
                 <h3 className="text-lg font-medium mb-4">Xem trước mô tả đầy đủ</h3>
-                
-                <div className="prose max-w-none border p-4 rounded min-h-[200px]" dangerouslySetInnerHTML={{ __html: formData.description || '<p>Chưa có mô tả chi tiết</p>' }} />
+
+                <div
+                  className="prose max-w-none border p-4 rounded min-h-[200px]"
+                  dangerouslySetInnerHTML={{
+                    __html: formData.description || '<p>Chưa có mô tả chi tiết</p>',
+                  }}
+                />
               </div>
             </div>
-            
+
             {/* Thông số kỹ thuật */}
             <div className="bg-white p-6 rounded-lg shadow-md mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Thông số kỹ thuật</h2>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => setIsEditingSpecs(!isEditingSpecs)}
                   className="text-blue-500 hover:text-blue-700"
                 >
                   {isEditingSpecs ? 'Xong' : 'Chỉnh sửa'}
                 </button>
               </div>
-              
+
               {isEditingSpecs ? (
                 <div className="space-y-4">
                   <RichTextEditor
                     value={formData.specs}
-                    onChange={(content) => setFormData(prev => ({ ...prev, specs: content }))}
+                    onChange={(content) => setFormData((prev) => ({ ...prev, specs: content }))}
                     placeholder="Nhập thông số kỹ thuật chi tiết..."
                     className="mb-4"
                   />
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <input
@@ -1425,7 +1618,7 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                       </button>
                     </div>
                   </div>
-                  
+
                   {specifications.length > 0 && (
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">Thông số đã thêm</h4>
@@ -1460,39 +1653,36 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
                     </div>
                   )}
                 </div>
+              ) : specifications.length > 0 ? (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <table className="w-full border-collapse">
+                    <tbody>
+                      {specifications.map((spec, index) => (
+                        <tr key={index} className="border-b border-gray-200">
+                          <td className="py-2 font-medium w-1/3">{spec.key}</td>
+                          <td className="py-2">{spec.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
-                specifications.length > 0 ? (
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <table className="w-full border-collapse">
-                      <tbody>
-                        {specifications.map((spec, index) => (
-                          <tr key={index} className="border-b border-gray-200">
-                            <td className="py-2 font-medium w-1/3">{spec.key}</td>
-                            <td className="py-2">{spec.value}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="bg-gray-50 p-4 rounded-lg text-gray-500 text-center">
-                    Chưa có thông số kỹ thuật nào. Nhấn "Chỉnh sửa" để thêm.
-                  </div>
-                )
+                <div className="bg-gray-50 p-4 rounded-lg text-gray-500 text-center">
+                  Chưa có thông số kỹ thuật nào. Nhấn "Chỉnh sửa" để thêm.
+                </div>
               )}
               <p className="text-sm text-gray-500 mt-4">
-                Thêm các thông số kỹ thuật chi tiết của sản phẩm để giúp người dùng hiểu rõ hơn về sản phẩm (VD: Cấu hình, Yêu cầu hệ thống, Tính năng đặc biệt).
+                Thêm các thông số kỹ thuật chi tiết của sản phẩm để giúp người dùng hiểu rõ hơn về
+                sản phẩm (VD: Cấu hình, Yêu cầu hệ thống, Tính năng đặc biệt).
               </p>
             </div>
           </>
         )}
-        
+
         <div className="sticky bottom-5 left-0 right-0 bg-white shadow-md rounded-lg p-4 border border-gray-200 flex justify-between items-center z-10">
           <div>
             {isNew ? (
-              <span className="text-sm text-primary-600 font-medium">
-                Tạo sản phẩm mới
-              </span>
+              <span className="text-sm text-primary-600 font-medium">Tạo sản phẩm mới</span>
             ) : (
               <span className="text-sm text-primary-600 font-medium">
                 Cập nhật sản phẩm: <span className="font-bold">{formData.name}</span>
@@ -1505,12 +1695,23 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
               onClick={() => router.push('/admin/products')}
               className="flex items-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
               </svg>
               Quay lại
             </button>
-            
+
             <button
               type="submit"
               disabled={loading}
@@ -1518,16 +1719,43 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Đang lưu...
                 </>
               ) : (
                 <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   {isNew ? 'Tạo sản phẩm' : 'Lưu thay đổi'}
                 </>
@@ -1540,4 +1768,4 @@ function AdminEditProductPage({ params }: AdminEditProductPageProps) {
   );
 }
 
-export default withAdminAuth(AdminEditProductPage); 
+export default withAdminAuth(AdminEditProductPage);

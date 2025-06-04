@@ -20,27 +20,30 @@ export async function GET(request: NextRequest) {
 
     // Đọc dữ liệu từ file
     const productsData = JSON.parse(fs.readFileSync(productsPath, 'utf8'));
-    
+
     // Tìm sản phẩm hiện tại để lấy thông tin
-    const currentProduct = productsData.find((p: any) => p.id === productId || p.slug === productId);
-    
+    const currentProduct = productsData.find(
+      (p: any) => p.id === productId || p.slug === productId,
+    );
+
     if (!currentProduct) {
       return NextResponse.json({ error: 'Không tìm thấy sản phẩm' }, { status: 404 });
     }
 
     let relatedProducts = [];
-    
+
     // Nếu sản phẩm hiện tại có danh sách relatedProducts, ưu tiên lấy từ đây
     if (currentProduct.relatedProducts && currentProduct.relatedProducts.length > 0) {
-      relatedProducts = productsData.filter((p: any) => 
-        currentProduct.relatedProducts.includes(p.id) && p.id !== productId);
-    } 
+      relatedProducts = productsData.filter(
+        (p: any) => currentProduct.relatedProducts.includes(p.id) && p.id !== productId,
+      );
+    }
     // Nếu không, lấy sản phẩm từ cùng danh mục
     else if (categoryId) {
       relatedProducts = productsData.filter((p: any) => {
         const productCategories = p.categories || [];
-        const hasCategory = productCategories.some((cat: any) => 
-          typeof cat === 'string' ? cat === categoryId : cat.id === categoryId
+        const hasCategory = productCategories.some((cat: any) =>
+          typeof cat === 'string' ? cat === categoryId : cat.id === categoryId,
         );
         return hasCategory && p.id !== productId;
       });
@@ -61,4 +64,4 @@ export async function GET(request: NextRequest) {
     console.error('Lỗi khi xử lý sản phẩm liên quan:', error);
     return NextResponse.json({ error: 'Lỗi máy chủ nội bộ' }, { status: 500 });
   }
-} 
+}

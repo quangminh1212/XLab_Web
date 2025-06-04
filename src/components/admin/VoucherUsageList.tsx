@@ -9,4 +9,4 @@ const VoucherUsageList: React.FC<VoucherUsageListProps> = ({ userUsage }) => {
   return null;
 };
 
-export default VoucherUsageList; 
+export default VoucherUsageList;

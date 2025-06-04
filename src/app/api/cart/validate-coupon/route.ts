@@ -45,7 +45,7 @@ function loadCoupons(): Coupon[] {
         return [];
       }
     }
-    console.log("Coupons file does not exist");
+    console.log('Coupons file does not exist');
     return [];
   } catch (error) {
     console.error('Error loading coupons:', error);
@@ -57,9 +57,9 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { code, orderTotal } = body;
-    
-    console.log("Validating coupon:", code, "for orderTotal:", orderTotal);
-    
+
+    console.log('Validating coupon:', code, 'for orderTotal:', orderTotal);
+
     // Lấy thông tin session của người dùng
     const session = await getServerSession(authOptions);
     const userEmail = session?.user?.email;
@@ -67,30 +67,30 @@ export async function POST(request: NextRequest) {
     if (!code) {
       return NextResponse.json(
         { success: false, error: 'Vui lòng nhập mã giảm giá' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (orderTotal === undefined || orderTotal === null || isNaN(orderTotal)) {
       return NextResponse.json(
         { success: false, error: 'Tổng giá trị đơn hàng không hợp lệ' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Tải danh sách mã giảm giá từ file
     const allCoupons = loadCoupons();
-    console.log("Loaded coupons:", allCoupons.length);
+    console.log('Loaded coupons:', allCoupons.length);
 
     // Tìm mã giảm giá
-    const coupon = allCoupons.find(c => 
-      c.code.toUpperCase() === code.toUpperCase() && c.isActive
+    const coupon = allCoupons.find(
+      (c) => c.code.toUpperCase() === code.toUpperCase() && c.isActive,
     );
 
     if (!coupon) {
       return NextResponse.json(
         { success: false, error: 'Mã giảm giá không hợp lệ hoặc đã hết hạn' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -99,30 +99,30 @@ export async function POST(request: NextRequest) {
     const startDate = new Date(coupon.startDate);
     const endDate = new Date(coupon.endDate);
 
-    console.log("Coupon dates - Now:", now, "Start:", startDate, "End:", endDate);
+    console.log('Coupon dates - Now:', now, 'Start:', startDate, 'End:', endDate);
 
     if (now < startDate) {
       return NextResponse.json(
         { success: false, error: 'Mã giảm giá chưa có hiệu lực' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (now > endDate) {
       return NextResponse.json(
         { success: false, error: 'Mã giảm giá đã hết hạn' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Kiểm tra giá trị đơn hàng tối thiểu
     if (coupon.minOrder && orderTotal < coupon.minOrder) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: `Đơn hàng phải tối thiểu ${coupon.minOrder.toLocaleString()}đ để sử dụng mã này` 
+        {
+          success: false,
+          error: `Đơn hàng phải tối thiểu ${coupon.minOrder.toLocaleString()}đ để sử dụng mã này`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -130,18 +130,21 @@ export async function POST(request: NextRequest) {
     if (coupon.usageLimit && coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) {
       return NextResponse.json(
         { success: false, error: 'Mã giảm giá đã hết lượt sử dụng' },
-        { status: 400 }
+        { status: 400 },
       );
     }
-    
+
     // Kiểm tra số lần sử dụng của người dùng cụ thể
     if (userEmail && coupon.userLimit && coupon.userLimit > 0) {
       const userUsage = (coupon.userUsage || {})[userEmail] || 0;
-      
+
       if (userUsage >= coupon.userLimit) {
         return NextResponse.json(
-          { success: false, error: `Mỗi người chỉ được sử dụng mã này tối đa ${coupon.userLimit} lần` },
-          { status: 400 }
+          {
+            success: false,
+            error: `Mỗi người chỉ được sử dụng mã này tối đa ${coupon.userLimit} lần`,
+          },
+          { status: 400 },
         );
       }
     }
@@ -151,7 +154,7 @@ export async function POST(request: NextRequest) {
       if (!userEmail || !coupon.forUsers.includes(userEmail)) {
         return NextResponse.json(
           { success: false, error: 'Mã giảm giá này không áp dụng cho tài khoản của bạn' },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -171,7 +174,7 @@ export async function POST(request: NextRequest) {
     // Đảm bảo giảm giá không vượt quá tổng đơn hàng
     discountAmount = Math.min(discountAmount, orderTotal);
 
-    console.log("Coupon validated successfully. Discount amount:", discountAmount);
+    console.log('Coupon validated successfully. Discount amount:', discountAmount);
 
     return NextResponse.json({
       success: true,
@@ -183,15 +186,14 @@ export async function POST(request: NextRequest) {
         type: coupon.type,
         value: coupon.value,
         userLimit: coupon.userLimit,
-        discountAmount
-      }
+        discountAmount,
+      },
     });
-
   } catch (error) {
     console.error('Error validating coupon:', error);
     return NextResponse.json(
       { success: false, error: 'Đã xảy ra lỗi khi kiểm tra mã giảm giá' },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

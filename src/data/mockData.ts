@@ -8,7 +8,7 @@ export const categories: Category[] = [
     slug: 'phan-mem-doanh-nghiep',
     description: 'Các phần mềm phục vụ cho doanh nghiệp như ERP, CRM, thanh toán...',
     imageUrl: '/images/categories/productivity.png',
-    productCount: 0
+    productCount: 0,
   },
   {
     id: 'cat-2',
@@ -16,7 +16,7 @@ export const categories: Category[] = [
     slug: 'ung-dung-van-phong',
     description: 'Các ứng dụng văn phòng như soạn thảo, bảng tính, thuyết trình...',
     imageUrl: '/images/categories/utilities.png',
-    productCount: 1
+    productCount: 1,
   },
   {
     id: 'cat-3',
@@ -24,7 +24,7 @@ export const categories: Category[] = [
     slug: 'phan-mem-do-hoa',
     description: 'Các phần mềm thiết kế, chỉnh sửa ảnh, video và đồ họa...',
     imageUrl: '/images/categories/design.png',
-    productCount: 0
+    productCount: 0,
   },
   {
     id: 'cat-4',
@@ -32,7 +32,7 @@ export const categories: Category[] = [
     slug: 'bao-mat-antivirus',
     description: 'Các phần mềm bảo mật, diệt virus, mã hóa dữ liệu...',
     imageUrl: '/images/categories/security.png',
-    productCount: 0
+    productCount: 0,
   },
   {
     id: 'cat-5',
@@ -40,7 +40,7 @@ export const categories: Category[] = [
     slug: 'ung-dung-giao-duc',
     description: 'Các ứng dụng học ngoại ngữ, lập trình, toán học...',
     imageUrl: '/images/categories/education.png',
-    productCount: 0
+    productCount: 0,
   },
   {
     id: 'cat-6',
@@ -48,8 +48,8 @@ export const categories: Category[] = [
     slug: 'tai-khoan-hoc-tap',
     description: 'Các tài khoản premium cho các nền tảng học trực tuyến phổ biến.',
     imageUrl: '/images/categories/accounts.svg',
-    productCount: 0
-  }
+    productCount: 0,
+  },
 ];
 
 // Mock Stores
@@ -63,7 +63,7 @@ export const stores: Store[] = [
     imageUrl: '/images/categories/development.png',
     website: 'https://xlab.example.com',
     active: true,
-    createdAt: new Date('2023-01-15').toISOString()
+    createdAt: new Date('2023-01-15').toISOString(),
   },
   {
     id: '2',
@@ -74,7 +74,7 @@ export const stores: Store[] = [
     imageUrl: '/images/categories/productivity.png',
     website: 'https://vntech.example.com',
     active: true,
-    createdAt: new Date('2023-03-20').toISOString()
+    createdAt: new Date('2023-03-20').toISOString(),
   },
   {
     id: '3',
@@ -85,8 +85,8 @@ export const stores: Store[] = [
     imageUrl: '/images/categories/design.png',
     website: 'https://creative-tools.example.com',
     active: true,
-    createdAt: new Date('2023-02-10').toISOString()
-  }
+    createdAt: new Date('2023-02-10').toISOString(),
+  },
 ];
 
 // Danh sách sản phẩm
@@ -96,7 +96,8 @@ export const products: Product[] = [
     id: 'prod-vt',
     name: 'VoiceTyping',
     slug: 'voicetyping',
-    description: 'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition.',
+    description:
+      'Nhập văn bản bằng giọng nói tại vị trí con trỏ chuột sử dụng Google Speech Recognition.',
     longDescription: `
       <h2>VoiceTyping - Nhập liệu bằng giọng nói</h2>
       <p>VoiceTyping là một ứng dụng Microsoft Office cho phép người dùng nhập văn bản bằng giọng nói tại vị trí con trỏ chuột, tích hợp với bộ công cụ Microsoft Office.</p>
@@ -147,7 +148,7 @@ export const products: Product[] = [
       'Nhận dạng giọng nói chính xác với nhiều giọng địa phương',
       'Tích hợp với Microsoft Office',
       'Hỗ trợ điều khiển bằng hotkey',
-      'Tự động lưu lịch sử chuyển đổi'
-    ]
-  }
-]; 
+      'Tự động lưu lịch sử chuyển đổi',
+    ],
+  },
+];

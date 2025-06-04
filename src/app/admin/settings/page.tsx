@@ -19,7 +19,7 @@ function SettingsPage() {
       try {
         setIsLoading(true);
         const response = await fetch('/api/admin/settings');
-        
+
         if (response.ok) {
           const data = await response.json();
           setSettings(data);
@@ -75,7 +75,7 @@ function SettingsPage() {
       setErrors(['Đã xảy ra lỗi khi kết nối đến máy chủ.']);
     } finally {
       setIsSaving(false);
-      
+
       // Tự động ẩn thông báo thành công sau 3 giây
       if (successMessage) {
         setTimeout(() => setSuccessMessage(''), 3000);
@@ -84,10 +84,10 @@ function SettingsPage() {
   };
 
   const handleInputChange = (section: keyof SystemSettings, field: string, value: any) => {
-    setSettings(prev => {
+    setSettings((prev) => {
       // Create a deep copy of the current settings
       const newSettings = JSON.parse(JSON.stringify(prev)) as SystemSettings;
-      
+
       // Update the specific field
       if (section === 'site') {
         (newSettings.site as any)[field] = value;
@@ -96,16 +96,16 @@ function SettingsPage() {
       } else if (section === 'email') {
         (newSettings.email as any)[field] = value;
       }
-      
+
       return newSettings;
     });
   };
 
   const handleCheckboxChange = (section: keyof SystemSettings, field: string, checked: boolean) => {
-    setSettings(prev => {
+    setSettings((prev) => {
       // Create a deep copy of the current settings
       const newSettings = JSON.parse(JSON.stringify(prev)) as SystemSettings;
-      
+
       // Update the specific field
       if (section === 'site') {
         (newSettings.site as any)[field] = checked;
@@ -114,16 +114,19 @@ function SettingsPage() {
       } else if (section === 'email') {
         (newSettings.email as any)[field] = checked;
       }
-      
+
       return newSettings;
     });
   };
 
-  const handleToggleChange = (field: 'maintenanceMode' | 'disableRegistration' | 'disableCheckout', checked: boolean) => {
-    setSettings(prev => {
+  const handleToggleChange = (
+    field: 'maintenanceMode' | 'disableRegistration' | 'disableCheckout',
+    checked: boolean,
+  ) => {
+    setSettings((prev) => {
       // Create a deep copy of the current settings
       const newSettings = JSON.parse(JSON.stringify(prev)) as SystemSettings;
-      
+
       // Update the specific field
       if (field === 'maintenanceMode') {
         newSettings.maintenanceMode = checked;
@@ -132,7 +135,7 @@ function SettingsPage() {
       } else if (field === 'disableCheckout') {
         newSettings.disableCheckout = checked;
       }
-      
+
       return newSettings;
     });
   };
@@ -176,8 +179,8 @@ function SettingsPage() {
             <button
               onClick={() => setActiveTab('site')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
-                activeTab === 'site' 
-                  ? 'border-primary-500 text-primary-600' 
+                activeTab === 'site'
+                  ? 'border-primary-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -186,8 +189,8 @@ function SettingsPage() {
             <button
               onClick={() => setActiveTab('payment')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
-                activeTab === 'payment' 
-                  ? 'border-primary-500 text-primary-600' 
+                activeTab === 'payment'
+                  ? 'border-primary-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -196,8 +199,8 @@ function SettingsPage() {
             <button
               onClick={() => setActiveTab('email')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
-                activeTab === 'email' 
-                  ? 'border-primary-500 text-primary-600' 
+                activeTab === 'email'
+                  ? 'border-primary-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -207,8 +210,8 @@ function SettingsPage() {
             <button
               onClick={() => setActiveTab('advanced')}
               className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
-                activeTab === 'advanced' 
-                  ? 'border-primary-500 text-primary-600' 
+                activeTab === 'advanced'
+                  ? 'border-primary-500 text-primary-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -223,10 +226,13 @@ function SettingsPage() {
             {activeTab === 'site' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">Thông tin trang web</h2>
-                
+
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
-                    <label htmlFor="siteName" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="siteName"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Tên trang web
                     </label>
                     <input
@@ -238,9 +244,12 @@ function SettingsPage() {
                       required
                     />
                   </div>
-                  
+
                   <div>
-                    <label htmlFor="siteDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="siteDescription"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Mô tả trang web
                     </label>
                     <input
@@ -251,9 +260,12 @@ function SettingsPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     />
                   </div>
-                  
+
                   <div>
-                    <label htmlFor="logoUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="logoUrl"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Đường dẫn logo
                     </label>
                     <input
@@ -264,9 +276,12 @@ function SettingsPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     />
                   </div>
-                  
+
                   <div>
-                    <label htmlFor="faviconUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="faviconUrl"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Đường dẫn favicon
                     </label>
                     <input
@@ -278,12 +293,15 @@ function SettingsPage() {
                     />
                   </div>
                 </div>
-                
+
                 <h3 className="text-md font-medium text-gray-800 mt-6">Thông tin liên hệ</h3>
-                
+
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
-                    <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="contactEmail"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Email liên hệ
                     </label>
                     <input
@@ -295,9 +313,12 @@ function SettingsPage() {
                       required
                     />
                   </div>
-                  
+
                   <div>
-                    <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="contactPhone"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Số điện thoại liên hệ
                     </label>
                     <input
@@ -309,9 +330,12 @@ function SettingsPage() {
                       required
                     />
                   </div>
-                  
+
                   <div className="sm:col-span-2">
-                    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="address"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Địa chỉ
                     </label>
                     <textarea
@@ -325,58 +349,69 @@ function SettingsPage() {
                 </div>
               </div>
             )}
-            
+
             {/* Cài đặt thanh toán */}
             {activeTab === 'payment' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">Phương thức thanh toán</h2>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center">
                     <input
                       type="checkbox"
                       id="enableBankTransfer"
                       checked={settings.payment.enableBankTransfer}
-                      onChange={(e) => handleCheckboxChange('payment', 'enableBankTransfer', e.target.checked)}
+                      onChange={(e) =>
+                        handleCheckboxChange('payment', 'enableBankTransfer', e.target.checked)
+                      }
                       className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                     />
-                    <label htmlFor="enableBankTransfer" className="ml-2 block text-sm text-gray-700">
+                    <label
+                      htmlFor="enableBankTransfer"
+                      className="ml-2 block text-sm text-gray-700"
+                    >
                       Chuyển khoản ngân hàng
                     </label>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <input
                       type="checkbox"
                       id="enableMomo"
                       checked={settings.payment.enableMomo}
-                      onChange={(e) => handleCheckboxChange('payment', 'enableMomo', e.target.checked)}
+                      onChange={(e) =>
+                        handleCheckboxChange('payment', 'enableMomo', e.target.checked)
+                      }
                       className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                     />
                     <label htmlFor="enableMomo" className="ml-2 block text-sm text-gray-700">
                       Ví MoMo
                     </label>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <input
                       type="checkbox"
                       id="enableZalopay"
                       checked={settings.payment.enableZalopay}
-                      onChange={(e) => handleCheckboxChange('payment', 'enableZalopay', e.target.checked)}
+                      onChange={(e) =>
+                        handleCheckboxChange('payment', 'enableZalopay', e.target.checked)
+                      }
                       className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                     />
                     <label htmlFor="enableZalopay" className="ml-2 block text-sm text-gray-700">
                       ZaloPay
                     </label>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <input
                       type="checkbox"
                       id="enableCreditCard"
                       checked={settings.payment.enableCreditCard}
-                      onChange={(e) => handleCheckboxChange('payment', 'enableCreditCard', e.target.checked)}
+                      onChange={(e) =>
+                        handleCheckboxChange('payment', 'enableCreditCard', e.target.checked)
+                      }
                       className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                     />
                     <label htmlFor="enableCreditCard" className="ml-2 block text-sm text-gray-700">
@@ -384,13 +419,18 @@ function SettingsPage() {
                     </label>
                   </div>
                 </div>
-                
-                <h3 className="text-md font-medium text-gray-800 mt-6">Thông tin tài khoản ngân hàng</h3>
-                
+
+                <h3 className="text-md font-medium text-gray-800 mt-6">
+                  Thông tin tài khoản ngân hàng
+                </h3>
+
                 {settings.payment.enableBankTransfer && (
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-4">
                     <div>
-                      <label htmlFor="bankName" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="bankName"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Tên ngân hàng
                       </label>
                       <input
@@ -402,37 +442,50 @@ function SettingsPage() {
                         required={settings.payment.enableBankTransfer}
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="bankAccountName" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="bankAccountName"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Tên chủ tài khoản
                       </label>
                       <input
                         type="text"
                         id="bankAccountName"
                         value={settings.payment.bankAccountName}
-                        onChange={(e) => handleInputChange('payment', 'bankAccountName', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange('payment', 'bankAccountName', e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         required={settings.payment.enableBankTransfer}
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="bankAccountNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="bankAccountNumber"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Số tài khoản
                       </label>
                       <input
                         type="text"
                         id="bankAccountNumber"
                         value={settings.payment.bankAccountNumber}
-                        onChange={(e) => handleInputChange('payment', 'bankAccountNumber', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange('payment', 'bankAccountNumber', e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md"
                         required={settings.payment.enableBankTransfer}
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="bankBranch" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="bankBranch"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Chi nhánh
                       </label>
                       <input
@@ -447,32 +500,40 @@ function SettingsPage() {
                 )}
               </div>
             )}
-            
+
             {/* Cài đặt email */}
             {activeTab === 'email' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">Cài đặt email</h2>
-                
+
                 <div className="flex items-center mb-6">
                   <input
                     type="checkbox"
                     id="enableEmailNotification"
                     checked={settings.email.enableEmailNotification}
-                    onChange={(e) => handleCheckboxChange('email', 'enableEmailNotification', e.target.checked)}
+                    onChange={(e) =>
+                      handleCheckboxChange('email', 'enableEmailNotification', e.target.checked)
+                    }
                     className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                   />
-                  <label htmlFor="enableEmailNotification" className="ml-2 block text-sm text-gray-700">
+                  <label
+                    htmlFor="enableEmailNotification"
+                    className="ml-2 block text-sm text-gray-700"
+                  >
                     Bật thông báo qua email
                   </label>
                 </div>
-                
+
                 {settings.email.enableEmailNotification && (
                   <>
                     <h3 className="text-md font-medium text-gray-800">Cấu hình SMTP</h3>
-                    
+
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                       <div>
-                        <label htmlFor="smtpServer" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="smtpServer"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Máy chủ SMTP
                         </label>
                         <input
@@ -484,65 +545,88 @@ function SettingsPage() {
                           required={settings.email.enableEmailNotification}
                         />
                       </div>
-                      
+
                       <div>
-                        <label htmlFor="smtpPort" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="smtpPort"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Cổng SMTP
                         </label>
                         <input
                           type="number"
                           id="smtpPort"
                           value={settings.email.smtpPort}
-                          onChange={(e) => handleInputChange('email', 'smtpPort', parseInt(e.target.value))}
+                          onChange={(e) =>
+                            handleInputChange('email', 'smtpPort', parseInt(e.target.value))
+                          }
                           className="w-full px-3 py-2 border border-gray-300 rounded-md"
                           required={settings.email.enableEmailNotification}
                         />
                       </div>
-                      
+
                       <div>
-                        <label htmlFor="smtpUsername" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="smtpUsername"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Tên đăng nhập SMTP
                         </label>
                         <input
                           type="text"
                           id="smtpUsername"
                           value={settings.email.smtpUsername}
-                          onChange={(e) => handleInputChange('email', 'smtpUsername', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange('email', 'smtpUsername', e.target.value)
+                          }
                           className="w-full px-3 py-2 border border-gray-300 rounded-md"
                           required={settings.email.enableEmailNotification}
                         />
                       </div>
-                      
+
                       <div>
-                        <label htmlFor="smtpPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="smtpPassword"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Mật khẩu SMTP
                         </label>
                         <input
                           type="password"
                           id="smtpPassword"
                           value={settings.email.smtpPassword}
-                          onChange={(e) => handleInputChange('email', 'smtpPassword', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange('email', 'smtpPassword', e.target.value)
+                          }
                           className="w-full px-3 py-2 border border-gray-300 rounded-md"
                           required={settings.email.enableEmailNotification}
                         />
                       </div>
-                      
+
                       <div>
-                        <label htmlFor="senderEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="senderEmail"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Email người gửi
                         </label>
                         <input
                           type="email"
                           id="senderEmail"
                           value={settings.email.senderEmail}
-                          onChange={(e) => handleInputChange('email', 'senderEmail', e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange('email', 'senderEmail', e.target.value)
+                          }
                           className="w-full px-3 py-2 border border-gray-300 rounded-md"
                           required={settings.email.enableEmailNotification}
                         />
                       </div>
-                      
+
                       <div>
-                        <label htmlFor="senderName" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="senderName"
+                          className="block text-sm font-medium text-gray-700 mb-1"
+                        >
                           Tên người gửi
                         </label>
                         <input
@@ -559,12 +643,12 @@ function SettingsPage() {
                 )}
               </div>
             )}
-            
+
             {/* Cài đặt nâng cao */}
             {activeTab === 'advanced' && (
               <div className="space-y-6">
                 <h2 className="text-lg font-medium text-gray-900">Cài đặt nâng cao</h2>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center">
                     <input
@@ -578,7 +662,7 @@ function SettingsPage() {
                       Chế độ bảo trì
                     </label>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -587,11 +671,14 @@ function SettingsPage() {
                       onChange={(e) => handleToggleChange('disableRegistration', e.target.checked)}
                       className="h-4 w-4 text-primary-600 border-gray-300 rounded"
                     />
-                    <label htmlFor="disableRegistration" className="ml-2 block text-sm text-gray-700">
+                    <label
+                      htmlFor="disableRegistration"
+                      className="ml-2 block text-sm text-gray-700"
+                    >
                       Tạm ngừng đăng ký tài khoản mới
                     </label>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -605,20 +692,18 @@ function SettingsPage() {
                     </label>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg">
                   <h3 className="text-sm font-medium">Thông tin cập nhật</h3>
                   <p className="mt-1 text-sm">
                     Cập nhật lần cuối: {new Date(settings.lastUpdated).toLocaleString('vi-VN')}
                   </p>
-                  <p className="text-sm">
-                    Người cập nhật: {settings.updatedBy}
-                  </p>
+                  <p className="text-sm">Người cập nhật: {settings.updatedBy}</p>
                 </div>
               </div>
             )}
           </div>
-          
+
           <div className="bg-gray-50 px-6 py-4 flex justify-end">
             <button
               type="submit"
@@ -634,4 +719,4 @@ function SettingsPage() {
   );
 }
 
-export default withAdminAuth(SettingsPage); 
+export default withAdminAuth(SettingsPage);

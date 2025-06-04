@@ -39,7 +39,7 @@ export default function TestSheetsPage() {
     try {
       const response = await fetch('/api/test-sheets');
       const data = await response.json();
-      
+
       if (response.ok) {
         setTransactions(data.transactions || []);
       } else {
@@ -56,7 +56,7 @@ export default function TestSheetsPage() {
     setLoading(true);
     setError('');
     setSearchResult(null);
-    
+
     try {
       const response = await fetch('/api/payment/check-bank-transfer', {
         method: 'POST',
@@ -67,9 +67,9 @@ export default function TestSheetsPage() {
           transactionId: testCode,
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok && data.success) {
         setSearchResult(data.transaction);
       } else {
@@ -100,7 +100,7 @@ export default function TestSheetsPage() {
         {/* Test Controls */}
         <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">Test Controls</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Fetch All Transactions */}
             <div>
@@ -148,11 +148,23 @@ export default function TestSheetsPage() {
             <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
               <h4 className="font-medium text-green-800 mb-2">✅ Giao dịch được tìm thấy:</h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div><span className="font-medium">Mã giao dịch:</span> {searchResult.id}</div>
-                <div><span className="font-medium">Số tiền:</span> {formatCurrency(searchResult.amount)}</div>
-                <div className="col-span-2"><span className="font-medium">Mô tả:</span> {searchResult.description}</div>
-                <div><span className="font-medium">Trạng thái:</span> {searchResult.status}</div>
-                <div><span className="font-medium">Thời gian:</span> {new Date(searchResult.createdAt).toLocaleString('vi-VN')}</div>
+                <div>
+                  <span className="font-medium">Mã giao dịch:</span> {searchResult.id}
+                </div>
+                <div>
+                  <span className="font-medium">Số tiền:</span>{' '}
+                  {formatCurrency(searchResult.amount)}
+                </div>
+                <div className="col-span-2">
+                  <span className="font-medium">Mô tả:</span> {searchResult.description}
+                </div>
+                <div>
+                  <span className="font-medium">Trạng thái:</span> {searchResult.status}
+                </div>
+                <div>
+                  <span className="font-medium">Thời gian:</span>{' '}
+                  {new Date(searchResult.createdAt).toLocaleString('vi-VN')}
+                </div>
               </div>
             </div>
           )}
@@ -187,7 +199,10 @@ export default function TestSheetsPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {transactions.map((transaction, index) => (
-                    <tr key={index} className={transaction.type === 'Tiền vào' ? 'bg-green-50' : ''}>
+                    <tr
+                      key={index}
+                      className={transaction.type === 'Tiền vào' ? 'bg-green-50' : ''}
+                    >
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {transaction.bank}
                       </td>
@@ -198,16 +213,22 @@ export default function TestSheetsPage() {
                         {transaction.description}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          transaction.type === 'Tiền vào' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
-                        }`}>
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            transaction.type === 'Tiền vào'
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}
+                        >
                           {transaction.type}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <span className={transaction.type === 'Tiền vào' ? 'text-green-600' : 'text-red-600'}>
+                        <span
+                          className={
+                            transaction.type === 'Tiền vào' ? 'text-green-600' : 'text-red-600'
+                          }
+                        >
                           {formatCurrency(transaction.amount)}
                         </span>
                       </td>
@@ -233,4 +254,4 @@ export default function TestSheetsPage() {
       </div>
     </div>
   );
-} 
+}

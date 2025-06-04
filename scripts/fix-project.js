@@ -1,6 +1,6 @@
 /**
  * Fix Project - Unified Script
- * 
+ *
  * Comprehensive script to fix all common errors and prepare the project for development:
  * - Cleans the .next directory
  * - Ensures all required dependencies are installed
@@ -38,7 +38,7 @@ function runCommand(command, silent = false) {
 // 1. Dependencies Check
 function ensureDependencies() {
   console.log('📦 Checking dependencies...');
-  
+
   try {
     require.resolve('critters');
     console.log('✅ Critters is properly installed');
@@ -51,23 +51,23 @@ function ensureDependencies() {
 // 2. Clean Next.js Directory
 function cleanNextDirectory() {
   console.log('🧹 Cleaning .next directory...');
-  
+
   const nextDir = path.join(process.cwd(), '.next');
-  
+
   if (!fs.existsSync(nextDir)) {
     console.log('✅ .next directory does not exist, skipping clean.');
     return;
   }
-  
+
   try {
     // Remove problematic files first
     const problematicFiles = [
       '.next/trace',
       '.next/app-paths-manifest.json',
-      '.next/server/app-paths-manifest.json'
+      '.next/server/app-paths-manifest.json',
     ];
-    
-    problematicFiles.forEach(filePath => {
+
+    problematicFiles.forEach((filePath) => {
       const fullPath = path.join(process.cwd(), filePath);
       if (fs.existsSync(fullPath)) {
         try {
@@ -78,16 +78,16 @@ function cleanNextDirectory() {
         }
       }
     });
-    
+
     // Remove cache directories
     const cacheDirs = [
       '.next/cache',
       '.next/server/vendor-chunks',
       '.next/static/chunks',
-      '.next/static/css'
+      '.next/static/css',
     ];
-    
-    cacheDirs.forEach(dirPath => {
+
+    cacheDirs.forEach((dirPath) => {
       const fullPath = path.join(process.cwd(), dirPath);
       if (fs.existsSync(fullPath)) {
         try {
@@ -98,7 +98,7 @@ function cleanNextDirectory() {
         }
       }
     });
-    
+
     console.log('✅ Successfully cleaned .next directory');
   } catch (err) {
     console.error('❌ Error cleaning .next directory:', err.message);
@@ -108,12 +108,12 @@ function cleanNextDirectory() {
 // 3. Fix Next.js Configuration
 function fixNextConfig() {
   console.log('🔧 Checking next.config.js...');
-  
+
   const configPath = path.join(process.cwd(), 'next.config.js');
   if (fs.existsSync(configPath)) {
     try {
       let content = fs.readFileSync(configPath, 'utf8');
-      
+
       if (content.includes('optimizeCss: true')) {
         content = content.replace('optimizeCss: true', 'optimizeCss: false');
         fs.writeFileSync(configPath, content);
@@ -132,7 +132,7 @@ function fixNextConfig() {
 // 4. Create Static Directories and Files
 function createStaticStructure() {
   console.log('📁 Creating static directories and files...');
-  
+
   // Essential directories
   const directories = [
     '.next/static',
@@ -145,10 +145,10 @@ function createStaticStructure() {
     '.next/server/app',
     '.next/server/chunks',
     '.next/server/vendor-chunks',
-    '.next/cache'
+    '.next/cache',
   ];
 
-  directories.forEach(dir => {
+  directories.forEach((dir) => {
     ensureDirectoryExists(path.join(process.cwd(), dir));
   });
 
@@ -165,13 +165,16 @@ function createStaticStructure() {
     { path: '.next/server/app-paths-manifest.json', content: '{}' },
     { path: '.next/server/server-reference-manifest.json', content: '{}' },
     { path: '.next/server/vendor-chunks/next.js', content: 'module.exports = require("next");' },
-    { path: '.next/server/vendor-chunks/tailwind-merge.js', content: 'module.exports = require("tailwind-merge");' },
+    {
+      path: '.next/server/vendor-chunks/tailwind-merge.js',
+      content: 'module.exports = require("tailwind-merge");',
+    },
   ];
 
-  staticFiles.forEach(file => {
+  staticFiles.forEach((file) => {
     const filePath = path.join(process.cwd(), file.path);
     ensureDirectoryExists(path.dirname(filePath));
-    
+
     if (!fs.existsSync(filePath)) {
       fs.writeFileSync(filePath, file.content);
       console.log(`📄 Created file: ${file.path}`);
@@ -184,10 +187,10 @@ function createStaticStructure() {
 // 5. Update Server Info
 function updateServerInfo() {
   console.log('📄 Updating server info...');
-  
+
   const serverInfoPath = path.join(process.cwd(), '.next/server/server-info.json');
   const buildId = 'build-id-' + Date.now();
-  
+
   const serverInfo = {
     version: '15.2.4',
     requiresSSL: false,
@@ -196,9 +199,9 @@ function updateServerInfo() {
     staticFiles: {
       '/favicon.ico': {
         type: 'static',
-        etag: '"favicon-etag"'
-      }
-    }
+        etag: '"favicon-etag"',
+      },
+    },
   };
 
   ensureDirectoryExists(path.dirname(serverInfoPath));
@@ -209,9 +212,9 @@ function updateServerInfo() {
 // 6. Update .gitignore
 function updateGitignore() {
   console.log('📝 Updating .gitignore...');
-  
+
   const gitignorePath = path.join(process.cwd(), '.gitignore');
-  
+
   const additionalPatterns = `
 # Next.js Build Files
 .next/
@@ -253,13 +256,13 @@ node_modules/
     if (fs.existsSync(gitignorePath)) {
       gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
     }
-    
+
     // Only add patterns that don't already exist
-    const linesToAdd = additionalPatterns.split('\n').filter(line => {
+    const linesToAdd = additionalPatterns.split('\n').filter((line) => {
       const trimmedLine = line.trim();
       return trimmedLine && !gitignoreContent.includes(trimmedLine);
     });
-    
+
     if (linesToAdd.length > 0) {
       gitignoreContent += '\n' + linesToAdd.join('\n');
       fs.writeFileSync(gitignorePath, gitignoreContent);
@@ -275,20 +278,20 @@ node_modules/
 // 7. Create Unified Run Script
 function createRunScript() {
   console.log('📄 Creating unified run script...');
-  
+
   const packageJsonPath = path.join(process.cwd(), 'package.json');
-  
+
   if (fs.existsSync(packageJsonPath)) {
     try {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-      
+
       // Add our scripts if they don't exist
       if (!packageJson.scripts) packageJson.scripts = {};
-      
+
       packageJson.scripts['fix'] = 'node scripts/fix-project.js';
       packageJson.scripts['dev:clean'] = 'node scripts/fix-project.js && npm run dev';
       packageJson.scripts['dev:safe'] = 'node scripts/fix-project.js && npm run dev';
-      
+
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
       console.log('✅ Added fix scripts to package.json');
     } catch (error) {
@@ -300,17 +303,17 @@ function createRunScript() {
 // 8. Clean Up Old Fix Files
 function cleanupOldFiles() {
   console.log('🧹 Cleaning up old fix files...');
-  
+
   const filesToRemove = [
     'fix-all-errors.js',
-    'check-critters.js', 
+    'check-critters.js',
     'generate-static-files.js',
     'check-products.ps1',
     'run.bat',
-    '.traceignore'
+    '.traceignore',
   ];
-  
-  filesToRemove.forEach(file => {
+
+  filesToRemove.forEach((file) => {
     const filePath = path.join(process.cwd(), file);
     if (fs.existsSync(filePath)) {
       try {
@@ -321,7 +324,7 @@ function cleanupOldFiles() {
       }
     }
   });
-  
+
   console.log('✅ Cleanup completed');
 }
 
@@ -331,10 +334,10 @@ async function fixProject() {
     console.log('==================================================');
     console.log('🛠️  XLAB PROJECT FIX - UNIFIED SCRIPT');
     console.log('==================================================');
-    
+
     // Ensure scripts directory exists
     ensureDirectoryExists(path.join(process.cwd(), 'scripts'));
-    
+
     // Run all fixes
     ensureDependencies();
     cleanNextDirectory();
@@ -343,17 +346,16 @@ async function fixProject() {
     updateServerInfo();
     updateGitignore();
     createRunScript();
-    
+
     console.log('==================================================');
     console.log('✅ Project fix completed successfully!');
     console.log('💡 You can now run: npm run dev:clean');
     console.log('==================================================');
-    
+
     // Clean up old files last
     setTimeout(() => {
       cleanupOldFiles();
     }, 1000);
-    
   } catch (error) {
     console.error('❌ Fix process failed:', error.message);
     process.exit(1);
@@ -365,4 +367,4 @@ if (require.main === module) {
   fixProject();
 }
 
-module.exports = { fixProject }; 
+module.exports = { fixProject };

@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import React, { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useCart } from '@/components/cart/CartContext'
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCart } from '@/components/cart/CartContext';
 
 interface ProductCardProps {
-  id: string
-  name: string
-  description: string  // Mô tả ngắn của sản phẩm
-  price: number
-  originalPrice?: number
-  image: string
-  category?: string
-  rating?: number
-  reviewCount?: number
-  isAccount?: boolean
-  weeklyPurchases?: number
-  totalSold?: number
-  slug?: string
-  onAddToCart?: (id: string) => void
-  onView?: (id: string) => void
+  id: string;
+  name: string;
+  description: string; // Mô tả ngắn của sản phẩm
+  price: number;
+  originalPrice?: number;
+  image: string;
+  category?: string;
+  rating?: number;
+  reviewCount?: number;
+  isAccount?: boolean;
+  weeklyPurchases?: number;
+  totalSold?: number;
+  slug?: string;
+  onAddToCart?: (id: string) => void;
+  onView?: (id: string) => void;
 }
 
 export default function ProductCard({
@@ -39,25 +39,25 @@ export default function ProductCard({
   totalSold = 0,
   slug = '',
   onAddToCart = () => {},
-  onView = () => {}
+  onView = () => {},
 }: ProductCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isImageLoaded, setIsImageLoaded] = useState(false)
-  const [imageError, setImageError] = useState(false)
-  const [showAddedEffect, setShowAddedEffect] = useState(false)
-  const router = useRouter()
-  const { addItem, clearCart } = useCart()
-  
+  const [isHovered, setIsHovered] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [showAddedEffect, setShowAddedEffect] = useState(false);
+  const router = useRouter();
+  const { addItem, clearCart } = useCart();
+
   // Log the image URL for debugging
-  console.log(`ProductCard image URL for ${name}:`, image)
-  
+  console.log(`ProductCard image URL for ${name}:`, image);
+
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
-    if (!imgUrl) return '/images/placeholder/product-placeholder.jpg'
-    if (imgUrl.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg'
-    if (imgUrl.includes('undefined')) return '/images/placeholder/product-placeholder.jpg'
-    if (imgUrl.trim() === '') return '/images/placeholder/product-placeholder.jpg'
-    
+    if (!imgUrl) return '/images/placeholder/product-placeholder.jpg';
+    if (imgUrl.startsWith('blob:')) return '/images/placeholder/product-placeholder.jpg';
+    if (imgUrl.includes('undefined')) return '/images/placeholder/product-placeholder.jpg';
+    if (imgUrl.trim() === '') return '/images/placeholder/product-placeholder.jpg';
+
     // Nếu đường dẫn không tồn tại hoặc không hợp lệ, sử dụng placeholder
     try {
       // Kiểm tra nếu là đường dẫn tương đối
@@ -65,7 +65,7 @@ export default function ProductCard({
         // Thêm domain nếu cần
         return imgUrl;
       }
-      
+
       // Kiểm tra nếu là URL đầy đủ
       const url = new URL(imgUrl, window.location.origin);
       return url.toString();
@@ -73,22 +73,23 @@ export default function ProductCard({
       // Nếu không phải URL hợp lệ, sử dụng placeholder
       return '/images/placeholder/product-placeholder.jpg';
     }
-  }
-  
+  };
+
   // Get the final image URL
-  const cleanImageUrl = getValidImageUrl(image)
-  
+  const cleanImageUrl = getValidImageUrl(image);
+
   // Sử dụng mô tả ngắn thay vì cắt mô tả dài
-  const shortDescription = description || ''
-      
+  const shortDescription = description || '';
+
   // Calculate discount only if originalPrice is higher than price
-  const discountPercentage = originalPrice && originalPrice > price 
-    ? Math.round(((originalPrice - price) / originalPrice) * 100) 
-    : 0
+  const discountPercentage =
+    originalPrice && originalPrice > price
+      ? Math.round(((originalPrice - price) / originalPrice) * 100)
+      : 0;
 
   // The actual image to display (with fallback) - moved up for use in handleAddToCart
-  const displayImageUrl = imageError 
-    ? '/images/placeholder/product-placeholder.jpg' 
+  const displayImageUrl = imageError
+    ? '/images/placeholder/product-placeholder.jpg'
     : cleanImageUrl;
 
   // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
@@ -97,12 +98,12 @@ export default function ProductCard({
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,
-    }).format(amount)
-  }
+    }).format(amount);
+  };
 
   const renderRatingStars = (rating: number) => {
-    const fullStars = Math.floor(rating)
-    const hasHalfStar = rating % 1 >= 0.5
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
 
     return (
       <div className="flex items-center">
@@ -114,8 +115,8 @@ export default function ProductCard({
               i < fullStars
                 ? 'text-yellow-400'
                 : i === fullStars && hasHalfStar
-                ? 'text-yellow-400'
-                : 'text-gray-300'
+                  ? 'text-yellow-400'
+                  : 'text-gray-300'
             } mr-0.5`}
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -129,70 +130,75 @@ export default function ProductCard({
               </defs>
             ) : null}
             <path
-              fill={i === fullStars && hasHalfStar ? `url(#halfGradient-${id}-${i})` : 'currentColor'}
+              fill={
+                i === fullStars && hasHalfStar ? `url(#halfGradient-${id}-${i})` : 'currentColor'
+              }
               d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
             />
           </svg>
         ))}
-        {reviewCount > 0 && (
-          <span className="ml-1 text-xs text-gray-500">({reviewCount})</span>
-        )}
+        {reviewCount > 0 && <span className="ml-1 text-xs text-gray-500">({reviewCount})</span>}
       </div>
-    )
-  }
+    );
+  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
+    e.preventDefault();
+    e.stopPropagation();
+
     // Thêm sản phẩm vào giỏ hàng trực tiếp từ component
     addItem({
       id,
       name,
       price,
       quantity: 1,
-      image: displayImageUrl
-    })
-    
+      image: displayImageUrl,
+    });
+
     // Hiển thị hiệu ứng đã thêm vào giỏ
-    setShowAddedEffect(true)
+    setShowAddedEffect(true);
     setTimeout(() => {
-      setShowAddedEffect(false)
-    }, 1000)
-    
+      setShowAddedEffect(false);
+    }, 1000);
+
     // Gọi callback nếu được cung cấp
     if (onAddToCart) {
-      onAddToCart(id)
+      onAddToCart(id);
     }
-  }
+  };
 
   const handleView = () => {
-    if (onView) onView(id)
-  }
+    if (onView) onView(id);
+  };
 
   // Handle image error and use placeholder
   const handleImageError = () => {
-    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`)
-    setImageError(true)
-    setIsImageLoaded(true) // Mark as loaded to hide spinner
-  }
+    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`);
+    setImageError(true);
+    setIsImageLoaded(true); // Mark as loaded to hide spinner
+  };
 
   // Tạo slug từ tên nếu không có slug được truyền vào
-  const productSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  const productSlug =
+    slug ||
+    name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
 
   // Color palette phù hợp với logo XLab (chuyên nghiệp, hiện đại)
   const colorPalette = [
     {
       name: 'teal',
-          bg: 'from-white via-primary-50 to-primary-100',
-    hover: 'hover:border-primary-300 hover:shadow-primary-100/50',
-    badge: 'from-primary-500 to-primary-600',
-    button: 'from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700',
-    buttonHover: 'hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300',
-    price: 'from-primary-600 to-primary-700',
-    stats: 'text-primary-600',
-    statsIcon: 'text-primary-500',
-    overlay: 'to-primary-900/40'
+      bg: 'from-white via-primary-50 to-primary-100',
+      hover: 'hover:border-primary-300 hover:shadow-primary-100/50',
+      badge: 'from-primary-500 to-primary-600',
+      button: 'from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700',
+      buttonHover: 'hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300',
+      price: 'from-primary-600 to-primary-700',
+      stats: 'text-primary-600',
+      statsIcon: 'text-primary-500',
+      overlay: 'to-primary-900/40',
     },
     {
       name: 'blue',
@@ -202,9 +208,9 @@ export default function ProductCard({
       button: 'from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700',
       buttonHover: 'hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300',
       price: 'from-primary-600 to-primary-700',
-              stats: 'text-primary-600',
+      stats: 'text-primary-600',
       statsIcon: 'text-blue-500',
-      overlay: 'to-blue-900/40'
+      overlay: 'to-blue-900/40',
     },
     {
       name: 'purple',
@@ -216,7 +222,7 @@ export default function ProductCard({
       price: 'from-purple-600 to-purple-700',
       stats: 'text-purple-600',
       statsIcon: 'text-purple-500',
-      overlay: 'to-purple-900/40'
+      overlay: 'to-purple-900/40',
     },
     {
       name: 'emerald',
@@ -228,7 +234,7 @@ export default function ProductCard({
       price: 'from-emerald-600 to-emerald-700',
       stats: 'text-emerald-600',
       statsIcon: 'text-emerald-500',
-      overlay: 'to-emerald-900/40'
+      overlay: 'to-emerald-900/40',
     },
     {
       name: 'orange',
@@ -240,7 +246,7 @@ export default function ProductCard({
       price: 'from-orange-600 to-orange-700',
       stats: 'text-orange-600',
       statsIcon: 'text-orange-500',
-      overlay: 'to-orange-900/40'
+      overlay: 'to-orange-900/40',
     },
     {
       name: 'indigo',
@@ -252,8 +258,8 @@ export default function ProductCard({
       price: 'from-indigo-600 to-indigo-700',
       stats: 'text-indigo-600',
       statsIcon: 'text-indigo-500',
-      overlay: 'to-indigo-900/40'
-    }
+      overlay: 'to-indigo-900/40',
+    },
   ];
 
   // Chọn màu dựa trên ID sản phẩm để đảm bảo consistent
@@ -265,14 +271,19 @@ export default function ProductCard({
   return (
     <Link
       href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
+<<<<<<< HEAD
       className={`group flex flex-col h-full min-h-[380px] min-w-[200px] bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
+=======
+      className={`group flex flex-col h-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
+>>>>>>> ec11d6b24695bbac5a3c92cbdb39131178298704
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={handleView}
     >
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
-          <div className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}>
+          <div
+            className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
+          >
             -{discountPercentage}%
           </div>
         )}
@@ -292,11 +303,7 @@ export default function ProductCard({
 
         {!isImageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-white">
-            <svg
-              className="w-10 h-10 text-gray-300 animate-spin"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-10 h-10 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -315,10 +322,23 @@ export default function ProductCard({
         )}
 
         {showAddedEffect && (
-          <div className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}>
-            <div className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          <div
+            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
+          >
+            <div
+              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
               </svg>
               Đã thêm
             </div>
@@ -337,7 +357,12 @@ export default function ProductCard({
             >
               <span className="flex items-center justify-center">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 7m0 6l-1.5 6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 7m0 6l-1.5 6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
+                  />
                 </svg>
                 Thêm vào giỏ
               </span>
@@ -355,7 +380,7 @@ export default function ProductCard({
                   quantity: 1,
                   image,
                   version: '',
-                  uniqueKey: `${id}_default_`
+                  uniqueKey: `${id}_default_`,
                 });
                 router.push('/checkout?skipInfo=true');
               }}
@@ -363,7 +388,12 @@ export default function ProductCard({
             >
               <span className="flex items-center justify-center">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
                 </svg>
                 Mua ngay
               </span>
@@ -374,7 +404,9 @@ export default function ProductCard({
 
       <div className="p-4 flex-1 flex flex-col justify-between bg-white">
         {category && (
-          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">{category}</div>
+          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+            {category}
+          </div>
         )}
         <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
           {name}
@@ -382,10 +414,12 @@ export default function ProductCard({
         <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
           {shortDescription}
         </p>
-                <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between">
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-2 mb-2">
-              <span className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}>
+              <span
+                className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+              >
                 {formatCurrency(price)}
               </span>
               {originalPrice && discountPercentage > 0 && (
@@ -394,35 +428,31 @@ export default function ProductCard({
                 </span>
               )}
             </div>
-            <div>
-              {rating > 0 ? (
-                renderRatingStars(rating)
-              ) : (
-                <div className="h-4"></div>
-              )}
-            </div>
+            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-4"></div>}</div>
           </div>
           {totalSold > 0 && (
-            <div className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}>
+            <div
+              className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
-                fill="none"
-                viewBox="0 0 24 24"
+                fill="none" 
+                viewBox="0 0 24 24" 
                 stroke="currentColor"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="font-semibold">{totalSold}</span>&nbsp;đã bán
+              <span className="font-semibold">{totalSold}</span>
             </div>
           )}
         </div>
       </div>
     </Link>
-  )
-} 
+  );
+}

@@ -17,4 +17,4 @@ export interface UserStats {
   inactive: number;
   newThisMonth: number;
   admins?: number;
-} 
+}

@@ -1,15 +1,15 @@
-import { type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import { products } from '@/data/mockData';
 import { Product } from '@/types';
 
 // Safe imports to handle potential undefined modules
 let clsx: any;
 try {
-  clsx = require("clsx").clsx;
+  clsx = require('clsx').clsx;
 } catch (error) {
-  console.warn("Failed to import clsx, using fallback");
-  clsx = (...inputs: any[]) => inputs.filter(Boolean).join(" ");
+  console.warn('Failed to import clsx, using fallback');
+  clsx = (...inputs: any[]) => inputs.filter(Boolean).join(' ');
 }
 
 /**
@@ -22,8 +22,8 @@ export function cn(...inputs: ClassValue[]) {
   try {
     return twMerge(clsx(inputs));
   } catch (error) {
-    console.warn("Error in cn function, using fallback:", error);
-    return inputs.filter(Boolean).join(" ");
+    console.warn('Error in cn function, using fallback:', error);
+    return inputs.filter(Boolean).join(' ');
   }
 }
 
@@ -37,7 +37,7 @@ export function containerClass(...additionalClasses: ClassValue[]) {
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
-    currency: 'VND'
+    currency: 'VND',
   }).format(amount);
 }
 
@@ -48,7 +48,7 @@ export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('vi-VN', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
   }).format(new Date(date));
 }
 
@@ -64,7 +64,7 @@ export function truncateString(str: string, length: number): string {
  * Get the category name from its ID
  */
 export function getCategoryName(categoryId: string, categories: any[]): string {
-  const category = categories.find(cat => cat.id === categoryId);
+  const category = categories.find((cat) => cat.id === categoryId);
   return category ? category.name : 'Unknown';
 }
 
@@ -72,7 +72,7 @@ export function getCategoryName(categoryId: string, categories: any[]): string {
  * Get store name from its ID
  */
 export function getStoreName(storeId: string, stores: any[]): string {
-  const store = stores.find(store => store.id === storeId);
+  const store = stores.find((store) => store.id === storeId);
   return store ? store.name : 'Unknown';
 }
 
@@ -136,13 +136,13 @@ export function stringToColor(str: string): string {
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   let color = '#';
   for (let i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xFF;
+    const value = (hash >> (i * 8)) & 0xff;
     color += ('00' + value.toString(16)).substr(-2);
   }
-  
+
   return color;
 }
 
@@ -158,11 +158,11 @@ export function getFileExtension(filename: string): string {
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
@@ -171,10 +171,10 @@ export function formatFileSize(bytes: number): string {
  */
 export function debounce<T extends (...args: any[]) => any>(
   fn: T,
-  ms = 300
+  ms = 300,
 ): (...args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout>;
-  return function(this: any, ...args: Parameters<T>) {
+  return function (this: any, ...args: Parameters<T>) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), ms);
   };
@@ -188,7 +188,7 @@ const viewCountCache: Record<string, number> = {};
 const downloadCountCache: Record<string, number> = {};
 
 // Initialize cache from mockData
-products.forEach(product => {
+products.forEach((product) => {
   viewCountCache[product.slug] = product.viewCount || 0;
   downloadCountCache[product.slug] = product.downloadCount || 0;
 });
@@ -198,7 +198,7 @@ products.forEach(product => {
  */
 export function getProductBySlug(slug: string): Product | undefined {
   if (!slug) return undefined;
-  return products.find(product => product.slug === slug);
+  return products.find((product) => product.slug === slug);
 }
 
 /**
@@ -206,19 +206,19 @@ export function getProductBySlug(slug: string): Product | undefined {
  */
 export function incrementViewCount(slug: string): number {
   if (!slug) return 0;
-  
+
   const product = getProductBySlug(slug);
   if (!product) return 0;
-  
+
   try {
     if (typeof product.viewCount !== 'number') {
       product.viewCount = 0;
     }
     product.viewCount += 1;
-    
+
     // Cập nhật cache
     viewCountCache[slug] = product.viewCount;
-    
+
     return product.viewCount;
   } catch (error) {
     console.error(`Lỗi khi tăng lượt xem cho ${slug}:`, error);
@@ -231,19 +231,19 @@ export function incrementViewCount(slug: string): number {
  */
 export function incrementDownloadCount(slug: string): number {
   if (!slug) return 0;
-  
+
   const product = getProductBySlug(slug);
   if (!product) return 0;
-  
+
   try {
     if (typeof product.downloadCount !== 'number') {
       product.downloadCount = 0;
     }
     product.downloadCount += 1;
-    
+
     // Cập nhật cache
     downloadCountCache[slug] = product.downloadCount;
-    
+
     return product.downloadCount;
   } catch (error) {
     console.error(`Lỗi khi tăng lượt tải cho ${slug}:`, error);
@@ -280,7 +280,7 @@ export interface CartItem {
 // Cart utility functions
 export const getCartFromLocalStorage = (): CartItem[] => {
   if (typeof window === 'undefined') return [];
-  
+
   try {
     const cartData = localStorage.getItem('cart');
     return cartData ? JSON.parse(cartData) : [];
@@ -292,7 +292,7 @@ export const getCartFromLocalStorage = (): CartItem[] => {
 
 export const saveCartToLocalStorage = (cart: CartItem[]): void => {
   if (typeof window === 'undefined') return;
-  
+
   try {
     localStorage.setItem('cart', JSON.stringify(cart));
   } catch (error) {
@@ -302,7 +302,7 @@ export const saveCartToLocalStorage = (cart: CartItem[]): void => {
 
 export const addItemToCart = (cart: CartItem[], item: CartItem): CartItem[] => {
   const existingItemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
-  
+
   if (existingItemIndex >= 0) {
     // Item already exists, update quantity
     const newCart = [...cart];
@@ -318,7 +318,11 @@ export const removeItemFromCart = (cart: CartItem[], itemId: string): CartItem[]
   return cart.filter((item) => item.id !== itemId);
 };
 
-export const updateItemQuantity = (cart: CartItem[], itemId: string, quantity: number): CartItem[] => {
+export const updateItemQuantity = (
+  cart: CartItem[],
+  itemId: string,
+  quantity: number,
+): CartItem[] => {
   return cart.map((item) => {
     if (item.id === itemId) {
       return { ...item, quantity: Math.max(1, quantity) };
@@ -340,4 +344,4 @@ export const calculateCartTotals = (cart: CartItem[]) => {
   const total = subtotal; // Tổng cộng bằng tạm tính
 
   return { subtotal, tax, total };
-}; 
+};

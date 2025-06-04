@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useCallback,
+  useRef,
+} from 'react';
 import { useSession } from 'next-auth/react';
 
 interface BalanceContextType {
@@ -32,70 +40,73 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const isMountedRef = useRef(true);
 
-  const fetchBalance = useCallback(async (force = false): Promise<void> => {
-    if (!session?.user?.email || status !== 'authenticated') {
-      if (status === 'unauthenticated') setLoading(false);
-      return;
-    }
-
-    // Kiểm tra cache nếu không force
-    const now = Date.now();
-    if (!force && (now - lastFetchTime) < CACHE_DURATION && cachedBalance >= 0) {
-      if (isMountedRef.current) {
-        setBalance(cachedBalance);
-        setLoading(false);
+  const fetchBalance = useCallback(
+    async (force = false): Promise<void> => {
+      if (!session?.user?.email || status !== 'authenticated') {
+        if (status === 'unauthenticated') setLoading(false);
+        return;
       }
-      return;
-    }
 
-    // Tránh multiple requests cùng lúc
-    if (isCurrentlyFetching) {
-      return;
-    }
-
-    isCurrentlyFetching = true;
-
-    try {
-      if (isMountedRef.current) {
-        setError(null);
-      }
-      
-      const response = await fetch('/api/user/balance', {
-        cache: 'no-cache', // Đảm bảo không cache ở browser level
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        const newBalance = data.balance || 0;
-        
-        // Chỉ update state nếu component vẫn mounted
+      // Kiểm tra cache nếu không force
+      const now = Date.now();
+      if (!force && now - lastFetchTime < CACHE_DURATION && cachedBalance >= 0) {
         if (isMountedRef.current) {
-          setBalance(newBalance);
-          setLastUpdated(new Date());
+          setBalance(cachedBalance);
+          setLoading(false);
         }
-        
-        cachedBalance = newBalance;
-        lastFetchTime = now;
-        
-        // Chỉ log khi không phải cached để giảm spam log
-        if (!data.cached) {
-          console.log(`💰 Balance updated: ${newBalance.toLocaleString('vi-VN')} VND`);
+        return;
+      }
+
+      // Tránh multiple requests cùng lúc
+      if (isCurrentlyFetching) {
+        return;
+      }
+
+      isCurrentlyFetching = true;
+
+      try {
+        if (isMountedRef.current) {
+          setError(null);
         }
-      } else {
-        throw new Error('Failed to fetch balance');
+
+        const response = await fetch('/api/user/balance', {
+          cache: 'no-cache', // Đảm bảo không cache ở browser level
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const newBalance = data.balance || 0;
+
+          // Chỉ update state nếu component vẫn mounted
+          if (isMountedRef.current) {
+            setBalance(newBalance);
+            setLastUpdated(new Date());
+          }
+
+          cachedBalance = newBalance;
+          lastFetchTime = now;
+
+          // Chỉ log khi không phải cached để giảm spam log
+          if (!data.cached) {
+            console.log(`💰 Balance updated: ${newBalance.toLocaleString('vi-VN')} VND`);
+          }
+        } else {
+          throw new Error('Failed to fetch balance');
+        }
+      } catch (err) {
+        console.error('Error fetching balance:', err);
+        if (isMountedRef.current) {
+          setError(err instanceof Error ? err.message : 'Unknown error');
+        }
+      } finally {
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
+        isCurrentlyFetching = false;
       }
-    } catch (err) {
-      console.error('Error fetching balance:', err);
-      if (isMountedRef.current) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      }
-    } finally {
-      if (isMountedRef.current) {
-        setLoading(false);
-      }
-      isCurrentlyFetching = false;
-    }
-  }, [session?.user?.email, status]);
+    },
+    [session?.user?.email, status],
+  );
 
   const refreshBalance = useCallback(async (): Promise<void> => {
     if (isMountedRef.current) {
@@ -143,7 +154,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible' && session?.user?.email && isMountedRef.current) {
         const now = Date.now();
-        if ((now - lastFetchTime) > CACHE_DURATION) {
+        if (now - lastFetchTime > CACHE_DURATION) {
           fetchBalance();
         }
       }
@@ -158,14 +169,10 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
     loading,
     error,
     refreshBalance,
-    lastUpdated
+    lastUpdated,
   };
 
-  return (
-    <BalanceContext.Provider value={value}>
-      {children}
-    </BalanceContext.Provider>
-  );
+  return <BalanceContext.Provider value={value}>{children}</BalanceContext.Provider>;
 }
 
 export function useBalance() {
@@ -174,4 +181,4 @@ export function useBalance() {
     throw new Error('useBalance must be used within a BalanceProvider');
   }
   return context;
-} 
+}

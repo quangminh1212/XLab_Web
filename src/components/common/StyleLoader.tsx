@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect } from 'react';
 import Head from 'next/head';
@@ -18,8 +18,8 @@ export const StyleLoader: React.FC = () => {
               node.nodeType === Node.ELEMENT_NODE &&
               (node as Element).tagName === 'LINK' &&
               (node as HTMLLinkElement).rel === 'stylesheet' &&
-              ((node as HTMLLinkElement).href.includes('/static/css/vendors.css') || 
-               (node as HTMLLinkElement).href.includes('/static/css/app/layout.css'))
+              ((node as HTMLLinkElement).href.includes('/static/css/vendors.css') ||
+                (node as HTMLLinkElement).href.includes('/static/css/app/layout.css'))
             ) {
               // This is a CSS link that might 404, add an error handler
               (node as HTMLLinkElement).onerror = () => {
@@ -70,11 +70,11 @@ export const StyleLoader: React.FC = () => {
                 }
               }
             }, true);
-          `
+          `,
         }}
       />
     </>
   );
 };
 
-export default StyleLoader; 
+export default StyleLoader;

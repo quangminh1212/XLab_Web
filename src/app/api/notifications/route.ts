@@ -47,7 +47,7 @@ async function getNotifications(): Promise<Notification[]> {
         createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 giờ trước
         link: '/products',
         priority: 'high',
-        expiresAt: new Date(Date.now() + 7 * 24 * 3600000).toISOString() // 7 ngày sau
+        expiresAt: new Date(Date.now() + 7 * 24 * 3600000).toISOString(), // 7 ngày sau
       },
       {
         id: '2',
@@ -57,7 +57,7 @@ async function getNotifications(): Promise<Notification[]> {
         isRead: {},
         createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 ngày trước
         link: '/products/1',
-        priority: 'medium'
+        priority: 'medium',
       },
       {
         id: '3',
@@ -66,8 +66,8 @@ async function getNotifications(): Promise<Notification[]> {
         type: 'system',
         isRead: {},
         createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), // 2 ngày trước
-        priority: 'high'
-      }
+        priority: 'high',
+      },
     ];
     await saveNotifications(defaultNotifications);
     return defaultNotifications;
@@ -104,7 +104,7 @@ function formatTimeAgo(dateString: string): string {
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     // Trong development mode, nếu không có session hợp lệ, trả về thông báo mặc định
     if (!session?.user?.email) {
       if (process.env.NODE_ENV === 'development') {
@@ -117,8 +117,8 @@ export async function GET(request: Request) {
             type: 'system',
             time: 'Vừa xong',
             isRead: false,
-            priority: 'medium'
-          }
+            priority: 'medium',
+          },
         ];
         return NextResponse.json({ notifications: demoNotifications });
       }
@@ -131,7 +131,7 @@ export async function GET(request: Request) {
     // Lọc thông báo theo người dùng và chưa hết hạn
     const now = new Date();
     const userNotifications = notifications
-      .filter(notification => {
+      .filter((notification) => {
         // Kiểm tra hết hạn
         if (notification.expiresAt && new Date(notification.expiresAt) < now) {
           return false;
@@ -142,7 +142,7 @@ export async function GET(request: Request) {
         }
         return true;
       })
-      .map(notification => ({
+      .map((notification) => ({
         id: notification.id,
         title: notification.title,
         content: notification.content,
@@ -150,23 +150,23 @@ export async function GET(request: Request) {
         time: formatTimeAgo(notification.createdAt),
         isRead: notification.isRead[userId] || false,
         link: notification.link,
-        priority: notification.priority
+        priority: notification.priority,
       }))
       .sort((a, b) => {
         // Sắp xếp theo độ ưu tiên và thời gian
         const priorityOrder = { high: 3, medium: 2, low: 1 };
         const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] || 1;
         const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] || 1;
-        
+
         if (aPriority !== bPriority) {
           return bPriority - aPriority;
         }
-        
+
         // Nếu cùng độ ưu tiên, chưa đọc sẽ lên trước
         if (a.isRead !== b.isRead) {
           return a.isRead ? 1 : -1;
         }
-        
+
         return 0;
       });
 
@@ -195,25 +195,34 @@ export async function POST(request: Request) {
 
     // Validate input
     if (!title || !content || !type) {
-      return NextResponse.json({ 
-        error: 'Missing required fields: title, content, type' 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: 'Missing required fields: title, content, type',
+        },
+        { status: 400 },
+      );
     }
 
     if (!['promotion', 'update', 'order', 'system'].includes(type)) {
-      return NextResponse.json({ 
-        error: 'Invalid type. Must be one of: promotion, update, order, system' 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: 'Invalid type. Must be one of: promotion, update, order, system',
+        },
+        { status: 400 },
+      );
     }
 
     if (priority && !['low', 'medium', 'high'].includes(priority)) {
-      return NextResponse.json({ 
-        error: 'Invalid priority. Must be one of: low, medium, high' 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: 'Invalid priority. Must be one of: low, medium, high',
+        },
+        { status: 400 },
+      );
     }
 
     const notifications = await getNotifications();
-    
+
     const newNotification: Notification = {
       id: Date.now().toString(),
       title,
@@ -224,18 +233,18 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
       link,
       priority: priority || 'medium',
-      expiresAt
+      expiresAt,
     };
 
     notifications.unshift(newNotification); // Thêm vào đầu danh sách
     await saveNotifications(notifications);
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: 'Notification created successfully',
-      notification: newNotification
+      notification: newNotification,
     });
   } catch (error) {
     console.error('Error creating notification:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-} 
+}

@@ -49,7 +49,7 @@ export const defaultSystemSettings: SystemSettings = {
     faviconUrl: '/images/favicon.ico',
     contactEmail: 'contact@xlabshop.vn',
     contactPhone: '0123456789',
-    address: 'Số 1, Đường ABC, Phường XYZ, Quận 123, TP.HCM'
+    address: 'Số 1, Đường ABC, Phường XYZ, Quận 123, TP.HCM',
   },
   payment: {
     enableMomo: false,
@@ -59,7 +59,7 @@ export const defaultSystemSettings: SystemSettings = {
     bankName: 'BIDV',
     bankAccountName: 'CÔNG TY TNHH XLAB',
     bankAccountNumber: '12345678901234',
-    bankBranch: 'TP.HCM'
+    bankBranch: 'TP.HCM',
   },
   email: {
     smtpServer: 'smtp.gmail.com',
@@ -68,13 +68,13 @@ export const defaultSystemSettings: SystemSettings = {
     smtpPassword: '',
     senderEmail: 'noreply@xlabshop.vn',
     senderName: 'XLab Shop',
-    enableEmailNotification: false
+    enableEmailNotification: false,
   },
   maintenanceMode: false,
   disableRegistration: false,
   disableCheckout: false,
   lastUpdated: new Date().toISOString(),
-  updatedBy: 'system'
+  updatedBy: 'system',
 };
 
 // Hàm kiểm tra email hợp lệ
@@ -90,18 +90,21 @@ export function isValidPhone(phone: string): boolean {
 }
 
 // Xác thực cài đặt hệ thống
-export function validateSystemSettings(settings: SystemSettings): { valid: boolean; errors: string[] } {
+export function validateSystemSettings(settings: SystemSettings): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   // Kiểm tra cài đặt site
   if (!settings.site.siteName) {
     errors.push('Tên trang web không được để trống');
   }
-  
+
   if (!isValidEmail(settings.site.contactEmail)) {
     errors.push('Email liên hệ không hợp lệ');
   }
-  
+
   if (!isValidPhone(settings.site.contactPhone)) {
     errors.push('Số điện thoại liên hệ không hợp lệ');
   }
@@ -137,6 +140,6 @@ export function validateSystemSettings(settings: SystemSettings): { valid: boole
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
-} 
+}

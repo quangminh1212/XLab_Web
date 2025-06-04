@@ -5,16 +5,16 @@ const SPREADSHEET_ID = '1TOKHwtD13QAiQXXB5T_WkARkmT-LonO5s-BjWhj9okA';
 const RANGE = 'Trang tính1!A:K'; // Read all columns A to K
 
 interface SheetTransaction {
-  bank: string;           // Column A
-  date: string;          // Column B  
+  bank: string; // Column A
+  date: string; // Column B
   accountNumber: string; // Column C
   accountHolder: string; // Column D
-  code: string;          // Column E
-  description: string;   // Column F - Nội dung thanh toán
-  type: string;          // Column G
-  amount: number;        // Column H - Số tiền
-  reference: string;     // Column I
-  balance: number;       // Column J
+  code: string; // Column E
+  description: string; // Column F - Nội dung thanh toán
+  type: string; // Column G
+  amount: number; // Column H - Số tiền
+  reference: string; // Column I
+  balance: number; // Column J
 }
 
 // Primary method using CSV export (works without API key for public sheets)
@@ -22,20 +22,20 @@ export async function getSheetDataFromCSV(): Promise<SheetTransaction[]> {
   try {
     // Google Sheets can be exported as CSV using this URL format
     const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=0`;
-    
+
     console.log('Fetching transaction data from Google Sheets...');
     const response = await fetch(csvUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch CSV data: ${response.status} ${response.statusText}`);
     }
-    
+
     const csvText = await response.text();
-    const rows = csvText.split('\n').map(row => {
+    const rows = csvText.split('\n').map((row) => {
       // Handle CSV parsing with quoted fields
       const fields: string[] = [];
       let current = '';
       let inQuotes = false;
-      
+
       for (let i = 0; i < row.length; i++) {
         const char = row[i];
         if (char === '"') {
@@ -48,25 +48,25 @@ export async function getSheetDataFromCSV(): Promise<SheetTransaction[]> {
         }
       }
       fields.push(current.trim());
-      
+
       return fields;
     });
 
     const transactions: SheetTransaction[] = [];
-    
+
     // Skip header row and process data rows
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
-      
+
       // Skip empty rows
       if (!row[0] || row[0].trim() === '') continue;
-      
+
       // Ensure we have minimum required data
       if (row[0] && row[5] && row[7]) {
         try {
           const amount = parseFloat(row[7]?.replace(/[^\d.-]/g, '') || '0');
           const balance = parseFloat(row[9]?.replace(/[^\d.-]/g, '') || '0');
-          
+
           transactions.push({
             bank: row[0]?.trim() || '',
             date: row[1]?.trim() || '',
@@ -93,18 +93,22 @@ export async function getSheetDataFromCSV(): Promise<SheetTransaction[]> {
   }
 }
 
-export async function findTransactionByCode(transactionCode: string): Promise<SheetTransaction | null> {
+export async function findTransactionByCode(
+  transactionCode: string,
+): Promise<SheetTransaction | null> {
   try {
     console.log(`🔍 Searching for transaction code: ${transactionCode}`);
     const transactions = await getSheetDataFromCSV();
-    
+
     // Search for transaction code in description field (Column F)
-    const foundTransaction = transactions.find(transaction => {
+    const foundTransaction = transactions.find((transaction) => {
       const includesCode = transaction.description.includes(transactionCode);
       const isIncoming = transaction.type === 'Tiền vào';
-      
-      console.log(`Checking transaction: ${transaction.description} | Type: ${transaction.type} | Includes code: ${includesCode} | Is incoming: ${isIncoming}`);
-      
+
+      console.log(
+        `Checking transaction: ${transaction.description} | Type: ${transaction.type} | Includes code: ${includesCode} | Is incoming: ${isIncoming}`,
+      );
+
       return includesCode && isIncoming;
     });
 
@@ -171,8 +175,8 @@ export async function getGoogleSheetsData(): Promise<SheetTransaction[]> {
     return transactions;
   } catch (error) {
     console.error('Error reading Google Sheets via API:', error);
-    
+
     // Fallback to CSV method
     return getSheetDataFromCSV();
   }
-} 
+}

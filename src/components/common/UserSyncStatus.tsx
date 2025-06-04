@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
@@ -27,7 +27,7 @@ export default function UserSyncStatus() {
 
   const checkSyncStatus = async () => {
     if (!session?.user?.email) return;
-    
+
     setIsLoading(true);
     try {
       const response = await fetch('/api/user/sync');
@@ -44,16 +44,16 @@ export default function UserSyncStatus() {
 
   const forceSyncData = async () => {
     if (!session?.user?.email) return;
-    
+
     setIsSyncing(true);
     try {
       const response = await fetch('/api/user/sync', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setLastSyncTime(data.syncTime);
@@ -117,7 +117,9 @@ export default function UserSyncStatus() {
             </div>
             <div>
               <span className="text-gray-500">Số dư:</span>
-              <span className="ml-2 font-medium">{syncStatus.syncStatus.balance.toLocaleString('vi-VN')} VND</span>
+              <span className="ml-2 font-medium">
+                {syncStatus.syncStatus.balance.toLocaleString('vi-VN')} VND
+              </span>
             </div>
             <div>
               <span className="text-gray-500">Sản phẩm trong giỏ:</span>
@@ -178,4 +180,4 @@ export default function UserSyncStatus() {
       )}
     </div>
   );
-} 
+}

@@ -83,13 +83,13 @@ function saveCoupons(data: Coupon[]): boolean {
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
-    
+
     // Validate data là mảng trước khi lưu
     if (!Array.isArray(data)) {
       console.error('Invalid coupon data format - expected array');
       return false;
     }
-    
+
     // Tạo backup trước khi ghi đè
     if (fs.existsSync(couponsFilePath)) {
       const backupDir = path.join(dataDir, 'backups');
@@ -100,7 +100,7 @@ function saveCoupons(data: Coupon[]): boolean {
       const backupPath = path.join(backupDir, `coupons-${timestamp}.bak`);
       fs.copyFileSync(couponsFilePath, backupPath);
     }
-    
+
     fs.writeFileSync(couponsFilePath, JSON.stringify(data, null, 2), 'utf8');
     return true;
   } catch (error) {
@@ -112,34 +112,34 @@ function saveCoupons(data: Coupon[]): boolean {
 // Hàm cập nhật số lần sử dụng của mã giảm giá
 async function updateCouponUsage(couponCode: string, userEmail: string): Promise<boolean> {
   if (!couponCode || !userEmail) return false;
-  
+
   try {
     // Tải dữ liệu mã giảm giá
     const coupons = loadCoupons();
-    
+
     // Tìm mã giảm giá cần cập nhật
-    const couponIndex = coupons.findIndex(c => c.code === couponCode);
+    const couponIndex = coupons.findIndex((c) => c.code === couponCode);
     if (couponIndex === -1) return false;
-    
+
     // Cập nhật số lần sử dụng tổng cộng
     coupons[couponIndex].usedCount = (coupons[couponIndex].usedCount || 0) + 1;
-    
+
     // Khởi tạo đối tượng userUsage nếu chưa có
     if (!coupons[couponIndex].userUsage) {
       coupons[couponIndex].userUsage = {};
     }
-    
+
     // Cập nhật số lần sử dụng của người dùng
     const currentUserUsage = coupons[couponIndex].userUsage![userEmail] || 0;
     coupons[couponIndex].userUsage![userEmail] = currentUserUsage + 1;
-    
+
     // Cập nhật thời gian chỉnh sửa
     coupons[couponIndex].updatedAt = new Date().toISOString();
-    
+
     // Lưu lại dữ liệu
     return saveCoupons(coupons);
   } catch (error) {
-    console.error("Error updating coupon usage:", error);
+    console.error('Error updating coupon usage:', error);
     return false;
   }
 }
@@ -150,10 +150,10 @@ async function saveOrderToUserFile(orderData: OrderData): Promise<boolean> {
     if (!fs.existsSync(usersDir)) {
       fs.mkdirSync(usersDir, { recursive: true });
     }
-    
+
     const userFilePath = path.join(usersDir, `${orderData.userEmail}.json`);
     let userData: any = {};
-    
+
     // Kiểm tra xem file đã tồn tại chưa
     if (fs.existsSync(userFilePath)) {
       const fileContent = fs.readFileSync(userFilePath, 'utf8');
@@ -164,30 +164,30 @@ async function saveOrderToUserFile(orderData: OrderData): Promise<boolean> {
         return false;
       }
     }
-    
+
     // Khởi tạo mảng orders nếu chưa có
     if (!userData.orders) {
       userData.orders = [];
     }
-    
+
     // Thêm đơn hàng mới vào mảng
     userData.orders.push(orderData);
-    
+
     // Nếu đơn hàng có sử dụng mã giảm giá, cập nhật vào danh sách vouchers đã dùng
     if (orderData.couponCode) {
       // Khởi tạo mảng vouchers nếu chưa có
       if (!userData.vouchers) {
         userData.vouchers = [];
       }
-      
+
       // Tìm thông tin mã giảm giá
       const coupons = loadCoupons();
-      const usedCoupon = coupons.find(c => c.code === orderData.couponCode);
-      
+      const usedCoupon = coupons.find((c) => c.code === orderData.couponCode);
+
       if (usedCoupon) {
         // Kiểm tra xem voucher đã tồn tại trong danh sách của user chưa
         const existingVoucher = userData.vouchers.find((v: any) => v.code === orderData.couponCode);
-        
+
         if (existingVoucher) {
           // Nếu đã tồn tại, tăng số lần sử dụng
           existingVoucher.usedCount = (existingVoucher.usedCount || 0) + 1;
@@ -198,18 +198,18 @@ async function saveOrderToUserFile(orderData: OrderData): Promise<boolean> {
             code: usedCoupon.code,
             name: usedCoupon.name,
             usedCount: 1,
-            lastUsed: new Date().toISOString()
+            lastUsed: new Date().toISOString(),
           });
         }
       }
     }
-    
+
     // Cập nhật thời gian chỉnh sửa
     if (!userData.metadata) {
       userData.metadata = {};
     }
     userData.metadata.lastUpdated = new Date().toISOString();
-    
+
     // Lưu lại dữ liệu
     fs.writeFileSync(userFilePath, JSON.stringify(userData, null, 2), 'utf8');
     console.log(`Order ${orderData.id} saved to user file: ${orderData.userEmail}`);
@@ -246,7 +246,9 @@ export async function POST(request: Request) {
       if (!couponUpdated) {
         console.warn(`Failed to update usage for coupon: ${orderData.couponCode}`);
       } else {
-        console.log(`Successfully updated usage for coupon ${orderData.couponCode} by user ${orderData.userEmail}`);
+        console.log(
+          `Successfully updated usage for coupon ${orderData.couponCode} by user ${orderData.userEmail}`,
+        );
       }
     }
 
@@ -258,14 +260,13 @@ export async function POST(request: Request) {
     }
 
     // Trả về phản hồi thành công
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       message: 'Order saved successfully',
-      orderId: orderData.id 
+      orderId: orderData.id,
     });
-
   } catch (error) {
     console.error('Error saving order:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-} 
+}

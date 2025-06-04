@@ -9,19 +9,19 @@ export const dynamicParams = true;
 export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params trước khi sử dụng thuộc tính của nó
   const { id: accountId } = await params;
-  
+
   console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
-  
+
   // Tìm sản phẩm từ mockData (loại dịch vụ)
   // Tìm theo slug trước
   let selectedProduct = mockProducts.find(
-    (p) => p.slug === accountId && (p.isAccount || p.type === 'account')
+    (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
   );
-  
+
   // Sau đó tìm theo id nếu không tìm thấy theo slug
   if (!selectedProduct) {
     selectedProduct = mockProducts.find(
-      (p) => p.id === accountId && (p.isAccount || p.type === 'account')
+      (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
     );
   }
 
@@ -72,14 +72,15 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
         'Thư viện hiệu ứng và âm thanh đầy đủ',
         'Sử dụng trên cả thiết bị di động và máy tính',
         'Hỗ trợ kỹ thuật 24/7',
-        'Cập nhật tính năng mới ngay khi phát hành'
-      ]
+        'Cập nhật tính năng mới ngay khi phát hành',
+      ],
     },
     {
       id: 'capcut-pro-7days',
       slug: 'capcut-pro-7days',
       name: 'CapCut Pro - 7 Ngày',
-      description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 7 ngày lý tưởng để thử nghiệm hoặc hoàn thành dự án ngắn hạn.',
+      description:
+        'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 7 ngày lý tưởng để thử nghiệm hoặc hoàn thành dự án ngắn hạn.',
       longDescription: `
         <h2>CapCut Pro - Gói 7 ngày</h2>
         <p>Trải nghiệm đầy đủ các tính năng cao cấp của CapCut Pro trong 7 ngày với giá cực kỳ hấp dẫn.</p>
@@ -114,14 +115,15 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
         'Không có logo watermark',
         'Thư viện hiệu ứng và âm thanh đầy đủ',
         'Có thể sử dụng cho cả thiết bị di động và máy tính',
-        'Hỗ trợ kỹ thuật 24/7'
-      ]
+        'Hỗ trợ kỹ thuật 24/7',
+      ],
     },
     {
       id: 'capcut-pro-1month',
       slug: 'capcut-pro-1month',
       name: 'CapCut Pro - 1 Tháng',
-      description: 'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 1 tháng phù hợp cho các nhà sáng tạo nội dung thường xuyên.',
+      description:
+        'Tài khoản CapCut Pro với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 1 tháng phù hợp cho các nhà sáng tạo nội dung thường xuyên.',
       longDescription: `
         <h2>CapCut Pro - Gói 1 tháng</h2>
         <p>Gói đăng ký 1 tháng phù hợp với những người làm nội dung thường xuyên nhưng không muốn cam kết dài hạn.</p>
@@ -157,14 +159,15 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
         'Thư viện hiệu ứng và âm thanh đầy đủ',
         'Có thể sử dụng cho cả thiết bị di động và máy tính',
         'Hỗ trợ kỹ thuật 24/7',
-        'Cập nhật tính năng mới ngay khi phát hành'
-      ]
+        'Cập nhật tính năng mới ngay khi phát hành',
+      ],
     },
     {
       id: 'capcut-pro-2years',
       slug: 'capcut-pro-2years',
       name: 'CapCut Pro - 2 Năm',
-      description: 'Tài khoản CapCut Pro dài hạn với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 2 năm tiết kiệm tối đa, phù hợp cho các studio và nhà sáng tạo nội dung chuyên nghiệp.',
+      description:
+        'Tài khoản CapCut Pro dài hạn với đầy đủ tính năng chỉnh sửa video chuyên nghiệp. Gói 2 năm tiết kiệm tối đa, phù hợp cho các studio và nhà sáng tạo nội dung chuyên nghiệp.',
       longDescription: `
         <h2>CapCut Pro - Gói 2 năm</h2>
         <p>Giải pháp tiết kiệm nhất dành cho các nhà sáng tạo nội dung chuyên nghiệp và studio làm phim.</p>
@@ -204,19 +207,19 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
         'Cập nhật tính năng mới ngay khi phát hành',
         'Đảm bảo hoàn tiền 30 ngày',
         'Hỗ trợ đồng bộ đám mây không giới hạn',
-        'Tiết kiệm hơn 70% so với mua hàng tháng'
-      ]
-    }
+        'Tiết kiệm hơn 70% so với mua hàng tháng',
+      ],
+    },
   ];
 
   // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData
   if (!selectedProduct) {
     // Tìm theo slug trước
-    selectedProduct = sampleAccounts.find(p => p.slug === accountId);
-    
+    selectedProduct = sampleAccounts.find((p) => p.slug === accountId);
+
     // Sau đó tìm theo id nếu cần
     if (!selectedProduct) {
-      selectedProduct = sampleAccounts.find(p => p.id === accountId);
+      selectedProduct = sampleAccounts.find((p) => p.id === accountId);
     }
   }
 
@@ -225,10 +228,12 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
     console.log(`Không tìm thấy tài khoản với ID hoặc slug: ${accountId}`);
     return notFound();
   }
-  
+
   // Ghi log thông tin truy cập
-  console.log(`Người dùng đang xem tài khoản: ${selectedProduct.name} (ID: ${selectedProduct.id}, Slug: ${selectedProduct.slug})`);
+  console.log(
+    `Người dùng đang xem tài khoản: ${selectedProduct.name} (ID: ${selectedProduct.id}, Slug: ${selectedProduct.slug})`,
+  );
 
   // Truyền dữ liệu sản phẩm sang client component
   return <ProductDetail product={selectedProduct} />;
-} 
+}

@@ -43,9 +43,9 @@ const samplePurchaseHistory: Order[] = [
         originalPrice: 500000,
         licenseKey: 'XLAB-CGP-PRO-1234-5678-90AB',
         expiryDate: '15/03/2024',
-        updates: true
-      }
-    ]
+        updates: true,
+      },
+    ],
   },
   {
     id: 'ORD-12346',
@@ -61,7 +61,7 @@ const samplePurchaseHistory: Order[] = [
         originalPrice: 750000,
         licenseKey: 'XLAB-GRK-BAS-5678-9012-CDEF',
         expiryDate: '20/05/2024',
-        updates: true
+        updates: true,
       },
       {
         id: 'chatgpt',
@@ -71,10 +71,10 @@ const samplePurchaseHistory: Order[] = [
         originalPrice: 500000,
         licenseKey: 'XLAB-CGP-PRE-9012-3456-GHIJ',
         expiryDate: '20/05/2024',
-        updates: false
-      }
-    ]
-  }
+        updates: false,
+      },
+    ],
+  },
 ];
 
 export default function OrdersPage() {
@@ -98,23 +98,20 @@ export default function OrdersPage() {
         console.error('Lỗi khi tải danh sách sản phẩm:', error);
       }
     };
-    
+
     fetchProducts();
   }, []);
 
   // Hàm lấy ảnh sản phẩm từ danh sách sản phẩm
   const getProductImage = (productId: string, productName: string) => {
-    const product = products.find(p => 
-      p.id === productId || 
-      p.slug === productId
-    );
-    
+    const product = products.find((p) => p.id === productId || p.slug === productId);
+
     if (product && product.images && product.images.length > 0) {
       const firstImage = product.images[0];
       // Trả về ảnh đầu tiên trong mảng images
       return firstImage;
     }
-    
+
     return '/images/placeholder/product-placeholder.jpg';
   };
 
@@ -136,7 +133,7 @@ export default function OrdersPage() {
         // Kiểm tra dữ liệu từ localStorage
         if (session.user.email) {
           const savedPurchases = localStorage.getItem(`purchases_${session.user.email}`);
-          
+
           if (savedPurchases) {
             try {
               const parsedPurchases = JSON.parse(savedPurchases);
@@ -184,9 +181,7 @@ export default function OrdersPage() {
     <div className="container max-w-6xl py-10 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Đơn hàng của tôi</h1>
-        <p className="mt-2 text-gray-600">
-          Xem và quản lý tất cả đơn hàng của bạn tại XLab.
-        </p>
+        <p className="mt-2 text-gray-600">Xem và quản lý tất cả đơn hàng của bạn tại XLab.</p>
       </div>
 
       {isLoading ? (
@@ -203,59 +198,72 @@ export default function OrdersPage() {
                   onClick={() => toggleOrderDetails(order.id)}
                 >
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Đơn hàng #{order.id}
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      Ngày đặt: {formatDate(order.date)}
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900">Đơn hàng #{order.id}</h3>
+                    <p className="text-sm text-gray-500">Ngày đặt: {formatDate(order.date)}</p>
                   </div>
                   <div className="mt-2 sm:mt-0 flex items-center space-x-4">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                      order.status === 'Hoàn thành' 
-                        ? 'bg-green-100 text-green-800' 
-                        : order.status === 'Đang xử lý' 
-                        ? 'bg-blue-100 text-blue-800' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                        order.status === 'Hoàn thành'
+                          ? 'bg-green-100 text-green-800'
+                          : order.status === 'Đang xử lý'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
                       {order.status}
                     </span>
-                    <span className="text-gray-900 font-medium">
-                      {formatCurrency(order.total)}
-                    </span>
-                    <svg 
-                      className={`h-5 w-5 text-gray-400 transform ${expandedOrderId === order.id ? 'rotate-180' : ''}`} 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 20 20" 
+                    <span className="text-gray-900 font-medium">{formatCurrency(order.total)}</span>
+                    <svg
+                      className={`h-5 w-5 text-gray-400 transform ${expandedOrderId === order.id ? 'rotate-180' : ''}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
                       fill="currentColor"
                     >
-                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </div>
                 </div>
-                
+
                 {expandedOrderId === order.id && (
                   <div className="mt-4 border-t border-gray-200 pt-4">
-                    <h4 className="text-sm font-medium text-gray-900 mb-2">
-                      Chi tiết đơn hàng
-                    </h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">Chi tiết đơn hàng</h4>
                     <div className="bg-gray-50 rounded-lg overflow-hidden">
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                              scope="col"
+                              className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
                               Sản phẩm
                             </th>
-                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                              scope="col"
+                              className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
                               Ảnh
                             </th>
-                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                              scope="col"
+                              className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
                               Phiên bản
                             </th>
-                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                              scope="col"
+                              className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
                               License key
                             </th>
-                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th
+                              scope="col"
+                              className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
                               Giá
                             </th>
                           </tr>
@@ -264,9 +272,7 @@ export default function OrdersPage() {
                           {order.items.map((item) => (
                             <tr key={item.id}>
                               <td className="px-4 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {item.name}
-                                </div>
+                                <div className="text-sm font-medium text-gray-900">{item.name}</div>
                                 <div className="text-sm text-gray-500">
                                   Hết hạn: {item.expiryDate}
                                 </div>
@@ -286,9 +292,7 @@ export default function OrdersPage() {
                                 </div>
                               </td>
                               <td className="px-4 py-4 whitespace-nowrap">
-                                <span className="text-sm text-gray-900">
-                                  {item.version}
-                                </span>
+                                <span className="text-sm text-gray-900">{item.version}</span>
                               </td>
                               <td className="px-4 py-4 whitespace-nowrap">
                                 <span className="text-sm text-gray-900 font-mono">
@@ -308,9 +312,9 @@ export default function OrdersPage() {
                         </tbody>
                       </table>
                     </div>
-                    
+
                     <div className="mt-4 flex justify-between items-center">
-                      <Link 
+                      <Link
                         href={`/orders/${order.id}`}
                         className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                       >
@@ -345,14 +349,10 @@ export default function OrdersPage() {
               d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
             />
           </svg>
-          <h3 className="mt-2 text-xl font-medium text-gray-900">
-            Chưa có đơn hàng nào
-          </h3>
-          <p className="mt-1 text-gray-500">
-            Bạn chưa có đơn hàng nào. Hãy mua sắm để bắt đầu!
-          </p>
+          <h3 className="mt-2 text-xl font-medium text-gray-900">Chưa có đơn hàng nào</h3>
+          <p className="mt-1 text-gray-500">Bạn chưa có đơn hàng nào. Hãy mua sắm để bắt đầu!</p>
           <div className="mt-6">
-            <Link 
+            <Link
               href="/products"
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
@@ -363,22 +363,27 @@ export default function OrdersPage() {
       )}
 
       <div className="mt-8">
-        <Link 
-          href="/account" 
+        <Link
+          href="/account"
           className="text-primary-600 hover:text-primary-700 font-medium flex items-center"
         >
-          <svg 
-            className="mr-2 h-5 w-5" 
-            xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            className="mr-2 h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
           </svg>
           Quay lại trang tài khoản
         </Link>
       </div>
     </div>
   );
-} 
+}

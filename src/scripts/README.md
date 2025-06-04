@@ -39,7 +39,9 @@ crontab -e
 Hệ thống hiện tại được cấu hình để tăng ngẫu nhiên 1-10 lượt mua mỗi ngày cho mỗi sản phẩm.
 
 Để thay đổi phạm vi số lượng tăng, bạn có thể chỉnh sửa file:
+
 - `src/app/api/admin/products/update-purchases/route.ts`
 
 Hoặc thay đổi số lượt mua ban đầu khi tạo sản phẩm tại:
-- `src/app/admin/products/new/page.tsx` 
+
+- `src/app/admin/products/new/page.tsx`

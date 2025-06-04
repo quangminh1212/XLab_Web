@@ -34,10 +34,10 @@ function readJsonFile(filePath) {
 function saveUserData(email, userData) {
   const fileName = getFileNameFromEmail(email);
   const filePath = path.join(USERS_DIR, fileName);
-  
+
   userData.metadata.lastUpdated = new Date().toISOString();
   userData.metadata.version = '1.0';
-  
+
   fs.writeFileSync(filePath, JSON.stringify(userData, null, 2), 'utf8');
   console.log(`✅ Saved data for: ${email}`);
 }
@@ -45,25 +45,25 @@ function saveUserData(email, userData) {
 // Chạy migration
 function migrate() {
   console.log('🚀 Starting migration to individual user files...');
-  
+
   ensureUsersDir();
-  
+
   const users = readJsonFile(USERS_FILE);
   const transactions = readJsonFile(TRANSACTIONS_FILE);
-  
+
   if (users.length === 0) {
     console.log('❌ No users found to migrate');
     return;
   }
-  
+
   console.log(`Found ${users.length} users to migrate`);
-  
+
   for (const user of users) {
     console.log(`Migrating user: ${user.email}`);
-    
+
     // Tìm transactions của user này
-    const userTransactions = transactions.filter(t => t.userId === user.id);
-    
+    const userTransactions = transactions.filter((t) => t.userId === user.id);
+
     // Tạo dữ liệu user đầy đủ
     const userData = {
       profile: user,
@@ -72,19 +72,19 @@ function migrate() {
       settings: {
         notifications: true,
         language: 'vi',
-        theme: 'light'
+        theme: 'light',
       },
       metadata: {
         lastUpdated: new Date().toISOString(),
-        version: '1.0'
-      }
+        version: '1.0',
+      },
     };
-    
+
     saveUserData(user.email, userData);
   }
-  
+
   console.log('✅ Migration completed successfully!');
 }
 
 // Chạy migration
-migrate(); 
+migrate();

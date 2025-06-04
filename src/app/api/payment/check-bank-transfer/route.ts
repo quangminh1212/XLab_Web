@@ -28,7 +28,7 @@ const processedTransactions: Set<string> = new Set(); // Tránh xử lý lặp l
 const getUserBalance = async (userEmail: string): Promise<number> => {
   try {
     const balancePath = path.join(process.cwd(), 'data', 'balances.json');
-    
+
     try {
       const balanceData = await fs.readFile(balancePath, 'utf-8');
       const balances: UserBalance = JSON.parse(balanceData);
@@ -48,7 +48,7 @@ const updateUserBalance = async (userEmail: string, amount: number): Promise<num
   try {
     const balancePath = path.join(process.cwd(), 'data', 'balances.json');
     const dataDir = path.dirname(balancePath);
-    
+
     // Ensure data directory exists
     try {
       await fs.access(dataDir);
@@ -57,7 +57,7 @@ const updateUserBalance = async (userEmail: string, amount: number): Promise<num
     }
 
     let balances: UserBalance = {};
-    
+
     // Read existing balances
     try {
       const balanceData = await fs.readFile(balancePath, 'utf-8');
@@ -74,8 +74,10 @@ const updateUserBalance = async (userEmail: string, amount: number): Promise<num
 
     // Write back to file
     await fs.writeFile(balancePath, JSON.stringify(balances, null, 2));
-    
-    console.log(`💰 Balance updated for ${userEmail}: ${currentBalance} + ${amount} = ${newBalance}`);
+
+    console.log(
+      `💰 Balance updated for ${userEmail}: ${currentBalance} + ${amount} = ${newBalance}`,
+    );
     return newBalance;
   } catch (error) {
     console.error('Error updating balance:', error);
@@ -88,7 +90,7 @@ const checkBankTransaction = async (
   transactionId: string,
   expectedAmount?: number,
   bankCode?: string,
-  accountNumber?: string
+  accountNumber?: string,
 ): Promise<BankTransaction | null> => {
   try {
     // Check if already verified
@@ -98,41 +100,43 @@ const checkBankTransaction = async (
 
     // Try to find transaction in Google Sheets
     let sheetTransaction = await findTransactionByCode(transactionId);
-    
+
     // If API method fails, try CSV method as fallback
     if (!sheetTransaction) {
       console.log('Trying CSV method as fallback...');
       const allTransactions = await getSheetDataFromCSV();
-      sheetTransaction = allTransactions.find(transaction => 
-        transaction.description.includes(transactionId) && 
-        transaction.type === 'Tiền vào'
-      ) || null;
+      sheetTransaction =
+        allTransactions.find(
+          (transaction) =>
+            transaction.description.includes(transactionId) && transaction.type === 'Tiền vào',
+        ) || null;
     }
 
     if (sheetTransaction) {
       // Verify transaction details
       const isValidAccount = !accountNumber || sheetTransaction.accountNumber === accountNumber;
-      const isValidAmount = !expectedAmount || Math.abs(sheetTransaction.amount - expectedAmount) < 1; // Allow 1 VND difference
-      
+      const isValidAmount =
+        !expectedAmount || Math.abs(sheetTransaction.amount - expectedAmount) < 1; // Allow 1 VND difference
+
       if (isValidAccount && isValidAmount) {
         const verifiedTransaction: BankTransaction = {
           transactionId,
           amount: sheetTransaction.amount,
           status: 'completed',
           timestamp: new Date(sheetTransaction.date),
-          description: sheetTransaction.description
+          description: sheetTransaction.description,
         };
-        
+
         // Cache the verified transaction
         verifiedTransactions[transactionId] = verifiedTransaction;
-        
+
         return verifiedTransaction;
       } else {
         console.log('Transaction found but validation failed:', {
           expectedAmount,
           actualAmount: sheetTransaction.amount,
           expectedAccount: accountNumber,
-          actualAccount: sheetTransaction.accountNumber
+          actualAccount: sheetTransaction.accountNumber,
         });
       }
     }
@@ -147,21 +151,15 @@ const checkBankTransaction = async (
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { transactionId, amount, bankCode, accountNumber } = await request.json();
 
     if (!transactionId) {
-      return NextResponse.json(
-        { error: 'Missing transaction ID' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing transaction ID' }, { status: 400 });
     }
 
     console.log('Checking transaction:', {
@@ -169,7 +167,7 @@ export async function POST(request: NextRequest) {
       amount,
       bankCode,
       accountNumber,
-      userEmail: session.user.email
+      userEmail: session.user.email,
     });
 
     // Check bank transaction status from Google Sheets
@@ -177,13 +175,13 @@ export async function POST(request: NextRequest) {
       transactionId,
       amount,
       bankCode,
-      accountNumber
+      accountNumber,
     );
 
     console.log('🔍 Bank transaction result:', {
       found: !!bankTransaction,
       transaction: bankTransaction,
-      alreadyProcessed: processedTransactions.has(transactionId)
+      alreadyProcessed: processedTransactions.has(transactionId),
     });
 
     if (bankTransaction && bankTransaction.status === 'completed') {
@@ -192,7 +190,7 @@ export async function POST(request: NextRequest) {
         transactionId,
         amount: bankTransaction.amount,
         description: bankTransaction.description,
-        timestamp: bankTransaction.timestamp
+        timestamp: bankTransaction.timestamp,
       });
 
       // Auto-add money to account if not already processed
@@ -200,8 +198,10 @@ export async function POST(request: NextRequest) {
         try {
           const newBalance = await updateUserBalance(session.user.email, bankTransaction.amount);
           processedTransactions.add(transactionId); // Mark as processed
-          
-          console.log(`🎉 Auto-deposited ${bankTransaction.amount} VND to ${session.user.email}, new balance: ${newBalance}`);
+
+          console.log(
+            `🎉 Auto-deposited ${bankTransaction.amount} VND to ${session.user.email}, new balance: ${newBalance}`,
+          );
         } catch (error) {
           console.error('Error auto-depositing funds:', error);
           // Continue with response even if balance update fails
@@ -218,8 +218,8 @@ export async function POST(request: NextRequest) {
           status: 'completed',
           description: bankTransaction.description,
           createdAt: bankTransaction.timestamp.toISOString(),
-          verifiedAt: new Date().toISOString()
-        }
+          verifiedAt: new Date().toISOString(),
+        },
       });
     }
 
@@ -228,14 +228,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: false,
       status: 'pending',
-      message: 'Giao dịch chưa được tìm thấy hoặc đang chờ xử lý. Vui lòng đợi vài phút và thử lại.'
+      message:
+        'Giao dịch chưa được tìm thấy hoặc đang chờ xử lý. Vui lòng đợi vài phút và thử lại.',
     });
-
   } catch (error) {
     console.error('Error checking bank transfer:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-} 
+}

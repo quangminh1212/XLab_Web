@@ -11,17 +11,17 @@ export default function DebugAuth() {
   useEffect(() => {
     // Test notifications API
     fetch('/api/notifications')
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}: ${res.statusText}`);
         }
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         setNotifications(data.notifications || []);
         setNotificationsError('');
       })
-      .catch(error => {
+      .catch((error) => {
         setNotificationsError(error.message);
         setNotifications([]);
       });
@@ -30,17 +30,27 @@ export default function DebugAuth() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Debug Authentication</h1>
-      
+
       <div className="space-y-6">
         {/* Authentication Status */}
         <div className="bg-gray-100 p-4 rounded-lg">
           <h2 className="text-xl font-semibold mb-4">Authentication Status</h2>
           <div className="space-y-2">
-            <p><strong>Status:</strong> {status}</p>
-            <p><strong>User Email:</strong> {session?.user?.email || 'Not logged in'}</p>
-            <p><strong>User Name:</strong> {session?.user?.name || 'N/A'}</p>
-            <p><strong>User Image:</strong> {session?.user?.image || 'N/A'}</p>
-            <p><strong>Is Admin:</strong> {session?.user?.isAdmin ? 'Yes' : 'No'}</p>
+            <p>
+              <strong>Status:</strong> {status}
+            </p>
+            <p>
+              <strong>User Email:</strong> {session?.user?.email || 'Not logged in'}
+            </p>
+            <p>
+              <strong>User Name:</strong> {session?.user?.name || 'N/A'}
+            </p>
+            <p>
+              <strong>User Image:</strong> {session?.user?.image || 'N/A'}
+            </p>
+            <p>
+              <strong>Is Admin:</strong> {session?.user?.isAdmin ? 'Yes' : 'No'}
+            </p>
           </div>
         </div>
 
@@ -48,10 +58,18 @@ export default function DebugAuth() {
         <div className="bg-blue-100 p-4 rounded-lg">
           <h2 className="text-xl font-semibold mb-4">Environment Check</h2>
           <div className="space-y-2 text-sm">
-            <p><strong>NODE_ENV:</strong> {process.env.NODE_ENV}</p>
-            <p><strong>NEXTAUTH_URL:</strong> {process.env.NEXTAUTH_URL || 'Not set'}</p>
-            <p><strong>Has Google Client ID:</strong> {process.env.GOOGLE_CLIENT_ID ? 'Yes' : 'No'}</p>
-            <p><strong>Has NextAuth Secret:</strong> {process.env.NEXTAUTH_SECRET ? 'Yes' : 'No'}</p>
+            <p>
+              <strong>NODE_ENV:</strong> {process.env.NODE_ENV}
+            </p>
+            <p>
+              <strong>NEXTAUTH_URL:</strong> {process.env.NEXTAUTH_URL || 'Not set'}
+            </p>
+            <p>
+              <strong>Has Google Client ID:</strong> {process.env.GOOGLE_CLIENT_ID ? 'Yes' : 'No'}
+            </p>
+            <p>
+              <strong>Has NextAuth Secret:</strong> {process.env.NEXTAUTH_SECRET ? 'Yes' : 'No'}
+            </p>
           </div>
         </div>
 
@@ -85,12 +103,18 @@ export default function DebugAuth() {
           <h2 className="text-xl font-semibold mb-4">Notifications API Test</h2>
           {notificationsError ? (
             <div className="text-red-600">
-              <p><strong>Error:</strong> {notificationsError}</p>
+              <p>
+                <strong>Error:</strong> {notificationsError}
+              </p>
             </div>
           ) : (
             <div>
-              <p><strong>Status:</strong> Success</p>
-              <p><strong>Notifications Count:</strong> {notifications.length}</p>
+              <p>
+                <strong>Status:</strong> Success
+              </p>
+              <p>
+                <strong>Notifications Count:</strong> {notifications.length}
+              </p>
               {notifications.length > 0 && (
                 <div className="mt-4">
                   <h3 className="font-semibold">First Notification:</h3>
@@ -113,4 +137,4 @@ export default function DebugAuth() {
       </div>
     </div>
   );
-} 
+}

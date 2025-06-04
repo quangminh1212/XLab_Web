@@ -5,16 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: [
-        '/api/',
-        '/admin/',
-        '/account/',
-        '/checkout/',
-        '/cart/',
-        '/.well-known/'
-      ],
+      disallow: ['/api/', '/admin/', '/account/', '/checkout/', '/cart/', '/.well-known/'],
     },
     sitemap: 'https://xlab.com/sitemap.xml',
     host: 'https://xlab.com',
   };
-} 
+}

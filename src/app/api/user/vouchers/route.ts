@@ -55,37 +55,35 @@ export async function GET() {
   try {
     // Lấy thông tin session
     const session = await getServerSession(authOptions);
-    
+
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: 'Bạn cần đăng nhập để xem voucher cá nhân' },
-        { status: 401 }
+        { status: 401 },
       );
     }
-    
+
     const userEmail = session.user.email;
-    
+
     // Đọc dữ liệu từ file
     const allCoupons = loadCoupons();
-    
+
     // Lọc các voucher công khai và voucher dành riêng cho người dùng
     const now = new Date();
-    
-    const userVouchers = allCoupons.filter(coupon => {
+
+    const userVouchers = allCoupons.filter((coupon) => {
       // Kiểm tra nếu voucher còn hiệu lực
-      const isActive = coupon.isActive && 
-                       new Date(coupon.startDate) <= now && 
-                       new Date(coupon.endDate) >= now;
-      
+      const isActive =
+        coupon.isActive && new Date(coupon.startDate) <= now && new Date(coupon.endDate) >= now;
+
       if (!isActive) return false;
-      
+
       // Lấy voucher công khai hoặc voucher có forUsers chứa email của user
-      return coupon.isPublic || 
-             (coupon.forUsers && coupon.forUsers.includes(userEmail));
+      return coupon.isPublic || (coupon.forUsers && coupon.forUsers.includes(userEmail));
     });
-    
+
     // Chỉ trả về thông tin cần thiết
-    const simplifiedVouchers = userVouchers.map(coupon => ({
+    const simplifiedVouchers = userVouchers.map((coupon) => ({
       id: coupon.id,
       code: coupon.code,
       name: coupon.name,
@@ -96,21 +94,20 @@ export async function GET() {
       isPublic: coupon.isPublic,
       minOrder: coupon.minOrder,
       userLimit: coupon.userLimit,
-      userUsage: userEmail ? { 
-        current: (coupon.userUsage && coupon.userUsage[userEmail]) || 0,
-        limit: coupon.userLimit || 0
-      } : undefined
+      userUsage: userEmail
+        ? {
+            current: (coupon.userUsage && coupon.userUsage[userEmail]) || 0,
+            limit: coupon.userLimit || 0,
+          }
+        : undefined,
     }));
-    
+
     return NextResponse.json({
       success: true,
-      vouchers: simplifiedVouchers
+      vouchers: simplifiedVouchers,
     });
   } catch (error) {
     console.error('Error fetching user vouchers:', error);
-    return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi tải danh sách voucher' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Đã xảy ra lỗi khi tải danh sách voucher' }, { status: 500 });
   }
-} 
+}

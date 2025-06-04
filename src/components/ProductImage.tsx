@@ -11,23 +11,18 @@ interface ProductImageProps {
   className?: string;
 }
 
-export const ProductImage: React.FC<ProductImageProps> = ({ 
-  src, 
-  alt, 
-  width = 300, 
+export const ProductImage: React.FC<ProductImageProps> = ({
+  src,
+  alt,
+  width = 300,
   height = 300,
-  className = ''
+  className = '',
 }) => {
   return (
     <div className={`relative ${className}`} style={{ width, height }}>
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className="object-contain"
-      />
+      <Image src={src} alt={alt} fill className="object-contain" />
     </div>
   );
 };
 
-export default ProductImage; 
+export default ProductImage;

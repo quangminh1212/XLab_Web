@@ -26,10 +26,10 @@ interface RelatedProductsProps {
   limit?: number;
 }
 
-export default function RelatedProducts({ 
-  currentProductId, 
-  categoryId, 
-  limit = 4 
+export default function RelatedProducts({
+  currentProductId,
+  categoryId,
+  limit = 4,
 }: RelatedProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,15 +38,21 @@ export default function RelatedProducts({
     const fetchRelatedProducts = async () => {
       try {
         // Fetch related products from API or import from data
-        const response = await fetch(`/api/products/related?productId=${currentProductId}&categoryId=${categoryId || ''}&limit=${limit}`);
-        
+        const response = await fetch(
+          `/api/products/related?productId=${currentProductId}&categoryId=${categoryId || ''}&limit=${limit}`,
+        );
+
         if (!response.ok) {
           // Fallback: If API fails, try to fetch products from the same category
-          const categoryResponse = await fetch(`/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`);
+          const categoryResponse = await fetch(
+            `/api/products?categoryId=${categoryId || ''}&limit=${limit + 1}`,
+          );
           if (categoryResponse.ok) {
             const allProducts = await categoryResponse.json();
             // Filter out the current product
-            const filtered = allProducts.filter((p: Product) => p.id !== currentProductId).slice(0, limit);
+            const filtered = allProducts
+              .filter((p: Product) => p.id !== currentProductId)
+              .slice(0, limit);
             setProducts(filtered);
           } else {
             setProducts([]);
@@ -69,16 +75,18 @@ export default function RelatedProducts({
   }, [currentProductId, categoryId, limit]);
 
   if (loading) {
-    return <div className="mt-12 py-8 text-center text-gray-500">Đang tải sản phẩm liên quan...</div>;
+    return (
+      <div className="mt-12 py-8 text-center text-gray-500">Đang tải sản phẩm liên quan...</div>
+    );
   }
 
   if (products.length === 0) {
     return null;
   }
 
-  const mappedProducts = products.map(product => {
+  const mappedProducts = products.map((product) => {
     console.log('RelatedProducts - Raw product:', product);
-    
+
     // Đảm bảo tất cả thuộc tính đều là primitive values
     const safeId = String(product.id || '');
     const safeName = String(product.name || '');
@@ -89,7 +97,7 @@ export default function RelatedProducts({
     const safeRating = product.rating ? Number(product.rating) : undefined;
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
-    
+
     // Xử lý category an toàn
     let safeCategory;
     if (product.categories?.length) {
@@ -101,7 +109,7 @@ export default function RelatedProducts({
         safeCategory = String(firstCategory.name || firstCategory.id || '');
       }
     }
-    
+
     const mapped = {
       id: safeId,
       name: safeName,
@@ -112,9 +120,9 @@ export default function RelatedProducts({
       category: safeCategory,
       rating: safeRating,
       reviewCount: safeReviewCount,
-      isAccount: safeIsAccount
+      isAccount: safeIsAccount,
     };
-    
+
     console.log('RelatedProducts - Mapped product:', mapped);
     return mapped;
   });
@@ -129,4 +137,4 @@ export default function RelatedProducts({
       />
     </div>
   );
-} 
+}

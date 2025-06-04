@@ -38,7 +38,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [loading, setLoading] = useState(true);
 
   // Tính toán số thông báo chưa đọc
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   // Tải thông báo từ API
   const fetchNotifications = async () => {
@@ -72,10 +72,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       });
 
       if (response.ok) {
-        setNotifications(prev => 
-          prev.map(notification => 
-            notification.id === id.toString() ? { ...notification, isRead: true } : notification
-          )
+        setNotifications((prev) =>
+          prev.map((notification) =>
+            notification.id === id.toString() ? { ...notification, isRead: true } : notification,
+          ),
         );
       }
     } catch (error) {
@@ -95,9 +95,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       });
 
       if (response.ok) {
-        setNotifications(prev =>
-          prev.map(notification => ({ ...notification, isRead: true }))
-        );
+        setNotifications((prev) => prev.map((notification) => ({ ...notification, isRead: true })));
       }
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
@@ -110,10 +108,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       ...notification,
       id: Date.now(),
       isRead: false,
-      time: 'Vừa xong'
+      time: 'Vừa xong',
     };
-    
-    setNotifications(prev => [newNotification, ...prev]);
+
+    setNotifications((prev) => [newNotification, ...prev]);
   };
 
   // Tải thông báo khi component mount
@@ -128,14 +126,10 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     markAllAsRead,
     addNotification,
     loading,
-    fetchNotifications
+    fetchNotifications,
   };
 
-  return (
-    <NotificationContext.Provider value={value}>
-      {children}
-    </NotificationContext.Provider>
-  );
+  return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
 };
 
-export default NotificationContext; 
+export default NotificationContext;

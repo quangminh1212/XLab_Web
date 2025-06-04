@@ -44,9 +44,9 @@ const samplePurchaseHistory: Order[] = [
         originalPrice: 500000,
         licenseKey: 'XLAB-CGP-PRO-1234-5678-90AB',
         expiryDate: '15/03/2024',
-        updates: true
-      }
-    ]
+        updates: true,
+      },
+    ],
   },
   {
     id: 'ORD-12346',
@@ -62,7 +62,7 @@ const samplePurchaseHistory: Order[] = [
         originalPrice: 750000,
         licenseKey: 'XLAB-GRK-BAS-5678-9012-CDEF',
         expiryDate: '20/05/2024',
-        updates: true
+        updates: true,
       },
       {
         id: 'chatgpt',
@@ -72,10 +72,10 @@ const samplePurchaseHistory: Order[] = [
         originalPrice: 500000,
         licenseKey: 'XLAB-CGP-PRE-9012-3456-GHIJ',
         expiryDate: '20/05/2024',
-        updates: false
-      }
-    ]
-  }
+        updates: false,
+      },
+    ],
+  },
 ];
 
 interface OrderDetailPageProps {
@@ -87,7 +87,7 @@ interface OrderDetailPageProps {
 export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   // Use React.use to properly unwrap the params object
   const { id: orderId } = React.use(params);
-  
+
   const router = useRouter();
   const { data: session, status } = useSession();
   const [order, setOrder] = useState<Order | null>(null);
@@ -107,7 +107,7 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
         console.error('Lỗi khi tải danh sách sản phẩm:', error);
       }
     };
-    
+
     fetchProducts();
   }, []);
 
@@ -115,21 +115,18 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
   const getProductImage = (productId: string, productName: string) => {
     console.log('Tìm ảnh cho sản phẩm:', { productId, productName });
     console.log('Danh sách sản phẩm hiện có:', products);
-    
-    const product = products.find(p => 
-      p.id === productId || 
-      p.slug === productId
-    );
-    
+
+    const product = products.find((p) => p.id === productId || p.slug === productId);
+
     console.log('Sản phẩm tìm thấy:', product);
-    
+
     if (product && product.images && product.images.length > 0) {
       const firstImage = product.images[0];
       console.log('Ảnh đầu tiên:', firstImage);
       // Trả về ảnh đầu tiên trong mảng images
       return firstImage;
     }
-    
+
     console.log('Sử dụng ảnh placeholder');
     return '/images/placeholder/product-placeholder.jpg';
   };
@@ -147,15 +144,15 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
 
     // Nếu người dùng đã xác thực (hoặc để test)
     // if (status === 'authenticated' && session?.user) {
-      // Mô phỏng việc tải dữ liệu từ API
-      setTimeout(() => {
-        // Luôn hiển thị demo data để test
-        const foundOrder = samplePurchaseHistory.find(o => o.id === orderId);
-        if (foundOrder) {
-          setOrder(foundOrder);
-        }
-        setIsLoading(false);
-      }, 1000);
+    // Mô phỏng việc tải dữ liệu từ API
+    setTimeout(() => {
+      // Luôn hiển thị demo data để test
+      const foundOrder = samplePurchaseHistory.find((o) => o.id === orderId);
+      if (foundOrder) {
+        setOrder(foundOrder);
+      }
+      setIsLoading(false);
+    }, 1000);
     // }
   }, [orderId]);
 
@@ -184,18 +181,23 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           </p>
         </div>
         <div className="mt-4 sm:mt-0">
-          <Link 
-            href="/orders" 
+          <Link
+            href="/orders"
             className="text-primary-600 hover:text-primary-700 font-medium flex items-center"
           >
-            <svg 
-              className="mr-2 h-5 w-5" 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
+            <svg
+              className="mr-2 h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
             Quay lại danh sách đơn hàng
           </Link>
@@ -222,13 +224,15 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
               <div>
                 <h2 className="text-xs font-medium text-gray-500 uppercase">Trạng thái</h2>
                 <p className="mt-1">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    order.status === 'Hoàn thành' 
-                      ? 'bg-green-100 text-green-800' 
-                      : order.status === 'Đang xử lý' 
-                      ? 'bg-blue-100 text-blue-800' 
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      order.status === 'Hoàn thành'
+                        ? 'bg-green-100 text-green-800'
+                        : order.status === 'Đang xử lý'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
                     {order.status}
                   </span>
                 </p>
@@ -243,22 +247,40 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th scope="col" className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Sản phẩm
                     </th>
-                    <th scope="col" className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Ảnh
                     </th>
-                    <th scope="col" className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Phiên bản
                     </th>
-                    <th scope="col" className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       License key
                     </th>
-                    <th scope="col" className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Ngày hết hạn
                     </th>
-                    <th scope="col" className="px-4 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th
+                      scope="col"
+                      className="px-4 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Giá
                     </th>
                   </tr>
@@ -330,33 +352,43 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
           {/* Thanh công cụ */}
           <div className="px-6 py-4 bg-gray-100 border-t border-gray-200">
             <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
-              <button 
+              <button
                 onClick={handleDownloadInvoice}
                 className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
-                <svg 
-                  className="-ml-1 mr-2 h-5 w-5 text-gray-400" 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 Tải hóa đơn
               </button>
-              <button 
+              <button
                 onClick={handleSupportRequest}
                 className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               >
-                <svg 
-                  className="-ml-1 mr-2 h-5 w-5" 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
+                <svg
+                  className="-ml-1 mr-2 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
                 </svg>
                 Yêu cầu hỗ trợ
               </button>
@@ -365,23 +397,26 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow p-8 text-center">
-          <svg 
-            className="mx-auto h-12 w-12 text-gray-400" 
-            xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            className="mx-auto h-12 w-12 text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
-          <h3 className="mt-2 text-xl font-medium text-gray-900">
-            Không tìm thấy đơn hàng
-          </h3>
+          <h3 className="mt-2 text-xl font-medium text-gray-900">Không tìm thấy đơn hàng</h3>
           <p className="mt-1 text-gray-500">
             Đơn hàng bạn đang tìm kiếm không tồn tại hoặc bạn không có quyền truy cập.
           </p>
           <div className="mt-6">
-            <Link 
+            <Link
               href="/orders"
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             >
@@ -392,4 +427,4 @@ export default function OrderDetailPage({ params }: OrderDetailPageProps) {
       )}
     </div>
   );
-} 
+}

@@ -23,9 +23,9 @@ export default function TestQRPage() {
         bankBin: '970422', // MBBank bin code
         bankNumber: '669912122000',
         amount: '10000', // Test với 10,000 VND
-        purpose: `Nap tien XLab ${transactionId}`
+        purpose: `Nap tien XLab ${transactionId}`,
       });
-      
+
       const content = qrPay.build();
       setQrContent(content);
 
@@ -35,8 +35,8 @@ export default function TestQRPage() {
         margin: 2,
         color: {
           dark: '#0F766E',
-          light: '#FFFFFF'
-        }
+          light: '#FFFFFF',
+        },
       });
       setQrImageUrl(qrUrl);
 
@@ -51,7 +51,7 @@ export default function TestQRPage() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8">Test VietQR Code</h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* QR Code Image */}
           <div className="bg-white p-6 rounded-lg shadow">
@@ -73,13 +73,21 @@ export default function TestQRPage() {
             <div className="bg-gray-100 p-4 rounded font-mono text-sm break-all">
               {qrContent || 'Loading...'}
             </div>
-            
+
             <div className="mt-4 space-y-2">
               <h3 className="font-semibold">Test Details:</h3>
-              <p><strong>Bank:</strong> MBBank (970422)</p>
-              <p><strong>Account:</strong> 669912122000</p>
-              <p><strong>Owner:</strong> BACH MINH QUANG</p>
-              <p><strong>Amount:</strong> 10,000 VND</p>
+              <p>
+                <strong>Bank:</strong> MBBank (970422)
+              </p>
+              <p>
+                <strong>Account:</strong> 669912122000
+              </p>
+              <p>
+                <strong>Owner:</strong> BACH MINH QUANG
+              </p>
+              <p>
+                <strong>Amount:</strong> 10,000 VND
+              </p>
             </div>
 
             <button
@@ -103,4 +111,4 @@ export default function TestQRPage() {
       </div>
     </div>
   );
-} 
+}

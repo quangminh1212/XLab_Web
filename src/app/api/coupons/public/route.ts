@@ -45,7 +45,7 @@ function loadCoupons(): Coupon[] {
     if (fs.existsSync(couponsFilePath)) {
       const data = fs.readFileSync(couponsFilePath, 'utf8');
       try {
-        console.log("Loading coupons from file");
+        console.log('Loading coupons from file');
         const coupons = JSON.parse(data);
         console.log(`Found ${coupons.length} coupons total`);
         return coupons;
@@ -54,7 +54,7 @@ function loadCoupons(): Coupon[] {
         return [];
       }
     }
-    console.log("Coupons file does not exist");
+    console.log('Coupons file does not exist');
     return [];
   } catch (error) {
     console.error('Error loading coupons:', error);
@@ -86,35 +86,37 @@ export async function GET() {
   try {
     // Lấy thông tin phiên đăng nhập
     const session = await getServerSession(authOptions);
-    
+
     // Đọc dữ liệu từ file
     const allCoupons = loadCoupons();
-    
+
     // Lọc chỉ lấy mã giảm giá công khai (bao gồm cả đã hết hạn)
     const now = new Date();
-    const publicCoupons = allCoupons.filter(coupon => {
+    const publicCoupons = allCoupons.filter((coupon) => {
       const isPublic = coupon.isPublic === true;
       const isActive = coupon.isActive === true;
       const hasStarted = new Date(coupon.startDate) <= now;
-      
+
       // Không còn lọc những voucher đã hết hạn
       const result = isPublic && isActive && hasStarted;
       if (!result) {
-        console.log(`Filtering out coupon ${coupon.code}: isPublic=${isPublic}, isActive=${isActive}, hasStarted=${hasStarted}`);
+        console.log(
+          `Filtering out coupon ${coupon.code}: isPublic=${isPublic}, isActive=${isActive}, hasStarted=${hasStarted}`,
+        );
       }
       return result;
     });
-    
+
     console.log(`Returning ${publicCoupons.length} public active coupons`);
-    
+
     // Nếu người dùng đã đăng nhập, thêm thông tin về việc sử dụng voucher
     let userData: UserData | null = null;
     if (session?.user?.email) {
       userData = loadUserData(session.user.email);
     }
-    
+
     // Trả về thông tin đầy đủ để hiển thị trên trang public vouchers
-    const fullCoupons = publicCoupons.map(coupon => {
+    const fullCoupons = publicCoupons.map((coupon) => {
       // Chuẩn bị thông tin cơ bản về voucher
       const voucherInfo = {
         id: coupon.id,
@@ -130,9 +132,9 @@ export async function GET() {
         usageLimit: coupon.usageLimit,
         usedCount: coupon.usedCount,
         userLimit: coupon.userLimit,
-        applicableProducts: coupon.applicableProducts
+        applicableProducts: coupon.applicableProducts,
       };
-      
+
       // Thêm thông tin về việc sử dụng nếu người dùng đã đăng nhập
       if (userData && userData.vouchers && coupon.userLimit) {
         const usedCount = userData.vouchers[coupon.id] || 0;
@@ -140,35 +142,35 @@ export async function GET() {
           ...voucherInfo,
           userUsage: {
             current: usedCount,
-            limit: coupon.userLimit
-          }
+            limit: coupon.userLimit,
+          },
         };
       }
-      
+
       return voucherInfo;
     });
-    
+
     return NextResponse.json(
       {
         success: true,
-        coupons: fullCoupons
+        coupons: fullCoupons,
       },
       {
         headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0'
-        }
-      }
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        },
+      },
     );
   } catch (error) {
     console.error('Error fetching public coupons:', error);
     return NextResponse.json(
       { error: 'Đã xảy ra lỗi khi tải danh sách mã giảm giá', details: String(error) },
-      { 
+      {
         status: 500,
         headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0'
-        }
-      }
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        },
+      },
     );
   }
-} 
+}

@@ -9,22 +9,29 @@
     --foreground-rgb: 0, 0, 0;
     --background-start-rgb: 255, 255, 255;
     --background-end-rgb: 255, 255, 255;
-    --primary-color: #00A19A;
-    --primary-dark: #00726A;
-    --primary-light: #33D6D6;
-    --secondary-color: #37C88F;
+    --primary-color: #00a19a;
+    --primary-dark: #00726a;
+    --primary-light: #33d6d6;
+    --secondary-color: #37c88f;
   }
 
   body {
     @apply bg-gray-50 text-gray-900;
-    font-family: var(--font-inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+    font-family: var(
+      --font-inter,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      sans-serif
+    );
     color: rgb(var(--foreground-rgb));
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
+      rgb(var(--background-start-rgb));
   }
 
   html {
@@ -50,31 +57,31 @@
   .container-tight {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
-  
+
   .btn {
     @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
   }
-  
+
   .btn-primary {
     @apply bg-primary-500 text-white hover:bg-primary-600 focus-visible:ring-primary-500;
   }
-  
+
   .btn-secondary {
     @apply bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-300;
   }
-  
+
   .btn-outline {
     @apply border border-gray-200 text-gray-900 hover:bg-gray-100 focus-visible:ring-gray-300;
   }
-  
+
   .btn-destructive {
     @apply bg-red-500 text-white hover:bg-red-600 focus-visible:ring-red-500;
   }
-  
+
   .btn-ghost {
     @apply text-gray-900 hover:bg-gray-100 focus-visible:ring-gray-300;
   }
-  
+
   .btn-link {
     @apply text-primary-500 hover:text-primary-600 focus-visible:ring-primary-500 p-0 h-auto font-medium underline-offset-4 hover:underline;
   }
@@ -83,17 +90,17 @@
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 10px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 10px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
   }
@@ -101,11 +108,11 @@
   .heading-1 {
     @apply text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl lg:text-5xl;
   }
-  
+
   .heading-2 {
     @apply text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl;
   }
-  
+
   .heading-3 {
     @apply text-lg font-bold text-gray-900 sm:text-xl md:text-2xl lg:text-3xl;
   }
@@ -132,7 +139,7 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .react-hydrated {
     visibility: visible !important;
   }
@@ -229,8 +236,12 @@
 
 /* Animation classes */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInUp {
@@ -268,7 +279,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -277,10 +289,22 @@
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; transform: translateY(-10px); }
-  10% { opacity: 1; transform: translateY(0); }
-  90% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-10px); }
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 .animate-fadeIn {
@@ -461,7 +485,9 @@
   background-color: #f3f4f6;
   padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
   font-size: 0.875em;
 }
 
@@ -488,4 +514,4 @@
 
 .rich-text-content a:hover {
   text-decoration: none;
-} 
+}

@@ -68,14 +68,10 @@ const FeaturedProducts = ({
           )}
         </div>
 
-        <ProductGrid
-          products={products}
-          onAddToCart={onAddToCart}
-          onProductView={onProductView}
-        />
+        <ProductGrid products={products} onAddToCart={onAddToCart} onProductView={onProductView} />
       </div>
     </section>
   );
 };
 
-export default FeaturedProducts; 
+export default FeaturedProducts;

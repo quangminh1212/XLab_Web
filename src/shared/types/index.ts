@@ -1,33 +1,33 @@
 // Re-export all types from existing types folder
-export * from './types/auth'
-export * from './types/product'
-export * from './types/cart'
-export * from './types/order'
+export * from './types/auth';
+export * from './types/product';
+export * from './types/cart';
+export * from './types/order';
 
 // Common shared types
 export interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  message?: string
-  error?: string
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
 }
 
 export interface PaginatedResponse<T = any> {
-  data: T[]
+  data: T[];
   pagination: {
-    page: number
-    limit: number
-    total: number
-    totalPages: number
-  }
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface SelectOption {
-  label: string
-  value: string | number
+  label: string;
+  value: string | number;
 }
 
-export type Status = 'idle' | 'loading' | 'success' | 'error'
+export type Status = 'idle' | 'loading' | 'success' | 'error';
 
 export interface Product {
   id: string;
@@ -37,7 +37,7 @@ export interface Product {
   shortDescription?: string;
   longDescription?: string;
   imageUrl?: string;
-  images?: string[] | { url: string; alt: string; }[];
+  images?: string[] | { url: string; alt: string }[];
   descriptionImages?: string[];
   price: number;
   salePrice?: number;
@@ -67,7 +67,13 @@ export interface Product {
   isAccount?: boolean;
   type?: string;
   options?: { name: string; price: number }[];
-  versions?: { name: string; description?: string; price: number; originalPrice: number; features: string[] }[];
+  versions?: {
+    name: string;
+    description?: string;
+    price: number;
+    originalPrice: number;
+    features: string[];
+  }[];
 }
 
 export interface Category {
@@ -102,4 +108,4 @@ export interface User {
 export interface Session {
   user?: User;
   expires: string;
-} 
+}

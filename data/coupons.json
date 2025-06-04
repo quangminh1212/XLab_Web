@@ -39,9 +39,7 @@
     "createdAt": "2024-06-01T00:00:00Z",
     "applicableProducts": [],
     "isPublic": true,
-    "forUsers": [
-      "xlab.rnd@gmail.com"
-    ],
+    "forUsers": ["xlab.rnd@gmail.com"],
     "updatedAt": "2025-06-03T12:39:22.017Z"
   },
   {
@@ -64,9 +62,7 @@
     "createdAt": "2024-05-15T00:00:00Z",
     "applicableProducts": [],
     "isPublic": false,
-    "forUsers": [
-      "xlab.rnd@gmail.com"
-    ],
+    "forUsers": ["xlab.rnd@gmail.com"],
     "updatedAt": "2025-06-03T09:16:03.567Z"
   }
 ]

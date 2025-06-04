@@ -37,46 +37,49 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const authKey = searchParams.get('authKey');
-    
+
     // Check authentication - sử dụng authKey đơn giản cho cronjob
     // Trong thực tế, nên sử dụng phương thức xác thực an toàn hơn
     const validAuthKey = process.env.UPDATE_PURCHASES_AUTH_KEY || 'fallback-key-for-build';
-    
+
     if (authKey !== validAuthKey) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const products = getProducts();
     let updatedCount = 0;
-    
+
     // Cập nhật số lượt mua cho tất cả sản phẩm
-    const updatedProducts = products.map(product => {
+    const updatedProducts = products.map((product) => {
       // Random từ 1 đến 10 lượt mua mỗi ngày
       const randomPurchases = Math.floor(Math.random() * 10) + 1;
       const currentPurchases = product.weeklyPurchases || 0;
-      
+
       // Cập nhật số lượt mua
       const updatedProduct = {
         ...product,
-        weeklyPurchases: currentPurchases + randomPurchases
+        weeklyPurchases: currentPurchases + randomPurchases,
       };
-      
+
       updatedCount++;
       return updatedProduct;
     });
-    
+
     // Lưu cập nhật vào file
     saveProducts(updatedProducts);
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: `Đã cập nhật số lượt mua cho ${updatedCount} sản phẩm` 
+
+    return NextResponse.json({
+      success: true,
+      message: `Đã cập nhật số lượt mua cho ${updatedCount} sản phẩm`,
     });
   } catch (error: any) {
     console.error('Error updating purchase counts:', error);
-    return NextResponse.json({ 
-      success: false, 
-      error: error.message || 'Internal server error' 
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Internal server error',
+      },
+      { status: 500 },
+    );
   }
-} 
+}

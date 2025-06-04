@@ -1,8 +1,14 @@
-"use client";
+'use client';
 
 import React from 'react';
 import { Header, Footer } from '@/components/layout';
-import { Analytics, CompileIndicator, StyleLoader, CssErrorHandler, GlobalStyles } from '@/components/common';
+import {
+  Analytics,
+  CompileIndicator,
+  StyleLoader,
+  CssErrorHandler,
+  GlobalStyles,
+} from '@/components/common';
 import { SessionProvider } from '@/components/auth';
 import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
@@ -33,4 +39,4 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
       </NotificationProvider>
     </SessionProvider>
   );
-} 
+}

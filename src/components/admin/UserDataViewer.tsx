@@ -89,8 +89,10 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
     setError('');
 
     try {
-      const response = await fetch(`/api/admin/user-data?email=${encodeURIComponent(searchEmail)}&action=info`);
-      
+      const response = await fetch(
+        `/api/admin/user-data?email=${encodeURIComponent(searchEmail)}&action=info`,
+      );
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Có lỗi xảy ra');
@@ -112,9 +114,11 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/admin/user-data?email=${encodeURIComponent(searchEmail)}&action=integrity`);
+      const response = await fetch(
+        `/api/admin/user-data?email=${encodeURIComponent(searchEmail)}&action=integrity`,
+      );
       const data = await response.json();
-      
+
       if (data.isValid) {
         alert('✅ Dữ liệu người dùng toàn vẹn');
       } else {
@@ -131,7 +135,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
@@ -151,7 +155,7 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
     <div className={`space-y-6 ${className}`}>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">🔍 Truy vấn dữ liệu người dùng</h2>
-        
+
         <div className="flex gap-4 mb-4">
           <input
             type="email"
@@ -193,16 +197,36 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
             <h3 className="text-xl font-semibold text-gray-800 mb-4">👤 Thông tin cá nhân</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p><strong>ID:</strong> {userData.profile.id}</p>
-                <p><strong>Tên:</strong> {userData.profile.name}</p>
-                <p><strong>Email:</strong> {userData.profile.email}</p>
-                <p><strong>Admin:</strong> {userData.profile.isAdmin ? 'Có' : 'Không'}</p>
+                <p>
+                  <strong>ID:</strong> {userData.profile.id}
+                </p>
+                <p>
+                  <strong>Tên:</strong> {userData.profile.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {userData.profile.email}
+                </p>
+                <p>
+                  <strong>Admin:</strong> {userData.profile.isAdmin ? 'Có' : 'Không'}
+                </p>
               </div>
               <div>
-                <p><strong>Số dư:</strong> {formatCurrency(userData.profile.balance)}</p>
-                <p><strong>Tham gia:</strong> {formatDateTime(userData.profile.createdAt)}</p>
-                <p><strong>Đăng nhập cuối:</strong> {userData.profile.lastLogin ? formatDateTime(userData.profile.lastLogin) : 'Chưa có'}</p>
-                <p><strong>Trạng thái:</strong> {userData.profile.isActive ? '✅ Hoạt động' : '❌ Không hoạt động'}</p>
+                <p>
+                  <strong>Số dư:</strong> {formatCurrency(userData.profile.balance)}
+                </p>
+                <p>
+                  <strong>Tham gia:</strong> {formatDateTime(userData.profile.createdAt)}
+                </p>
+                <p>
+                  <strong>Đăng nhập cuối:</strong>{' '}
+                  {userData.profile.lastLogin
+                    ? formatDateTime(userData.profile.lastLogin)
+                    : 'Chưa có'}
+                </p>
+                <p>
+                  <strong>Trạng thái:</strong>{' '}
+                  {userData.profile.isActive ? '✅ Hoạt động' : '❌ Không hoạt động'}
+                </p>
               </div>
             </div>
           </div>
@@ -216,11 +240,15 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
                 <p className="text-sm text-gray-600">Sessions hoạt động</p>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
-                <p className="text-2xl font-bold text-green-600">{userData.stats.totalActivities}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {userData.stats.totalActivities}
+                </p>
                 <p className="text-sm text-gray-600">Tổng hoạt động</p>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <p className="text-2xl font-bold text-purple-600">{userData.stats.totalTransactions}</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {userData.stats.totalTransactions}
+                </p>
                 <p className="text-sm text-gray-600">Tổng giao dịch</p>
               </div>
             </div>
@@ -231,12 +259,22 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
             <h3 className="text-xl font-semibold text-gray-800 mb-4">🔒 Tính toàn vẹn dữ liệu</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p><strong>Phiên bản:</strong> {userData.metadata.dataVersion}</p>
-                <p><strong>Backup cuối:</strong> {formatDateTime(userData.metadata.lastBackup)}</p>
+                <p>
+                  <strong>Phiên bản:</strong> {userData.metadata.dataVersion}
+                </p>
+                <p>
+                  <strong>Backup cuối:</strong> {formatDateTime(userData.metadata.lastBackup)}
+                </p>
               </div>
               <div>
-                <p><strong>Checksum:</strong> <code className="text-xs">{userData.metadata.checksum.substring(0, 16)}...</code></p>
-                <p><strong>Tính toàn vẹn:</strong> {userData.metadata.dataIntegrity ? '✅ OK' : '⚠️ Cảnh báo'}</p>
+                <p>
+                  <strong>Checksum:</strong>{' '}
+                  <code className="text-xs">{userData.metadata.checksum.substring(0, 16)}...</code>
+                </p>
+                <p>
+                  <strong>Tính toàn vẹn:</strong>{' '}
+                  {userData.metadata.dataIntegrity ? '✅ OK' : '⚠️ Cảnh báo'}
+                </p>
               </div>
             </div>
           </div>
@@ -246,13 +284,18 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
             <h3 className="text-xl font-semibold text-gray-800 mb-4">📝 Hoạt động gần đây</h3>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {userData.activities.map((activity) => (
-                <div key={activity.id} className="p-3 bg-gray-50 rounded-lg border-l-4 border-blue-500">
+                <div
+                  key={activity.id}
+                  className="p-3 bg-gray-50 rounded-lg border-l-4 border-blue-500"
+                >
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-medium">{activity.description}</p>
                       <p className="text-sm text-gray-600">Loại: {activity.type}</p>
                     </div>
-                    <span className="text-xs text-gray-500">{formatDateTime(activity.timestamp)}</span>
+                    <span className="text-xs text-gray-500">
+                      {formatDateTime(activity.timestamp)}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -273,16 +316,20 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        transaction.status === 'completed' 
-                          ? 'bg-green-100 text-green-800' 
-                          : transaction.status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          transaction.status === 'completed'
+                            ? 'bg-green-100 text-green-800'
+                            : transaction.status === 'pending'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-red-100 text-red-800'
+                        }`}
+                      >
                         {transaction.status}
                       </span>
-                      <p className="text-xs text-gray-500 mt-1">{formatDateTime(transaction.createdAt)}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {formatDateTime(transaction.createdAt)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -301,18 +348,24 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
                       <p className="font-medium">Session {session.id}</p>
                       <p className="text-sm text-gray-600">IP: {session.ipAddress || 'N/A'}</p>
                       {session.userAgent && (
-                        <p className="text-xs text-gray-500 truncate max-w-md">{session.userAgent}</p>
+                        <p className="text-xs text-gray-500 truncate max-w-md">
+                          {session.userAgent}
+                        </p>
                       )}
                     </div>
                     <div className="text-right">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        session.isActive 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          session.isActive
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
                         {session.isActive ? 'Hoạt động' : 'Đã kết thúc'}
                       </span>
-                      <p className="text-xs text-gray-500 mt-1">{formatDateTime(session.loginTime)}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {formatDateTime(session.loginTime)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -323,4 +376,4 @@ export default function UserDataViewer({ className = '' }: UserDataViewerProps) 
       )}
     </div>
   );
-} 
+}

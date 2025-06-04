@@ -1,7 +1,7 @@
 /**
  * Script tự động chạy để cập nhật số lượt mua hàng ngày
  * Có thể chạy script này thông qua cronjob hàng ngày
- * 
+ *
  * Ví dụ cài đặt cron job trên server Linux:
  * 0 0 * * * node /path/to/update-purchases.js
  */
@@ -19,10 +19,10 @@ if (!AUTH_KEY) {
 async function updatePurchases() {
   try {
     console.log('Đang cập nhật số lượt mua hàng ngày...');
-    
+
     const response = await fetch(`${API_URL}?authKey=${AUTH_KEY}`);
     const data = await response.json();
-    
+
     if (data.success) {
       console.log('✅', data.message);
     } else {
@@ -34,4 +34,4 @@ async function updatePurchases() {
 }
 
 // Chạy hàm cập nhật
-updatePurchases(); 
+updatePurchases();

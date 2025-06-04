@@ -5,4 +5,4 @@ export { default as LoadingScreen } from './LoadingScreen';
 export { default as CompileIndicator } from './CompileIndicator';
 export { default as StyleLoader } from './StyleLoader';
 export { default as CssErrorHandler } from './CssErrorHandler';
-export { default as GlobalStyles } from './GlobalStyles'; 
+export { default as GlobalStyles } from './GlobalStyles';

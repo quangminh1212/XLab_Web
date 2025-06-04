@@ -16,10 +16,10 @@ const requiredDirs = [
   '.next/static/chunks',
   '.next/static/css',
   '.next/server/app',
-  '.next/server/chunks'
+  '.next/server/chunks',
 ];
 
-requiredDirs.forEach(dir => {
+requiredDirs.forEach((dir) => {
   const fullPath = path.join(process.cwd(), dir);
   if (!fs.existsSync(fullPath)) {
     fs.mkdirSync(fullPath, { recursive: true });
@@ -32,21 +32,21 @@ const createEmptyPackFiles = () => {
   const webpackDirs = [
     '.next/cache/webpack/client-development',
     '.next/cache/webpack/server-development',
-    '.next/cache/webpack/edge-server-development'
+    '.next/cache/webpack/edge-server-development',
   ];
-  
-  webpackDirs.forEach(dir => {
+
+  webpackDirs.forEach((dir) => {
     const fullPath = path.join(process.cwd(), dir);
     if (fs.existsSync(fullPath)) {
       for (let i = 0; i <= 5; i++) {
         const packFile = path.join(fullPath, `${i}.pack`);
         const packGzFile = path.join(fullPath, `${i}.pack.gz`);
-        
+
         if (!fs.existsSync(packFile)) {
           fs.writeFileSync(packFile, '');
           console.log(`✅ Đã tạo file trống: ${packFile}`);
         }
-        
+
         if (!fs.existsSync(packGzFile)) {
           fs.writeFileSync(packGzFile, '');
           console.log(`✅ Đã tạo file trống: ${packGzFile}`);
@@ -60,18 +60,18 @@ const createEmptyPackFiles = () => {
 const createPlaceholderFiles = () => {
   const cssDir = path.join(process.cwd(), '.next/static/css');
   const cssFile = path.join(cssDir, 'app-layout.css');
-  
+
   if (!fs.existsSync(cssFile)) {
     fs.writeFileSync(cssFile, '/* Placeholder CSS */');
     console.log(`✅ Đã tạo file CSS giả: ${cssFile}`);
   }
-  
+
   // Tạo file route.js giả cho NextAuth
   const nextAuthDir = path.join(process.cwd(), '.next/server/app/api/auth/[...nextauth]');
   if (!fs.existsSync(nextAuthDir)) {
     fs.mkdirSync(nextAuthDir, { recursive: true });
   }
-  
+
   const routeFile = path.join(nextAuthDir, 'route.js');
   if (!fs.existsSync(routeFile)) {
     fs.writeFileSync(routeFile, '// Placeholder NextAuth route file');
@@ -83,14 +83,17 @@ const createPlaceholderFiles = () => {
 const checkEnvFiles = () => {
   const envPath = path.join(process.cwd(), '.env');
   const envLocalPath = path.join(process.cwd(), '.env.local');
-  
+
   if (!fs.existsSync(envPath)) {
     fs.writeFileSync(envPath, 'NODE_ENV=development\nNEXTAUTH_URL=http://localhost:3000\n');
     console.log(`✅ Đã tạo file .env`);
   }
-  
+
   if (!fs.existsSync(envLocalPath)) {
-    fs.writeFileSync(envLocalPath, 'NEXTAUTH_URL=http://localhost:3000\nNEXTAUTH_SECRET=voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=\n');
+    fs.writeFileSync(
+      envLocalPath,
+      'NEXTAUTH_URL=http://localhost:3000\nNEXTAUTH_SECRET=voZ7iiSzvDrGjrG0m0qkkw60XkANsAg9xf/rGiA4bfA=\n',
+    );
     console.log(`✅ Đã tạo file .env.local`);
   }
 };
@@ -103,4 +106,4 @@ try {
   console.log('✨ Đã hoàn tất sửa lỗi Next.js!');
 } catch (error) {
   console.error('❌ Lỗi khi sửa Next.js:', error);
-} 
+}

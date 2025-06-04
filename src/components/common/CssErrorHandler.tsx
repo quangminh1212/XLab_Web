@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useEffect } from 'react';
 import setupCssErrorHandler from '@/shared/utils/cssErrorHandler';
@@ -17,4 +17,4 @@ const CssErrorHandler = () => {
   return null; // This component doesn't render anything
 };
 
-export default CssErrorHandler; 
+export default CssErrorHandler;

@@ -31,4 +31,4 @@ export interface OrderStats {
   refunded: number;
   revenue: number;
   averageOrderValue: number;
-} 
+}

@@ -8,53 +8,50 @@ const balanceCache = new Map<string, { balance: number; timestamp: number }>();
 const CACHE_TIMEOUT = 120 * 1000; // 120 seconds (2 minutes)
 
 // Cleanup cache mỗi 10 phút để tránh memory leak
-setInterval(() => {
-  const now = Date.now();
-  balanceCache.forEach((cache, email) => {
-    if (now - cache.timestamp > CACHE_TIMEOUT * 2) { // Remove after 4 minutes
-      balanceCache.delete(email);
-    }
-  });
-}, 10 * 60 * 1000); // 10 minutes
+setInterval(
+  () => {
+    const now = Date.now();
+    balanceCache.forEach((cache, email) => {
+      if (now - cache.timestamp > CACHE_TIMEOUT * 2) {
+        // Remove after 4 minutes
+        balanceCache.delete(email);
+      }
+    });
+  },
+  10 * 60 * 1000,
+); // 10 minutes
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user || !session.user.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const userEmail = session.user.email;
 
     // Check cache first
     const cached = balanceCache.get(userEmail);
-    if (cached && (Date.now() - cached.timestamp) < CACHE_TIMEOUT) {
+    if (cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
       return NextResponse.json({
         balance: cached.balance,
-        cached: true
+        cached: true,
       });
     }
 
     // Get synchronized balance from both systems
     const balance = await syncUserBalance(userEmail);
-    
+
     // Cache the result
     balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
     return NextResponse.json({
       balance: balance,
-      cached: false
+      cached: false,
     });
-    
   } catch (error) {
     console.error('Error fetching user balance:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-} 
+}
