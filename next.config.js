@@ -6,9 +6,6 @@ const withNextIntl = require('next-intl/plugin')(
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  devServer: {
-    port: 3001,
-  },
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
