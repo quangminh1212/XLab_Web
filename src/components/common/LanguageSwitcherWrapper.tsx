@@ -1,10 +1,10 @@
 'use client';
 
-import { NextIntlClientProvider } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaGlobe } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
+import { useLocale } from 'next-intl';
 
 // Tạo một phiên bản đơn giản của LanguageSwitcher không sử dụng các hook của next-intl
 export default function LanguageSwitcherWrapper() {
@@ -12,16 +12,8 @@ export default function LanguageSwitcherWrapper() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
-  const [locale, setLocale] = useState('vi');
+  const locale = useLocale();
   const [messages, setMessages] = useState<Record<string, any>>({});
-
-  // Xác định locale hiện tại từ pathname
-  useEffect(() => {
-    const segments = pathname?.split('/');
-    if (segments && segments.length > 1 && (segments[1] === 'vi' || segments[1] === 'en')) {
-      setLocale(segments[1]);
-    }
-  }, [pathname]);
 
   // Tải các message cho locale hiện tại
   useEffect(() => {

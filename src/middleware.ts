@@ -74,80 +74,39 @@ const debug = (request: NextRequest, token: any) => {
   }
 };
 
-const intlMiddleware = createMiddleware({
-  // A list of all locales that are supported
+// Cấu hình i18n middleware
+const i18nMiddleware = createMiddleware({
   locales: ['vi', 'en'],
-  
-  // Used when no locale matches
   defaultLocale: 'vi',
-  
-  // Hỗ trợ lưu ngôn ngữ trong cookie
   localePrefix: 'always'
 });
 
-export default async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Bỏ qua các file static và api routes không cần kiểm tra
-  if (isStaticFile(pathname) || pathname.includes('/api/auth')) {
-    return NextResponse.next();
-  }
-
-  // Lấy token từ cookie với secret từ environment hoặc fallback
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
-  });
-
-  // Log thông tin debug
-  debug(request, token);
-
-  // Nếu là đường dẫn admin
-  if (isAdminPath(pathname)) {
-    // Nếu chưa đăng nhập, chuyển đến login
+  // Kiểm tra xem đường dẫn có cần bảo vệ không
+  const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
+  
+  if (isProtectedPath) {
+    const token = await getToken({req: request});
+    
     if (!token) {
-      const url = new URL('/login', request.url);
+      const url = new URL('/auth/signin', request.url);
       url.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(url);
     }
-
-    // Kiểm tra email có trong danh sách admin không
-    if (!token.email || !ADMIN_EMAILS.includes(token.email)) {
-      const url = new URL('/', request.url);
-      return NextResponse.redirect(url);
-    }
   }
 
-  // Nếu là đường dẫn được bảo vệ và chưa đăng nhập, chuyển hướng đến trang đăng nhập
-  if (isProtectedPath(pathname) && !token) {
-    const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(url);
-  }
-
-  // Nếu là API request, bỏ qua middleware i18n
-  if (pathname.startsWith('/api')) {
-    return NextResponse.next();
-  }
-
-  // Nếu là static files, bỏ qua middleware i18n
-  if (
-    pathname.includes('.') ||
-    pathname.startsWith('/_next')
-  ) {
-    return NextResponse.next();
-  }
-
-  return intlMiddleware(request);
+  // Xử lý i18n routing
+  return i18nMiddleware(request);
 }
 
 export const config = {
-  // Kết hợp cả hai matcher: bảo vệ đường dẫn và hỗ trợ i18n
   matcher: [
     // Auth và bảo vệ đường dẫn
     '/admin/:path*',
-    '/account/:path*', 
-    '/checkout/:path*', 
+    '/account/:path*',
+    '/checkout/:path*',
     '/api/protected/:path*',
     // i18n routing (skip api and static files)
     '/((?!api|_next|.*\\..*).*)'

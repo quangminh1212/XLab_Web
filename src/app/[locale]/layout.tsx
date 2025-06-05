@@ -94,16 +94,16 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  // Xử lý params.locale một cách an toàn
-  const locale = Array.isArray(locales) && params?.locale && locales.includes(params.locale as any)
-    ? params.locale
-    : 'vi'; // Default to 'vi' if locale is invalid
-  
+  // Validate locale
+  if (!locales.includes(params.locale as any)) {
+    notFound();
+  }
+
   // Load messages for the current locale
-  const messages = await getMessages({ locale });
+  const messages = await getMessages({ locale: params.locale });
 
   return (
-    <html lang={locale} className={`${inter.variable} scroll-smooth`}>
+    <html lang={params.locale} className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -113,7 +113,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale={params.locale} messages={messages}>
           <ClientLayoutWrapper>
             <div className="flex flex-col min-h-screen">
               <Header />
