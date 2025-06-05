@@ -9,6 +9,8 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useTranslations } from 'next-intl';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -29,6 +31,7 @@ interface PublicCoupon {
 }
 
 const Header = () => {
+  const t = useTranslations('Header');
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -203,7 +206,8 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isOpen]);
 
   const isActive = (path: string) => {
-    return pathname === path
+    const localeFreePath = pathname.substring(3) || '/';
+    return localeFreePath === path
       ? 'text-primary-600 font-medium'
       : 'text-gray-700 hover:text-primary-600';
   };
@@ -254,27 +258,10 @@ const Header = () => {
   };
 
   const handleCopyVoucher = (code: string) => {
-    navigator.clipboard
-      .writeText(code)
-      .then(() => {
-        // Use a more elegant notification method instead of alert
-        setShowNotification(true);
-        setNotificationMessage(`Đã sao chép mã: ${code}`);
-
-        // Hide notification after 2 seconds
-        setTimeout(() => {
-          setShowNotification(false);
-        }, 2000);
-      })
-      .catch((err) => {
-        console.error('Copy failed:', err);
-        setShowNotification(true);
-        setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
-
-        setTimeout(() => {
-          setShowNotification(false);
-        }, 2000);
-      });
+    navigator.clipboard.writeText(code);
+    setNotificationMessage(`Đã sao chép mã voucher ${code}`);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 3000);
   };
 
   // Sắp xếp và lọc các vouchers để hiển thị
@@ -318,6 +305,8 @@ const Header = () => {
     ];
   };
 
+  const { validPublicCoupons, validUserCoupons } = getDisplayVouchers();
+
   return (
     <>
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -342,7 +331,7 @@ const Header = () => {
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Trang chủ
+                {t('home')}
               </Link>
               <Link
                 href="/products"
@@ -556,7 +545,7 @@ const Header = () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                       />
                     </svg>
                     {unreadCount > 0 && (
