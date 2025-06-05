@@ -4,9 +4,10 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import ClientLayoutWrapper from '@/components/layout/ClientLayoutWrapper';
-import { locales } from '@/i18n';
+import { locales } from '@/i18n/request';
 import type { Metadata, Viewport } from 'next';
 import { siteConfig } from '@/config/siteConfig';
+import { Header, Footer } from '@/components/layout';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -88,11 +89,13 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({
   children,
-  params: { locale },
+  params,
 }: {
   children: React.ReactNode;
   params: { locale: string };
 }) {
+  const locale = params.locale;
+  
   // Validate that the incoming `locale` parameter is valid
   if (!locales.includes(locale as any)) {
     notFound();
@@ -113,7 +116,13 @@ export default async function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+          <ClientLayoutWrapper>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
+          </ClientLayoutWrapper>
         </NextIntlClientProvider>
       </body>
     </html>

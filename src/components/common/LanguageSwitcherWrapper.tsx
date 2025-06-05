@@ -1,21 +1,58 @@
 'use client';
 
-import { useLocale } from 'next-intl';
-import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/request';
-import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { NextIntlClientProvider } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { FaGlobe } from 'react-icons/fa';
+import { useSession } from 'next-auth/react';
 
-export default function LanguageSwitcher() {
-  const t = useTranslations('common');
-  const locale = useLocale();
+// Tạo một phiên bản đơn giản của LanguageSwitcher không sử dụng các hook của next-intl
+export default function LanguageSwitcherWrapper() {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
+  const [locale, setLocale] = useState('vi');
+  const [messages, setMessages] = useState<Record<string, any>>({});
+
+  // Xác định locale hiện tại từ pathname
+  useEffect(() => {
+    const segments = pathname?.split('/');
+    if (segments && segments.length > 1 && (segments[1] === 'vi' || segments[1] === 'en')) {
+      setLocale(segments[1]);
+    }
+  }, [pathname]);
+
+  // Tải các message cho locale hiện tại
+  useEffect(() => {
+    const loadMessages = async () => {
+      try {
+        const messages = await import(`../../messages/${locale}.json`);
+        setMessages(messages.default);
+      } catch (error) {
+        console.error('Failed to load messages:', error);
+        setMessages({});
+      }
+    };
+
+    loadMessages();
+  }, [locale]);
+
+  // Xử lý lấy đường dẫn không chứa locale
+  const getBasePathname = (path: string): string => {
+    // Loại bỏ locale từ pathname
+    const segments = path.split('/');
+    if (segments.length > 1 && (segments[1] === 'vi' || segments[1] === 'en')) {
+      return '/' + segments.slice(2).join('/');
+    }
+    return path;
+  };
 
   const handleChangeLanguage = async (newLocale: string) => {
+    // Lấy đường dẫn cơ bản không chứa locale
+    const path = pathname || '/';
+    const basePath = getBasePathname(path);
+    
     // Cập nhật ngôn ngữ cho người dùng nếu đã đăng nhập
     if (session?.user?.email) {
       try {
@@ -37,8 +74,9 @@ export default function LanguageSwitcher() {
       }
     }
 
-    // Chuyển hướng với locale mới
-    router.replace(pathname, { locale: newLocale });
+    // Chuyển hướng đến đường dẫn mới với locale mới
+    const newPath = `/${newLocale}${basePath}`;
+    router.push(newPath);
     setIsOpen(false);
   };
 
@@ -50,7 +88,7 @@ export default function LanguageSwitcher() {
         aria-label="Chọn ngôn ngữ"
       >
         <FaGlobe className="mr-2 text-primary-600" />
-        <span className="mr-1">{t('language')}:</span>
+        <span className="mr-1">{messages?.common?.language || 'Ngôn ngữ'}:</span>
         <span className="uppercase font-bold text-primary-600">{locale}</span>
       </button>
 

@@ -9,7 +9,7 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import LanguageSwitcherWrapper from '@/components/common/LanguageSwitcherWrapper';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -338,7 +338,7 @@ const Header = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
+            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6 items-center">
               <Link
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
@@ -369,15 +369,15 @@ const Header = () => {
               >
                 Bảo hành
               </Link>
+              
+              {/* Language Switcher in Desktop Navigation */}
+              <div className="border-l border-gray-200 pl-2">
+                <LanguageSwitcherWrapper />
+              </div>
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
-              {/* Language Switcher */}
-              <div className="hidden md:block">
-                <LanguageSwitcher />
-              </div>
-              
               {/* Balance Display */}
               {session && (
                 <div className="hidden sm:block">
@@ -825,7 +825,7 @@ const Header = () => {
               Bảo hành
             </Link>
             <div className="px-4 py-2">
-              <LanguageSwitcher />
+              <LanguageSwitcherWrapper />
             </div>
           </nav>
         </div>
