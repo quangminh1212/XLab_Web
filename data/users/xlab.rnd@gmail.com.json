@@ -8,7 +8,7 @@
     "isActive": true,
     "balance": 57000,
     "createdAt": "2025-05-29T20:16:59.995Z",
-    "updatedAt": "2025-06-05T15:23:31.606Z",
+    "updatedAt": "2025-06-05T18:37:30.828Z",
     "lastLogin": "2025-05-29T20:16:59.995Z"
   },
   "transactions": [],
@@ -33,7 +33,7 @@
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-05T15:23:31.608Z",
+    "lastUpdated": "2025-06-05T18:37:30.829Z",
     "version": "1.0"
   }
 }

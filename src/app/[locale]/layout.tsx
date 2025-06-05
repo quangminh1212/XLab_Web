@@ -21,6 +21,12 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#00A19A',
+};
+
 export const metadata: Metadata = {
   title: {
     template: siteConfig.seo.titleTemplate,
@@ -81,12 +87,6 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  themeColor: '#00A19A',
-};
-
 export default async function RootLayout({
   children,
   params,
@@ -94,16 +94,11 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  // Validate locale
-  if (!locales.includes(params.locale as any)) {
-    notFound();
-  }
-
-  // Load messages for the current locale
-  const messages = await getMessages({ locale: params.locale });
+  const locale = params.locale;
+  const messages = await getMessages({ locale });
 
   return (
-    <html lang={params.locale} className={`${inter.variable} scroll-smooth`}>
+    <html lang={locale} className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -113,7 +108,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <NextIntlClientProvider locale={params.locale} messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientLayoutWrapper>
             <div className="flex flex-col min-h-screen">
               <Header />

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import createMiddleware from 'next-intl/middleware';
-import { locales } from './i18n/request';
+import { locales } from '@/i18n/request';
 
 // Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
 const protectedPaths = ['/account', '/checkout', '/api/protected'];
@@ -83,6 +83,16 @@ const i18nMiddleware = createMiddleware({
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const pathnameIsMissingLocale = locales.every(
+    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
+  );
+
+  if (pathnameIsMissingLocale) {
+    const locale = request.headers.get('accept-language')?.split(',')?.[0].split('-')[0] || 'vi';
+    return NextResponse.redirect(
+      new URL(`/${locale}${pathname}`, request.url)
+    );
+  }
 
   // Kiểm tra xem đường dẫn có cần bảo vệ không
   const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
