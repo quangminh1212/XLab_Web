@@ -1,5 +1,21 @@
 {
   "Header": {
     "home": "Trang chủ"
+  },
+  "Login": {
+    "welcome": "Chào mừng trở lại!",
+    "description": "Đăng nhập để tiếp tục sử dụng các dịch vụ của XLab",
+    "google_signin": "Tiếp tục với Google",
+    "or_signin_with_email": "Hoặc đăng nhập bằng email",
+    "email_label": "Email",
+    "password_label": "Mật khẩu",
+    "remember_me": "Ghi nhớ đăng nhập",
+    "forgot_password": "Quên mật khẩu?",
+    "signin_button": "Đăng nhập",
+    "no_account": "Chưa có tài khoản?",
+    "signup_link": "Đăng ký ngay",
+    "error_email_password_required": "Vui lòng nhập email và mật khẩu",
+    "error_invalid_credentials": "Email hoặc mật khẩu không chính xác",
+    "error_generic": "Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại."
   }
 } 

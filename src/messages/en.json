@@ -1,5 +1,21 @@
 {
   "Header": {
     "home": "Home"
+  },
+  "Login": {
+    "welcome": "Welcome back!",
+    "description": "Sign in to continue using XLab services",
+    "google_signin": "Continue with Google",
+    "or_signin_with_email": "Or sign in with email",
+    "email_label": "Email",
+    "password_label": "Password",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?",
+    "signin_button": "Sign In",
+    "no_account": "Don't have an account?",
+    "signup_link": "Sign up now",
+    "error_email_password_required": "Please enter your email and password",
+    "error_invalid_credentials": "Incorrect email or password",
+    "error_generic": "An error occurred during sign-in. Please try again."
   }
 } 
