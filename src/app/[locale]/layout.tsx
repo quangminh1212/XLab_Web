@@ -94,13 +94,11 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const locale = params.locale;
+  // Xử lý params.locale một cách an toàn
+  const locale = Array.isArray(locales) && params?.locale && locales.includes(params.locale as any)
+    ? params.locale
+    : 'vi'; // Default to 'vi' if locale is invalid
   
-  // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as any)) {
-    notFound();
-  }
-
   // Load messages for the current locale
   const messages = await getMessages({ locale });
 
