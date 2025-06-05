@@ -6,7 +6,7 @@
     "dev": "next dev -p 3000",
     "dev:clean": "node scripts/fix-next-errors.js && npm run dev",
     "dev:safe": "node scripts/fix-next-errors.js && npm run dev",
-    "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
+    "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev -p 3000",
     "build": "next build",
     "build:export": "cross-env NEXT_PUBLIC_EXPORT=true next build",
     "start": "next start",

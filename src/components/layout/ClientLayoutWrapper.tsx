@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Header, Footer } from '@/components/layout';
 import {
   Analytics,
   CompileIndicator,
@@ -24,11 +23,7 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
       <NotificationProvider>
         <BalanceProvider>
           <CartProvider>
-            <div className="flex flex-col min-h-screen">
-              <Header />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
+            {children}
             <Analytics />
             <CompileIndicator />
             <StyleLoader />
