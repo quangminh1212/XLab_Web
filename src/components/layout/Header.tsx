@@ -9,6 +9,7 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -372,6 +373,11 @@ const Header = () => {
 
             {/* Right Side - Balance + Auth + Cart */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+              {/* Language Switcher */}
+              <div className="hidden md:block">
+                <LanguageSwitcher />
+              </div>
+              
               {/* Balance Display */}
               {session && (
                 <div className="hidden sm:block">
@@ -818,6 +824,9 @@ const Header = () => {
             >
               Bảo hành
             </Link>
+            <div className="px-4 py-2">
+              <LanguageSwitcher />
+            </div>
           </nav>
         </div>
       </header>

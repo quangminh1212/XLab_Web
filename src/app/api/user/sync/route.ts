@@ -135,6 +135,34 @@ export async function POST(request: NextRequest) {
     }
 
     const userEmail = session.user.email;
+    
+    // Lấy dữ liệu từ request body
+    const requestData = await request.json();
+    const updateData = requestData.updateData || {};
+    
+    // Xử lý cập nhật ngôn ngữ nếu có
+    if (updateData.settings?.language) {
+      // Lấy dữ liệu user hiện tại
+      let userData = await getUserDataFromFile(userEmail);
+      
+      if (userData) {
+        // Cập nhật ngôn ngữ
+        userData.settings = {
+          ...userData.settings,
+          language: updateData.settings.language
+        };
+        
+        // Lưu dữ liệu đã cập nhật
+        saveUserData(userEmail, userData);
+        
+        return NextResponse.json({
+          success: true,
+          message: 'Ngôn ngữ đã được cập nhật thành công',
+          language: updateData.settings.language,
+          syncTime: new Date().toISOString()
+        });
+      }
+    }
 
     // Force sync toàn bộ dữ liệu user
     const syncedUser = await syncAllUserData(userEmail);
@@ -192,6 +220,7 @@ export async function GET(request: NextRequest) {
         cartItems: userData?.cart?.length || 0,
         balance: userData?.profile?.balance || 0,
         transactionCount: userData?.transactions?.length || 0,
+        language: userData?.settings?.language || 'vi'
       },
       recommendations: userData ? [] : ['Dữ liệu user chưa được khởi tạo, cần sync'],
     });

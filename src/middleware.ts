@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import createMiddleware from 'next-intl/middleware';
+import { locales } from './i18n';
 
 // Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
 const protectedPaths = ['/account', '/checkout', '/api/protected'];
@@ -72,7 +74,18 @@ const debug = (request: NextRequest, token: any) => {
   }
 };
 
-export async function middleware(request: NextRequest) {
+const intlMiddleware = createMiddleware({
+  // A list of all locales that are supported
+  locales: ['vi', 'en'],
+  
+  // Used when no locale matches
+  defaultLocale: 'vi',
+  
+  // Hỗ trợ lưu ngôn ngữ trong cookie
+  localePrefix: 'always'
+});
+
+export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Bỏ qua các file static và api routes không cần kiểm tra
@@ -112,10 +125,31 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  // Nếu là API request, bỏ qua middleware i18n
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
+  // Nếu là static files, bỏ qua middleware i18n
+  if (
+    pathname.includes('.') ||
+    pathname.startsWith('/_next')
+  ) {
+    return NextResponse.next();
+  }
+
+  return intlMiddleware(request);
 }
 
 export const config = {
-  // Chỉ áp dụng cho các đường dẫn cần kiểm tra
-  matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/protected/:path*'],
+  // Kết hợp cả hai matcher: bảo vệ đường dẫn và hỗ trợ i18n
+  matcher: [
+    // Auth và bảo vệ đường dẫn
+    '/admin/:path*',
+    '/account/:path*', 
+    '/checkout/:path*', 
+    '/api/protected/:path*',
+    // i18n routing (skip api and static files)
+    '/((?!api|_next|.*\\..*).*)'
+  ]
 };
