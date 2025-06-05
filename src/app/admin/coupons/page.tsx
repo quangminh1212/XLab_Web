@@ -754,7 +754,7 @@ function CouponsPage() {
                                       autoFocus
                                     />
                                     <span className="text-sm font-bold">
-                                      {coupon.type === 'percentage' ? '%' : coupon.type === 'cashback' ? 'VNĐ' : 'đ'}
+                                      {coupon.type === 'percentage' || coupon.type === 'cashback' ? '%' : 'đ'}
                                     </span>
                                     <button
                                       onClick={() => saveInlineEdit(coupon.id, 'value')}
@@ -777,10 +777,8 @@ function CouponsPage() {
                                     className="text-sm font-bold cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                     title="Click để chỉnh sửa"
                                   >
-                                    {coupon.type === 'percentage'
+                                    {coupon.type === 'percentage' || coupon.type === 'cashback'
                                       ? `${coupon.value}%`
-                                      : coupon.type === 'cashback'
-                                      ? formatCurrency(coupon.value)
                                       : formatCurrency(coupon.value)}
                                   </span>
                                 )}
@@ -1143,16 +1141,16 @@ function CouponsPage() {
                       setForm((prev) => ({ ...prev, value: Number(e.target.value) }))
                     }
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                    placeholder={form.type === 'percentage' ? 'VD: 10' : 'VD: 50000'}
+                    placeholder={form.type === 'percentage' || form.type === 'cashback' ? 'VD: 10' : 'VD: 50000'}
                     min="0"
-                    max={form.type === 'percentage' ? 100 : undefined}
+                    max={form.type === 'percentage' || form.type === 'cashback' ? 100 : undefined}
                     required
                   />
                   <p className="text-xs text-gray-500 mt-1">
                     {form.type === 'percentage'
                       ? 'Nhập số phần trăm (0-100)'
                       : form.type === 'cashback'
-                      ? 'Nhập số tiền sẽ được hoàn vào tài khoản (VNĐ)'
+                      ? 'Nhập số phần trăm sẽ được hoàn vào tài khoản (0-100)'
                       : 'Nhập số tiền (VNĐ)'}
                   </p>
                 </div>
@@ -1175,7 +1173,7 @@ function CouponsPage() {
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       {form.type === 'cashback'
-                        ? 'Giới hạn số tiền tối đa được hoàn (0 = không giới hạn)'
+                        ? 'Giới hạn số tiền tối đa được hoàn theo % (0 = không giới hạn)'
                         : 'Giới hạn số tiền tối đa được giảm (0 = không giới hạn)'}
                     </p>
                   </div>
@@ -1399,16 +1397,16 @@ function CouponsPage() {
                         setForm((prev) => ({ ...prev, value: Number(e.target.value) }))
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      placeholder={form.type === 'percentage' ? 'VD: 10' : 'VD: 50000'}
+                      placeholder={form.type === 'percentage' || form.type === 'cashback' ? 'VD: 10' : 'VD: 50000'}
                       min="0"
-                      max={form.type === 'percentage' ? 100 : undefined}
+                      max={form.type === 'percentage' || form.type === 'cashback' ? 100 : undefined}
                       required
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       {form.type === 'percentage'
                         ? 'Nhập số phần trăm (0-100)'
                         : form.type === 'cashback'
-                        ? 'Nhập số tiền sẽ được hoàn vào tài khoản (VNĐ)'
+                        ? 'Nhập số phần trăm sẽ được hoàn vào tài khoản (0-100)'
                         : 'Nhập số tiền (VNĐ)'}
                     </p>
                   </div>
@@ -1430,7 +1428,7 @@ function CouponsPage() {
                       />
                       <p className="text-xs text-gray-500 mt-1">
                         {form.type === 'cashback'
-                          ? 'Giới hạn số tiền tối đa được hoàn (0 = không giới hạn)'
+                          ? 'Giới hạn số tiền tối đa được hoàn theo % (0 = không giới hạn)'
                           : 'Giới hạn số tiền tối đa được giảm (0 = không giới hạn)'}
                       </p>
                     </div>

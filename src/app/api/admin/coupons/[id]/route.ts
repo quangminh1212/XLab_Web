@@ -229,7 +229,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // Validation giá trị
-    if (type === 'percentage' && (value < 0 || value > 100)) {
+    if ((type === 'percentage' || type === 'cashback') && (value < 0 || value > 100)) {
       return NextResponse.json({ error: 'Giá trị phần trăm phải từ 0 đến 100' }, { status: 400 });
     }
 
