@@ -109,3 +109,27 @@ export interface Session {
   user?: User;
   expires: string;
 }
+
+export interface Coupon {
+  id: string;
+  code: string;
+  name: string;
+  description?: string;
+  type: 'percentage' | 'fixed' | 'cashback';
+  value: number;
+  minOrder?: number;
+  maxDiscount?: number;
+  usageLimit?: number;
+  userLimit?: number;
+  usedCount: number;
+  userUsage?: { [email: string]: number };
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  applicableProducts?: string[];
+  isPublic: boolean;
+  forUsers?: string[];
+  discountAmount?: number;
+  isCashback?: boolean;
+}

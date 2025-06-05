@@ -14,7 +14,7 @@ interface Coupon {
   code: string;
   name: string;
   description?: string;
-  type: 'percentage' | 'fixed';
+  type: 'percentage' | 'fixed' | 'cashback';
   value: number;
   minOrder?: number;
   maxDiscount?: number;
@@ -161,6 +161,8 @@ export async function POST(request: NextRequest) {
 
     // Tính toán giảm giá
     let discountAmount = 0;
+    let isCashback = false;
+
     if (coupon.type === 'percentage') {
       discountAmount = (orderTotal * coupon.value) / 100;
       // Áp dụng giới hạn giảm giá tối đa nếu có
@@ -169,12 +171,22 @@ export async function POST(request: NextRequest) {
       }
     } else if (coupon.type === 'fixed') {
       discountAmount = coupon.value;
+    } else if (coupon.type === 'cashback') {
+      // Với hoàn tiền, tính giá trị hoàn tiền tương tự như phần trăm
+      discountAmount = (orderTotal * coupon.value) / 100;
+      // Áp dụng giới hạn hoàn tiền tối đa nếu có
+      if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
+        discountAmount = coupon.maxDiscount;
+      }
+      isCashback = true;
     }
 
     // Đảm bảo giảm giá không vượt quá tổng đơn hàng
-    discountAmount = Math.min(discountAmount, orderTotal);
+    if (!isCashback) {
+      discountAmount = Math.min(discountAmount, orderTotal);
+    }
 
-    console.log('Coupon validated successfully. Discount amount:', discountAmount);
+    console.log('Coupon validated successfully. Discount amount:', discountAmount, 'isCashback:', isCashback);
 
     return NextResponse.json({
       success: true,
@@ -187,6 +199,7 @@ export async function POST(request: NextRequest) {
         value: coupon.value,
         userLimit: coupon.userLimit,
         discountAmount,
+        isCashback
       },
     });
   } catch (error) {

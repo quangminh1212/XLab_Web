@@ -14,7 +14,7 @@ interface Coupon {
   code: string;
   name: string;
   description?: string;
-  type: 'percentage' | 'fixed';
+  type: 'percentage' | 'fixed' | 'cashback';
   value: number;
   minOrder?: number;
   maxDiscount?: number;

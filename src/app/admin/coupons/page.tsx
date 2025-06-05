@@ -10,7 +10,7 @@ interface Coupon {
   code: string;
   name: string;
   description?: string;
-  type: 'percentage' | 'fixed';
+  type: 'percentage' | 'fixed' | 'cashback';
   value: number;
   minOrder?: number;
   maxDiscount?: number;
@@ -30,7 +30,7 @@ interface CouponForm {
   code: string;
   name: string;
   description: string;
-  type: 'percentage' | 'fixed';
+  type: 'percentage' | 'fixed' | 'cashback';
   value: number;
   minOrder: number;
   maxDiscount: number;
@@ -710,6 +710,7 @@ function CouponsPage() {
                                     >
                                       <option value="percentage">Phần trăm (%)</option>
                                       <option value="fixed">Cố định (VNĐ)</option>
+                                      <option value="cashback">Hoàn tiền vào tài khoản</option>
                                     </select>
                                     <button
                                       onClick={() => saveInlineEdit(coupon.id, 'type')}
@@ -730,7 +731,7 @@ function CouponsPage() {
                                     onClick={() => startInlineEdit(coupon.id, 'type', coupon.type)}
                                     title="Click để chỉnh sửa loại giảm giá"
                                   >
-                                    {coupon.type === 'percentage' ? 'Phần trăm' : 'Cố định'}
+                                    {coupon.type === 'percentage' ? 'Phần trăm' : coupon.type === 'cashback' ? 'Hoàn tiền vào tài khoản' : 'Cố định'}
                                   </span>
                                 )}
                                 {inlineEditing[`${coupon.id}-value`] ? (
@@ -753,7 +754,7 @@ function CouponsPage() {
                                       autoFocus
                                     />
                                     <span className="text-sm font-bold">
-                                      {coupon.type === 'percentage' ? '%' : 'đ'}
+                                      {coupon.type === 'percentage' ? '%' : coupon.type === 'cashback' ? 'VNĐ' : 'đ'}
                                     </span>
                                     <button
                                       onClick={() => saveInlineEdit(coupon.id, 'value')}
@@ -778,6 +779,8 @@ function CouponsPage() {
                                   >
                                     {coupon.type === 'percentage'
                                       ? `${coupon.value}%`
+                                      : coupon.type === 'cashback'
+                                      ? formatCurrency(coupon.value)
                                       : formatCurrency(coupon.value)}
                                   </span>
                                 )}
@@ -1117,20 +1120,21 @@ function CouponsPage() {
                     onChange={(e) =>
                       setForm((prev) => ({
                         ...prev,
-                        type: e.target.value as 'percentage' | 'fixed',
+                        type: e.target.value as 'percentage' | 'fixed' | 'cashback',
                       }))
                     }
                     className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                   >
                     <option value="percentage">Phần trăm (%)</option>
                     <option value="fixed">Số tiền cố định (VNĐ)</option>
+                    <option value="cashback">Hoàn tiền vào tài khoản</option>
                   </select>
                 </div>
 
                 {/* Giá trị giảm */}
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Giá trị giảm *
+                    Giá trị {form.type === 'cashback' ? 'hoàn tiền' : 'giảm'} *
                   </label>
                   <input
                     type="number"
@@ -1147,31 +1151,33 @@ function CouponsPage() {
                   <p className="text-xs text-gray-500 mt-1">
                     {form.type === 'percentage'
                       ? 'Nhập số phần trăm (0-100)'
+                      : form.type === 'cashback'
+                      ? 'Nhập số tiền sẽ được hoàn vào tài khoản (VNĐ)'
                       : 'Nhập số tiền (VNĐ)'}
                   </p>
                 </div>
 
-                {/* Giá trị giảm tối đa - Chỉ hiển thị khi loại giảm giá là phần trăm */}
-                {form.type === 'percentage' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Giá trị giảm tối đa
-                      </label>
-                      <input
-                        type="number"
-                        value={form.maxDiscount}
-                        onChange={(e) =>
-                          setForm((prev) => ({ ...prev, maxDiscount: Number(e.target.value) }))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                        placeholder="VD: 100000"
-                        min="0"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Giới hạn số tiền tối đa được giảm (0 = không giới hạn)
-                      </p>
-                    </div>
+                {/* Giá trị giảm tối đa - chỉ hiển thị khi chọn phần trăm hoặc hoàn tiền */}
+                {(form.type === 'percentage' || form.type === 'cashback') && (
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      {form.type === 'cashback' ? 'Giá trị hoàn tiền tối đa' : 'Giá trị giảm tối đa'}
+                    </label>
+                    <input
+                      type="number"
+                      value={form.maxDiscount}
+                      onChange={(e) =>
+                        setForm((prev) => ({ ...prev, maxDiscount: Number(e.target.value) }))
+                      }
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                      placeholder="VD: 100000"
+                      min="0"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {form.type === 'cashback'
+                        ? 'Giới hạn số tiền tối đa được hoàn (0 = không giới hạn)'
+                        : 'Giới hạn số tiền tối đa được giảm (0 = không giới hạn)'}
+                    </p>
                   </div>
                 )}
 
@@ -1371,13 +1377,14 @@ function CouponsPage() {
                       onChange={(e) =>
                         setForm((prev) => ({
                           ...prev,
-                          type: e.target.value as 'percentage' | 'fixed',
+                          type: e.target.value as 'percentage' | 'fixed' | 'cashback',
                         }))
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                     >
                       <option value="percentage">Phần trăm (%)</option>
                       <option value="fixed">Số tiền cố định (VNĐ)</option>
+                      <option value="cashback">Hoàn tiền vào tài khoản</option>
                     </select>
                   </div>
                   {/* Giá trị giảm */}
@@ -1400,30 +1407,32 @@ function CouponsPage() {
                     <p className="text-xs text-gray-500 mt-1">
                       {form.type === 'percentage'
                         ? 'Nhập số phần trăm (0-100)'
+                        : form.type === 'cashback'
+                        ? 'Nhập số tiền sẽ được hoàn vào tài khoản (VNĐ)'
                         : 'Nhập số tiền (VNĐ)'}
                     </p>
                   </div>
-                  {/* Giá trị giảm tối đa - Chỉ hiển thị khi loại giảm giá là phần trăm */}
-                  {form.type === 'percentage' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Giá trị giảm tối đa
-                        </label>
-                        <input
-                          type="number"
-                          value={form.maxDiscount}
-                          onChange={(e) =>
-                            setForm((prev) => ({ ...prev, maxDiscount: Number(e.target.value) }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                          placeholder="VD: 100000"
-                          min="0"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Giới hạn số tiền tối đa được giảm (0 = không giới hạn)
-                        </p>
-                      </div>
+                  {/* Giá trị giảm tối đa - chỉ hiển thị khi chọn phần trăm hoặc hoàn tiền */}
+                  {(form.type === 'percentage' || form.type === 'cashback') && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {form.type === 'cashback' ? 'Giá trị hoàn tiền tối đa' : 'Giá trị giảm tối đa'}
+                      </label>
+                      <input
+                        type="number"
+                        value={form.maxDiscount}
+                        onChange={(e) =>
+                          setForm((prev) => ({ ...prev, maxDiscount: Number(e.target.value) }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="VD: 100000"
+                        min="0"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        {form.type === 'cashback'
+                          ? 'Giới hạn số tiền tối đa được hoàn (0 = không giới hạn)'
+                          : 'Giới hạn số tiền tối đa được giảm (0 = không giới hạn)'}
+                      </p>
                     </div>
                   )}
                   {/* Thời gian hiệu lực */}
