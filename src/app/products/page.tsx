@@ -261,19 +261,9 @@ export default function ProductsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h2 className="text-xl font-semibold text-blue-800 mb-2">Hướng dẫn tìm kiếm sản phẩm</h2>
-        <p className="text-blue-700 mb-2">
-          Quý khách có thể tìm thấy tất cả sản phẩm và dịch vụ tại đây. Các dịch vụ và tài khoản (như ChatGPT, Grok) cũng được
-          liệt kê trong danh sách này.
-        </p>
-        <p className="text-blue-700">
-          Để xem chi tiết một sản phẩm, vui lòng nhấp vào sản phẩm hoặc truy cập đường dẫn{' '}
-          <span className="font-mono bg-blue-100 px-1 rounded">/products/[tên-sản-phẩm]</span>
-        </p>
-      </div>
       <h1 className="text-3xl font-bold mb-4">Sản phẩm</h1>
-      <div className="py-4 bg-gray-50">
+      
+      <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
           <div className="mb-4">
             <p className="text-sm md:text-base text-gray-600">
