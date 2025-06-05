@@ -20,7 +20,7 @@ echo Starting development server...
 echo.
 
 rem Start development server directly
-call npm run dev -- --port 3001
+call npm run dev -- --port 3000
 
 rem Keep the window open if there's an error
 if errorlevel 1 (
