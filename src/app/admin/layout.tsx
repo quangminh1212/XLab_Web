@@ -112,7 +112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div
               className={`p-4 bg-teal-600 text-white font-medium flex ${isSidebarCollapsed ? 'justify-center' : 'justify-between'} items-center`}
             >
-              {!isSidebarCollapsed && <span>Menu quản trị</span>}
+              {!isSidebarCollapsed && <span className="font-bold">Menu quản trị</span>}
               <button
                 onClick={toggleSidebar}
                 className="text-white focus:outline-none hover:bg-teal-700 rounded p-2 transition-colors"
