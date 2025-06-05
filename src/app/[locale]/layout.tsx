@@ -2,19 +2,17 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages } from '@/i18n';
+import { locales } from '@/i18n/config';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import ClientLayoutWrapper from '@/components/layout/ClientLayoutWrapper';
-import { locales } from '@/i18n/request';
 import type { Metadata, Viewport } from 'next';
 import { siteConfig } from '@/config/siteConfig';
-import { Header, Footer } from '@/components/layout';
 
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
   variable: '--font-inter',
-  preload: true,
-  display: 'swap',
 });
 
 export function generateStaticParams() {
@@ -24,7 +22,8 @@ export function generateStaticParams() {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#00A19A',
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export const metadata: Metadata = {
@@ -94,21 +93,32 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
+  // Await params before using
+  const resolvedParams = await Promise.resolve(params);
+  const locale = resolvedParams.locale;
+
+  // Validate locale
+  if (!locales.includes(locale as any)) {
+    notFound();
+  }
+
   // Get messages for the locale
-  const messages = await getMessages({ locale: 'vi' });
+  const messages = await getMessages({ locale: locale as "vi" | "en" });
 
   return (
-    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+    <html lang={locale} className={`${inter.variable} scroll-smooth`}>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="font-sans antialiased">
-        <NextIntlClientProvider locale="vi" messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <ClientLayoutWrapper>
             <div className="flex flex-col min-h-screen">
               <Header />
