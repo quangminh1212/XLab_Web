@@ -103,14 +103,3 @@ run-fixed.bat
 /data/backups/
 *.bak
 *.temp
-
-# i18n generated files
-.next-i18next/
-.i18n-cache/
-
-# Cache files
-.cache/
-.swc/
-
-# User data
-/data/users/*.json
