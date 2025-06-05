@@ -1151,6 +1151,30 @@ function CouponsPage() {
                   </p>
                 </div>
 
+                {/* Giá trị giảm tối đa - Chỉ hiển thị khi loại giảm giá là phần trăm */}
+                {form.type === 'percentage' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Giá trị giảm tối đa
+                      </label>
+                      <input
+                        type="number"
+                        value={form.maxDiscount}
+                        onChange={(e) =>
+                          setForm((prev) => ({ ...prev, maxDiscount: Number(e.target.value) }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        placeholder="VD: 100000"
+                        min="0"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Giới hạn số tiền tối đa được giảm (0 = không giới hạn)
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Thời gian hiệu lực */}
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -1195,20 +1219,19 @@ function CouponsPage() {
                   </p>
                 </div>
 
-                {/* Usage Limit */}
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                {/* Số lần sử dụng tối đa */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Số lần sử dụng tối đa (0 = không giới hạn)
                   </label>
                   <input
                     type="number"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Ví dụ: 100"
-                    name="usageLimit"
                     value={form.usageLimit}
                     onChange={(e) =>
                       setForm((prev) => ({ ...prev, usageLimit: Number(e.target.value) }))
                     }
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                    placeholder="Ví dụ: 100"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -1216,20 +1239,19 @@ function CouponsPage() {
                   </p>
                 </div>
 
-                {/* User Limit */}
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                {/* Số lần mỗi người dùng */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">
                     Số lần mỗi người có thể sử dụng (0 = không giới hạn)
                   </label>
                   <input
                     type="number"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Ví dụ: 1"
-                    name="userLimit"
                     value={form.userLimit}
                     onChange={(e) =>
                       setForm((prev) => ({ ...prev, userLimit: Number(e.target.value) }))
                     }
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
+                    placeholder="Ví dụ: 1"
                     min="0"
                   />
                   <p className="text-xs text-gray-500 mt-1">
@@ -1237,7 +1259,7 @@ function CouponsPage() {
                   </p>
                 </div>
 
-                {/* Trường công khai/riêng tư */}
+                {/* Trạng thái */}
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
                     Trạng thái *
@@ -1375,7 +1397,35 @@ function CouponsPage() {
                       max={form.type === 'percentage' ? 100 : undefined}
                       required
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {form.type === 'percentage'
+                        ? 'Nhập số phần trăm (0-100)'
+                        : 'Nhập số tiền (VNĐ)'}
+                    </p>
                   </div>
+                  {/* Giá trị giảm tối đa - Chỉ hiển thị khi loại giảm giá là phần trăm */}
+                  {form.type === 'percentage' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Giá trị giảm tối đa
+                        </label>
+                        <input
+                          type="number"
+                          value={form.maxDiscount}
+                          onChange={(e) =>
+                            setForm((prev) => ({ ...prev, maxDiscount: Number(e.target.value) }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                          placeholder="VD: 100000"
+                          min="0"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Giới hạn số tiền tối đa được giảm (0 = không giới hạn)
+                        </p>
+                      </div>
+                    </div>
+                  )}
                   {/* Thời gian hiệu lực */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
