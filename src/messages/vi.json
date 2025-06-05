@@ -17,5 +17,32 @@
     "error_email_password_required": "Vui lòng nhập email và mật khẩu",
     "error_invalid_credentials": "Email hoặc mật khẩu không chính xác",
     "error_generic": "Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại."
+  },
+  "Register": {
+    "title": "Tạo tài khoản mới",
+    "description": "Đăng ký nhanh chóng để trải nghiệm các dịch vụ của XLab",
+    "fullname_label": "Họ tên",
+    "fullname_placeholder": "Nhập họ tên của bạn",
+    "email_label": "Địa chỉ email",
+    "email_placeholder": "Nhập địa chỉ email của bạn",
+    "password_label": "Mật khẩu",
+    "password_placeholder": "Tạo mật khẩu (ít nhất 6 ký tự)",
+    "confirm_password_label": "Xác nhận mật khẩu",
+    "confirm_password_placeholder": "Nhập lại mật khẩu của bạn",
+    "signup_button": "Đăng ký",
+    "loading_button": "Đang xử lý...",
+    "has_account": "Đã có tài khoản?",
+    "signin_link": "Đăng nhập ngay",
+    "google_signup": "Hoặc đăng ký với Google",
+    "error_fill_all_fields": "Vui lòng điền đầy đủ thông tin.",
+    "error_password_mismatch": "Mật khẩu xác nhận không khớp.",
+    "error_password_too_short": "Mật khẩu phải có ít nhất 6 ký tự.",
+    "success_message": "Đăng ký thành công! Đang chuyển hướng...",
+    "error_generic": "Có lỗi xảy ra khi đăng ký",
+    "terms_prefix": "Bằng cách đăng ký, bạn đồng ý với",
+    "terms_of_service": "Điều khoản dịch vụ",
+    "terms_conjunction": "và",
+    "privacy_policy": "Chính sách bảo mật",
+    "terms_suffix": "của chúng tôi."
   }
 } 

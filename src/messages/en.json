@@ -17,5 +17,32 @@
     "error_email_password_required": "Please enter your email and password",
     "error_invalid_credentials": "Incorrect email or password",
     "error_generic": "An error occurred during sign-in. Please try again."
+  },
+  "Register": {
+    "title": "Create a new account",
+    "description": "Sign up quickly to experience XLab services",
+    "fullname_label": "Full name",
+    "fullname_placeholder": "Enter your full name",
+    "email_label": "Email address",
+    "email_placeholder": "Enter your email address",
+    "password_label": "Password",
+    "password_placeholder": "Create a password (at least 6 characters)",
+    "confirm_password_label": "Confirm password",
+    "confirm_password_placeholder": "Re-enter your password",
+    "signup_button": "Sign Up",
+    "loading_button": "Processing...",
+    "has_account": "Already have an account?",
+    "signin_link": "Sign in now",
+    "google_signup": "Or sign up with Google",
+    "error_fill_all_fields": "Please fill in all fields.",
+    "error_password_mismatch": "Password confirmation does not match.",
+    "error_password_too_short": "Password must be at least 6 characters long.",
+    "success_message": "Registration successful! Redirecting...",
+    "error_generic": "An error occurred during registration",
+    "terms_prefix": "By signing up, you agree to our",
+    "terms_of_service": "Terms of Service",
+    "terms_conjunction": "and",
+    "privacy_policy": "Privacy Policy",
+    "terms_suffix": "."
   }
 } 
