@@ -1,10 +1,28 @@
 import { products as mockProducts } from '@/data/mockData';
 import ProductDetail from '@/app/products/[id]/ProductDetail';
 import { notFound } from 'next/navigation';
+import fs from 'fs';
+import path from 'path';
+import { Product } from '@/models/ProductModel';
 
 // Đảm bảo trang được render động với mỗi request
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
+
+// Đọc dữ liệu sản phẩm từ file JSON
+function getProducts(): Product[] {
+  try {
+    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
+    if (!fs.existsSync(dataFilePath)) {
+      return [];
+    }
+    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error('Error reading products data:', error);
+    return [];
+  }
+}
 
 export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params trước khi sử dụng thuộc tính của nó
@@ -12,17 +30,33 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
 
   console.log(`Đang tìm kiếm dịch vụ với ID hoặc slug: ${accountId}`);
 
-  // Tìm sản phẩm từ mockData (loại dịch vụ)
-  // Tìm theo slug trước
-  let selectedProduct = mockProducts.find(
+  // Lấy danh sách sản phẩm từ file JSON
+  const productsFromJson = getProducts();
+
+  // Tìm kiếm trong products.json trước
+  let selectedProduct = productsFromJson.find(
     (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
   );
 
-  // Sau đó tìm theo id nếu không tìm thấy theo slug
   if (!selectedProduct) {
-    selectedProduct = mockProducts.find(
+    selectedProduct = productsFromJson.find(
       (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
     );
+  }
+
+  // Nếu không tìm thấy, tìm trong mockData
+  if (!selectedProduct) {
+    // Tìm theo slug trước
+    selectedProduct = mockProducts.find(
+      (p) => p.slug === accountId && (p.isAccount || p.type === 'account'),
+    );
+
+    // Sau đó tìm theo id nếu không tìm thấy theo slug
+    if (!selectedProduct) {
+      selectedProduct = mockProducts.find(
+        (p) => p.id === accountId && (p.isAccount || p.type === 'account'),
+      );
+    }
   }
 
   // Thêm dữ liệu mẫu cho các sản phẩm CapCut Pro
@@ -212,7 +246,7 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
     },
   ];
 
-  // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData
+  // Tìm kiếm trong mảng sampleAccounts nếu không tìm thấy trong mockData và products.json
   if (!selectedProduct) {
     // Tìm theo slug trước
     selectedProduct = sampleAccounts.find((p) => p.slug === accountId);

@@ -1,8 +1,8 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { categories } from '@/data/mockData';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductImage from '@/components/product/ProductImage';
 import ProductCard from '@/components/product/ProductCard';
@@ -157,30 +157,24 @@ export default function ProductsPage() {
     })),
   ];
 
-  // Helper to safely get a valid image URL
+  // Helper function to safely get a valid image URL
   const getValidImageUrl = (product: any): string => {
-    if (!product.images || !product.images.length) {
-      return '/images/placeholder/product-placeholder.jpg';
+    if (!product) return '/images/placeholder/product-placeholder.jpg';
+
+    // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
+    if (product.images && product.images.length > 0) {
+      const imageUrl = product.images[0];
+      // Kiểm tra xem đây là string hay object
+      if (typeof imageUrl === 'string') {
+        return imageUrl;
+      } else if (imageUrl.url) {
+        return imageUrl.url;
+      }
     }
 
-    const firstImage = product.images[0];
-
-    // Handle different image formats
-    if (typeof firstImage === 'string') {
-      if (firstImage.startsWith('blob:')) {
-        return '/images/placeholder/product-placeholder.jpg';
-      }
-      if (firstImage.includes('undefined') || firstImage.trim() === '') {
-        return '/images/placeholder/product-placeholder.jpg';
-      }
-      return firstImage;
-    } else if (typeof firstImage === 'object' && firstImage !== null) {
-      if (firstImage.url) {
-        if (firstImage.url.startsWith('blob:')) {
-          return '/images/placeholder/product-placeholder.jpg';
-        }
-        return firstImage.url;
-      }
+    // Kiểm tra nếu có thuộc tính imageUrl
+    if (product.imageUrl) {
+      return product.imageUrl;
     }
 
     return '/images/placeholder/product-placeholder.jpg';
@@ -266,155 +260,168 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="py-4 bg-gray-50">
-      <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
-        <div className="mb-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Sản phẩm</h1>
-          <p className="text-sm md:text-base text-gray-600">
-            Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
-          </p>
-        </div>
-
-        {/* Filter tabs */}
-        <div className="border-b border-gray-200 mb-4">
-          <div className="flex space-x-4">
-            <button
-              onClick={() => setFilter('all')}
-              className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-            >
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 10h16M4 14h16M4 18h16"
-                  />
-                </svg>
-                Tất cả
-              </div>
-            </button>
-            <button
-              onClick={() => setFilter('software')}
-              className={`py-2 px-2 ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-            >
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-                Phần mềm
-              </div>
-            </button>
-            <button
-              onClick={() => setFilter('service')}
-              className={`py-2 px-2 ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-            >
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                Dịch vụ
-              </div>
-            </button>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h2 className="text-xl font-semibold text-blue-800 mb-2">Hướng dẫn tìm kiếm sản phẩm</h2>
+        <p className="text-blue-700 mb-2">
+          Quý khách có thể tìm thấy tất cả sản phẩm và dịch vụ tại đây. Các dịch vụ và tài khoản (như ChatGPT, Grok) cũng được
+          liệt kê trong danh sách này.
+        </p>
+        <p className="text-blue-700">
+          Để xem chi tiết một sản phẩm, vui lòng nhấp vào sản phẩm hoặc truy cập đường dẫn{' '}
+          <span className="font-mono bg-blue-100 px-1 rounded">/products/[tên-sản-phẩm]</span>
+        </p>
+      </div>
+      <h1 className="text-3xl font-bold mb-4">Sản phẩm</h1>
+      <div className="py-4 bg-gray-50">
+        <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
+          <div className="mb-4">
+            <p className="text-sm md:text-base text-gray-600">
+              Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
+            </p>
           </div>
-        </div>
 
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Main content */}
-          <div className="w-full">
-            {/* Filters bar */}
-            <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
-              <div className="text-sm md:text-base text-gray-600">
-                Hiển thị {sortedProducts.length} kết quả
-              </div>
-              <div className="flex items-center space-x-2">
-                <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
-                  Sắp xếp:
-                </label>
-                <select
-                  id="sort"
-                  className="text-sm md:text-base border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                >
-                  <option value="newest">Mới nhất</option>
-                  <option value="price-low">Giá thấp đến cao</option>
-                  <option value="price-high">Giá cao đến thấp</option>
-                  <option value="popular">Phổ biến nhất</option>
-                </select>
-              </div>
+          {/* Filter tabs */}
+          <div className="border-b border-gray-200 mb-4">
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setFilter('all')}
+                className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                    />
+                  </svg>
+                  Tất cả
+                </div>
+              </button>
+              <button
+                onClick={() => setFilter('software')}
+                className={`py-2 px-2 ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                  Phần mềm
+                </div>
+              </button>
+              <button
+                onClick={() => setFilter('service')}
+                className={`py-2 px-2 ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+              >
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  Dịch vụ
+                </div>
+              </button>
             </div>
+          </div>
 
-            {/* Product grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
-              {sortedProducts.map((product) => {
-                // Log the product data for debugging
-                console.log(`Product ${product.id} image data:`, product.images);
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Main content */}
+            <div className="w-full">
+              {/* Filters bar */}
+              <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
+                <div className="text-sm md:text-base text-gray-600">
+                  Hiển thị {sortedProducts.length} kết quả
+                </div>
+                <div className="flex items-center space-x-2">
+                  <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
+                    Sắp xếp:
+                  </label>
+                  <select
+                    id="sort"
+                    className="text-sm md:text-base border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                  >
+                    <option value="newest">Mới nhất</option>
+                    <option value="price-low">Giá thấp đến cao</option>
+                    <option value="price-high">Giá cao đến thấp</option>
+                    <option value="popular">Phổ biến nhất</option>
+                  </select>
+                </div>
+              </div>
 
-                // Xác định giá hiển thị - kiểm tra versions trước
-                const displayPrice =
-                  product.versions && product.versions.length > 0
-                    ? product.versions[0].price || 0
-                    : product.price || 0;
+              {/* Product grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+                {sortedProducts.map((product) => {
+                  // Log the product data for debugging
+                  console.log(`Product ${product.id} image data:`, product.images);
 
-                // Xác định giá gốc - kiểm tra versions trước
-                const originalPrice =
-                  product.versions && product.versions.length > 0
-                    ? product.versions[0].originalPrice || 0
-                    : product.salePrice || 0;
+                  // Xác định giá hiển thị - kiểm tra versions trước
+                  const displayPrice =
+                    product.versions && product.versions.length > 0
+                      ? product.versions[0].price || 0
+                      : product.price || 0;
 
-                // Lấy ảnh sản phẩm (sử dụng helper function)
-                const imageUrl = getValidImageUrl(product);
+                  // Xác định giá gốc - kiểm tra versions trước
+                  const originalPrice =
+                    product.versions && product.versions.length > 0
+                      ? product.versions[0].originalPrice || 0
+                      : product.salePrice || 0;
 
-                console.log(`Processed image URL for ${product.name}:`, imageUrl);
+                  // Lấy ảnh sản phẩm (sử dụng helper function)
+                  const imageUrl = getValidImageUrl(product);
 
-                return (
-                  <ProductCard
-                    key={product.id}
-                    id={product.id.toString()}
-                    name={product.name}
-                    description={product.shortDescription || ''}
-                    price={displayPrice}
-                    originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
-                    image={imageUrl}
-                    category={categories.find((c) => c.id === product.categoryId)?.name}
-                    rating={product.rating}
-                    reviewCount={product.reviewCount}
-                    weeklyPurchases={product.weeklyPurchases}
-                    totalSold={product.totalSold}
-                    slug={product.slug}
-                    isAccount={product.isAccount || product.type === 'account'}
-                  />
-                );
-              })}
+                  console.log(`Processed image URL for ${product.name}:`, imageUrl);
+
+                  return (
+                    <ProductCard
+                      key={product.id}
+                      id={product.id.toString()}
+                      name={product.name}
+                      description={product.shortDescription || ''}
+                      price={displayPrice}
+                      originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
+                      image={imageUrl}
+                      category={categories.find((c) => c.id === product.categoryId)?.name}
+                      rating={product.rating}
+                      reviewCount={product.reviewCount}
+                      weeklyPurchases={product.weeklyPurchases}
+                      totalSold={product.totalSold}
+                      slug={product.slug}
+                      isAccount={product.isAccount || product.type === 'account'}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
