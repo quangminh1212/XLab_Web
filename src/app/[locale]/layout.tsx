@@ -94,11 +94,11 @@ export default async function RootLayout({
   children: React.ReactNode;
   params: { locale: string };
 }) {
-  const locale = params.locale;
-  const messages = await getMessages({ locale });
+  // Get messages for the locale
+  const messages = await getMessages({ locale: 'vi' });
 
   return (
-    <html lang={locale} className={`${inter.variable} scroll-smooth`}>
+    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -108,7 +108,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider locale="vi" messages={messages}>
           <ClientLayoutWrapper>
             <div className="flex flex-col min-h-screen">
               <Header />
