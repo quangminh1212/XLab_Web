@@ -37,8 +37,9 @@ interface LocaleLayoutProps {
 
 export default async function LocaleLayout({
   children,
-  params: { locale },
+  params,
 }: LocaleLayoutProps) {
+  const locale = params.locale;
   let messages;
   try {
     messages = await getMessages();
