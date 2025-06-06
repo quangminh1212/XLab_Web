@@ -9,6 +9,11 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+<<<<<<< HEAD
+=======
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useTranslations } from 'next-intl';
+>>>>>>> a60ce285271f3e1cc6fa1403fb6885b1e5aefa10
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -29,6 +34,7 @@ interface PublicCoupon {
 }
 
 const Header = () => {
+  const t = useTranslations('Header');
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -203,7 +209,8 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isOpen]);
 
   const isActive = (path: string) => {
-    return pathname === path
+    const localeFreePath = pathname.substring(3) || '/';
+    return localeFreePath === path
       ? 'text-primary-600 font-medium'
       : 'text-gray-700 hover:text-primary-600';
   };
@@ -254,69 +261,27 @@ const Header = () => {
   };
 
   const handleCopyVoucher = (code: string) => {
-    navigator.clipboard
-      .writeText(code)
-      .then(() => {
-        // Use a more elegant notification method instead of alert
-        setShowNotification(true);
-        setNotificationMessage(`Đã sao chép mã: ${code}`);
-
-        // Hide notification after 2 seconds
-        setTimeout(() => {
-          setShowNotification(false);
-        }, 2000);
-      })
-      .catch((err) => {
-        console.error('Copy failed:', err);
-        setShowNotification(true);
-        setNotificationMessage('Không thể sao chép mã. Vui lòng thử lại.');
-
-        setTimeout(() => {
-          setShowNotification(false);
-        }, 2000);
-      });
+    navigator.clipboard.writeText(code);
+    setNotificationMessage(`Đã sao chép mã voucher ${code}`);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 3000);
   };
 
-  // Sắp xếp và lọc các vouchers để hiển thị
   const getDisplayVouchers = () => {
-    if (!session?.user) {
-      // Nếu không đăng nhập, chỉ hiển thị vouchers công khai
-      return publicCoupons;
-    }
+    const isExpired = (coupon: PublicCoupon): boolean => new Date(coupon.endDate) < new Date();
+    const isOutOfUses = (coupon: PublicCoupon): boolean =>
+      coupon.userUsage !== undefined && coupon.userUsage.current >= coupon.userUsage.limit;
 
-    // Nếu đã đăng nhập, hiển thị cả vouchers công khai và voucher riêng
-    // Loại bỏ trùng lặp giữa vouchers công khai và vouchers của người dùng
-    const userVoucherIds = new Set(userCoupons.filter((v) => !v.isPublic).map((v) => v.id));
-    const uniquePublicCoupons = publicCoupons.filter((v) => !userVoucherIds.has(v.id));
+    const validPublicCoupons = publicCoupons.filter(coupon => !isExpired(coupon));
+    const validUserCoupons = userCoupons.filter(coupon => !isExpired(coupon) && !isOutOfUses(coupon));
 
-    // Lọc các voucher đã hết hạn và hết lượt
-    const isExpired = (coupon: PublicCoupon): boolean => {
-      try {
-        const now = new Date();
-        const expireDate = new Date(coupon.endDate);
-        return expireDate < now;
-      } catch (error) {
-        return false;
-      }
-    };
+    const combined = [...validUserCoupons, ...validPublicCoupons];
+    const unique = Array.from(new Map(combined.map(c => [c.id, c])).values());
 
-    const isOutOfUses = (coupon: PublicCoupon): boolean => {
-      return coupon.userUsage !== undefined && coupon.userUsage.current >= coupon.userUsage.limit;
-    };
-
-    // Lọc ra các voucher còn hiệu lực và còn lượt sử dụng
-    const filteredUserCoupons = userCoupons
-      .filter((v) => !v.isPublic)
-      .filter((v) => !isExpired(v) && !isOutOfUses(v));
-
-    const filteredPublicCoupons = uniquePublicCoupons.filter((v) => !isExpired(v));
-
-    // Sắp xếp: vouchers cá nhân trước, sau đó là vouchers công khai
-    return [
-      ...filteredUserCoupons, // Voucher riêng của người dùng
-      ...filteredPublicCoupons, // Voucher công khai
-    ];
+    return unique.slice(0, 10);
   };
+
+  const displayVouchers = getDisplayVouchers();
 
   return (
     <>
@@ -342,7 +307,11 @@ const Header = () => {
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
+<<<<<<< HEAD
                 Trang chủ
+=======
+                {t('home')}
+>>>>>>> a60ce285271f3e1cc6fa1403fb6885b1e5aefa10
               </Link>
               <Link
                 href="/products"
@@ -433,7 +402,7 @@ const Header = () => {
                           <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
                           <p className="text-xs sm:text-sm text-gray-500 mt-2">Đang tải...</p>
                         </div>
-                      ) : getDisplayVouchers().length > 0 ? (
+                      ) : displayVouchers.length > 0 ? (
                         <>
                           {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
                             <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
@@ -441,85 +410,82 @@ const Header = () => {
                             </div>
                           )}
 
-                          {getDisplayVouchers().map((coupon, index) => (
-                            <div key={coupon.id}>
-                              <div
-                                className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
-                                role="menuitem"
-                              >
-                                <div className="flex justify-between items-start">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <div className="flex items-center">
-                                      <span
-                                        onClick={() => handleCopyVoucher(coupon.code)}
-                                        className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
-                                        title="Nhấn để sao chép mã"
-                                      >
-                                        {coupon.code}
-                                      </span>
-                                    </div>
+                          {displayVouchers.map((coupon: PublicCoupon) => (
+                            <div
+                              key={coupon.id}
+                              className={`p-3 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${!coupon.isPublic ? 'bg-teal-50' : ''}`}
+                              role="menuitem"
+                            >
+                              <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <div className="flex items-center">
                                     <span
-                                      className={`text-xs font-medium ${coupon.type === 'percentage' ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}
+                                      onClick={() => handleCopyVoucher(coupon.code)}
+                                      className={`${!coupon.isPublic ? 'bg-teal-600' : 'bg-emerald-600'} text-white font-mono text-xs font-bold px-2 py-1 rounded-md shadow-sm select-all cursor-pointer hover:opacity-90 transition-all flex items-center`}
+                                      title="Nhấn để sao chép mã"
                                     >
-                                      {coupon.type === 'percentage'
-                                        ? `${coupon.value}%`
-                                        : formatCurrency(coupon.value)}
+                                      {coupon.code}
                                     </span>
                                   </div>
-                                  <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
-                                    HSD: {formatDate(coupon.endDate)}
+                                  <span
+                                    className={`text-xs font-medium ${coupon.type === 'percentage' ? 'text-teal-700 bg-teal-50 border border-teal-200' : 'text-emerald-700 bg-emerald-50 border border-emerald-200'} rounded-full px-2 py-0.5`}
+                                  >
+                                    {coupon.type === 'percentage'
+                                      ? `${coupon.value}%`
+                                      : formatCurrency(coupon.value)}
                                   </span>
                                 </div>
-                                <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                                  {coupon.name}
-                                </h4>
-                                {coupon.description && (
-                                  <div className="flex justify-between items-center mt-1">
-                                    <p className="text-xs text-gray-600 line-clamp-2">
-                                      {coupon.description}
-                                    </p>
-                                    {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                      <span className="text-xs font-medium text-teal-600">
-                                        Còn {coupon.userUsage.limit - coupon.userUsage.current} lượt
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                                <div className="mt-2 flex justify-between items-center text-xs mb-1">
-                                  <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
-                                    {coupon.minOrder
-                                      ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}`
-                                      : 'Không giới hạn đơn'}
-                                  </span>
+                                <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
+                                  HSD: {formatDate(coupon.endDate)}
+                                </span>
+                              </div>
+                              <h4 className="text-xs sm:text-sm font-medium text-gray-900">
+                                {coupon.name}
+                              </h4>
+                              {coupon.description && (
+                                <div className="flex justify-between items-center mt-1">
+                                  <p className="text-xs text-gray-600 line-clamp-2">
+                                    {coupon.description}
+                                  </p>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                    <span className="text-gray-500">
-                                      {Math.min(
-                                        100,
-                                        Math.round(
-                                          (coupon.userUsage.current / coupon.userUsage.limit) * 100,
-                                        ),
-                                      )}
-                                      %
+                                    <span className="text-xs font-medium text-teal-600">
+                                      Còn {coupon.userUsage.limit - coupon.userUsage.current} lượt
                                     </span>
                                   )}
                                 </div>
+                              )}
+                              <div className="mt-2 flex justify-between items-center text-xs mb-1">
+                                <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
+                                  {coupon.minOrder
+                                    ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}`
+                                    : 'Không giới hạn đơn'}
+                                </span>
                                 {coupon.userUsage && coupon.userUsage.limit > 0 && (
-                                  <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-                                    <div
-                                      className={`h-full rounded-full ${
-                                        coupon.userUsage.current >= coupon.userUsage.limit
-                                          ? 'bg-gradient-to-r from-red-500 to-red-600'
-                                          : 'bg-gradient-to-r from-teal-500 to-emerald-600'
-                                      }`}
-                                      style={{
-                                        width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%`,
-                                      }}
-                                    ></div>
-                                  </div>
+                                  <span className="text-gray-500">
+                                    {Math.min(
+                                      100,
+                                      Math.round(
+                                        (coupon.userUsage.current / coupon.userUsage.limit) * 100,
+                                      ),
+                                    )}
+                                    %
+                                  </span>
                                 )}
-
-                                {/* Note section removed */}
                               </div>
+                              {coupon.userUsage && coupon.userUsage.limit > 0 && (
+                                <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                                  <div
+                                    className={`h-full rounded-full ${
+                                      coupon.userUsage.current >= coupon.userUsage.limit
+                                        ? 'bg-gradient-to-r from-red-500 to-red-600'
+                                        : 'bg-gradient-to-r from-teal-500 to-emerald-600'
+                                    }`}
+                                    style={{
+                                      width: `${Math.min(100, (coupon.userUsage.current / coupon.userUsage.limit) * 100)}%`,
+                                    }}
+                                  ></div>
+                                </div>
+                              )}
                             </div>
                           ))}
                         </>
@@ -556,7 +522,7 @@ const Header = () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                       />
                     </svg>
                     {unreadCount > 0 && (

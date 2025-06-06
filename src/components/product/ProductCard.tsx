@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
+import { useTranslations } from 'next-intl';
 
 interface ProductCardProps {
   id: string;
@@ -41,6 +42,7 @@ export default function ProductCard({
   onAddToCart = () => {},
   onView = () => {},
 }: ProductCardProps) {
+  const t = useTranslations('ProductCard');
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -186,269 +188,146 @@ export default function ProductCard({
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9-]/g, '');
 
-  // Color palette phù hợp với logo XLab (chuyên nghiệp, hiện đại)
-  const colorPalette = [
-    {
-      name: 'teal',
-      bg: 'from-white via-primary-50 to-primary-100',
-      hover: 'hover:border-primary-300 hover:shadow-primary-100/50',
-      badge: 'from-primary-500 to-primary-600',
-      button: 'from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700',
-      buttonHover: 'hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300',
-      price: 'from-primary-600 to-primary-700',
-      stats: 'text-primary-600',
-      statsIcon: 'text-primary-500',
-      overlay: 'to-primary-900/40',
-    },
-    {
-      name: 'blue',
-      bg: 'from-white via-blue-50 to-blue-100',
-      hover: 'hover:border-blue-300 hover:shadow-blue-100/50',
-      badge: 'from-blue-500 to-blue-600',
-      button: 'from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700',
-      buttonHover: 'hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300',
-      price: 'from-primary-600 to-primary-700',
-      stats: 'text-primary-600',
-      statsIcon: 'text-blue-500',
-      overlay: 'to-blue-900/40',
-    },
-    {
-      name: 'purple',
-      bg: 'from-white via-purple-50 to-purple-100',
-      hover: 'hover:border-purple-300 hover:shadow-purple-100/50',
-      badge: 'from-purple-500 to-purple-600',
-      button: 'from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700',
-      buttonHover: 'hover:bg-purple-50 hover:text-purple-700 hover:border-purple-300',
-      price: 'from-purple-600 to-purple-700',
-      stats: 'text-purple-600',
-      statsIcon: 'text-purple-500',
-      overlay: 'to-purple-900/40',
-    },
-    {
-      name: 'emerald',
-      bg: 'from-white via-emerald-50 to-emerald-100',
-      hover: 'hover:border-emerald-300 hover:shadow-emerald-100/50',
-      badge: 'from-emerald-500 to-emerald-600',
-      button: 'from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700',
-      buttonHover: 'hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300',
-      price: 'from-emerald-600 to-emerald-700',
-      stats: 'text-emerald-600',
-      statsIcon: 'text-emerald-500',
-      overlay: 'to-emerald-900/40',
-    },
-    {
-      name: 'orange',
-      bg: 'from-white via-orange-50 to-orange-100',
-      hover: 'hover:border-orange-300 hover:shadow-orange-100/50',
-      badge: 'from-orange-500 to-orange-600',
-      button: 'from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700',
-      buttonHover: 'hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300',
-      price: 'from-orange-600 to-orange-700',
-      stats: 'text-orange-600',
-      statsIcon: 'text-orange-500',
-      overlay: 'to-orange-900/40',
-    },
-    {
-      name: 'indigo',
-      bg: 'from-white via-indigo-50 to-indigo-100',
-      hover: 'hover:border-indigo-300 hover:shadow-indigo-100/50',
-      badge: 'from-indigo-500 to-indigo-600',
-      button: 'from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700',
-      buttonHover: 'hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300',
-      price: 'from-indigo-600 to-indigo-700',
-      stats: 'text-indigo-600',
-      statsIcon: 'text-indigo-500',
-      overlay: 'to-indigo-900/40',
-    },
-  ];
-
-  // Chọn màu dựa trên ID sản phẩm để đảm bảo consistent
-  const safeId = id || '0';
-  const parsedId = parseInt(safeId);
-  const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
-  const currentColor = colorPalette[colorIndex] || colorPalette[0];
-
   return (
-    <Link
-      href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
+    <div
+      className={`relative group bg-white rounded-2xl overflow-hidden shadow-sm border border-transparent transition-all duration-300 ease-in-out transform hover:scale-[1.03] hover:shadow-lg flex flex-col`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative pt-[100%] bg-white">
-        {originalPrice && discountPercentage > 0 && (
-          <div
-            className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
-          >
-            -{discountPercentage}%
-          </div>
-        )}
-
-        <Image
-          src={displayImageUrl}
-          alt={name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-contain transition-all duration-500 ${
-            isHovered ? 'scale-110' : 'scale-100'
-          } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoad={() => setIsImageLoaded(true)}
-          priority={false}
-          onError={handleImageError}
-        />
-
-        {!isImageLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white">
-            <svg className="w-10 h-10 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          </div>
-        )}
-
-        {showAddedEffect && (
-          <div
-            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
-          >
-            <div
-              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Đã thêm
+      <Link href={`/products/${productSlug}`} passHref onClick={handleView}>
+        <div className="relative w-full aspect-w-1 aspect-h-1 bg-gray-200 overflow-hidden">
+          {!isImageLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+              <div className="w-8 h-8 border-2 border-primary-200 border-t-transparent rounded-full animate-spin"></div>
             </div>
-          </div>
-        )}
-
-        <div
-          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 ${currentColor.overlay} flex items-center justify-center transition-opacity duration-300 ${
-            isHovered ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={handleAddToCart}
-              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-5 py-2.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform`}
-            >
-              <span className="flex items-center justify-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 7m0 6l-1.5 6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
-                  />
-                </svg>
-                Thêm vào giỏ
-              </span>
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                // Clear cart and add only this product
-                clearCart();
-                addItem({
-                  id,
-                  name,
-                  price,
-                  quantity: 1,
-                  image,
-                  version: '',
-                  uniqueKey: `${id}_default_`,
-                });
-                router.push('/checkout?skipInfo=true');
-              }}
-              className={`bg-gradient-to-r ${currentColor.button} text-white px-5 py-2.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20`}
-            >
-              <span className="flex items-center justify-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-                Mua ngay
-              </span>
-            </button>
-          </div>
+          )}
+          <Image
+            src={displayImageUrl}
+            alt={name}
+            layout="fill"
+            objectFit="cover"
+            className={`transition-transform duration-500 ease-in-out ${
+              isHovered ? 'scale-110' : 'scale-100'
+            } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={() => setIsImageLoaded(true)}
+            onError={handleImageError}
+          />
+          <div
+            className={`absolute inset-0 bg-gradient-to-t from-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+          ></div>
         </div>
-      </div>
 
-      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
-        {category && (
-          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
-            {category}
+        <div className="p-4 flex flex-col flex-grow">
+          <div className="flex-grow">
+            {category && (
+              <span className="text-xs font-semibold uppercase text-primary-600 tracking-wider">
+                {category}
+              </span>
+            )}
+            <h3 className="text-base font-bold text-gray-800 mt-1 leading-tight truncate-2-lines">
+              {name}
+            </h3>
+            <p className="text-xs text-gray-500 mt-1 mb-2 h-8 truncate-2-lines">
+              {shortDescription}
+            </p>
           </div>
-        )}
-        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
-          {name}
-        </h3>
-        <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
-          {shortDescription}
-        </p>
-        <div className="flex items-end justify-between">
-          <div className="flex-1">
-            <div className="flex items-baseline flex-wrap gap-2 mb-2">
-              <span
-                className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
-              >
+
+          <div className="flex justify-between items-center mt-auto pt-2">
+            <div className="flex flex-col">
+              <span className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-700">
                 {formatCurrency(price)}
               </span>
-              {originalPrice && discountPercentage > 0 && (
-                <span className="text-sm text-gray-400 line-through">
+              {originalPrice && originalPrice > price && (
+                <span className="text-xs text-gray-400 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
             </div>
-            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-4"></div>}</div>
-          </div>
-          {totalSold > 0 && (
-            <div
-              className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              <span className="font-semibold">{totalSold}</span>
+            <div className="flex items-center">
+              {renderRatingStars(rating)}
             </div>
-          )}
+          </div>
         </div>
+      </Link>
+
+      <div className="absolute bottom-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <button
+          onClick={handleAddToCart}
+          className={`relative w-10 h-10 flex items-center justify-center rounded-full text-white shadow-lg transition-all duration-300 transform-gpu group-hover:scale-110`}
+          aria-label={t('add_to_cart')}
+        >
+          {showAddedEffect ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          )}
+          <span className="absolute -top-8 -right-10 w-max bg-gray-800 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            {showAddedEffect ? t('added_to_cart') : t('add_to_cart')}
+          </span>
+        </button>
       </div>
-    </Link>
+
+      <div className="absolute top-2 left-2 z-10">
+        {discountPercentage > 0 && (
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md">
+            -{discountPercentage}%
+          </div>
+        )}
+      </div>
+
+      <div className="absolute bottom-2 left-2 z-10 text-xs text-gray-500 flex items-center space-x-2">
+        {totalSold > 0 && (
+          <div className="flex items-center bg-white/70 backdrop-blur-sm px-2 py-1 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-3.5 w-3.5 mr-1 text-green-500"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span className="font-semibold text-gray-700">{totalSold}+</span>&nbsp;{t('sold')}
+          </div>
+        )}
+        {weeklyPurchases > 0 && (
+          <div className="hidden sm:flex items-center bg-white/70 backdrop-blur-sm px-2 py-1 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-3.5 w-3.5 mr-1 text-blue-500"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.96-1.61l.713-4.278A2 2 0 0015.06 9.872l-1.31-1.31a.5.5 0 00-.707 0l-1.15 1.15a.5.5 0 01-.707 0l-1.15-1.15a.5.5 0 00-.707 0l-1.15 1.15a.5.5 0 01-.707 0L6 10.333z" />
+            </svg>
+            <span className="font-semibold text-gray-700">{weeklyPurchases}</span>&nbsp;{t('purchases_week')}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
