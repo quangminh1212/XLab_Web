@@ -273,12 +273,12 @@ export default function ProductsPage() {
 
           {/* Filter tabs */}
           <div className="border-b border-gray-200 mb-4">
-            <div className="flex space-x-4">
+            <div className="flex justify-start">
               <button
                 onClick={() => setFilter('all')}
-                className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+                className={`py-2 px-4 min-w-[120px] text-center ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
               >
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 md:h-5 md:w-5 mr-2"
@@ -298,9 +298,9 @@ export default function ProductsPage() {
               </button>
               <button
                 onClick={() => setFilter('software')}
-                className={`py-2 px-2 ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+                className={`py-2 px-4 min-w-[120px] text-center ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
               >
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 md:h-5 md:w-5 mr-2"
@@ -320,9 +320,9 @@ export default function ProductsPage() {
               </button>
               <button
                 onClick={() => setFilter('service')}
-                className={`py-2 px-2 ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
+                className={`py-2 px-4 min-w-[120px] text-center ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
               >
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 md:h-5 md:w-5 mr-2"
