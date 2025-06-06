@@ -262,7 +262,9 @@ export default function ProductsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="w-[90%] mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Sản phẩm</h1>
+        <div className="container mx-auto px-0 max-w-none">
+          <h1 className="text-3xl font-bold mb-6">Sản phẩm</h1>
+        </div>
         
         <div className="bg-gray-50 py-4">
           <div className="container mx-auto px-0 max-w-none">
