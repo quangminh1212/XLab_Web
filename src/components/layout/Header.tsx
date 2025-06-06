@@ -369,7 +369,7 @@ const Header = () => {
                 href="/bao-hanh"
                 className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('app.common.support')}
+                {t('app.header.support')}
               </Link>
             </nav>
 
@@ -822,7 +822,7 @@ const Header = () => {
               className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('app.common.support')}
+              {t('app.header.support')}
             </Link>
             
             {/* Language Switcher in Mobile Menu */}

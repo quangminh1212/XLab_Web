@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import HomePage from '@/app/page';
 
 interface LocalePageProps {
   params: {
@@ -7,6 +8,6 @@ interface LocalePageProps {
 }
 
 export default function LocalePage({ params }: LocalePageProps) {
-  // Redirect to the home page with the selected locale
-  redirect('/');
+  // Không redirect nữa, thay vào đó render trực tiếp HomePage
+  return <HomePage />;
 } 
