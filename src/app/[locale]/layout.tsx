@@ -12,12 +12,15 @@ export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
   params,
 }: LocaleLayoutProps) {
+  // Tránh sử dụng params.locale trực tiếp mà phải gán vào biến khác trước
+  const locale = params.locale;
+  
   // Validate that the incoming locale is valid
-  const isValidLocale = locales.includes(params.locale);
+  const isValidLocale = locales.includes(locale);
   
   if (!isValidLocale) {
     // This shouldn't happen due to middleware, but just in case
