@@ -7,8 +7,7 @@ interface LocaleProductDetailPageProps {
   };
 }
 
-export default function LocaleProductDetailPage({ params }: LocaleProductDetailPageProps) {
-  // Chuyển id vào làm Promise<{id: string}> để phù hợp với kiểu dữ liệu của ProductPage
-  const productParams = Promise.resolve({ id: params.id });
-  return <ProductPage params={productParams} />;
+export default async function LocaleProductDetailPage({ params }: LocaleProductDetailPageProps) {
+  // Trang ProductPage yêu cầu params là một Promise<{id: string}>
+  return <ProductPage params={Promise.resolve({ id: params.id })} />;
 } 
