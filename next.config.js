@@ -1,26 +1,16 @@
 const path = require('path');
-const withNextIntl = require('next-intl/plugin')(
-  './src/i18n/request.ts'
-);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-<<<<<<< HEAD
-=======
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
->>>>>>> d3e78d4f978f0864382e8714f0b3ca7c2acb6cd0
   experimental: {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
-  },
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
   },
   images: {
     domains: [
@@ -112,4 +102,4 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+module.exports = nextConfig;

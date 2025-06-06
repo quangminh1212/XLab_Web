@@ -9,8 +9,6 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import LanguageSwitcherWrapper from '@/components/common/LanguageSwitcherWrapper';
-import LocalizedLink from '@/components/LocalizedLink';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -327,7 +325,7 @@ const Header = () => {
           <div className="flex justify-between items-center">
             {/* Logo */}
             <div className="flex items-center">
-              <LocalizedLink href="/" className="flex items-center justify-center">
+              <Link href="/" className="flex items-center justify-center">
                 <Image
                   src="/images/logo.jpg"
                   alt="XLab Logo"
@@ -335,46 +333,41 @@ const Header = () => {
                   height={60}
                   className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"
                 />
-              </LocalizedLink>
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6 items-center">
-              <LocalizedLink
+            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
+              <Link
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
                 Trang chủ
-              </LocalizedLink>
-              <LocalizedLink
+              </Link>
+              <Link
                 href="/products"
                 className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
                 Sản phẩm
-              </LocalizedLink>
-              <LocalizedLink
+              </Link>
+              <Link
                 href="/about"
                 className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
                 Giới thiệu
-              </LocalizedLink>
-              <LocalizedLink
+              </Link>
+              <Link
                 href="/contact"
                 className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
                 Liên hệ
-              </LocalizedLink>
-              <LocalizedLink
+              </Link>
+              <Link
                 href="/bao-hanh"
                 className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
                 Bảo hành
-              </LocalizedLink>
-              
-              {/* Language Switcher in Desktop Navigation */}
-              <div className="border-l border-gray-200 pl-2">
-                <LanguageSwitcherWrapper />
-              </div>
+              </Link>
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
@@ -426,12 +419,12 @@ const Header = () => {
                   >
                     <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
                       <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
-                      <LocalizedLink
+                      <Link
                         href="/vouchers/public"
                         className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                       >
                         Xem tất cả
-                      </LocalizedLink>
+                      </Link>
                     </div>
 
                     <div className="max-h-80 overflow-y-auto">
@@ -624,14 +617,14 @@ const Header = () => {
                       </div>
 
                       <div className="px-4 py-2 border-t border-gray-100 text-center">
-                        <LocalizedLink
+                        <Link
                           href="/notifications"
                           className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                           onClick={() => setIsNotificationOpen(false)}
                           role="menuitem"
                         >
                           Xem tất cả thông báo
-                        </LocalizedLink>
+                        </Link>
                       </div>
                     </div>
                   )}
@@ -639,7 +632,7 @@ const Header = () => {
               )}
 
               {/* Cart Icon */}
-              <LocalizedLink href="/cart" className="text-gray-700 hover:text-primary-600 relative">
+              <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 sm:h-5 sm:w-5"
@@ -657,7 +650,7 @@ const Header = () => {
                 <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
                   {itemCount}
                 </span>
-              </LocalizedLink>
+              </Link>
 
               {/* User Profile */}
               <div className="relative" ref={profileRef}>
@@ -716,32 +709,32 @@ const Header = () => {
                         {session.user?.email}
                       </p>
                     </div>
-                    <LocalizedLink
+                    <Link
                       href="/account"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Tài khoản của tôi
-                    </LocalizedLink>
-                    <LocalizedLink
+                    </Link>
+                    <Link
                       href="/orders/history"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Đơn hàng của tôi
-                    </LocalizedLink>
+                    </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (
-                      <LocalizedLink
+                      <Link
                         href="/admin"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                         role="menuitem"
                         onClick={() => setIsProfileOpen(false)}
                       >
                         Quản trị viên
-                      </LocalizedLink>
+                      </Link>
                     )}
                     <button
                       onClick={() => {
@@ -790,44 +783,41 @@ const Header = () => {
           } md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2`}
         >
           <nav className="container mx-auto px-4 py-2 space-y-1">
-            <LocalizedLink
+            <Link
               href="/"
               className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Trang chủ
-            </LocalizedLink>
-            <LocalizedLink
+            </Link>
+            <Link
               href="/products"
               className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Sản phẩm
-            </LocalizedLink>
-            <LocalizedLink
+            </Link>
+            <Link
               href="/about"
               className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Giới thiệu
-            </LocalizedLink>
-            <LocalizedLink
+            </Link>
+            <Link
               href="/contact"
               className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Liên hệ
-            </LocalizedLink>
-            <LocalizedLink
+            </Link>
+            <Link
               href="/bao-hanh"
               className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
               Bảo hành
-            </LocalizedLink>
-            <div className="px-4 py-2">
-              <LanguageSwitcherWrapper />
-            </div>
+            </Link>
           </nav>
         </div>
       </header>

@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import createMiddleware from 'next-intl/middleware';
-import { locales } from '@/i18n/request';
 
 // Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
 const protectedPaths = ['/account', '/checkout', '/api/protected'];
@@ -74,51 +72,50 @@ const debug = (request: NextRequest, token: any) => {
   }
 };
 
-// Cấu hình i18n middleware
-const i18nMiddleware = createMiddleware({
-  locales: ['vi', 'en'],
-  defaultLocale: 'vi',
-  localePrefix: 'always'
-});
-
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const pathnameIsMissingLocale = locales.every(
-    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
-  );
 
-  if (pathnameIsMissingLocale) {
-    const locale = request.headers.get('accept-language')?.split(',')?.[0].split('-')[0] || 'vi';
-    return NextResponse.redirect(
-      new URL(`/${locale}${pathname}`, request.url)
-    );
+  // Bỏ qua các file static và api routes không cần kiểm tra
+  if (isStaticFile(pathname) || pathname.includes('/api/auth')) {
+    return NextResponse.next();
   }
 
-  // Kiểm tra xem đường dẫn có cần bảo vệ không
-  const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
-  
-  if (isProtectedPath) {
-    const token = await getToken({req: request});
-    
+  // Lấy token từ cookie với secret từ environment hoặc fallback
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
+  });
+
+  // Log thông tin debug
+  debug(request, token);
+
+  // Nếu là đường dẫn admin
+  if (isAdminPath(pathname)) {
+    // Nếu chưa đăng nhập, chuyển đến login
     if (!token) {
-      const url = new URL('/auth/signin', request.url);
+      const url = new URL('/login', request.url);
       url.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(url);
+    }
+
+    // Kiểm tra email có trong danh sách admin không
+    if (!token.email || !ADMIN_EMAILS.includes(token.email)) {
+      const url = new URL('/', request.url);
       return NextResponse.redirect(url);
     }
   }
 
-  // Xử lý i18n routing
-  return i18nMiddleware(request);
+  // Nếu là đường dẫn được bảo vệ và chưa đăng nhập, chuyển hướng đến trang đăng nhập
+  if (isProtectedPath(pathname) && !token) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    // Auth và bảo vệ đường dẫn
-    '/admin/:path*',
-    '/account/:path*',
-    '/checkout/:path*',
-    '/api/protected/:path*',
-    // i18n routing (skip api and static files)
-    '/((?!api|_next|.*\\..*).*)'
-  ]
+  // Chỉ áp dụng cho các đường dẫn cần kiểm tra
+  matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/protected/:path*'],
 };
