@@ -7,13 +7,13 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip middleware for static files, API routes, etc.
-  if (
-    pathname.includes('.') ||
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/api/') ||
-    pathname.includes('favicon.ico') ||
-    pathname.includes('site.webmanifest')
-  ) {
+ if (
+   pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/) ||
+   pathname.startsWith('/_next') ||
+   pathname.startsWith('/api/') ||
+   pathname.includes('favicon.ico') ||
+   pathname.includes('site.webmanifest')
+ ) {
     return NextResponse.next();
   }
 
@@ -57,5 +57,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|_next/data|favicon.ico|images|site.webmanifest).*)'],
+ matcher: ['/((?!_next|api|favicon.ico|site.webmanifest|.*\\.).*)'],
 };
