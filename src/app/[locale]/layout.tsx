@@ -3,9 +3,9 @@ import { locales } from '@/middleware';
 
 interface LocaleLayoutProps {
   children: ReactNode;
-  params: {
+  params: Promise<{
     locale: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -16,7 +16,8 @@ export default async function LocaleLayout({
   children,
   params,
 }: LocaleLayoutProps) {
-  const locale = params.locale;
+  // Await params để lấy giá trị locale một cách đúng đắn
+  const { locale } = await params;
   
   // Validate that the incoming locale is valid
   const isValidLocale = locales.includes(locale);
