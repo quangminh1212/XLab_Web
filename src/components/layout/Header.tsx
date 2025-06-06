@@ -9,6 +9,8 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useTranslation } from '@/i18n/useTranslation';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -31,6 +33,7 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { t, locale, changeLocale } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -342,36 +345,39 @@ const Header = () => {
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Trang chủ
+                {t('app.header.home')}
               </Link>
               <Link
                 href="/products"
                 className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Sản phẩm
+                {t('app.header.products')}
               </Link>
               <Link
                 href="/about"
                 className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Giới thiệu
+                {t('app.footer.introduction')}
               </Link>
               <Link
                 href="/contact"
                 className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Liên hệ
+                {t('app.header.contact')}
               </Link>
               <Link
                 href="/bao-hanh"
                 className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Bảo hành
+                {t('app.common.support')}
               </Link>
             </nav>
 
-            {/* Right Side - Balance + Auth + Cart */}
+            {/* Right Side - Balance + Auth + Cart + Language */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
+              {/* Language Switcher */}
+              <LanguageSwitcher className="hidden md:block" />
+              
               {/* Balance Display */}
               {session && (
                 <div className="hidden sm:block">
@@ -690,7 +696,7 @@ const Header = () => {
                     onClick={() => signIn()}
                     className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    Đăng nhập
+                    {t('app.header.login')}
                   </button>
                 )}
 
@@ -788,36 +794,71 @@ const Header = () => {
               className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Trang chủ
+              {t('app.header.home')}
             </Link>
             <Link
               href="/products"
               className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Sản phẩm
+              {t('app.header.products')}
             </Link>
             <Link
               href="/about"
               className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Giới thiệu
+              {t('app.footer.introduction')}
             </Link>
             <Link
               href="/contact"
               className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Liên hệ
+              {t('app.header.contact')}
             </Link>
             <Link
               href="/bao-hanh"
               className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Bảo hành
+              {t('app.common.support')}
             </Link>
+            
+            {/* Language Switcher in Mobile Menu */}
+            <div className="px-4 py-2 border-t border-gray-100 mt-2 pt-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700">{t('app.header.language')}</span>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => {
+                      changeLocale('vi');
+                      setIsOpen(false);
+                    }}
+                    className={`px-3 py-1 text-sm rounded-md ${
+                      locale === 'vi'
+                        ? 'bg-primary-100 text-primary-700 font-medium'
+                        : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    {t('app.header.language.vi')}
+                  </button>
+                  <button
+                    onClick={() => {
+                      changeLocale('en');
+                      setIsOpen(false);
+                    }}
+                    className={`px-3 py-1 text-sm rounded-md ${
+                      locale === 'en'
+                        ? 'bg-primary-100 text-primary-700 font-medium'
+                        : 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    {t('app.header.language.en')}
+                  </button>
+                </div>
+              </div>
+            </div>
           </nav>
         </div>
       </header>

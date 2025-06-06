@@ -8,24 +8,11 @@
     "isActive": true,
     "balance": 57000,
     "createdAt": "2025-05-29T20:16:59.995Z",
-    "updatedAt": "2025-06-05T05:35:23.921Z",
+    "updatedAt": "2025-06-06T08:29:25.334Z",
     "lastLogin": "2025-05-29T20:16:59.995Z"
   },
   "transactions": [],
-  "cart": [
-    {
-      "id": "chatgpt",
-      "name": "ChatGPT",
-      "price": 149000,
-      "quantity": 1,
-      "image": "/images/products/chatgpt/8f03b3dc-86a9-49ef-9c61-ae5e6030f44b.png",
-      "version": "Full - Dùng riêng - 1 Tháng",
-      "options": [
-        "Full - Dùng riêng - 1 Tháng"
-      ],
-      "uniqueKey": "chatgpt_Full - Dùng riêng - 1 Tháng_Full - Dùng riêng - 1 Tháng"
-    }
-  ],
+  "cart": [],
   "orders": [],
   "vouchers": [
     {
@@ -47,7 +34,7 @@
     "theme": "light"
   },
   "metadata": {
-    "lastUpdated": "2025-06-05T05:35:23.922Z",
+    "lastUpdated": "2025-06-06T08:29:25.349Z",
     "version": "1.0"
   }
 }

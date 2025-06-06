@@ -22,6 +22,7 @@
     "fix:all": "node scripts/fix-all-issues.js"
   },
   "dependencies": {
+    "@formatjs/intl": "3.1.6",
     "@next/swc-wasm-nodejs": "15.3.2",
     "@radix-ui/react-slot": "1.1.2",
     "@tinymce/tinymce-react": "6.1.0",
@@ -42,6 +43,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "5.5.0",
+    "react-intl": "7.1.11",
     "react-quill": "2.0.0",
     "tailwind-merge": "2.2.0",
     "uuid": "11.1.0",
