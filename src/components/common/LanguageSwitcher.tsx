@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from '@/i18n/useTranslation';
+import Image from 'next/image';
 
 interface LanguageSwitcherProps {
   className?: string;
@@ -51,6 +52,11 @@ export const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     setIsOpen(false);
   };
 
+  const flagMap = {
+    vi: '/images/icons/vietnam-flag.svg',
+    en: '/images/icons/uk-flag.svg',
+  };
+
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
@@ -59,7 +65,18 @@ export const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <span>{t('app.header.language')}</span>
+        <div className="flex items-center">
+          <div className="w-5 h-5 relative mr-2">
+            <Image 
+              src={flagMap[locale as keyof typeof flagMap]} 
+              alt={locale}
+              width={20}
+              height={20}
+              className="rounded-sm"
+            />
+          </div>
+          <span>{t(`app.header.language.${locale}`)}</span>
+        </div>
         <svg
           className={`ml-1 h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -82,18 +99,36 @@ export const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               onClick={() => handleLanguageChange('vi')}
               className={`block w-full px-4 py-2 text-left text-sm ${
                 locale === 'vi' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-50'
-              }`}
+              } flex items-center`}
               role="menuitem"
             >
+              <div className="w-5 h-5 relative mr-2">
+                <Image 
+                  src={flagMap.vi}
+                  alt="Tiếng Việt"
+                  width={20}
+                  height={20}
+                  className="rounded-sm"
+                />
+              </div>
               {t('app.header.language.vi')}
             </button>
             <button
               onClick={() => handleLanguageChange('en')}
               className={`block w-full px-4 py-2 text-left text-sm ${
                 locale === 'en' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-50'
-              }`}
+              } flex items-center`}
               role="menuitem"
             >
+              <div className="w-5 h-5 relative mr-2">
+                <Image 
+                  src={flagMap.en}
+                  alt="English"
+                  width={20}
+                  height={20}
+                  className="rounded-sm"
+                />
+              </div>
               {t('app.header.language.en')}
             </button>
           </div>

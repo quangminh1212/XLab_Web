@@ -835,12 +835,21 @@ const Header = () => {
                       changeLocale('vi');
                       setIsOpen(false);
                     }}
-                    className={`px-3 py-1 text-sm rounded-md ${
+                    className={`px-3 py-1 text-sm rounded-md flex items-center ${
                       locale === 'vi'
                         ? 'bg-primary-100 text-primary-700 font-medium'
                         : 'bg-gray-100 text-gray-700'
                     }`}
                   >
+                    <div className="w-4 h-4 relative mr-1">
+                      <Image 
+                        src="/images/icons/vietnam-flag.svg"
+                        alt="Tiếng Việt"
+                        width={16}
+                        height={16}
+                        className="rounded-sm"
+                      />
+                    </div>
                     {t('app.header.language.vi')}
                   </button>
                   <button
@@ -848,12 +857,21 @@ const Header = () => {
                       changeLocale('en');
                       setIsOpen(false);
                     }}
-                    className={`px-3 py-1 text-sm rounded-md ${
+                    className={`px-3 py-1 text-sm rounded-md flex items-center ${
                       locale === 'en'
                         ? 'bg-primary-100 text-primary-700 font-medium'
                         : 'bg-gray-100 text-gray-700'
                     }`}
                   >
+                    <div className="w-4 h-4 relative mr-1">
+                      <Image 
+                        src="/images/icons/uk-flag.svg"
+                        alt="English"
+                        width={16}
+                        height={16}
+                        className="rounded-sm"
+                      />
+                    </div>
                     {t('app.header.language.en')}
                   </button>
                 </div>
