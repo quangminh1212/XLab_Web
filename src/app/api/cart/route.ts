@@ -52,7 +52,25 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const data = await request.json();
+    // Kiểm tra content-type để đảm bảo đúng là JSON
+    const contentType = request.headers.get("content-type");
+    if (!contentType || !contentType.includes('application/json')) {
+      return NextResponse.json({ error: 'Content-Type must be application/json' }, { status: 400 });
+    }
+
+    let data;
+    try {
+      // Thêm kiểm tra để đảm bảo JSON hợp lệ
+      const text = await request.text();
+      if (!text || text.trim() === '') {
+        return NextResponse.json({ error: 'Empty request body' }, { status: 400 });
+      }
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error('JSON parse error:', e);
+      return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+    }
+
     const { cart } = data;
 
     if (!Array.isArray(cart)) {
