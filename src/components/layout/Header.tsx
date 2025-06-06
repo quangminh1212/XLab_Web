@@ -847,7 +847,7 @@ const Header = () => {
                         alt="Tiếng Việt"
                         width={16}
                         height={16}
-                        className="rounded-sm"
+                        className="rounded-sm translate-y-[1px]"
                       />
                     </div>
                     {t('app.header.language.vi')}
@@ -869,7 +869,7 @@ const Header = () => {
                         alt="English"
                         width={16}
                         height={16}
-                        className="rounded-sm"
+                        className="rounded-sm translate-y-[1px]"
                       />
                     </div>
                     {t('app.header.language.en')}

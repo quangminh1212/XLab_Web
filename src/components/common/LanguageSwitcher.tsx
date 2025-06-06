@@ -66,13 +66,13 @@ export const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
         aria-haspopup="true"
       >
         <div className="flex items-center">
-          <div className="w-5 h-5 relative mr-2">
+          <div className="w-5 h-5 relative mr-2 flex items-center justify-center">
             <Image 
               src={flagMap[locale as keyof typeof flagMap]} 
               alt={locale}
               width={20}
               height={20}
-              className="rounded-sm"
+              className="rounded-sm translate-y-[1px]"
             />
           </div>
           <span>{t(`app.header.language.${locale}`)}</span>
@@ -102,13 +102,13 @@ export const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               } flex items-center`}
               role="menuitem"
             >
-              <div className="w-5 h-5 relative mr-2">
+              <div className="w-5 h-5 relative mr-2 flex items-center justify-center">
                 <Image 
                   src={flagMap.vi}
                   alt="Tiếng Việt"
                   width={20}
                   height={20}
-                  className="rounded-sm"
+                  className="rounded-sm translate-y-[1px]"
                 />
               </div>
               {t('app.header.language.vi')}
@@ -120,13 +120,13 @@ export const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               } flex items-center`}
               role="menuitem"
             >
-              <div className="w-5 h-5 relative mr-2">
+              <div className="w-5 h-5 relative mr-2 flex items-center justify-center">
                 <Image 
                   src={flagMap.en}
                   alt="English"
                   width={20}
                   height={20}
-                  className="rounded-sm"
+                  className="rounded-sm translate-y-[1px]"
                 />
               </div>
               {t('app.header.language.en')}
