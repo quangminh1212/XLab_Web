@@ -103,11 +103,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         console.warn('No valid items to save to server - all items were filtered out');
         return;
       }
-      // Kiểm tra nếu không còn item nào hợp lệ và có items ban đầu
-      if (validCartItems.length === 0 && cartItems.length > 0) {
-        console.warn('No valid items to save to server - all items were filtered out');
-        return;
-      }
 
       const response = await fetch('/api/cart', {
         method: 'PUT',
