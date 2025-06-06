@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import '@/styles/globals.css';
 import '../styles/app-layout.css';
 import type { Metadata, Viewport } from 'next';
@@ -97,10 +96,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-=======
-import { ReactNode } from 'react';
-
-export default function RootLayout({ children }: { children: ReactNode }) {
-  return children;
-} 
->>>>>>> a60ce285271f3e1cc6fa1403fb6885b1e5aefa10

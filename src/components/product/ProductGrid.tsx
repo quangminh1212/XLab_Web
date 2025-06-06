@@ -1,5 +1,3 @@
-'use client';
-
 import ProductCard from './ProductCard';
 
 interface OptionPrice {

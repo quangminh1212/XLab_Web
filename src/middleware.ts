@@ -1,32 +1,29 @@
-<<<<<<< HEAD
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-=======
-import { withAuth, NextRequestWithAuth } from 'next-auth/middleware';
-import createIntlMiddleware from 'next-intl/middleware';
-import { NextRequest } from 'next/server';
->>>>>>> a60ce285271f3e1cc6fa1403fb6885b1e5aefa10
 
-const locales = ['en', 'vi'];
-const publicPages = [
-  '/',
+// Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
+const protectedPaths = ['/account', '/checkout', '/api/protected'];
+
+// Danh sách các đường dẫn chỉ dành cho admin
+const adminPaths = ['/admin'];
+
+// Danh sách email admin (giữ đồng bộ với NextAuth)
+const ADMIN_EMAILS = ['xlab.rnd@gmail.com'];
+
+// Danh sách các đường dẫn công khai (không cần đăng nhập)
+const publicPaths = [
   '/login',
   '/register',
   '/about',
   '/products',
+  '/accounts',
   '/services',
   '/support',
   '/contact',
-  '/vouchers/public',
-  '/terms',
-  '/privacy',
-  '/bao-hanh',
-  '/pricing',
-  '/testimonials'
+  '/api/auth',
 ];
 
-<<<<<<< HEAD
 // Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
 const isProtectedPath = (path: string) => {
   return protectedPaths.some(
@@ -121,51 +118,4 @@ export async function middleware(request: NextRequest) {
 export const config = {
   // Chỉ áp dụng cho các đường dẫn cần kiểm tra
   matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/protected/:path*'],
-=======
-const intlMiddleware = createIntlMiddleware({
-  locales,
-  defaultLocale: 'vi',
-  localePrefix: 'always',
-});
-
-const authMiddleware = withAuth(
-  function onSuccess(req) {
-    return intlMiddleware(req);
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const { pathname } = req.nextUrl;
-        if (pathname.startsWith('/admin')) {
-          return token?.email === 'xlab.rnd@gmail.com';
-        }
-        return token != null;
-      },
-    },
-    pages: {
-      signIn: '/login',
-    },
-  }
-);
-
-export function middleware(request: NextRequest) {
-  const publicPathnameRegex = new RegExp(
-    `^(/(${locales.join('|')}))?(${publicPages
-      .map((p) => (p === '/' ? '' : p))
-      .join('|')})/?$`,
-    'i'
-  );
-
-  const isPublicPage = publicPathnameRegex.test(request.nextUrl.pathname);
-
-  if (isPublicPage) {
-    return intlMiddleware(request);
-  } else {
-    return (authMiddleware as any)(request as NextRequestWithAuth);
-  }
-}
-
-export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
->>>>>>> a60ce285271f3e1cc6fa1403fb6885b1e5aefa10
 };
