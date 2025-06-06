@@ -25,10 +25,9 @@ export function middleware(request: NextRequest) {
   if (pathnameHasLocale) {
     return NextResponse.next();
   }
-
-  // Get preferred locale from cookie or accept-language header
+// Get preferred locale from cookie or accept-language header
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
-  let locale = cookieLocale || defaultLocale;
+  let locale = cookieLocale && locales.includes(cookieLocale) ? cookieLocale : defaultLocale;
   
   if (!cookieLocale) {
     // If no cookie, try to get locale from accept-language header
@@ -36,22 +35,31 @@ export function middleware(request: NextRequest) {
     if (acceptLanguage) {
       const preferredLocale = acceptLanguage
         .split(',')
-        .map((lang) => lang.split(';')[0].trim())
-        .find((lang) => locales.includes(lang.substring(0, 2)));
+        .map((lang) => {
+          const [code] = lang.split(';')[0].trim().split('-');
+          return code.toLowerCase();
+        })
+        .find((lang) => locales.includes(lang));
       
       if (preferredLocale) {
-        locale = preferredLocale.substring(0, 2);
+        locale = preferredLocale;
       }
     }
   }
 
   // Redirect to the locale path
   const url = request.nextUrl.clone();
-  url.pathname = `/${locale}${pathname === '/' ? '' : pathname}`;
+  url.pathname = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
   
   // Set locale cookie in the response
   const response = NextResponse.redirect(url);
-  response.cookies.set('NEXT_LOCALE', locale);
+  response.cookies.set('NEXT_LOCALE', locale, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30 // 30 days
+  });
   
   return response;
 }
