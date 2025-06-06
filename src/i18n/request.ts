@@ -1,23 +1,7 @@
 import {getRequestConfig} from 'next-intl/server';
-import {createLocalizedPathnamesNavigation} from 'next-intl/navigation';
-import {localePrefix} from 'next-intl/dist/types/src/shared/types';
 
 export const locales = ['vi', 'en'] as const;
 export type Locale = (typeof locales)[number];
-
-// Cấu hình đường dẫn phân theo ngôn ngữ
-export const {Link, redirect, usePathname, useRouter} = createLocalizedPathnamesNavigation({
-  locales,
-  pathnames: {
-    '/': '/',
-    '/cart': '/cart',
-    '/admin': '/admin',
-    '/admin/coupons': '/admin/coupons',
-    '/products': '/products',
-    '/products/[id]': '/products/[id]',
-  },
-  localePrefix: 'always'
-});
 
 export default getRequestConfig(async ({locale}) => {
   // Validate that the incoming `locale` parameter is valid
