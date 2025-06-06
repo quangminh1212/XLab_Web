@@ -44,5 +44,37 @@
     "terms_conjunction": "and",
     "privacy_policy": "Privacy Policy",
     "terms_suffix": "."
+  },
+  "Products": {
+    "title": "Products",
+    "meta_title": "Software | XLab - Software and Services",
+    "loading": "Loading products...",
+    "error_loading": "Could not load products",
+    "error_invalid_data": "Invalid data format",
+    "error_generic": "An error occurred",
+    "try_again": "Try again",
+    "go_home": "Go home",
+    "all_categories": "All",
+    "software_category": "Software",
+    "service_category": "Services",
+    "search_placeholder": "Search products...",
+    "sort_by": "Sort by:",
+    "sort_newest": "Newest",
+    "sort_price_low": "Price: Low to high",
+    "sort_price_high": "Price: High to low",
+    "sort_popular": "Most popular",
+    "sort_rating": "Highest rating",
+    "filter_by_category": "Filter by category",
+    "no_products_found": "No products found.",
+    "featured_products": "Featured Products",
+    "new_products": "New Products",
+    "popular_products": "Popular Products"
+  },
+  "ProductCard": {
+    "add_to_cart": "Add to Cart",
+    "view_details": "View Details",
+    "added_to_cart": "Added!",
+    "sold": "Sold",
+    "purchases_week": "purchases/week"
   }
 } 

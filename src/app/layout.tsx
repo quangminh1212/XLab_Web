@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { siteConfig } from '@/config/siteConfig';
 import { ClientLayoutWrapper } from '@/components/layout';
+import { getLocale, getMessages } from 'next-intl/server';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -79,9 +80,12 @@ export const viewport: Viewport = {
   themeColor: '#00A19A',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
+    <html lang={locale} className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -91,7 +95,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="font-sans antialiased">
-        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+        <ClientLayoutWrapper locale={locale} messages={messages}>
+          {children}
+        </ClientLayoutWrapper>
       </body>
     </html>
   );

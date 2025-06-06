@@ -44,5 +44,37 @@
     "terms_conjunction": "và",
     "privacy_policy": "Chính sách bảo mật",
     "terms_suffix": "của chúng tôi."
+  },
+  "Products": {
+    "title": "Sản phẩm",
+    "meta_title": "Phần mềm | XLab - Phần mềm và Dịch vụ",
+    "loading": "Đang tải sản phẩm...",
+    "error_loading": "Không thể tải sản phẩm",
+    "error_invalid_data": "Định dạng dữ liệu không hợp lệ",
+    "error_generic": "Đã xảy ra lỗi",
+    "try_again": "Thử lại",
+    "go_home": "Về trang chủ",
+    "all_categories": "Tất cả",
+    "software_category": "Phần mềm",
+    "service_category": "Dịch vụ",
+    "search_placeholder": "Tìm kiếm sản phẩm...",
+    "sort_by": "Sắp xếp theo:",
+    "sort_newest": "Mới nhất",
+    "sort_price_low": "Giá: Thấp đến cao",
+    "sort_price_high": "Giá: Cao đến thấp",
+    "sort_popular": "Phổ biến nhất",
+    "sort_rating": "Đánh giá cao nhất",
+    "filter_by_category": "Lọc theo danh mục",
+    "no_products_found": "Không tìm thấy sản phẩm nào.",
+    "featured_products": "Sản phẩm nổi bật",
+    "new_products": "Sản phẩm mới",
+    "popular_products": "Sản phẩm phổ biến"
+  },
+  "ProductCard": {
+    "add_to_cart": "Thêm vào giỏ",
+    "view_details": "Xem chi tiết",
+    "added_to_cart": "Đã thêm!",
+    "sold": "Đã bán",
+    "purchases_week": "lượt mua/tuần"
   }
 } 

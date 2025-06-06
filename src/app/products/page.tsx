@@ -7,8 +7,10 @@ import { useSearchParams } from 'next/navigation';
 import ProductImage from '@/components/product/ProductImage';
 import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/common/button';
+import { useTranslations } from 'next-intl';
 
 export default function ProductsPage() {
+  const t = useTranslations('Products');
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -33,7 +35,7 @@ export default function ProductsPage() {
         const response = await fetch('/api/products');
 
         if (!response.ok) {
-          throw new Error('Không thể tải sản phẩm');
+          throw new Error(t('error_loading'));
         }
 
         const result = await response.json();
@@ -42,22 +44,22 @@ export default function ProductsPage() {
           setProducts(result.data);
         } else {
           setProducts([]);
-          setError('Định dạng dữ liệu không hợp lệ');
+          setError(t('error_invalid_data'));
         }
         setLoading(false);
       } catch (err: any) {
-        setError(err.message || 'Đã xảy ra lỗi');
+        setError(err.message || t('error_generic'));
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [t]);
 
   // Update title when component is rendered
   useEffect(() => {
-    document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ';
-  }, []);
+    document.title = t('meta_title');
+  }, [t]);
 
   // Lọc tất cả sản phẩm (bao gồm phần mềm và dịch vụ)
   const allProducts = Array.isArray(products) ? products : [];
@@ -133,17 +135,17 @@ export default function ProductsPage() {
 
   // Danh mục sản phẩm
   const productCategories = [
-    { id: 'all', name: 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
+    { id: 'all', name: t('all_categories'), count: Array.isArray(allProducts) ? allProducts.length : 0 },
     {
       id: 'software',
-      name: 'Phần mềm',
+      name: t('software_category'),
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => !p.isAccount && (p.type === 'software' || !p.type)).length
         : 0,
     },
     {
       id: 'service',
-      name: 'Dịch vụ',
+      name: t('service_category'),
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => p.isAccount || p.type === 'account').length
         : 0,
@@ -186,7 +188,7 @@ export default function ProductsPage() {
       <div className="py-12 flex justify-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải sản phẩm...</p>
+          <p className="text-gray-600">{t('loading')}</p>
         </div>
       </div>
     );
@@ -210,7 +212,7 @@ export default function ProductsPage() {
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải sản phẩm</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('error_loading')}</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <div className="flex justify-center gap-4">
             <button
@@ -231,7 +233,7 @@ export default function ProductsPage() {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              Thử lại
+              {t('try_again')}
             </button>
             <Link
               href="/"
@@ -248,10 +250,10 @@ export default function ProductsPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                 />
               </svg>
-              Về trang chủ
+              {t('go_home')}
             </Link>
           </div>
         </div>
@@ -260,160 +262,170 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Sản phẩm</h1>
-      
-      <div className="bg-gray-50 py-4">
-        <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
-          <div className="mb-4">
-            <p className="text-sm md:text-base text-gray-600">
-              Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
-            </p>
+    <div className="bg-gray-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Hero Section */}
+        <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg shadow-lg p-8 md:p-12 text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+            Khám phá các sản phẩm của chúng tôi
+          </h1>
+          <p className="mt-4 text-lg md:text-xl text-primary-100 max-w-3xl mx-auto">
+            Tìm kiếm các giải pháp phần mềm và dịch vụ hàng đầu để đáp ứng mọi nhu cầu của bạn.
+          </p>
+          <div className="mt-8">
+            <input
+              type="text"
+              placeholder={t('search_placeholder')}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full max-w-lg mx-auto px-4 py-3 rounded-full border-gray-300 shadow-sm focus:ring-primary-400 focus:border-primary-400"
+            />
           </div>
+        </div>
 
-          {/* Filter tabs */}
-          <div className="border-b border-gray-200 mb-4">
-            <div className="flex space-x-4">
-              <button
-                onClick={() => setFilter('all')}
-                className={`py-2 px-2 ${filter === 'all' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-              >
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 10h16M4 14h16M4 18h16"
-                    />
-                  </svg>
-                  Tất cả
-                </div>
-              </button>
-              <button
-                onClick={() => setFilter('software')}
-                className={`py-2 px-2 ${filter === 'software' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-              >
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  Phần mềm
-                </div>
-              </button>
-              <button
-                onClick={() => setFilter('service')}
-                className={`py-2 px-2 ${filter === 'service' ? 'border-b-2 border-primary-600 text-primary-600' : 'text-gray-500 hover:text-gray-700'} font-medium text-sm md:text-base`}
-              >
-                <div className="flex items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 md:h-5 md:w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  Dịch vụ
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Main content */}
-            <div className="w-full">
-              {/* Filters bar */}
-              <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
-                <div className="text-sm md:text-base text-gray-600">
-                  Hiển thị {sortedProducts.length} kết quả
-                </div>
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
-                    Sắp xếp:
-                  </label>
-                  <select
-                    id="sort"
-                    className="text-sm md:text-base border-gray-200 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                    value={sort}
-                    onChange={(e) => setSort(e.target.value)}
-                  >
-                    <option value="newest">Mới nhất</option>
-                    <option value="price-low">Giá thấp đến cao</option>
-                    <option value="price-high">Giá cao đến thấp</option>
-                    <option value="popular">Phổ biến nhất</option>
-                  </select>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Filters */}
+          <aside className="lg:col-span-1">
+            <div className="sticky top-24">
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('filter_by_category')}</h3>
+                <ul className="space-y-2">
+                  {productCategories.map((category) => (
+                    <li key={category.id}>
+                      <button
+                        onClick={() => setFilter(category.id)}
+                        className={`w-full text-left px-4 py-2 rounded-md transition-colors ${
+                          filter === category.id
+                            ? 'bg-primary-100 text-primary-700 font-semibold'
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        {category.name} ({category.count})
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              {/* Product grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
-                {sortedProducts.map((product) => {
-                  // Log the product data for debugging
-                  console.log(`Product ${product.id} image data:`, product.images);
-
-                  // Xác định giá hiển thị - kiểm tra versions trước
-                  const displayPrice =
-                    product.versions && product.versions.length > 0
-                      ? product.versions[0].price || 0
-                      : product.price || 0;
-
-                  // Xác định giá gốc - kiểm tra versions trước
-                  const originalPrice =
-                    product.versions && product.versions.length > 0
-                      ? product.versions[0].originalPrice || 0
-                      : product.salePrice || 0;
-
-                  // Lấy ảnh sản phẩm (sử dụng helper function)
-                  const imageUrl = getValidImageUrl(product);
-
-                  console.log(`Processed image URL for ${product.name}:`, imageUrl);
-
-                  return (
-                    <ProductCard
-                      key={product.id}
-                      id={product.id.toString()}
-                      name={product.name}
-                      description={product.shortDescription || ''}
-                      price={displayPrice}
-                      originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
-                      image={imageUrl}
-                      category={categories.find((c) => c.id === product.categoryId)?.name}
-                      rating={product.rating}
-                      reviewCount={product.reviewCount}
-                      weeklyPurchases={product.weeklyPurchases}
-                      totalSold={product.totalSold}
-                      slug={product.slug}
-                      isAccount={product.isAccount || product.type === 'account'}
-                    />
-                  );
-                })}
+              <div className="bg-white p-6 rounded-lg shadow-md mt-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('sort_by')}</h3>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="w-full px-4 py-2 border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="newest">{t('sort_newest')}</option>
+                  <option value="price-low">{t('sort_price_low')}</option>
+                  <option value="price-high">{t('sort_price_high')}</option>
+                  <option value="popular">{t('sort_popular')}</option>
+                  <option value="rating">{t('sort_rating')}</option>
+                </select>
               </div>
             </div>
-          </div>
+          </aside>
+
+          {/* Product Grid */}
+          <main className="lg:col-span-3">
+            {sortedProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {sortedProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={product.id.toString()}
+                    name={product.name}
+                    description={product.shortDescription || ''}
+                    price={product.price || 0}
+                    originalPrice={product.salePrice}
+                    image={getValidImageUrl(product)}
+                    category={categories.find((c) => c.id === product.categoryId)?.name}
+                    rating={product.rating}
+                    reviewCount={product.reviewCount}
+                    weeklyPurchases={product.weeklyPurchases}
+                    totalSold={product.totalSold}
+                    slug={product.slug}
+                    isAccount={product.isAccount || product.type === 'account'}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mx-auto text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <h3 className="mt-4 text-xl font-medium text-gray-900">
+                  {t('no_products_found')}
+                </h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  Vui lòng thử lại với các bộ lọc hoặc từ khóa tìm kiếm khác.
+                </p>
+              </div>
+            )}
+
+            {/* Featured Products Section */}
+            {featuredProducts.length > 0 && (
+              <section className="mt-16">
+                <h2 className="text-3xl font-extrabold text-gray-900 mb-6">{t('featured_products')}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {featuredProducts.map((product) => (
+                     <ProductCard
+                     key={product.id}
+                     id={product.id.toString()}
+                     name={product.name}
+                     description={product.shortDescription || ''}
+                     price={product.price || 0}
+                     originalPrice={product.salePrice}
+                     image={getValidImageUrl(product)}
+                     category={categories.find((c) => c.id === product.categoryId)?.name}
+                     rating={product.rating}
+                     reviewCount={product.reviewCount}
+                     weeklyPurchases={product.weeklyPurchases}
+                     totalSold={product.totalSold}
+                     slug={product.slug}
+                     isAccount={product.isAccount || product.type === 'account'}
+                   />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* New Products Section */}
+            {newProducts.length > 0 && (
+              <section className="mt-16">
+                <h2 className="text-3xl font-extrabold text-gray-900 mb-6">{t('new_products')}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {newProducts.map((product) => (
+                     <ProductCard
+                     key={product.id}
+                     id={product.id.toString()}
+                     name={product.name}
+                     description={product.shortDescription || ''}
+                     price={product.price || 0}
+                     originalPrice={product.salePrice}
+                     image={getValidImageUrl(product)}
+                     category={categories.find((c) => c.id === product.categoryId)?.name}
+                     rating={product.rating}
+                     reviewCount={product.reviewCount}
+                     weeklyPurchases={product.weeklyPurchases}
+                     totalSold={product.totalSold}
+                     slug={product.slug}
+                     isAccount={product.isAccount || product.type === 'account'}
+                   />
+                  ))}
+                </div>
+              </section>
+            )}
+          </main>
         </div>
       </div>
     </div>
