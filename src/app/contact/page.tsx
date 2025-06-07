@@ -3,9 +3,13 @@
 import { useState } from 'react';
 import { siteConfig } from '@/config/siteConfig';
 import { useMessages } from '../../i18n/useMessages';
+import { usePathname } from 'next/navigation';
+import { getLocaleFromPath } from '../../i18n';
 
 export default function ContactPage() {
   const messages = useMessages();
+  const pathname = usePathname() || '';
+  const locale = getLocaleFromPath(pathname);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -396,7 +400,7 @@ export default function ContactPage() {
           <h2 className="text-2xl font-bold mb-6 text-center">{messages['app.contact.location']}</h2>
           <div className="rounded-lg overflow-hidden h-[500px] max-w-7xl mx-auto">
             <iframe
-              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(siteConfig.contact.address)}`}
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(siteConfig.contact.address)}&language=${locale}`}
               width="100%"
               height="100%"
               style={{ border: 0 }}
