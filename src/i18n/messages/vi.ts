@@ -149,7 +149,25 @@ const messages = {
 
   // FAQ section
   'app.faq.title': 'Câu hỏi thường gặp',
-  'app.faq.description': 'Giải đáp những thắc mắc phổ biến của khách hàng về sản phẩm và dịch vụ của XLab'
+  'app.faq.description': 'Câu trả lời cho các câu hỏi phổ biến của khách hàng về sản phẩm và dịch vụ của XLab',
+  'app.faq.viewMore': 'Xem thêm câu hỏi',
+  'app.faq.question1': 'Làm thế nào để tải xuống phần mềm?',
+  'app.faq.answer1': 'Bạn có thể tải xuống phần mềm miễn phí tại trang sản phẩm tương ứng sau khi đăng nhập vào tài khoản của mình. Đối với sản phẩm trả phí, bạn cần hoàn tất thanh toán trước khi tải xuống.',
+  'app.faq.question2': 'Làm thế nào để kích hoạt bản quyền?',
+  'app.faq.answer2': 'Sau khi mua sản phẩm, bạn sẽ nhận được mã kích hoạt qua email. Mở ứng dụng, vào phần "Kích hoạt bản quyền" và nhập mã này để sử dụng đầy đủ tính năng.',
+  'app.faq.question3': 'Tôi có thể sử dụng trên mấy thiết bị?',
+  'app.faq.answer3': 'Mỗi bản quyền cho phép bạn sử dụng trên tối đa 3 thiết bị cùng một lúc. Bạn có thể quản lý danh sách thiết bị trong phần "Tài khoản" trên website.',
+  'app.faq.question4': 'Chính sách hoàn tiền như thế nào?',
+  'app.faq.answer4': 'Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được hướng dẫn.',
+  'app.faq.question5': 'Làm thế nào để liên hệ hỗ trợ kỹ thuật?',
+  'app.faq.answer5': 'Bạn có thể liên hệ với đội ngũ hỗ trợ kỹ thuật thông qua email support@xlab.vn, hotline 1900.xxxx, hoặc chat trực tiếp trên website. Chúng tôi phản hồi trong vòng 24 giờ làm việc.',
+  'app.faq.question6': 'XLab có cung cấp giải pháp cho doanh nghiệp?',
+  'app.faq.answer6': 'Có, chúng tôi có các gói dịch vụ đặc biệt dành cho doanh nghiệp với nhiều ưu đãi về giá và hỗ trợ kỹ thuật chuyên biệt. Liên hệ với chúng tôi để được tư vấn phương án phù hợp nhất.',
+  
+  // Call to action section
+  'app.cta.title': 'Sẵn sàng nâng cao hiệu suất công việc với XLab?',
+  'app.cta.description': 'Chúng tôi cung cấp nhiều mức giá ưu đãi đặc biệt dành cho khách hàng mua số lượng lớn. Càng mua nhiều, mức giảm giá càng cao. Chúng tôi cam kết mang đến cho bạn những giải pháp tốt nhất với chi phí hợp lý nhất.',
+  'app.cta.contactButton': 'Liên hệ tư vấn'
 };
 
 export default messages; 

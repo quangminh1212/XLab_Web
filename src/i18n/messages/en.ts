@@ -149,7 +149,25 @@ const messages = {
 
   // FAQ section
   'app.faq.title': 'Frequently Asked Questions',
-  'app.faq.description': 'Answers to common customer questions about XLab products and services'
+  'app.faq.description': 'Answers to common customer questions about XLab products and services',
+  'app.faq.viewMore': 'View more questions',
+  'app.faq.question1': 'How to download software?',
+  'app.faq.answer1': 'You can download free software from the corresponding product page after logging into your account. For paid products, you need to complete the payment before downloading.',
+  'app.faq.question2': 'How to activate the license?',
+  'app.faq.answer2': 'After purchasing a product, you will receive an activation code via email. Open the application, go to "Activate License" and enter this code to use all features.',
+  'app.faq.question3': 'How many devices can I use it on?',
+  'app.faq.answer3': 'Each license allows you to use on up to 3 devices simultaneously. You can manage your device list in the "Account" section on the website.',
+  'app.faq.question4': 'What is the refund policy?',
+  'app.faq.answer4': 'We have a 7-day refund policy from the date of purchase if the product does not meet your needs. Contact our support department for guidance.',
+  'app.faq.question5': 'How to contact technical support?',
+  'app.faq.answer5': 'You can contact our technical support team via email support@xlab.vn, hotline 1900.xxxx, or live chat on the website. We respond within 24 business hours.',
+  'app.faq.question6': 'Does XLab provide solutions for businesses?',
+  'app.faq.answer6': 'Yes, we have special service packages for businesses with many price benefits and specialized technical support. Contact us for advice on the most suitable option.',
+  
+  // Call to action section
+  'app.cta.title': 'Ready to improve your work efficiency with XLab?',
+  'app.cta.description': 'We offer special discount rates for customers who buy in bulk. The more you buy, the higher the discount. We are committed to bringing you the best solutions at the most reasonable cost.',
+  'app.cta.contactButton': 'Contact us'
 };
 
 export default messages; 

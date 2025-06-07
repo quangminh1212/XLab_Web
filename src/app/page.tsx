@@ -502,12 +502,10 @@ function HomePage() {
                           />
                         </svg>
                       </span>
-                      Làm thế nào để tải xuống phần mềm?
+                      {t('app.faq.question1')}
                     </h3>
                     <p className="text-gray-600">
-                      Bạn có thể tải xuống phần mềm miễn phí tại trang sản phẩm tương ứng sau khi
-                      đăng nhập vào tài khoản của mình. Đối với sản phẩm trả phí, bạn cần hoàn tất
-                      thanh toán trước khi tải xuống.
+                      {t('app.faq.answer1')}
                     </p>
                   </div>
                   <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
@@ -526,11 +524,10 @@ function HomePage() {
                           />
                         </svg>
                       </span>
-                      Làm thế nào để kích hoạt bản quyền?
+                      {t('app.faq.question2')}
                     </h3>
                     <p className="text-gray-600">
-                      Sau khi mua sản phẩm, bạn sẽ nhận được mã kích hoạt qua email. Mở ứng dụng,
-                      vào phần "Kích hoạt bản quyền" và nhập mã này để sử dụng đầy đủ tính năng.
+                      {t('app.faq.answer2')}
                     </p>
                   </div>
                   <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
@@ -549,11 +546,10 @@ function HomePage() {
                           />
                         </svg>
                       </span>
-                      Tôi có thể sử dụng trên mấy thiết bị?
+                      {t('app.faq.question3')}
                     </h3>
                     <p className="text-gray-600">
-                      Mỗi bản quyền cho phép bạn sử dụng trên tối đa 3 thiết bị cùng một lúc. Bạn có
-                      thể quản lý danh sách thiết bị trong phần "Tài khoản" trên website.
+                      {t('app.faq.answer3')}
                     </p>
                   </div>
                   <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
@@ -572,12 +568,10 @@ function HomePage() {
                           />
                         </svg>
                       </span>
-                      Chính sách hoàn tiền như thế nào?
+                      {t('app.faq.question4')}
                     </h3>
                     <p className="text-gray-600">
-                      Chúng tôi có chính sách hoàn tiền trong vòng 7 ngày kể từ ngày mua nếu sản
-                      phẩm không đáp ứng được nhu cầu của bạn. Liên hệ với bộ phận hỗ trợ để được
-                      hướng dẫn.
+                      {t('app.faq.answer4')}
                     </p>
                   </div>
                   <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
@@ -596,12 +590,10 @@ function HomePage() {
                           />
                         </svg>
                       </span>
-                      Làm thế nào để liên hệ hỗ trợ kỹ thuật?
+                      {t('app.faq.question5')}
                     </h3>
                     <p className="text-gray-600">
-                      Bạn có thể liên hệ với đội ngũ hỗ trợ kỹ thuật thông qua email
-                      support@xlab.vn, hotline 1900.xxxx, hoặc chat trực tiếp trên website. Chúng
-                      tôi phản hồi trong vòng 24 giờ làm việc.
+                      {t('app.faq.answer5')}
                     </p>
                   </div>
                   <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
@@ -620,12 +612,10 @@ function HomePage() {
                           />
                         </svg>
                       </span>
-                      XLab có cung cấp giải pháp cho doanh nghiệp?
+                      {t('app.faq.question6')}
                     </h3>
                     <p className="text-gray-600">
-                      Có, chúng tôi có các gói dịch vụ đặc biệt dành cho doanh nghiệp với nhiều ưu
-                      đãi về giá và hỗ trợ kỹ thuật chuyên biệt. Liên hệ với chúng tôi để được tư
-                      vấn phương án phù hợp nhất.
+                      {t('app.faq.answer6')}
                     </p>
                   </div>
                 </div>
@@ -634,7 +624,7 @@ function HomePage() {
                     href="/support"
                     className="inline-flex items-center bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors"
                   >
-                    Xem thêm câu hỏi
+                    {t('app.faq.viewMore')}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4 ml-1"
@@ -660,19 +650,17 @@ function HomePage() {
         <div className="container">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
-              Sẵn sàng nâng cao hiệu suất công việc với XLab?
+              {t('app.cta.title')}
             </h2>
             <p className="text-white/90 text-base md:text-lg mb-8 max-w-2xl mx-auto">
-              Chúng tôi cung cấp nhiều mức giá ưu đãi đặc biệt dành cho khách hàng mua số lượng lớn.
-              Càng mua nhiều, mức giảm giá càng cao. Chúng tôi cam kết mang đến cho bạn những giải
-              pháp tốt nhất với chi phí hợp lý nhất.
+              {t('app.cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/contact"
                 className="bg-white text-primary-600 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl"
               >
-                Liên hệ tư vấn
+                {t('app.cta.contactButton')}
               </Link>
             </div>
           </div>
