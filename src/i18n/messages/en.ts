@@ -257,14 +257,9 @@ const messages = {
   'product.description': 'Description',
   'product.features': 'Features',
   'product.requirements': 'Requirements',
-
-  // Grok product specific translations
-  'product.grok.title': 'Grok',
-  'product.grok.description': 'Grok AI helps automatically analyze and process big data quickly, supporting precise decision making and saving time. It is widely applied in many fields such as market analysis, automated customer service, fraud detection, and business process optimization.',
-  'product.grok.option.full': 'Full - Private use - 1 Month',
+  'product.grok.detailsTitle': 'Detailed Information',
   'product.grok.showMore': 'Show more',
   'product.grok.showLess': 'Show less',
-  'product.grok.detailsTitle': 'Detailed Information',
 };
 
 export default messages; 
