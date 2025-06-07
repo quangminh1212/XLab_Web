@@ -1,4 +1,5 @@
-import ProductPage from '@/app/products/[id]/page';
+import { Suspense } from 'react';
+import ProductDetailPage from '@/app/products/[id]/page';
 
 interface LocaleProductDetailPageProps {
   params: {
@@ -7,7 +8,10 @@ interface LocaleProductDetailPageProps {
   };
 }
 
-export default async function LocaleProductDetailPage({ params }: LocaleProductDetailPageProps) {
-  // Trang ProductPage yêu cầu params là một Promise<{id: string}>
-  return <ProductPage params={Promise.resolve({ id: params.id })} />;
+export default function LocaleProductDetail({ params }: LocaleProductDetailPageProps) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductDetailPage params={Promise.resolve({ id: params.id })} />
+    </Suspense>
+  );
 } 
