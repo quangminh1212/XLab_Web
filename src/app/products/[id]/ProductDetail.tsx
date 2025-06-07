@@ -648,7 +648,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
               </div>
 
-              <p className="mt-4 text-gray-600 text-lg">{localizedShortDescription || ''}</p>
+              <p className="mt-4 text-gray-600 text-sm line-clamp-3">{localizedShortDescription || ''}</p>
 
               {/* Quantity selector */}
               <div className="mt-6">
@@ -722,17 +722,21 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 </Link>
               </div>
 
-              {/* Features list */}
+              {/* Features list - rút gọn */}
               {product.features && product.features.length > 0 && (
-                <div className="mt-8">
-                  <h3 className="font-medium text-gray-900 mb-2">Tính năng nổi bật:</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {product.features.map((feature, index) => (
-                      <li key={index} className="text-gray-600">
-                        {typeof feature === 'string' ? feature : feature.title}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="mt-6">
+                  <details>
+                    <summary className="font-medium text-gray-900 cursor-pointer hover:text-primary-600">
+                      Xem tính năng nổi bật
+                    </summary>
+                    <ul className="list-disc list-inside space-y-1 mt-2 pl-2">
+                      {product.features.map((feature, index) => (
+                        <li key={index} className="text-gray-600 text-sm">
+                          {typeof feature === 'string' ? feature : feature.title}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
                 </div>
               )}
             </div>
@@ -747,7 +751,6 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         
         {/* Related products */}
         <div className="mt-10">
-          <h2 className="text-2xl font-semibold mb-6">{t('product.relatedProducts')}</h2>
           <RelatedProducts 
             currentProductId={product.id.toString()}
             categoryId={

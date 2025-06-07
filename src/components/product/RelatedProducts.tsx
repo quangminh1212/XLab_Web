@@ -13,6 +13,7 @@ interface Product {
   originalPrice?: number;
   image: string;
   imageUrl?: string;
+  images?: string[] | { url: string }[];
   category?: string;
   categories?: { id: string; name: string }[];
   rating?: number;
@@ -97,7 +98,23 @@ export default function RelatedProducts({
     const safeDescription = String(product.shortDescription || product.description || '');
     const safePrice = Number(product.price) || 0;
     const safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : undefined;
-    const safeImage = String(product.imageUrl || product.image || '');
+    
+    // Cải thiện xử lý ảnh - ưu tiên imageUrl trước, nếu không có thì dùng image, nếu không có cả hai thì dùng ảnh mặc định
+    let safeImage = '/images/placeholder/product-placeholder.jpg';
+    if (product.imageUrl && typeof product.imageUrl === 'string' && product.imageUrl.trim() !== '') {
+      safeImage = product.imageUrl;
+    } else if (product.image && typeof product.image === 'string' && product.image.trim() !== '') {
+      safeImage = product.image;
+    } else if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+      // Nếu có mảng images, lấy ảnh đầu tiên
+      const firstImage = product.images[0];
+      if (typeof firstImage === 'string' && firstImage.trim() !== '') {
+        safeImage = firstImage;
+      } else if (typeof firstImage === 'object' && firstImage && firstImage.url) {
+        safeImage = firstImage.url;
+      }
+    }
+    
     const safeRating = product.rating ? Number(product.rating) : undefined;
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
