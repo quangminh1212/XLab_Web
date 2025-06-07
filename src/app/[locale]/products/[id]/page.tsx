@@ -9,9 +9,12 @@ interface LocaleProductDetailPageProps {
 }
 
 export default function LocaleProductDetail({ params }: LocaleProductDetailPageProps) {
+  // Tạo promise để phù hợp với loại params mà ProductDetailPage mong đợi
+  const productParams = Promise.resolve({ id: params.id });
+  
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ProductDetailPage params={Promise.resolve({ id: params.id })} />
+      <ProductDetailPage params={productParams} />
     </Suspense>
   );
 } 
