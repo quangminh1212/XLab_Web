@@ -207,18 +207,18 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-5xl">
-      <div className="mb-6 border-l-4 border-primary-600 pl-4">
-        <h1 className="text-2xl font-bold text-gray-900">Lịch sử đơn hàng của bạn</h1>
-        <p className="text-sm text-gray-600 mt-1">Quản lý và theo dõi đơn hàng tại XLab</p>
+    <div className="container mx-auto py-4 px-3 max-w-5xl">
+      <div className="mb-4 border-l-4 border-primary-600 pl-3">
+        <h1 className="text-xl font-bold text-gray-900">Lịch sử đơn hàng của bạn</h1>
+        <p className="text-xs text-gray-600">Quản lý và theo dõi đơn hàng tại XLab</p>
       </div>
 
       {orders.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-8 text-center border border-gray-100">
-          <div className="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+        <div className="bg-white rounded-lg shadow p-6 text-center border border-gray-100">
+          <div className="bg-gray-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-10 w-10 text-gray-400"
+              className="h-8 w-8 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -231,18 +231,18 @@ export default function OrderHistoryPage() {
               />
             </svg>
           </div>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">Bạn chưa có đơn hàng nào</h2>
-          <p className="text-gray-500 mb-6 max-w-md mx-auto text-sm">
+          <h2 className="text-base font-semibold text-gray-800 mb-2">Bạn chưa có đơn hàng nào</h2>
+          <p className="text-gray-500 mb-4 max-w-md mx-auto text-xs">
             Hãy khám phá các sản phẩm của chúng tôi và trải nghiệm dịch vụ ngay!
           </p>
           <Link
             href="/products"
-            className="inline-flex items-center bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition-all duration-200 text-sm font-medium"
+            className="inline-flex items-center bg-primary-600 text-white px-4 py-1.5 rounded-md hover:bg-primary-700 transition-all duration-200 text-xs font-medium"
           >
             Xem sản phẩm
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 ml-2"
+              className="h-3 w-3 ml-1.5"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -255,138 +255,117 @@ export default function OrderHistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 gap-3">
           {orders.map((order) => (
             <div 
               key={order.id} 
-              className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
             >
-              {/* Phần header với thông tin đơn hàng */}
-              <div className="border-b border-gray-200 bg-gray-50 px-5 py-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mr-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-primary-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                        />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                {/* Phần header thông tin cơ bản */}
+                <div className="flex p-2.5 border-b sm:border-b-0 sm:border-r border-gray-200 bg-gray-50">
+                  <div className="w-6 h-6 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mr-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 text-primary-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs">Mã đơn hàng</div>
+                    <div className="font-medium text-gray-800">{order.id}</div>
+                  </div>
+                </div>
+                
+                <div className="flex p-2.5 border-b sm:border-b-0 sm:border-r border-gray-200 bg-gray-50">
+                  <div className="w-6 h-6 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mr-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 text-primary-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-gray-500 text-xs">Ngày đặt</div>
+                    <div className="text-gray-800">{formatDate(order.createdAt)}</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-center p-2.5 bg-gray-50">
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)} inline-flex items-center`}
+                  >
+                    {order.status === 'completed' && (
+                      <svg className="w-2.5 h-2.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500">Mã đơn hàng</div>
-                      <div className="font-medium text-gray-800">{order.id}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mr-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 text-primary-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500">Ngày đặt</div>
-                      <div className="text-gray-800">{formatDate(order.createdAt)}</div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center sm:justify-end">
-                    <div className="bg-white p-1 rounded-lg border border-gray-200">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)} inline-flex items-center`}
-                      >
-                        {order.status === 'completed' && (
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                          </svg>
-                        )}
-                        {getStatusName(order.status)}
-                      </span>
-                    </div>
-                  </div>
+                    )}
+                    {getStatusName(order.status)}
+                  </span>
                 </div>
               </div>
 
-              {/* Phần danh sách sản phẩm */}
-              <div className="px-5 py-4">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">Sản phẩm</h3>
-                <div className="divide-y divide-gray-100">
+              {/* Phần sản phẩm và giá */}
+              <div className="flex justify-between items-start p-2.5 border-t border-gray-200 bg-white">
+                {/* Danh sách sản phẩm */}
+                <div className="flex-1">
                   {order.items.map((item, index) => (
-                    <div key={index} className="py-3 flex items-center justify-between group">
-                      <div className="flex items-center space-x-3">
-                        <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-200">
-                          <Image
-                            src={getProductImage(item.productId, item.productName)}
-                            alt={item.productName}
-                            fill
-                            className="object-contain p-1"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = '/images/placeholder/product-placeholder.jpg';
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-sm text-gray-800 group-hover:text-primary-600 transition-colors duration-200">{item.productName}</h3>
-                          <div className="flex items-center mt-1">
-                            <span className="inline-flex items-center text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-                              <svg className="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
-                              </svg>
-                              Số lượng: {item.quantity}
-                            </span>
-                          </div>
-                        </div>
+                    <div key={index} className="flex items-center mb-1.5 last:mb-0">
+                      <div className="relative w-8 h-8 rounded overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-100 mr-2">
+                        <Image
+                          src={getProductImage(item.productId, item.productName)}
+                          alt={item.productName}
+                          fill
+                          className="object-contain p-1"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/images/placeholder/product-placeholder.jpg';
+                          }}
+                        />
                       </div>
-                      <div className="text-right">
-                        <p className="font-medium text-sm text-gray-800">{formatCurrency(item.price)}</p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-xs text-gray-800 truncate">{item.productName}</h3>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-500">SL: {item.quantity}</span>
+                          <span className="text-xs font-medium text-gray-800">{formatCurrency(item.price)}</span>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* Phần thông tin tổng cộng */}
-              <div className="bg-gray-50 border-t border-gray-200 px-5 py-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-                      <div className="flex items-center">
-                        <span className="text-sm text-gray-500 mr-2">Tổng cộng:</span>
-                        <span className="font-bold text-primary-600">
-                          {formatCurrency(order.totalAmount)}
-                        </span>
-                      </div>
-                    </div>
+                
+                {/* Phần giá và nút */}
+                <div className="ml-3 flex flex-col items-end">
+                  <div className="flex flex-col items-end mb-2">
+                    <span className="text-xs text-gray-500">Tổng cộng</span>
+                    <span className="font-bold text-sm text-primary-600">{formatCurrency(order.totalAmount)}</span>
                   </div>
                   <Link
                     href={`/orders/${order.id}`}
-                    className="inline-flex items-center text-xs px-4 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-md transition-colors duration-200 font-medium shadow-sm"
+                    className="inline-flex items-center text-xs px-2.5 py-1 bg-primary-600 text-white hover:bg-primary-700 rounded transition-colors duration-200 font-medium"
                   >
-                    Xem chi tiết
+                    Chi tiết
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-3 w-3 ml-1.5"
+                      className="h-2.5 w-2.5 ml-1"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
