@@ -219,6 +219,10 @@ const messages = {
   'app.contact.workingHours': 'Working Hours',
   'app.contact.workingHoursValue': '24/7',
   'app.contact.connectWithUs': 'Connect with us',
+  
+  // Map section
+  'app.contact.location': 'Our Location',
+  'app.contact.mapTitle': 'XLab Location'
 };
 
 export default messages; 

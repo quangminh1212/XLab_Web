@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { siteConfig } from '@/config/siteConfig';
-import { useMessages } from '@/i18n/useMessages';
+import { useMessages } from '../../i18n/useMessages';
 
 export default function ContactPage() {
   const messages = useMessages();
@@ -393,7 +393,7 @@ export default function ContactPage() {
       {/* Map */}
       <section className="bg-gray-100 py-12">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-6 text-center">Vị trí của chúng tôi</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">{messages['app.contact.location']}</h2>
           <div className="rounded-lg overflow-hidden h-[500px] max-w-7xl mx-auto">
             <iframe
               src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(siteConfig.contact.address)}`}
@@ -402,7 +402,7 @@ export default function ContactPage() {
               style={{ border: 0 }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Vị trí của XLab"
+              title={messages['app.contact.mapTitle']}
               className="rounded-lg"
               allowFullScreen
             ></iframe>

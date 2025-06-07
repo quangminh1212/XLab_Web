@@ -219,6 +219,10 @@ const messages = {
   'app.contact.workingHours': 'Giờ làm việc',
   'app.contact.workingHoursValue': '24/7',
   'app.contact.connectWithUs': 'Kết nối với chúng tôi',
+  
+  // Map section
+  'app.contact.location': 'Vị trí của chúng tôi',
+  'app.contact.mapTitle': 'Vị trí của XLab'
 };
 
 export default messages; 
