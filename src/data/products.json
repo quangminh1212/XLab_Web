@@ -13,15 +13,9 @@
     "specifications": [],
     "categories": [
       {
-        "id": {
-          "id": "ai-tools"
-        },
-        "name": {
-          "id": "ai-tools"
-        },
-        "slug": {
-          "id": "ai-tools"
-        }
+        "id": "ai-tools",
+        "name": "AI Tools",
+        "slug": "ai-tools"
       }
     ],
     "versions": [
@@ -71,15 +65,9 @@
     "specifications": [],
     "categories": [
       {
-        "id": {
-          "id": "ai-tools"
-        },
-        "name": {
-          "id": "ai-tools"
-        },
-        "slug": {
-          "id": "ai-tools"
-        }
+        "id": "ai-tools",
+        "name": "AI Tools",
+        "slug": "ai-tools"
       }
     ],
     "versions": [
