@@ -21,12 +21,41 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
+  const [expanded, setExpanded] = useState(false);
+  
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">Thông tin chi tiết</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
-        <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
+        <div className={`prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto ${!expanded ? 'max-h-96 overflow-hidden relative' : ''}`}>
           <RichTextContent content={description} className="product-description" />
+          
+          {!expanded && (
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent"></div>
+          )}
+        </div>
+        
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md transition-colors flex items-center"
+          >
+            {expanded ? (
+              <>
+                <span>Thu gọn</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                </svg>
+              </>
+            ) : (
+              <>
+                <span>Xem thêm</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </>
+            )}
+          </button>
         </div>
 
         <style jsx global>{`
