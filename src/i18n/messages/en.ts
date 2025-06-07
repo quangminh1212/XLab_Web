@@ -239,7 +239,32 @@ const messages = {
   'app.products.loading': 'Loading products...',
   'app.products.error': 'Could not load products',
   'app.products.tryAgain': 'Try again',
-  'app.products.goHome': 'Go to homepage'
+  'app.products.goHome': 'Go to homepage',
+
+  // Product detail page translations
+  'product.quantity': 'Quantity',
+  'product.addToCart': 'Add to Cart',
+  'product.buyNow': 'Buy Now',
+  'product.details': 'Details',
+  'product.type': 'Type',
+  'product.discount': 'Discount',
+  'product.soldOut': 'Sold Out',
+  'product.inStock': 'In Stock',
+  'product.originalPrice': 'Original Price',
+  'product.specifications': 'Specifications',
+  'product.relatedProducts': 'Related Products',
+  'product.option': 'Option',
+  'product.description': 'Description',
+  'product.features': 'Features',
+  'product.requirements': 'Requirements',
+
+  // Grok product specific translations
+  'product.grok.title': 'Grok',
+  'product.grok.description': 'Grok AI helps automatically analyze and process big data quickly, supporting precise decision making and saving time. It is widely applied in many fields such as market analysis, automated customer service, fraud detection, and business process optimization.',
+  'product.grok.option.full': 'Full - Private use - 1 Month',
+  'product.grok.showMore': 'Show more',
+  'product.grok.showLess': 'Show less',
+  'product.grok.detailsTitle': 'Detailed Information',
 };
 
 export default messages; 

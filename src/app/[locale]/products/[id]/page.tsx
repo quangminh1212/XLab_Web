@@ -9,9 +9,13 @@ interface LocaleProductDetailPageProps {
 }
 
 export default async function LocaleProductDetail({ params }: LocaleProductDetailPageProps) {
+  // Ensure params is awaited before accessing properties
+  const safeParams = await Promise.resolve(params);
+  const productId = safeParams.id;
+  
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ProductDetailPage params={{ id: params.id }} />
+      <ProductDetailPage params={{ id: productId }} />
     </Suspense>
   );
 } 

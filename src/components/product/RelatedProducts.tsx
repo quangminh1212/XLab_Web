@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ProductGrid from './ProductGrid';
+import { useTranslation } from '@/i18n/useTranslation';
 
 interface Product {
   id: string;
@@ -33,6 +34,7 @@ export default function RelatedProducts({
 }: RelatedProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t, locale } = useTranslation();
 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
@@ -76,7 +78,9 @@ export default function RelatedProducts({
 
   if (loading) {
     return (
-      <div className="mt-12 py-8 text-center text-gray-500">Đang tải sản phẩm liên quan...</div>
+      <div className="mt-12 py-8 text-center text-gray-500">
+        {locale === 'en' ? 'Loading related products...' : 'Đang tải sản phẩm liên quan...'}
+      </div>
     );
   }
 
@@ -131,8 +135,10 @@ export default function RelatedProducts({
     <div className="mt-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <ProductGrid
         products={mappedProducts}
-        title="Sản phẩm liên quan"
-        subtitle="Bạn có thể quan tâm đến các sản phẩm khác tương tự"
+        title={t('product.relatedProducts')}
+        subtitle={locale === 'en' 
+          ? "You might be interested in these similar products" 
+          : "Bạn có thể quan tâm đến các sản phẩm khác tương tự"}
         columns={4}
       />
     </div>
