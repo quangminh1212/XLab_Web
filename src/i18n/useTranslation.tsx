@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { getLocaleFromPath } from './index';
 import { messages } from './index';
@@ -13,6 +13,7 @@ export interface UseTranslationType {
 
 export function useTranslation(): UseTranslationType {
   const pathname = usePathname() || '';
+  const router = useRouter();
   const currentLocale = getLocaleFromPath(pathname);
   const [locale, setLocale] = useState(currentLocale);
   
@@ -22,6 +23,7 @@ export function useTranslation(): UseTranslationType {
     
     // Set locale in cookie
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
+    setLocale(newLocale);
     
     // Redirect to the same path but with new locale
     const segments = pathname.split('/').filter(Boolean);
@@ -35,9 +37,9 @@ export function useTranslation(): UseTranslationType {
       newPath += pathname;
     }
     
-    // Redirect to the new path
-    window.location.href = newPath;
-  }, [locale, pathname]);
+    // Use router.push instead of window.location to avoid full page reload
+    router.push(newPath);
+  }, [locale, pathname, router]);
 
   // Update locale if pathname changes
   useEffect(() => {

@@ -23,9 +23,23 @@ export function middleware(request: NextRequest) {
   );
 
   if (pathnameHasLocale) {
-    return NextResponse.next();
+    // Nếu đường dẫn đã có locale, lưu locale đó vào cookie và tiếp tục
+    const currentLocale = pathname.split('/')[1];
+    const response = NextResponse.next();
+    
+    // Lưu locale vào cookie
+    response.cookies.set('NEXT_LOCALE', currentLocale, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30 // 30 days
+    });
+    
+    return response;
   }
-// Get preferred locale from cookie or accept-language header
+
+  // Get preferred locale from cookie or accept-language header
   const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
   let locale = cookieLocale && locales.includes(cookieLocale) ? cookieLocale : defaultLocale;
   

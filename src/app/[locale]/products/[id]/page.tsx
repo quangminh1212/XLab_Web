@@ -12,10 +12,11 @@ export default async function LocaleProductDetail({ params }: LocaleProductDetai
   // Ensure params is awaited before accessing properties
   const safeParams = await Promise.resolve(params);
   const productId = safeParams.id;
+  const locale = safeParams.locale;
   
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ProductDetailPage params={{ id: productId }} />
+      <ProductDetailPage params={{ id: productId, locale: locale }} />
     </Suspense>
   );
 } 

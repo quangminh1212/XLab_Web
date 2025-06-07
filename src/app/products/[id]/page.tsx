@@ -38,6 +38,12 @@ const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/f
 export const dynamic = 'auto';
 export const dynamicParams = true;
 
+// Định nghĩa kiểu dữ liệu cho tham số
+interface ProductPageParams {
+  id: string;
+  locale?: string;
+}
+
 // Đọc dữ liệu sản phẩm từ file JSON
 function getProducts(): Product[] {
   try {
@@ -55,10 +61,11 @@ function getProducts(): Product[] {
 }
 
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params }: { params: ProductPageParams }) {
   try {
     // Truy cập trực tiếp thuộc tính của params không cần await
     const productId = params.id;
+    const locale = params.locale || 'vi'; // Sử dụng locale hoặc mặc định là 'vi'
 
     console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
 
@@ -84,10 +91,10 @@ export default async function ProductPage({ params }: { params: { id: string } }
       `Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`,
     );
 
-    // Truyền dữ liệu sản phẩm sang client component
+    // Truyền dữ liệu sản phẩm và locale sang client component
     return (
       <>
-        <DynamicProductDetail product={product} />
+        <DynamicProductDetail product={product} locale={locale} />
         <div id="fallback-container" style={{ display: 'none' }}>
           <DynamicProductFallback />
         </div>

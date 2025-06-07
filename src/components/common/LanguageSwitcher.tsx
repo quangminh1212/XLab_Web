@@ -46,8 +46,12 @@ export const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     setIsOpen(!isOpen);
   };
 
-  // Handle language change
+  // Handle language change with immediate effect
   const handleLanguageChange = (lang: string) => {
+    // Dispatch a custom event that other components can listen to
+    window.dispatchEvent(new CustomEvent('locale-changed', { detail: { locale: lang } }));
+    
+    // Update locale via the hook
     changeLocale(lang);
     setIsOpen(false);
   };
