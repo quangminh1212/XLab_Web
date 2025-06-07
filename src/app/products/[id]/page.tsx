@@ -55,10 +55,10 @@ function getProducts(): Product[] {
 }
 
 // Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProductPage({ params }: { params: { id: string } }) {
   try {
-    // Await params trước khi sử dụng thuộc tính của nó
-    const { id: productId } = await params;
+    // Truy cập trực tiếp thuộc tính của params không cần await
+    const productId = params.id;
 
     console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
 

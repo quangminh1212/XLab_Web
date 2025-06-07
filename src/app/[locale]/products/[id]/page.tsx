@@ -8,13 +8,10 @@ interface LocaleProductDetailPageProps {
   };
 }
 
-export default function LocaleProductDetail({ params }: LocaleProductDetailPageProps) {
-  // Tạo promise để phù hợp với loại params mà ProductDetailPage mong đợi
-  const productParams = Promise.resolve({ id: params.id });
-  
+export default async function LocaleProductDetail({ params }: LocaleProductDetailPageProps) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <ProductDetailPage params={productParams} />
+      <ProductDetailPage params={{ id: params.id }} />
     </Suspense>
   );
 } 
