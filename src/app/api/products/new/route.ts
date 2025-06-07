@@ -123,7 +123,9 @@ export async function POST(request: Request) {
       name: body.name,
       slug: body.slug,
       description: body.description,
+      description_en: body.description_en || '',
       shortDescription: body.shortDescription || '',
+      shortDescription_en: body.shortDescription_en || '',
       isPublished: body.isPublished !== undefined ? body.isPublished : true,
       images: images,
       descriptionImages: descriptionImages,
@@ -139,6 +141,7 @@ export async function POST(request: Request) {
       type: body.type || 'software',
       isAccount: body.isAccount || false,
       productOptions: body.productOptions || [],
+      productOptions_en: body.productOptions_en || [],
       defaultProductOption: body.defaultProductOption || '',
       optionPrices: body.optionPrices || {},
     };
