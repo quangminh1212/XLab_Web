@@ -197,6 +197,28 @@ const messages = {
   'app.about.partnerText': 'We are always ready to listen and accompany your business in the journey of digital transformation and sustainable development.',
   'app.about.contactButton': 'Contact Us',
   'app.about.exploreButton': 'Explore Services',
+
+  // Contact page translations
+  'app.contact.pageTitle': 'Contact Us',
+  'app.contact.pageSubtitle': 'Get in touch with us for the most suitable solutions for your business.',
+  'app.contact.formTitle': 'Send us a message',
+  'app.contact.infoTitle': 'Contact Information',
+  'app.contact.name': 'Full Name',
+  'app.contact.email': 'Email',
+  'app.contact.phone': 'Phone Number',
+  'app.contact.company': 'Company',
+  'app.contact.service': 'Service you are interested in',
+  'app.contact.serviceOption': '-- Select a service --',
+  'app.contact.message': 'Message',
+  'app.contact.submit': 'Send Message',
+  'app.contact.submitting': 'Sending...',
+  'app.contact.successMessage': 'Thank you for contacting us! We will respond as soon as possible.',
+  'app.contact.errorMessage': 'An error occurred while sending the form. Please try again later.',
+  'app.contact.address': 'Address',
+  'app.contact.telephone': 'Phone',
+  'app.contact.workingHours': 'Working Hours',
+  'app.contact.workingHoursValue': '24/7',
+  'app.contact.connectWithUs': 'Connect with us',
 };
 
 export default messages; 

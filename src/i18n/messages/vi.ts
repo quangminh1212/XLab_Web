@@ -197,6 +197,28 @@ const messages = {
   'app.about.partnerText': 'Chúng tôi luôn sẵn sàng lắng nghe và đồng hành cùng doanh nghiệp của bạn trong hành trình chuyển đổi số và phát triển bền vững.',
   'app.about.contactButton': 'Liên hệ ngay',
   'app.about.exploreButton': 'Khám phá dịch vụ',
+
+  // Contact page translations
+  'app.contact.pageTitle': 'Liên hệ với chúng tôi',
+  'app.contact.pageSubtitle': 'Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của bạn.',
+  'app.contact.formTitle': 'Gửi tin nhắn cho chúng tôi',
+  'app.contact.infoTitle': 'Thông tin liên hệ',
+  'app.contact.name': 'Họ và tên',
+  'app.contact.email': 'Email',
+  'app.contact.phone': 'Số điện thoại',
+  'app.contact.company': 'Công ty',
+  'app.contact.service': 'Dịch vụ bạn quan tâm',
+  'app.contact.serviceOption': '-- Chọn dịch vụ --',
+  'app.contact.message': 'Tin nhắn',
+  'app.contact.submit': 'Gửi tin nhắn',
+  'app.contact.submitting': 'Đang gửi...',
+  'app.contact.successMessage': 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong thời gian sớm nhất.',
+  'app.contact.errorMessage': 'Có lỗi xảy ra khi gửi form. Vui lòng thử lại sau.',
+  'app.contact.address': 'Địa chỉ',
+  'app.contact.telephone': 'Điện thoại',
+  'app.contact.workingHours': 'Giờ làm việc',
+  'app.contact.workingHoursValue': '24/7',
+  'app.contact.connectWithUs': 'Kết nối với chúng tôi',
 };
 
 export default messages; 

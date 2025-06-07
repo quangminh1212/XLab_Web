@@ -23,6 +23,7 @@ export const siteConfig = {
     twitter: 'https://twitter.com/xlabvn',
     github: 'https://github.com/xlabvn',
     linkedin: 'https://linkedin.com/company/xlabvn',
+    youtube: 'https://youtube.com/channel/xlabvn',
   },
 
   // Cấu hình pháp lý
