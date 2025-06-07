@@ -22,9 +22,16 @@ interface Order {
   items: OrderItem[];
 }
 
+// Định nghĩa interface cho nhóm đơn hàng theo thời gian
+interface OrderGroup {
+  title: string;
+  orders: Order[];
+}
+
 export default function OrderHistoryPage() {
   const { data: session, status } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [orderGroups, setOrderGroups] = useState<OrderGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
 
@@ -58,6 +65,52 @@ export default function OrderHistoryPage() {
     return '/images/placeholder/product-placeholder.jpg';
   };
 
+  // Nhóm đơn hàng theo thời gian
+  const groupOrdersByDate = (ordersList: Order[]) => {
+    const now = new Date();
+    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+    const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), 1);
+
+    const groups: OrderGroup[] = [
+      { title: 'Tháng này', orders: [] },
+      { title: 'Tháng trước', orders: [] },
+      { title: '3 tháng gần đây', orders: [] },
+      { title: '6 tháng gần đây', orders: [] },
+      { title: 'Một năm trở lại', orders: [] },
+      { title: 'Cũ hơn', orders: [] },
+    ];
+
+    // Sắp xếp đơn hàng theo thời gian mới nhất đến cũ nhất
+    const sortedOrders = [...ordersList].sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    // Phân loại đơn hàng vào các nhóm
+    sortedOrders.forEach((order) => {
+      const orderDate = new Date(order.createdAt);
+      
+      if (orderDate >= thisMonth) {
+        groups[0].orders.push(order);
+      } else if (orderDate >= lastMonth) {
+        groups[1].orders.push(order);
+      } else if (orderDate >= threeMonthsAgo) {
+        groups[2].orders.push(order);
+      } else if (orderDate >= sixMonthsAgo) {
+        groups[3].orders.push(order);
+      } else if (orderDate >= oneYearAgo) {
+        groups[4].orders.push(order);
+      } else {
+        groups[5].orders.push(order);
+      }
+    });
+
+    // Lọc bỏ các nhóm không có đơn hàng
+    return groups.filter(group => group.orders.length > 0);
+  };
+
   useEffect(() => {
     // Chỉ fetch dữ liệu khi người dùng đã đăng nhập
     if (status === 'authenticated') {
@@ -71,7 +124,12 @@ export default function OrderHistoryPage() {
           }
 
           const data = await response.json();
-          setOrders(data.orders);
+          const fetchedOrders = data.orders;
+          setOrders(fetchedOrders);
+          
+          // Nhóm đơn hàng theo thời gian
+          const groups = groupOrdersByDate(fetchedOrders);
+          setOrderGroups(groups);
         } catch (error) {
           console.error('Lỗi khi lấy dữ liệu đơn hàng:', error);
 
@@ -113,6 +171,10 @@ export default function OrderHistoryPage() {
             },
           ];
           setOrders(sampleOrders);
+          
+          // Nhóm đơn hàng mẫu theo thời gian
+          const groups = groupOrdersByDate(sampleOrders);
+          setOrderGroups(groups);
         } finally {
           setLoading(false);
         }
@@ -179,6 +241,15 @@ export default function OrderHistoryPage() {
     }).format(amount);
   };
 
+  // Chia mảng thành các nhóm nhỏ (3 phần tử mỗi nhóm)
+  const chunkArray = (array: any[], chunkSize: number) => {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
+
   if (status === 'loading' || loading) {
     return (
       <div className="container mx-auto py-8 px-4">
@@ -207,13 +278,13 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="container mx-auto py-3 px-3 max-w-5xl">
+    <div className="container mx-auto py-3 px-3 max-w-6xl">
       <div className="mb-3 border-l-4 border-primary-600 pl-3">
         <h1 className="text-xl font-bold text-gray-900">Lịch sử đơn hàng của bạn</h1>
         <p className="text-xs text-gray-600">Quản lý và theo dõi đơn hàng tại XLab</p>
       </div>
 
-      {orders.length === 0 ? (
+      {orderGroups.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-4 text-center border border-gray-100">
           <div className="bg-gray-50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
             <svg
@@ -255,79 +326,91 @@ export default function OrderHistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {orders.map((order) => (
-            <div 
-              key={order.id} 
-              className="bg-white rounded-lg shadow-sm border border-gray-100"
-            >
-              {/* Header - Thông tin đơn hàng */}
-              <div className="grid grid-cols-3 gap-1 border-b border-gray-100 text-xs">
-                <div className="px-3 py-2 flex items-center">
-                  <div className="text-gray-500 mr-1">Mã đơn hàng:</div>
-                  <div className="font-medium text-gray-800">{order.id}</div>
-                </div>
-                
-                <div className="px-3 py-2 flex items-center">
-                  <div className="text-gray-500 mr-1">Ngày đặt:</div>
-                  <div className="text-gray-800">{formatDate(order.createdAt)}</div>
-                </div>
-                
-                <div className="px-3 py-2 flex items-center justify-end">
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
-                  >
-                    {getStatusName(order.status)}
-                  </span>
-                </div>
+        <div className="space-y-6">
+          {orderGroups.map((group, groupIndex) => (
+            <div key={groupIndex} className="mb-6">
+              <div className="mb-2 border-b border-gray-200 pb-1">
+                <h2 className="text-sm font-semibold text-gray-700">{group.title}</h2>
               </div>
-
-              {/* Phần sản phẩm */}
-              <div className="px-3 pt-2 pb-0 text-sm">
-                <div className="text-xs font-medium text-gray-500 mb-1">Sản phẩm</div>
-                <div>
-                  {order.items.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between py-1.5 border-t border-gray-50 first:border-0">
-                      <div className="flex items-center">
-                        <div className="relative w-6 h-6 rounded overflow-hidden bg-gray-50 flex-shrink-0 mr-2">
-                          <Image
-                            src={getProductImage(item.productId, item.productName)}
-                            alt={item.productName}
-                            fill
-                            className="object-contain p-0.5"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = '/images/placeholder/product-placeholder.jpg';
-                            }}
-                          />
+              
+              {chunkArray(group.orders, 3).map((orderRow, rowIndex) => (
+                <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
+                  {orderRow.map((order) => (
+                    <div 
+                      key={order.id} 
+                      className="bg-white rounded-lg shadow-sm border border-gray-100 h-full flex flex-col"
+                    >
+                      {/* Header - Thông tin đơn hàng */}
+                      <div className="grid grid-cols-3 gap-1 border-b border-gray-100 text-xs">
+                        <div className="px-3 py-2 flex items-center">
+                          <div className="text-gray-500 mr-1">Mã đơn hàng:</div>
+                          <div className="font-medium text-gray-800">{order.id}</div>
                         </div>
-                        <div className="flex items-center text-xs">
-                          <span className="text-gray-800">{item.productName}</span>
-                          <span className="text-gray-400 mx-1">•</span>
-                          <span className="text-gray-500">SL: {item.quantity}</span>
+                        
+                        <div className="px-3 py-2 flex items-center">
+                          <div className="text-gray-500 mr-1">Ngày đặt:</div>
+                          <div className="text-gray-800">{formatDate(order.createdAt)}</div>
+                        </div>
+                        
+                        <div className="px-3 py-2 flex items-center justify-end">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
+                          >
+                            {getStatusName(order.status)}
+                          </span>
                         </div>
                       </div>
-                      <div className="text-xs font-medium text-gray-800">
-                        {formatCurrency(item.price)}
+
+                      {/* Phần sản phẩm */}
+                      <div className="px-3 pt-2 pb-0 text-sm flex-grow">
+                        <div className="text-xs font-medium text-gray-500 mb-1">Sản phẩm</div>
+                        <div>
+                          {order.items.map((item: OrderItem, index: number) => (
+                            <div key={index} className="flex items-center justify-between py-1.5 border-t border-gray-50 first:border-0">
+                              <div className="flex items-center">
+                                <div className="relative w-6 h-6 rounded overflow-hidden bg-gray-50 flex-shrink-0 mr-2">
+                                  <Image
+                                    src={getProductImage(item.productId, item.productName)}
+                                    alt={item.productName}
+                                    fill
+                                    className="object-contain p-0.5"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = '/images/placeholder/product-placeholder.jpg';
+                                    }}
+                                  />
+                                </div>
+                                <div className="flex items-center text-xs">
+                                  <span className="text-gray-800">{item.productName}</span>
+                                  <span className="text-gray-400 mx-1">•</span>
+                                  <span className="text-gray-500">SL: {item.quantity}</span>
+                                </div>
+                              </div>
+                              <div className="text-xs font-medium text-gray-800">
+                                {formatCurrency(item.price)}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Footer - Tổng cộng và nút chi tiết */}
+                      <div className="px-3 py-2 border-t border-gray-100 bg-gray-50 flex justify-between items-center mt-auto">
+                        <div className="flex items-center">
+                          <span className="text-xs text-gray-500 mr-1">Tổng cộng:</span>
+                          <span className="text-xs font-bold text-primary-600">{formatCurrency(order.totalAmount)}</span>
+                        </div>
+                        <Link
+                          href={`/orders/${order.id}`}
+                          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+                        >
+                          Chi tiết →
+                        </Link>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* Footer - Tổng cộng và nút chi tiết */}
-              <div className="px-3 py-2 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
-                <div className="flex items-center">
-                  <span className="text-xs text-gray-500 mr-1">Tổng cộng:</span>
-                  <span className="text-xs font-bold text-primary-600">{formatCurrency(order.totalAmount)}</span>
-                </div>
-                <Link
-                  href={`/orders/${order.id}`}
-                  className="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                >
-                  Chi tiết →
-                </Link>
-              </div>
+              ))}
             </div>
           ))}
         </div>
