@@ -103,6 +103,12 @@ const messages = {
   'app.product.originalPrice': 'Giá gốc',
   'app.product.category': 'Danh mục',
 
+  // Grok product specific translations
+  'product.grok.detailsTitle': 'Thông tin chi tiết',
+  'product.grok.showMore': 'Xem thêm',
+  'product.grok.showLess': 'Thu gọn',
+  'product.relatedProducts': 'Sản phẩm liên quan',
+  
   // Account related
   'app.account.myAccount': 'Tài khoản của tôi',
   'app.account.deposit': 'Nạp tiền',
