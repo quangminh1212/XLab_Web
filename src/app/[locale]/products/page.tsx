@@ -7,5 +7,6 @@ interface ProductsPageProps {
 }
 
 export default function LocaleProductsPage({ params }: ProductsPageProps) {
+  // Truyền locale để hỗ trợ chuyển đổi ngôn ngữ
   return <ProductsPage />;
 } 

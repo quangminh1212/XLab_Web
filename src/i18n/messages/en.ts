@@ -222,7 +222,24 @@ const messages = {
   
   // Map section
   'app.contact.location': 'Our Location',
-  'app.contact.mapTitle': 'XLab Location'
+  'app.contact.mapTitle': 'XLab Location',
+
+  // Products page translations
+  'app.products.pageTitle': 'Products',
+  'app.products.pageDescription': 'List of high-quality software and services at the best market prices.',
+  'app.products.allTab': 'All',
+  'app.products.softwareTab': 'Software',
+  'app.products.serviceTab': 'Services',
+  'app.products.showingResults': 'Showing {count} results',
+  'app.products.sortLabel': 'Sort by:',
+  'app.products.sortNewest': 'Newest',
+  'app.products.sortPriceLow': 'Price: Low to High',
+  'app.products.sortPriceHigh': 'Price: High to Low',
+  'app.products.sortPopular': 'Most Popular',
+  'app.products.loading': 'Loading products...',
+  'app.products.error': 'Could not load products',
+  'app.products.tryAgain': 'Try again',
+  'app.products.goHome': 'Go to homepage'
 };
 
 export default messages; 

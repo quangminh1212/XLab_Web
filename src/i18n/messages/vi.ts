@@ -222,7 +222,24 @@ const messages = {
   
   // Map section
   'app.contact.location': 'Vị trí của chúng tôi',
-  'app.contact.mapTitle': 'Vị trí của XLab'
+  'app.contact.mapTitle': 'Vị trí của XLab',
+
+  // Products page translations
+  'app.products.pageTitle': 'Sản phẩm',
+  'app.products.pageDescription': 'Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.',
+  'app.products.allTab': 'Tất cả',
+  'app.products.softwareTab': 'Phần mềm',
+  'app.products.serviceTab': 'Dịch vụ',
+  'app.products.showingResults': 'Hiển thị {count} kết quả',
+  'app.products.sortLabel': 'Sắp xếp:',
+  'app.products.sortNewest': 'Mới nhất',
+  'app.products.sortPriceLow': 'Giá thấp đến cao',
+  'app.products.sortPriceHigh': 'Giá cao đến thấp',
+  'app.products.sortPopular': 'Phổ biến nhất',
+  'app.products.loading': 'Đang tải sản phẩm...',
+  'app.products.error': 'Không thể tải sản phẩm',
+  'app.products.tryAgain': 'Thử lại',
+  'app.products.goHome': 'Về trang chủ'
 };
 
 export default messages; 

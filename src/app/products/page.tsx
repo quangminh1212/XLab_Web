@@ -7,8 +7,10 @@ import { useSearchParams } from 'next/navigation';
 import ProductImage from '@/components/product/ProductImage';
 import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/common/button';
+import { useMessages } from '@/i18n/useMessages';
 
 export default function ProductsPage() {
+  const messages = useMessages();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -33,7 +35,7 @@ export default function ProductsPage() {
         const response = await fetch('/api/products');
 
         if (!response.ok) {
-          throw new Error('Không thể tải sản phẩm');
+          throw new Error(messages['app.products.error'] || 'Không thể tải sản phẩm');
         }
 
         const result = await response.json();
@@ -52,7 +54,7 @@ export default function ProductsPage() {
     };
 
     fetchProducts();
-  }, []);
+  }, [messages]);
 
   // Update title when component is rendered
   useEffect(() => {
@@ -133,17 +135,17 @@ export default function ProductsPage() {
 
   // Danh mục sản phẩm
   const productCategories = [
-    { id: 'all', name: 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
+    { id: 'all', name: messages['app.products.allTab'] || 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
     {
       id: 'software',
-      name: 'Phần mềm',
+      name: messages['app.products.softwareTab'] || 'Phần mềm',
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => !p.isAccount && (p.type === 'software' || !p.type)).length
         : 0,
     },
     {
       id: 'service',
-      name: 'Dịch vụ',
+      name: messages['app.products.serviceTab'] || 'Dịch vụ',
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => p.isAccount || p.type === 'account').length
         : 0,
@@ -186,7 +188,7 @@ export default function ProductsPage() {
       <div className="py-12 flex justify-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải sản phẩm...</p>
+          <p className="text-gray-600">{messages['app.products.loading'] || 'Đang tải sản phẩm...'}</p>
         </div>
       </div>
     );
@@ -210,7 +212,7 @@ export default function ProductsPage() {
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải sản phẩm</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{messages['app.products.error'] || 'Không thể tải sản phẩm'}</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <div className="flex justify-center gap-4">
             <button
@@ -231,7 +233,7 @@ export default function ProductsPage() {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              Thử lại
+              {messages['app.products.tryAgain'] || 'Thử lại'}
             </button>
             <Link
               href="/"
@@ -251,7 +253,7 @@ export default function ProductsPage() {
                   d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
                 />
               </svg>
-              Về trang chủ
+              {messages['app.products.goHome'] || 'Về trang chủ'}
             </Link>
           </div>
         </div>
@@ -263,14 +265,14 @@ export default function ProductsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="w-[90%] mx-auto">
         <div className="container mx-auto px-0 max-w-none">
-          <h1 className="text-3xl font-bold mb-6">Sản phẩm</h1>
+          <h1 className="text-3xl font-bold mb-6">{messages['app.products.pageTitle'] || 'Sản phẩm'}</h1>
         </div>
         
         <div className="bg-gray-50 py-4">
           <div className="container mx-auto px-0 max-w-none">
             <div className="mb-4">
               <p className="text-sm md:text-base text-gray-600">
-                Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
+                {messages['app.products.pageDescription'] || 'Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.'}
               </p>
             </div>
 
@@ -296,7 +298,7 @@ export default function ProductsPage() {
                         d="M4 6h16M4 10h16M4 14h16M4 18h16"
                       />
                     </svg>
-                    Tất cả
+                    {messages['app.products.allTab'] || 'Tất cả'}
                   </div>
                 </button>
                 <button
@@ -318,7 +320,7 @@ export default function ProductsPage() {
                         d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                       />
                     </svg>
-                    Phần mềm
+                    {messages['app.products.softwareTab'] || 'Phần mềm'}
                   </div>
                 </button>
                 <button
@@ -340,7 +342,7 @@ export default function ProductsPage() {
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    Dịch vụ
+                    {messages['app.products.serviceTab'] || 'Dịch vụ'}
                   </div>
                 </button>
               </div>
@@ -352,11 +354,11 @@ export default function ProductsPage() {
                 {/* Filters bar */}
                 <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
                   <div className="text-sm md:text-base text-gray-600">
-                    Hiển thị {sortedProducts.length} kết quả
+                    {messages['app.products.showingResults']?.replace('{count}', sortedProducts.length.toString()) || `Hiển thị ${sortedProducts.length} kết quả`}
                   </div>
                   <div className="flex items-center space-x-2">
                     <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
-                      Sắp xếp:
+                      {messages['app.products.sortLabel'] || 'Sắp xếp:'}
                     </label>
                     <select
                       id="sort"
@@ -364,10 +366,10 @@ export default function ProductsPage() {
                       value={sort}
                       onChange={(e) => setSort(e.target.value)}
                     >
-                      <option value="newest">Mới nhất</option>
-                      <option value="price-low">Giá thấp đến cao</option>
-                      <option value="price-high">Giá cao đến thấp</option>
-                      <option value="popular">Phổ biến nhất</option>
+                      <option value="newest">{messages['app.products.sortNewest'] || 'Mới nhất'}</option>
+                      <option value="price-low">{messages['app.products.sortPriceLow'] || 'Giá thấp đến cao'}</option>
+                      <option value="price-high">{messages['app.products.sortPriceHigh'] || 'Giá cao đến thấp'}</option>
+                      <option value="popular">{messages['app.products.sortPopular'] || 'Phổ biến nhất'}</option>
                     </select>
                   </div>
                 </div>
@@ -375,9 +377,6 @@ export default function ProductsPage() {
                 {/* Product grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
                   {sortedProducts.map((product) => {
-                    // Log the product data for debugging
-                    console.log(`Product ${product.id} image data:`, product.images);
-
                     // Xác định giá hiển thị - kiểm tra versions trước
                     const displayPrice =
                       product.versions && product.versions.length > 0
@@ -392,8 +391,6 @@ export default function ProductsPage() {
 
                     // Lấy ảnh sản phẩm (sử dụng helper function)
                     const imageUrl = getValidImageUrl(product);
-
-                    console.log(`Processed image URL for ${product.name}:`, imageUrl);
 
                     return (
                       <ProductCard
