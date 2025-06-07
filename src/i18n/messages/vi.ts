@@ -42,6 +42,12 @@ const messages = {
   'app.footer.newsletter': 'Đăng ký nhận thông tin mới',
   'app.footer.newsletterDesc': 'Nhận thông tin về sản phẩm mới, khuyến mãi và cập nhật từ XLab',
   'app.footer.newsletterPrivacy': 'Chúng tôi tôn trọng quyền riêng tư của bạn. Xem Chính sách Bảo mật của chúng tôi.',
+  'app.footer.productsAndServices': 'Sản phẩm & Dịch vụ',
+  'app.footer.navigation': 'Điều hướng',
+  'app.footer.testimonials': 'Đánh giá',
+  'app.footer.aboutDesc1': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
+  'app.footer.aboutDesc2': 'Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.',
+  'app.footer.liveChatSupport': 'Hỗ trợ trực tuyến',
   
   'app.common.submit': 'Gửi',
   'app.common.cancel': 'Hủy',
@@ -57,6 +63,7 @@ const messages = {
   'app.common.warning': 'Cảnh báo',
   'app.common.info': 'Thông tin',
   'app.common.copyToClipboard': 'Sao chép',
+  'app.common.viewAll': 'Xem tất cả',
   
   'app.auth.email': 'Email',
   'app.auth.password': 'Mật khẩu',
@@ -95,6 +102,54 @@ const messages = {
   'app.product.price': 'Giá',
   'app.product.originalPrice': 'Giá gốc',
   'app.product.category': 'Danh mục',
+
+  // Account related
+  'app.account.myAccount': 'Tài khoản của tôi',
+  'app.account.deposit': 'Nạp tiền',
+  'app.orders.history': 'Lịch sử đơn hàng',
+  'app.vouchers.used': 'Voucher đã dùng',
+
+  // Homepage translations
+  'app.slogan': 'Tối ưu hiệu quả, tối thiểu chi phí!',
+  'app.search.placeholder': 'Tìm kiếm phần mềm, ứng dụng...',
+
+  // About section
+  'app.about.title': 'Về XLab',
+  'app.about.description': 'XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.',
+  'app.about.mission': 'Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.',
+  'app.about.learnMore': 'Tìm hiểu thêm',
+
+  // Features
+  'app.features.localProduct': 'Sản phẩm trong nước',
+  'app.features.localProductDesc': 'Phát triển bởi đội ngũ kỹ sư Việt Nam',
+  'app.features.support': 'Hỗ trợ 24/7',
+  'app.features.supportDesc': 'Đội ngũ hỗ trợ tận tâm',
+  'app.features.security': 'Bảo mật cao',
+  'app.features.securityDesc': 'Dữ liệu được mã hóa an toàn',
+  'app.features.pricing': 'Giá cả hợp lý',
+  'app.features.pricingDesc': 'Nhiều lựa chọn phù hợp mọi ngân sách',
+  'app.features.ai': 'Tích hợp AI',
+  'app.features.aiDesc': 'Công nghệ AI tiên tiến hỗ trợ bạn',
+  'app.features.updates': 'Cập nhật liên tục',
+  'app.features.updatesDesc': 'Luôn được cập nhật tính năng mới',
+
+  // Stats section
+  'app.stats.title': 'Thành tựu của chúng tôi',
+  'app.stats.customers': 'Khách hàng tin dùng',
+  'app.stats.solutions': 'Giải pháp phần mềm',
+  'app.stats.experience': 'Năm kinh nghiệm',
+
+  // Content sections
+  'app.sections.software': 'Phần mềm',
+  'app.sections.noSoftware': 'Chưa có phần mềm',
+  'app.sections.softwareComingSoon': 'Chúng tôi sẽ sớm cập nhật các phần mềm.',
+  'app.sections.services': 'Dịch vụ',
+  'app.sections.noServices': 'Chưa có dịch vụ',
+  'app.sections.servicesComingSoon': 'Chúng tôi sẽ sớm cập nhật các dịch vụ.',
+
+  // FAQ section
+  'app.faq.title': 'Câu hỏi thường gặp',
+  'app.faq.description': 'Giải đáp những thắc mắc phổ biến của khách hàng về sản phẩm và dịch vụ của XLab'
 };
 
 export default messages; 

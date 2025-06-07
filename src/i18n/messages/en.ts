@@ -42,6 +42,12 @@ const messages = {
   'app.footer.newsletter': 'Subscribe to Newsletter',
   'app.footer.newsletterDesc': 'Receive information about new products, promotions and updates from XLab',
   'app.footer.newsletterPrivacy': 'We respect your privacy. View our Privacy Policy.',
+  'app.footer.productsAndServices': 'Products & Services',
+  'app.footer.navigation': 'Navigation',
+  'app.footer.testimonials': 'Testimonials',
+  'app.footer.aboutDesc1': 'XLab is a leading company in the field of technology solutions and professional software development for businesses.',
+  'app.footer.aboutDesc2': 'With a team of experienced experts, XLab is proud to be a trusted partner of over 500+ businesses.',
+  'app.footer.liveChatSupport': 'Live Chat Support',
   
   'app.common.submit': 'Submit',
   'app.common.cancel': 'Cancel',
@@ -57,6 +63,7 @@ const messages = {
   'app.common.warning': 'Warning',
   'app.common.info': 'Information',
   'app.common.copyToClipboard': 'Copy',
+  'app.common.viewAll': 'View All',
   
   'app.auth.email': 'Email',
   'app.auth.password': 'Password',
@@ -95,6 +102,54 @@ const messages = {
   'app.product.price': 'Price',
   'app.product.originalPrice': 'Original Price',
   'app.product.category': 'Category',
+
+  // Account related
+  'app.account.myAccount': 'My Account',
+  'app.account.deposit': 'Deposit',
+  'app.orders.history': 'Order History',
+  'app.vouchers.used': 'Used Vouchers',
+
+  // Homepage translations
+  'app.slogan': 'Maximize efficiency, minimize costs!',
+  'app.search.placeholder': 'Search for software, applications...',
+
+  // About section
+  'app.about.title': 'About XLab',
+  'app.about.description': 'XLab is a platform providing advanced AI-integrated software solutions that help users enhance work efficiency and everyday life.',
+  'app.about.mission': 'Our mission is to provide Vietnamese people with access to tools for work, study, and entertainment at affordable prices and international quality.',
+  'app.about.learnMore': 'Learn More',
+
+  // Features
+  'app.features.localProduct': 'Local Products',
+  'app.features.localProductDesc': 'Developed by Vietnamese engineers',
+  'app.features.support': '24/7 Support',
+  'app.features.supportDesc': 'Dedicated support team',
+  'app.features.security': 'High Security',
+  'app.features.securityDesc': 'Securely encrypted data',
+  'app.features.pricing': 'Reasonable Pricing',
+  'app.features.pricingDesc': 'Options suitable for all budgets',
+  'app.features.ai': 'AI Integration',
+  'app.features.aiDesc': 'Advanced AI technology supports you',
+  'app.features.updates': 'Continuous Updates',
+  'app.features.updatesDesc': 'Always updated with new features',
+
+  // Stats section
+  'app.stats.title': 'Our Achievements',
+  'app.stats.customers': 'Trusted Customers',
+  'app.stats.solutions': 'Software Solutions',
+  'app.stats.experience': 'Years of Experience',
+
+  // Content sections
+  'app.sections.software': 'Software',
+  'app.sections.noSoftware': 'No Software Yet',
+  'app.sections.softwareComingSoon': 'We will update software products soon.',
+  'app.sections.services': 'Services',
+  'app.sections.noServices': 'No Services Yet',
+  'app.sections.servicesComingSoon': 'We will update services soon.',
+
+  // FAQ section
+  'app.faq.title': 'Frequently Asked Questions',
+  'app.faq.description': 'Answers to common customer questions about XLab products and services'
 };
 
 export default messages; 

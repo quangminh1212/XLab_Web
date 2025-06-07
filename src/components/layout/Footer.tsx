@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
+import { useTranslation } from '@/i18n/useTranslation';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t, locale } = useTranslation();
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden">
@@ -89,27 +91,25 @@ export default function Footer() {
           {/* Giới thiệu */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Về XLab</span>
+              <span className="relative z-10">{t('app.footer.about')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <div className="space-y-3 text-center sm:text-left">
               <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm
-                chuyên nghiệp cho doanh nghiệp.
+                {t('app.footer.aboutDesc1')}
               </p>
               <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+
-                doanh nghiệp.
+                {t('app.footer.aboutDesc2')}
               </p>
               <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 mt-3">
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
-                  500+ Khách hàng
+                  500+ {t('app.stats.customers')}
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
-                  5+ Năm
+                  5+ {t('app.stats.experience')}
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
-                  24/7 Hỗ trợ
+                  24/7 {t('app.features.support')}
                 </span>
               </div>
             </div>
@@ -118,7 +118,7 @@ export default function Footer() {
           {/* Sản phẩm & Dịch vụ + Điều hướng */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Sản phẩm & Dịch vụ</span>
+              <span className="relative z-10">{t('app.footer.productsAndServices')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
@@ -128,7 +128,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Sản phẩm
+                  {t('app.header.products')}
                 </Link>
               </li>
               <li>
@@ -137,7 +137,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Dịch vụ
+                  {t('app.header.services')}
                 </Link>
               </li>
               <li>
@@ -146,7 +146,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Đánh giá
+                  {t('app.footer.testimonials')}
                 </Link>
               </li>
             </ul>
@@ -154,7 +154,7 @@ export default function Footer() {
             {/* Điều hướng */}
             <div className="pt-4 border-t border-slate-700 w-full">
               <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
-                Điều hướng
+                {t('app.footer.navigation')}
               </h4>
               <div className="space-y-3 text-center sm:text-left">
                 <Link
@@ -162,7 +162,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Trang chủ
+                  {t('app.header.home')}
                 </Link>
                 <br />
                 <Link
@@ -170,7 +170,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Giới thiệu
+                  {t('app.footer.introduction')}
                 </Link>
                 <br />
                 <Link
@@ -178,7 +178,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Bảng giá
+                  {t('app.header.pricing')}
                 </Link>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function Footer() {
           {/* Thông tin liên hệ */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Liên hệ</span>
+              <span className="relative z-10">{t('app.footer.contact')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-3 sm:space-y-4 text-center sm:text-left mb-4">
@@ -253,14 +253,14 @@ export default function Footer() {
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400">
-                  {siteConfig.contact.email}
-                </span>
+                <span className="text-xs sm:text-sm text-slate-400">{siteConfig.contact.email}</span>
               </li>
+
+              {/* Live chat */}
               <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 mr-2.5 group-hover:from-violet-500/30 group-hover:to-purple-500/30 transition-all duration-300 border border-violet-500/20">
+                <div className="p-2 rounded-xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 mr-2.5 group-hover:from-purple-500/30 group-hover:to-indigo-500/30 transition-all duration-300 border border-purple-500/20">
                   <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-violet-400 flex-shrink-0"
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -269,15 +269,37 @@ export default function Footer() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                     />
                   </svg>
                 </div>
-                <span className="text-xs sm:text-sm text-slate-400">
-                  {siteConfig.contact.workingHours}
+                <span className="text-xs sm:text-sm text-slate-400 group-hover:text-purple-300 transition-colors">
+                  {t('app.footer.liveChatSupport')}
                 </span>
               </li>
             </ul>
+
+            {/* Newsletter signup */}
+            <div className="w-full">
+              <div className="mb-3">
+                <div className="text-sm text-slate-400 mb-2 text-center sm:text-left">
+                  {t('app.footer.newsletter')}
+                </div>
+                <div className="flex">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="w-full bg-slate-800/80 border border-slate-700 rounded-l-lg px-3 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                  <button className="bg-primary-600 hover:bg-primary-700 text-white rounded-r-lg px-3 py-2 text-sm transition-colors">
+                    {t('app.common.submit')}
+                  </button>
+                </div>
+              </div>
+              <p className="text-xs text-slate-500 text-center sm:text-left">
+                {t('app.footer.newsletterPrivacy')}
+              </p>
+            </div>
           </div>
         </div>
 
