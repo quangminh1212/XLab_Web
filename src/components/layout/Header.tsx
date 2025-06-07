@@ -206,7 +206,11 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isOpen]);
 
   const isActive = (path: string) => {
-    return pathname === path
+    // Kiểm tra cả path chính xác và path bắt đầu bằng path đó (cho các trang con)
+    const isExactMatch = pathname === path;
+    const isPartialMatch = path !== '/' && pathname.startsWith(path);
+    
+    return isExactMatch || isPartialMatch
       ? 'text-primary-600 font-medium'
       : 'text-gray-700 hover:text-primary-600';
   };
