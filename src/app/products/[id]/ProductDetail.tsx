@@ -696,7 +696,7 @@ export default function ProductDetail({ product, locale: propLocale }: { product
               {/* Quantity selector */}
               <div className="mt-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('product.quantity')}
+                  {currentLocale === 'en' ? 'Quantity' : 'Số lượng'}
                 </label>
                 <div className="flex items-center">
                   <button
@@ -741,7 +741,7 @@ export default function ProductDetail({ product, locale: propLocale }: { product
                       d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                   </svg>
-                  {t('product.addToCart')}
+                  {currentLocale === 'en' ? 'Add to Cart' : 'Thêm vào giỏ hàng'}
                 </button>
                 <Link
                   href={`/checkout?product=${encodeURIComponent(product.id)}&quantity=${quantity}&option=${encodeURIComponent(selectedOption || selectedVersion)}`}
@@ -761,7 +761,7 @@ export default function ProductDetail({ product, locale: propLocale }: { product
                       d="M13 10V3L4 14h7v7l9-11h-7z"
                     />
                   </svg>
-                  {t('product.buyNow')}
+                  {currentLocale === 'en' ? 'Buy Now' : 'Mua ngay'}
                 </Link>
               </div>
 
