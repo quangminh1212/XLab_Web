@@ -21,16 +21,24 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 });
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
-const ProductDescription = ({ description }: { description: string }) => {
+const ProductDescription = ({ description, description_en, locale }: { description: string, description_en?: string, locale: string }) => {
   const [expanded, setExpanded] = useState(false);
   const { t } = useTranslation();
+  
+  // Chọn mô tả phù hợp với ngôn ngữ hiện tại
+  const localizedDescription = locale === 'en' ? (description_en || '') : description;
+  
+  // Nếu không có dữ liệu mô tả, không hiển thị gì cả
+  if (!localizedDescription || localizedDescription.trim() === '') {
+    return null;
+  }
   
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.grok.detailsTitle')}</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
         <div className={`prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto ${!expanded ? 'max-h-96 overflow-hidden relative' : ''}`}>
-          <RichTextContent content={description} className="product-description" />
+          <RichTextContent content={localizedDescription} className="product-description" />
           
           {!expanded && (
             <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent"></div>
@@ -149,8 +157,33 @@ const ProductSpecifications = ({
   );
 };
 
-export default function ProductDetail({ product }: { product: ProductType }) {
-  const { t, locale } = useTranslation();
+export default function ProductDetail({ product, locale: propLocale }: { product: ProductType, locale?: string }) {
+  const { t, locale: contextLocale, changeLocale } = useTranslation();
+  
+  // Ưu tiên sử dụng locale từ props nếu có, nếu không thì dùng locale từ context
+  const [currentLocale, setCurrentLocale] = useState(propLocale || contextLocale);
+  
+  // Cập nhật locale khi context thay đổi hoặc prop thay đổi
+  useEffect(() => {
+    setCurrentLocale(propLocale || contextLocale);
+  }, [propLocale, contextLocale]);
+
+  // Thêm event listener để lắng nghe sự kiện thay đổi ngôn ngữ
+  useEffect(() => {
+    const handleLocaleChange = (event: CustomEvent) => {
+      if (event.detail && event.detail.locale) {
+        setCurrentLocale(event.detail.locale);
+      }
+    };
+
+    // Thêm event listener
+    window.addEventListener('locale-changed', handleLocaleChange as EventListener);
+
+    // Cleanup khi component unmount
+    return () => {
+      window.removeEventListener('locale-changed', handleLocaleChange as EventListener);
+    };
+  }, []);
 
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
@@ -162,8 +195,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // Update document title khi component được render
   useEffect(() => {
-    document.title = `${product.name} | XLab - ${locale === 'en' ? 'Software and Services' : 'Phần mềm và Dịch vụ'}`;
-  }, [product.name, locale]);
+    document.title = `${product.name} | XLab - ${currentLocale === 'en' ? 'Software and Services' : 'Phần mềm và Dịch vụ'}`;
+  }, [product.name, currentLocale]);
 
   // State để theo dõi số lượt xem
   const [viewCount, setViewCount] = useState<number>(0);
@@ -197,28 +230,28 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   const [showAddToCartAnimation, setShowAddToCartAnimation] = useState<boolean>(false);
   const [addedToCartMessage, setAddedToCartMessage] = useState<string>('');
 
-  // Lấy mô tả sản phẩm theo ngôn ngữ
+  // Lấy mô tả sản phẩm theo ngôn ngữ đã chọn
   const getLocalizedDescription = () => {
-    if (locale === 'en' && product.description_en) {
-      return product.description_en;
+    if (currentLocale === 'en') {
+      return product.description_en || '';
     }
-    return product.description;
+    return product.description || '';
   };
   
-  // Lấy mô tả ngắn theo ngôn ngữ
+  // Lấy mô tả ngắn theo ngôn ngữ đã chọn
   const getLocalizedShortDescription = () => {
-    if (locale === 'en' && product.shortDescription_en) {
-      return product.shortDescription_en;
+    if (currentLocale === 'en') {
+      return product.shortDescription_en || '';
     }
-    return product.shortDescription;
+    return product.shortDescription || '';
   };
   
-  // Lấy tùy chọn sản phẩm theo ngôn ngữ
+  // Lấy tùy chọn sản phẩm theo ngôn ngữ đã chọn
   const getLocalizedProductOptions = () => {
-    if (locale === 'en' && product.productOptions_en) {
-      return product.productOptions_en;
+    if (currentLocale === 'en') {
+      return product.productOptions_en || [];
     }
-    return product.productOptions;
+    return product.productOptions || [];
   };
 
   // Xử lý thêm tùy chọn mới
@@ -421,7 +454,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     });
 
     // Hiển thị thông báo đã thêm vào giỏ
-    setAddedToCartMessage(locale === 'en' 
+    setAddedToCartMessage(currentLocale === 'en' 
       ? `Added ${quantity} product(s) to cart` 
       : `Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
     setShowAddToCartAnimation(true);
@@ -458,10 +491,19 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     }
   };
 
+  // Cập nhật productOptions khi locale thay đổi
+  useEffect(() => {
+    const options = getLocalizedProductOptions();
+    if (options && options.length > 0) {
+      setProductOptions(options);
+      setSelectedOption(options[0]);
+    }
+  }, [currentLocale]);
+
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <p>{locale === 'en' ? 'Loading product information...' : 'Đang tải thông tin sản phẩm...'}</p>
+        <p>{currentLocale === 'en' ? 'Loading product information...' : 'Đang tải thông tin sản phẩm...'}</p>
       </div>
     );
   }
@@ -479,7 +521,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         setSelectedOption(localizedProductOptions[0]);
       }
     }
-  }, [locale, localizedProductOptions]);
+  }, [currentLocale, localizedProductOptions]);
 
   return (
     <div className="container mx-auto px-4 py-8 product-detail-loaded">
@@ -515,7 +557,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
             href={isAccount ? '/categories/tai-khoan-hoc-tap' : '/products'}
             className="text-gray-500 hover:text-primary-600"
           >
-            {isAccount ? (locale === 'en' ? 'Learning Accounts' : 'Tài khoản học tập') : t('app.header.products')}
+            {isAccount ? t('app.account.learningAccounts') : t('app.header.products')}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <span className="text-gray-800">{product.name}</span>
@@ -726,8 +768,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               {product.features && product.features.length > 0 && (
                 <div className="mt-6">
                   <details>
-                    <summary className="font-medium text-gray-900 cursor-pointer hover:text-primary-600">
-                      Xem tính năng nổi bật
+                                          <summary className="font-medium text-gray-900 cursor-pointer hover:text-primary-600">
+                      {currentLocale === 'en' ? 'View featured features' : 'Xem tính năng nổi bật'}
                     </summary>
                     <ul className="list-disc list-inside space-y-1 mt-2 pl-2">
                       {product.features.map((feature, index) => (
@@ -744,7 +786,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         </div>
 
         {/* Product description */}
-        <ProductDescription description={localizedDescription} />
+        <ProductDescription 
+          description={product.description || ''} 
+          description_en={product.description_en || ''} 
+          locale={currentLocale} 
+        />
         
         {/* Product specifications */}
         <ProductSpecifications specifications={product.specifications} />
