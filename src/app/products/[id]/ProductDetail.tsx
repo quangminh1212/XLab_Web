@@ -515,13 +515,14 @@ export default function ProductDetail({ product, locale: propLocale }: { product
   
   // Cập nhật danh sách tùy chọn sản phẩm theo ngôn ngữ nếu có
   useEffect(() => {
-    if (localizedProductOptions) {
-      setProductOptions(localizedProductOptions);
-      if (localizedProductOptions.length > 0) {
+    if (localizedProductOptions && localizedProductOptions.length > 0) {
+      // Chỉ cập nhật nếu productOptions khác với localizedProductOptions
+      if (JSON.stringify(productOptions) !== JSON.stringify(localizedProductOptions)) {
+        setProductOptions(localizedProductOptions);
         setSelectedOption(localizedProductOptions[0]);
       }
     }
-  }, [currentLocale, localizedProductOptions]);
+  }, [currentLocale]);
 
   return (
     <div className="container mx-auto px-4 py-8 product-detail-loaded">
