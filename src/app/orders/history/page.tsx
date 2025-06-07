@@ -255,69 +255,86 @@ export default function OrderHistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {orders.map((order) => (
             <div 
               key={order.id} 
-              className="bg-white rounded-lg shadow overflow-hidden border border-gray-100 transition-all duration-200 hover:shadow-md hover:border-primary-100"
+              className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
             >
-              <div className="border-b border-gray-100 bg-gray-50 px-4 py-3">
-                <div className="flex flex-wrap justify-between items-center gap-2 text-sm">
+              {/* Phần header với thông tin đơn hàng */}
+              <div className="border-b border-gray-200 bg-gray-50 px-5 py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 text-primary-500 mr-1.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                      />
-                    </svg>
-                    <span className="text-gray-500">Mã đơn hàng:</span>
-                    <span className="ml-1 font-medium text-gray-800">{order.id}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 text-primary-500 mr-1.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    <span className="text-gray-500">Ngày đặt:</span>
-                    <span className="ml-1 text-gray-800">{formatDate(order.createdAt)}</span>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)} inline-flex items-center`}
-                  >
-                    {order.status === 'completed' && (
-                      <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mr-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-primary-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                        />
                       </svg>
-                    )}
-                    {getStatusName(order.status)}
-                  </span>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500">Mã đơn hàng</div>
+                      <div className="font-medium text-gray-800">{order.id}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-primary-50 flex items-center justify-center flex-shrink-0 mr-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 text-primary-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500">Ngày đặt</div>
+                      <div className="text-gray-800">{formatDate(order.createdAt)}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center sm:justify-end">
+                    <div className="bg-white p-1 rounded-lg border border-gray-200">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)} inline-flex items-center`}
+                      >
+                        {order.status === 'completed' && (
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        )}
+                        {getStatusName(order.status)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="px-4 py-3">
-                <div className="space-y-2">
+              {/* Phần danh sách sản phẩm */}
+              <div className="px-5 py-4">
+                <h3 className="text-sm font-medium text-gray-700 mb-3">Sản phẩm</h3>
+                <div className="divide-y divide-gray-100">
                   {order.items.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between group">
+                    <div key={index} className="py-3 flex items-center justify-between group">
                       <div className="flex items-center space-x-3">
-                        <div className="relative w-10 h-10 rounded overflow-hidden bg-gray-50 flex-shrink-0">
+                        <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-50 flex-shrink-0 border border-gray-200">
                           <Image
                             src={getProductImage(item.productId, item.productName)}
                             alt={item.productName}
@@ -331,8 +348,11 @@ export default function OrderHistoryPage() {
                         </div>
                         <div>
                           <h3 className="font-medium text-sm text-gray-800 group-hover:text-primary-600 transition-colors duration-200">{item.productName}</h3>
-                          <div className="flex items-center">
-                            <span className="text-xs text-gray-500">
+                          <div className="flex items-center mt-1">
+                            <span className="inline-flex items-center text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                              <svg className="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                              </svg>
                               Số lượng: {item.quantity}
                             </span>
                           </div>
@@ -346,31 +366,38 @@ export default function OrderHistoryPage() {
                 </div>
               </div>
 
-              <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-                <div className="flex items-center">
-                  <span className="text-sm text-gray-500 mr-2">Tổng cộng:</span>
-                  <span className="font-bold text-primary-600">
-                    {formatCurrency(order.totalAmount)}
-                  </span>
-                </div>
-                <Link
-                  href={`/orders/${order.id}`}
-                  className="inline-flex items-center text-xs px-3 py-1.5 bg-white border border-primary-200 text-primary-600 hover:bg-primary-50 rounded transition-colors duration-200 font-medium"
-                >
-                  Chi tiết
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3 w-3 ml-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+              {/* Phần thông tin tổng cộng */}
+              <div className="bg-gray-50 border-t border-gray-200 px-5 py-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+                      <div className="flex items-center">
+                        <span className="text-sm text-gray-500 mr-2">Tổng cộng:</span>
+                        <span className="font-bold text-primary-600">
+                          {formatCurrency(order.totalAmount)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <Link
+                    href={`/orders/${order.id}`}
+                    className="inline-flex items-center text-xs px-4 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded-md transition-colors duration-200 font-medium shadow-sm"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
+                    Xem chi tiết
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 ml-1.5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
