@@ -167,7 +167,36 @@ const messages = {
   // Call to action section
   'app.cta.title': 'Sẵn sàng nâng cao hiệu suất công việc với XLab?',
   'app.cta.description': 'Chúng tôi cung cấp nhiều mức giá ưu đãi đặc biệt dành cho khách hàng mua số lượng lớn. Càng mua nhiều, mức giảm giá càng cao. Chúng tôi cam kết mang đến cho bạn những giải pháp tốt nhất với chi phí hợp lý nhất.',
-  'app.cta.contactButton': 'Liên hệ tư vấn'
+  'app.cta.contactButton': 'Liên hệ tư vấn',
+
+  // About page translations
+  'app.about.pageTitle': 'Về chúng tôi',
+  'app.about.pageSubtitle': 'Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ tại Việt Nam',
+  'app.about.storyTitle': 'Câu chuyện của chúng tôi',
+  'app.about.storyParagraph1': 'XLab được thành lập vào năm 2018 bởi một nhóm kỹ sư phần mềm đam mê và có tầm nhìn về việc tạo ra các giải pháp công nghệ tiên tiến, giúp doanh nghiệp Việt Nam nâng cao hiệu quả hoạt động và năng lực cạnh tranh trong kỷ nguyên số.',
+  'app.about.storyParagraph2': 'Sau hơn 10 năm hoạt động và phát triển, XLab đã trở thành đối tác công nghệ tin cậy của hàng trăm doanh nghiệp trong và ngoài nước, từ các công ty khởi nghiệp cho đến các tập đoàn lớn thuộc nhiều lĩnh vực khác nhau như tài chính, bán lẻ, sản xuất, giáo dục và y tế.',
+  'app.about.storyParagraph3': 'Chúng tôi tự hào về đội ngũ nhân sự tài năng và đam mê công nghệ, với hơn 100 chuyên gia phần mềm, kỹ sư hệ thống, và chuyên gia tư vấn giàu kinh nghiệm, luôn tận tâm với mục tiêu mang lại những giải pháp tối ưu cho đối tác và khách hàng.',
+  'app.about.workspaceAlt': 'Không gian làm việc tại XLab',
+  'app.about.teamAlt': 'Đội ngũ XLab làm việc cùng nhau',
+  'app.about.techWorkspaceAlt': 'Không gian công nghệ tại XLab',
+  'app.about.missionTitle': 'Sứ mệnh',
+  'app.about.missionText': 'Sứ mệnh của XLab là ứng dụng công nghệ tiên tiến để tạo ra các giải pháp phần mềm xuất sắc, giúp doanh nghiệp Việt Nam tối ưu hóa quy trình, tăng năng suất và phát triển bền vững trong kỷ nguyên số. Chúng tôi cam kết mang đến những sản phẩm và dịch vụ chất lượng cao, đáp ứng nhu cầu đa dạng của khách hàng, đồng thời góp phần thúc đẩy sự phát triển của ngành công nghệ thông tin Việt Nam.',
+  'app.about.visionTitle': 'Tầm nhìn',
+  'app.about.visionText': 'XLab hướng tới trở thành doanh nghiệp công nghệ hàng đầu tại Việt Nam và khu vực Đông Nam Á trong lĩnh vực phát triển phần mềm và cung cấp giải pháp công nghệ thông tin toàn diện. Chúng tôi nỗ lực trở thành đối tác tin cậy và lâu dài của các doanh nghiệp trong hành trình chuyển đổi số, đồng thời là môi trường làm việc lý tưởng cho các tài năng công nghệ phát triển sự nghiệp.',
+  'app.about.valuesTitle': 'Giá trị cốt lõi',
+  'app.about.valuesSubtitle': 'Những giá trị tạo nên văn hóa và định hướng mọi hoạt động của XLab',
+  'app.about.qualityTitle': 'Chất lượng',
+  'app.about.qualityText': 'Đặt chất lượng sản phẩm và dịch vụ lên hàng đầu, không ngừng cải tiến để đạt được sự xuất sắc',
+  'app.about.innovationTitle': 'Đổi mới',
+  'app.about.innovationText': 'Khuyến khích tư duy sáng tạo, dám thử nghiệm những ý tưởng mới và công nghệ tiên tiến',
+  'app.about.collaborationTitle': 'Hợp tác',
+  'app.about.collaborationText': 'Xây dựng mối quan hệ đối tác lâu dài dựa trên sự tôn trọng và hợp tác cùng có lợi',
+  'app.about.responsibilityTitle': 'Trách nhiệm',
+  'app.about.responsibilityText': 'Làm việc với tinh thần trách nhiệm cao, cam kết hoàn thành mọi cam kết với khách hàng',
+  'app.about.partnerTitle': 'Hợp tác cùng XLab',
+  'app.about.partnerText': 'Chúng tôi luôn sẵn sàng lắng nghe và đồng hành cùng doanh nghiệp của bạn trong hành trình chuyển đổi số và phát triển bền vững.',
+  'app.about.contactButton': 'Liên hệ ngay',
+  'app.about.exploreButton': 'Khám phá dịch vụ',
 };
 
 export default messages; 

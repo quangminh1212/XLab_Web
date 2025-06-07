@@ -167,7 +167,36 @@ const messages = {
   // Call to action section
   'app.cta.title': 'Ready to improve your work efficiency with XLab?',
   'app.cta.description': 'We offer special discount rates for customers who buy in bulk. The more you buy, the higher the discount. We are committed to bringing you the best solutions at the most reasonable cost.',
-  'app.cta.contactButton': 'Contact us'
+  'app.cta.contactButton': 'Contact us',
+
+  // About page translations
+  'app.about.pageTitle': 'About Us',
+  'app.about.pageSubtitle': 'A pioneer in software development and technology solutions in Vietnam',
+  'app.about.storyTitle': 'Our Story',
+  'app.about.storyParagraph1': 'XLab was founded in 2018 by a group of passionate software engineers with a vision to create advanced technology solutions, helping Vietnamese businesses improve operational efficiency and competitiveness in the digital era.',
+  'app.about.storyParagraph2': 'After over 10 years of operation and development, XLab has become a trusted technology partner for hundreds of businesses both domestic and international, from startups to large corporations across various sectors including finance, retail, manufacturing, education, and healthcare.',
+  'app.about.storyParagraph3': 'We take pride in our talented and passionate team, with over 100 software specialists, system engineers, and experienced consultants, always dedicated to delivering optimal solutions for our partners and customers.',
+  'app.about.workspaceAlt': 'Workspace at XLab',
+  'app.about.teamAlt': 'XLab team working together',
+  'app.about.techWorkspaceAlt': 'Technology workspace at XLab',
+  'app.about.missionTitle': 'Mission',
+  'app.about.missionText': 'XLab\'s mission is to apply advanced technology to create excellent software solutions, helping Vietnamese businesses optimize processes, increase productivity, and develop sustainably in the digital era. We are committed to delivering high-quality products and services that meet the diverse needs of our customers, while contributing to the development of Vietnam\'s information technology industry.',
+  'app.about.visionTitle': 'Vision',
+  'app.about.visionText': 'XLab aims to become a leading technology company in Vietnam and Southeast Asia in software development and comprehensive IT solutions. We strive to be a trusted and long-term partner for businesses in their digital transformation journey, while being an ideal workplace for technology talents to develop their careers.',
+  'app.about.valuesTitle': 'Core Values',
+  'app.about.valuesSubtitle': 'The values that shape our culture and guide all of XLab\'s activities',
+  'app.about.qualityTitle': 'Quality',
+  'app.about.qualityText': 'Placing product and service quality first, continuously improving to achieve excellence',
+  'app.about.innovationTitle': 'Innovation',
+  'app.about.innovationText': 'Encouraging creative thinking, daring to experiment with new ideas and advanced technologies',
+  'app.about.collaborationTitle': 'Collaboration',
+  'app.about.collaborationText': 'Building long-term partnerships based on respect and mutually beneficial cooperation',
+  'app.about.responsibilityTitle': 'Responsibility',
+  'app.about.responsibilityText': 'Working with high responsibility, committed to fulfilling all commitments to customers',
+  'app.about.partnerTitle': 'Partner with XLab',
+  'app.about.partnerText': 'We are always ready to listen and accompany your business in the journey of digital transformation and sustainable development.',
+  'app.about.contactButton': 'Contact Us',
+  'app.about.exploreButton': 'Explore Services',
 };
 
 export default messages; 

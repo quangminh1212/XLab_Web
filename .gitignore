@@ -103,3 +103,22 @@ run-fixed.bat
 /data/backups/
 *.bak
 *.temp
+
+# Additional generated files when project is running
+.swc/
+.env.development.local
+.env.test.local
+.env.production.local
+/tmp/
+.cache/
+__generated__/
+.eslintcache
+.stylelintcache
+
+# Generated data files
+/data/users/*.json
+/data/temp/
+/data/logs/
+
+# Session data
+/sessions/
