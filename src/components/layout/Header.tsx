@@ -7,8 +7,10 @@ import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+import { HiTranslate } from 'react-icons/hi';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -35,6 +37,7 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
   const [isVoucherOpen, setIsVoucherOpen] = React.useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = React.useState(false);
   const [publicCoupons, setPublicCoupons] = React.useState<PublicCoupon[]>([]);
   const [userCoupons, setUserCoupons] = React.useState<PublicCoupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = React.useState(false);
@@ -50,6 +53,11 @@ const Header = () => {
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const voucherRef = useRef<HTMLDivElement>(null);
+  const languageRef = useRef<HTMLDivElement>(null);
+  const languageButtonRef = useRef<HTMLButtonElement>(null);
+  
+  // Sử dụng LanguageContext
+  const { language, changeLanguage, t } = useLanguage();
 
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
@@ -170,8 +178,19 @@ const Header = () => {
       ) {
         setIsVoucherOpen(false);
       }
+      
+      // Đóng language dropdown khi click ra ngoài
+      if (
+        isLanguageOpen &&
+        languageRef.current &&
+        languageButtonRef.current &&
+        !languageRef.current.contains(event.target as Node) &&
+        !languageButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsLanguageOpen(false);
+      }
     },
-    [isProfileOpen, isNotificationOpen, isVoucherOpen],
+    [isProfileOpen, isNotificationOpen, isVoucherOpen, isLanguageOpen],
   );
 
   // Thêm event listener khi component được mount
@@ -192,6 +211,7 @@ const Header = () => {
         if (isProfileOpen) setIsProfileOpen(false);
         if (isNotificationOpen) setIsNotificationOpen(false);
         if (isVoucherOpen) setIsVoucherOpen(false);
+        if (isLanguageOpen) setIsLanguageOpen(false);
         if (isOpen) setIsOpen(false);
       }
     };
@@ -234,6 +254,15 @@ const Header = () => {
     if (isOpen) setIsOpen(false);
     if (isProfileOpen) setIsProfileOpen(false);
     if (isNotificationOpen) setIsNotificationOpen(false);
+    if (isLanguageOpen) setIsLanguageOpen(false);
+  };
+  
+  const toggleLanguage = () => {
+    setIsLanguageOpen(!isLanguageOpen);
+    if (isOpen) setIsOpen(false);
+    if (isProfileOpen) setIsProfileOpen(false);
+    if (isNotificationOpen) setIsNotificationOpen(false);
+    if (isVoucherOpen) setIsVoucherOpen(false);
   };
 
   const formatCurrency = (amount: number) => {
@@ -342,31 +371,31 @@ const Header = () => {
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Trang chủ
+                {t('header.home')}
               </Link>
               <Link
                 href="/products"
                 className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Sản phẩm
+                {t('header.products')}
               </Link>
               <Link
                 href="/about"
                 className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Giới thiệu
+                {t('header.about')}
               </Link>
               <Link
                 href="/contact"
                 className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Liên hệ
+                {t('header.contact')}
               </Link>
               <Link
                 href="/bao-hanh"
                 className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                Bảo hành
+                {t('header.warranty')}
               </Link>
             </nav>
 
@@ -631,6 +660,58 @@ const Header = () => {
                 </div>
               )}
 
+              {/* Language Selector */}
+              <div className="relative" ref={languageRef}>
+                <button
+                  ref={languageButtonRef}
+                  onClick={toggleLanguage}
+                  className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                  aria-label="Change Language"
+                  aria-expanded={isLanguageOpen}
+                  aria-haspopup="true"
+                >
+                  <HiTranslate className="h-4 w-4 sm:h-5 sm:w-5" />
+                </button>
+                
+                {/* Language Dropdown */}
+                {isLanguageOpen && (
+                  <div
+                    className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-xl py-2 z-10"
+                    tabIndex={0}
+                    role="menu"
+                    aria-orientation="vertical"
+                  >
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <h3 className="text-base font-semibold text-gray-900">{t('header.language')}</h3>
+                    </div>
+                    <button
+                      onClick={() => {
+                        changeLanguage('vi');
+                        setIsLanguageOpen(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2 text-sm ${
+                        language === 'vi' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                      role="menuitem"
+                    >
+                      Tiếng Việt
+                    </button>
+                    <button
+                      onClick={() => {
+                        changeLanguage('en');
+                        setIsLanguageOpen(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2 text-sm ${
+                        language === 'en' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                      role="menuitem"
+                    >
+                      English
+                    </button>
+                  </div>
+                )}
+              </div>
+              
               {/* Cart Icon */}
               <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
                 <svg

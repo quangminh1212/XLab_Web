@@ -1,0 +1,47 @@
+{
+  "header": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About",
+    "contact": "Contact",
+    "warranty": "Warranty",
+    "myAccount": "My Account",
+    "myOrders": "My Orders",
+    "admin": "Admin",
+    "notifications": "Notifications",
+    "markAllAsRead": "Mark all as read",
+    "language": "Language"
+  },
+  "common": {
+    "search": "Search",
+    "viewAll": "View All",
+    "loadMore": "Load More",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "loading": "Loading..."
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty",
+    "checkout": "Checkout",
+    "total": "Total",
+    "remove": "Remove",
+    "clear": "Clear All"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember me",
+    "loginWith": "Login with"
+  }
+} 
