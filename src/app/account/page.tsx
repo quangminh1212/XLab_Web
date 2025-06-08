@@ -1348,7 +1348,7 @@ export default function AccountPage() {
 
               {/* Phần Quản lý giấy phép */}
               <div id="licenses" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Quản lý giấy phép</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('app.account.licenseManagement')}</h2>
 
                 {hasProducts ? (
                   <div className="overflow-x-auto">
@@ -1359,37 +1359,37 @@ export default function AccountPage() {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Sản phẩm
+                            {t('app.account.product')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Mã giấy phép
+                            {t('app.account.licenseKey')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Ngày kích hoạt
+                            {t('app.account.activationDate')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Hạn sử dụng
+                            {t('app.account.expiryDate')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Trạng thái
+                            {t('app.account.status')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Thao tác
+                            {t('app.account.actions')}
                           </th>
                         </tr>
                       </thead>
@@ -1433,16 +1433,16 @@ export default function AccountPage() {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                  Đang hoạt động
+                                  {t('app.account.active')}
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <div className="flex space-x-2">
                                   <button className="text-primary-600 hover:text-primary-900">
-                                    Sao chép
+                                    {t('app.account.copy')}
                                   </button>
                                   <button className="text-blue-600 hover:text-blue-900">
-                                    Gia hạn
+                                    {t('app.account.renew')}
                                   </button>
                                 </div>
                               </td>
@@ -1468,10 +1468,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Không có giấy phép nào
+                      {t('app.account.noLicenses')}
                     </h3>
                     <p className="text-gray-600 mb-4 max-w-md mx-auto">
-                      Bạn chưa có giấy phép sản phẩm nào. Hãy mua sản phẩm để nhận giấy phép.
+                      {t('app.account.noLicensesDesc')}
                     </p>
                   </div>
                 )}
@@ -1480,13 +1480,13 @@ export default function AccountPage() {
               {/* Phần Lịch sử mua hàng */}
               <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">
-                  Lịch sử mua hàng
+                  {t('app.account.purchaseHistory')}
                   {hasProducts && (
                     <button
                       onClick={goToOrdersPage}
                       className="ml-4 text-sm font-medium text-primary-600 hover:text-primary-700"
                     >
-                      Xem tất cả đơn hàng
+                      {t('app.account.viewAllOrders')}
                     </button>
                   )}
                 </h2>
@@ -1497,12 +1497,12 @@ export default function AccountPage() {
                       <div key={orderIndex} className="border rounded-lg overflow-hidden">
                         <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
                           <div>
-                            <h3 className="font-bold">Đơn hàng #{order.id}</h3>
-                            <p className="text-sm text-gray-600">Ngày đặt: {order.date}</p>
+                            <h3 className="font-bold">{t('app.account.orderNumber', { id: order.id })}</h3>
+                            <p className="text-sm text-gray-600">{t('app.account.orderDate')}: {order.date}</p>
                           </div>
                           <div>
                             <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
-                              {order.status}
+                              {t(`app.account.orderStatus.${order.status.toLowerCase()}`)}
                             </span>
                           </div>
                         </div>
@@ -1519,13 +1519,13 @@ export default function AccountPage() {
                                 </div>
                                 <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
                                   <div className="text-sm">
-                                    <span className="text-gray-600">Giá: </span>
+                                    <span className="text-gray-600">{t('app.account.price')}: </span>
                                     <span className="font-semibold">
                                       {formatCurrency(item.price)}
                                     </span>
                                   </div>
                                   <div className="text-sm">
-                                    <span className="text-gray-600">Hạn dùng: </span>
+                                    <span className="text-gray-600">{t('app.account.expiryDate')}: </span>
                                     <span className="font-semibold">{item.expiryDate}</span>
                                   </div>
                                 </div>
@@ -1536,7 +1536,7 @@ export default function AccountPage() {
                             {/* Hiển thị chi tiết tiết kiệm */}
                             <div className="space-y-2 mb-4">
                               <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Tiết kiệm từ giá sale:</span>
+                                <span className="text-gray-600">{t('app.account.savingsFromSale')}:</span>
                                 <span className="font-semibold text-green-600">
                                   {formatCurrency(
                                     order.items.reduce(
@@ -1555,7 +1555,7 @@ export default function AccountPage() {
                                 </div>
                               )}
                               <div className="flex justify-between text-sm font-bold border-t pt-2">
-                                <span className="text-gray-800">Tổng tiết kiệm:</span>
+                                <span className="text-gray-800">{t('app.account.totalSavings')}:</span>
                                 <span className="text-green-600">
                                   {formatCurrency(
                                     order.items.reduce(
@@ -1569,17 +1569,17 @@ export default function AccountPage() {
 
                             <div className="flex justify-between items-center">
                               <div className="text-lg font-semibold">
-                                Tổng thanh toán: {formatCurrency(order.total)}
+                                {t('app.account.totalPayment')}: {formatCurrency(order.total)}
                               </div>
                               <div className="flex space-x-3">
                                 <Link
                                   href={`/orders/${order.id}`}
                                   className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm"
                                 >
-                                  Chi tiết đơn hàng
+                                  {t('app.account.orderDetails')}
                                 </Link>
                                 <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
-                                  Tải hóa đơn PDF
+                                  {t('app.account.downloadInvoice')}
                                 </button>
                               </div>
                             </div>
@@ -1604,10 +1604,10 @@ export default function AccountPage() {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                           />
                         </svg>
-                        Xem tất cả đơn hàng
+                        {t('app.account.viewAllOrders')}
                       </button>
                     </div>
                   </div>
@@ -1628,10 +1628,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Chưa có đơn hàng nào
+                      {t('app.account.noOrders')}
                     </h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                      Bạn chưa thực hiện giao dịch nào. Hãy khám phá sản phẩm của chúng tôi.
+                      {t('app.account.noOrdersDesc')}
                     </p>
                     <Link
                       href="/products"
@@ -1651,7 +1651,7 @@ export default function AccountPage() {
                           d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                         />
                       </svg>
-                      Mua sắm ngay
+                      {t('app.account.shopNow')}
                     </Link>
                   </div>
                 )}
@@ -1659,7 +1659,7 @@ export default function AccountPage() {
 
               {/* Phần Tải xuống */}
               <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Tải xuống</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('app.account.downloads')}</h2>
 
                 {hasProducts ? (
                   <div className="space-y-4">
@@ -1675,7 +1675,7 @@ export default function AccountPage() {
                               {item.name} - {item.version}
                             </h3>
                             <p className="text-sm text-gray-600">
-                              Phiên bản: 2.1.0 (Cập nhật: 01/07/2023)
+                              {t('app.account.version')}: 2.1.0 ({t('app.account.updated')}: 01/07/2023)
                             </p>
                           </div>
                           <div className="flex items-center space-x-3">
@@ -1694,7 +1694,7 @@ export default function AccountPage() {
                                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                                 />
                               </svg>
-                              Xem lịch sử
+                              {t('app.account.viewHistory')}
                             </button>
                             <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm flex items-center">
                               <svg
@@ -1711,7 +1711,7 @@ export default function AccountPage() {
                                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                                 />
                               </svg>
-                              Tải xuống
+                              {t('app.account.download')}
                             </button>
                           </div>
                         </div>
@@ -1734,10 +1734,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Không có tệp nào để tải xuống
+                      {t('app.account.noDownloads')}
                     </h3>
                     <p className="text-gray-600 mb-4 max-w-md mx-auto">
-                      Bạn cần mua sản phẩm trước khi có thể tải xuống phần mềm.
+                      {t('app.account.noDownloadsDesc')}
                     </p>
                   </div>
                 )}
@@ -1745,7 +1745,7 @@ export default function AccountPage() {
 
               {/* Phần Hỗ trợ kỹ thuật */}
               <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Hỗ trợ kỹ thuật</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('app.account.technicalSupport')}</h2>
 
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-md">
