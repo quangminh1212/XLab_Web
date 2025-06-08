@@ -268,7 +268,67 @@ const messages = {
   'app.products.loading': 'Đang tải sản phẩm...',
   'app.products.error': 'Không thể tải sản phẩm',
   'app.products.tryAgain': 'Thử lại',
-  'app.products.goHome': 'Về trang chủ'
+  'app.products.goHome': 'Về trang chủ',
+
+  // Thêm các translation mới
+  'app.auth.currentPassword': 'Mật khẩu hiện tại',
+  'app.auth.newPassword': 'Mật khẩu mới',
+  'app.auth.confirmNewPassword': 'Xác nhận mật khẩu mới',
+  'app.account.updateInfo': 'Cập nhật thông tin',
+  'app.account.passwordChangeInfo': 'Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.',
+  'app.account.profileUpdateSuccess': 'Thông tin tài khoản đã được cập nhật thành công!',
+  'app.account.phoneExample': 'Ví dụ: 0901234567',
+  'app.account.joinDate': 'Ngày tham gia',
+  
+  // Contact page translations
+  'app.contact.pageTitle': 'Liên hệ với chúng tôi',
+  'app.contact.pageSubtitle': 'Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của bạn.',
+  'app.contact.formTitle': 'Gửi tin nhắn cho chúng tôi',
+  'app.contact.infoTitle': 'Thông tin liên hệ',
+  'app.contact.name': 'Họ và tên',
+  'app.contact.email': 'Email',
+  'app.contact.phone': 'Số điện thoại',
+  'app.contact.company': 'Công ty',
+  'app.contact.service': 'Dịch vụ bạn quan tâm',
+  'app.contact.serviceOption': '-- Chọn dịch vụ --',
+  'app.contact.message': 'Tin nhắn',
+  'app.contact.submit': 'Gửi tin nhắn',
+  'app.contact.submitting': 'Đang gửi...',
+  'app.contact.successMessage': 'Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong thời gian sớm nhất.',
+  'app.contact.errorMessage': 'Có lỗi xảy ra khi gửi form. Vui lòng thử lại sau.',
+  'app.contact.address': 'Địa chỉ',
+  'app.contact.telephone': 'Điện thoại',
+  'app.contact.workingHours': 'Giờ làm việc',
+  'app.contact.workingHoursValue': '24/7',
+  'app.contact.connectWithUs': 'Kết nối với chúng tôi',
+  
+  // Map section
+  'app.contact.location': 'Vị trí của chúng tôi',
+  'app.contact.mapTitle': 'Vị trí của XLab',
+
+  // Products page translations
+  'app.products.pageTitle': 'Sản phẩm',
+  'app.products.pageDescription': 'Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.',
+  'app.products.allTab': 'Tất cả',
+  'app.products.softwareTab': 'Phần mềm',
+  'app.products.serviceTab': 'Dịch vụ',
+  'app.products.showingResults': 'Hiển thị {count} kết quả',
+  'app.products.sortLabel': 'Sắp xếp:',
+  'app.products.sortNewest': 'Mới nhất',
+  'app.products.sortPriceLow': 'Giá thấp đến cao',
+  'app.products.sortPriceHigh': 'Giá cao đến thấp',
+  'app.products.sortPopular': 'Phổ biến nhất',
+  'app.products.loading': 'Đang tải sản phẩm...',
+  'app.products.error': 'Không thể tải sản phẩm',
+  'app.products.tryAgain': 'Thử lại',
+  'app.products.goHome': 'Về trang chủ',
+
+  // Thêm các translation mới
+  'app.auth.currentPassword': 'Mật khẩu hiện tại',
+  'app.auth.newPassword': 'Mật khẩu mới',
+  'app.auth.confirmNewPassword': 'Xác nhận mật khẩu mới',
+  'app.account.updateInfo': 'Cập nhật thông tin',
+  'app.account.passwordChangeInfo': 'Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.'
 };
 
 export default messages; 

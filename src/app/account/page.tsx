@@ -742,58 +742,58 @@ export default function AccountPage() {
               <div id="profile" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">{t('app.account.profile')}</h2>
 
-                <div className="mb-6">
+                <div id="profile" className="mb-6">
                   <h3 className="text-lg font-semibold mb-4">{t('app.account.personalInfo')}</h3>
+                  {saveSuccess && (
+                    <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md">
+                      {t('app.account.profileUpdateSuccess')}
+                    </div>
+                  )}
                   <form onSubmit={handleUpdateProfile}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
                           {t('app.account.fullName')}
                         </label>
                         <input
                           type="text"
-                          id="name"
                           name="name"
                           value={profile.name}
                           onChange={handleProfileChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
-                          Email
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {t('app.auth.email')}
                         </label>
                         <input
                           type="email"
-                          id="email"
                           name="email"
                           value={profile.email}
-                          readOnly
+                          disabled
                           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
                         />
                       </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="phone">
-                          Số điện thoại
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {t('app.contact.phone')}
                         </label>
                         <input
-                          type="text"
-                          id="phone"
+                          type="tel"
                           name="phone"
                           value={profile.phone}
                           onChange={handleProfileChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                          placeholder={t('app.account.phoneExample')}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="memberSince">
-                          Ngày tham gia
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          {t('app.account.joinDate')}
                         </label>
                         <input
                           type="text"
-                          id="memberSince"
                           name="memberSince"
                           value={profile.memberSince}
                           readOnly
@@ -807,7 +807,7 @@ export default function AccountPage() {
                         disabled={isSaving}
                         className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
                       >
-                        {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
+                        {isSaving ? t('app.common.loading') : t('app.account.updateInfo')}
                       </button>
                     </div>
                   </form>
@@ -857,7 +857,7 @@ export default function AccountPage() {
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Mật khẩu hiện tại
+                        {t('app.auth.currentPassword')}
                       </label>
                       <input
                         type="password"
@@ -866,7 +866,7 @@ export default function AccountPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Mật khẩu mới
+                        {t('app.auth.newPassword')}
                       </label>
                       <input
                         type="password"
@@ -875,7 +875,7 @@ export default function AccountPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Xác nhận mật khẩu mới
+                        {t('app.auth.confirmNewPassword')}
                       </label>
                       <input
                         type="password"
@@ -890,12 +890,12 @@ export default function AccountPage() {
                       onClick={(e) => {
                         e.preventDefault();
                         setPasswordMessage(
-                          'Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.',
+                          t('app.account.passwordChangeInfo')
                         );
                         setShowPasswordMessage(true);
                       }}
                     >
-                      Đổi mật khẩu
+                      {t('app.account.changePassword')}
                     </button>
                   </div>
                 </div>
