@@ -63,9 +63,16 @@ export default function ContactPage() {
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="container mx-auto px-4">
+<<<<<<< HEAD
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{messages['app.contact.pageTitle']}</h1>
           <p className="text-xl max-w-3xl whitespace-nowrap">
             {messages['app.contact.pageSubtitle']}
+=======
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Liên hệ với chúng tôi</h1>
+          <p className="text-xl max-w-3xl whitespace-nowrap">
+            Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của
+            bạn.
+>>>>>>> 8648b6962ce748e599f9829dc686213b9d504663
           </p>
         </div>
       </section>

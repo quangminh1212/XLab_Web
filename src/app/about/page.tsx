@@ -11,9 +11,16 @@ export default function AboutPage() {
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
         <div className="container">
+<<<<<<< HEAD
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('app.about.pageTitle')}</h1>
           <p className="text-xl whitespace-nowrap">
             {t('app.about.pageSubtitle')}
+=======
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Về chúng tôi</h1>
+          <p className="text-xl max-w-3xl whitespace-nowrap">
+            XLab - Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ
+            tại Việt Nam
+>>>>>>> 8648b6962ce748e599f9829dc686213b9d504663
           </p>
         </div>
       </section>
