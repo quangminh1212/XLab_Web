@@ -1310,7 +1310,7 @@ export default function AccountPage() {
                                     key={`voucher-${order.id}-${item.id}`}
                                     className="flex justify-between items-center mb-2"
                                   >
-                                    <span className="text-gray-600">{t('app.account.savedFromVoucher')}</span>
+                                    <span className="text-gray-600">{t('app.account.savingsFromVoucher')}:</span>
                                     <span className="font-semibold text-green-600">
                                       {formatCurrency(order.couponDiscount)}
                                     </span>
@@ -1548,7 +1548,7 @@ export default function AccountPage() {
                               </div>
                               {order.couponDiscount && order.couponDiscount > 0 && (
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-gray-600">Tiết kiệm từ voucher:</span>
+                                  <span className="text-gray-600">{t('app.account.savingsFromVoucher')}:</span>
                                   <span className="font-semibold text-green-600">
                                     {formatCurrency(order.couponDiscount)}
                                   </span>
