@@ -71,16 +71,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Tải danh sách mã giảm giá từ file
+    const allCoupons = loadCoupons();
+    console.log('Loading coupons from file');
+    console.log('Found', allCoupons.length, 'coupons total');
+
+    // Xử lý trường hợp đặc biệt: lấy tất cả mã giảm giá
+    if (code === 'ALL') {
+      // Lọc ra chỉ những mã công khai và còn hiệu lực
+      const now = new Date();
+      const activeCoupons = allCoupons.filter(coupon => {
+        const isActive = coupon.isActive;
+        const isPublic = coupon.isPublic;
+        const hasStarted = new Date(coupon.startDate) <= now;
+        const hasNotEnded = new Date(coupon.endDate) >= now;
+        
+        if (!isPublic) {
+          console.log(`Filtering out coupon ${coupon.code}: isPublic=${isPublic}, isActive=${isActive}, hasStarted=${hasStarted}`);
+        }
+        
+        return isActive && isPublic && hasStarted && hasNotEnded;
+      });
+      
+      console.log(`Returning ${activeCoupons.length} public active coupons`);
+      return NextResponse.json({
+        success: true,
+        allCoupons: activeCoupons
+      });
+    }
+
+    // Cho các mã thông thường, cần kiểm tra orderTotal
     if (orderTotal === undefined || orderTotal === null || isNaN(orderTotal)) {
       return NextResponse.json(
         { success: false, error: 'Tổng giá trị đơn hàng không hợp lệ' },
         { status: 400 },
       );
     }
-
-    // Tải danh sách mã giảm giá từ file
-    const allCoupons = loadCoupons();
-    console.log('Loaded coupons:', allCoupons.length);
 
     // Tìm mã giảm giá
     const coupon = allCoupons.find(

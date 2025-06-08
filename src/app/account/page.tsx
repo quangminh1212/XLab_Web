@@ -1,11 +1,13 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Avatar from '@/components/common/Avatar';
+import { formatCurrency } from '@/lib/utils';
+import { useTranslation } from '@/i18n/useTranslation';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -56,6 +58,7 @@ const userProfile = {
 export default function AccountPage() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
+  const { t } = useTranslation();
   const [imageError, setImageError] = useState(false);
   const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
@@ -78,11 +81,6 @@ export default function AccountPage() {
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
-
-  const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
-  const formatCurrency = (amount: number) => {
-    return currencyFormatter.format(amount);
-  };
 
   // Hàm lấy danh sách mã giảm giá
   const fetchAvailableCoupons = async () => {
@@ -462,9 +460,9 @@ export default function AccountPage() {
       {/* Page Header */}
       <section className="bg-primary-600 text-white py-16">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Tài khoản của tôi</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('app.account.myAccount')}</h1>
           <p className="text-xl max-w-3xl">
-            Quản lý thông tin cá nhân, giấy phép và lịch sử mua hàng của bạn.
+            {t('app.account.description')}
           </p>
         </div>
       </section>
@@ -474,7 +472,7 @@ export default function AccountPage() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng sản phẩm đã mua</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('app.account.totalPurchased')}</h3>
               <p className="text-3xl font-bold text-gray-800">{totalProducts}</p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 {hasProducts ? (
@@ -491,7 +489,7 @@ export default function AccountPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>Tất cả đang hoạt động</span>
+                    <span>{t('app.account.allActive')}</span>
                   </>
                 ) : (
                   <>
@@ -507,14 +505,14 @@ export default function AccountPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>Chưa có sản phẩm nào</span>
+                    <span>{t('app.account.noProducts')}</span>
                   </>
                 )}
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('app.account.totalSpent')}</h3>
               <p className="text-3xl font-bold text-gray-800 whitespace-nowrap">
                 {formatCurrency(totalSpent)}
               </p>
@@ -531,12 +529,12 @@ export default function AccountPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Qua {purchaseHistory.length} đơn hàng</span>
+                <span>{t('app.account.throughOrders', { count: purchaseHistory.length })}</span>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('app.account.totalSaved')}</h3>
               <p className="text-3xl font-bold text-green-600 whitespace-nowrap">
                 {formatCurrency(totalSaved)}
               </p>
@@ -553,7 +551,7 @@ export default function AccountPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>So với giá gốc</span>
+                <span>{t('app.account.comparedToOriginal')}</span>
               </div>
             </div>
           </div>
@@ -608,7 +606,7 @@ export default function AccountPage() {
                   </div>
                   <h2 className="text-xl font-bold">{profile.name}</h2>
                   <p className="text-gray-600">{profile.email}</p>
-                  <p className="text-sm text-gray-500">Thành viên từ {profile.memberSince}</p>
+                  <p className="text-sm text-gray-500">{t('app.account.memberSince', { date: profile.memberSince })}</p>
                 </div>
 
                 <nav className="space-y-1">
@@ -630,7 +628,7 @@ export default function AccountPage() {
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    Hồ sơ cá nhân
+                    {t('app.account.profile')}
                   </a>
                   <a
                     href="#my-products"
@@ -650,7 +648,7 @@ export default function AccountPage() {
                         d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                       />
                     </svg>
-                    Sản phẩm của tôi
+                    {t('app.account.myProducts')}
                   </a>
                   <a
                     href="#coupons"
@@ -658,25 +656,27 @@ export default function AccountPage() {
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-2"
+                      className="h-5 w-5 mr-3"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      style={{ verticalAlign: '-0.125em' }}
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M17.293 10.293l-7.586-7.586A1 1 0 008.586 2H4a2 2 0 00-2 2v4.586a1 1 0 00.293.707l7.586 7.586a1 1 0 001.414 0l6-6a1 1 0 000-1.414z"
+                        d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
                       />
-                      <circle cx="6.5" cy="6.5" r="1.5" />
                     </svg>
-                    Quản lý mã giảm giá
+                    {t('app.header.vouchers')}
                   </a>
                   <a
-                    href="#licenses"
+                    href="#purchase-history"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goToOrdersPage();
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -689,14 +689,14 @@ export default function AccountPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                       />
                     </svg>
-                    Quản lý giấy phép
+                    {t('app.orders.history')}
                   </a>
-                  <a
-                    href="#orders"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+                  <button
+                    className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-md w-full text-left"
+                    onClick={handleSignOut}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -709,93 +709,27 @@ export default function AccountPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                       />
                     </svg>
-                    Lịch sử mua hàng
-                  </a>
-                  <a
-                    href="#downloads"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                      />
-                    </svg>
-                    Tải xuống
-                  </a>
-                  <a
-                    href="#support"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
-                    Hỗ trợ kỹ thuật
-                  </a>
-                  <a
-                    href="#settings"
-                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-3"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    Cài đặt tài khoản
-                  </a>
+                    {t('app.header.logout')}
+                  </button>
                 </nav>
               </div>
 
               <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="font-bold text-lg mb-4">Thống kê nhanh</h3>
+                <h3 className="font-bold text-lg mb-4">{t('app.account.quickStats')}</h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Giấy phép đang hoạt động</span>
+                    <span className="text-gray-600">{t('app.account.activeLicenses')}</span>
                     <span className="font-bold">{totalProducts}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Đơn hàng đã mua</span>
+                    <span className="text-gray-600">{t('app.account.ordersPurchased')}</span>
                     <span className="font-bold">{purchaseHistory.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Tổng sản phẩm</span>
+                    <span className="text-gray-600">{t('app.account.totalProducts')}</span>
                     <span className="font-bold">{totalProducts}</span>
                   </div>
                 </div>
@@ -804,167 +738,446 @@ export default function AccountPage() {
 
             {/* Main Content */}
             <div className="lg:w-3/4">
-              {/* Phần Hồ sơ cá nhân */}
+              {/* Profile Section */}
               <div id="profile" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Hồ sơ cá nhân</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('app.account.profile')}</h2>
 
-                <div className="space-y-6">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-3">Thông tin cá nhân</h3>
-                    <form onSubmit={handleUpdateProfile}>
-                      {saveSuccess && (
-                        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-md">
-                          Thông tin đã được cập nhật thành công!
-                        </div>
-                      )}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Họ tên
-                          </label>
-                          <input
-                            type="text"
-                            name="name"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                            value={profile.name}
-                            onChange={handleProfileChange}
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            name="email"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
-                            value={profile.email}
-                            disabled
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Ngày tham gia
-                          </label>
-                          <input
-                            type="text"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
-                            value={profile.memberSince}
-                            disabled
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Số điện thoại
-                          </label>
-                          <input
-                            type="text"
-                            name="phone"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                            placeholder="Chưa cập nhật"
-                            value={profile.phone}
-                            onChange={handleProfileChange}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="mt-4 text-right">
-                        <button
-                          type="submit"
-                          disabled={isSaving}
-                          className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
-                        >
-                          {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-3">Đổi mật khẩu</h3>
-                    {showPasswordMessage && (
-                      <div className="mb-4 p-3 bg-blue-50 text-blue-600 text-sm rounded-md flex items-start justify-between">
-                        <div className="flex items-start">
-                          <svg
-                            className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
-                          <span>{passwordMessage}</span>
-                        </div>
-                        <button
-                          onClick={() => setShowPasswordMessage(false)}
-                          className="text-blue-400 hover:text-blue-600"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    )}
-                    <div className="space-y-3">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">{t('app.account.personalInfo')}</h3>
+                  <form onSubmit={handleUpdateProfile}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Mật khẩu hiện tại
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="name">
+                          {t('app.account.fullName')}
                         </label>
                         <input
-                          type="password"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={profile.name}
+                          onChange={handleProfileChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Mật khẩu mới
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="email">
+                          Email
                         </label>
                         <input
-                          type="password"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Xác nhận mật khẩu mới
-                        </label>
-                        <input
-                          type="password"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={profile.email}
+                          readOnly
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
                         />
                       </div>
                     </div>
-
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="phone">
+                          Số điện thoại
+                        </label>
+                        <input
+                          type="text"
+                          id="phone"
+                          name="phone"
+                          value={profile.phone}
+                          onChange={handleProfileChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="memberSince">
+                          Ngày tham gia
+                        </label>
+                        <input
+                          type="text"
+                          id="memberSince"
+                          name="memberSince"
+                          value={profile.memberSince}
+                          readOnly
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
+                        />
+                      </div>
+                    </div>
                     <div className="mt-4 text-right">
                       <button
-                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPasswordMessage(
-                            'Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.',
-                          );
-                          setShowPasswordMessage(true);
-                        }}
+                        type="submit"
+                        disabled={isSaving}
+                        className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
                       >
-                        Đổi mật khẩu
+                        {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
                       </button>
                     </div>
+                  </form>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">{t('app.account.changePassword')}</h3>
+                  {showPasswordMessage && (
+                    <div className="mb-4 p-3 bg-blue-50 text-blue-600 text-sm rounded-md flex items-start justify-between">
+                      <div className="flex items-start">
+                        <svg
+                          className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span>{passwordMessage}</span>
+                      </div>
+                      <button
+                        onClick={() => setShowPasswordMessage(false)}
+                        className="text-blue-400 hover:text-blue-600"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Mật khẩu hiện tại
+                      </label>
+                      <input
+                        type="password"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Mật khẩu mới
+                      </label>
+                      <input
+                        type="password"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Xác nhận mật khẩu mới
+                      </label>
+                      <input
+                        type="password"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4 text-right">
+                    <button
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPasswordMessage(
+                          'Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.',
+                        );
+                        setShowPasswordMessage(true);
+                      }}
+                    >
+                      Đổi mật khẩu
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">{t('app.account.support')}</h3>
+                  {supportSuccess && (
+                    <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
+                      <div className="flex items-start">
+                        <svg
+                          className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        <span>
+                          Yêu cầu hỗ trợ của bạn đã được gửi thành công! Chúng tôi sẽ phản hồi sớm
+                          nhất có thể.
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => setSupportSuccess(false)}
+                        className="text-green-400 hover:text-green-600"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t('app.account.supportProduct')}
+                      </label>
+                      <select
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        value={supportProduct}
+                        onChange={(e) => setSupportProduct(e.target.value)}
+                      >
+                        <option value="">{t('app.account.selectProduct')}</option>
+                        {purchaseHistory
+                          .flatMap((order) => order.items)
+                          .map((item, index) => (
+                            <option key={index} value={item.id}>
+                              {item.name} - {item.version}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t('app.account.supportSubject')}
+                      </label>
+                      <input
+                        type="text"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        placeholder={t('app.account.subjectPlaceholder')}
+                        value={supportTitle}
+                        onChange={(e) => setSupportTitle(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t('app.account.issueDescription')}
+                      </label>
+                      <textarea
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
+                        placeholder={t('app.account.descriptionPlaceholder')}
+                        value={supportDescription}
+                        onChange={(e) => setSupportDescription(e.target.value)}
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 text-right">
+                    <button
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // Validate form
+                        if (!supportTitle || !supportDescription) {
+                          alert('Vui lòng nhập đầy đủ thông tin');
+                          return;
+                        }
+
+                        // Reset form
+                        setSupportProduct('');
+                        setSupportTitle('');
+                        setSupportDescription('');
+                        setSupportSuccess(true);
+
+                        // Tự động ẩn thông báo sau 5 giây
+                        setTimeout(() => {
+                          setSupportSuccess(false);
+                        }, 5000);
+                      }}
+                    >
+                      {t('app.account.submitSupportRequest')}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">{t('app.account.notificationSettings')}</h3>
+                  {settingsSaved && (
+                    <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
+                      <div className="flex items-start">
+                        <svg
+                          className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        <span>{t('app.account.settingsSaved')}</span>
+                      </div>
+                      <button
+                        onClick={() => setSettingsSaved(false)}
+                        className="text-green-400 hover:text-green-600"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">{t('app.account.emailNotification')}</span>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          checked={notificationSettings.email}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              email: e.target.checked,
+                            })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">{t('app.account.productUpdates')}</span>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          checked={notificationSettings.productUpdates}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              productUpdates: e.target.checked,
+                            })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">{t('app.account.promotions')}</span>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          checked={notificationSettings.promotions}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              promotions: e.target.checked,
+                            })
+                          }
+                        />
+                      </label>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">{t('app.account.expiryReminders')}</span>
+                      <label className="inline-flex items-center">
+                        <input
+                          type="checkbox"
+                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
+                          checked={notificationSettings.expiryReminders}
+                          onChange={(e) =>
+                            setNotificationSettings({
+                              ...notificationSettings,
+                              expiryReminders: e.target.checked,
+                            })
+                          }
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 text-right">
+                    <button
+                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                      onClick={() => {
+                        // Save settings to localStorage
+                        try {
+                          localStorage.setItem(
+                            `notification_settings_${session?.user?.email}`,
+                            JSON.stringify(notificationSettings)
+                          );
+                          setSettingsSaved(true);
+                          setTimeout(() => {
+                            setSettingsSaved(false);
+                          }, 3000);
+                        } catch (error) {
+                          console.error('Error saving notification settings:', error);
+                        }
+                      }}
+                    >
+                      {t('app.account.saveSettings')}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Nút đăng xuất */}
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg text-gray-800">Đăng xuất</h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Kết thúc phiên đăng nhập hiện tại của bạn
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition flex items-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      Đăng xuất
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1646,14 +1859,14 @@ export default function AccountPage() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Sản phẩm
+                          {t('app.account.supportProduct')}
                         </label>
                         <select
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
                           value={supportProduct}
                           onChange={(e) => setSupportProduct(e.target.value)}
                         >
-                          <option value="">Chọn sản phẩm cần hỗ trợ</option>
+                          <option value="">{t('app.account.selectProduct')}</option>
                           {purchaseHistory
                             .flatMap((order) => order.items)
                             .map((item, index) => (
@@ -1665,23 +1878,23 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Tiêu đề
+                          {t('app.account.supportSubject')}
                         </label>
                         <input
                           type="text"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          placeholder="Nhập tiêu đề vấn đề"
+                          placeholder={t('app.account.subjectPlaceholder')}
                           value={supportTitle}
                           onChange={(e) => setSupportTitle(e.target.value)}
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Mô tả vấn đề
+                          {t('app.account.issueDescription')}
                         </label>
                         <textarea
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
-                          placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"
+                          placeholder={t('app.account.descriptionPlaceholder')}
                           value={supportDescription}
                           onChange={(e) => setSupportDescription(e.target.value)}
                         ></textarea>
@@ -1711,7 +1924,7 @@ export default function AccountPage() {
                           }, 5000);
                         }}
                       >
-                        Gửi yêu cầu hỗ trợ
+                        {t('app.account.submitSupportRequest')}
                       </button>
                     </div>
                   </div>
@@ -1768,7 +1981,7 @@ export default function AccountPage() {
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo qua email</span>
+                        <span className="text-gray-700">{t('app.account.emailNotification')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1784,7 +1997,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo cập nhật sản phẩm</span>
+                        <span className="text-gray-700">{t('app.account.productUpdates')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1800,7 +2013,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo khuyến mãi và ưu đãi</span>
+                        <span className="text-gray-700">{t('app.account.promotions')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1816,7 +2029,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo hết hạn giấy phép</span>
+                        <span className="text-gray-700">{t('app.account.expiryReminders')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1837,27 +2050,23 @@ export default function AccountPage() {
                   <div className="mt-4 text-right">
                     <button
                       className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                      onClick={(e) => {
-                        e.preventDefault();
-
-                        // Lưu cài đặt vào localStorage
-                        if (session?.user?.email) {
+                      onClick={() => {
+                        // Save settings to localStorage
+                        try {
                           localStorage.setItem(
-                            `notification_settings_${session.user.email}`,
-                            JSON.stringify(notificationSettings),
+                            `notification_settings_${session?.user?.email}`,
+                            JSON.stringify(notificationSettings)
                           );
+                          setSettingsSaved(true);
+                          setTimeout(() => {
+                            setSettingsSaved(false);
+                          }, 3000);
+                        } catch (error) {
+                          console.error('Error saving notification settings:', error);
                         }
-
-                        // Hiển thị thông báo thành công
-                        setSettingsSaved(true);
-
-                        // Tự động ẩn thông báo sau 3 giây
-                        setTimeout(() => {
-                          setSettingsSaved(false);
-                        }, 3000);
                       }}
                     >
-                      Lưu thay đổi
+                      {t('app.account.saveSettings')}
                     </button>
                   </div>
                 </div>
