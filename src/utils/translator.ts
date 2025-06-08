@@ -1,10 +1,11 @@
-import { google } from 'googleapis';
+// Tránh import google APIs trực tiếp để không gây lỗi ở client side
+let googleTranslateAPI: any = null;
 
 // Khai báo biến môi trường ảo cho API key (trong thực tế nên dùng .env)
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 
 // Dictionary để dịch đơn giản khi không có API key
-const simpleDictionary: Record<string, Record<string, string>> = {
+export const simpleDictionary: Record<string, Record<string, string>> = {
   en: {
     // Navigation và header
     'Trang chủ': 'Home',
@@ -123,6 +124,32 @@ const simpleDictionary: Record<string, Record<string, string>> = {
 };
 
 /**
+ * Hàm lazy-load Google APIs để tránh lỗi khi chạy trên client-side
+ */
+async function loadGoogleTranslateAPI() {
+  if (typeof window !== 'undefined') {
+    // Đang chạy trên client side, không sử dụng Google API
+    return null;
+  }
+  
+  if (!googleTranslateAPI) {
+    try {
+      // Dynamic import để tránh lỗi khi chạy trên client-side
+      const { google } = await import('googleapis');
+      googleTranslateAPI = google.translate({
+        version: 'v2',
+        auth: GOOGLE_API_KEY as string,
+      });
+    } catch (error) {
+      console.error('Failed to load Google Translate API:', error);
+      return null;
+    }
+  }
+  
+  return googleTranslateAPI;
+}
+
+/**
  * Dịch văn bản sang ngôn ngữ đích
  * @param text Văn bản cần dịch
  * @param targetLang Ngôn ngữ đích (mã ISO)
@@ -134,21 +161,27 @@ export async function translateText(text: string, targetLang: string): Promise<s
     return text;
   }
 
-  // Nếu không có API key, sử dụng dictionary đơn giản
-  if (!GOOGLE_API_KEY) {
-    return simpleDictionary[targetLang]?.[text] || text;
+  // Sử dụng dictionary đơn giản
+  if (simpleDictionary[targetLang]?.[text]) {
+    return simpleDictionary[targetLang][text];
+  }
+
+  // Nếu đang chạy trên client hoặc không có API key, trả về text gốc
+  if (typeof window !== 'undefined' || !GOOGLE_API_KEY) {
+    return text;
   }
 
   try {
-    // Sử dụng Google Translate API nếu có API key
-    const translate = google.translate({
-      version: 'v2',
-      auth: GOOGLE_API_KEY as string,
-    });
+    // Lazy load Google API
+    const translate = await loadGoogleTranslateAPI();
+    
+    if (!translate) {
+      return text;
+    }
 
     const response = await translate.translations.list({
       q: [text],
-      target: targetLang as string,
+      target: targetLang,
       format: 'text',
     });
 
@@ -160,7 +193,7 @@ export async function translateText(text: string, targetLang: string): Promise<s
     return translations[0].translatedText;
   } catch (error) {
     console.error('Translation error:', error);
-    // Fallback to dictionary if API fails
+    // Fallback to dictionary
     return simpleDictionary[targetLang]?.[text] || text;
   }
 } 

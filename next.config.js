@@ -11,6 +11,15 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
+    memoryBasedWorkersCount: true,
+    outputFileTracingRoot: './',
+    outputFileTracingExcludes: {
+      '*': [
+        'node_modules/@swc/core-linux-x64-gnu',
+        'node_modules/@swc/core-linux-x64-musl',
+        'node_modules/@esbuild/linux-x64',
+      ],
+    },
   },
   images: {
     domains: [
@@ -46,6 +55,12 @@ const nextConfig = {
       fullUrl: false,
     },
   },
+  api: {
+    responseLimit: false,
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
   webpack: (config, { dev, isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -71,6 +86,20 @@ const nextConfig = {
           },
         };
       }
+
+      // Thay thế các module chỉ dành cho Node.js bằng 'empty' module trong môi trường client
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        dns: false,
+        child_process: false,
+        http2: false,
+        module: false,
+        os: false,
+        path: false,
+      };
     }
 
     return config;

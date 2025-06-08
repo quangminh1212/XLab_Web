@@ -169,27 +169,26 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
         return text;
       }
 
-      // Kiểm tra từ điển cứng
-      try {
-        // Import theo kiểu động để tránh lỗi server-side
-        const dictionary = require('@/utils/translator').simpleDictionary;
-        if (dictionary && dictionary[language] && dictionary[language][text]) {
-          const translated = dictionary[language][text];
-          
-          // Lưu vào cache
-          setCache((prevCache) => ({
-            ...prevCache,
-            [language]: {
-              ...(prevCache[language] || {}),
-              [text]: translated,
-            },
-          }));
-          
-          return translated;
+      // Kiểm tra từ điển cứng (chạy bất đồng bộ)
+      Promise.resolve().then(async () => {
+        try {
+          const { simpleDictionary } = await import('@/utils/translator');
+          if (simpleDictionary && simpleDictionary[language] && simpleDictionary[language][text]) {
+            const translated = simpleDictionary[language][text];
+            
+            // Lưu vào cache
+            setCache((prevCache) => ({
+              ...prevCache,
+              [language]: {
+                ...(prevCache[language] || {}),
+                [text]: translated,
+              },
+            }));
+          }
+        } catch (e) {
+          // Bỏ qua lỗi nếu không import được
         }
-      } catch (e) {
-        // Bỏ qua lỗi nếu không import được
-      }
+      });
 
       // Nếu chưa có trong cache, bắt đầu dịch bất đồng bộ
       translateText(text, language).catch(console.error);
