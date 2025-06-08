@@ -14,6 +14,7 @@ import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
 import { TranslationProvider } from '@/contexts/TranslationContext';
+import PageContent from './PageContent';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
@@ -26,11 +27,15 @@ export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperPro
           <BalanceProvider>
             <TranslationProvider>
               <CartProvider>
-                <div className="flex flex-col min-h-screen">
-                  <Header />
-                  <main className="flex-grow">{children}</main>
-                  <Footer />
-                </div>
+                              <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">
+                  <PageContent>
+                    {children}
+                  </PageContent>
+                </main>
+                <Footer />
+              </div>
                 <Analytics />
                 <CompileIndicator />
                 <StyleLoader />
