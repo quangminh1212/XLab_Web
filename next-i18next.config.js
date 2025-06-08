@@ -1,9 +1,8 @@
-const path = require('path');
-
 module.exports = {
   i18n: {
     defaultLocale: 'vi',
     locales: ['en', 'vi'],
-    localePath: path.resolve('./public/locales'),
+    // The 'path' module is not needed and causes issues in edge runtime.
+    // localePath: path.resolve('./public/locales'),
   },
 }; 

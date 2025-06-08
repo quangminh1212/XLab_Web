@@ -9,6 +9,8 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -29,6 +31,8 @@ interface PublicCoupon {
 }
 
 const Header = () => {
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language;
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -203,9 +207,15 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isOpen]);
 
   const isActive = (path: string) => {
-    return pathname === path
-      ? 'text-primary-600 font-medium'
-      : 'text-gray-700 hover:text-primary-600';
+    // We need to remove the locale from the pathname for comparison
+    const pathnameWithoutLocale = pathname.startsWith(`/${currentLang}`)
+      ? pathname.substring(currentLang.length + 1) || '/'
+      : pathname;
+    
+    // Handle root path separately
+    if (path === '/') return pathnameWithoutLocale === '/';
+
+    return pathnameWithoutLocale.startsWith(path);
   };
 
   const toggleMenu = () => {
@@ -246,11 +256,16 @@ const Header = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Date(
+    const localDate = new Date(
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString('vi-VN');
+    );
+    return new Intl.DateTimeFormat('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(localDate);
   };
 
   const handleCopyVoucher = (code: string) => {
@@ -259,7 +274,7 @@ const Header = () => {
       .then(() => {
         // Use a more elegant notification method instead of alert
         setShowNotification(true);
-        setNotificationMessage(`Đã sao chép mã: ${code}`);
+        setNotificationMessage('Voucher đã được sao chép vào clipboard!');
 
         // Hide notification after 2 seconds
         setTimeout(() => {
@@ -318,6 +333,14 @@ const Header = () => {
     ];
   };
 
+  const navLinks = [
+    { href: '/', text: t('nav_home') },
+    { href: '/products', text: t('nav_products') },
+    { href: '/about', text: t('nav_about') },
+    { href: '/contact', text: t('nav_contact') },
+    { href: '/bao-hanh', text: t('nav_warranty') },
+  ];
+
   return (
     <>
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -337,37 +360,20 @@ const Header = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-              <Link
-                href="/"
-                className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Trang chủ
-              </Link>
-              <Link
-                href="/products"
-                className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Sản phẩm
-              </Link>
-              <Link
-                href="/about"
-                className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Giới thiệu
-              </Link>
-              <Link
-                href="/contact"
-                className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Liên hệ
-              </Link>
-              <Link
-                href="/bao-hanh"
-                className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Bảo hành
-              </Link>
+            <nav className="hidden md:flex items-center space-x-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={`/${currentLang}${link.href === '/' ? '' : link.href}`}
+                  className={`text-base font-medium transition-colors duration-200 ${
+                    isActive(link.href)
+                      ? 'text-primary-600 border-b-2 border-primary-600'
+                      : 'text-gray-700 hover:text-primary-600'
+                  }`}
+                >
+                  {link.text}
+                </Link>
+              ))}
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
@@ -782,42 +788,19 @@ const Header = () => {
             isOpen ? 'block' : 'hidden'
           } md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2`}
         >
-          <nav className="container mx-auto px-4 py-2 space-y-1">
-            <Link
-              href="/"
-              className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Trang chủ
-            </Link>
-            <Link
-              href="/products"
-              className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Sản phẩm
-            </Link>
-            <Link
-              href="/about"
-              className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Giới thiệu
-            </Link>
-            <Link
-              href="/contact"
-              className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Liên hệ
-            </Link>
-            <Link
-              href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Bảo hành
-            </Link>
+          <nav className="flex flex-col space-y-4 px-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={`/${currentLang}${link.href === '/' ? '' : link.href}`}
+                onClick={toggleMenu}
+                className={`text-base font-medium transition-colors duration-200 ${
+                  isActive(link.href) ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
+                }`}
+              >
+                {link.text}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>
