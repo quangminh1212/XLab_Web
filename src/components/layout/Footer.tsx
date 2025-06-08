@@ -320,7 +320,7 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
               &copy; {currentYear} <span className="text-white font-medium">{siteConfig.name}</span>
-              . {t('app.footer.copyright')}{' '}
+              . Bản quyền thuộc về công ty{' '}
               <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
             </p>
           </div>

@@ -1,13 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useSession, signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Avatar from '@/components/common/Avatar';
-import { formatCurrency } from '@/lib/utils';
-import { useTranslation } from '@/i18n/useTranslation';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -58,7 +56,6 @@ const userProfile = {
 export default function AccountPage() {
   const router = useRouter();
   const { data: session, status, update: updateSession } = useSession();
-  const { t } = useTranslation();
   const [imageError, setImageError] = useState(false);
   const [profile, setProfile] = useState(userProfile);
   const [isSaving, setSaving] = useState(false);
@@ -81,6 +78,11 @@ export default function AccountPage() {
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
+
+  const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
+  const formatCurrency = (amount: number) => {
+    return currencyFormatter.format(amount);
+  };
 
   // Hàm lấy danh sách mã giảm giá
   const fetchAvailableCoupons = async () => {
@@ -460,9 +462,9 @@ export default function AccountPage() {
       {/* Page Header */}
       <section className="bg-primary-600 text-white py-16">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('app.account.myAccount')}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Tài khoản của tôi</h1>
           <p className="text-xl max-w-3xl">
-            {t('app.account.description')}
+            Quản lý thông tin cá nhân, giấy phép và lịch sử mua hàng của bạn.
           </p>
         </div>
       </section>
@@ -472,7 +474,7 @@ export default function AccountPage() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('app.account.totalPurchased')}</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng sản phẩm đã mua</h3>
               <p className="text-3xl font-bold text-gray-800">{totalProducts}</p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 {hasProducts ? (
@@ -489,7 +491,7 @@ export default function AccountPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>{t('app.account.allActive')}</span>
+                    <span>Tất cả đang hoạt động</span>
                   </>
                 ) : (
                   <>
@@ -505,14 +507,14 @@ export default function AccountPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>{t('app.account.noProducts')}</span>
+                    <span>Chưa có sản phẩm nào</span>
                   </>
                 )}
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('app.account.totalSpent')}</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
               <p className="text-3xl font-bold text-gray-800 whitespace-nowrap">
                 {formatCurrency(totalSpent)}
               </p>
@@ -529,12 +531,12 @@ export default function AccountPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>{t('app.account.throughOrders', { count: purchaseHistory.length })}</span>
+                <span>Qua {purchaseHistory.length} đơn hàng</span>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('app.account.totalSaved')}</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
               <p className="text-3xl font-bold text-green-600 whitespace-nowrap">
                 {formatCurrency(totalSaved)}
               </p>
@@ -551,7 +553,7 @@ export default function AccountPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>{t('app.account.comparedToOriginal')}</span>
+                <span>So với giá gốc</span>
               </div>
             </div>
           </div>
@@ -606,7 +608,7 @@ export default function AccountPage() {
                   </div>
                   <h2 className="text-xl font-bold">{profile.name}</h2>
                   <p className="text-gray-600">{profile.email}</p>
-                  <p className="text-sm text-gray-500">{t('app.account.memberSince', { date: profile.memberSince })}</p>
+                  <p className="text-sm text-gray-500">Thành viên từ {profile.memberSince}</p>
                 </div>
 
                 <nav className="space-y-1">
@@ -628,7 +630,7 @@ export default function AccountPage() {
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    {t('app.account.profile')}
+                    Hồ sơ cá nhân
                   </a>
                   <a
                     href="#my-products"
@@ -648,7 +650,7 @@ export default function AccountPage() {
                         d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                       />
                     </svg>
-                    {t('app.account.myProducts')}
+                    Sản phẩm của tôi
                   </a>
                   <a
                     href="#coupons"
@@ -656,27 +658,25 @@ export default function AccountPage() {
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-3"
+                      className="h-5 w-5 mr-2"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      style={{ verticalAlign: '-0.125em' }}
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"
+                        d="M17.293 10.293l-7.586-7.586A1 1 0 008.586 2H4a2 2 0 00-2 2v4.586a1 1 0 00.293.707l7.586 7.586a1 1 0 001.414 0l6-6a1 1 0 000-1.414z"
                       />
+                      <circle cx="6.5" cy="6.5" r="1.5" />
                     </svg>
-                    {t('app.header.vouchers')}
+                    Quản lý mã giảm giá
                   </a>
                   <a
-                    href="#purchase-history"
+                    href="#licenses"
                     className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      goToOrdersPage();
-                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -689,14 +689,14 @@ export default function AccountPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                       />
                     </svg>
-                    {t('app.orders.history')}
+                    Quản lý giấy phép
                   </a>
-                  <button
-                    className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-md w-full text-left"
-                    onClick={handleSignOut}
+                  <a
+                    href="#orders"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -709,27 +709,93 @@ export default function AccountPage() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                       />
                     </svg>
-                    {t('app.header.logout')}
-                  </button>
+                    Lịch sử mua hàng
+                  </a>
+                  <a
+                    href="#downloads"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    Tải xuống
+                  </a>
+                  <a
+                    href="#support"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                    Hỗ trợ kỹ thuật
+                  </a>
+                  <a
+                    href="#settings"
+                    className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Cài đặt tài khoản
+                  </a>
                 </nav>
               </div>
 
               <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="font-bold text-lg mb-4">{t('app.account.quickStats')}</h3>
+                <h3 className="font-bold text-lg mb-4">Thống kê nhanh</h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{t('app.account.activeLicenses')}</span>
+                    <span className="text-gray-600">Giấy phép đang hoạt động</span>
                     <span className="font-bold">{totalProducts}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{t('app.account.ordersPurchased')}</span>
+                    <span className="text-gray-600">Đơn hàng đã mua</span>
                     <span className="font-bold">{purchaseHistory.length}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{t('app.account.totalProducts')}</span>
+                    <span className="text-gray-600">Tổng sản phẩm</span>
                     <span className="font-bold">{totalProducts}</span>
                   </div>
                 </div>
@@ -738,460 +804,182 @@ export default function AccountPage() {
 
             {/* Main Content */}
             <div className="lg:w-3/4">
-              {/* Profile Section */}
+              {/* Phần Hồ sơ cá nhân */}
               <div id="profile" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">{t('app.account.profile')}</h2>
+                <h2 className="text-2xl font-bold mb-6">Hồ sơ cá nhân</h2>
 
-                <div id="profile" className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4">{t('app.account.personalInfo')}</h3>
-                  {saveSuccess && (
-                    <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md">
-                      {t('app.account.profileUpdateSuccess')}
+                <div className="space-y-6">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-gray-800 mb-3">Thông tin cá nhân</h3>
+                    <form onSubmit={handleUpdateProfile}>
+                      {saveSuccess && (
+                        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-md">
+                          Thông tin đã được cập nhật thành công!
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Họ tên
+                          </label>
+                          <input
+                            type="text"
+                            name="name"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            value={profile.name}
+                            onChange={handleProfileChange}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            name="email"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
+                            value={profile.email}
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Ngày tham gia
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
+                            value={profile.memberSince}
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Số điện thoại
+                          </label>
+                          <input
+                            type="text"
+                            name="phone"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                            placeholder="Chưa cập nhật"
+                            value={profile.phone}
+                            onChange={handleProfileChange}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-4 text-right">
+                        <button
+                          type="submit"
+                          disabled={isSaving}
+                          className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        >
+                          {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-semibold text-gray-800 mb-3">Đổi mật khẩu</h3>
+                    {showPasswordMessage && (
+                      <div className="mb-4 p-3 bg-blue-50 text-blue-600 text-sm rounded-md flex items-start justify-between">
+                        <div className="flex items-start">
+                          <svg
+                            className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <span>{passwordMessage}</span>
+                        </div>
+                        <button
+                          onClick={() => setShowPasswordMessage(false)}
+                          className="text-blue-400 hover:text-blue-600"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Mật khẩu hiện tại
+                        </label>
+                        <input
+                          type="password"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Mật khẩu mới
+                        </label>
+                        <input
+                          type="password"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Xác nhận mật khẩu mới
+                        </label>
+                        <input
+                          type="password"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
+                        />
+                      </div>
                     </div>
-                  )}
-                  <form onSubmit={handleUpdateProfile}>
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('app.account.fullName')}
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={profile.name}
-                          onChange={handleProfileChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('app.auth.email')}
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={profile.email}
-                          disabled
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('app.contact.phone')}
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={profile.phone}
-                          onChange={handleProfileChange}
-                          placeholder={t('app.account.phoneExample')}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('app.account.joinDate')}
-                        </label>
-                        <input
-                          type="text"
-                          name="memberSince"
-                          value={profile.memberSince}
-                          readOnly
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50"
-                        />
-                      </div>
-                    </div>
+
                     <div className="mt-4 text-right">
                       <button
-                        type="submit"
-                        disabled={isSaving}
-                        className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
-                      >
-                        {isSaving ? t('app.common.loading') : t('app.account.updateInfo')}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4">{t('app.account.changePassword')}</h3>
-                  {showPasswordMessage && (
-                    <div className="mb-4 p-3 bg-blue-50 text-blue-600 text-sm rounded-md flex items-start justify-between">
-                      <div className="flex items-start">
-                        <svg
-                          className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        <span>{passwordMessage}</span>
-                      </div>
-                      <button
-                        onClick={() => setShowPasswordMessage(false)}
-                        className="text-blue-400 hover:text-blue-600"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('app.auth.currentPassword')}
-                      </label>
-                      <input
-                        type="password"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('app.auth.newPassword')}
-                      </label>
-                      <input
-                        type="password"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('app.auth.confirmNewPassword')}
-                      </label>
-                      <input
-                        type="password"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mt-4 text-right">
-                    <button
-                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPasswordMessage(
-                          t('app.account.passwordChangeInfo')
-                        );
-                        setShowPasswordMessage(true);
-                      }}
-                    >
-                      {t('app.account.changePassword')}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4">{t('app.account.support')}</h3>
-                  {supportSuccess && (
-                    <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
-                      <div className="flex items-start">
-                        <svg
-                          className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                        <span>
-                          {t('app.account.supportRequestSuccess')}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => setSupportSuccess(false)}
-                        className="text-green-400 hover:text-green-600"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('app.account.supportProduct')}
-                      </label>
-                      <select
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        value={supportProduct}
-                        onChange={(e) => setSupportProduct(e.target.value)}
-                      >
-                        <option value="">{t('app.account.selectProduct')}</option>
-                        {purchaseHistory
-                          .flatMap((order) => order.items)
-                          .map((item, index) => (
-                            <option key={index} value={item.id}>
-                              {item.name} - {item.version}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('app.account.supportSubject')}
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                        placeholder={t('app.account.subjectPlaceholder')}
-                        value={supportTitle}
-                        onChange={(e) => setSupportTitle(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t('app.account.issueDescription')}
-                      </label>
-                      <textarea
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
-                        placeholder={t('app.account.descriptionPlaceholder')}
-                        value={supportDescription}
-                        onChange={(e) => setSupportDescription(e.target.value)}
-                      ></textarea>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 text-right">
-                    <button
-                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // Validate form
-                        if (!supportTitle || !supportDescription) {
-                          alert('Vui lòng nhập đầy đủ thông tin');
-                          return;
-                        }
-
-                        // Reset form
-                        setSupportProduct('');
-                        setSupportTitle('');
-                        setSupportDescription('');
-                        setSupportSuccess(true);
-
-                        // Tự động ẩn thông báo sau 5 giây
-                        setTimeout(() => {
-                          setSupportSuccess(false);
-                        }, 5000);
-                      }}
-                    >
-                      {t('app.account.submitSupportRequest')}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4">{t('app.account.notificationSettings')}</h3>
-                  {settingsSaved && (
-                    <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
-                      <div className="flex items-start">
-                        <svg
-                          className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                        <span>{t('app.account.settingsSaved')}</span>
-                      </div>
-                      <button
-                        onClick={() => setSettingsSaved(false)}
-                        className="text-green-400 hover:text-green-600"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-700">{t('app.account.emailNotification')}</span>
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
-                          checked={notificationSettings.email}
-                          onChange={(e) =>
-                            setNotificationSettings({
-                              ...notificationSettings,
-                              email: e.target.checked,
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-700">{t('app.account.productUpdates')}</span>
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
-                          checked={notificationSettings.productUpdates}
-                          onChange={(e) =>
-                            setNotificationSettings({
-                              ...notificationSettings,
-                              productUpdates: e.target.checked,
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-700">{t('app.account.promotions')}</span>
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
-                          checked={notificationSettings.promotions}
-                          onChange={(e) =>
-                            setNotificationSettings({
-                              ...notificationSettings,
-                              promotions: e.target.checked,
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-700">{t('app.account.expiryReminders')}</span>
-                      <label className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          className="rounded text-primary-600 focus:ring-primary-500 h-4 w-4"
-                          checked={notificationSettings.expiryReminders}
-                          onChange={(e) =>
-                            setNotificationSettings({
-                              ...notificationSettings,
-                              expiryReminders: e.target.checked,
-                            })
-                          }
-                        />
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4 text-right">
-                    <button
-                      className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                      onClick={() => {
-                        // Save settings to localStorage
-                        try {
-                          localStorage.setItem(
-                            `notification_settings_${session?.user?.email}`,
-                            JSON.stringify(notificationSettings)
+                        className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPasswordMessage(
+                            'Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.',
                           );
-                          setSettingsSaved(true);
-                          setTimeout(() => {
-                            setSettingsSaved(false);
-                          }, 3000);
-                        } catch (error) {
-                          console.error('Error saving notification settings:', error);
-                        }
-                      }}
-                    >
-                      {t('app.account.saveSettings')}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Nút đăng xuất */}
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-800">{t('app.header.logout')}</h3>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {t('app.account.logoutDescription')}
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleSignOut}
-                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                          setShowPasswordMessage(true);
+                        }}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                        />
-                      </svg>
-                      {t('app.header.logout')}
-                    </button>
+                        Đổi mật khẩu
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Section mã giảm giá chuyển lên ngay sau hồ sơ cá nhân */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mb-8">
-                <h2 className="text-xl font-semibold mb-4">{t('app.account.availableCoupons')}</h2>
+                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
 
                 {loadingCoupons ? (
                   <div className="flex justify-center py-8">
                     <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
                   </div>
-                ) : publicCoupons.length > 0 ? (
+                ) : availableCoupons.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {publicCoupons.map((coupon) => (
+                    {availableCoupons.map((coupon) => (
                       <div key={coupon.id} className="border rounded-md p-4 bg-white">
                         <div className="flex items-start">
                           <div className="bg-primary-100 p-3 rounded-full mr-3">
@@ -1210,7 +998,6 @@ export default function AccountPage() {
                               />
                             </svg>
                           </div>
-
                           <div>
                             <h3 className="font-semibold">{coupon.name}</h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
@@ -1222,13 +1009,53 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                {t('app.account.applyToOrders')} {formatCurrency(coupon.minOrder)}
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : publicCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {publicCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-green-100 p-3 rounded-full mr-3">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 text-green-600"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} -{' '}
+                              {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? `${t('app.account.discount')} ${coupon.value}%${coupon.maxDiscount ? ` (${t('app.account.maxDiscount')} ${formatCurrency(coupon.maxDiscount)})` : ''}`
-                                : `${t('app.account.discount')} ${formatCurrency(coupon.value)}`}
+                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}`
+                                : `Giảm ${formatCurrency(coupon.value)}`}
                             </div>
                           </div>
                         </div>
@@ -1237,53 +1064,37 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>{t('app.account.noCoupons')}</p>
+                    <p>Bạn chưa có mã giảm giá nào</p>
                   </div>
                 )}
               </div>
 
               {/* Phần Sản phẩm đã mua */}
-              <div className="bg-white rounded-lg shadow p-6 mb-8">
-                <h2 className="text-xl font-semibold mb-4">{t('app.account.purchasedProducts')}</h2>
+              <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Sản phẩm đã mua</h2>
 
-                {isLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
-                  </div>
-                ) : purchaseHistory.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <p>{t('app.account.noProducts')}</p>
-                  </div>
-                ) : (
-                  <div className="space-y-8">
-                    {Array.from(
-                      new Set(purchaseHistory.flatMap((order) => order.items.map((item) => item.id))),
-                    ).map((itemId) => {
-                      const allItems = purchaseHistory.flatMap((order) => order.items);
-                      const item = allItems.find((i) => i.id === itemId);
-                      if (!item) return null;
-
-                      return (
-                        <div key={itemId} className="border rounded-md p-4 bg-white">
-                          <div className="flex justify-between items-start mb-4">
-                            <h3 className="text-lg font-semibold">{item.name}</h3>
-                            <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                              {item.version}
-                            </span>
+                {hasProducts ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {purchaseHistory
+                      .flatMap((order) => order.items)
+                      .map((item, index) => (
+                        <div key={index} className="border rounded-lg overflow-hidden">
+                          <div className="bg-gray-50 p-4 border-b">
+                            <h3 className="font-bold">{item.name}</h3>
+                            <p className="text-sm text-gray-600">{item.version}</p>
                           </div>
-
-                          <div className="grid grid-cols-2 gap-4 mb-4">
-                            <div className="flex justify-between items-center">
-                              <span className="text-gray-600">{t('app.account.price')}</span>
+                          <div className="p-4">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-gray-600">Giá</span>
                               <span className="font-semibold">{formatCurrency(item.price)}</span>
                             </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-gray-600">{t('app.product.originalPrice')}</span>
-                              <span className="font-semibold line-through text-gray-500">
-                                {formatCurrency(item.originalPrice)}
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-gray-600">Tiết kiệm từ giá sale</span>
+                              <span className="font-semibold text-green-600">
+                                {formatCurrency(item.originalPrice - item.price)}
                               </span>
                             </div>
-
+                            {/* Tìm order chứa item hiện tại để hiển thị ngày mua */}
                             {purchaseHistory.map((order) => {
                               if (order.items.some((orderItem) => orderItem.id === item.id)) {
                                 return (
@@ -1291,7 +1102,7 @@ export default function AccountPage() {
                                     key={`purchase-date-${order.id}-${item.id}`}
                                     className="flex justify-between items-center mb-2"
                                   >
-                                    <span className="text-gray-600">{t('app.account.purchaseDate')}</span>
+                                    <span className="text-gray-600">Ngày mua</span>
                                     <span className="font-semibold">{order.date}</span>
                                   </div>
                                 );
@@ -1310,7 +1121,7 @@ export default function AccountPage() {
                                     key={`voucher-${order.id}-${item.id}`}
                                     className="flex justify-between items-center mb-2"
                                   >
-                                    <span className="text-gray-600">{t('app.account.savingsFromVoucher')}:</span>
+                                    <span className="text-gray-600">Tiết kiệm từ voucher</span>
                                     <span className="font-semibold text-green-600">
                                       {formatCurrency(order.couponDiscount)}
                                     </span>
@@ -1319,36 +1130,71 @@ export default function AccountPage() {
                               }
                               return null;
                             })}
-                            <div className="flex justify-between items-center">
-                              <span className="text-gray-600">{t('app.account.expiryDate')}</span>
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-gray-600">Hạn giấy phép</span>
                               <span className="font-semibold">{item.expiryDate}</span>
                             </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-gray-600">{t('app.account.savedFromSale')}</span>
-                              <span className="font-semibold text-green-600">
-                                {formatCurrency(item.originalPrice - item.price)}
-                              </span>
+                            <div className="mt-4 flex space-x-2">
+                              <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm hover:bg-primary-700 transition">
+                                Tải xuống
+                              </button>
+                              <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition">
+                                Xem chi tiết
+                              </button>
                             </div>
                           </div>
-
-                          <div className="flex justify-end space-x-2">
-                            <button className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700 transition-colors">
-                              {t('app.account.download')}
-                            </button>
-                            <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors">
-                              {t('app.account.viewDetails')}
-                            </button>
-                          </div>
                         </div>
-                      );
-                    })}
+                      ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 bg-gray-50 rounded-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-16 w-16 mx-auto text-gray-400 mb-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                      />
+                    </svg>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                      Chưa có sản phẩm nào
+                    </h3>
+                    <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                      Bạn chưa mua sản phẩm nào. Khám phá các sản phẩm của chúng tôi để bắt đầu.
+                    </p>
+                    <Link
+                      href="/products"
+                      className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                      </svg>
+                      Khám phá sản phẩm
+                    </Link>
                   </div>
                 )}
               </div>
 
               {/* Phần Quản lý giấy phép */}
               <div id="licenses" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">{t('app.account.licenseManagement')}</h2>
+                <h2 className="text-2xl font-bold mb-6">Quản lý giấy phép</h2>
 
                 {hasProducts ? (
                   <div className="overflow-x-auto">
@@ -1359,37 +1205,37 @@ export default function AccountPage() {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            {t('app.account.product')}
+                            Sản phẩm
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            {t('app.account.licenseKey')}
+                            Mã giấy phép
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            {t('app.account.activationDate')}
+                            Ngày kích hoạt
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            {t('app.account.expiryDate')}
+                            Hạn sử dụng
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            {t('app.account.status')}
+                            Trạng thái
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            {t('app.account.actions')}
+                            Thao tác
                           </th>
                         </tr>
                       </thead>
@@ -1433,16 +1279,16 @@ export default function AccountPage() {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                  {t('app.account.active')}
+                                  Đang hoạt động
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <div className="flex space-x-2">
                                   <button className="text-primary-600 hover:text-primary-900">
-                                    {t('app.account.copy')}
+                                    Sao chép
                                   </button>
                                   <button className="text-blue-600 hover:text-blue-900">
-                                    {t('app.account.renew')}
+                                    Gia hạn
                                   </button>
                                 </div>
                               </td>
@@ -1468,10 +1314,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      {t('app.account.noLicenses')}
+                      Không có giấy phép nào
                     </h3>
                     <p className="text-gray-600 mb-4 max-w-md mx-auto">
-                      {t('app.account.noLicensesDesc')}
+                      Bạn chưa có giấy phép sản phẩm nào. Hãy mua sản phẩm để nhận giấy phép.
                     </p>
                   </div>
                 )}
@@ -1480,13 +1326,13 @@ export default function AccountPage() {
               {/* Phần Lịch sử mua hàng */}
               <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">
-                  {t('app.account.purchaseHistory')}
+                  Lịch sử mua hàng
                   {hasProducts && (
                     <button
                       onClick={goToOrdersPage}
                       className="ml-4 text-sm font-medium text-primary-600 hover:text-primary-700"
                     >
-                      {t('app.account.viewAllOrders')}
+                      Xem tất cả đơn hàng
                     </button>
                   )}
                 </h2>
@@ -1497,12 +1343,12 @@ export default function AccountPage() {
                       <div key={orderIndex} className="border rounded-lg overflow-hidden">
                         <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
                           <div>
-                            <h3 className="font-bold">{t('app.account.orderNumber', { id: order.id })}</h3>
-                            <p className="text-sm text-gray-600">{t('app.account.orderDate')}: {order.date}</p>
+                            <h3 className="font-bold">Đơn hàng #{order.id}</h3>
+                            <p className="text-sm text-gray-600">Ngày đặt: {order.date}</p>
                           </div>
                           <div>
                             <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
-                              {t(`app.account.orderStatus.${order.status.toLowerCase()}`)}
+                              {order.status}
                             </span>
                           </div>
                         </div>
@@ -1519,13 +1365,13 @@ export default function AccountPage() {
                                 </div>
                                 <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
                                   <div className="text-sm">
-                                    <span className="text-gray-600">{t('app.account.price')}: </span>
+                                    <span className="text-gray-600">Giá: </span>
                                     <span className="font-semibold">
                                       {formatCurrency(item.price)}
                                     </span>
                                   </div>
                                   <div className="text-sm">
-                                    <span className="text-gray-600">{t('app.account.expiryDate')}: </span>
+                                    <span className="text-gray-600">Hạn dùng: </span>
                                     <span className="font-semibold">{item.expiryDate}</span>
                                   </div>
                                 </div>
@@ -1536,7 +1382,7 @@ export default function AccountPage() {
                             {/* Hiển thị chi tiết tiết kiệm */}
                             <div className="space-y-2 mb-4">
                               <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">{t('app.account.savingsFromSale')}:</span>
+                                <span className="text-gray-600">Tiết kiệm từ giá sale:</span>
                                 <span className="font-semibold text-green-600">
                                   {formatCurrency(
                                     order.items.reduce(
@@ -1548,14 +1394,14 @@ export default function AccountPage() {
                               </div>
                               {order.couponDiscount && order.couponDiscount > 0 && (
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-gray-600">{t('app.account.savingsFromVoucher')}:</span>
+                                  <span className="text-gray-600">Tiết kiệm từ voucher:</span>
                                   <span className="font-semibold text-green-600">
                                     {formatCurrency(order.couponDiscount)}
                                   </span>
                                 </div>
                               )}
                               <div className="flex justify-between text-sm font-bold border-t pt-2">
-                                <span className="text-gray-800">{t('app.account.totalSavings')}:</span>
+                                <span className="text-gray-800">Tổng tiết kiệm:</span>
                                 <span className="text-green-600">
                                   {formatCurrency(
                                     order.items.reduce(
@@ -1569,17 +1415,17 @@ export default function AccountPage() {
 
                             <div className="flex justify-between items-center">
                               <div className="text-lg font-semibold">
-                                {t('app.account.totalPayment')}: {formatCurrency(order.total)}
+                                Tổng thanh toán: {formatCurrency(order.total)}
                               </div>
                               <div className="flex space-x-3">
                                 <Link
                                   href={`/orders/${order.id}`}
                                   className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm"
                                 >
-                                  {t('app.account.orderDetails')}
+                                  Chi tiết đơn hàng
                                 </Link>
                                 <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
-                                  {t('app.account.downloadInvoice')}
+                                  Tải hóa đơn PDF
                                 </button>
                               </div>
                             </div>
@@ -1604,10 +1450,10 @@ export default function AccountPage() {
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                           />
                         </svg>
-                        {t('app.account.viewAllOrders')}
+                        Xem tất cả đơn hàng
                       </button>
                     </div>
                   </div>
@@ -1628,10 +1474,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      {t('app.account.noOrders')}
+                      Chưa có đơn hàng nào
                     </h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                      {t('app.account.noOrdersDesc')}
+                      Bạn chưa thực hiện giao dịch nào. Hãy khám phá sản phẩm của chúng tôi.
                     </p>
                     <Link
                       href="/products"
@@ -1651,7 +1497,7 @@ export default function AccountPage() {
                           d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                         />
                       </svg>
-                      {t('app.account.shopNow')}
+                      Mua sắm ngay
                     </Link>
                   </div>
                 )}
@@ -1659,7 +1505,7 @@ export default function AccountPage() {
 
               {/* Phần Tải xuống */}
               <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">{t('app.account.downloads')}</h2>
+                <h2 className="text-2xl font-bold mb-6">Tải xuống</h2>
 
                 {hasProducts ? (
                   <div className="space-y-4">
@@ -1675,7 +1521,7 @@ export default function AccountPage() {
                               {item.name} - {item.version}
                             </h3>
                             <p className="text-sm text-gray-600">
-                              {t('app.account.version')}: 2.1.0 ({t('app.account.updated')}: 01/07/2023)
+                              Phiên bản: 2.1.0 (Cập nhật: 01/07/2023)
                             </p>
                           </div>
                           <div className="flex items-center space-x-3">
@@ -1694,7 +1540,7 @@ export default function AccountPage() {
                                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                                 />
                               </svg>
-                              {t('app.account.viewHistory')}
+                              Xem lịch sử
                             </button>
                             <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm flex items-center">
                               <svg
@@ -1711,7 +1557,7 @@ export default function AccountPage() {
                                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                                 />
                               </svg>
-                              {t('app.account.download')}
+                              Tải xuống
                             </button>
                           </div>
                         </div>
@@ -1734,10 +1580,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      {t('app.account.noDownloads')}
+                      Không có tệp nào để tải xuống
                     </h3>
                     <p className="text-gray-600 mb-4 max-w-md mx-auto">
-                      {t('app.account.noDownloadsDesc')}
+                      Bạn cần mua sản phẩm trước khi có thể tải xuống phần mềm.
                     </p>
                   </div>
                 )}
@@ -1745,7 +1591,7 @@ export default function AccountPage() {
 
               {/* Phần Hỗ trợ kỹ thuật */}
               <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">{t('app.account.technicalSupport')}</h2>
+                <h2 className="text-2xl font-bold mb-6">Hỗ trợ kỹ thuật</h2>
 
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-md">
@@ -1800,14 +1646,14 @@ export default function AccountPage() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('app.account.supportProduct')}
+                          Sản phẩm
                         </label>
                         <select
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
                           value={supportProduct}
                           onChange={(e) => setSupportProduct(e.target.value)}
                         >
-                          <option value="">{t('app.account.selectProduct')}</option>
+                          <option value="">Chọn sản phẩm cần hỗ trợ</option>
                           {purchaseHistory
                             .flatMap((order) => order.items)
                             .map((item, index) => (
@@ -1819,23 +1665,23 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('app.account.supportSubject')}
+                          Tiêu đề
                         </label>
                         <input
                           type="text"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          placeholder={t('app.account.subjectPlaceholder')}
+                          placeholder="Nhập tiêu đề vấn đề"
                           value={supportTitle}
                           onChange={(e) => setSupportTitle(e.target.value)}
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('app.account.issueDescription')}
+                          Mô tả vấn đề
                         </label>
                         <textarea
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
-                          placeholder={t('app.account.descriptionPlaceholder')}
+                          placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"
                           value={supportDescription}
                           onChange={(e) => setSupportDescription(e.target.value)}
                         ></textarea>
@@ -1865,7 +1711,7 @@ export default function AccountPage() {
                           }, 5000);
                         }}
                       >
-                        {t('app.account.submitSupportRequest')}
+                        Gửi yêu cầu hỗ trợ
                       </button>
                     </div>
                   </div>
@@ -1922,7 +1768,7 @@ export default function AccountPage() {
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">{t('app.account.emailNotification')}</span>
+                        <span className="text-gray-700">Thông báo qua email</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1938,7 +1784,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">{t('app.account.productUpdates')}</span>
+                        <span className="text-gray-700">Thông báo cập nhật sản phẩm</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1954,7 +1800,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">{t('app.account.promotions')}</span>
+                        <span className="text-gray-700">Thông báo khuyến mãi và ưu đãi</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1970,7 +1816,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">{t('app.account.expiryReminders')}</span>
+                        <span className="text-gray-700">Thông báo hết hạn giấy phép</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1991,23 +1837,27 @@ export default function AccountPage() {
                   <div className="mt-4 text-right">
                     <button
                       className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition"
-                      onClick={() => {
-                        // Save settings to localStorage
-                        try {
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        // Lưu cài đặt vào localStorage
+                        if (session?.user?.email) {
                           localStorage.setItem(
-                            `notification_settings_${session?.user?.email}`,
-                            JSON.stringify(notificationSettings)
+                            `notification_settings_${session.user.email}`,
+                            JSON.stringify(notificationSettings),
                           );
-                          setSettingsSaved(true);
-                          setTimeout(() => {
-                            setSettingsSaved(false);
-                          }, 3000);
-                        } catch (error) {
-                          console.error('Error saving notification settings:', error);
                         }
+
+                        // Hiển thị thông báo thành công
+                        setSettingsSaved(true);
+
+                        // Tự động ẩn thông báo sau 3 giây
+                        setTimeout(() => {
+                          setSettingsSaved(false);
+                        }, 3000);
                       }}
                     >
-                      {t('app.account.saveSettings')}
+                      Lưu thay đổi
                     </button>
                   </div>
                 </div>
@@ -2047,15 +1897,15 @@ export default function AccountPage() {
 
               {/* Thêm section mã giảm giá */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mt-6">
-                <h2 className="text-xl font-semibold mb-4">{t('app.account.availableCoupons')}</h2>
+                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
 
                 {loadingCoupons ? (
                   <div className="flex justify-center py-8">
                     <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
                   </div>
-                ) : publicCoupons.length > 0 ? (
+                ) : availableCoupons.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {publicCoupons.map((coupon) => (
+                    {availableCoupons.map((coupon) => (
                       <div key={coupon.id} className="border rounded-md p-4 bg-white">
                         <div className="flex items-start">
                           <div className="bg-primary-100 p-3 rounded-full mr-3">
@@ -2074,7 +1924,6 @@ export default function AccountPage() {
                               />
                             </svg>
                           </div>
-
                           <div>
                             <h3 className="font-semibold">{coupon.name}</h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
@@ -2086,13 +1935,53 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                {t('app.account.applyToOrders')} {formatCurrency(coupon.minOrder)}
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : publicCoupons.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {publicCoupons.map((coupon) => (
+                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
+                        <div className="flex items-start">
+                          <div className="bg-green-100 p-3 rounded-full mr-3">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 text-green-600"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                              />
+                            </svg>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <div className="text-sm font-mono text-primary-600 mt-1">
+                              {coupon.code}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} -{' '}
+                              {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
+                            </div>
+                            {coupon.minOrder && (
+                              <div className="text-xs text-teal-600 mt-1">
+                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? `${t('app.account.discount')} ${coupon.value}%${coupon.maxDiscount ? ` (${t('app.account.maxDiscount')} ${formatCurrency(coupon.maxDiscount)})` : ''}`
-                                : `${t('app.account.discount')} ${formatCurrency(coupon.value)}`}
+                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}`
+                                : `Giảm ${formatCurrency(coupon.value)}`}
                             </div>
                           </div>
                         </div>
@@ -2101,7 +1990,7 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>{t('app.account.noCoupons')}</p>
+                    <p>Bạn chưa có mã giảm giá nào</p>
                   </div>
                 )}
               </div>
