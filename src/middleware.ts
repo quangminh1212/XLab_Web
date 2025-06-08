@@ -1,83 +1,121 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export const locales = ['vi', 'en'];
-export const defaultLocale = 'vi';
+// Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
+const protectedPaths = ['/account', '/checkout', '/api/protected'];
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+// Danh sách các đường dẫn chỉ dành cho admin
+const adminPaths = ['/admin'];
 
-  // Skip middleware for static files, API routes, etc.
- if (
-   pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/) ||
-   pathname.startsWith('/_next') ||
-   pathname.startsWith('/api/') ||
-   pathname.includes('favicon.ico') ||
-   pathname.includes('site.webmanifest')
- ) {
+// Danh sách email admin (giữ đồng bộ với NextAuth)
+const ADMIN_EMAILS = ['xlab.rnd@gmail.com'];
+
+// Danh sách các đường dẫn công khai (không cần đăng nhập)
+const publicPaths = [
+  '/login',
+  '/register',
+  '/about',
+  '/products',
+  '/accounts',
+  '/services',
+  '/support',
+  '/contact',
+  '/api/auth',
+];
+
+// Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
+const isProtectedPath = (path: string) => {
+  return protectedPaths.some(
+    (protectedPath) => path === protectedPath || path.startsWith(`${protectedPath}/`),
+  );
+};
+
+// Kiểm tra xem đường dẫn có thuộc danh sách admin hay không
+const isAdminPath = (path: string) => {
+  return adminPaths.some((adminPath) => path === adminPath || path.startsWith(`${adminPath}/`));
+};
+
+// Kiểm tra xem đường dẫn có thuộc danh sách công khai hay không
+const isPublicPath = (path: string) => {
+  return publicPaths.some((publicPath) => path === publicPath || path.startsWith(`${publicPath}/`));
+};
+
+// Kiểm tra nếu đường dẫn là tệp tĩnh
+const isStaticFile = (path: string) => {
+  return (
+    path.includes('/_next/') ||
+    path.includes('/images/') ||
+    path.includes('/favicon.ico') ||
+    path.endsWith('.png') ||
+    path.endsWith('.jpg') ||
+    path.endsWith('.jpeg') ||
+    path.endsWith('.svg') ||
+    path.endsWith('.gif') ||
+    path.endsWith('.ico') ||
+    path.endsWith('.webmanifest') ||
+    path.endsWith('.css') ||
+    path.endsWith('.js') ||
+    path.endsWith('.json') ||
+    path.endsWith('.xml') ||
+    path.endsWith('.txt')
+  );
+};
+
+// Hàm debug để kiểm tra token và đường dẫn (chỉ trong development)
+const debug = (request: NextRequest, token: any) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Middleware Debug]:', {
+      path: request.nextUrl.pathname,
+      token: token ? `Found (${token.email})` : 'Not found',
+    });
+  }
+};
+
+export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // Bỏ qua các file static và api routes không cần kiểm tra
+  if (isStaticFile(pathname) || pathname.includes('/api/auth')) {
     return NextResponse.next();
   }
 
-  // Check if the pathname already has a locale
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
+  // Lấy token từ cookie với secret từ environment hoặc fallback
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
+  });
 
-  if (pathnameHasLocale) {
-    // Nếu đường dẫn đã có locale, lưu locale đó vào cookie và tiếp tục
-    const currentLocale = pathname.split('/')[1];
-    const response = NextResponse.next();
-    
-    // Lưu locale vào cookie
-    response.cookies.set('NEXT_LOCALE', currentLocale, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30 // 30 days
-    });
-    
-    return response;
-  }
+  // Log thông tin debug
+  debug(request, token);
 
-  // Get preferred locale from cookie or accept-language header
-  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value;
-  let locale = cookieLocale && locales.includes(cookieLocale) ? cookieLocale : defaultLocale;
-  
-  if (!cookieLocale) {
-    // If no cookie, try to get locale from accept-language header
-    const acceptLanguage = request.headers.get('accept-language');
-    if (acceptLanguage) {
-      const preferredLocale = acceptLanguage
-        .split(',')
-        .map((lang) => {
-          const [code] = lang.split(';')[0].trim().split('-');
-          return code.toLowerCase();
-        })
-        .find((lang) => locales.includes(lang));
-      
-      if (preferredLocale) {
-        locale = preferredLocale;
-      }
+  // Nếu là đường dẫn admin
+  if (isAdminPath(pathname)) {
+    // Nếu chưa đăng nhập, chuyển đến login
+    if (!token) {
+      const url = new URL('/login', request.url);
+      url.searchParams.set('callbackUrl', pathname);
+      return NextResponse.redirect(url);
+    }
+
+    // Kiểm tra email có trong danh sách admin không
+    if (!token.email || !ADMIN_EMAILS.includes(token.email)) {
+      const url = new URL('/', request.url);
+      return NextResponse.redirect(url);
     }
   }
 
-  // Redirect to the locale path
-  const url = request.nextUrl.clone();
-  url.pathname = pathname === '/' ? `/${locale}` : `/${locale}${pathname}`;
-  
-  // Set locale cookie in the response
-  const response = NextResponse.redirect(url);
-  response.cookies.set('NEXT_LOCALE', locale, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 30 // 30 days
-  });
-  
-  return response;
+  // Nếu là đường dẫn được bảo vệ và chưa đăng nhập, chuyển hướng đến trang đăng nhập
+  if (isProtectedPath(pathname) && !token) {
+    const url = new URL('/login', request.url);
+    url.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
- matcher: ['/((?!_next|api|favicon.ico|site.webmanifest|.*\\.).*)'],
+  // Chỉ áp dụng cho các đường dẫn cần kiểm tra
+  matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/protected/:path*'],
 };

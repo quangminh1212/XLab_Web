@@ -7,7 +7,7 @@ export default function ServicesPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Chuyển hướng ngay lập tức sang trang products
+    // Chuyển hướng ngay lập tức
     router.replace('/products');
   }, [router]);
 

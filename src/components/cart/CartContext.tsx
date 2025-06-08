@@ -83,41 +83,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   // Save cart lên server
   const saveCartToServer = async (cartItems: CartItem[]) => {
     if (!session?.user?.email) return;
-    if (!Array.isArray(cartItems) || cartItems.length === 0) return;
 
     try {
-// Đảm bảo cart có định dạng đúng trước khi gửi
-      const validCartItems = cartItems.filter(item => 
-        item && typeof item === 'object' && 
-        item.id && typeof item.id === 'string' && item.id.trim() !== '' &&
-        typeof item.price === 'number' && item.price >= 0 && 
-        typeof item.quantity === 'number' && item.quantity > 0 && Number.isInteger(item.quantity));
-
-      // Log filtered items for debugging
-      if (validCartItems.length !== cartItems.length) {
-        console.warn(`Filtered ${cartItems.length - validCartItems.length} invalid items before saving to server`);
-      }
-      
-      // Kiểm tra nếu không còn item nào hợp lệ và có items ban đầu
-      if (validCartItems.length === 0 && cartItems.length > 0) {
-        console.warn('No valid items to save to server - all items were filtered out');
-        return;
-      }
-
       const response = await fetch('/api/cart', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ cart: validCartItems }),
+        body: JSON.stringify({ cart: cartItems }),
       });
 
       if (response.ok) {
         const result = await response.json();
         console.log('🛒 Cart saved to server:', result.message);
       } else {
-        const errorText = await response.text();
-        console.error('Failed to save cart to server:', response.status, response.statusText, errorText);
+        console.error('Failed to save cart to server:', response.statusText);
       }
     } catch (error) {
       console.error('Error saving cart to server:', error);

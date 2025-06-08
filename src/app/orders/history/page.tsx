@@ -22,16 +22,9 @@ interface Order {
   items: OrderItem[];
 }
 
-// Định nghĩa interface cho nhóm đơn hàng theo thời gian
-interface OrderGroup {
-  title: string;
-  orders: Order[];
-}
-
 export default function OrderHistoryPage() {
   const { data: session, status } = useSession();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [orderGroups, setOrderGroups] = useState<OrderGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
 
@@ -65,52 +58,6 @@ export default function OrderHistoryPage() {
     return '/images/placeholder/product-placeholder.jpg';
   };
 
-  // Nhóm đơn hàng theo thời gian
-  const groupOrdersByDate = (ordersList: Order[]) => {
-    const now = new Date();
-    const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, 1);
-    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
-    const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), 1);
-
-    const groups: OrderGroup[] = [
-      { title: 'Tháng này', orders: [] },
-      { title: 'Tháng trước', orders: [] },
-      { title: '3 tháng gần đây', orders: [] },
-      { title: '6 tháng gần đây', orders: [] },
-      { title: 'Một năm trở lại', orders: [] },
-      { title: 'Cũ hơn', orders: [] },
-    ];
-
-    // Sắp xếp đơn hàng theo thời gian mới nhất đến cũ nhất
-    const sortedOrders = [...ordersList].sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    // Phân loại đơn hàng vào các nhóm
-    sortedOrders.forEach((order) => {
-      const orderDate = new Date(order.createdAt);
-      
-      if (orderDate >= thisMonth) {
-        groups[0].orders.push(order);
-      } else if (orderDate >= lastMonth) {
-        groups[1].orders.push(order);
-      } else if (orderDate >= threeMonthsAgo) {
-        groups[2].orders.push(order);
-      } else if (orderDate >= sixMonthsAgo) {
-        groups[3].orders.push(order);
-      } else if (orderDate >= oneYearAgo) {
-        groups[4].orders.push(order);
-      } else {
-        groups[5].orders.push(order);
-      }
-    });
-
-    // Lọc bỏ các nhóm không có đơn hàng
-    return groups.filter(group => group.orders.length > 0);
-  };
-
   useEffect(() => {
     // Chỉ fetch dữ liệu khi người dùng đã đăng nhập
     if (status === 'authenticated') {
@@ -124,12 +71,7 @@ export default function OrderHistoryPage() {
           }
 
           const data = await response.json();
-          const fetchedOrders = data.orders;
-          setOrders(fetchedOrders);
-          
-          // Nhóm đơn hàng theo thời gian
-          const groups = groupOrdersByDate(fetchedOrders);
-          setOrderGroups(groups);
+          setOrders(data.orders);
         } catch (error) {
           console.error('Lỗi khi lấy dữ liệu đơn hàng:', error);
 
@@ -171,10 +113,6 @@ export default function OrderHistoryPage() {
             },
           ];
           setOrders(sampleOrders);
-          
-          // Nhóm đơn hàng mẫu theo thời gian
-          const groups = groupOrdersByDate(sampleOrders);
-          setOrderGroups(groups);
         } finally {
           setLoading(false);
         }
@@ -241,15 +179,6 @@ export default function OrderHistoryPage() {
     }).format(amount);
   };
 
-  // Chia mảng thành các nhóm nhỏ (3 phần tử mỗi nhóm)
-  const chunkArray = (array: any[], chunkSize: number) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-
   if (status === 'loading' || loading) {
     return (
       <div className="container mx-auto py-8 px-4">
@@ -278,42 +207,37 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="container mx-auto py-3 px-3 max-w-6xl">
-      <div className="mb-3 border-l-4 border-primary-600 pl-3">
-        <h1 className="text-xl font-bold text-gray-900">Lịch sử đơn hàng của bạn</h1>
-        <p className="text-xs text-gray-600">Quản lý và theo dõi đơn hàng tại XLab</p>
-      </div>
+    <div className="container mx-auto py-8 px-4">
+      <h1 className="text-2xl font-bold mb-8">Lịch sử đơn hàng của bạn</h1>
 
-      {orderGroups.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-4 text-center border border-gray-100">
-          <div className="bg-gray-50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-          </div>
-          <h2 className="text-base font-semibold text-gray-800 mb-2">Bạn chưa có đơn hàng nào</h2>
-          <p className="text-gray-500 mb-4 max-w-md mx-auto text-xs">
-            Hãy khám phá các sản phẩm của chúng tôi!
+      {orders.length === 0 ? (
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-16 w-16 mx-auto text-gray-400 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+          <h2 className="text-lg font-medium text-gray-700 mb-2">Bạn chưa có đơn hàng nào</h2>
+          <p className="text-gray-500 mb-6">
+            Hãy khám phá các sản phẩm của chúng tôi và đặt hàng ngay!
           </p>
           <Link
             href="/products"
-            className="inline-flex items-center bg-primary-600 text-white px-3 py-1 rounded hover:bg-primary-700 transition-all duration-200 text-xs font-medium"
+            className="inline-flex items-center bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
           >
             Xem sản phẩm
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-3 w-3 ml-1"
+              className="h-5 w-5 ml-2"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -327,90 +251,86 @@ export default function OrderHistoryPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {orderGroups.map((group, groupIndex) => (
-            <div key={groupIndex} className="mb-6">
-              <div className="mb-2 border-b border-gray-200 pb-1">
-                <h2 className="text-sm font-semibold text-gray-700">{group.title}</h2>
-              </div>
-              
-              {chunkArray(group.orders, 3).map((orderRow, rowIndex) => (
-                <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-3">
-                  {orderRow.map((order) => (
-                    <div 
-                      key={order.id} 
-                      className="bg-white rounded-lg shadow-sm border border-gray-100 h-full flex flex-col"
+          {orders.map((order) => (
+            <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
+                <div className="flex flex-wrap justify-between items-center">
+                  <div>
+                    <span className="text-sm text-gray-500">Mã đơn hàng:</span>
+                    <span className="ml-2 font-medium">{order.id}</span>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-500">Ngày đặt:</span>
+                    <span className="ml-2">{formatDate(order.createdAt)}</span>
+                  </div>
+                  <div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
                     >
-                      {/* Header - Thông tin đơn hàng */}
-                      <div className="grid grid-cols-3 gap-1 border-b border-gray-100 text-xs">
-                        <div className="px-3 py-2 flex items-center">
-                          <div className="text-gray-500 mr-1">Mã đơn hàng:</div>
-                          <div className="font-medium text-gray-800">{order.id}</div>
-                        </div>
-                        
-                        <div className="px-3 py-2 flex items-center">
-                          <div className="text-gray-500 mr-1">Ngày đặt:</div>
-                          <div className="text-gray-800">{formatDate(order.createdAt)}</div>
-                        </div>
-                        
-                        <div className="px-3 py-2 flex items-center justify-end">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
-                          >
-                            {getStatusName(order.status)}
-                          </span>
-                        </div>
-                      </div>
+                      {getStatusName(order.status)}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-                      {/* Phần sản phẩm */}
-                      <div className="px-3 pt-2 pb-0 text-sm flex-grow">
-                        <div className="text-xs font-medium text-gray-500 mb-1">Sản phẩm</div>
+              <div className="px-6 py-4">
+                <div className="divide-y divide-gray-200">
+                  {order.items.map((item, index) => (
+                    <div key={index} className="py-3 flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                          <Image
+                            src={getProductImage(item.productId, item.productName)}
+                            alt={item.productName}
+                            fill
+                            className="object-contain"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = '/images/placeholder/product-placeholder.jpg';
+                            }}
+                          />
+                        </div>
                         <div>
-                          {order.items.map((item: OrderItem, index: number) => (
-                            <div key={index} className="flex items-center justify-between py-1.5 border-t border-gray-50 first:border-0">
-                              <div className="flex items-center">
-                                <div className="relative w-6 h-6 rounded overflow-hidden bg-gray-50 flex-shrink-0 mr-2">
-                                  <Image
-                                    src={getProductImage(item.productId, item.productName)}
-                                    alt={item.productName}
-                                    fill
-                                    className="object-contain p-0.5"
-                                    onError={(e) => {
-                                      const target = e.target as HTMLImageElement;
-                                      target.src = '/images/placeholder/product-placeholder.jpg';
-                                    }}
-                                  />
-                                </div>
-                                <div className="flex items-center text-xs">
-                                  <span className="text-gray-800">{item.productName}</span>
-                                  <span className="text-gray-400 mx-1">•</span>
-                                  <span className="text-gray-500">SL: {item.quantity}</span>
-                                </div>
-                              </div>
-                              <div className="text-xs font-medium text-gray-800">
-                                {formatCurrency(item.price)}
-                              </div>
-                            </div>
-                          ))}
+                          <h3 className="font-medium">{item.productName}</h3>
+                          <p className="text-sm text-gray-500">Số lượng: {item.quantity}</p>
                         </div>
                       </div>
-
-                      {/* Footer - Tổng cộng và nút chi tiết */}
-                      <div className="px-3 py-2 border-t border-gray-100 bg-gray-50 flex justify-between items-center mt-auto">
-                        <div className="flex items-center">
-                          <span className="text-xs text-gray-500 mr-1">Tổng cộng:</span>
-                          <span className="text-xs font-bold text-primary-600">{formatCurrency(order.totalAmount)}</span>
-                        </div>
-                        <Link
-                          href={`/orders/${order.id}`}
-                          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                        >
-                          Chi tiết →
-                        </Link>
+                      <div className="text-right">
+                        <p className="font-medium">{formatCurrency(item.price)}</p>
                       </div>
                     </div>
                   ))}
                 </div>
-              ))}
+              </div>
+
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Tổng cộng:</span>
+                  <span className="font-bold text-xl text-primary-600">
+                    {formatCurrency(order.totalAmount)}
+                  </span>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <Link
+                    href={`/orders/${order.id}`}
+                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium"
+                  >
+                    Xem chi tiết
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 ml-1"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Link>
+                </div>
+              </div>
             </div>
           ))}
         </div>

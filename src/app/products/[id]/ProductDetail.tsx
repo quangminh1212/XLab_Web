@@ -12,7 +12,6 @@ import { Product as UIProduct } from '@/types';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RelatedProducts from '../../../components/product/RelatedProducts';
-import { useTranslation } from '@/i18n/useTranslation';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -21,51 +20,13 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 });
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
-const ProductDescription = ({ description, description_en, locale }: { description: string, description_en?: string, locale: string }) => {
-  const [expanded, setExpanded] = useState(false);
-  const { t } = useTranslation();
-  
-  // Chọn mô tả phù hợp với ngôn ngữ hiện tại
-  const localizedDescription = locale === 'en' ? (description_en || '') : description;
-  
-  // Nếu không có dữ liệu mô tả, không hiển thị gì cả
-  if (!localizedDescription || localizedDescription.trim() === '') {
-    return null;
-  }
-  
+const ProductDescription = ({ description }: { description: string }) => {
   return (
     <div className="mt-10">
-      <h2 className="text-2xl font-semibold mb-6">{t('product.grok.detailsTitle')}</h2>
+      <h2 className="text-2xl font-semibold mb-6">Thông tin chi tiết</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
-        <div className={`prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto ${!expanded ? 'max-h-96 overflow-hidden relative' : ''}`}>
-          <RichTextContent content={localizedDescription} className="product-description" />
-          
-          {!expanded && (
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent"></div>
-          )}
-        </div>
-        
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-md transition-colors flex items-center"
-          >
-            {expanded ? (
-              <>
-                <span>{t('product.grok.showLess')}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
-                </svg>
-              </>
-            ) : (
-              <>
-                <span>{t('product.grok.showMore')}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </>
-            )}
-          </button>
+        <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
+          <RichTextContent content={description} className="product-description" />
         </div>
 
         <style jsx global>{`
@@ -124,8 +85,6 @@ const ProductSpecifications = ({
 }: {
   specifications?: { key: string; value: string }[] | { [key: string]: string };
 }) => {
-  const { t } = useTranslation();
-
   if (!specifications) return null;
 
   // Convert specifications từ object sang array nếu cần
@@ -137,7 +96,7 @@ const ProductSpecifications = ({
 
   return (
     <div className="mt-10">
-      <h2 className="text-2xl font-semibold mb-6">{t('product.specifications')}</h2>
+      <h2 className="text-2xl font-semibold mb-6">Thông số kỹ thuật</h2>
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <table className="w-full border-collapse">
           <tbody>
@@ -157,34 +116,7 @@ const ProductSpecifications = ({
   );
 };
 
-export default function ProductDetail({ product, locale: propLocale }: { product: ProductType, locale?: string }) {
-  const { t, locale: contextLocale, changeLocale } = useTranslation();
-  
-  // Ưu tiên sử dụng locale từ props nếu có, nếu không thì dùng locale từ context
-  const [currentLocale, setCurrentLocale] = useState(propLocale || contextLocale);
-  
-  // Cập nhật locale khi context thay đổi hoặc prop thay đổi
-  useEffect(() => {
-    setCurrentLocale(propLocale || contextLocale);
-  }, [propLocale, contextLocale]);
-
-  // Thêm event listener để lắng nghe sự kiện thay đổi ngôn ngữ
-  useEffect(() => {
-    const handleLocaleChange = (event: CustomEvent) => {
-      if (event.detail && event.detail.locale) {
-        setCurrentLocale(event.detail.locale);
-      }
-    };
-
-    // Thêm event listener
-    window.addEventListener('locale-changed', handleLocaleChange as EventListener);
-
-    // Cleanup khi component unmount
-    return () => {
-      window.removeEventListener('locale-changed', handleLocaleChange as EventListener);
-    };
-  }, []);
-
+export default function ProductDetail({ product }: { product: ProductType }) {
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
     const mainElement = document.querySelector('main');
@@ -195,8 +127,8 @@ export default function ProductDetail({ product, locale: propLocale }: { product
 
   // Update document title khi component được render
   useEffect(() => {
-    document.title = `${product.name} | XLab - ${currentLocale === 'en' ? 'Software and Services' : 'Phần mềm và Dịch vụ'}`;
-  }, [product.name, currentLocale]);
+    document.title = `${product.name} | XLab - Phần mềm và Dịch vụ`;
+  }, [product.name]);
 
   // State để theo dõi số lượt xem
   const [viewCount, setViewCount] = useState<number>(0);
@@ -229,30 +161,6 @@ export default function ProductDetail({ product, locale: propLocale }: { product
   // State để hiện thị hiệu ứng khi thêm vào giỏ
   const [showAddToCartAnimation, setShowAddToCartAnimation] = useState<boolean>(false);
   const [addedToCartMessage, setAddedToCartMessage] = useState<string>('');
-
-  // Lấy mô tả sản phẩm theo ngôn ngữ đã chọn
-  const getLocalizedDescription = () => {
-    if (currentLocale === 'en') {
-      return product.description_en || '';
-    }
-    return product.description || '';
-  };
-  
-  // Lấy mô tả ngắn theo ngôn ngữ đã chọn
-  const getLocalizedShortDescription = () => {
-    if (currentLocale === 'en') {
-      return product.shortDescription_en || '';
-    }
-    return product.shortDescription || '';
-  };
-  
-  // Lấy tùy chọn sản phẩm theo ngôn ngữ đã chọn
-  const getLocalizedProductOptions = () => {
-    if (currentLocale === 'en') {
-      return product.productOptions_en || [];
-    }
-    return product.productOptions || [];
-  };
 
   // Xử lý thêm tùy chọn mới
   const handleAddOption = () => {
@@ -454,9 +362,7 @@ export default function ProductDetail({ product, locale: propLocale }: { product
     });
 
     // Hiển thị thông báo đã thêm vào giỏ
-    setAddedToCartMessage(currentLocale === 'en' 
-      ? `Added ${quantity} product(s) to cart` 
-      : `Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
+    setAddedToCartMessage(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
     setShowAddToCartAnimation(true);
 
     // Ẩn thông báo sau 3 giây
@@ -491,38 +397,13 @@ export default function ProductDetail({ product, locale: propLocale }: { product
     }
   };
 
-  // Cập nhật productOptions khi locale thay đổi
-  useEffect(() => {
-    const options = getLocalizedProductOptions();
-    if (options && options.length > 0) {
-      setProductOptions(options);
-      setSelectedOption(options[0]);
-    }
-  }, [currentLocale]);
-
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <p>{currentLocale === 'en' ? 'Loading product information...' : 'Đang tải thông tin sản phẩm...'}</p>
+        <p>Đang tải thông tin sản phẩm...</p>
       </div>
     );
   }
-
-  // Sử dụng hàm lấy mô tả theo ngôn ngữ
-  const localizedDescription = getLocalizedDescription();
-  const localizedShortDescription = getLocalizedShortDescription();
-  const localizedProductOptions = getLocalizedProductOptions();
-  
-  // Cập nhật danh sách tùy chọn sản phẩm theo ngôn ngữ nếu có
-  useEffect(() => {
-    if (localizedProductOptions && localizedProductOptions.length > 0) {
-      // Chỉ cập nhật nếu productOptions khác với localizedProductOptions
-      if (JSON.stringify(productOptions) !== JSON.stringify(localizedProductOptions)) {
-        setProductOptions(localizedProductOptions);
-        setSelectedOption(localizedProductOptions[0]);
-      }
-    }
-  }, [currentLocale]);
 
   return (
     <div className="container mx-auto px-4 py-8 product-detail-loaded">
@@ -551,14 +432,14 @@ export default function ProductDetail({ product, locale: propLocale }: { product
         {/* Breadcrumbs */}
         <div className="flex items-center text-sm mb-4">
           <Link href="/" className="text-gray-500 hover:text-primary-600">
-            {t('app.header.home')}
+            Trang chủ
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <Link
             href={isAccount ? '/categories/tai-khoan-hoc-tap' : '/products'}
             className="text-gray-500 hover:text-primary-600"
           >
-            {isAccount ? t('app.account.learningAccounts') : t('app.header.products')}
+            {isAccount ? 'Tài khoản học tập' : 'Sản phẩm'}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <span className="text-gray-800">{product.name}</span>
@@ -691,95 +572,87 @@ export default function ProductDetail({ product, locale: propLocale }: { product
                 )}
               </div>
 
-              <p className="mt-4 text-gray-600 text-sm line-clamp-3">{localizedShortDescription || ''}</p>
+              <p className="mt-4 text-gray-600 text-lg">{product.shortDescription || ''}</p>
 
               {/* Quantity selector */}
               <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {currentLocale === 'en' ? 'Quantity' : 'Số lượng'}
-                </label>
+                <h3 className="font-medium text-gray-900 mb-2">Số lượng:</h3>
                 <div className="flex items-center">
                   <button
                     onClick={decreaseQuantity}
-                    className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded-l-md border border-gray-300"
+                    className="w-10 h-10 rounded-l-lg bg-gray-100 flex items-center justify-center border border-gray-300"
                   >
-                    -
+                    <span className="text-xl">-</span>
                   </button>
                   <input
                     type="number"
-                    min="1"
                     value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 h-10 text-center border-t border-b border-gray-300"
+                    readOnly
+                    className="w-14 h-10 text-center border-t border-b border-gray-300"
                   />
                   <button
                     onClick={increaseQuantity}
-                    className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded-r-md border border-gray-300"
+                    className="w-10 h-10 rounded-r-lg bg-gray-100 flex items-center justify-center border border-gray-300"
                   >
-                    +
+                    <span className="text-xl">+</span>
                   </button>
                 </div>
               </div>
 
-              {/* Add to cart and buy now buttons */}
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+              {/* Action buttons */}
+              <div className="mt-8 grid grid-cols-2 gap-4">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-3 px-6 rounded-md transition-colors flex items-center justify-center"
+                  className="px-4 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-transform active:scale-95"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
-                  {currentLocale === 'en' ? 'Add to Cart' : 'Thêm vào giỏ hàng'}
+                  Thêm vào giỏ hàng
                 </button>
                 <Link
-                  href={`/checkout?product=${encodeURIComponent(product.id)}&quantity=${quantity}&option=${encodeURIComponent(selectedOption || selectedVersion)}`}
-                  className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-3 px-6 rounded-md transition-colors flex items-center justify-center"
+                  href="/checkout?skipInfo=true"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // Xóa giỏ hàng hiện tại trước
+                    clearCart();
+                    // Thêm sản phẩm hiện tại vào giỏ hàng
+                    let productImage = '/images/placeholder/product-placeholder.svg';
+                    if (product.images && product.images.length > 0) {
+                      const firstImage = product.images[0];
+                      if (typeof firstImage === 'string' && !firstImage.startsWith('blob:')) {
+                        productImage = firstImage;
+                      } else if (typeof firstImage !== 'string' && firstImage.url) {
+                        productImage = firstImage.url;
+                      }
+                    }
+                    // Thêm sản phẩm vào giỏ hàng
+                    addItem({
+                      id: product.id.toString(),
+                      name: product.name,
+                      price: calculateSelectedPrice(),
+                      quantity: quantity,
+                      image: productImage,
+                      version: selectedOption || selectedVersion,
+                      options: selectedOption ? [selectedOption] : selectedVersion ? [selectedVersion] : undefined,
+                    });
+                    // Chuyển hướng đến trang thanh toán
+                    window.location.href = '/checkout?skipInfo=true';
+                  }}
+                  className="px-4 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 text-center transition-transform active:scale-95"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  {currentLocale === 'en' ? 'Buy Now' : 'Mua ngay'}
+                  Mua ngay
                 </Link>
               </div>
 
-              {/* Features list - rút gọn */}
+              {/* Features list */}
               {product.features && product.features.length > 0 && (
-                <div className="mt-6">
-                  <details>
-                                          <summary className="font-medium text-gray-900 cursor-pointer hover:text-primary-600">
-                      {currentLocale === 'en' ? 'View featured features' : 'Xem tính năng nổi bật'}
-                    </summary>
-                    <ul className="list-disc list-inside space-y-1 mt-2 pl-2">
-                      {product.features.map((feature, index) => (
-                        <li key={index} className="text-gray-600 text-sm">
-                          {typeof feature === 'string' ? feature : feature.title}
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
+                <div className="mt-8">
+                  <h3 className="font-medium text-gray-900 mb-2">Tính năng nổi bật:</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {product.features.map((feature, index) => (
+                      <li key={index} className="text-gray-600">
+                        {typeof feature === 'string' ? feature : feature.title}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
@@ -787,28 +660,21 @@ export default function ProductDetail({ product, locale: propLocale }: { product
         </div>
 
         {/* Product description */}
-        <ProductDescription 
-          description={product.description || ''} 
-          description_en={product.description_en || ''} 
-          locale={currentLocale} 
-        />
-        
-        {/* Product specifications */}
-        <ProductSpecifications specifications={product.specifications} />
-        
-        {/* Related products */}
-        <div className="mt-10">
-          <RelatedProducts 
-            currentProductId={product.id.toString()}
-            categoryId={
-              product.categories && product.categories.length > 0
-                ? typeof product.categories[0].id === 'object'
-                  ? (product.categories[0].id as any)?.id
-                  : product.categories[0].id
-                : undefined
-            }
-          />
+        <div className="max-w-6xl mx-auto">
+          <ProductDescription description={product.description} />
         </div>
+
+        {/* Related products */}
+        <RelatedProducts
+          currentProductId={product.id}
+          categoryId={
+            product.categories && product.categories.length > 0
+              ? typeof product.categories[0].id === 'object'
+                ? (product.categories[0].id as any)?.id
+                : product.categories[0].id
+              : undefined
+          }
+        />
       </div>
     </div>
   );
