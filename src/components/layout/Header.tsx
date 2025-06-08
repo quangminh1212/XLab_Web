@@ -7,11 +7,8 @@ import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
-import { useLanguage } from '@/contexts/LanguageContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import LanguageSwitcher from '@/components/common/LanguageSwitcher';
-import { formatCurrency, formatDate } from '@/shared/utils/formatters';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -34,7 +31,6 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { language, t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -240,14 +236,21 @@ const Header = () => {
     if (isNotificationOpen) setIsNotificationOpen(false);
   };
 
-  // Use our new formatCurrency function with language context
-  const currencyFormatter = (amount: number) => {
-    return formatCurrency(amount, language);
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      maximumFractionDigits: 0,
+    }).format(amount);
   };
 
-  // Use our new formatDate function with language context
-  const dateFormatter = (dateString: string) => {
-    return formatDate(dateString, language);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Date(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+    ).toLocaleDateString('vi-VN');
   };
 
   const handleCopyVoucher = (code: string) => {
@@ -339,39 +342,36 @@ const Header = () => {
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('nav.home')}
+                Trang chủ
               </Link>
               <Link
                 href="/products"
                 className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('nav.products')}
+                Sản phẩm
               </Link>
               <Link
                 href="/about"
                 className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('nav.about')}
+                Giới thiệu
               </Link>
               <Link
                 href="/contact"
                 className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('nav.contact')}
+                Liên hệ
               </Link>
               <Link
                 href="/bao-hanh"
                 className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('nav.warranty')}
+                Bảo hành
               </Link>
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
-              {/* Language Switcher */}
-              <LanguageSwitcher />
-              
               {/* Balance Display */}
               {session && (
                 <div className="hidden sm:block">
@@ -418,12 +418,12 @@ const Header = () => {
                     aria-orientation="vertical"
                   >
                     <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                      <h3 className="text-base font-semibold text-gray-900">{t('voucher.title')}</h3>
+                      <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
                       <Link
                         href="/vouchers/public"
                         className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                       >
-                        {t('voucher.viewAll')}
+                        Xem tất cả
                       </Link>
                     </div>
 
@@ -431,13 +431,13 @@ const Header = () => {
                       {loadingCoupons ? (
                         <div className="py-6 text-center">
                           <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
-                          <p className="text-xs sm:text-sm text-gray-500 mt-2">{t('voucher.loading')}</p>
+                          <p className="text-xs sm:text-sm text-gray-500 mt-2">Đang tải...</p>
                         </div>
                       ) : getDisplayVouchers().length > 0 ? (
                         <>
                           {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
                             <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
-                              <h4 className="text-xs font-medium text-teal-700">{t('voucher.yourVouchers')}</h4>
+                              <h4 className="text-xs font-medium text-teal-700">Voucher của bạn</h4>
                             </div>
                           )}
 
@@ -463,11 +463,11 @@ const Header = () => {
                                     >
                                       {coupon.type === 'percentage'
                                         ? `${coupon.value}%`
-                                        : currencyFormatter(coupon.value)}
+                                        : formatCurrency(coupon.value)}
                                     </span>
                                   </div>
                                   <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
-                                    HSD: {dateFormatter(coupon.endDate)}
+                                    HSD: {formatDate(coupon.endDate)}
                                   </span>
                                 </div>
                                 <h4 className="text-xs sm:text-sm font-medium text-gray-900">
@@ -488,7 +488,7 @@ const Header = () => {
                                 <div className="mt-2 flex justify-between items-center text-xs mb-1">
                                   <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                     {coupon.minOrder
-                                      ? `Đơn tối thiểu: ${currencyFormatter(coupon.minOrder)}`
+                                      ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}`
                                       : 'Không giới hạn đơn'}
                                   </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
@@ -526,7 +526,7 @@ const Header = () => {
                       ) : (
                         <div className="px-4 py-6 text-center">
                           <p className="text-xs sm:text-sm text-gray-500">
-                            {t('voucher.none')}
+                            Không có mã giảm giá nào
                           </p>
                         </div>
                       )}
@@ -575,7 +575,7 @@ const Header = () => {
                       aria-orientation="vertical"
                     >
                       <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                        <h3 className="text-base font-semibold text-gray-900">{t('notification.title')}</h3>
+                        <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
                         {unreadCount > 0 && (
                           <button
                             onClick={(e) => {
@@ -584,7 +584,7 @@ const Header = () => {
                             }}
                             className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                           >
-                            {t('notification.markAllRead')}
+                            Đánh dấu tất cả đã đọc
                           </button>
                         )}
                       </div>
@@ -610,7 +610,7 @@ const Header = () => {
                         ) : (
                           <div className="px-4 py-6 text-center">
                             <p className="text-xs sm:text-sm text-gray-500">
-                              {t('notification.none')}
+                              Không có thông báo nào
                             </p>
                           </div>
                         )}
@@ -623,7 +623,7 @@ const Header = () => {
                           onClick={() => setIsNotificationOpen(false)}
                           role="menuitem"
                         >
-                          {t('notification.viewAll')}
+                          Xem tất cả thông báo
                         </Link>
                       </div>
                     </div>
@@ -690,7 +690,7 @@ const Header = () => {
                     onClick={() => signIn()}
                     className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    {t('user.login')}
+                    Đăng nhập
                   </button>
                 )}
 
@@ -715,7 +715,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      {t('user.myAccount')}
+                      Tài khoản của tôi
                     </Link>
                     <Link
                       href="/orders/history"
@@ -723,7 +723,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      {t('user.myOrders')}
+                      Đơn hàng của tôi
                     </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (
@@ -733,7 +733,7 @@ const Header = () => {
                         role="menuitem"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        {t('user.admin')}
+                        Quản trị viên
                       </Link>
                     )}
                     <button
@@ -744,7 +744,7 @@ const Header = () => {
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                     >
-                      {t('user.logout')}
+                      Đăng xuất
                     </button>
                   </div>
                 )}
@@ -788,39 +788,36 @@ const Header = () => {
               className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('nav.home')}
+              Trang chủ
             </Link>
             <Link
               href="/products"
               className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('nav.products')}
+              Sản phẩm
             </Link>
             <Link
               href="/about"
               className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('nav.about')}
+              Giới thiệu
             </Link>
             <Link
               href="/contact"
               className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('nav.contact')}
+              Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
               className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('nav.warranty')}
+              Bảo hành
             </Link>
-            <div className="px-4 py-2">
-              <LanguageSwitcher />
-            </div>
           </nav>
         </div>
       </header>
