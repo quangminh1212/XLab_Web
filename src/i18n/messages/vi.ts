@@ -48,6 +48,7 @@ const messages = {
   'app.footer.aboutDesc1': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
   'app.footer.aboutDesc2': 'Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.',
   'app.footer.liveChatSupport': 'Hỗ trợ trực tuyến',
+  'app.footer.copyright': 'Bản quyền thuộc về công ty',
   
   'app.common.submit': 'Gửi',
   'app.common.cancel': 'Hủy',

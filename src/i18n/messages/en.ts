@@ -48,6 +48,7 @@ const messages = {
   'app.footer.aboutDesc1': 'XLab is a leading company in the field of technology solutions and professional software development for businesses.',
   'app.footer.aboutDesc2': 'With a team of experienced experts, XLab is proud to be a trusted partner of over 500+ businesses.',
   'app.footer.liveChatSupport': 'Live Chat Support',
+  'app.footer.copyright': 'Copyright belongs to',
   
   'app.common.submit': 'Submit',
   'app.common.cancel': 'Cancel',
