@@ -9,8 +9,6 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import LanguageSwitcher from '@/components/common/LanguageSwitcher';
-import { useTranslation } from '@/i18n/useTranslation';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -33,7 +31,6 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { t, locale, changeLocale } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -206,11 +203,7 @@ const Header = () => {
   }, [isProfileOpen, isNotificationOpen, isVoucherOpen, isOpen]);
 
   const isActive = (path: string) => {
-    // Kiểm tra cả path chính xác và path bắt đầu bằng path đó (cho các trang con)
-    const isExactMatch = pathname === path;
-    const isPartialMatch = path !== '/' && pathname.startsWith(path);
-    
-    return isExactMatch || isPartialMatch
+    return pathname === path
       ? 'text-primary-600 font-medium'
       : 'text-gray-700 hover:text-primary-600';
   };
@@ -349,39 +342,36 @@ const Header = () => {
                 href="/"
                 className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('app.header.home')}
+                Trang chủ
               </Link>
               <Link
                 href="/products"
                 className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('app.header.products')}
+                Sản phẩm
               </Link>
               <Link
                 href="/about"
                 className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('app.footer.introduction')}
+                Giới thiệu
               </Link>
               <Link
                 href="/contact"
                 className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('app.header.contact')}
+                Liên hệ
               </Link>
               <Link
                 href="/bao-hanh"
                 className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
               >
-                {t('app.header.support')}
+                Bảo hành
               </Link>
             </nav>
 
-            {/* Right Side - Balance + Auth + Cart + Language */}
+            {/* Right Side - Balance + Auth + Cart */}
             <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
-              {/* Language Switcher */}
-              <LanguageSwitcher className="hidden md:block" />
-              
               {/* Balance Display */}
               {session && (
                 <div className="hidden sm:block">
@@ -700,7 +690,7 @@ const Header = () => {
                     onClick={() => signIn()}
                     className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    {t('app.header.login')}
+                    Đăng nhập
                   </button>
                 )}
 
@@ -798,89 +788,36 @@ const Header = () => {
               className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('app.header.home')}
+              Trang chủ
             </Link>
             <Link
               href="/products"
               className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('app.header.products')}
+              Sản phẩm
             </Link>
             <Link
               href="/about"
               className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('app.footer.introduction')}
+              Giới thiệu
             </Link>
             <Link
               href="/contact"
               className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('app.header.contact')}
+              Liên hệ
             </Link>
             <Link
               href="/bao-hanh"
               className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              {t('app.header.support')}
+              Bảo hành
             </Link>
-            
-            {/* Language Switcher in Mobile Menu */}
-            <div className="px-4 py-2 border-t border-gray-100 mt-2 pt-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">{t('app.header.language')}</span>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      changeLocale('vi');
-                      setIsOpen(false);
-                    }}
-                    className={`px-3 py-1 text-sm rounded-md flex items-center ${
-                      locale === 'vi'
-                        ? 'bg-primary-100 text-primary-700 font-medium'
-                        : 'bg-gray-100 text-gray-700'
-                    }`}
-                  >
-                    <div className="w-4 h-4 relative mr-1">
-                      <Image 
-                        src="/images/icons/vietnam-flag.svg"
-                        alt="Tiếng Việt"
-                        width={16}
-                        height={16}
-                        className="rounded-sm translate-y-[1px]"
-                      />
-                    </div>
-                    {t('app.header.language.vi')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      changeLocale('en');
-                      setIsOpen(false);
-                    }}
-                    className={`px-3 py-1 text-sm rounded-md flex items-center ${
-                      locale === 'en'
-                        ? 'bg-primary-100 text-primary-700 font-medium'
-                        : 'bg-gray-100 text-gray-700'
-                    }`}
-                  >
-                    <div className="w-4 h-4 relative mr-1">
-                      <Image 
-                        src="/images/icons/uk-flag.svg"
-                        alt="English"
-                        width={16}
-                        height={16}
-                        className="rounded-sm translate-y-[1px]"
-                      />
-                    </div>
-                    {t('app.header.language.en')}
-                  </button>
-                </div>
-              </div>
-            </div>
           </nav>
         </div>
       </header>

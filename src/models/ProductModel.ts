@@ -48,9 +48,7 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
-  description_en?: string;
   shortDescription: string;
-  shortDescription_en?: string;
   images: ProductImage[] | string[];
   descriptionImages?: string[];
   features: ProductFeature[];
@@ -66,7 +64,6 @@ export interface Product {
   type?: 'software' | 'account';
   isAccount?: boolean;
   productOptions?: ProductOption[];
-  productOptions_en?: ProductOption[];
   defaultProductOption?: ProductOption;
   optionPrices?: { [key: string]: OptionPrice };
   startDate?: string; // Ngày bắt đầu hiệu lực
@@ -78,9 +75,7 @@ export interface ProductFormData {
   name: string;
   slug: string;
   description: string;
-  description_en?: string;
   shortDescription: string;
-  shortDescription_en?: string;
   images: ProductImage[] | string[];
   descriptionImages?: string[];
   features: ProductFeature[];
@@ -94,7 +89,6 @@ export interface ProductFormData {
   type?: 'software' | 'account';
   isAccount?: boolean;
   productOptions?: ProductOption[];
-  productOptions_en?: ProductOption[];
   defaultProductOption?: ProductOption;
   optionPrices?: { [key: string]: OptionPrice };
   startDate?: string; // Ngày bắt đầu hiệu lực

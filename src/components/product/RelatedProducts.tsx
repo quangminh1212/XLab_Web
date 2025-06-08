@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import ProductGrid from './ProductGrid';
-import { useTranslation } from '@/i18n/useTranslation';
 
 interface Product {
   id: string;
@@ -13,7 +12,6 @@ interface Product {
   originalPrice?: number;
   image: string;
   imageUrl?: string;
-  images?: string[] | { url: string }[];
   category?: string;
   categories?: { id: string; name: string }[];
   rating?: number;
@@ -35,7 +33,6 @@ export default function RelatedProducts({
 }: RelatedProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const { t, locale } = useTranslation();
 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
@@ -79,9 +76,7 @@ export default function RelatedProducts({
 
   if (loading) {
     return (
-      <div className="mt-12 py-8 text-center text-gray-500">
-        {locale === 'en' ? 'Loading related products...' : 'Đang tải sản phẩm liên quan...'}
-      </div>
+      <div className="mt-12 py-8 text-center text-gray-500">Đang tải sản phẩm liên quan...</div>
     );
   }
 
@@ -98,23 +93,7 @@ export default function RelatedProducts({
     const safeDescription = String(product.shortDescription || product.description || '');
     const safePrice = Number(product.price) || 0;
     const safeOriginalPrice = product.originalPrice ? Number(product.originalPrice) : undefined;
-    
-    // Cải thiện xử lý ảnh - ưu tiên imageUrl trước, nếu không có thì dùng image, nếu không có cả hai thì dùng ảnh mặc định
-    let safeImage = '/images/placeholder/product-placeholder.jpg';
-    if (product.imageUrl && typeof product.imageUrl === 'string' && product.imageUrl.trim() !== '') {
-      safeImage = product.imageUrl;
-    } else if (product.image && typeof product.image === 'string' && product.image.trim() !== '') {
-      safeImage = product.image;
-    } else if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-      // Nếu có mảng images, lấy ảnh đầu tiên
-      const firstImage = product.images[0];
-      if (typeof firstImage === 'string' && firstImage.trim() !== '') {
-        safeImage = firstImage;
-      } else if (typeof firstImage === 'object' && firstImage && firstImage.url) {
-        safeImage = firstImage.url;
-      }
-    }
-    
+    const safeImage = String(product.imageUrl || product.image || '');
     const safeRating = product.rating ? Number(product.rating) : undefined;
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
@@ -152,10 +131,8 @@ export default function RelatedProducts({
     <div className="mt-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <ProductGrid
         products={mappedProducts}
-        title={t('product.relatedProducts')}
-        subtitle={locale === 'en' 
-          ? "You might be interested in these similar products" 
-          : "Bạn có thể quan tâm đến các sản phẩm khác tương tự"}
+        title="Sản phẩm liên quan"
+        subtitle="Bạn có thể quan tâm đến các sản phẩm khác tương tự"
         columns={4}
       />
     </div>
