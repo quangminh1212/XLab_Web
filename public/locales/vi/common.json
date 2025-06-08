@@ -4,5 +4,14 @@
   "nav_products": "Sản phẩm",
   "nav_about": "Giới thiệu",
   "nav_contact": "Liên hệ",
-  "nav_warranty": "Bảo hành"
+  "nav_warranty": "Bảo hành",
+  "deposit_title": "Nạp tiền vào tài khoản",
+  "deposit_description": "Quét mã QR hoặc chuyển khoản theo thông tin bên dưới",
+  "deposit_qr_title": "Quét mã QR để chuyển khoản",
+  "balance_title": "Số dư hiện tại",
+  "transfer_info_title": "Thông tin chuyển khoản",
+  "bank": "Ngân hàng",
+  "account_number": "Số tài khoản",
+  "account_holder": "Chủ tài khoản",
+  "transaction_id": "Mã giao dịch"
 } 

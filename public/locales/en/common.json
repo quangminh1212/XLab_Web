@@ -4,5 +4,14 @@
   "nav_products": "Products",
   "nav_about": "About",
   "nav_contact": "Contact",
-  "nav_warranty": "Warranty"
+  "nav_warranty": "Warranty",
+  "deposit_title": "Deposit to Account",
+  "deposit_description": "Scan the QR code or transfer using the information below",
+  "deposit_qr_title": "Scan QR to transfer",
+  "balance_title": "Current Balance",
+  "transfer_info_title": "Transfer Information",
+  "bank": "Bank",
+  "account_number": "Account Number",
+  "account_holder": "Account Holder",
+  "transaction_id": "Transaction ID"
 } 

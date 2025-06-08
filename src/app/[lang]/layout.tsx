@@ -85,13 +85,15 @@ export const viewport: Viewport = {
   themeColor: '#00A19A',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-  params: { lang },
+  params,
 }: {
   children: React.ReactNode;
   params: { lang: string };
 }) {
+  const { lang } = params;
+  // Re-triggering build with a comment
   return (
     <html lang={lang} className={`${inter.variable} scroll-smooth`}>
       <head>
