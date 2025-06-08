@@ -5,8 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { formatCurrency } from '@/shared/utils/formatters';
 
 interface ProductCardProps {
   id: string;
@@ -49,7 +47,6 @@ export default function ProductCard({
   const [showAddedEffect, setShowAddedEffect] = useState(false);
   const router = useRouter();
   const { addItem, clearCart } = useCart();
-  const { language, t } = useLanguage();
 
   // Log the image URL for debugging
   console.log(`ProductCard image URL for ${name}:`, image);
@@ -95,9 +92,13 @@ export default function ProductCard({
     ? '/images/placeholder/product-placeholder.jpg'
     : cleanImageUrl;
 
-  // Sử dụng hàm formatCurrency từ utility
-  const formatProductPrice = (amount: number) => {
-    return formatCurrency(amount, language);
+  // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0,
+    }).format(amount);
   };
 
   const renderRatingStars = (rating: number) => {
@@ -136,11 +137,7 @@ export default function ProductCard({
             />
           </svg>
         ))}
-        {reviewCount > 0 && (
-          <span className="ml-1 text-xs text-gray-500">
-            ({reviewCount} {t('product.reviews')})
-          </span>
-        )}
+        {reviewCount > 0 && <span className="ml-1 text-xs text-gray-500">({reviewCount})</span>}
       </div>
     );
   };
@@ -251,168 +248,205 @@ export default function ProductCard({
       statsIcon: 'text-orange-500',
       overlay: 'to-orange-900/40',
     },
+    {
+      name: 'indigo',
+      bg: 'from-white via-indigo-50 to-indigo-100',
+      hover: 'hover:border-indigo-300 hover:shadow-indigo-100/50',
+      badge: 'from-indigo-500 to-indigo-600',
+      button: 'from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700',
+      buttonHover: 'hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300',
+      price: 'from-indigo-600 to-indigo-700',
+      stats: 'text-indigo-600',
+      statsIcon: 'text-indigo-500',
+      overlay: 'to-indigo-900/40',
+    },
   ];
 
-  // Chọn màu dựa trên productId để đảm bảo cùng sản phẩm luôn có cùng màu sắc
-  const colorIndex = Number(id.replace(/\D/g, '')) % colorPalette.length;
-  const color = colorPalette[colorIndex] || colorPalette[0];
-
-  // Link sản phẩm
-  const productUrl = `/products/${encodeURIComponent(productSlug)}`;
-
-  // Format các giá trị số
-  const formattedPrice = formatProductPrice(price);
-  const formattedOriginalPrice = originalPrice ? formatProductPrice(originalPrice) : '';
+  // Chọn màu dựa trên ID sản phẩm để đảm bảo consistent
+  const safeId = id || '0';
+  const parsedId = parseInt(safeId);
+  const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
+  const currentColor = colorPalette[colorIndex] || colorPalette[0];
 
   return (
     <Link
-      href={productUrl}
-      className={`relative flex flex-col h-full border rounded-xl overflow-hidden transition-all duration-300 bg-gradient-to-b ${color.bg} ${color.hover} shadow hover:shadow-lg`}
+      href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
+      className={`group flex flex-col h-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={handleView}
     >
-      {/* Header - Image & Discount Badge */}
-      <div className="relative rounded-t-xl overflow-hidden bg-white aspect-square">
-        {/* Discount Badge if there's a discount */}
-        {discountPercentage > 0 && (
+      <div className="relative pt-[100%] bg-white">
+        {originalPrice && discountPercentage > 0 && (
           <div
-            className={`absolute z-10 top-2 left-2 text-xs font-medium py-1 px-2 rounded-full text-white bg-gradient-to-r ${color.badge}`}
+            className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
           >
             -{discountPercentage}%
           </div>
         )}
 
-        {/* Image with fallback */}
-        <div className="relative w-full h-full">
-          {!isImageLoaded && !imageError && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-            </div>
-          )}
-          <Image
-            src={displayImageUrl}
-            alt={name}
-            fill={true}
-            className={`object-contain transition-opacity duration-300 ${
-              isImageLoaded ? 'opacity-100' : 'opacity-0'
-            }`}
-            onLoad={() => setIsImageLoaded(true)}
-            onError={handleImageError}
-          />
+        <Image
+          src={displayImageUrl}
+          alt={name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className={`object-contain transition-all duration-500 ${
+            isHovered ? 'scale-110' : 'scale-100'
+          } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setIsImageLoaded(true)}
+          priority={false}
+          onError={handleImageError}
+        />
 
-          {/* Overlay on Hover */}
-          <div
-            className={`absolute inset-0 bg-gradient-to-t from-transparent ${
-              color.overlay
-            } opacity-0 transition-opacity duration-300 ${isHovered ? 'opacity-100' : ''}`}
-          ></div>
-        </div>
-
-        {/* "Added to Cart" effect */}
-        {showAddedEffect && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30 animate-fade-out">
-            <div className="bg-white rounded-full p-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 text-primary-600 animate-check"
-                fill="none"
-                viewBox="0 0 24 24"
+        {!isImageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white">
+            <svg className="w-10 h-10 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
                 stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
           </div>
         )}
-      </div>
 
-      {/* Content */}
-      <div className="flex-1 px-3 py-3 flex flex-col justify-between">
-        {/* Name & Description */}
-        <div>
-          <h3 className="text-gray-900 font-semibold text-base leading-tight mb-1 line-clamp-2">
-            {name}
-          </h3>
-          <p className="text-gray-600 text-xs leading-snug mb-2 line-clamp-2">{shortDescription}</p>
-
-          {/* Rating Stars */}
-          {rating > 0 && <div className="mb-2">{renderRatingStars(rating)}</div>}
-        </div>
-
-        {/* Footer - Price & CTA */}
-        <div className="mt-auto">
-          {/* Price */}
-          <div className="flex flex-wrap items-baseline gap-x-2 mb-2">
+        {showAddedEffect && (
+          <div
+            className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
+          >
             <div
-              className={`text-base font-bold bg-clip-text text-transparent bg-gradient-to-r ${color.price}`}
+              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}
             >
-              {formattedPrice}
-            </div>
-            {originalPrice && originalPrice > price && (
-              <div className="text-xs text-gray-500 line-through">
-                {t('product.originalPrice')} {formattedOriginalPrice}
-              </div>
-            )}
-          </div>
-
-          {/* Social Proof - Purchaces */}
-          {(weeklyPurchases > 0 || totalSold > 0) && (
-            <div className={`flex items-center mb-3 text-xs ${color.stats}`}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-3.5 w-3.5 mr-1 ${color.statsIcon}`}
+                className="h-5 w-5 mr-1"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
                 <path
                   fillRule="evenodd"
-                  d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                   clipRule="evenodd"
                 />
               </svg>
-              <span>
-                {totalSold > 0 && <>{totalSold} {t('product.sold')}</>}
-                {weeklyPurchases > 0 && totalSold > 0 && <> · </>}
-                {weeklyPurchases > 0 && <>+{weeklyPurchases} {t('product.thisWeek')}</>}
-              </span>
+              Đã thêm
             </div>
-          )}
+          </div>
+        )}
 
-          {/* CTAs */}
-          <div className="flex space-x-2">
-            <Link
-              href={productUrl}
-              className={`flex-1 text-center text-xs sm:text-sm py-1.5 px-2 text-white font-medium rounded-lg bg-gradient-to-r ${color.button}`}
-            >
-              {t('product.buyNow')}
-            </Link>
+        <div
+          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 ${currentColor.overlay} flex items-center justify-center transition-opacity duration-300 ${
+            isHovered ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <div className="flex flex-col gap-3">
             <button
               onClick={handleAddToCart}
-              className={`text-xs sm:text-sm py-1.5 px-2 bg-white border border-gray-200 rounded-lg text-gray-700 ${color.buttonHover}`}
+              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-5 py-2.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform`}
+            >
+              <span className="flex items-center justify-center">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 7m0 6l-1.5 6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
+                  />
+                </svg>
+                Thêm vào giỏ
+              </span>
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Clear cart and add only this product
+                clearCart();
+                addItem({
+                  id,
+                  name,
+                  price,
+                  quantity: 1,
+                  image,
+                  version: '',
+                  uniqueKey: `${id}_default_`,
+                });
+                router.push('/checkout?skipInfo=true');
+              }}
+              className={`bg-gradient-to-r ${currentColor.button} text-white px-5 py-2.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20`}
+            >
+              <span className="flex items-center justify-center">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                Mua ngay
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
+        {category && (
+          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+            {category}
+          </div>
+        )}
+        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
+          {name}
+        </h3>
+        <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
+          {shortDescription}
+        </p>
+        <div className="flex items-end justify-between">
+          <div className="flex-1">
+            <div className="flex items-baseline flex-wrap gap-2 mb-2">
+              <span
+                className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+              >
+                {formatCurrency(price)}
+              </span>
+              {originalPrice && discountPercentage > 0 && (
+                <span className="text-sm text-gray-400 line-through">
+                  {formatCurrency(originalPrice)}
+                </span>
+              )}
+            </div>
+            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-4"></div>}</div>
+          </div>
+          {totalSold > 0 && (
+            <div
+              className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
+                className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                fill="none" 
+                viewBox="0 0 24 24" 
                 stroke="currentColor"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="sr-only">{t('product.addToCart')}</span>
-            </button>
-          </div>
+              <span className="font-semibold">{totalSold}</span>
+            </div>
+          )}
         </div>
       </div>
     </Link>
