@@ -1,3 +1,8 @@
 {
-  "welcome": "Chào mừng đến với XLab"
+  "welcome": "Chào mừng đến với XLab",
+  "nav_home": "Trang chủ",
+  "nav_products": "Sản phẩm",
+  "nav_about": "Giới thiệu",
+  "nav_contact": "Liên hệ",
+  "nav_warranty": "Bảo hành"
 } 
