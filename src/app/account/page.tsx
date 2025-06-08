@@ -1184,15 +1184,15 @@ export default function AccountPage() {
 
               {/* Section mã giảm giá chuyển lên ngay sau hồ sơ cá nhân */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mb-8">
-                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('app.account.availableCoupons')}</h2>
 
                 {loadingCoupons ? (
                   <div className="flex justify-center py-8">
                     <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
                   </div>
-                ) : availableCoupons.length > 0 ? (
+                ) : publicCoupons.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {availableCoupons.map((coupon) => (
+                    {publicCoupons.map((coupon) => (
                       <div key={coupon.id} className="border rounded-md p-4 bg-white">
                         <div className="flex items-start">
                           <div className="bg-primary-100 p-3 rounded-full mr-3">
@@ -1211,6 +1211,7 @@ export default function AccountPage() {
                               />
                             </svg>
                           </div>
+
                           <div>
                             <h3 className="font-semibold">{coupon.name}</h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
@@ -1222,53 +1223,13 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : publicCoupons.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {publicCoupons.map((coupon) => (
-                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
-                        <div className="flex items-start">
-                          <div className="bg-green-100 p-3 rounded-full mr-3">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6 text-green-600"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                              />
-                            </svg>
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">{coupon.name}</h3>
-                            <div className="text-sm font-mono text-primary-600 mt-1">
-                              {coupon.code}
-                            </div>
-                            <div className="text-xs text-gray-500 mt-1">
-                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} -{' '}
-                              {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
-                            </div>
-                            {coupon.minOrder && (
-                              <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                                {t('app.account.applyToOrders')} {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}`
-                                : `Giảm ${formatCurrency(coupon.value)}`}
+                                ? `${t('app.account.discount')} ${coupon.value}%${coupon.maxDiscount ? ` (${t('app.account.maxDiscount')} ${formatCurrency(coupon.maxDiscount)})` : ''}`
+                                : `${t('app.account.discount')} ${formatCurrency(coupon.value)}`}
                             </div>
                           </div>
                         </div>
@@ -1277,37 +1238,53 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>Bạn chưa có mã giảm giá nào</p>
+                    <p>{t('app.account.noCoupons')}</p>
                   </div>
                 )}
               </div>
 
               {/* Phần Sản phẩm đã mua */}
-              <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Sản phẩm đã mua</h2>
+              <div className="bg-white rounded-lg shadow p-6 mb-8">
+                <h2 className="text-xl font-semibold mb-4">{t('app.account.purchasedProducts')}</h2>
 
-                {hasProducts ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {purchaseHistory
-                      .flatMap((order) => order.items)
-                      .map((item, index) => (
-                        <div key={index} className="border rounded-lg overflow-hidden">
-                          <div className="bg-gray-50 p-4 border-b">
-                            <h3 className="font-bold">{item.name}</h3>
-                            <p className="text-sm text-gray-600">{item.version}</p>
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                ) : purchaseHistory.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>{t('app.account.noProducts')}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-8">
+                    {Array.from(
+                      new Set(purchaseHistory.flatMap((order) => order.items.map((item) => item.id))),
+                    ).map((itemId) => {
+                      const allItems = purchaseHistory.flatMap((order) => order.items);
+                      const item = allItems.find((i) => i.id === itemId);
+                      if (!item) return null;
+
+                      return (
+                        <div key={itemId} className="border rounded-md p-4 bg-white">
+                          <div className="flex justify-between items-start mb-4">
+                            <h3 className="text-lg font-semibold">{item.name}</h3>
+                            <span className="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                              {item.version}
+                            </span>
                           </div>
-                          <div className="p-4">
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-600">Giá</span>
+
+                          <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">{t('app.account.price')}</span>
                               <span className="font-semibold">{formatCurrency(item.price)}</span>
                             </div>
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-600">Tiết kiệm từ giá sale</span>
-                              <span className="font-semibold text-green-600">
-                                {formatCurrency(item.originalPrice - item.price)}
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">{t('app.product.originalPrice')}</span>
+                              <span className="font-semibold line-through text-gray-500">
+                                {formatCurrency(item.originalPrice)}
                               </span>
                             </div>
-                            {/* Tìm order chứa item hiện tại để hiển thị ngày mua */}
+
                             {purchaseHistory.map((order) => {
                               if (order.items.some((orderItem) => orderItem.id === item.id)) {
                                 return (
@@ -1315,7 +1292,7 @@ export default function AccountPage() {
                                     key={`purchase-date-${order.id}-${item.id}`}
                                     className="flex justify-between items-center mb-2"
                                   >
-                                    <span className="text-gray-600">Ngày mua</span>
+                                    <span className="text-gray-600">{t('app.account.purchaseDate')}</span>
                                     <span className="font-semibold">{order.date}</span>
                                   </div>
                                 );
@@ -1334,7 +1311,7 @@ export default function AccountPage() {
                                     key={`voucher-${order.id}-${item.id}`}
                                     className="flex justify-between items-center mb-2"
                                   >
-                                    <span className="text-gray-600">Tiết kiệm từ voucher</span>
+                                    <span className="text-gray-600">{t('app.account.savedFromVoucher')}</span>
                                     <span className="font-semibold text-green-600">
                                       {formatCurrency(order.couponDiscount)}
                                     </span>
@@ -1343,64 +1320,29 @@ export default function AccountPage() {
                               }
                               return null;
                             })}
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-600">Hạn giấy phép</span>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">{t('app.account.expiryDate')}</span>
                               <span className="font-semibold">{item.expiryDate}</span>
                             </div>
-                            <div className="mt-4 flex space-x-2">
-                              <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm hover:bg-primary-700 transition">
-                                Tải xuống
-                              </button>
-                              <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition">
-                                Xem chi tiết
-                              </button>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">{t('app.account.savedFromSale')}</span>
+                              <span className="font-semibold text-green-600">
+                                {formatCurrency(item.originalPrice - item.price)}
+                              </span>
                             </div>
                           </div>
+
+                          <div className="flex justify-end space-x-2">
+                            <button className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700 transition-colors">
+                              {t('app.account.download')}
+                            </button>
+                            <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors">
+                              {t('app.account.viewDetails')}
+                            </button>
+                          </div>
                         </div>
-                      ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-10 bg-gray-50 rounded-lg">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-16 w-16 mx-auto text-gray-400 mb-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                      />
-                    </svg>
-                    <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Chưa có sản phẩm nào
-                    </h3>
-                    <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                      Bạn chưa mua sản phẩm nào. Khám phá các sản phẩm của chúng tôi để bắt đầu.
-                    </p>
-                    <Link
-                      href="/products"
-                      className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
-                      Khám phá sản phẩm
-                    </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -2106,15 +2048,15 @@ export default function AccountPage() {
 
               {/* Thêm section mã giảm giá */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mt-6">
-                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('app.account.availableCoupons')}</h2>
 
                 {loadingCoupons ? (
                   <div className="flex justify-center py-8">
                     <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
                   </div>
-                ) : availableCoupons.length > 0 ? (
+                ) : publicCoupons.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {availableCoupons.map((coupon) => (
+                    {publicCoupons.map((coupon) => (
                       <div key={coupon.id} className="border rounded-md p-4 bg-white">
                         <div className="flex items-start">
                           <div className="bg-primary-100 p-3 rounded-full mr-3">
@@ -2133,6 +2075,7 @@ export default function AccountPage() {
                               />
                             </svg>
                           </div>
+
                           <div>
                             <h3 className="font-semibold">{coupon.name}</h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
@@ -2144,53 +2087,13 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : publicCoupons.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {publicCoupons.map((coupon) => (
-                      <div key={coupon.id} className="border rounded-md p-4 bg-white">
-                        <div className="flex items-start">
-                          <div className="bg-green-100 p-3 rounded-full mr-3">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6 text-green-600"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                              />
-                            </svg>
-                          </div>
-                          <div>
-                            <h3 className="font-semibold">{coupon.name}</h3>
-                            <div className="text-sm font-mono text-primary-600 mt-1">
-                              {coupon.code}
-                            </div>
-                            <div className="text-xs text-gray-500 mt-1">
-                              {new Date(coupon.startDate).toLocaleDateString('vi-VN')} -{' '}
-                              {new Date(coupon.endDate).toLocaleDateString('vi-VN')}
-                            </div>
-                            {coupon.minOrder && (
-                              <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                                {t('app.account.applyToOrders')} {formatCurrency(coupon.minOrder)}
                               </div>
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}`
-                                : `Giảm ${formatCurrency(coupon.value)}`}
+                                ? `${t('app.account.discount')} ${coupon.value}%${coupon.maxDiscount ? ` (${t('app.account.maxDiscount')} ${formatCurrency(coupon.maxDiscount)})` : ''}`
+                                : `${t('app.account.discount')} ${formatCurrency(coupon.value)}`}
                             </div>
                           </div>
                         </div>
@@ -2199,7 +2102,7 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>Bạn chưa có mã giảm giá nào</p>
+                    <p>{t('app.account.noCoupons')}</p>
                   </div>
                 )}
               </div>

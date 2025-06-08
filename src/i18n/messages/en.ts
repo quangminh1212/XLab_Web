@@ -147,6 +147,23 @@ const messages = {
   'app.account.promotions': 'Promotions and offers',
   'app.account.expiryReminders': 'License expiry reminders',
   'app.account.saveSettings': 'Save Settings',
+  
+  // Coupon and purchased products section
+  'app.account.availableCoupons': 'Available Coupons',
+  'app.account.noCoupons': 'You don\'t have any coupons yet',
+  'app.account.purchasedProducts': 'Purchased Products',
+  'app.account.welcomeNew': 'Welcome New Member',
+  'app.account.applyToOrders': 'Apply to orders from',
+  'app.account.discount': 'Discount',
+  'app.account.maxDiscount': 'maximum',
+  'app.account.price': 'Price',
+  'app.account.savedFromSale': 'Saved from sale price',
+  'app.account.savedFromVoucher': 'Saved from voucher',
+  'app.account.purchaseDate': 'Purchase date',
+  'app.account.expiryDate': 'Expiry date',
+  'app.account.download': 'Download',
+  'app.account.viewDetails': 'View details',
+  
   'app.orders.history': 'Order History',
   'app.vouchers.used': 'Used Vouchers',
 
