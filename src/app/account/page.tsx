@@ -919,8 +919,7 @@ export default function AccountPage() {
                           />
                         </svg>
                         <span>
-                          Yêu cầu hỗ trợ của bạn đã được gửi thành công! Chúng tôi sẽ phản hồi sớm
-                          nhất có thể.
+                          {t('app.account.supportRequestSuccess')}
                         </span>
                       </div>
                       <button
@@ -1153,9 +1152,9 @@ export default function AccountPage() {
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold text-lg text-gray-800">Đăng xuất</h3>
+                      <h3 className="font-semibold text-lg text-gray-800">{t('app.header.logout')}</h3>
                       <p className="text-sm text-gray-600 mt-1">
-                        Kết thúc phiên đăng nhập hiện tại của bạn
+                        {t('app.account.logoutDescription')}
                       </p>
                     </div>
                     <button
@@ -1176,7 +1175,7 @@ export default function AccountPage() {
                           d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                         />
                       </svg>
-                      Đăng xuất
+                      {t('app.header.logout')}
                     </button>
                   </div>
                 </div>
