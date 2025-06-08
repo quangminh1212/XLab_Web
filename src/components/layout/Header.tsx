@@ -7,7 +7,8 @@ import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/contexts/TranslationContext';
+import { AutoTranslate } from '@/hooks/useAutoTranslate';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
 import { HiTranslate } from 'react-icons/hi';
@@ -56,8 +57,8 @@ const Header = () => {
   const languageRef = useRef<HTMLDivElement>(null);
   const languageButtonRef = useRef<HTMLButtonElement>(null);
   
-  // Sử dụng LanguageContext
-  const { language, changeLanguage, t } = useLanguage();
+  // Sử dụng TranslationContext
+  const { language, changeLanguage, translate } = useTranslation();
 
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
@@ -367,36 +368,36 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-              <Link
-                href="/"
-                className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                {t('header.home')}
-              </Link>
-              <Link
-                href="/products"
-                className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                {t('header.products')}
-              </Link>
-              <Link
-                href="/about"
-                className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                {t('header.about')}
-              </Link>
-              <Link
-                href="/contact"
-                className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                {t('header.contact')}
-              </Link>
-              <Link
-                href="/bao-hanh"
-                className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                {t('header.warranty')}
-              </Link>
+                              <Link
+                  href="/"
+                  className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Trang chủ</AutoTranslate>
+                </Link>
+                <Link
+                  href="/products"
+                  className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Sản phẩm</AutoTranslate>
+                </Link>
+                <Link
+                  href="/about"
+                  className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Giới thiệu</AutoTranslate>
+                </Link>
+                <Link
+                  href="/contact"
+                  className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Liên hệ</AutoTranslate>
+                </Link>
+                <Link
+                  href="/bao-hanh"
+                  className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Bảo hành</AutoTranslate>
+                </Link>
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
@@ -682,7 +683,9 @@ const Header = () => {
                     aria-orientation="vertical"
                   >
                     <div className="px-4 py-2 border-b border-gray-100">
-                      <h3 className="text-base font-semibold text-gray-900">{t('header.language')}</h3>
+                      <h3 className="text-base font-semibold text-gray-900">
+                        <AutoTranslate>Ngôn ngữ</AutoTranslate>
+                      </h3>
                     </div>
                     <button
                       onClick={() => {
@@ -771,7 +774,7 @@ const Header = () => {
                     onClick={() => signIn()}
                     className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    Đăng nhập
+                    <AutoTranslate>Đăng nhập</AutoTranslate>
                   </button>
                 )}
 
@@ -796,7 +799,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Tài khoản của tôi
+                      <AutoTranslate>Tài khoản của tôi</AutoTranslate>
                     </Link>
                     <Link
                       href="/orders/history"
@@ -804,7 +807,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Đơn hàng của tôi
+                      <AutoTranslate>Đơn hàng của tôi</AutoTranslate>
                     </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (
@@ -814,7 +817,7 @@ const Header = () => {
                         role="menuitem"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        Quản trị viên
+                        <AutoTranslate>Quản trị viên</AutoTranslate>
                       </Link>
                     )}
                     <button
@@ -825,7 +828,7 @@ const Header = () => {
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                     >
-                      Đăng xuất
+                      <AutoTranslate>Đăng xuất</AutoTranslate>
                     </button>
                   </div>
                 )}
@@ -869,35 +872,35 @@ const Header = () => {
               className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Trang chủ
+              <AutoTranslate>Trang chủ</AutoTranslate>
             </Link>
             <Link
               href="/products"
               className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Sản phẩm
+              <AutoTranslate>Sản phẩm</AutoTranslate>
             </Link>
             <Link
               href="/about"
               className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Giới thiệu
+              <AutoTranslate>Giới thiệu</AutoTranslate>
             </Link>
             <Link
               href="/contact"
               className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Liên hệ
+              <AutoTranslate>Liên hệ</AutoTranslate>
             </Link>
             <Link
               href="/bao-hanh"
               className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
               onClick={() => setIsOpen(false)}
             >
-              Bảo hành
+              <AutoTranslate>Bảo hành</AutoTranslate>
             </Link>
           </nav>
         </div>

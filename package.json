@@ -22,6 +22,7 @@
     "fix:all": "node scripts/fix-all-issues.js"
   },
   "dependencies": {
+    "@google-cloud/translate": "9.1.0",
     "@next/swc-wasm-nodejs": "15.3.2",
     "@radix-ui/react-slot": "1.1.2",
     "@tinymce/tinymce-react": "6.1.0",
