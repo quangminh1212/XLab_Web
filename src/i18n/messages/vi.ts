@@ -103,6 +103,7 @@ const messages = {
   'app.product.price': 'Giá',
   'app.product.originalPrice': 'Giá gốc',
   'app.product.category': 'Danh mục',
+  'app.product.type': 'Loại',
 
   // Grok product specific translations
   'product.grok.detailsTitle': 'Thông tin chi tiết',

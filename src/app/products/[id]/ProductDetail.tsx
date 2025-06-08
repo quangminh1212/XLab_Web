@@ -500,6 +500,26 @@ export default function ProductDetail({ product, locale: propLocale }: { product
     }
   }, [currentLocale]);
 
+  // Hàm để lấy tên tùy chọn theo ngôn ngữ
+  const getLocalizedOptionName = (option: string) => {
+    // Nếu option có dạng "Full - Dùng riêng - 1 Tháng", thì cần phân tách và dịch từng phần
+    if (option.includes(' - ')) {
+      const parts = option.split(' - ');
+      const localizedParts = parts.map(part => {
+        // Kiểm tra và dịch các phần cụ thể
+        if (part === 'Full') return currentLocale === 'vi' ? 'Full' : 'Full';
+        if (part === 'Dùng riêng') return currentLocale === 'vi' ? 'Dùng riêng' : 'Private Use';
+        if (part.includes('Tháng')) {
+          const number = part.replace('Tháng', '').trim();
+          return currentLocale === 'vi' ? `${number} Tháng` : `${number} Month${number === '1' ? '' : 's'}`;
+        }
+        return part; // Giữ nguyên nếu không khớp với bất kỳ trường hợp nào
+      });
+      return localizedParts.join(' - ');
+    }
+    return option; // Trả về nguyên option nếu không có dấu gạch ngang
+  };
+
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -650,7 +670,7 @@ export default function ProductDetail({ product, locale: propLocale }: { product
                                   <div className="w-2 h-2 bg-white rounded-full m-auto"></div>
                                 )}
                               </div>
-                              <span className="font-medium text-gray-900">{version.name}</span>
+                              <span className="font-medium text-gray-900">{getLocalizedOptionName(version.name)}</span>
                             </div>
                             {version.description && (
                               <p className="mt-0.5 text-xs text-gray-500 ml-6">
@@ -670,7 +690,7 @@ export default function ProductDetail({ product, locale: propLocale }: { product
                 {/* Loại sản phẩm */}
                 {product.productOptions && product.productOptions.length > 0 && (
                   <div className="mb-6">
-                    <h4 className="font-medium text-gray-700 text-lg mb-4">Loại</h4>
+                    <h4 className="font-medium text-gray-700 text-lg mb-4">{t('app.product.type')}</h4>
                     <div className="flex flex-wrap gap-4">
                       {productOptions.map((option, index) => (
                         <div
@@ -678,7 +698,7 @@ export default function ProductDetail({ product, locale: propLocale }: { product
                           onClick={() => setSelectedOption(option)}
                           className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
                         >
-                          <span className="text-gray-900 font-medium text-sm mr-2">{option}</span>
+                          <span className="text-gray-900 font-medium text-sm mr-2">{getLocalizedOptionName(option)}</span>
                           {product.optionPrices && product.optionPrices[option] && (
                             <span className="text-primary-600 font-medium text-sm">
                               {formatCurrency(product.optionPrices[option].price)}

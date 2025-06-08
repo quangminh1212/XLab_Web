@@ -103,6 +103,7 @@ const messages = {
   'app.product.price': 'Price',
   'app.product.originalPrice': 'Original Price',
   'app.product.category': 'Category',
+  'app.product.type': 'Type',
 
   // Account related
   'app.account.myAccount': 'My Account',
