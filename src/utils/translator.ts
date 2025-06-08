@@ -24,6 +24,15 @@ const simpleDictionary: Record<string, Record<string, string>> = {
     'Giỏ hàng': 'Cart',
     'Tiếng Việt': 'Vietnamese',
     'Tiếng Anh': 'English',
+    'Đã thêm vào giỏ hàng': 'Added to cart',
+    'Mua sắm': 'Shopping',
+    'Giá': 'Price',
+    'Số lượng': 'Quantity',
+    'Đánh giá': 'Reviews',
+    'Đánh giá sản phẩm': 'Product reviews',
+    'Viết đánh giá': 'Write a review',
+    'Gửi đánh giá': 'Submit review',
+    'Đánh giá của bạn': 'Your review',
     
     // Mua hàng và thanh toán
     'Thanh toán': 'Checkout',
@@ -89,6 +98,27 @@ const simpleDictionary: Record<string, Record<string, string>> = {
     'Giải pháp phần mềm': 'Software solutions',
     '5+': '5+',
     'Năm kinh nghiệm': 'Years of experience',
+
+    // Thêm các phần còn thiếu dịch
+    'Phần mềm': 'Software',
+    'Dịch vụ': 'Services',
+    'Xem tất cả': 'View all',
+    'ChatGPT': 'ChatGPT',
+    'Grok': 'Grok',
+    'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi khác nhau, hỗ trợ nhiều ngôn ngữ khác nhau, thông minh và hiệu quả': 
+    'ChatGPT is an extremely powerful AI chatbot that can answer many different questions, supports multiple languages, and is intelligent and efficient',
+    'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định thông minh':
+    'Grok AI helps to automatically analyze and process big data quickly, supporting intelligent decision making',
+    'Về XLab': 'About XLab',
+    'Sản phẩm trong nước': 'Domestic Products',
+    'Phát triển bởi đội ngũ kỹ sư Việt Nam': 'Developed by Vietnamese engineers',
+    'Hỗ trợ 24/7': '24/7 Support',
+    'Đội ngũ hỗ trợ tận tâm': 'Dedicated support team',
+    'Tìm hiểu thêm': 'Learn more',
+    'XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.':
+    'XLab is a platform that provides software solutions with advanced AI integration to help users improve work efficiency and daily life.',
+    'Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.':
+    'Our mission is to bring Vietnamese people the opportunity to access tools for work, study, and entertainment at affordable prices and international quality.',
   },
 };
 

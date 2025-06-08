@@ -112,14 +112,27 @@ export const TranslateWrapper: React.FC<{ children: ReactNode }> = ({ children }
  */
 function processChildren(children: ReactNode): ReactNode {
   // Nếu là string, thì dịch nó
-  if (typeof children === 'string') {
+  if (typeof children === 'string' && children.trim() !== '') {
     return <AutoTranslate>{children}</AutoTranslate>;
+  }
+  
+  // Nếu là number, boolean, null hoặc undefined, trả về nguyên vẹn
+  if (
+    typeof children === 'number' || 
+    typeof children === 'boolean' || 
+    children === null || 
+    children === undefined ||
+    (typeof children === 'string' && children.trim() === '')
+  ) {
+    return children;
   }
   
   // Nếu là array, xử lý từng phần tử
   if (Array.isArray(children)) {
     return children.map((child, index) => (
-      <React.Fragment key={index}>{processChildren(child)}</React.Fragment>
+      <React.Fragment key={`auto-translate-${index}`}>
+        {processChildren(child)}
+      </React.Fragment>
     ));
   }
   
@@ -134,18 +147,34 @@ function processChildren(children: ReactNode): ReactNode {
     }
     
     // Xử lý các children
-    if (children.props && children.props.children) {
+    const newChildren = children.props && children.props.children 
+      ? processChildren(children.props.children) 
+      : children.props?.children;
+    
+    // Xử lý props đặc biệt như dangerouslySetInnerHTML
+    if (children.props && children.props.dangerouslySetInnerHTML) {
+      const html = children.props.dangerouslySetInnerHTML.__html;
       return React.cloneElement(
         children,
-        { ...children.props },
-        processChildren(children.props.children)
+        { 
+          ...children.props,
+          dangerouslySetInnerHTML: {
+            __html: html, // Giữ nguyên vì đây là HTML không thể xử lý bằng processChildren
+          }
+        }
       );
     }
     
-    return children;
+    // Tạo element mới với children đã được dịch
+    return React.cloneElement(
+      children,
+      { ...children.props },
+      newChildren
+    );
   }
   
-  // Trường hợp khác (null, undefined, boolean, number)
+  // Trường hợp khác
+  console.warn('Unhandled node type in processChildren:', children);
   return children;
 }
 
@@ -154,6 +183,15 @@ function processChildren(children: ReactNode): ReactNode {
  */
 export const NoTranslate: React.FC<{ children: ReactNode }> = ({ children }) => {
   return <span data-no-translate="true">{children}</span>;
+};
+
+// Hàm chuyển đổi mảng children thành mảng mới có thể được dịch
+export const translateArray = (items: ReactNode[]): ReactNode[] => {
+  return items.map((item, index) => (
+    <React.Fragment key={`translated-item-${index}`}>
+      {processChildren(item)}
+    </React.Fragment>
+  ));
 };
 
 export default useAutoTranslate; 

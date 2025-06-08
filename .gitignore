@@ -108,3 +108,4 @@ run-fixed.bat
 /public/translation-cache/
 data/users/
 data/translations/
+.translation-cache/

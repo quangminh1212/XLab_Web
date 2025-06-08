@@ -674,45 +674,61 @@ const Header = () => {
                   <HiTranslate className="h-4 w-4 sm:h-5 sm:w-5" />
                 </button>
                 
-                {/* Language Dropdown */}
-                {isLanguageOpen && (
-                  <div
-                    className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-xl py-2 z-10"
-                    tabIndex={0}
-                    role="menu"
-                    aria-orientation="vertical"
-                  >
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <h3 className="text-base font-semibold text-gray-900">
-                        <AutoTranslate>Ngôn ngữ</AutoTranslate>
-                      </h3>
-                    </div>
-                    <button
-                      onClick={() => {
-                        changeLanguage('vi');
-                        setIsLanguageOpen(false);
-                      }}
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        language === 'vi' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                      role="menuitem"
-                    >
-                      Tiếng Việt
-                    </button>
-                    <button
-                      onClick={() => {
-                        changeLanguage('en');
-                        setIsLanguageOpen(false);
-                      }}
-                      className={`block w-full text-left px-4 py-2 text-sm ${
-                        language === 'en' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
-                      }`}
-                      role="menuitem"
-                    >
-                      English
-                    </button>
-                  </div>
-                )}
+                                    {/* Language Dropdown */}
+                    {isLanguageOpen && (
+                      <div
+                        className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-xl py-2 z-10"
+                        tabIndex={0}
+                        role="menu"
+                        aria-orientation="vertical"
+                      >
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <h3 className="text-base font-semibold text-gray-900">
+                            <AutoTranslate>Ngôn ngữ</AutoTranslate>
+                          </h3>
+                        </div>
+                        <button
+                          onClick={() => {
+                            // Hiệu ứng chuyển ngôn ngữ
+                            document.body.classList.add('initial-loading');
+                            setTimeout(() => {
+                              changeLanguage('vi');
+                              setIsLanguageOpen(false);
+                              setTimeout(() => {
+                                document.body.classList.remove('initial-loading');
+                                document.body.classList.add('loaded');
+                              }, 300);
+                            }, 100);
+                          }}
+                          className={`block w-full text-left px-4 py-2 text-sm ${
+                            language === 'vi' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                          role="menuitem"
+                        >
+                          Tiếng Việt
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Hiệu ứng chuyển ngôn ngữ
+                            document.body.classList.add('initial-loading');
+                            setTimeout(() => {
+                              changeLanguage('en');
+                              setIsLanguageOpen(false);
+                              setTimeout(() => {
+                                document.body.classList.remove('initial-loading');
+                                document.body.classList.add('loaded');
+                              }, 300);
+                            }, 100);
+                          }}
+                          className={`block w-full text-left px-4 py-2 text-sm ${
+                            language === 'en' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                          role="menuitem"
+                        >
+                          English
+                        </button>
+                      </div>
+                    )}
               </div>
               
               {/* Cart Icon */}
