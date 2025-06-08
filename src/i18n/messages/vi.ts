@@ -66,6 +66,11 @@ const messages = {
   'app.common.copyToClipboard': 'Sao chép',
   'app.common.viewAll': 'Xem tất cả',
   
+  // Notifications
+  'app.notifications.markAllAsRead': 'Đánh dấu tất cả đã đọc',
+  'app.notifications.noNotifications': 'Không có thông báo nào',
+  'app.notifications.viewAll': 'Xem tất cả thông báo',
+  
   'app.auth.email': 'Email',
   'app.auth.password': 'Mật khẩu',
   'app.auth.confirmPassword': 'Xác nhận mật khẩu',

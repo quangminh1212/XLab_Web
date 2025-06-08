@@ -262,6 +262,11 @@ const messages = {
   'product.grok.detailsTitle': 'Detailed Information',
   'product.grok.showMore': 'Show more',
   'product.grok.showLess': 'Show less',
+
+  // Notifications
+  'app.notifications.markAllAsRead': 'Mark all as read',
+  'app.notifications.noNotifications': 'No notifications',
+  'app.notifications.viewAll': 'View all notifications',
 };
 
 export default messages; 

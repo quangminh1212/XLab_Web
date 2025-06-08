@@ -428,12 +428,12 @@ const Header = () => {
                     aria-orientation="vertical"
                   >
                     <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                      <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
+                      <h3 className="text-base font-semibold text-gray-900">{t('app.header.vouchers')}</h3>
                       <Link
                         href="/vouchers/public"
                         className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                       >
-                        Xem tất cả
+                        {t('app.common.viewAll')}
                       </Link>
                     </div>
 
@@ -585,18 +585,15 @@ const Header = () => {
                       aria-orientation="vertical"
                     >
                       <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                        <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
-                        {unreadCount > 0 && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              markAllAsRead();
-                            }}
-                            className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
-                          >
-                            Đánh dấu tất cả đã đọc
-                          </button>
-                        )}
+                        <h3 className="text-base font-semibold text-gray-900">
+                          {t('app.header.notifications')}
+                        </h3>
+                        <button
+                          onClick={markAllAsRead}
+                          className="text-xs text-primary-600 hover:text-primary-700"
+                        >
+                          {t('app.notifications.markAllAsRead')}
+                        </button>
                       </div>
 
                       <div className="max-h-80 overflow-y-auto">
@@ -620,7 +617,7 @@ const Header = () => {
                         ) : (
                           <div className="px-4 py-6 text-center">
                             <p className="text-xs sm:text-sm text-gray-500">
-                              Không có thông báo nào
+                              {t('app.notifications.noNotifications')}
                             </p>
                           </div>
                         )}
@@ -633,7 +630,7 @@ const Header = () => {
                           onClick={() => setIsNotificationOpen(false)}
                           role="menuitem"
                         >
-                          Xem tất cả thông báo
+                          {t('app.notifications.viewAll')}
                         </Link>
                       </div>
                     </div>
@@ -725,7 +722,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Tài khoản của tôi
+                      {t('app.account.myAccount')}
                     </Link>
                     <Link
                       href="/orders/history"
@@ -733,7 +730,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Đơn hàng của tôi
+                      {t('app.orders.history')}
                     </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (
@@ -743,7 +740,7 @@ const Header = () => {
                         role="menuitem"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        Quản trị viên
+                        {t('app.header.admin')}
                       </Link>
                     )}
                     <button
@@ -754,7 +751,7 @@ const Header = () => {
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                     >
-                      Đăng xuất
+                      {t('app.header.logout')}
                     </button>
                   </div>
                 )}
