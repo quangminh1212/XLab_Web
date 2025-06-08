@@ -34,7 +34,7 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { language, t } = useLanguage();
+  const { language, t, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -248,6 +248,11 @@ const Header = () => {
   // Use our new formatDate function with language context
   const dateFormatter = (dateString: string) => {
     return formatDate(dateString, language);
+  };
+
+  // Toggle language
+  const toggleLanguage = () => {
+    setLanguage(language === 'vi' ? 'en' : 'vi');
   };
 
   const handleCopyVoucher = (code: string) => {

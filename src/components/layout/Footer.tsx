@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden">
@@ -89,7 +91,7 @@ export default function Footer() {
           {/* Giới thiệu */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Về XLab</span>
+              <span className="relative z-10">{t('footer.about')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <div className="space-y-3 text-center sm:text-left">
@@ -118,7 +120,7 @@ export default function Footer() {
           {/* Sản phẩm & Dịch vụ + Điều hướng */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Sản phẩm & Dịch vụ</span>
+              <span className="relative z-10">{t('footer.company')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
@@ -128,7 +130,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Sản phẩm
+                  {t('nav.products')}
                 </Link>
               </li>
               <li>
@@ -137,7 +139,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Dịch vụ
+                  {t('footer.services')}
                 </Link>
               </li>
               <li>
@@ -146,7 +148,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Đánh giá
+                  {t('footer.testimonials')}
                 </Link>
               </li>
             </ul>
@@ -154,7 +156,7 @@ export default function Footer() {
             {/* Điều hướng */}
             <div className="pt-4 border-t border-slate-700 w-full">
               <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
-                Điều hướng
+                {t('footer.navigation')}
               </h4>
               <div className="space-y-3 text-center sm:text-left">
                 <Link
@@ -162,7 +164,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Trang chủ
+                  {t('nav.home')}
                 </Link>
                 <br />
                 <Link
@@ -170,7 +172,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Giới thiệu
+                  {t('nav.about')}
                 </Link>
                 <br />
                 <Link
@@ -178,7 +180,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Bảng giá
+                  {t('footer.pricing')}
                 </Link>
               </div>
             </div>
@@ -187,7 +189,7 @@ export default function Footer() {
           {/* Thông tin liên hệ */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Liên hệ</span>
+              <span className="relative z-10">{t('footer.contact')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-3 sm:space-y-4 text-center sm:text-left mb-4">
@@ -257,127 +259,39 @@ export default function Footer() {
                   {siteConfig.contact.email}
                 </span>
               </li>
-              <li className="flex items-start justify-center sm:justify-start group">
-                <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 mr-2.5 group-hover:from-violet-500/30 group-hover:to-purple-500/30 transition-all duration-300 border border-violet-500/20">
-                  <svg
-                    className="h-4 w-4 sm:h-5 sm:w-5 text-violet-400 flex-shrink-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <span className="text-xs sm:text-sm text-slate-400">
-                  {siteConfig.contact.workingHours}
-                </span>
-              </li>
             </ul>
-          </div>
-        </div>
 
-        {/* Divider với gradient đẹp */}
-        <div className="relative mt-14 mb-7">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full h-px bg-gradient-to-r from-transparent via-slate-600 to-transparent"></div>
-          </div>
-          <div className="relative flex justify-center">
-            <div className="px-6 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
-              <div className="w-2 h-2 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom section - Cải thiện layout */}
-        <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-10 sm:mt-14">
-          <div className="text-center sm:text-left">
-            <p className="text-xs sm:text-sm text-slate-400">
-              &copy; {currentYear} <span className="text-white font-medium">{siteConfig.name}</span>
-              . Bản quyền thuộc về công ty{' '}
-              <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-6">
-            <span className="text-xs sm:text-sm text-slate-400 font-medium">
-              Chấp nhận thanh toán
-            </span>
-            <div className="flex items-center space-x-2 sm:space-x-2.5">
-              {/* Visa */}
-              <div className="group relative">
-                <div className="w-9 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-8 h-5">
-                    <path
-                      fill="#1565C0"
-                      d="M45,35c0,2.209-1.791,4-4,4H7c-2.209,0-4-1.791-4-4V13c0-2.209,1.791-4,4-4h34c2.209,0,4,1.791,4,4V35z"
-                    />
-                    <path
-                      fill="#FFF"
-                      d="M15.186 19l-2.626 7.832c0 0-.667-3.313-.733-3.729-1.495-3.411-3.701-3.221-3.701-3.221L10.726 30v-.002h3.161L18.258 19H15.186zM17.689 30L20.56 30 22.296 19 19.389 19zM38.008 19h-3.021l-4.71 11h2.852l.588-1.571h3.596L37.619 30h2.613L38.008 19zM34.513 26.328l1.563-4.157.818 4.157H34.513zM26.369 22.206c0-.606.498-1.057 1.926-1.057.928 0 1.991.177 1.991.177l.355-2.073c0 0-1.113-.393-2.887-.393-2.545 0-4.482.674-4.482 3.07 0 2.417 2.627 2.215 2.627 3.329 0 .394-.333.82-1.441.82-1.721 0-3.014-.517-3.014-.517l-.368 2.055c0 0 1.357.591 3.329.591 2.453 0 4.34-.854 4.34-3.214C28.746 22.966 26.369 23.046 26.369 22.206z"
-                    />
-                  </svg>
-                </div>
-              </div>
-
-              {/* MasterCard */}
-              <div className="group relative">
-                <div className="w-9 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-8 h-5">
-                    <path fill="#FF9800" d="M32 10A14 14 0 1 0 32 38A14 14 0 1 0 32 10Z" />
-                    <path fill="#D50000" d="M16 10A14 14 0 1 0 16 38A14 14 0 1 0 16 10Z" />
-                    <path
-                      fill="#FFC400"
-                      d="M18,24c0,4.755,2.376,8.95,6,11.48c3.624-2.53,6-6.725,6-11.48s-2.376-8.95-6-11.48 C20.376,15.05,18,19.245,18,24z"
-                    />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Momo */}
-              <div className="group relative">
-                <div className="w-9 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
-                  <svg viewBox="0 0 48 48" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="24" cy="24" r="20" fill="#ae2070" />
-                    <path
-                      d="M22.11,15.08a5.83,5.83,0,0,0-5.18,3.26A5.83,5.83,0,0,0,11.44,21a3.6,3.6,0,0,0-3.36,3.8v6.52A1.44,1.44,0,0,0,9.52,32.8h8.51A1.44,1.44,0,0,0,19.47,31V25.33a.86.86,0,0,1,1.72,0V31A1.44,1.44,0,0,0,22.64,32.8h8.51a1.44,1.44,0,0,0,1.44-1.44V24.84a3.6,3.6,0,0,0-3.36-3.8A5.83,5.83,0,0,0,23.74,18,5.83,5.83,0,0,0,22.11,15.08Z"
-                      fill="white"
-                    />
-                  </svg>
-                </div>
-              </div>
-
-              {/* ZaloPay */}
-              <div className="group relative">
-                <div className="w-9 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
-                  <svg viewBox="0 0 48 48" className="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="24" cy="24" r="20" fill="#005ec2" />
-                    <path
-                      d="M34.5,18.5H13.5v11h21V18.5z M31.8,26.8H16.2v-5.6h15.6V26.8z"
-                      fill="white"
-                    />
-                    <circle cx="24" cy="24" r="2.5" fill="#005ec2" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Bank Transfer */}
-              <div className="group relative">
-                <div className="w-9 h-6 sm:w-11 sm:h-7 bg-white/95 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 border border-slate-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-                    <path
-                      fill="#1976D2"
-                      d="M2,15V12H22V15H2M2,19V16H6V19H2M7,19V16H11V19H7M12,19V16H16V19H12M17,19V16H22V19H17M2,11V8H22V11H2M2,7V4H22V7H2Z"
-                    />
-                  </svg>
-                </div>
+            {/* Pháp lý */}
+            <div className="pt-4 border-t border-slate-700 w-full">
+              <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
+                {t('footer.legal')}
+              </h4>
+              <div className="space-y-3 text-center sm:text-left">
+                <Link
+                  href="/terms"
+                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
+                >
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  {t('footer.terms')}
+                </Link>
+                <br />
+                <Link
+                  href="/privacy"
+                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
+                >
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  {t('footer.privacy')}
+                </Link>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Copyright Bar */}
+        <div className="mt-10 pt-5 border-t border-slate-800 text-center">
+          <p className="text-slate-400 text-xs sm:text-sm">
+            © {currentYear} {siteConfig.legal.companyName}. {t('footer.rights')}
+          </p>
         </div>
       </div>
     </footer>

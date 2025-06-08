@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
 import { categories } from '@/data/mockData';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Helper function to lấy URL ảnh hợp lệ
 const getValidImageUrl = (product: any): string => {
@@ -31,6 +32,7 @@ const getValidImageUrl = (product: any): string => {
 };
 
 function HomePage() {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -79,13 +81,13 @@ function HomePage() {
               <span className="text-primary-500">Lab</span>
             </h1>
             <p className="text-responsive-lg text-gray-600 max-w-3xl mb-6 sm:mb-8">
-              Tối ưu hiệu quả, tối thiểu chi phí!
+              {t('home.tagline')}
             </p>
 
             <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl">
               <input
                 type="text"
-                placeholder="Tìm kiếm phần mềm, ứng dụng..."
+                placeholder={t('home.search.placeholder')}
                 className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800 text-sm sm:text-base"
               />
               <button className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
@@ -133,21 +135,19 @@ function HomePage() {
                       </svg>
                     </div>
                   </div>
-                  <h2 className="heading-3 mb-3 text-gray-800 text-center">Về XLab</h2>
+                  <h2 className="heading-3 mb-3 text-gray-800 text-center">{t('home.about.title')}</h2>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp
-                    người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.
+                    {t('home.about.desc1')}
                   </p>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ
-                    phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
+                    {t('home.about.desc2')}
                   </p>
                   <div className="mt-4">
                     <Link
                       href="/about"
                       className="w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-3 sm:px-4 rounded-lg transition-colors flex items-center justify-center text-responsive-sm"
                     >
-                      Tìm hiểu thêm
+                      {t('home.about.learnMore')}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-3 w-3 sm:h-4 sm:w-4 ml-1"
@@ -181,8 +181,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">Sản phẩm trong nước</h3>
-                  <p className="text-sm text-gray-600">Phát triển bởi đội ngũ kỹ sư Việt Nam</p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.feature.domesticProduct')}</h3>
+                  <p className="text-sm text-gray-600">{t('home.feature.domesticDesc')}</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -195,8 +195,8 @@ function HomePage() {
                       <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">Hỗ trợ 24/7</h3>
-                  <p className="text-sm text-gray-600">Đội ngũ hỗ trợ tận tâm</p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.feature.support')}</h3>
+                  <p className="text-sm text-gray-600">{t('home.feature.supportDesc')}</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -213,8 +213,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">Bảo mật cao</h3>
-                  <p className="text-sm text-gray-600">Dữ liệu được mã hóa an toàn</p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.feature.security')}</h3>
+                  <p className="text-sm text-gray-600">{t('home.feature.securityDesc')}</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -232,8 +232,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">Giá cả hợp lý</h3>
-                  <p className="text-sm text-gray-600">Nhiều lựa chọn phù hợp mọi ngân sách</p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.feature.price')}</h3>
+                  <p className="text-sm text-gray-600">{t('home.feature.priceDesc')}</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -250,8 +250,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">Tích hợp AI</h3>
-                  <p className="text-sm text-gray-600">Công nghệ AI tiên tiến hỗ trợ bạn</p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.feature.ai')}</h3>
+                  <p className="text-sm text-gray-600">{t('home.feature.aiDesc')}</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -270,15 +270,15 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">Cập nhật liên tục</h3>
-                  <p className="text-sm text-gray-600">Luôn được cập nhật tính năng mới</p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.feature.updates')}</h3>
+                  <p className="text-sm text-gray-600">{t('home.feature.updatesDesc')}</p>
                 </div>
               </div>
             </section>
 
             {/* Thống kê - Phần mới */}
             <section className="bg-white rounded-xl shadow-sm p-4 mb-3">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Thành tựu của chúng tôi</h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-4">{t('home.stats.title')}</h2>
 
               <div className="space-y-4">
                 <div className="flex items-center">
@@ -294,7 +294,7 @@ function HomePage() {
                   </div>
                   <div>
                     <div className="font-bold text-xl text-gray-900">10,000+</div>
-                    <div className="text-xs text-gray-600">Khách hàng tin dùng</div>
+                    <div className="text-xs text-gray-600">{t('home.stats.customers')}</div>
                   </div>
                 </div>
 
@@ -315,7 +315,7 @@ function HomePage() {
                   </div>
                   <div>
                     <div className="font-bold text-xl text-gray-900">30+</div>
-                    <div className="text-xs text-gray-600">Giải pháp phần mềm</div>
+                    <div className="text-xs text-gray-600">{t('home.stats.solutions')}</div>
                   </div>
                 </div>
 
@@ -337,7 +337,7 @@ function HomePage() {
                   </div>
                   <div>
                     <div className="font-bold text-xl text-gray-900">5+</div>
-                    <div className="text-xs text-gray-600">Năm kinh nghiệm</div>
+                    <div className="text-xs text-gray-600">{t('home.stats.experience')}</div>
                   </div>
                 </div>
               </div>
@@ -350,12 +350,12 @@ function HomePage() {
             <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-2xl font-bold text-gray-800">Phần mềm</h2>
+                  <h2 className="text-2xl font-bold text-gray-800">{t('home.software.title')}</h2>
                   <Link
                     href="/products"
                     className="text-primary-600 hover:text-primary-800 transition-colors text-base font-medium"
                   >
-                    Xem tất cả
+                    {t('home.viewAll')}
                   </Link>
                 </div>
 
@@ -399,9 +399,9 @@ function HomePage() {
                           d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                         />
                       </svg>
-                      <h3 className="text-base font-medium text-gray-700 mb-1">Chưa có phần mềm</h3>
+                      <h3 className="text-base font-medium text-gray-700 mb-1">{t('home.noSoftware.title')}</h3>
                       <p className="text-gray-500 max-w-lg mx-auto text-sm">
-                        Chúng tôi sẽ sớm cập nhật các phần mềm.
+                        {t('home.noSoftware.desc')}
                       </p>
                     </div>
                   </div>
