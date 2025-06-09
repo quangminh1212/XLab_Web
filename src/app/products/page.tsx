@@ -7,8 +7,10 @@ import { useSearchParams } from 'next/navigation';
 import ProductImage from '@/components/product/ProductImage';
 import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/common/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ProductsPage() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -33,7 +35,7 @@ export default function ProductsPage() {
         const response = await fetch('/api/products');
 
         if (!response.ok) {
-          throw new Error('Không thể tải sản phẩm');
+          throw new Error(t('products.loadError'));
         }
 
         const result = await response.json();
@@ -42,22 +44,22 @@ export default function ProductsPage() {
           setProducts(result.data);
         } else {
           setProducts([]);
-          setError('Định dạng dữ liệu không hợp lệ');
+          setError(t('products.invalidData'));
         }
         setLoading(false);
       } catch (err: any) {
-        setError(err.message || 'Đã xảy ra lỗi');
+        setError(err.message || t('products.error'));
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [t]);
 
   // Update title when component is rendered
   useEffect(() => {
-    document.title = 'Phần mềm | XLab - Phần mềm và Dịch vụ';
-  }, []);
+    document.title = t('products.pageTitle');
+  }, [t]);
 
   // Lọc tất cả sản phẩm (bao gồm phần mềm và dịch vụ)
   const allProducts = Array.isArray(products) ? products : [];
@@ -186,7 +188,7 @@ export default function ProductsPage() {
       <div className="py-12 flex justify-center">
         <div className="flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-gray-600">Đang tải sản phẩm...</p>
+          <p className="text-gray-600">{t('products.loading')}</p>
         </div>
       </div>
     );
@@ -198,7 +200,7 @@ export default function ProductsPage() {
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-16 w-16 mx-auto text-red-500 mb-4"
+            className="h-16 w-16 text-red-500 mx-auto mb-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -207,12 +209,12 @@ export default function ProductsPage() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Không thể tải sản phẩm</h2>
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('products.errorTitle')}</h3>
           <p className="text-gray-600 mb-6">{error}</p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <button
               onClick={() => window.location.reload()}
               className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors inline-flex items-center justify-center"
@@ -231,7 +233,7 @@ export default function ProductsPage() {
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                 />
               </svg>
-              Thử lại
+              {t('products.tryAgain')}
             </button>
             <Link
               href="/"
@@ -251,7 +253,7 @@ export default function ProductsPage() {
                   d="M3 12l2-2m0 0l7-7 7 7m-7-7v14"
                 />
               </svg>
-              Về trang chủ
+              {t('products.backToHome')}
             </Link>
           </div>
         </div>
@@ -263,11 +265,11 @@ export default function ProductsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
-          <h1 className="text-3xl font-bold mb-2">Sản phẩm</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('products.title')}</h1>
           
           <div className="mb-6">
             <p className="text-sm md:text-base text-gray-600">
-              Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
+              {t('products.subtitle')}
             </p>
           </div>
 
@@ -293,7 +295,7 @@ export default function ProductsPage() {
                       d="M4 6h16M4 10h16M4 14h16M4 18h16"
                     />
                   </svg>
-                  Tất cả
+                  {t('products.all')}
                 </div>
               </button>
               <button
@@ -315,7 +317,7 @@ export default function ProductsPage() {
                       d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  Phần mềm
+                  {t('products.software')}
                 </div>
               </button>
               <button
@@ -337,7 +339,7 @@ export default function ProductsPage() {
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  Dịch vụ
+                  {t('products.service')}
                 </div>
               </button>
             </div>
@@ -349,11 +351,11 @@ export default function ProductsPage() {
               {/* Filters bar */}
               <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
                 <div className="text-sm md:text-base text-gray-600">
-                  Hiển thị {sortedProducts.length} kết quả
+                  {t('products.showing', { count: sortedProducts.length })}
                 </div>
                 <div className="flex items-center space-x-2">
                   <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
-                    Sắp xếp:
+                    {t('products.sortBy')}:
                   </label>
                   <select
                     id="sort"
@@ -361,10 +363,10 @@ export default function ProductsPage() {
                     value={sort}
                     onChange={(e) => setSort(e.target.value)}
                   >
-                    <option value="newest">Mới nhất</option>
-                    <option value="price-low">Giá thấp đến cao</option>
-                    <option value="price-high">Giá cao đến thấp</option>
-                    <option value="popular">Phổ biến nhất</option>
+                    <option value="newest">{t('products.sortNewest')}</option>
+                    <option value="price-low">{t('products.sortPriceLow')}</option>
+                    <option value="price-high">{t('products.sortPriceHigh')}</option>
+                    <option value="popular">{t('products.sortPopular')}</option>
                   </select>
                 </div>
               </div>

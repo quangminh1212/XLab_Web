@@ -12,6 +12,7 @@ import { Product as UIProduct } from '@/types';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import RelatedProducts from '../../../components/product/RelatedProducts';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Tải động component VoiceTypingDemo chỉ khi cần (khi sản phẩm là VoiceTyping)
 const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
@@ -21,9 +22,10 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
+  const { t } = useLanguage();
   return (
     <div className="mt-10">
-      <h2 className="text-2xl font-semibold mb-6">Thông tin chi tiết</h2>
+      <h2 className="text-2xl font-semibold mb-6">{t('product.details')}</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
         <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
           <RichTextContent content={description} className="product-description" />
@@ -85,6 +87,8 @@ const ProductSpecifications = ({
 }: {
   specifications?: { key: string; value: string }[] | { [key: string]: string };
 }) => {
+  const { t } = useLanguage();
+  
   if (!specifications) return null;
 
   // Convert specifications từ object sang array nếu cần
@@ -96,7 +100,7 @@ const ProductSpecifications = ({
 
   return (
     <div className="mt-10">
-      <h2 className="text-2xl font-semibold mb-6">Thông số kỹ thuật</h2>
+      <h2 className="text-2xl font-semibold mb-6">{t('product.specifications')}</h2>
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <table className="w-full border-collapse">
           <tbody>
@@ -117,6 +121,8 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
+  const { t } = useLanguage();
+  
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
     const mainElement = document.querySelector('main');
@@ -127,8 +133,8 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
   // Update document title khi component được render
   useEffect(() => {
-    document.title = `${product.name} | XLab - Phần mềm và Dịch vụ`;
-  }, [product.name]);
+    document.title = `${product.name} | ${t('product.metaTitle')}`;
+  }, [product.name, t]);
 
   // State để theo dõi số lượt xem
   const [viewCount, setViewCount] = useState<number>(0);
@@ -400,7 +406,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <p>Đang tải thông tin sản phẩm...</p>
+        <p>{t('product.loading')}</p>
       </div>
     );
   }
