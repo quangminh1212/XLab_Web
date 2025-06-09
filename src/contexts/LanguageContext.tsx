@@ -311,6 +311,14 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.customers': '500+ Khách hàng',
     'footer.years': '5+ Năm',
     'footer.support': '24/7 Hỗ trợ',
+
+    // Notifications
+    'notifications.title': 'Thông báo',
+    'notifications.markAllRead': 'Đánh dấu tất cả đã đọc',
+    'notifications.noNotifications': 'Không có thông báo',
+    
+    // Orders
+    'orders.myOrders': 'Đơn hàng của tôi',
   },
   en: {
     // Header
@@ -581,6 +589,14 @@ const translations: Record<Language, Record<string, string>> = {
     'warranty.missionDescription': 'XLab\'s mission is to provide Vietnamese people with access to tools for work, study, and entertainment at reasonable prices and international quality.',
     'warranty.contactNow': 'Contact Now',
     'warranty.faq': 'Frequently Asked Questions',
+
+    // Notifications
+    'notifications.title': 'Notifications',
+    'notifications.markAllRead': 'Mark all as read',
+    'notifications.noNotifications': 'No notifications',
+    
+    // Orders
+    'orders.myOrders': 'My Orders',
   },
 };
 

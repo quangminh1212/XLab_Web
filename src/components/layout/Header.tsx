@@ -575,7 +575,7 @@ const Header = () => {
                       aria-orientation="vertical"
                     >
                       <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                        <h3 className="text-base font-semibold text-gray-900">Thông báo</h3>
+                        <h3 className="text-base font-semibold text-gray-900">{t('notifications.title')}</h3>
                         {unreadCount > 0 && (
                           <button
                             onClick={(e) => {
@@ -584,7 +584,7 @@ const Header = () => {
                             }}
                             className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                           >
-                            Đánh dấu tất cả đã đọc
+                            {t('notifications.markAllRead')}
                           </button>
                         )}
                       </div>
@@ -696,7 +696,7 @@ const Header = () => {
                     onClick={() => signIn()}
                     className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    Đăng nhập
+                    {t('auth.signIn')}
                   </button>
                 )}
 
@@ -721,7 +721,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Tài khoản của tôi
+                      {t('nav.account')}
                     </Link>
                     <Link
                       href="/orders/history"
@@ -729,7 +729,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Đơn hàng của tôi
+                      {t('orders.myOrders')}
                     </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (
@@ -739,7 +739,7 @@ const Header = () => {
                         role="menuitem"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        Quản trị viên
+                        {t('nav.admin')}
                       </Link>
                     )}
                     <button
@@ -750,7 +750,7 @@ const Header = () => {
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                     >
-                      Đăng xuất
+                      {t('auth.signOut')}
                     </button>
                   </div>
                 )}
