@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { siteConfig } from '@/config/siteConfig';
 import Link from 'next/link';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function WarrantyPage() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -46,7 +48,7 @@ export default function WarrantyPage() {
         problem: '',
       });
     } catch (error) {
-      setSubmitError('Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại sau.');
+      setSubmitError(t('warranty.formError'));
       console.error('Form submission error:', error);
     } finally {
       setIsSubmitting(false);
@@ -58,9 +60,9 @@ export default function WarrantyPage() {
       {/* Page Header */}
       <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Bảo Hành</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('warranty.title')}</h1>
           <p className="text-xl max-w-3xl">
-            XLab sẵn sàng hỗ trợ tư vấn và xử lý bảo hành suốt 365 ngày!
+            {t('warranty.subtitle')}
           </p>
         </div>
       </section>
@@ -71,13 +73,12 @@ export default function WarrantyPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Chính sách bảo hành */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">Chính sách bảo hành</h2>
+              <h2 className="text-2xl font-bold mb-6">{t('warranty.policyTitle')}</h2>
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
-                    <span className="font-medium block mb-1">Thời gian bảo hành</span>
-                    XLab cam kết bảo hành cho tất cả các tài khoản và phần mềm trong thời hạn{' '}
-                    <strong>365 ngày</strong> kể từ ngày mua.
+                    <span className="font-medium block mb-1">{t('warranty.periodTitle')}</span>
+                    {t('warranty.period', { days: 365 })}
                   </p>
                 </div>
               </div>
@@ -85,9 +86,8 @@ export default function WarrantyPage() {
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
-                    <span className="font-medium block mb-1">Quy trình bảo hành</span>
-                    Khi tài khoản gặp sự cố, quý khách vui lòng gửi yêu cầu hỗ trợ thông qua form
-                    bên cạnh hoặc liên hệ trực tiếp qua Zalo, Email.
+                    <span className="font-medium block mb-1">{t('warranty.processTitle')}</span>
+                    {t('warranty.process')}
                   </p>
                 </div>
               </div>
@@ -95,8 +95,8 @@ export default function WarrantyPage() {
               <div className="bg-white border border-gray-200 p-5 rounded-lg">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
-                    <span className="font-medium block mb-1">Điều kiện bảo hành</span>
-                    Tài khoản phải nằm trong thời hạn bảo hành và được sử dụng đúng quy định.
+                    <span className="font-medium block mb-1">{t('warranty.conditionsTitle')}</span>
+                    {t('warranty.conditions')}
                   </p>
                 </div>
               </div>
@@ -104,13 +104,12 @@ export default function WarrantyPage() {
 
             {/* Chính sách đổi trả */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">Chính sách đổi trả</h2>
+              <h2 className="text-2xl font-bold mb-6">{t('warranty.refundPolicyTitle')}</h2>
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
-                    <span className="font-medium block mb-1">Thời gian đổi trả</span>
-                    Trong vòng <strong>7 ngày</strong> kể từ ngày mua, quý khách có thể yêu cầu hoàn
-                    tiền nếu sản phẩm không đáp ứng được nhu cầu sử dụng.
+                    <span className="font-medium block mb-1">{t('warranty.refundPeriodTitle')}</span>
+                    {t('warranty.refundPeriod', { days: 7 })}
                   </p>
                 </div>
               </div>
@@ -118,8 +117,8 @@ export default function WarrantyPage() {
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
-                    <span className="font-medium block mb-1">Điều kiện đổi trả</span>
-                    Sản phẩm chưa bị sửa đổi, can thiệp và không vi phạm các điều khoản sử dụng.
+                    <span className="font-medium block mb-1">{t('warranty.refundConditionsTitle')}</span>
+                    {t('warranty.refundConditions')}
                   </p>
                 </div>
               </div>
@@ -127,9 +126,8 @@ export default function WarrantyPage() {
               <div className="bg-white border border-gray-200 p-5 rounded-lg">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
-                    <span className="font-medium block mb-1">Quy trình hoàn tiền</span>
-                    Sau khi xác nhận yêu cầu hợp lệ, chúng tôi sẽ hoàn tiền qua phương thức thanh
-                    toán ban đầu trong vòng 3-5 ngày làm việc.
+                    <span className="font-medium block mb-1">{t('warranty.refundProcessTitle')}</span>
+                    {t('warranty.refundProcess')}
                   </p>
                 </div>
               </div>
@@ -144,10 +142,10 @@ export default function WarrantyPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Warranty Form */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">Yêu cầu hỗ trợ kỹ thuật</h2>
+              <h2 className="text-2xl font-bold mb-6">{t('warranty.supportRequestTitle')}</h2>
               {submitSuccess ? (
                 <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                  <p>Cảm ơn bạn đã gửi yêu cầu! Chúng tôi sẽ phản hồi trong thời gian sớm nhất.</p>
+                  <p>{t('warranty.submitSuccess')}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -163,7 +161,7 @@ export default function WarrantyPage() {
                         htmlFor="name"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Họ và tên <span className="text-red-500">*</span>
+                        {t('warranty.formName')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -181,7 +179,7 @@ export default function WarrantyPage() {
                         htmlFor="email"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Email <span className="text-red-500">*</span>
+                        {t('warranty.formEmail')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="email"
@@ -201,7 +199,7 @@ export default function WarrantyPage() {
                         htmlFor="phone"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Số điện thoại <span className="text-red-500">*</span>
+                        {t('warranty.formPhone')} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="tel"
@@ -219,7 +217,7 @@ export default function WarrantyPage() {
                         htmlFor="orderCode"
                         className="block text-sm font-medium text-gray-700 mb-1"
                       >
-                        Mã đơn hàng
+                        {t('warranty.formOrderCode')}
                       </label>
                       <input
                         type="text"
@@ -237,7 +235,7 @@ export default function WarrantyPage() {
                       htmlFor="accountName"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Tên tài khoản
+                      {t('warranty.formAccountName')}
                     </label>
                     <input
                       type="text"
@@ -254,7 +252,7 @@ export default function WarrantyPage() {
                       htmlFor="problem"
                       className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Mô tả vấn đề <span className="text-red-500">*</span>
+                      {t('warranty.formProblem')} <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="problem"
@@ -264,7 +262,7 @@ export default function WarrantyPage() {
                       value={formData.problem}
                       onChange={handleChange}
                       className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                      placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"
+                      placeholder={t('warranty.formProblemPlaceholder')}
                     ></textarea>
                   </div>
 
@@ -274,7 +272,7 @@ export default function WarrantyPage() {
                       disabled={isSubmitting}
                       className="text-white bg-primary-600 hover:bg-primary-700 rounded-lg px-8 py-3 transition-colors font-medium shadow-sm"
                     >
-                      {isSubmitting ? 'Đang gửi...' : 'Gửi yêu cầu hỗ trợ'}
+                      {isSubmitting ? t('warranty.formSubmitting') : t('warranty.formSubmit')}
                     </button>
                   </div>
                 </form>
@@ -283,20 +281,15 @@ export default function WarrantyPage() {
 
             {/* Warranty Information */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">Thông tin liên hệ</h2>
+              <h2 className="text-2xl font-bold mb-6">{t('warranty.contactInfoTitle')}</h2>
 
               <div className="bg-gray-50 p-6 rounded-lg mb-8">
                 <p className="text-gray-700 mb-4">
-                  XLab hỗ trợ tư vấn mua hàng hoặc bảo hành từ{' '}
-                  <strong>8h00 đến 21h00 hàng ngày (kể cả ngày lễ)</strong>. Chúng tôi xử lý rất
-                  nhiều đơn hàng mỗi ngày và sẽ xử lý từng yêu cầu theo thứ tự. Chúng tôi sẽ hỗ trợ
-                  <strong> nhanh chóng trong vòng 24h</strong> sau khi nhận được yêu cầu.
+                  {t('warranty.supportInfo1')}
                 </p>
 
                 <p className="text-gray-700 mb-6">
-                  Để được hỗ trợ bảo hành nhanh chóng, bạn vui lòng điền vấn đề cụ thể vào form yêu
-                  cầu hỗ trợ. Chúng tôi sẽ kiểm tra, hướng dẫn cách sửa lỗi hoặc gửi tài khoản mới
-                  tự động qua Email/Zalo của bạn.
+                  {t('warranty.supportInfo2')}
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -373,7 +366,7 @@ export default function WarrantyPage() {
                         </svg>
                       </div>
                       <div className="ml-3">
-                        <p className="text-gray-800 font-medium">Địa chỉ</p>
+                        <p className="text-gray-800 font-medium">{t('warranty.address')}</p>
                         <p className="text-gray-600">{siteConfig.contact.address}</p>
                       </div>
                     </div>
@@ -396,7 +389,7 @@ export default function WarrantyPage() {
                         </svg>
                       </div>
                       <div className="ml-3">
-                        <p className="text-gray-800 font-medium">Giờ làm việc</p>
+                        <p className="text-gray-800 font-medium">{t('warranty.workingHours')}</p>
                         <p className="text-gray-600">{siteConfig.contact.workingHours}</p>
                       </div>
                     </div>
@@ -405,23 +398,22 @@ export default function WarrantyPage() {
               </div>
 
               <div className="bg-primary-50 p-6 rounded-lg">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800">Sứ mệnh của chúng tôi</h3>
+                <h3 className="text-xl font-semibold mb-4 text-gray-800">{t('warranty.ourMission')}</h3>
                 <p className="text-gray-700 mb-4">
-                  Sứ mệnh của XLab là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ
-                  làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
+                  {t('warranty.missionDescription')}
                 </p>
                 <div className="flex space-x-4 mt-4">
                   <Link
                     href="/contact"
                     className="text-primary-600 hover:text-primary-800 font-medium"
                   >
-                    Liên hệ ngay
+                    {t('warranty.contactNow')}
                   </Link>
                   <Link
                     href="/faqs"
                     className="text-primary-600 hover:text-primary-800 font-medium"
                   >
-                    Câu hỏi thường gặp
+                    {t('warranty.faq')}
                   </Link>
                 </div>
               </div>
