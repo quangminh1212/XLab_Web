@@ -412,12 +412,12 @@ const Header = () => {
                     aria-orientation="vertical"
                   >
                     <div className="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
-                      <h3 className="text-base font-semibold text-gray-900">Mã giảm giá</h3>
+                      <h3 className="text-base font-semibold text-gray-900">{t('voucher.title')}</h3>
                       <Link
                         href="/vouchers/public"
                         className="text-xs sm:text-sm text-primary-600 hover:text-primary-700"
                       >
-                        Xem tất cả
+                        {t('voucher.viewAll')}
                       </Link>
                     </div>
 
@@ -425,13 +425,13 @@ const Header = () => {
                       {loadingCoupons ? (
                         <div className="py-6 text-center">
                           <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-primary-600"></div>
-                          <p className="text-xs sm:text-sm text-gray-500 mt-2">Đang tải...</p>
+                          <p className="text-xs sm:text-sm text-gray-500 mt-2">{t('voucher.loading')}</p>
                         </div>
                       ) : getDisplayVouchers().length > 0 ? (
                         <>
                           {session && userCoupons.filter((v) => !v.isPublic).length > 0 && (
                             <div className="px-4 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 border-b border-teal-100">
-                              <h4 className="text-xs font-medium text-teal-700">Voucher của bạn</h4>
+                              <h4 className="text-xs font-medium text-teal-700">{t('voucher.yourVouchers')}</h4>
                             </div>
                           )}
 
@@ -461,7 +461,7 @@ const Header = () => {
                                     </span>
                                   </div>
                                   <span className="text-xs text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded-full">
-                                    HSD: {formatDate(coupon.endDate)}
+                                    {t('voucher.expiryDate')} {formatDate(coupon.endDate)}
                                   </span>
                                 </div>
                                 <h4 className="text-xs sm:text-sm font-medium text-gray-900">
@@ -474,7 +474,7 @@ const Header = () => {
                                     </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                       <span className="text-xs font-medium text-teal-600">
-                                        Còn {coupon.userUsage.limit - coupon.userUsage.current} lượt
+                                        {t('voucher.usesLeft', { count: coupon.userUsage.limit - coupon.userUsage.current })}
                                       </span>
                                     )}
                                   </div>
@@ -482,8 +482,8 @@ const Header = () => {
                                 <div className="mt-2 flex justify-between items-center text-xs mb-1">
                                   <span className="text-xs font-medium px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-100">
                                     {coupon.minOrder
-                                      ? `Đơn tối thiểu: ${formatCurrency(coupon.minOrder)}`
-                                      : 'Không giới hạn đơn'}
+                                      ? `${t('voucher.minOrder')} ${formatCurrency(coupon.minOrder)}`
+                                      : t('voucher.noLimit')}
                                   </span>
                                   {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                     <span className="text-gray-500">
