@@ -474,7 +474,13 @@ const Header = () => {
                                     </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                       <span className="text-xs font-medium text-teal-600">
-                                        {t('voucher.usesLeft', { count: coupon.userUsage.limit - coupon.userUsage.current })}
+                                        {t('voucher.usesLeft', { 
+                                          count: coupon.userUsage && 
+                                                 typeof coupon.userUsage.limit === 'number' && 
+                                                 typeof coupon.userUsage.current === 'number' 
+                                                 ? coupon.userUsage.limit - coupon.userUsage.current 
+                                                 : 0
+                                        })}
                                       </span>
                                     )}
                                   </div>

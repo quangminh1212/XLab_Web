@@ -426,26 +426,49 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
   // Hàm dịch văn bản
   const t = (key: string, params?: Record<string, any>): string => {
-    // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-    let text = translations[language][key] || key;
-    
-    // Chỉ xử lý thay thế tham số khi có tham số được truyền vào
-    if (params && typeof params === 'object') {
-      try {
-        // Thay thế các tham số trong chuỗi
-        Object.entries(params).forEach(([param, value]) => {
-          // Chỉ thay thế khi giá trị không phải undefined hoặc null
-          if (value !== undefined && value !== null) {
-            const strValue = String(value);
-            text = text.replace(new RegExp(`{${param}}`, 'g'), strValue);
-          }
-        });
-      } catch (error) {
-        console.error('Error replacing parameters in translation:', error);
+    try {
+      // Kiểm tra key hợp lệ
+      if (typeof key !== 'string' || !key) {
+        console.warn('Invalid translation key:', key);
+        return '';
       }
+      
+      // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
+      let text = translations[language]?.[key] || key;
+      
+      // Chỉ xử lý thay thế tham số khi có tham số được truyền vào
+      if (params && typeof params === 'object') {
+        // Kiểm tra xem params có phải là object rỗng không
+        if (Object.keys(params).length > 0) {
+          // Thay thế các tham số trong chuỗi
+          Object.entries(params).forEach(([param, value]) => {
+            // Xác định mẫu thay thế an toàn
+            const regex = new RegExp(`\\{${param}\\}`, 'g');
+            
+            // Xử lý các trường hợp giá trị
+            if (value !== undefined && value !== null) {
+              try {
+                // Chuyển đổi an toàn sang chuỗi
+                const strValue = String(value);
+                text = text.replace(regex, strValue);
+              } catch (err) {
+                // Nếu có lỗi khi chuyển đổi, thay thế bằng chuỗi rỗng
+                text = text.replace(regex, '');
+                console.warn(`Error converting value for param ${param}:`, err);
+              }
+            } else {
+              // Thay thế giá trị undefined hoặc null bằng chuỗi rỗng
+              text = text.replace(regex, '');
+            }
+          });
+        }
+      }
+      
+      return text;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return key || ''; // Trả về key gốc hoặc chuỗi rỗng nếu có lỗi xảy ra
     }
-    
-    return text;
   };
 
   return (
