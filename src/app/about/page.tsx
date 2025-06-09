@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 export default function AboutPage() {
   return (
     <div>
@@ -251,15 +249,15 @@ export default function AboutPage() {
               trình chuyển đổi số và phát triển bền vững.
             </p>
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4">
-              <Link href="/contact" className="btn bg-white text-primary-600 hover:bg-gray-100">
+              <a href="/contact" className="btn bg-white text-primary-600 hover:bg-gray-100">
                 Liên hệ ngay
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/services"
                 className="btn border border-white text-white hover:bg-primary-700"
               >
                 Khám phá dịch vụ
-              </Link>
+              </a>
             </div>
           </div>
         </div>

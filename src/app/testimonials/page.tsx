@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 interface Testimonial {
   id: string;
@@ -420,18 +419,18 @@ export default function TestimonialsPage() {
               nhu cầu của bạn.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link
+              <a
                 href="/contact"
                 className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
               >
                 Liên hệ tư vấn
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/services"
                 className="border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-4 rounded-full font-semibold transition-all transform hover:-translate-y-1"
               >
                 Khám phá dịch vụ
-              </Link>
+              </a>
             </div>
           </div>
         </div>
