@@ -426,13 +426,23 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
   // Hàm dịch văn bản
   const t = (key: string, params?: Record<string, any>): string => {
+    // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
     let text = translations[language][key] || key;
     
-    if (params) {
-      // Thay thế các tham số trong chuỗi
-      Object.entries(params).forEach(([param, value]) => {
-        text = text.replace(new RegExp(`{${param}}`, 'g'), value);
-      });
+    // Chỉ xử lý thay thế tham số khi có tham số được truyền vào
+    if (params && typeof params === 'object') {
+      try {
+        // Thay thế các tham số trong chuỗi
+        Object.entries(params).forEach(([param, value]) => {
+          // Chỉ thay thế khi giá trị không phải undefined hoặc null
+          if (value !== undefined && value !== null) {
+            const strValue = String(value);
+            text = text.replace(new RegExp(`{${param}}`, 'g'), strValue);
+          }
+        });
+      } catch (error) {
+        console.error('Error replacing parameters in translation:', error);
+      }
     }
     
     return text;
