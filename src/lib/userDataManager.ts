@@ -574,59 +574,62 @@ export async function getUserData(email: string): Promise<UserData | null> {
 
 // Cleanup các file temporary và backup cũ
 export async function cleanupOldFiles(): Promise<void> {
-  const cleanupTasks = [];
-
-  // Cleanup backup directory
   try {
-    await ensureDirectoryExists(BACKUP_DIR);
-    const backupFiles = await fs.readdir(BACKUP_DIR);
-    const now = Date.now();
-    const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
+    const userDir = path.dirname(getUserFilePath('dummy'));
+    const backupDir = path.dirname(getBackupFilePath('dummy', ''));
 
-    for (const file of backupFiles) {
-      if (file.includes('.tmp.')) {
-        const filePath = path.join(BACKUP_DIR, file);
-        try {
-          const stats = await fs.stat(filePath);
-          if (now - stats.mtime.getTime() > maxAge) {
-            await fs.unlink(filePath);
-            console.log(`🧹 Cleaned up old backup: ${file}`);
+    // Cleanup user directory
+    try {
+      const userFiles = await fs.readdir(userDir);
+      const now = Date.now();
+      const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+      for (const file of userFiles) {
+        if (file.includes('.tmp.') || file.includes('.backup.') || file.includes('.corrupted.')) {
+          const filePath = path.join(userDir, file);
+          try {
+            const stats = await fs.stat(filePath);
+            if (now - stats.mtime.getTime() > maxAge) {
+              await fs.unlink(filePath);
+              console.log(`🧹 Cleaned up old file: ${file}`);
+            }
+          } catch (error) {
+            // Ignore errors for individual files
           }
-        } catch (error) {
-          // Ignore errors for individual files
         }
       }
+    } catch (error) {
+      console.error('Error cleaning user directory:', error);
     }
-  } catch (error) {
-    console.error('Error cleaning backup directory:', error);
-  }
 
-  // Cleanup user directory
-  try {
-    await ensureDirectoryExists(USER_DATA_DIR);
-    const userFiles = await fs.readdir(USER_DATA_DIR);
-    const now = Date.now();
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+    // Cleanup backup directory
+    try {
+      const backupFiles = await fs.readdir(backupDir);
+      const now = Date.now();
+      const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-    for (const file of userFiles) {
-      if (file.includes('.tmp.') || file.includes('.backup.') || file.includes('.corrupted.')) {
-        const filePath = path.join(USER_DATA_DIR, file);
-        try {
-          const stats = await fs.stat(filePath);
-          if (now - stats.mtime.getTime() > maxAge) {
-            await fs.unlink(filePath);
-            console.log(`🧹 Cleaned up old file: ${file}`);
+      for (const file of backupFiles) {
+        if (file.includes('.tmp.')) {
+          const filePath = path.join(backupDir, file);
+          try {
+            const stats = await fs.stat(filePath);
+            if (now - stats.mtime.getTime() > maxAge) {
+              await fs.unlink(filePath);
+              console.log(`🧹 Cleaned up old backup: ${file}`);
+            }
+          } catch (error) {
+            // Ignore errors for individual files
           }
-        } catch (error) {
-          // Ignore errors for individual files
         }
       }
+    } catch (error) {
+      console.error('Error cleaning backup directory:', error);
     }
-  } catch (error) {
-    console.error('Error cleaning user directory:', error);
-  }
 
-  console.log('✅ File cleanup completed');
+    console.log('✅ File cleanup completed');
+  } catch (error) {
+    console.error('❌ Error during file cleanup:', error);
+  }
 }
 
 // Auto cleanup khi startup

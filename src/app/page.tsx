@@ -6,7 +6,6 @@ import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
 import { categories } from '@/data/mockData';
 import Image from 'next/image';
-import { AutoTranslate } from '@/hooks/useAutoTranslate';
 
 // Helper function to lấy URL ảnh hợp lệ
 const getValidImageUrl = (product: any): string => {
@@ -80,7 +79,7 @@ function HomePage() {
               <span className="text-primary-500">Lab</span>
             </h1>
             <p className="text-responsive-lg text-gray-600 max-w-3xl mb-6 sm:mb-8">
-              <AutoTranslate>Tối ưu hiệu quả, tối thiểu chi phí!</AutoTranslate>
+              Tối ưu hiệu quả, tối thiểu chi phí!
             </p>
 
             <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl">
@@ -134,21 +133,21 @@ function HomePage() {
                       </svg>
                     </div>
                   </div>
-                  <h2 className="heading-3 mb-3 text-gray-800 text-center"><AutoTranslate>Về XLab</AutoTranslate></h2>
+                  <h2 className="heading-3 mb-3 text-gray-800 text-center">Về XLab</h2>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    <AutoTranslate>XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp
-                    người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.</AutoTranslate>
+                    XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp
+                    người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.
                   </p>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    <AutoTranslate>Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ
-                    phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.</AutoTranslate>
+                    Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ
+                    phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.
                   </p>
                   <div className="mt-4">
                     <Link
                       href="/about"
                       className="w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-3 sm:px-4 rounded-lg transition-colors flex items-center justify-center text-responsive-sm"
                     >
-                      <AutoTranslate>Tìm hiểu thêm</AutoTranslate>
+                      Tìm hiểu thêm
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-3 w-3 sm:h-4 sm:w-4 ml-1"
@@ -182,8 +181,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base"><AutoTranslate>Sản phẩm trong nước</AutoTranslate></h3>
-                  <p className="text-sm text-gray-600"><AutoTranslate>Phát triển bởi đội ngũ kỹ sư Việt Nam</AutoTranslate></p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">Sản phẩm trong nước</h3>
+                  <p className="text-sm text-gray-600">Phát triển bởi đội ngũ kỹ sư Việt Nam</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -196,8 +195,8 @@ function HomePage() {
                       <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base"><AutoTranslate>Hỗ trợ 24/7</AutoTranslate></h3>
-                  <p className="text-sm text-gray-600"><AutoTranslate>Đội ngũ hỗ trợ tận tâm</AutoTranslate></p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">Hỗ trợ 24/7</h3>
+                  <p className="text-sm text-gray-600">Đội ngũ hỗ trợ tận tâm</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -214,8 +213,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base"><AutoTranslate>Bảo mật cao</AutoTranslate></h3>
-                  <p className="text-sm text-gray-600"><AutoTranslate>Dữ liệu được mã hóa an toàn</AutoTranslate></p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">Bảo mật cao</h3>
+                  <p className="text-sm text-gray-600">Dữ liệu được mã hóa an toàn</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -233,8 +232,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base"><AutoTranslate>Giá cả hợp lý</AutoTranslate></h3>
-                  <p className="text-sm text-gray-600"><AutoTranslate>Nhiều lựa chọn phù hợp mọi ngân sách</AutoTranslate></p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">Giá cả hợp lý</h3>
+                  <p className="text-sm text-gray-600">Nhiều lựa chọn phù hợp mọi ngân sách</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -251,8 +250,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base"><AutoTranslate>Tích hợp AI</AutoTranslate></h3>
-                  <p className="text-sm text-gray-600"><AutoTranslate>Công nghệ AI tiên tiến hỗ trợ bạn</AutoTranslate></p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">Tích hợp AI</h3>
+                  <p className="text-sm text-gray-600">Công nghệ AI tiên tiến hỗ trợ bạn</p>
                 </div>
                 <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                   <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
@@ -271,8 +270,8 @@ function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base"><AutoTranslate>Cập nhật liên tục</AutoTranslate></h3>
-                  <p className="text-sm text-gray-600"><AutoTranslate>Luôn được cập nhật tính năng mới</AutoTranslate></p>
+                  <h3 className="font-bold text-gray-900 mb-2 text-base">Cập nhật liên tục</h3>
+                  <p className="text-sm text-gray-600">Luôn được cập nhật tính năng mới</p>
                 </div>
               </div>
             </section>

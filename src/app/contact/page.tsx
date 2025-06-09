@@ -58,14 +58,8 @@ export default function ContactPage() {
       <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Liên hệ với chúng tôi</h1>
-<<<<<<< HEAD:src/app/[lang]/contact/page.tsx
-          <p className="text-xl max-w-3xl whitespace-nowrap">
-            Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của
-            bạn.
-=======
           <p className="text-xl max-w-none whitespace-nowrap overflow-hidden text-ellipsis">
             Hãy liên hệ với chúng tôi để được tư vấn về giải pháp phù hợp nhất cho doanh nghiệp của bạn.
->>>>>>> 8f500463eefe8c9a0ebebe941a683d4a54fc3459:src/app/contact/page.tsx
           </p>
         </div>
       </section>

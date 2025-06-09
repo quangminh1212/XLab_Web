@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import translation styles */
-@import './translation.css';
-
 @layer base {
   :root {
     --background: 0 0% 98%;

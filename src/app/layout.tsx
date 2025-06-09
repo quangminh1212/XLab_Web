@@ -1,15 +1,9 @@
 import '@/styles/globals.css';
-import '@/styles/app-layout.css';
+import '../styles/app-layout.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { siteConfig } from '@/config/siteConfig';
 import { ClientLayoutWrapper } from '@/components/layout';
-import I18nProvider from '@/contexts/I18nProvider';
-import i18nConfig from '../../../next-i18next.config.js';
-
-export async function generateStaticParams() {
-  return i18nConfig.i18n.locales.map(locale => ({ lang: locale }))
-}
 
 const inter = Inter({
   subsets: ['latin'],
@@ -85,17 +79,9 @@ export const viewport: Viewport = {
   themeColor: '#00A19A',
 };
 
-export default async function RootLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: { lang: string };
-}) {
-  const { lang } = params;
-  // Re-triggering build with a comment
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={lang} className={`${inter.variable} scroll-smooth`}>
+    <html lang="vi" className={`${inter.variable} scroll-smooth`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -105,9 +91,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <I18nProvider locale={lang} namespaces={['common']}>
-          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
-        </I18nProvider>
+        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
       </body>
     </html>
   );

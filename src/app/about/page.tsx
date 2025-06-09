@@ -5,14 +5,8 @@ export default function AboutPage() {
       <section className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-16">
         <div className="container">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">Về chúng tôi</h1>
-<<<<<<< HEAD:src/app/[lang]/about/page.tsx
-          <p className="text-xl max-w-3xl whitespace-nowrap">
-            XLab - Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ
-            tại Việt Nam
-=======
           <p className="text-xl max-w-none whitespace-nowrap overflow-hidden text-ellipsis">
             XLab - Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ tại Việt Nam
->>>>>>> 8f500463eefe8c9a0ebebe941a683d4a54fc3459:src/app/about/page.tsx
           </p>
         </div>
       </section>

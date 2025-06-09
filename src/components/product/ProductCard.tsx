@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
-import { AutoTranslate } from '@/hooks/useAutoTranslate';
 
 interface ProductCardProps {
   id: string;
@@ -337,7 +336,7 @@ export default function ProductCard({
                   clipRule="evenodd"
                 />
               </svg>
-              <AutoTranslate>Đã thêm</AutoTranslate>
+              Đã thêm
             </div>
           </div>
         )}
@@ -361,7 +360,7 @@ export default function ProductCard({
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 7m0 6l-1.5 6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
                   />
                 </svg>
-                <AutoTranslate>Thêm vào giỏ</AutoTranslate>
+                Thêm vào giỏ
               </span>
             </button>
             <button
@@ -392,7 +391,7 @@ export default function ProductCard({
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
-                <AutoTranslate>Mua ngay</AutoTranslate>
+                Mua ngay
               </span>
             </button>
           </div>

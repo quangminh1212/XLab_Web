@@ -99,9 +99,3 @@ run-fixed.bat
 /data/backups/
 *.bak
 *.temp
-
-# cache dịch
-/public/translation-cache/
-data/users/
-data/translations/
-.translation-cache/

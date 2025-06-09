@@ -7,10 +7,8 @@ import Link from 'next/link';
 import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
 import { useBalance } from '@/contexts/BalanceContext';
-import { useTranslation } from 'react-i18next';
 
 export default function DepositPage() {
-  const { t } = useTranslation();
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -189,10 +187,10 @@ export default function DepositPage() {
                 />
               </svg>
             </Link>
-            <h1 className="text-3xl font-bold text-gray-900">{t('deposit_title')}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Nạp tiền vào tài khoản</h1>
           </div>
           <div>
-            <p className="text-gray-600">{t('deposit_description')}</p>
+            <p className="text-gray-600">Quét mã QR hoặc chuyển khoản theo thông tin bên dưới</p>
             {suggestedAmount && (
               <div className="mt-2 inline-flex items-center px-3 py-1 rounded-full text-sm bg-teal-100 text-teal-800">
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,7 +219,7 @@ export default function DepositPage() {
                       <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM19 13h-2v2h2v-2zM19 17h-2v2h2v-2zM17 13h-2v2h2v-2zM15 15h-2v2h2v-2zM17 17h-2v2h2v-2zM13 13h2v2h-2v-2zM13 17h2v2h-2v-2zM15 19h2v2h-2v-2zM13 19h2v2h-2v-2zM19 15h2v2h-2v-2zM21 13h2v2h-2v-2zM19 19h2v2h-2v-2z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">{t('deposit_qr_title')}</h3>
+                  <h3 className="text-xl font-bold text-gray-900">Quét mã QR để chuyển khoản</h3>
                 </div>
 
                 {/* QR Code */}
@@ -306,39 +304,33 @@ export default function DepositPage() {
           <div className="space-y-6">
             {/* Current Balance */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6 text-teal-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 10v-1m0 0c-1.11 0-2.08-.402-2.599-1M12 18c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-800">{t('balance_title')}</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-teal-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                    />
+                  </svg>
                 </div>
+                <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
               </div>
-              <div className="text-center">
-                <p className="text-4xl font-bold text-teal-600 tracking-tight">
-                  {balance !== null ? formatCurrency(balance) : 'Đang tải...'}
-                </p>
-              </div>
+              <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
             </div>
 
             {/* Transfer Information */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-6 h-6 text-gray-600"
+                    className="w-6 h-6 text-emerald-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -351,23 +343,27 @@ export default function DepositPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800">{t('transfer_info_title')}</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Thông tin chuyển khoản</h3>
               </div>
 
               <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('bank')}:</span>
-                  <span className="font-semibold text-gray-900">{BANK_INFO.bankName}</span>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Ngân hàng</span>
+                  <span className="font-medium">{BANK_INFO.bankName}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('account_number')}:</span>
+
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Số tài khoản</span>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-900 tracking-wider">
+                    <span className="font-mono font-bold text-teal-600">
                       {BANK_INFO.accountNumber}
                     </span>
-                    <button onClick={() => copyToClipboard(BANK_INFO.accountNumber)}>
+                    <button
+                      onClick={() => copyToClipboard(BANK_INFO.accountNumber)}
+                      className="p-1 text-gray-400 hover:text-teal-600"
+                    >
                       <svg
-                        className="w-5 h-5 text-gray-400 hover:text-teal-600"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -376,23 +372,30 @@ export default function DepositPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                         />
                       </svg>
                     </button>
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('account_holder')}:</span>
-                  <span className="font-semibold text-gray-900">{BANK_INFO.accountName}</span>
+
+                <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                  <span className="text-gray-600">Chủ tài khoản</span>
+                  <span className="font-medium">{BANK_INFO.accountName}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">{t('transaction_id')}:</span>
+
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-gray-600">Mã giao dịch</span>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-teal-600">{transactionId}</span>
-                    <button onClick={() => copyToClipboard(transactionId)}>
+                    <span className="font-mono text-sm font-bold text-teal-600">
+                      {transactionId}
+                    </span>
+                    <button
+                      onClick={() => copyToClipboard(transactionId)}
+                      className="p-1 text-gray-400 hover:text-teal-600"
+                    >
                       <svg
-                        className="w-5 h-5 text-gray-400 hover:text-teal-600"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -401,7 +404,7 @@ export default function DepositPage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                         />
                       </svg>
                     </button>
