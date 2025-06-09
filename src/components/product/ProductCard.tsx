@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProductCardProps {
   id: string;
@@ -41,6 +42,7 @@ export default function ProductCard({
   onAddToCart = () => {},
   onView = () => {},
 }: ProductCardProps) {
+  const { t } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -336,7 +338,7 @@ export default function ProductCard({
                   clipRule="evenodd"
                 />
               </svg>
-              Đã thêm
+              {t('product.added')}
             </div>
           </div>
         )}
@@ -360,7 +362,7 @@ export default function ProductCard({
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 7m0 6l-1.5 6M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"
                   />
                 </svg>
-                Thêm vào giỏ
+                {t('product.addToCart')}
               </span>
             </button>
             <button
@@ -391,7 +393,7 @@ export default function ProductCard({
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
-                Mua ngay
+                {t('product.buyNow')}
               </span>
             </button>
           </div>
