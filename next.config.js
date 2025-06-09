@@ -1,5 +1,9 @@
 const path = require('path');
+<<<<<<< HEAD
 const { i18n } = require('./next-i18next.config.js');
+=======
+const webpack = require('webpack');
+>>>>>>> 389bc3857f38380d2237975474789404c7761326
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,6 +16,15 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
+    memoryBasedWorkersCount: true,
+  },
+  outputFileTracingRoot: path.resolve(__dirname),
+  outputFileTracingExcludes: {
+    '*': [
+      'node_modules/@swc/core-linux-x64-gnu',
+      'node_modules/@swc/core-linux-x64-musl',
+      'node_modules/@esbuild/linux-x64',
+    ],
   },
   images: {
     domains: [
@@ -47,10 +60,32 @@ const nextConfig = {
       fullUrl: false,
     },
   },
+  serverRuntimeConfig: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
   webpack: (config, { dev, isServer }) => {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
+    };
+
+    // Xử lý các node: URI
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'node:events': 'events',
+      'node:fs': 'fs',
+      'node:path': 'path',
+      'node:stream': 'stream-browserify',
+      'node:util': 'util',
+      'node:buffer': 'buffer',
+      'node:crypto': 'crypto-browserify',
+      'node:http': 'stream-http',
+      'node:https': 'https-browserify',
+      'node:zlib': 'browserify-zlib',
+      'node:assert': 'assert',
+      'node:os': 'os-browserify',
     };
 
     if (!isServer) {
@@ -72,6 +107,37 @@ const nextConfig = {
           },
         };
       }
+
+      // Thay thế các module chỉ dành cho Node.js bằng 'empty' module trong môi trường client
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        dns: false,
+        child_process: false,
+        http2: false,
+        module: false,
+        os: require.resolve('os-browserify'),
+        path: require.resolve('path-browserify'),
+        stream: require.resolve('stream-browserify'),
+        util: require.resolve('util'),
+        buffer: require.resolve('buffer'),
+        crypto: require.resolve('crypto-browserify'),
+        http: require.resolve('stream-http'),
+        https: require.resolve('https-browserify'),
+        zlib: require.resolve('browserify-zlib'),
+        assert: require.resolve('assert'),
+        events: require.resolve('events'),
+      };
+
+      // Thêm plugins cho polyfill
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          process: 'process/browser',
+          Buffer: ['buffer', 'Buffer'],
+        })
+      );
     }
 
     return config;

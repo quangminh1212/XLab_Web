@@ -7,10 +7,16 @@ import { usePathname } from 'next/navigation';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
+import { useTranslation } from '@/contexts/TranslationContext';
+import { AutoTranslate } from '@/hooks/useAutoTranslate';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+<<<<<<< HEAD
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+=======
+import { HiTranslate } from 'react-icons/hi';
+>>>>>>> 389bc3857f38380d2237975474789404c7761326
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -39,6 +45,7 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
   const [isVoucherOpen, setIsVoucherOpen] = React.useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = React.useState(false);
   const [publicCoupons, setPublicCoupons] = React.useState<PublicCoupon[]>([]);
   const [userCoupons, setUserCoupons] = React.useState<PublicCoupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = React.useState(false);
@@ -54,6 +61,11 @@ const Header = () => {
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const voucherRef = useRef<HTMLDivElement>(null);
+  const languageRef = useRef<HTMLDivElement>(null);
+  const languageButtonRef = useRef<HTMLButtonElement>(null);
+  
+  // Sử dụng TranslationContext
+  const { language, changeLanguage, translate } = useTranslation();
 
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
@@ -174,8 +186,19 @@ const Header = () => {
       ) {
         setIsVoucherOpen(false);
       }
+      
+      // Đóng language dropdown khi click ra ngoài
+      if (
+        isLanguageOpen &&
+        languageRef.current &&
+        languageButtonRef.current &&
+        !languageRef.current.contains(event.target as Node) &&
+        !languageButtonRef.current.contains(event.target as Node)
+      ) {
+        setIsLanguageOpen(false);
+      }
     },
-    [isProfileOpen, isNotificationOpen, isVoucherOpen],
+    [isProfileOpen, isNotificationOpen, isVoucherOpen, isLanguageOpen],
   );
 
   // Thêm event listener khi component được mount
@@ -196,6 +219,7 @@ const Header = () => {
         if (isProfileOpen) setIsProfileOpen(false);
         if (isNotificationOpen) setIsNotificationOpen(false);
         if (isVoucherOpen) setIsVoucherOpen(false);
+        if (isLanguageOpen) setIsLanguageOpen(false);
         if (isOpen) setIsOpen(false);
       }
     };
@@ -244,6 +268,15 @@ const Header = () => {
     if (isOpen) setIsOpen(false);
     if (isProfileOpen) setIsProfileOpen(false);
     if (isNotificationOpen) setIsNotificationOpen(false);
+    if (isLanguageOpen) setIsLanguageOpen(false);
+  };
+  
+  const toggleLanguage = () => {
+    setIsLanguageOpen(!isLanguageOpen);
+    if (isOpen) setIsOpen(false);
+    if (isProfileOpen) setIsProfileOpen(false);
+    if (isNotificationOpen) setIsNotificationOpen(false);
+    if (isVoucherOpen) setIsVoucherOpen(false);
   };
 
   const formatCurrency = (amount: number) => {
@@ -360,6 +393,7 @@ const Header = () => {
             </div>
 
             {/* Desktop Navigation */}
+<<<<<<< HEAD
             <nav className="hidden md:flex items-center space-x-6">
               {navLinks.map((link) => (
                 <Link
@@ -374,6 +408,39 @@ const Header = () => {
                   {link.text}
                 </Link>
               ))}
+=======
+            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
+                              <Link
+                  href="/"
+                  className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Trang chủ</AutoTranslate>
+                </Link>
+                <Link
+                  href="/products"
+                  className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Sản phẩm</AutoTranslate>
+                </Link>
+                <Link
+                  href="/about"
+                  className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Giới thiệu</AutoTranslate>
+                </Link>
+                <Link
+                  href="/contact"
+                  className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Liên hệ</AutoTranslate>
+                </Link>
+                <Link
+                  href="/bao-hanh"
+                  className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  <AutoTranslate>Bảo hành</AutoTranslate>
+                </Link>
+>>>>>>> 389bc3857f38380d2237975474789404c7761326
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
@@ -637,6 +704,76 @@ const Header = () => {
                 </div>
               )}
 
+              {/* Language Selector */}
+              <div className="relative" ref={languageRef}>
+                <button
+                  ref={languageButtonRef}
+                  onClick={toggleLanguage}
+                  className="text-gray-700 hover:text-primary-600 focus:outline-none relative"
+                  aria-label="Change Language"
+                  aria-expanded={isLanguageOpen}
+                  aria-haspopup="true"
+                >
+                  <HiTranslate className="h-4 w-4 sm:h-5 sm:w-5" />
+                </button>
+                
+                                    {/* Language Dropdown */}
+                    {isLanguageOpen && (
+                      <div
+                        className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-xl py-2 z-10"
+                        tabIndex={0}
+                        role="menu"
+                        aria-orientation="vertical"
+                      >
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <h3 className="text-base font-semibold text-gray-900">
+                            <AutoTranslate>Ngôn ngữ</AutoTranslate>
+                          </h3>
+                        </div>
+                        <button
+                          onClick={() => {
+                            // Hiệu ứng chuyển ngôn ngữ
+                            document.body.classList.add('initial-loading');
+                            setTimeout(() => {
+                              changeLanguage('vi');
+                              setIsLanguageOpen(false);
+                              setTimeout(() => {
+                                document.body.classList.remove('initial-loading');
+                                document.body.classList.add('loaded');
+                              }, 300);
+                            }, 100);
+                          }}
+                          className={`block w-full text-left px-4 py-2 text-sm ${
+                            language === 'vi' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                          role="menuitem"
+                        >
+                          Tiếng Việt
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Hiệu ứng chuyển ngôn ngữ
+                            document.body.classList.add('initial-loading');
+                            setTimeout(() => {
+                              changeLanguage('en');
+                              setIsLanguageOpen(false);
+                              setTimeout(() => {
+                                document.body.classList.remove('initial-loading');
+                                document.body.classList.add('loaded');
+                              }, 300);
+                            }, 100);
+                          }}
+                          className={`block w-full text-left px-4 py-2 text-sm ${
+                            language === 'en' ? 'bg-gray-100 text-primary-600' : 'text-gray-700 hover:bg-gray-100'
+                          }`}
+                          role="menuitem"
+                        >
+                          English
+                        </button>
+                      </div>
+                    )}
+              </div>
+              
               {/* Cart Icon */}
               <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
                 <svg
@@ -696,7 +833,7 @@ const Header = () => {
                     onClick={() => signIn()}
                     className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white py-1 px-2 sm:py-1.5 sm:px-3 rounded-md text-xs sm:text-sm transition-colors"
                   >
-                    Đăng nhập
+                    <AutoTranslate>Đăng nhập</AutoTranslate>
                   </button>
                 )}
 
@@ -721,7 +858,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Tài khoản của tôi
+                      <AutoTranslate>Tài khoản của tôi</AutoTranslate>
                     </Link>
                     <Link
                       href="/orders/history"
@@ -729,7 +866,7 @@ const Header = () => {
                       role="menuitem"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Đơn hàng của tôi
+                      <AutoTranslate>Đơn hàng của tôi</AutoTranslate>
                     </Link>
                     {/* Admin link if user has admin role */}
                     {session.user?.isAdmin && (
@@ -739,7 +876,7 @@ const Header = () => {
                         role="menuitem"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        Quản trị viên
+                        <AutoTranslate>Quản trị viên</AutoTranslate>
                       </Link>
                     )}
                     <button
@@ -750,7 +887,7 @@ const Header = () => {
                       className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 text-xs md:text-sm"
                       role="menuitem"
                     >
-                      Đăng xuất
+                      <AutoTranslate>Đăng xuất</AutoTranslate>
                     </button>
                   </div>
                 )}
@@ -788,6 +925,7 @@ const Header = () => {
             isOpen ? 'block' : 'hidden'
           } md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2`}
         >
+<<<<<<< HEAD
           <nav className="flex flex-col space-y-4 px-4">
             {navLinks.map((link) => (
               <Link
@@ -801,6 +939,44 @@ const Header = () => {
                 {link.text}
               </Link>
             ))}
+=======
+          <nav className="container mx-auto px-4 py-2 space-y-1">
+            <Link
+              href="/"
+              className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
+              onClick={() => setIsOpen(false)}
+            >
+              <AutoTranslate>Trang chủ</AutoTranslate>
+            </Link>
+            <Link
+              href="/products"
+              className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
+              onClick={() => setIsOpen(false)}
+            >
+              <AutoTranslate>Sản phẩm</AutoTranslate>
+            </Link>
+            <Link
+              href="/about"
+              className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
+              onClick={() => setIsOpen(false)}
+            >
+              <AutoTranslate>Giới thiệu</AutoTranslate>
+            </Link>
+            <Link
+              href="/contact"
+              className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
+              onClick={() => setIsOpen(false)}
+            >
+              <AutoTranslate>Liên hệ</AutoTranslate>
+            </Link>
+            <Link
+              href="/bao-hanh"
+              className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
+              onClick={() => setIsOpen(false)}
+            >
+              <AutoTranslate>Bảo hành</AutoTranslate>
+            </Link>
+>>>>>>> 389bc3857f38380d2237975474789404c7761326
           </nav>
         </div>
       </header>
