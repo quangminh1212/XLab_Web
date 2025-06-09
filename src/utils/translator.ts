@@ -103,7 +103,6 @@ export const simpleDictionary: Record<string, Record<string, string>> = {
     // Thêm các phần còn thiếu dịch
     'Phần mềm': 'Software',
     'Dịch vụ': 'Services',
-    'Xem tất cả': 'View all',
     'ChatGPT': 'ChatGPT',
     'Grok': 'Grok',
     'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi khác nhau, hỗ trợ nhiều ngôn ngữ khác nhau, thông minh và hiệu quả': 
@@ -120,6 +119,21 @@ export const simpleDictionary: Record<string, Record<string, string>> = {
     'XLab is a platform that provides software solutions with advanced AI integration to help users improve work efficiency and daily life.',
     'Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.':
     'Our mission is to bring Vietnamese people the opportunity to access tools for work, study, and entertainment at affordable prices and international quality.',
+    'Tối ưu hiệu quả, tối thiểu chi phí!': 'Maximize efficiency, minimize costs!',
+    'Tìm kiếm phần mềm, ứng dụng...': 'Search for software, applications...',
+    'Bảo mật cao': 'High security',
+    'Dữ liệu được mã hóa an toàn': 'Data is securely encrypted',
+    'Vẫn còn văn bản chưa được dịch': 'There is still text that has not been translated',
+    'Mã giảm giá': 'Discount code',
+    'Voucher của bạn': 'Your voucher',
+    'Nhấn để sao chép mã': 'Click to copy code',
+    'Đã sao chép mã': 'Code copied',
+    'Không thể sao chép mã. Vui lòng thử lại.': 'Cannot copy code. Please try again.',
+    '-70%': '-70%',
+    '-80%': '-80%',
+    '149.000 đ': '149,000 VND',
+    '500.000 đ': '500,000 VND',
+    '750.000 đ': '750,000 VND',
   },
 };
 

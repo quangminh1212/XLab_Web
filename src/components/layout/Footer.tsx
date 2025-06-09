@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
+import { AutoTranslate } from '@/hooks/useAutoTranslate';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -89,27 +90,27 @@ export default function Footer() {
           {/* Giới thiệu */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Về XLab</span>
+              <span className="relative z-10"><AutoTranslate>Về XLab</AutoTranslate></span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <div className="space-y-3 text-center sm:text-left">
               <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm
-                chuyên nghiệp cho doanh nghiệp.
+                <AutoTranslate>XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm
+                chuyên nghiệp cho doanh nghiệp.</AutoTranslate>
               </p>
               <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-                Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+
-                doanh nghiệp.
+                <AutoTranslate>Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+
+                doanh nghiệp.</AutoTranslate>
               </p>
               <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 mt-3">
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-primary-500/20 text-primary-300 rounded-full border border-primary-500/30">
-                  500+ Khách hàng
+                  <AutoTranslate>500+ Khách hàng</AutoTranslate>
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-emerald-500/20 text-emerald-300 rounded-full border border-emerald-500/30">
-                  5+ Năm
+                  <AutoTranslate>5+ Năm</AutoTranslate>
                 </span>
                 <span className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm bg-blue-500/20 text-blue-300 rounded-full border border-blue-500/30">
-                  24/7 Hỗ trợ
+                  <AutoTranslate>24/7 Hỗ trợ</AutoTranslate>
                 </span>
               </div>
             </div>
@@ -118,7 +119,7 @@ export default function Footer() {
           {/* Sản phẩm & Dịch vụ + Điều hướng */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Sản phẩm & Dịch vụ</span>
+              <span className="relative z-10"><AutoTranslate>Sản phẩm & Dịch vụ</AutoTranslate></span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
@@ -128,7 +129,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Sản phẩm
+                  <AutoTranslate>Sản phẩm</AutoTranslate>
                 </Link>
               </li>
               <li>
@@ -137,7 +138,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Dịch vụ
+                  <AutoTranslate>Dịch vụ</AutoTranslate>
                 </Link>
               </li>
               <li>
@@ -146,7 +147,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Đánh giá
+                  <AutoTranslate>Đánh giá</AutoTranslate>
                 </Link>
               </li>
             </ul>
@@ -154,7 +155,7 @@ export default function Footer() {
             {/* Điều hướng */}
             <div className="pt-4 border-t border-slate-700 w-full">
               <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
-                Điều hướng
+                <AutoTranslate>Điều hướng</AutoTranslate>
               </h4>
               <div className="space-y-3 text-center sm:text-left">
                 <Link
@@ -162,7 +163,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Trang chủ
+                  <AutoTranslate>Trang chủ</AutoTranslate>
                 </Link>
                 <br />
                 <Link
@@ -170,7 +171,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Giới thiệu
+                  <AutoTranslate>Giới thiệu</AutoTranslate>
                 </Link>
                 <br />
                 <Link
@@ -178,7 +179,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  Bảng giá
+                  <AutoTranslate>Bảng giá</AutoTranslate>
                 </Link>
               </div>
             </div>
@@ -187,7 +188,7 @@ export default function Footer() {
           {/* Thông tin liên hệ */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">Liên hệ</span>
+              <span className="relative z-10"><AutoTranslate>Liên hệ</AutoTranslate></span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-3 sm:space-y-4 text-center sm:text-left mb-4">
@@ -298,14 +299,14 @@ export default function Footer() {
           <div className="text-center sm:text-left">
             <p className="text-xs sm:text-sm text-slate-400">
               &copy; {currentYear} <span className="text-white font-medium">{siteConfig.name}</span>
-              . Bản quyền thuộc về công ty{' '}
+              . <AutoTranslate>Bản quyền thuộc về công ty</AutoTranslate>{' '}
               <span className="text-primary-400">{siteConfig.legal.companyName}</span>.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-6">
             <span className="text-xs sm:text-sm text-slate-400 font-medium">
-              Chấp nhận thanh toán
+              <AutoTranslate>Chấp nhận thanh toán</AutoTranslate>
             </span>
             <div className="flex items-center space-x-2 sm:space-x-2.5">
               {/* Visa */}
