@@ -57,7 +57,7 @@ export default function LoginPage() {
           </Link>
           <h2 className="mt-6 text-4xl font-extrabold text-gray-900 tracking-tight">Chào mừng trở lại!</h2>
           <p className="mt-3 text-center text-lg text-gray-600 max-w-md mx-auto">
-            Đăng nhập để tiếp tục sử dụng các dịch vụ của XLab
+            Để tiếp tục sử dụng các dịch vụ của XLab
           </p>
         </div>
       </div>
@@ -85,7 +85,7 @@ export default function LoginPage() {
 
           <div className="space-y-5">
             <p className="text-center text-gray-600 mb-4">
-              Đăng nhập an toàn với tài khoản Google của bạn
+              Kết nối an toàn với tài khoản Google của bạn
             </p>
 
             <button
@@ -141,14 +141,14 @@ export default function LoginPage() {
           {/* Phần thông tin bổ sung */}
           <div className="mt-6 pt-4 border-t border-gray-200">
             <div className="flex items-center justify-center text-sm text-gray-500">
-              <span>Đăng nhập an toàn 100%</span>
+              <span>Bảo mật 100%</span>
             </div>
           </div>
         </div>
 
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
-            Bằng cách đăng nhập, bạn đồng ý với{' '}
+            Bằng cách tiếp tục, bạn đồng ý với{' '}
             <Link href="/terms" className="text-primary-600 hover:underline font-medium">
               Điều khoản dịch vụ
             </Link>{' '}
