@@ -261,11 +261,11 @@ export default function ProductsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">Sản phẩm</h1>
-      
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
-          <div className="mb-4">
+          <h1 className="text-3xl font-bold mb-2">Sản phẩm</h1>
+          
+          <div className="mb-6">
             <p className="text-sm md:text-base text-gray-600">
               Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.
             </p>
