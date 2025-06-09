@@ -51,9 +51,7 @@ next-env.d.ts
 /data/backups/
 *.user_*.json
 
-# Generated product images with UUID patterns
-/public/images/products/chatgpt/*-*-*-*-*.png
-/public/images/products/grok/*-*-*-*-*.png
+
 
 # IDE
 .idea
@@ -95,8 +93,6 @@ start-dev.bat
 no-trace.bat
 run-fixed.bat
 
-# Generated images
-/images/products/*
 !/images/products/.gitkeep
 
 # Generated files
