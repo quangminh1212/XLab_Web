@@ -80,6 +80,24 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Thêm các HTTP Security Headers
+  const response = NextResponse.next();
+  
+  // Thiết lập các header bảo mật
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  
+  // Content-Security-Policy nghiêm ngặt hơn cho môi trường production
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://i.pravatar.cc https://images.unsplash.com https://lh3.googleusercontent.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com; frame-ancestors 'none';"
+    );
+  }
+
   // Lấy token từ cookie với secret từ environment hoặc fallback
   const token = await getToken({
     req: request,
@@ -94,28 +112,34 @@ export async function middleware(request: NextRequest) {
     // Nếu chưa đăng nhập, chuyển đến login
     if (!token) {
       const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', pathname);
+      url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
       return NextResponse.redirect(url);
     }
 
     // Kiểm tra email có trong danh sách admin không
     if (!token.email || !ADMIN_EMAILS.includes(token.email)) {
-      const url = new URL('/', request.url);
-      return NextResponse.redirect(url);
+      // Chuyển hướng đến trang chính với mã trạng thái 403 Forbidden
+      return new NextResponse('Forbidden', { status: 403 });
     }
   }
 
   // Nếu là đường dẫn được bảo vệ và chưa đăng nhập, chuyển hướng đến trang đăng nhập
   if (isProtectedPath(pathname) && !token) {
     const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', pathname);
+    url.searchParams.set('callbackUrl', encodeURIComponent(pathname));
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
   // Chỉ áp dụng cho các đường dẫn cần kiểm tra
-  matcher: ['/admin/:path*', '/account/:path*', '/checkout/:path*', '/api/protected/:path*'],
+  matcher: [
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|images|robots.txt).*)',
+    '/admin/:path*', 
+    '/account/:path*', 
+    '/checkout/:path*', 
+    '/api/protected/:path*'
+  ],
 };

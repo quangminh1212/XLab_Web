@@ -105,7 +105,10 @@ function extractIdFromUrl(url: string): string {
 export const dynamic = 'force-dynamic';
 
 // GET product handler
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -113,9 +116,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const id = params.id;
 
     // Find product
     const products = getProducts();
@@ -133,7 +134,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // UPDATE product handler
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -141,9 +145,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const id = params.id;
 
     // Find product
     const products = getProducts();
@@ -261,7 +263,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE product handler
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     // Check admin authentication
     const session = await getServerSession(authOptions);
@@ -269,9 +274,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Await params before accessing its properties
-    const safeParams = await params;
-    const id = safeParams.id;
+    const id = params.id;
 
     // Find product to get images for deletion
     const products = getProducts();
