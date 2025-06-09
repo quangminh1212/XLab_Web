@@ -5,6 +5,7 @@ import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const callbackUrl = searchParams?.get('callbackUrl') || '/';
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { t } = useLanguage();
 
   // Kiểm tra nếu đã đăng nhập thì chuyển hướng về trang chủ
   useEffect(() => {
@@ -55,9 +57,9 @@ export default function LoginPage() {
               <div className="absolute inset-0 bg-gradient-to-tr from-primary-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
           </Link>
-          <h2 className="mt-6 text-4xl font-extrabold text-gray-900 tracking-tight">Chào mừng trở lại!</h2>
+          <h2 className="mt-6 text-4xl font-extrabold text-gray-900 tracking-tight">{t('login.welcome')}</h2>
           <p className="mt-3 text-center text-lg text-gray-600 max-w-md mx-auto">
-            Để tiếp tục sử dụng các dịch vụ của XLab
+            {t('login.continue')}
           </p>
         </div>
       </div>
@@ -85,7 +87,7 @@ export default function LoginPage() {
 
           <div className="space-y-5">
             <p className="text-center text-gray-600 mb-4">
-              Kết nối an toàn với tài khoản Google của bạn
+              {t('login.connect')}
             </p>
 
             <button
@@ -134,29 +136,29 @@ export default function LoginPage() {
                   ></path>
                 </svg>
               )}
-              <span>Tiếp tục với Google</span>
+              <span>{t('login.google')}</span>
             </button>
           </div>
 
           {/* Phần thông tin bổ sung */}
           <div className="mt-6 pt-4 border-t border-gray-200">
             <div className="flex items-center justify-center text-sm text-gray-500">
-              <span>Bảo mật 100%</span>
+              <span>{t('login.secure')}</span>
             </div>
           </div>
         </div>
 
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
-            Bằng cách tiếp tục, bạn đồng ý với{' '}
+            {t('login.terms')}{' '}
             <Link href="/terms" className="text-primary-600 hover:underline font-medium">
-              Điều khoản dịch vụ
+              {t('login.termsLink')}
             </Link>{' '}
-            và{' '}
+            {t('login.and')}{' '}
             <Link href="/privacy" className="text-primary-600 hover:underline font-medium">
-              Chính sách bảo mật
+              {t('login.privacyLink')}
             </Link>{' '}
-            của chúng tôi.
+            {t('login.ourCompany')}
           </p>
         </div>
       </div>

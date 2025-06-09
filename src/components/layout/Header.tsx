@@ -9,6 +9,8 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Thêm interface cho voucher
 interface PublicCoupon {
@@ -31,6 +33,7 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -318,6 +321,15 @@ const Header = () => {
     ];
   };
 
+  // Các link chính của navigation
+  const navLinks = [
+    { href: '/', label: t('nav.home') },
+    { href: '/products', label: t('nav.products') },
+    { href: '/about', label: t('nav.about') },
+    { href: '/contact', label: t('nav.contact') },
+    { href: '/bao-hanh', label: t('nav.warranty') },
+  ];
+
   return (
     <>
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -338,36 +350,15 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-              <Link
-                href="/"
-                className={`${isActive('/')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Trang chủ
-              </Link>
-              <Link
-                href="/products"
-                className={`${isActive('/products')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Sản phẩm
-              </Link>
-              <Link
-                href="/about"
-                className={`${isActive('/about')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Giới thiệu
-              </Link>
-              <Link
-                href="/contact"
-                className={`${isActive('/contact')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Liên hệ
-              </Link>
-              <Link
-                href="/bao-hanh"
-                className={`${isActive('/bao-hanh')} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
-              >
-                Bảo hành
-              </Link>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`${isActive(link.href)} transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
 
             {/* Right Side - Balance + Auth + Cart */}
@@ -378,6 +369,9 @@ const Header = () => {
                   <BalanceDisplay />
                 </div>
               )}
+
+              {/* Language Switcher */}
+              <LanguageSwitcher className="mr-2" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -632,10 +626,14 @@ const Header = () => {
               )}
 
               {/* Cart Icon */}
-              <Link href="/cart" className="text-gray-700 hover:text-primary-600 relative">
+              <Link
+                href="/cart"
+                className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              >
+                <span className="sr-only">View cart</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 sm:h-5 sm:w-5"
+                  className="h-6 w-6"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -644,12 +642,14 @@ const Header = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <span className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center rounded-full text-xs">
-                  {itemCount}
-                </span>
+                {itemCount > 0 && (
+                  <span className="absolute top-0 right-0 -mt-1 -mr-1 bg-primary-500 rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
+                    {itemCount}
+                  </span>
+                )}
               </Link>
 
               {/* User Profile */}
@@ -750,28 +750,77 @@ const Header = () => {
                 )}
               </div>
 
-              {/* Mobile Menu Button */}
-              <button
-                onClick={toggleMenu}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                aria-label="Toggle menu"
-              >
-                <svg
-                  className="h-6 w-6 text-gray-700"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+              {/* Mobile menu button */}
+              <div className="flex md:hidden items-center space-x-3">
+                {/* Language Switcher for Mobile */}
+                <LanguageSwitcher className="mr-0.5" />
+
+                <Link
+                  href="/cart"
+                  className="relative p-1.5 rounded-full text-gray-700 hover:text-primary-600 hover:bg-gray-100"
                 >
-                  {isOpen ? (
-                    <path d="M6 18L18 6M6 6l12 12" />
-                  ) : (
-                    <path d="M4 6h16M4 12h16M4 18h16" />
+                  <span className="sr-only">View cart</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                  {itemCount > 0 && (
+                    <span className="absolute top-0 right-0 -mt-1 -mr-1 bg-primary-500 rounded-full w-4 h-4 flex items-center justify-center text-xs text-white">
+                      {itemCount}
+                    </span>
                   )}
-                </svg>
-              </button>
+                </Link>
+
+                <button
+                  onClick={toggleMenu}
+                  className="p-1.5 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <span className="sr-only">Open menu</span>
+                  {isOpen ? (
+                    <svg
+                      className="h-6 w-6"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="h-6 w-6"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 6h16M4 12h16M4 18h16"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -783,41 +832,16 @@ const Header = () => {
           } md:hidden absolute top-full left-0 right-0 bg-white shadow-lg border-t border-gray-100 py-2`}
         >
           <nav className="container mx-auto px-4 py-2 space-y-1">
-            <Link
-              href="/"
-              className={`${isActive('/')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Trang chủ
-            </Link>
-            <Link
-              href="/products"
-              className={`${isActive('/products')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Sản phẩm
-            </Link>
-            <Link
-              href="/about"
-              className={`${isActive('/about')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Giới thiệu
-            </Link>
-            <Link
-              href="/contact"
-              className={`${isActive('/contact')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Liên hệ
-            </Link>
-            <Link
-              href="/bao-hanh"
-              className={`${isActive('/bao-hanh')} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
-              onClick={() => setIsOpen(false)}
-            >
-              Bảo hành
-            </Link>
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`${isActive(link.href)} block px-4 py-2 text-base font-medium rounded-md hover:bg-gray-50`}
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>
