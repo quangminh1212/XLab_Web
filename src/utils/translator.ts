@@ -124,29 +124,37 @@ export const simpleDictionary: Record<string, Record<string, string>> = {
 };
 
 /**
- * Hàm lazy-load Google APIs để tránh lỗi khi chạy trên client-side
+ * Gọi Google Translate API trực tiếp thay vì sử dụng thư viện googleapis
  */
-async function loadGoogleTranslateAPI() {
-  if (typeof window !== 'undefined') {
-    // Đang chạy trên client side, không sử dụng Google API
-    return null;
+async function translateWithGoogleAPI(text: string, targetLang: string): Promise<string> {
+  if (!GOOGLE_API_KEY) {
+    return text;
   }
-  
-  if (!googleTranslateAPI) {
-    try {
-      // Dynamic import để tránh lỗi khi chạy trên client-side
-      const { google } = await import('googleapis');
-      googleTranslateAPI = google.translate({
-        version: 'v2',
-        auth: GOOGLE_API_KEY as string,
-      });
-    } catch (error) {
-      console.error('Failed to load Google Translate API:', error);
-      return null;
+
+  try {
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_API_KEY}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        q: text,
+        target: targetLang,
+        format: 'text',
+      }),
+    });
+
+    const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error.message || 'Translation API error');
     }
+
+    return data.data.translations[0].translatedText;
+  } catch (error) {
+    console.error('Translation API error:', error);
+    return text;
   }
-  
-  return googleTranslateAPI;
 }
 
 /**
@@ -166,34 +174,20 @@ export async function translateText(text: string, targetLang: string): Promise<s
     return simpleDictionary[targetLang][text];
   }
 
-  // Nếu đang chạy trên client hoặc không có API key, trả về text gốc
-  if (typeof window !== 'undefined' || !GOOGLE_API_KEY) {
+  // Nếu đang chạy trên client, trả về text gốc
+  if (typeof window !== 'undefined') {
     return text;
   }
 
-  try {
-    // Lazy load Google API
-    const translate = await loadGoogleTranslateAPI();
-    
-    if (!translate) {
-      return text;
+  // Sử dụng API Google Translate nếu đang chạy ở server và có API key
+  if (GOOGLE_API_KEY) {
+    try {
+      return await translateWithGoogleAPI(text, targetLang);
+    } catch (error) {
+      console.error('Translation error:', error);
     }
-
-    const response = await translate.translations.list({
-      q: [text],
-      target: targetLang,
-      format: 'text',
-    });
-
-    const translations = response.data.translations;
-    if (!translations || translations.length === 0) {
-      throw new Error('No translation found');
-    }
-
-    return translations[0].translatedText;
-  } catch (error) {
-    console.error('Translation error:', error);
-    // Fallback to dictionary
-    return simpleDictionary[targetLang]?.[text] || text;
   }
+
+  // Fallback to dictionary or original text
+  return simpleDictionary[targetLang]?.[text] || text;
 } 
