@@ -62,11 +62,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <div className="bg-white py-10 px-6 shadow-2xl sm:rounded-xl sm:px-12 border border-gray-100 relative backdrop-filter backdrop-blur-sm bg-opacity-80">
-          {/* Hiệu ứng ánh sáng */}
-          <div className="absolute -top-10 -left-10 w-full h-full bg-gradient-to-br from-primary-500/10 to-transparent rounded-full mix-blend-multiply filter blur-xl opacity-50"></div>
-          
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md z-10">
+        <div className="bg-white py-8 px-6 shadow-lg sm:rounded-xl sm:px-10 border border-gray-100 relative backdrop-filter backdrop-blur-sm bg-opacity-90">
           {error && (
             <div className="mb-6 p-3 bg-red-50 text-red-600 text-sm rounded-md border border-red-200 flex items-start">
               <svg
@@ -86,26 +83,16 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className="space-y-6">
-            {/* Icon bảo mật */}
-            <div className="flex justify-center">
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-            </div>
-
-            <p className="text-center text-sm text-gray-600 mb-6">
+          <div className="space-y-5">
+            <p className="text-center text-gray-600 mb-4">
               Đăng nhập an toàn với tài khoản Google của bạn
             </p>
 
             <button
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full flex justify-center items-center py-3.5 px-5 border border-gray-300 rounded-xl shadow-md text-base font-medium text-gray-700 bg-white hover:bg-gray-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden group"
+              className="w-full flex justify-center items-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-300"
             >
-              <span className="absolute w-0 h-0 transition-all duration-300 ease-out bg-primary-100 rounded-full group-hover:w-full group-hover:h-56 opacity-10"></span>
               {loading ? (
                 <svg
                   className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-500"
@@ -128,7 +115,7 @@ export default function LoginPage() {
                   ></path>
                 </svg>
               ) : (
-                <svg className="w-6 h-6 mr-3" viewBox="0 0 48 48">
+                <svg className="w-5 h-5 mr-2" viewBox="0 0 48 48">
                   <path
                     fill="#FFC107"
                     d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
@@ -147,22 +134,19 @@ export default function LoginPage() {
                   ></path>
                 </svg>
               )}
-              <span className="relative">Tiếp tục với Google</span>
+              <span>Tiếp tục với Google</span>
             </button>
           </div>
 
           {/* Phần thông tin bổ sung */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="flex items-center justify-center text-sm text-gray-500">
               <span>Đăng nhập an toàn 100%</span>
             </div>
           </div>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
             Bằng cách đăng nhập, bạn đồng ý với{' '}
             <Link href="/terms" className="text-primary-600 hover:underline font-medium">
