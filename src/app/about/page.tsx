@@ -271,8 +271,6 @@ export default function AboutPage() {
               // Xóa lớp active khỏi tất cả dots
               dots.forEach(dot => {
                 dot.classList.remove('slideshow-dot-active');
-                dot.classList.remove('opacity-100');
-                dot.classList.add('opacity-50');
               });
               
               // Tăng slideIndex
@@ -291,8 +289,6 @@ export default function AboutPage() {
               // Đánh dấu dot tương ứng là active
               if (dots[slideIndex - 1]) {
                 dots[slideIndex - 1].classList.add('slideshow-dot-active');
-                dots[slideIndex - 1].classList.remove('opacity-50');
-                dots[slideIndex - 1].classList.add('opacity-100');
               }
               
               // Gọi lại hàm sau 5 giây
