@@ -29,6 +29,10 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.login': 'Đăng nhập',
     'nav.logout': 'Đăng xuất',
     'nav.language': 'English',
+    'nav.account': 'Tài khoản',
+    'nav.admin': 'Quản trị',
+    'auth.signOut': 'Đăng xuất',
+    'auth.signIn': 'Đăng nhập',
     
     // Login page
     'login.welcome': 'Chào mừng trở lại!',
@@ -327,6 +331,10 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.login': 'Login',
     'nav.logout': 'Logout',
     'nav.language': 'Tiếng Việt',
+    'nav.account': 'Account',
+    'nav.admin': 'Admin',
+    'auth.signOut': 'Sign Out',
+    'auth.signIn': 'Sign In',
     
     // Login page
     'login.welcome': 'Welcome back!',
