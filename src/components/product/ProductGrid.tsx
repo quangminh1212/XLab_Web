@@ -30,6 +30,7 @@ interface Product {
   slug?: string;
   versions?: ProductVersion[];
   optionPrices?: { [key: string]: OptionPrice };
+  weeklyPurchases?: number;
 }
 
 interface ProductGridProps {
@@ -155,7 +156,7 @@ const ProductGrid = ({
         </div>
       )}
 
-      <div className={`grid ${getColumnsClass()} gap-responsive auto-rows-fr`}>
+      <div className={`grid ${getColumnsClass()} gap-6 auto-rows-fr`}>
         {products.map((product) => {
           const minPrice = calculateMinPrice(product);
           const originalPrice = calculateOriginalPrice(product, minPrice);
@@ -177,28 +178,32 @@ const ProductGrid = ({
             slug: product.slug ? String(product.slug) : '',
             onAddToCart: onAddToCart,
             onView: onProductView,
+            weeklyPurchases: product.weeklyPurchases ? Number(product.weeklyPurchases) : undefined,
           };
 
           console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
 
           return (
-            <ProductCard
-              key={safeProps.key}
-              id={safeProps.id}
-              name={safeProps.name}
-              description={safeProps.description}
-              price={safeProps.price}
-              originalPrice={safeProps.originalPrice}
-              image={safeProps.image}
-              category={safeProps.category}
-              rating={safeProps.rating}
-              reviewCount={safeProps.reviewCount}
-              totalSold={safeProps.totalSold}
-              isAccount={safeProps.isAccount}
-              slug={safeProps.slug}
-              onAddToCart={safeProps.onAddToCart}
-              onView={safeProps.onView}
-            />
+            <div className="h-full min-h-[520px] flex">
+              <ProductCard
+                key={safeProps.key}
+                id={safeProps.id}
+                name={safeProps.name}
+                description={safeProps.description}
+                price={safeProps.price}
+                originalPrice={safeProps.originalPrice}
+                image={safeProps.image}
+                category={safeProps.category}
+                rating={safeProps.rating}
+                reviewCount={safeProps.reviewCount}
+                totalSold={safeProps.totalSold}
+                isAccount={safeProps.isAccount}
+                slug={safeProps.slug}
+                onAddToCart={safeProps.onAddToCart}
+                onView={safeProps.onView}
+                weeklyPurchases={safeProps.weeklyPurchases}
+              />
+            </div>
           );
         })}
       </div>

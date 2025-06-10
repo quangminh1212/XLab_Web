@@ -18,6 +18,8 @@ interface Product {
   reviewCount?: number;
   isAccount?: boolean;
   type?: string;
+  totalSold?: number;
+  weeklyPurchases?: number;
 }
 
 interface RelatedProductsProps {
@@ -144,6 +146,8 @@ export default function RelatedProducts({
       rating: safeRating,
       reviewCount: safeReviewCount,
       isAccount: safeIsAccount,
+      totalSold: product.totalSold || 0,
+      weeklyPurchases: product.weeklyPurchases || 0,
     };
 
     console.log('RelatedProducts - Mapped product:', mapped);
@@ -156,7 +160,7 @@ export default function RelatedProducts({
         products={mappedProducts}
         title="Sản phẩm liên quan"
         subtitle="Bạn có thể quan tâm đến các sản phẩm khác tương tự"
-        columns={4}
+        columns={3}
       />
     </div>
   );

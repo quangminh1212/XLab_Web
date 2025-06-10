@@ -133,11 +133,14 @@ export default function ProductCard({
 
   // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
   const formatCurrency = (amount: number) => {
+    // Đảm bảo amount là số
+    const safeAmount = isNaN(amount) ? 0 : amount;
+    
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,
-    }).format(amount);
+    }).format(safeAmount);
   };
 
   const renderRatingStars = (rating: number) => {
@@ -310,7 +313,7 @@ export default function ProductCard({
   return (
     <Link
       href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
+      className={`group flex flex-col h-full w-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -457,7 +460,7 @@ export default function ProductCard({
               >
                 {formatCurrency(price)}
               </span>
-              {originalPrice && discountPercentage > 0 && (
+              {originalPrice && originalPrice > price && (
                 <span className="text-sm text-gray-400 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
@@ -465,27 +468,50 @@ export default function ProductCard({
             </div>
             <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-4"></div>}</div>
           </div>
-          {totalSold > 0 && (
-            <div
-              className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
+          <div className="flex flex-col items-end gap-2">
+            {weeklyPurchases > 0 && (
+              <div
+                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                />
-              </svg>
-              <span className="font-semibold">{totalSold}</span>
-            </div>
-          )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  />
+                </svg>
+                <span className="font-semibold">{weeklyPurchases}/tuần</span>
+              </div>
+            )}
+            {totalSold > 0 && (
+              <div
+                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+                <span className="font-semibold">{totalSold}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>

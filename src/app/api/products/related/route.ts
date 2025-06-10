@@ -80,6 +80,36 @@ export async function GET(request: NextRequest) {
         formattedProduct.imageUrl = '/images/placeholder/product-placeholder.jpg';
         formattedProduct.image = '/images/placeholder/product-placeholder.jpg';
       }
+
+      // Đảm bảo giá được xử lý đúng
+      if (formattedProduct.versions && formattedProduct.versions.length > 0) {
+        // Sử dụng giá từ phiên bản đầu tiên nếu không có giá cố định
+        if (!formattedProduct.price || formattedProduct.price === 0) {
+          formattedProduct.price = formattedProduct.versions[0].price;
+        }
+        // Sử dụng giá gốc từ phiên bản đầu tiên nếu không có giá gốc cố định
+        if (!formattedProduct.originalPrice) {
+          formattedProduct.originalPrice = formattedProduct.versions[0].originalPrice;
+        }
+      } else if (formattedProduct.optionPrices) {
+        // Nếu có optionPrices, sử dụng giá của tùy chọn đầu tiên
+        const firstOption = Object.values(formattedProduct.optionPrices)[0] as any;
+        if (firstOption && (!formattedProduct.price || formattedProduct.price === 0)) {
+          formattedProduct.price = firstOption.price;
+          formattedProduct.originalPrice = firstOption.originalPrice;
+        }
+      }
+      
+      // Đảm bảo luôn có giá
+      if (!formattedProduct.price || formattedProduct.price === 0) {
+        // Nếu có salePrice, sử dụng nó
+        if (formattedProduct.salePrice) {
+          formattedProduct.price = formattedProduct.salePrice;
+        } else {
+          // Đặt giá mặc định nếu không có giá
+          formattedProduct.price = 0;
+        }
+      }
       
       return formattedProduct;
     });
