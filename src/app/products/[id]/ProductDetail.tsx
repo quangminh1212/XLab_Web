@@ -22,84 +22,13 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
-  const { t, language } = useLanguage();
-  
-  // Xử lý để chỉ hiển thị nội dung theo ngôn ngữ được chọn
-  const getLocalizedDescription = () => {
-    if (!description) return '';
-    
-    // Kiểm tra xem description có chứa cả phiên bản tiếng Việt không
-    if (description.includes('<strong>Tiếng Việt:</strong>')) {
-      if (language === 'vi') {
-        // Tìm tất cả các phần tiếng Việt trong mô tả
-        const vietnameseContent = [];
-        let currentIndex = 0;
-        
-        while (true) {
-          // Tìm điểm bắt đầu của phần tiếng Việt
-          const viTagIndex = description.indexOf('<strong>Tiếng Việt:</strong>', currentIndex);
-          if (viTagIndex === -1) break;
-          
-          // Tìm điểm bắt đầu của phần tiếng Anh tiếp theo hoặc đến hết nội dung
-          let nextEnglishIndex = description.indexOf('<strong>Tiếng Việt:</strong>', viTagIndex + 30);
-          if (nextEnglishIndex === -1) {
-            // Không còn phần tiếng Việt nào nữa, lấy đến hết
-            nextEnglishIndex = description.length;
-          }
-          
-          // Điểm bắt đầu thực sự của nội dung (sau thẻ đóng </p> sau strong)
-          const contentStartIndex = description.indexOf('</p>', viTagIndex) + 4;
-          
-          // Lấy nội dung tiếng Việt
-          const vietnameseSection = description.substring(contentStartIndex, nextEnglishIndex);
-          vietnameseContent.push(vietnameseSection);
-          
-          // Cập nhật vị trí hiện tại
-          currentIndex = nextEnglishIndex;
-        }
-        
-        // Trả về tất cả các phần tiếng Việt đã tìm thấy
-        return vietnameseContent.join('');
-      } else {
-        // Trả về nội dung tiếng Anh (loại bỏ các phần tiếng Việt)
-        let englishContent = description;
-        let currentIndex = 0;
-        
-        while (true) {
-          // Tìm điểm bắt đầu của phần tiếng Việt
-          const viTagIndex = englishContent.indexOf('<strong>Tiếng Việt:</strong>', currentIndex);
-          if (viTagIndex === -1) break;
-          
-          // Tìm điểm bắt đầu của phần tiếng Anh tiếp theo hoặc đến hết nội dung
-          let nextEnglishIndex = englishContent.indexOf('<strong>Tiếng Việt:</strong>', viTagIndex + 30);
-          if (nextEnglishIndex === -1) {
-            // Không còn phần tiếng Việt nào nữa, lấy đến hết
-            nextEnglishIndex = englishContent.length;
-          }
-          
-          // Loại bỏ phần tiếng Việt
-          const beforeVi = englishContent.substring(0, viTagIndex);
-          const afterNextVi = englishContent.substring(nextEnglishIndex);
-          englishContent = beforeVi + afterNextVi;
-          
-          // Reset currentIndex vì chuỗi đã thay đổi
-          currentIndex = beforeVi.length;
-        }
-        
-        return englishContent;
-      }
-    }
-    
-    // Trường hợp không có phần tiếng Việt, trả về nguyên bản
-    return description;
-  };
-  
+  const { t } = useLanguage();
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.details')}</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
         <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
-          <RichTextContent content={getLocalizedDescription()} className="product-description" />
+          <RichTextContent content={description} className="product-description" />
         </div>
 
         <style jsx global>{`
