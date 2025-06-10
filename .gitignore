@@ -13,6 +13,8 @@
 cypress/videos
 cypress/screenshots
 /__tests__/output
+*.test.js
+*.spec.js
 
 # next.js
 /.next/
@@ -36,6 +38,7 @@ next-fix-all.log
 # local env files
 .env*.local
 !.env.example
+.env
 
 # vercel
 .vercel
@@ -50,8 +53,6 @@ next-env.d.ts
 # Secure user data - NEVER commit these!
 /data/backups/
 *.user_*.json
-
-
 
 # IDE
 .idea
@@ -99,3 +100,9 @@ run-fixed.bat
 /data/backups/
 *.bak
 *.temp
+
+# user data files
+data/users/*.json
+data/users.json
+data/balances.json
+data/notifications.json
