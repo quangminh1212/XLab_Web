@@ -121,7 +121,7 @@ const ProductSpecifications = ({
 };
 
 export default function ProductDetail({ product }: { product: ProductType }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   
   // Thêm class để đánh dấu khi component đã load xong
   useEffect(() => {
@@ -167,6 +167,11 @@ export default function ProductDetail({ product }: { product: ProductType }) {
   // State để hiện thị hiệu ứng khi thêm vào giỏ
   const [showAddToCartAnimation, setShowAddToCartAnimation] = useState<boolean>(false);
   const [addedToCartMessage, setAddedToCartMessage] = useState<string>('');
+
+  // Get description based on language
+  const getDescription = () => {
+    return language === 'vi' && product.shortDescriptionVi ? product.shortDescriptionVi : product.shortDescription;
+  };
 
   // Xử lý thêm tùy chọn mới
   const handleAddOption = () => {
@@ -578,7 +583,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
               </div>
 
-              <p className="mt-4 text-gray-600 text-lg">{product.shortDescription || ''}</p>
+              <p className="mt-4 text-gray-600 text-lg">{getDescription() || ''}</p>
 
               {/* Quantity selector */}
               <div className="mt-6">
