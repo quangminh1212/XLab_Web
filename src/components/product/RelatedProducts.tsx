@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ProductGrid from './ProductGrid';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Product {
   id: string;
@@ -33,6 +34,7 @@ export default function RelatedProducts({
   categoryId,
   limit = 4,
 }: RelatedProductsProps) {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -158,8 +160,8 @@ export default function RelatedProducts({
     <div className="mt-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <ProductGrid
         products={mappedProducts}
-        title="Sản phẩm liên quan"
-        subtitle="Bạn có thể quan tâm đến các sản phẩm khác tương tự"
+        title={t('product.relatedProducts')}
+        subtitle={t('product.relatedProductsSubtitle')}
         columns={3}
       />
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -42,16 +42,60 @@ export default function ProductCard({
   onAddToCart = () => {},
   onView = () => {},
 }: ProductCardProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showAddedEffect, setShowAddedEffect] = useState(false);
+  const [translatedDescription, setTranslatedDescription] = useState<string>(description);
+  const [translatedName, setTranslatedName] = useState<string>(name);
   const router = useRouter();
   const { addItem, clearCart } = useCart();
 
   // Log the image URL for debugging
   console.log(`ProductCard image URL for ${name}:`, image);
+
+  // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
+  useEffect(() => {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
+      const fetchTranslation = async () => {
+        try {
+          const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
+          if (response.ok) {
+            const data = await response.json();
+            console.log(`ProductCard translation data for ${id}:`, data);
+            // Cập nhật mô tả ngắn đã dịch
+            if (data && data.shortDescription) {
+              setTranslatedDescription(data.shortDescription);
+            } else {
+              setTranslatedDescription(description); // Fallback to original if no translation
+            }
+            
+            // Cập nhật tên sản phẩm đã dịch
+            if (data && data.name) {
+              setTranslatedName(data.name);
+            } else {
+              setTranslatedName(name); // Fallback to original if no translation
+            }
+          } else {
+            setTranslatedDescription(description); // Fallback to original
+            setTranslatedName(name);
+          }
+        } catch (error) {
+          console.error('Error fetching translation:', error);
+          setTranslatedDescription(description); // Fallback to original
+          setTranslatedName(name);
+        }
+      };
+
+      fetchTranslation();
+    } else {
+      // Nếu tiếng Việt, sử dụng mô tả và tên gốc
+      setTranslatedDescription(description);
+      setTranslatedName(name);
+    }
+  }, [description, name, language, id]);
 
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
@@ -80,8 +124,8 @@ export default function ProductCard({
   // Get the final image URL
   const cleanImageUrl = getValidImageUrl(image);
 
-  // Sử dụng mô tả ngắn thay vì cắt mô tả dài
-  const shortDescription = description || '';
+  // Sử dụng mô tả đã được dịch
+  const shortDescription = translatedDescription || '';
 
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage =
@@ -191,7 +235,7 @@ export default function ProductCard({
     // Thêm sản phẩm vào giỏ hàng trực tiếp từ component
     addItem({
       id,
-      name,
+      name: translatedName,
       price,
       quantity: 1,
       image: displayImageUrl,
@@ -413,7 +457,7 @@ export default function ProductCard({
                 clearCart();
                 addItem({
                   id,
-                  name,
+                  name: translatedName,
                   price,
                   quantity: 1,
                   image,
@@ -447,7 +491,7 @@ export default function ProductCard({
           </div>
         )}
         <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
-          {name}
+          {translatedName}
         </h3>
         <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
           {shortDescription}
