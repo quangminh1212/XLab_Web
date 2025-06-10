@@ -91,7 +91,7 @@ export default function Footer() {
           {/* Giới thiệu */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.about')}</span>
+              <span className="relative z-10">{t('footer.aboutLink')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <div className="space-y-3 text-center sm:text-left">
@@ -154,7 +154,7 @@ export default function Footer() {
             {/* Điều hướng */}
             <div className="pt-4 border-t border-slate-700 w-full">
               <h4 className="text-white text-base font-semibold mb-3 text-center sm:text-left">
-                {t('footer.navigation')}
+                {t('footer.navigationLinks')}
               </h4>
               <div className="space-y-3 text-center sm:text-left">
                 <Link
@@ -187,7 +187,7 @@ export default function Footer() {
           {/* Thông tin liên hệ */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.contact')}</span>
+              <span className="relative z-10">{t('footer.contactLink')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-3 sm:space-y-4 text-center sm:text-left mb-4">

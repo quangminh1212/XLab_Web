@@ -192,24 +192,21 @@ const translations: Record<Language, Record<string, string>> = {
     'cart.applyVoucher': 'Áp dụng',
 
     // Footer
-    'footer.company': 'Công ty',
-    'footer.about': 'Giới thiệu',
-    'footer.contact': 'Liên hệ',
-    'footer.careers': 'Tuyển dụng',
-    'footer.terms': 'Điều khoản dịch vụ',
-    'footer.privacy': 'Chính sách bảo mật',
+    'footer.aboutLink': 'Giới thiệu',
+    'footer.contactLink': 'Liên hệ',
+    'footer.productsAndServices': 'Sản phẩm & Dịch vụ',
+    'footer.products': 'Sản phẩm',
     'footer.services': 'Dịch vụ',
-    'footer.softwareDev': 'Phát triển phần mềm',
-    'footer.consulting': 'Tư vấn công nghệ',
-    'footer.cloudServices': 'Dịch vụ đám mây',
-    'footer.techSupport': 'Hỗ trợ kỹ thuật',
-    'footer.resources': 'Tài nguyên',
-    'footer.blog': 'Blog',
-    'footer.documentation': 'Tài liệu',
-    'footer.faq': 'FAQ',
-    'footer.support': 'Hỗ trợ',
-    'footer.copyright': '© 2023 XLab. Tất cả các quyền được bảo lưu.',
-    'footer.followUs': 'Theo dõi chúng tôi',
+    'footer.testimonials': 'Đánh giá',
+    'footer.navigationLinks': 'Điều hướng',
+    'footer.pricing': 'Bảng giá',
+    'footer.copyright': 'Bản quyền thuộc về công ty',
+    'footer.acceptedPayments': 'Chấp nhận thanh toán',
+    'footer.companyDescription1': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
+    'footer.companyDescription2': 'Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.',
+    'footer.customers': '500+ Khách hàng',
+    'footer.years': '5+ Năm',
+    'footer.support': '24/7 Hỗ trợ',
 
     // Products page
     'products.title': 'Sản phẩm',
@@ -297,21 +294,6 @@ const translations: Record<Language, Record<string, string>> = {
     'warranty.contactNow': 'Liên hệ ngay',
     'warranty.faq': 'Câu hỏi thường gặp',
 
-    // Footer
-    'footer.productsAndServices': 'Sản phẩm & Dịch vụ',
-    'footer.products': 'Sản phẩm',
-    'footer.services': 'Dịch vụ',
-    'footer.testimonials': 'Đánh giá',
-    'footer.navigation': 'Điều hướng',
-    'footer.pricing': 'Bảng giá',
-    'footer.copyright': 'Bản quyền thuộc về công ty',
-    'footer.acceptedPayments': 'Chấp nhận thanh toán',
-    'footer.companyDescription1': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
-    'footer.companyDescription2': 'Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.',
-    'footer.customers': '500+ Khách hàng',
-    'footer.years': '5+ Năm',
-    'footer.support': '24/7 Hỗ trợ',
-
     // Notifications
     'notifications.title': 'Thông báo',
     'notifications.markAllRead': 'Đánh dấu tất cả đã đọc',
@@ -319,6 +301,21 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Orders
     'orders.myOrders': 'Đơn hàng của tôi',
+
+    // Footer - Additional
+    'footer.company': 'Công ty',
+    'footer.careers': 'Tuyển dụng',
+    'footer.terms': 'Điều khoản dịch vụ',
+    'footer.privacy': 'Chính sách bảo mật',
+    'footer.softwareDev': 'Phát triển phần mềm',
+    'footer.consulting': 'Tư vấn công nghệ',
+    'footer.cloudServices': 'Dịch vụ đám mây',
+    'footer.techSupport': 'Hỗ trợ kỹ thuật',
+    'footer.resources': 'Tài nguyên',
+    'footer.blog': 'Blog',
+    'footer.documentation': 'Tài liệu',
+    'footer.faq': 'FAQ',
+    'footer.followUs': 'Theo dõi chúng tôi',
   },
   en: {
     // Header
@@ -488,13 +485,13 @@ const translations: Record<Language, Record<string, string>> = {
     'cart.enterCoupon': 'Enter coupon code',
 
     // Footer
-    'footer.about': 'About XLab',
-    'footer.contact': 'Contact',
+    'footer.aboutLink': 'About XLab',
+    'footer.contactLink': 'Contact',
     'footer.productsServices': 'Products & Services',
     'footer.productsList': 'Products',
     'footer.servicesList': 'Services',
     'footer.testimonialsList': 'Testimonials',
-    'footer.navigation': 'Navigation',
+    'footer.navigationLinks': 'Navigation',
     'footer.pricing': 'Pricing',
     'footer.copyright': 'Copyright owned by',
     'footer.acceptedPayments': 'Accepted Payments',
@@ -597,6 +594,21 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Orders
     'orders.myOrders': 'My Orders',
+
+    // Footer - Additional
+    'footer.company': 'Company',
+    'footer.careers': 'Careers',
+    'footer.terms': 'Terms of Service',
+    'footer.privacy': 'Privacy Policy',
+    'footer.softwareDev': 'Software Development',
+    'footer.consulting': 'Technology Consulting',
+    'footer.cloudServices': 'Cloud Services',
+    'footer.techSupport': 'Technical Support',
+    'footer.resources': 'Resources',
+    'footer.blog': 'Blog',
+    'footer.documentation': 'Documentation',
+    'footer.faq': 'FAQ',
+    'footer.followUs': 'Follow Us',
   },
 };
 
@@ -631,40 +643,44 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
       let text = translations[language]?.[key] || key;
       
-      // Chỉ xử lý thay thế tham số khi có tham số được truyền vào
-      if (params && typeof params === 'object') {
-        // Kiểm tra xem params có phải là object rỗng không
-        if (Object.keys(params).length > 0) {
-          // Thay thế các tham số trong chuỗi
-          Object.entries(params).forEach(([param, value]) => {
-            // Xác định mẫu thay thế an toàn
-            const regex = new RegExp(`\\{${param}\\}`, 'g');
-            
-            // Xử lý các trường hợp giá trị
-            if (value !== undefined && value !== null) {
-              try {
-                // Chuyển đổi an toàn sang chuỗi
-                const strValue = String(value);
-                text = text.replace(regex, strValue);
-              } catch (err) {
-                // Nếu có lỗi khi chuyển đổi, thay thế bằng chuỗi rỗng
-                text = text.replace(regex, '');
-                console.warn(`Error converting value for param ${param}:`, err);
-              }
-            } else {
-              // Thay thế giá trị undefined hoặc null bằng chuỗi rỗng
-              text = text.replace(regex, '');
-            }
-          });
-        }
+      // Thay thế tham số nếu có
+      if (params && typeof params === 'object' && Object.keys(params).length > 0) {
+        Object.entries(params).forEach(([param, value]) => {
+          const regex = new RegExp(`\\{${param}\\}`, 'g');
+          const strValue = convertValueToString(value, param);
+          text = text.replace(regex, strValue);
+        });
       }
       
       return text;
     } catch (error) {
       console.error('Translation error:', error);
-      return key || ''; // Trả về key gốc hoặc chuỗi rỗng nếu có lỗi xảy ra
+      return typeof key === 'string' ? key : '';
     }
   };
+  
+  // Hàm hỗ trợ chuyển đổi giá trị thành chuỗi an toàn
+  function convertValueToString(value: any, paramName: string): string {
+    if (value === undefined || value === null) {
+      return '';
+    }
+    
+    if (typeof value === 'object') {
+      try {
+        return String(value);
+      } catch (err) {
+        console.warn(`Error converting object param ${paramName}:`, err);
+        return '';
+      }
+    }
+    
+    try {
+      return String(value);
+    } catch (err) {
+      console.warn(`Error converting param ${paramName}:`, err);
+      return '';
+    }
+  }
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
