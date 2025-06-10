@@ -21,14 +21,45 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 });
 
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
-const ProductDescription = ({ description }: { description: string }) => {
-  const { t } = useLanguage();
+const ProductDescription = ({ description, productId }: { description: string, productId: string }) => {
+  const { t, language } = useLanguage();
+  const [translatedDescription, setTranslatedDescription] = useState<string>(description);
+
+  useEffect(() => {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
+      const fetchTranslation = async () => {
+        try {
+          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.description) {
+              setTranslatedDescription(data.description);
+            } else {
+              setTranslatedDescription(description); // Fallback to original if no translation
+            }
+          } else {
+            setTranslatedDescription(description); // Fallback to original
+          }
+        } catch (error) {
+          console.error('Error fetching translation:', error);
+          setTranslatedDescription(description); // Fallback to original
+        }
+      };
+
+      fetchTranslation();
+    } else {
+      // Nếu tiếng Việt, sử dụng mô tả gốc
+      setTranslatedDescription(description);
+    }
+  }, [description, language, productId]);
+
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.details')}</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
         <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
-          <RichTextContent content={description} className="product-description" />
+          <RichTextContent content={translatedDescription} className="product-description" />
         </div>
 
         <style jsx global>{`
@@ -667,7 +698,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
         {/* Product description */}
         <div className="max-w-6xl mx-auto">
-          <ProductDescription description={product.description} />
+          <ProductDescription description={product.description} productId={product.id.toString()} />
         </div>
 
         {/* Related products */}
