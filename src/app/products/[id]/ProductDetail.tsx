@@ -33,7 +33,8 @@ const ProductDescription = ({ description, productId }: { description: string, p
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            if (data.description) {
+            console.log("ProductDescription translation data:", data); // Ghi log để debug
+            if (data && data.description) {
               setTranslatedDescription(data.description);
             } else {
               setTranslatedDescription(description); // Fallback to original if no translation
@@ -125,7 +126,8 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            if (data.shortDescription) {
+            console.log("ProductShortDescription translation data:", data); // Ghi log để debug
+            if (data && data.shortDescription) {
               setTranslatedShortDescription(data.shortDescription);
             } else {
               setTranslatedShortDescription(shortDescription); // Fallback to original if no translation
@@ -164,7 +166,8 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            if (data.features) {
+            console.log("ProductFeatures translation data:", data); // Ghi log để debug
+            if (data && data.features) {
               setTranslatedFeatures(data.features);
             } else {
               setTranslatedFeatures(features); // Fallback to original if no translation
@@ -231,10 +234,11 @@ const ProductOptions = ({
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            if (data.productOptions) {
+            console.log("ProductOptions translation data:", data); // Ghi log để debug
+            if (data && data.productOptions) {
               setTranslatedOptions(data.productOptions);
             }
-            if (data.options) {
+            if (data && data.options) {
               setOptionsTitle(data.options);
             }
           }

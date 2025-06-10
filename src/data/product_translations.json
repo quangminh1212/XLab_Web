@@ -21,8 +21,22 @@
       "options": "Options"
     },
     "grok": {
+      "description": "<p>Grok AI is a powerful artificial intelligence system developed by xAI that can automatically analyze and process large amounts of of data quickly.</p><p>Grok supports natural language conversation in English and can help with research, content creation, data analysis, and many other tasks.</p>",
+      "shortDescription": "Grok AI is an intelligent system that can process and analyze data quickly, supporting research and content creation.",
+      "features": [
+        "Real-time data analysis",
+        "Fast processing of large datasets",
+        "Natural language conversation capabilities",
+        "Research assistance",
+        "Content generation tools",
+        "Regular model updates",
+        "API access for developers",
+        "Advanced data visualization"
+      ],
       "productOptions": {
-        "Full - Dùng riêng - 1 Tháng": "Full - Private Use - 1 Month" 
+        "Full - Dùng riêng - 1 Tháng": "Full - Private Use - 1 Month",
+        "Full - Dùng riêng - 3 Tháng": "Full - Private Use - 3 Months",
+        "Full - Dùng riêng - 6 Tháng": "Full - Private Use - 6 Months"
       },
       "options": "Options"
     }

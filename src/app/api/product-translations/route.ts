@@ -22,10 +22,15 @@ export async function GET(request: NextRequest) {
     const translationsData = fs.readFileSync(translationsPath, 'utf8');
     const translations = JSON.parse(translationsData);
 
+    console.log(`Translation request for id: ${id}, lang: ${lang}`);
+    console.log(`Available translations for ${lang}:`, Object.keys(translations[lang] || {}));
+
     // Kiểm tra nếu có bản dịch cho sản phẩm này với ngôn ngữ được chỉ định
     if (translations[lang] && translations[lang][id]) {
+      console.log(`Found translation for ${id}`);
       return NextResponse.json(translations[lang][id]);
     } else {
+      console.log(`No translation found for ${id} in language ${lang}`);
       return NextResponse.json({ message: 'No translation available' }, { status: 404 });
     }
   } catch (error) {
