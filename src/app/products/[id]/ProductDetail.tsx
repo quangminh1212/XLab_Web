@@ -23,12 +23,32 @@ const VoiceTypingDemo = dynamic(() => import('./VoiceTypingDemo'), {
 // Component xử lý hiển thị mô tả sản phẩm với Rich Text Content
 const ProductDescription = ({ description }: { description: string }) => {
   const { t } = useLanguage();
+  
+  // Hàm lấy mô tả theo ngôn ngữ cho sản phẩm cụ thể
+  const getLocalizedDescription = () => {
+    // Truy vết URL hiện tại để xác định sản phẩm đang xem
+    const path = window.location.pathname;
+    const productId = path.split('/').pop();
+    
+    // Kiểm tra xem có khóa dịch cho sản phẩm này không
+    const translationKey = `product.desc.${productId}`;
+    const localized = t(translationKey, {});
+    
+    // Nếu có mô tả được dịch, sử dụng nó, nếu không sử dụng mô tả gốc
+    if (localized && localized !== translationKey) {
+      return localized;
+    }
+    
+    // Trả về mô tả gốc nếu không có bản dịch
+    return description;
+  };
+  
   return (
     <div className="mt-10">
       <h2 className="text-2xl font-semibold mb-6">{t('product.details')}</h2>
       <div className="bg-white p-8 rounded-lg shadow-sm">
         <div className="prose prose-sm sm:prose lg:prose-xl xl:prose-2xl max-w-none mx-auto">
-          <RichTextContent content={description} className="product-description" />
+          <RichTextContent content={getLocalizedDescription()} className="product-description" />
         </div>
 
         <style jsx global>{`
@@ -403,6 +423,18 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     }
   };
 
+  // Lấy mô tả ngắn theo ngôn ngữ
+  const getLocalizedShortDescription = () => {
+    const translationKey = `product.desc.${product.id}.short`;
+    const localized = t(translationKey, {});
+    
+    if (localized && localized !== translationKey) {
+      return localized;
+    }
+    
+    return product.shortDescription || '';
+  };
+
   if (!product) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -578,7 +610,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 )}
               </div>
 
-              <p className="mt-4 text-gray-600 text-lg">{product.shortDescription || ''}</p>
+              <p className="mt-4 text-gray-600 text-lg">{getLocalizedShortDescription()}</p>
 
               {/* Quantity selector */}
               <div className="mt-6">

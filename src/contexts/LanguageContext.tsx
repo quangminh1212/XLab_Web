@@ -322,6 +322,28 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.documentation': 'Tài liệu',
     'footer.faq': 'FAQ',
     'footer.followUs': 'Theo dõi chúng tôi',
+
+    // Product descriptions for multilingual support
+    'product.desc.chatgpt': 'ChatGPT là một chat bot cực mạnh hiện nay. Có thể trả lời được rất nhiều các câu hỏi cả tiếng anh và tiếng việt. Có thể hỗ trợ cả lập trình từ Front-end cho tới Back-end.',
+    'product.desc.chatgpt.short': 'ChatGPT là một chat bot AI cực mạnh, có thể trả lời được rất nhiều câu hỏi cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.',
+    'product.desc.grok': 'Grok AI giúp tự động phân tích và xử lý dữ liệu lớn nhanh chóng, hỗ trợ ra quyết định chính xác và tiết kiệm thời gian. Ứng dụng rộng rãi trong nhiều lĩnh vực như phân tích thị trường, chăm sóc khách hàng tự động, phát hiện gian lận, và tối ưu hóa quy trình kinh doanh.',
+    'product.desc.grok.short': 'Grok AI giúp tự động phân tích dữ liệu lớn, hỗ trợ quyết định trong phân tích thị trường, chăm sóc khách hàng và tối ưu hóa kinh doanh.',
+    
+    // Product category names and descriptions
+    'category.ai-tools': 'Công cụ AI',
+    'category.ai-tools.desc': 'Các công cụ trí tuệ nhân tạo tiên tiến để tự động hóa tác vụ và nâng cao năng suất',
+    'category.office': 'Công cụ văn phòng',
+    'category.office.desc': 'Các công cụ thiết yếu để tạo, chỉnh sửa và quản lý tài liệu',
+    'category.education': 'Giáo dục',
+    'category.education.desc': 'Phần mềm và nền tảng học tập cho học sinh và giáo viên',
+    'category.development': 'Công cụ phát triển',
+    'category.development.desc': 'Công cụ cho nhà phát triển phần mềm và lập trình viên',
+    'category.multimedia': 'Đa phương tiện',
+    'category.multimedia.desc': 'Phần mềm chỉnh sửa âm thanh, video và hình ảnh',
+    'category.security': 'Bảo mật',
+    'category.security.desc': 'Công cụ bảo vệ dữ liệu và duy trì quyền riêng tư',
+    'category.business': 'Kinh doanh',
+    'category.business.desc': 'Giải pháp phần mềm cho quản lý và vận hành doanh nghiệp',
   },
   en: {
     // Header
@@ -521,7 +543,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Products page
     'products.title': 'Products',
-    'products.subtitle': 'List of high-quality software and services with the best prices on the market.',
+    'products.subtitle': 'List of high-quality software and services at the best market prices.',
     'products.pageTitle': 'Software | XLab - Software and Services',
     'products.all': 'All',
     'products.software': 'Software',
@@ -534,12 +556,12 @@ const translations: Record<Language, Record<string, string>> = {
     'products.sortPopular': 'Most Popular',
     'products.sortRating': 'Highest Rated',
     'products.loading': 'Loading products...',
-    'products.errorTitle': 'Unable to load products',
-    'products.loadError': 'Unable to load products',
+    'products.errorTitle': 'Cannot load products',
+    'products.loadError': 'Cannot load products',
     'products.invalidData': 'Invalid data format',
-    'products.error': 'An error occurred',
-    'products.tryAgain': 'Try Again',
-    'products.backToHome': 'Back to Home',
+    'products.error': 'An error has occurred',
+    'products.tryAgain': 'Try again',
+    'products.backToHome': 'Back to home',
     'products.accounts': 'Learning Accounts',
     
     // Product detail page
@@ -567,6 +589,28 @@ const translations: Record<Language, Record<string, string>> = {
     'product.inStock': 'In stock',
     'product.tryDemo': 'Try demo',
     'product.free': 'Free',
+    
+    // Product descriptions for multilingual support
+    'product.desc.chatgpt': 'ChatGPT is a powerful AI chatbot that can answer questions in both English and Vietnamese and help with programming from front-end to back-end development.',
+    'product.desc.chatgpt.short': 'ChatGPT is a powerful AI chatbot that can answer questions in both English and Vietnamese, supporting programming from Front-end to Back-end.',
+    'product.desc.grok': 'Grok AI helps automatically analyze and process large data quickly, supporting accurate decision-making and saving time. It has wide applications in fields such as market analysis, automated customer service, fraud detection, and business process optimization.',
+    'product.desc.grok.short': 'Grok AI automates big data analysis for faster decision-making in market analysis, customer service, and business optimization.',
+    
+    // Product category names and descriptions
+    'category.ai-tools': 'AI Tools',
+    'category.ai-tools.desc': 'Advanced artificial intelligence tools to automate tasks and enhance productivity',
+    'category.office': 'Office Tools',
+    'category.office.desc': 'Essential tools for document creation, editing, and management',
+    'category.education': 'Education',
+    'category.education.desc': 'Learning software and platforms for students and educators',
+    'category.development': 'Development Tools',
+    'category.development.desc': 'Tools for software developers and programmers',
+    'category.multimedia': 'Multimedia',
+    'category.multimedia.desc': 'Software for audio, video, and image editing',
+    'category.security': 'Security',
+    'category.security.desc': 'Tools to protect your data and maintain privacy',
+    'category.business': 'Business',
+    'category.business.desc': 'Software solutions for business management and operations',
 
     // Warranty page
     'warranty.title': 'Warranty',
