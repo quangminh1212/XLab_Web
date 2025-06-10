@@ -1,11 +1,33 @@
-import type { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Giới thiệu | XLab - Phần mềm và Dịch vụ',
-  description:
-    'Tìm hiểu về XLab - Đơn vị tiên phong trong lĩnh vực phát triển phần mềm và các giải pháp công nghệ tại Việt Nam',
+import { useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+const AboutLayout = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useLanguage();
+  
+  // Cập nhật title và meta description khi component mount hoặc ngôn ngữ thay đổi
+  useEffect(() => {
+    // Sử dụng template string để tạo ra một chuỗi duy nhất
+    document.title = `${t('about.title')} | XLab`;
+    
+    // Cập nhật meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', t('about.subtitle'));
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = t('about.subtitle');
+      document.head.appendChild(meta);
+    }
+  }, [t]);
+
+  return (
+    <div className="about-layout">
+      {children}
+    </div>
+  );
 };
 
-export default function AboutLayout({ children }: { children: React.ReactNode }) {
-  return <div className="about-layout">{children}</div>;
-}
+export default AboutLayout;
