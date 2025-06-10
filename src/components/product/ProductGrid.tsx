@@ -21,7 +21,8 @@ interface Product {
   price?: number;
   originalPrice?: number;
   image: string;
-  category?: string;
+  category?: string | object;
+  categories?: Array<string | { id: string | object; name: string | object; slug?: string | object }>;
   rating?: number;
   reviewCount?: number;
   totalSold?: number;
@@ -119,6 +120,32 @@ const ProductGrid = ({
     return product.originalPrice;
   };
 
+  // Xử lý category từ sản phẩm
+  const extractCategory = (product: Product): string | object | undefined => {
+    // Nếu đã có category
+    if (product.category) {
+      return product.category;
+    }
+    
+    // Nếu có categories array
+    if (product.categories && product.categories.length > 0) {
+      const firstCategory = product.categories[0];
+      
+      // Nếu category là string
+      if (typeof firstCategory === 'string') {
+        return firstCategory;
+      }
+      
+      // Nếu category là object
+      if (typeof firstCategory === 'object' && firstCategory !== null) {
+        // Trả về object để ProductCard xử lý
+        return firstCategory;
+      }
+    }
+    
+    return undefined;
+  };
+
   return (
     <div className="w-full">
       {(title || subtitle) && (
@@ -142,7 +169,7 @@ const ProductGrid = ({
             price: Number(minPrice) || 0,
             originalPrice: originalPrice ? Number(originalPrice) : undefined,
             image: String(product.image || ''),
-            category: product.category ? String(product.category) : undefined,
+            category: extractCategory(product),
             rating: product.rating ? Number(product.rating) : undefined,
             reviewCount: product.reviewCount ? Number(product.reviewCount) : undefined,
             totalSold: product.totalSold ? Number(product.totalSold) : undefined,

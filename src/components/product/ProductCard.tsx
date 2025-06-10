@@ -14,7 +14,7 @@ interface ProductCardProps {
   price: number;
   originalPrice?: number;
   image: string;
-  category?: string;
+  category?: string | object;
   rating?: number;
   reviewCount?: number;
   isAccount?: boolean;
@@ -93,6 +93,43 @@ export default function ProductCard({
   const displayImageUrl = imageError
     ? '/images/placeholder/product-placeholder.jpg'
     : cleanImageUrl;
+
+  // Xử lý category có thể là object phức tạp
+  const getCategoryName = (categoryValue: string | object | undefined): string | undefined => {
+    if (!categoryValue) return undefined;
+    
+    if (typeof categoryValue === 'string') {
+      return categoryValue;
+    }
+    
+    if (typeof categoryValue === 'object') {
+      // Nếu là object, thử lấy thuộc tính name hoặc id
+      const categoryObj = categoryValue as any;
+      
+      if (categoryObj.name) {
+        // Nếu có thuộc tính name
+        if (typeof categoryObj.name === 'string') {
+          return categoryObj.name;
+        } else if (typeof categoryObj.name === 'object' && categoryObj.name.id) {
+          return categoryObj.name.id;
+        }
+      }
+      
+      if (categoryObj.id) {
+        // Nếu có thuộc tính id
+        if (typeof categoryObj.id === 'string') {
+          return categoryObj.id;
+        } else if (typeof categoryObj.id === 'object' && categoryObj.id.id) {
+          return categoryObj.id.id;
+        }
+      }
+    }
+    
+    return undefined;
+  };
+
+  // Lấy tên category để hiển thị
+  const displayCategory = getCategoryName(category);
 
   // Giả sử có một hàm để định dạng giá tiền theo tiền tệ VND
   const formatCurrency = (amount: number) => {
@@ -401,9 +438,9 @@ export default function ProductCard({
       </div>
 
       <div className="p-4 flex-1 flex flex-col justify-between bg-white">
-        {category && (
+        {displayCategory && (
           <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
-            {category}
+            {displayCategory}
           </div>
         )}
         <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">

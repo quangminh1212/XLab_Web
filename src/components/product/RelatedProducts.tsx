@@ -12,8 +12,8 @@ interface Product {
   originalPrice?: number;
   image: string | object;
   imageUrl?: string | object;
-  category?: string;
-  categories?: { id: string; name: string }[];
+  category?: string | object;
+  categories?: Array<string | { id: string | object; name: string | object; slug?: string | object }>;
   rating?: number;
   reviewCount?: number;
   isAccount?: boolean;
@@ -121,16 +121,16 @@ export default function RelatedProducts({
     const safeReviewCount = product.reviewCount ? Number(product.reviewCount) : undefined;
     const safeIsAccount = Boolean(product.isAccount || product.type === 'account');
 
-    // Xử lý category an toàn
+    // Xử lý category an toàn - giữ nguyên dạng object để ProductCard xử lý
     let safeCategory;
-    if (product.categories?.length) {
-      const firstCategory = product.categories[0];
-      if (typeof firstCategory === 'string') {
-        safeCategory = firstCategory;
-      } else if (firstCategory && typeof firstCategory === 'object') {
-        // Kiểm tra các cấu trúc object có thể có
-        safeCategory = String(firstCategory.name || firstCategory.id || '');
-      }
+    
+    // Nếu có category trực tiếp
+    if (product.category) {
+      safeCategory = product.category;
+    }
+    // Nếu có categories array
+    else if (product.categories?.length) {
+      safeCategory = product.categories[0];
     }
 
     const mapped = {
