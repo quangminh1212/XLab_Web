@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { Product } from '@/models/ProductModel';
-import { cookies } from 'next/headers';
 
 // Data file path
 const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
@@ -38,24 +37,21 @@ function saveProducts(products: Product[]): void {
 // GET: Lấy thông tin sản phẩm theo ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const productId = params.id;
-
-    // Get all products
+    // Get products data
     const products = getProducts();
 
-    // Find product by slug first (for SEO-friendly URLs)
-    let product = products.find((p) => p.slug === productId);
-
-    // If not found by slug, try by ID
-    if (!product) {
-      product = products.find((p) => p.id === productId);
-    }
+    // Find product by ID or slug
+    console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${params.id}`);
+    const product = products.find((p) => p.id === params.id || p.slug === params.id);
 
     if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${params.id}`);
+      return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
     }
 
-    console.log(`Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`);
+    console.log(
+      `Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`,
+    );
 
     // Xử lý blob URLs trong ảnh
     const processedProduct = {
@@ -69,10 +65,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }) || [],
     };
 
-    return NextResponse.json({ product: processedProduct }, { status: 200 });
+    return NextResponse.json({ success: true, data: processedProduct }, { status: 200 });
   } catch (error) {
-    console.error('Error retrieving product:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('Error fetching product:', error);
+    return NextResponse.json({ success: false, error: 'Failed to fetch product' }, { status: 500 });
   }
 }
 
