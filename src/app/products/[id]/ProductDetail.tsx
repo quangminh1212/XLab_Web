@@ -368,7 +368,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
     });
 
     // Hiển thị thông báo đã thêm vào giỏ
-    setAddedToCartMessage(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
+    setAddedToCartMessage(t('product.addedToCart', { quantity }));
     setShowAddToCartAnimation(true);
 
     // Ẩn thông báo sau 3 giây
@@ -438,14 +438,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
         {/* Breadcrumbs */}
         <div className="flex items-center text-sm mb-4">
           <Link href="/" className="text-gray-500 hover:text-primary-600">
-            Trang chủ
+            {t('nav.home')}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <Link
             href={isAccount ? '/categories/tai-khoan-hoc-tap' : '/products'}
             className="text-gray-500 hover:text-primary-600"
           >
-            {isAccount ? 'Tài khoản học tập' : 'Sản phẩm'}
+            {isAccount ? t('products.accounts') : t('nav.products')}
           </Link>
           <span className="mx-2 text-gray-400">/</span>
           <span className="text-gray-800">{product.name}</span>
@@ -493,7 +493,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
               <div className="mt-4 flex items-center">
                 <div className="text-3xl font-bold text-primary-600">
                   {calculateCheapestPrice() === 0
-                    ? 'Miễn phí'
+                    ? t('product.free')
                     : formatCurrency(calculateCheapestPrice())}
                 </div>
 
@@ -557,7 +557,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                 {/* Loại sản phẩm */}
                 {product.productOptions && product.productOptions.length > 0 && (
                   <div className="mb-6">
-                    <h4 className="font-medium text-gray-700 text-lg mb-4">Loại</h4>
+                    <h4 className="font-medium text-gray-700 text-lg mb-4">{t('product.options')}</h4>
                     <div className="flex flex-wrap gap-4">
                       {productOptions.map((option, index) => (
                         <div
@@ -582,7 +582,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
               {/* Quantity selector */}
               <div className="mt-6">
-                <h3 className="font-medium text-gray-900 mb-2">Số lượng:</h3>
+                <h3 className="font-medium text-gray-900 mb-2">{t('product.quantity')}:</h3>
                 <div className="flex items-center">
                   <button
                     onClick={decreaseQuantity}
@@ -611,7 +611,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   onClick={handleAddToCart}
                   className="px-4 py-3 rounded-lg bg-primary-600 text-white font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-transform active:scale-95"
                 >
-                  Thêm vào giỏ hàng
+                  {t('product.addToCart')}
                 </button>
                 <Link
                   href="/checkout?skipInfo=true"
@@ -644,14 +644,14 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                   }}
                   className="px-4 py-3 rounded-lg bg-primary-500 text-white font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 text-center transition-transform active:scale-95"
                 >
-                  Mua ngay
+                  {t('product.buyNow')}
                 </Link>
               </div>
 
               {/* Features list */}
               {product.features && product.features.length > 0 && (
                 <div className="mt-8">
-                  <h3 className="font-medium text-gray-900 mb-2">Tính năng nổi bật:</h3>
+                  <h3 className="font-medium text-gray-900 mb-2">{t('product.features')}:</h3>
                   <ul className="list-disc list-inside space-y-1">
                     {product.features.map((feature, index) => (
                       <li key={index} className="text-gray-600">

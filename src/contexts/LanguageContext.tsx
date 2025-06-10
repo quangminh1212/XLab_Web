@@ -233,6 +233,7 @@ const translations: Record<Language, Record<string, string>> = {
     'products.error': 'Đã xảy ra lỗi',
     'products.tryAgain': 'Thử lại',
     'products.backToHome': 'Về trang chủ',
+    'products.accounts': 'Tài khoản học tập',
 
     // Product detail page
     'product.details': 'Thông tin chi tiết',
@@ -250,7 +251,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.reviews': 'Đánh giá',
     'product.features': 'Tính năng',
     'product.description': 'Mô tả',
-    'product.options': 'Tùy chọn',
+    'product.options': 'Loại',
     'product.selectOption': 'Chọn tùy chọn',
     'product.downloadCount': 'Lượt tải',
     'product.viewCount': 'Lượt xem',
@@ -258,6 +259,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.outOfStock': 'Hết hàng',
     'product.inStock': 'Còn hàng',
     'product.tryDemo': 'Dùng thử',
+    'product.free': 'Miễn phí',
 
     // Warranty page
     'warranty.title': 'Bảo Hành',
@@ -538,6 +540,7 @@ const translations: Record<Language, Record<string, string>> = {
     'products.error': 'An error occurred',
     'products.tryAgain': 'Try Again',
     'products.backToHome': 'Back to Home',
+    'products.accounts': 'Learning Accounts',
     
     // Product detail page
     'product.details': 'Product Details',
@@ -563,6 +566,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.outOfStock': 'Out of stock',
     'product.inStock': 'In stock',
     'product.tryDemo': 'Try demo',
+    'product.free': 'Free',
 
     // Warranty page
     'warranty.title': 'Warranty',
