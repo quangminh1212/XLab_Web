@@ -1,111 +1,90 @@
-import { notFound } from 'next/navigation';
-import fs from 'fs';
-import path from 'path';
-import { Product } from '@/models/ProductModel';
-import { default as dynamicImport } from 'next/dynamic';
+'use client';
 
-// Loading component đơn giản để hiển thị ngay lập tức
-function ProductFallbackLoading() {
-  return (
-    <div className="container mx-auto px-4 py-8 animate-pulse">
-      <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-gray-200 w-full h-96 rounded-lg"></div>
-          <div>
-            <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
-            <div className="h-24 bg-gray-200 rounded w-full mb-4"></div>
-            <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-            <div className="h-10 bg-gray-200 rounded w-1/3"></div>
-          </div>
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { Product as ProductType } from '@/models/ProductModel';
+import ProductDetail from './ProductDetail';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+interface ProductDetailPageProps {
+  params: { id: string };
+}
+
+export default function ProductDetailPage({ params }: ProductDetailPageProps) {
+  const { t } = useLanguage();
+  const router = useRouter();
+  const [product, setProduct] = useState<ProductType | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        // Tìm kiếm sản phẩm dựa trên ID hoặc slug
+        console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${params.id}`);
+        const res = await fetch(`/api/products/${params.id}`);
+        if (!res.ok) {
+          throw new Error('Không thể tải thông tin sản phẩm');
+        }
+        const data = await res.json();
+        if (data && data.product) {
+          setProduct(data.product);
+          console.log(`Người dùng đang xem sản phẩm: ${data.product.name} (ID: ${data.product.id}, Slug: ${data.product.slug})`);
+          
+          // Cập nhật title động dựa trên ngôn ngữ hiện tại
+          document.title = `${data.product.name} | ${t('product.metaTitle')}`;
+        } else {
+          setError('Không tìm thấy sản phẩm');
+          router.push('/products'); // Chuyển hướng về trang sản phẩm
+        }
+      } catch (err) {
+        console.error('Error fetching product:', err);
+        setError('Đã xảy ra lỗi khi tải thông tin sản phẩm');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [params.id, router, t]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <div className="w-16 h-16 border-4 border-primary-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-lg text-gray-600">{t('product.loading')}</p>
         </div>
       </div>
-    </div>
-  );
-}
-
-// Import các component với cơ chế lazy load
-const DynamicProductDetail = dynamicImport(() => import('@/app/products/[id]/ProductDetail'), {
-  loading: () => <ProductFallbackLoading />,
-  ssr: true,
-});
-
-const DynamicProductFallback = dynamicImport(() => import('@/app/products/[id]/fallback'), {
-  ssr: true,
-});
-
-// Đảm bảo trang được render động với mỗi request
-export const dynamic = 'auto';
-export const dynamicParams = true;
-
-// Đọc dữ liệu sản phẩm từ file JSON
-function getProducts(): Product[] {
-  try {
-    const dataFilePath = path.join(process.cwd(), 'src/data/products.json');
-    if (!fs.existsSync(dataFilePath)) {
-      fs.writeFileSync(dataFilePath, JSON.stringify([], null, 2), 'utf8');
-      return [];
-    }
-    const fileContent = fs.readFileSync(dataFilePath, 'utf8');
-    return JSON.parse(fileContent);
-  } catch (error) {
-    console.error('Error reading products data:', error);
-    return [];
-  }
-}
-
-// Server component sẽ tìm sản phẩm và chuyển dữ liệu sang client component
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  try {
-    // Await params trước khi sử dụng thuộc tính của nó
-    const { id: productId } = await params;
-
-    console.log(`Đang tìm kiếm sản phẩm với ID hoặc slug: ${productId}`);
-
-    // Lấy dữ liệu sản phẩm từ file JSON
-    const products = getProducts();
-
-    // Tìm sản phẩm theo slug trước (ưu tiên tìm theo slug để cải thiện SEO)
-    let product = products.find((p) => p.slug === productId);
-
-    // Nếu không tìm thấy bằng slug, thử tìm bằng id
-    if (!product) {
-      product = products.find((p) => p.id === productId);
-    }
-
-    // Nếu không tìm thấy sản phẩm, hiển thị trang not-found
-    if (!product) {
-      console.log(`Không tìm thấy sản phẩm với ID hoặc slug: ${productId}`);
-      notFound();
-    }
-
-    // Ghi log thông tin truy cập
-    console.log(
-      `Người dùng đang xem sản phẩm: ${product.name} (ID: ${product.id}, Slug: ${product.slug})`,
     );
+  }
 
-    // Truyền dữ liệu sản phẩm sang client component
+  if (error || !product) {
     return (
-      <>
-        <DynamicProductDetail product={product} />
-        <div id="fallback-container" style={{ display: 'none' }}>
-          <DynamicProductFallback />
+      <div className="container mx-auto px-4 py-8 text-center">
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <Image
+            src="/images/icons/error.svg"
+            alt="Error"
+            width={80}
+            height={80}
+            className="mb-4"
+          />
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+            {t('products.errorTitle')}
+          </h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => router.push('/products')}
+            className="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+          >
+            {t('products.backToHome')}
+          </button>
         </div>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              setTimeout(function() {
-                if (document.querySelector('.product-detail-loaded') === null) {
-                  document.getElementById('fallback-container').style.display = 'block';
-                }
-              }, 2000);
-            `,
-          }}
-        />
-      </>
+      </div>
     );
-  } catch (error) {
-    console.error('Error in ProductPage:', error);
-    return <DynamicProductFallback />;
   }
+
+  return <ProductDetail product={product} />;
 }
