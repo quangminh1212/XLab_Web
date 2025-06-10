@@ -40,15 +40,26 @@ const ProductDescription = ({ description }: { description: string }) => {
           const viTagIndex = description.indexOf('<strong>Tiếng Việt:</strong>', currentIndex);
           if (viTagIndex === -1) break;
           
-          // Tìm điểm bắt đầu của phần tiếng Anh tiếp theo hoặc đến hết nội dung
-          let nextEnglishIndex = description.indexOf('<strong>Tiếng Việt:</strong>', viTagIndex + 30);
-          if (nextEnglishIndex === -1) {
-            // Không còn phần tiếng Việt nào nữa, lấy đến hết
-            nextEnglishIndex = description.length;
+          // Tìm điểm bắt đầu của phần tiếng Anh tiếp theo (thẻ h3, h4 hoặc tiếng Việt tiếp theo)
+          let nextEnglishIndex = description.length;
+          
+          // Tìm thẻ heading tiếp theo (có thể là phần tiếng Anh mới)
+          const nextHeadingMatch = /<h[2-6]/i.exec(description.substring(viTagIndex + 30));
+          if (nextHeadingMatch) {
+            const potentialNextIndex = viTagIndex + 30 + nextHeadingMatch.index;
+            nextEnglishIndex = Math.min(nextEnglishIndex, potentialNextIndex);
           }
           
-          // Điểm bắt đầu thực sự của nội dung (sau thẻ đóng </p> sau strong)
-          const contentStartIndex = description.indexOf('</p>', viTagIndex) + 4;
+          // Tìm phần tiếng Việt tiếp theo
+          const nextViIndex = description.indexOf('<strong>Tiếng Việt:</strong>', viTagIndex + 30);
+          if (nextViIndex !== -1) {
+            nextEnglishIndex = Math.min(nextEnglishIndex, nextViIndex);
+          }
+          
+          // Điểm bắt đầu thực sự của nội dung (sau thẻ đóng </strong>)
+          const strongCloseTag = description.indexOf('</strong>', viTagIndex);
+          const pCloseTag = description.indexOf('</p>', strongCloseTag);
+          const contentStartIndex = pCloseTag !== -1 ? pCloseTag + 4 : strongCloseTag + 10;
           
           // Lấy nội dung tiếng Việt
           const vietnameseSection = description.substring(contentStartIndex, nextEnglishIndex);
@@ -61,7 +72,7 @@ const ProductDescription = ({ description }: { description: string }) => {
         // Trả về tất cả các phần tiếng Việt đã tìm thấy
         return vietnameseContent.join('');
       } else {
-        // Trả về nội dung tiếng Anh (loại bỏ các phần tiếng Việt)
+        // Tiếng Anh: Loại bỏ tất cả các phần từ "<strong>Tiếng Việt:</strong>" đến heading tiếp theo hoặc hết
         let englishContent = description;
         let currentIndex = 0;
         
@@ -70,16 +81,24 @@ const ProductDescription = ({ description }: { description: string }) => {
           const viTagIndex = englishContent.indexOf('<strong>Tiếng Việt:</strong>', currentIndex);
           if (viTagIndex === -1) break;
           
-          // Tìm điểm bắt đầu của phần tiếng Anh tiếp theo hoặc đến hết nội dung
-          let nextEnglishIndex = englishContent.indexOf('<strong>Tiếng Việt:</strong>', viTagIndex + 30);
-          if (nextEnglishIndex === -1) {
-            // Không còn phần tiếng Việt nào nữa, lấy đến hết
-            nextEnglishIndex = englishContent.length;
+          // Tìm điểm kết thúc của phần tiếng Việt (heading tiếp theo hoặc hết)
+          let endViIndex = englishContent.length;
+          
+          // Tìm thẻ heading tiếp theo (h1-h6)
+          const nextHeadingMatch = /<h[2-6]/i.exec(englishContent.substring(viTagIndex));
+          if (nextHeadingMatch) {
+            endViIndex = viTagIndex + nextHeadingMatch.index;
+          }
+          
+          // Tìm phần tiếng Việt tiếp theo
+          const nextViIndex = englishContent.indexOf('<strong>Tiếng Việt:</strong>', viTagIndex + 30);
+          if (nextViIndex !== -1) {
+            endViIndex = Math.min(endViIndex, nextViIndex);
           }
           
           // Loại bỏ phần tiếng Việt
           const beforeVi = englishContent.substring(0, viTagIndex);
-          const afterNextVi = englishContent.substring(nextEnglishIndex);
+          const afterNextVi = englishContent.substring(endViIndex);
           englishContent = beforeVi + afterNextVi;
           
           // Reset currentIndex vì chuỗi đã thay đổi
