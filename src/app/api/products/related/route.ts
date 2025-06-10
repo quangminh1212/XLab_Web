@@ -58,8 +58,33 @@ export async function GET(request: NextRequest) {
 
     // Giới hạn số lượng sản phẩm trả về
     relatedProducts = relatedProducts.slice(0, limit);
+    
+    // Xử lý dữ liệu sản phẩm để đảm bảo định dạng hình ảnh đúng
+    const formattedProducts = relatedProducts.map((product: any) => {
+      // Tạo bản sao của sản phẩm để không ảnh hưởng đến dữ liệu gốc
+      const formattedProduct = { ...product };
+      
+      // Xử lý trường images nếu là mảng
+      if (Array.isArray(formattedProduct.images) && formattedProduct.images.length > 0) {
+        // Thêm trường imageUrl là đường dẫn đến ảnh đầu tiên
+        formattedProduct.imageUrl = formattedProduct.images[0];
+        formattedProduct.image = formattedProduct.images[0];
+      } 
+      // Nếu không có images nhưng có image là mảng
+      else if (Array.isArray(formattedProduct.image) && formattedProduct.image.length > 0) {
+        formattedProduct.imageUrl = formattedProduct.image[0];
+        formattedProduct.image = formattedProduct.image[0];
+      }
+      // Nếu không có ảnh, sử dụng ảnh mặc định
+      else if (!formattedProduct.image && !formattedProduct.imageUrl) {
+        formattedProduct.imageUrl = '/images/placeholder/product-placeholder.jpg';
+        formattedProduct.image = '/images/placeholder/product-placeholder.jpg';
+      }
+      
+      return formattedProduct;
+    });
 
-    return NextResponse.json(relatedProducts);
+    return NextResponse.json(formattedProducts);
   } catch (error) {
     console.error('Lỗi khi xử lý sản phẩm liên quan:', error);
     return NextResponse.json({ error: 'Lỗi máy chủ nội bộ' }, { status: 500 });

@@ -112,6 +112,172 @@ const ProductDescription = ({ description, productId }: { description: string, p
   );
 };
 
+// Component xử lý hiển thị mô tả ngắn sản phẩm
+const ProductShortDescription = ({ shortDescription, productId }: { shortDescription: string, productId: string }) => {
+  const { language } = useLanguage();
+  const [translatedShortDescription, setTranslatedShortDescription] = useState<string>(shortDescription);
+
+  useEffect(() => {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
+      const fetchTranslation = async () => {
+        try {
+          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.shortDescription) {
+              setTranslatedShortDescription(data.shortDescription);
+            } else {
+              setTranslatedShortDescription(shortDescription); // Fallback to original if no translation
+            }
+          } else {
+            setTranslatedShortDescription(shortDescription); // Fallback to original
+          }
+        } catch (error) {
+          console.error('Error fetching short description translation:', error);
+          setTranslatedShortDescription(shortDescription); // Fallback to original
+        }
+      };
+
+      fetchTranslation();
+    } else {
+      // Nếu tiếng Việt, sử dụng mô tả gốc
+      setTranslatedShortDescription(shortDescription);
+    }
+  }, [shortDescription, language, productId]);
+
+  return (
+    <p className="mt-4 text-gray-600 text-lg">{translatedShortDescription || ''}</p>
+  );
+};
+
+// Component xử lý hiển thị tính năng sản phẩm với khả năng dịch
+const ProductFeatures = ({ features, productId }: { features: any[], productId: string }) => {
+  const { t, language } = useLanguage();
+  const [translatedFeatures, setTranslatedFeatures] = useState<any[]>(features);
+
+  useEffect(() => {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
+      const fetchTranslation = async () => {
+        try {
+          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.features) {
+              setTranslatedFeatures(data.features);
+            } else {
+              setTranslatedFeatures(features); // Fallback to original if no translation
+            }
+          } else {
+            setTranslatedFeatures(features); // Fallback to original
+          }
+        } catch (error) {
+          console.error('Error fetching feature translations:', error);
+          setTranslatedFeatures(features); // Fallback to original
+        }
+      };
+
+      fetchTranslation();
+    } else {
+      // Nếu tiếng Việt, sử dụng tính năng gốc
+      setTranslatedFeatures(features);
+    }
+  }, [features, language, productId]);
+
+  if (!translatedFeatures || translatedFeatures.length === 0) return null;
+
+  return (
+    <div className="mt-8">
+      <h3 className="font-medium text-gray-900 mb-2">{t('product.features')}:</h3>
+      <ul className="list-disc list-inside space-y-1">
+        {translatedFeatures.map((feature, index) => (
+          <li key={index} className="text-gray-600">
+            {typeof feature === 'string' ? feature : feature.title}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// Component xử lý dịch tùy chọn sản phẩm
+const ProductOptions = ({ 
+  options, 
+  productId, 
+  productOptions, 
+  selectedOption, 
+  setSelectedOption,
+  optionPrices
+}: { 
+  options: string[], 
+  productId: string,
+  productOptions: string[],
+  selectedOption: string,
+  setSelectedOption: (option: string) => void,
+  optionPrices?: { [key: string]: any }
+}) => {
+  const { t, language } = useLanguage();
+  const [translatedOptions, setTranslatedOptions] = useState<{ [key: string]: string }>(
+    productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {})
+  );
+  const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));
+
+  useEffect(() => {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
+      const fetchTranslation = async () => {
+        try {
+          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
+          if (response.ok) {
+            const data = await response.json();
+            if (data.productOptions) {
+              setTranslatedOptions(data.productOptions);
+            }
+            if (data.options) {
+              setOptionsTitle(data.options);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching options translations:', error);
+        }
+      };
+
+      fetchTranslation();
+    } else {
+      // Nếu tiếng Việt, sử dụng tùy chọn gốc
+      setTranslatedOptions(productOptions.reduce((acc, option) => ({ ...acc, [option]: option }), {}));
+      setOptionsTitle(t('product.options'));
+    }
+  }, [language, productId, productOptions, t]);
+
+  if (!options || options.length === 0) return null;
+
+  return (
+    <div className="mb-6">
+      <h4 className="font-medium text-gray-700 text-lg mb-4">{optionsTitle}</h4>
+      <div className="flex flex-wrap gap-4">
+        {options.map((option, index) => (
+          <div
+            key={index}
+            onClick={() => setSelectedOption(option)}
+            className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
+          >
+            <span className="text-gray-900 font-medium text-sm mr-2">
+              {translatedOptions[option] || option}
+            </span>
+            {optionPrices && optionPrices[option] && (
+              <span className="text-primary-600 font-medium text-sm">
+                {formatCurrency(optionPrices[option].price)}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // Component hiển thị thông số kỹ thuật
 const ProductSpecifications = ({
   specifications,
@@ -587,29 +753,21 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
                 {/* Loại sản phẩm */}
                 {product.productOptions && product.productOptions.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="font-medium text-gray-700 text-lg mb-4">{t('product.options')}</h4>
-                    <div className="flex flex-wrap gap-4">
-                      {productOptions.map((option, index) => (
-                        <div
-                          key={index}
-                          onClick={() => setSelectedOption(option)}
-                          className={`border rounded-lg px-4 py-2 flex items-center whitespace-nowrap cursor-pointer transition-shadow hover:shadow-lg ${selectedOption === option ? 'border-primary-500 bg-primary-50' : 'border-gray-200 bg-white'}`}
-                        >
-                          <span className="text-gray-900 font-medium text-sm mr-2">{option}</span>
-                          {product.optionPrices && product.optionPrices[option] && (
-                            <span className="text-primary-600 font-medium text-sm">
-                              {formatCurrency(product.optionPrices[option].price)}
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <ProductOptions 
+                    options={productOptions} 
+                    productId={product.id.toString()}
+                    productOptions={productOptions}
+                    selectedOption={selectedOption}
+                    setSelectedOption={setSelectedOption}
+                    optionPrices={product.optionPrices}
+                  />
                 )}
               </div>
 
-              <p className="mt-4 text-gray-600 text-lg">{product.shortDescription || ''}</p>
+              <ProductShortDescription 
+                shortDescription={product.shortDescription || ''} 
+                productId={product.id.toString()} 
+              />
 
               {/* Quantity selector */}
               <div className="mt-6">
@@ -681,16 +839,7 @@ export default function ProductDetail({ product }: { product: ProductType }) {
 
               {/* Features list */}
               {product.features && product.features.length > 0 && (
-                <div className="mt-8">
-                  <h3 className="font-medium text-gray-900 mb-2">{t('product.features')}:</h3>
-                  <ul className="list-disc list-inside space-y-1">
-                    {product.features.map((feature, index) => (
-                      <li key={index} className="text-gray-600">
-                        {typeof feature === 'string' ? feature : feature.title}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ProductFeatures features={product.features} productId={product.id.toString()} />
               )}
             </div>
           </div>
