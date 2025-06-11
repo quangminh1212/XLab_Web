@@ -276,6 +276,46 @@ function HomePage() {
                   title={t('home.reasonablePrice')}
                   description={t('home.budgetOptions')}
                 />
+                
+                <FeatureCard
+                  icon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-6 h-6 text-primary-600"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M11.3 1.046a.75.75 0 011.4.042l3.926 8.137h4.396a.75.75 0 01.578 1.268l-8.459 8.459a.75.75 0 01-1.268-.578v-4.396L2.41 11.7a.75.75 0 01.578-1.268h4.396L11.3 1.046z"
+                      />
+                    </svg>
+                  }
+                  title={t('home.aiIntegration')}
+                  description={t('home.aiSupport')}
+                />
+                
+                <FeatureCard
+                  icon={
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="w-6 h-6 text-primary-600"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h5M20 20v-5h-5M5 10a8 8 0 0111.966-2.79M18.364 18.364A8 8 0 015 10"
+                      />
+                    </svg>
+                  }
+                  title={t('home.continuousUpdates')}
+                  description={t('home.newFeatures')}
+                />
               </div>
             </section>
 
@@ -362,59 +402,6 @@ function HomePage() {
 
           {/* Main Content Column - Right */}
           <div className="md:col-span-9 h-full">
-            {/* Phần Feature cards "AI Integration" và "Continuous Updates" mới */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-              {/* AI Integration Card */}
-              <div className="bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-6 h-6 text-primary-600"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M11.3 1.046a.75.75 0 011.4.042l3.926 8.137h4.396a.75.75 0 01.578 1.268l-8.459 8.459a.75.75 0 01-1.268-.578v-4.396L2.41 11.7a.75.75 0 01.578-1.268h4.396L11.3 1.046z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2 text-lg">{t('home.aiIntegration')}</h3>
-                    <p className="text-gray-600">{t('home.aiSupport')}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Continuous Updates Card */}
-              <div className="bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="w-6 h-6 text-primary-600"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h5M20 20v-5h-5M5 10a8 8 0 0111.966-2.79M18.364 18.364A8 8 0 015 10"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-2 text-lg">{t('home.continuousUpdates')}</h3>
-                    <p className="text-gray-600">{t('home.newFeatures')}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Featured Products */}
             {isLoading ? (
               <div className="flex justify-center items-center h-40">
