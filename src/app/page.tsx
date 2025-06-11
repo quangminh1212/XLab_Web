@@ -4,7 +4,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/product/ProductCard';
-import { HighlightProducts } from '@/components/product';
 import { categories } from '@/data/mockData';
 import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -125,11 +124,6 @@ function HomePage() {
       return dateB.getTime() - dateA.getTime();
     })
     .slice(0, 4);
-    
-  // Sản phẩm highlight (sử dụng 2 sản phẩm nổi bật nhất)
-  const highlightProducts = products
-    .filter(product => product.rating && product.rating >= 4)
-    .slice(0, 2);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -399,12 +393,6 @@ function HomePage() {
               </div>
             ) : (
               <>
-                {/* Highlight Products - Banner */}
-                <HighlightProducts 
-                  products={highlightProducts} 
-                  title={t('home.topProducts')}
-                />
-
                 {/* Featured Products Section */}
                 <section className="mb-8 sm:mb-12">
                   <div className="flex items-center justify-between mb-4 sm:mb-6">
