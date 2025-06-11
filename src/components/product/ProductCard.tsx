@@ -197,7 +197,7 @@ export default function ProductCard({
           <svg
             key={i}
             xmlns="http://www.w3.org/2000/svg"
-            className={`h-4 w-4 ${
+            className={`h-3 w-3 ${
               i < fullStars
                 ? 'text-yellow-400'
                 : i === fullStars && hasHalfStar
@@ -223,7 +223,7 @@ export default function ProductCard({
             />
           </svg>
         ))}
-        {reviewCount > 0 && <span className="ml-1 text-xs text-gray-500">({reviewCount})</span>}
+        {reviewCount > 0 && <span className="ml-1 text-[10px] text-gray-500">({reviewCount})</span>}
       </div>
     );
   };
@@ -364,7 +364,7 @@ export default function ProductCard({
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div
-            className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
+            className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
           >
             -{discountPercentage}%
           </div>
@@ -432,13 +432,13 @@ export default function ProductCard({
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <button
               onClick={handleAddToCart}
-              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-5 py-2.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform`}
+              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-3 py-1.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs`}
             >
               <span className="flex items-center justify-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -466,10 +466,10 @@ export default function ProductCard({
                 });
                 router.push('/checkout?skipInfo=true');
               }}
-              className={`bg-gradient-to-r ${currentColor.button} text-white px-5 py-2.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20`}
+              className={`bg-gradient-to-r ${currentColor.button} text-white px-3 py-1.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs`}
             >
               <span className="flex items-center justify-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -484,42 +484,42 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-6 flex-1 flex flex-col justify-between bg-white">
+      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
         {displayCategory && (
-          <div className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">
+          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
             {displayCategory}
           </div>
         )}
-        <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-3 group-hover:text-gray-700 transition-colors duration-200">
+        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">
+        <p className="text-xs text-gray-600 line-clamp-2 mb-3 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between">
           <div className="flex-1">
-            <div className="flex items-baseline flex-wrap gap-2 mb-2">
+            <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
-                className={`text-2xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+                className={`text-lg font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
                 {formatCurrency(price)}
               </span>
               {originalPrice && originalPrice > price && (
-                <span className="text-sm text-gray-400 line-through">
+                <span className="text-xs text-gray-400 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
             </div>
-            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-4"></div>}</div>
+            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-3"></div>}</div>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col items-end gap-1">
             {weeklyPurchases > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-3 py-1.5 rounded-full bg-white shadow-sm`}
+                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3.5 w-3.5 mr-1.5 ${currentColor.statsIcon}`}
+                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -536,11 +536,11 @@ export default function ProductCard({
             )}
             {totalSold > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-3 py-1.5 rounded-full bg-white shadow-sm`}
+                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3.5 w-3.5 mr-1.5 ${currentColor.statsIcon}`}
+                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
