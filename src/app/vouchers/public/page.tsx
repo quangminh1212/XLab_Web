@@ -536,7 +536,8 @@ export default function PublicVouchersPage() {
               <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 mt-auto">
                 {activeTab === 'available' &&
                 voucher.description &&
-                voucher.description.includes('Ưu đãi cho khách hàng đăng ký mới') ? (
+                (voucher.description.includes('Ưu đãi cho khách hàng đăng ký mới') || 
+                 voucher.description.includes('Welcome offer for new members')) ? (
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
