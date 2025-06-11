@@ -36,13 +36,13 @@ interface Coupon {
   isPublic: boolean;
 }
 
-// Dữ liệu mẫu ban đầu
+// Initial sample data
 const initialCoupons: Coupon[] = [
   {
     id: '1',
     code: 'SUMMER2024',
-    name: 'Giảm giá mùa hè',
-    description: 'Mã giảm giá đặc biệt cho mùa hè 2024',
+    name: 'Summer Discount',
+    description: 'Special discount for Summer 2024',
     type: 'percentage',
     value: 20,
     minOrder: 100000,
@@ -59,8 +59,8 @@ const initialCoupons: Coupon[] = [
   {
     id: '2',
     code: 'WELCOME50',
-    name: 'Chào mừng thành viên mới',
-    description: 'Ưu đãi cho khách hàng đăng ký mới',
+    name: 'Welcome offer for new members',
+    description: 'Welcome offer for new members',
     type: 'fixed',
     value: 50000,
     minOrder: 200000,
