@@ -235,25 +235,11 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.pricing': 'Bảng giá',
     'footer.copyright': 'Bản quyền thuộc về công ty',
     'footer.acceptedPayments': 'Chấp nhận thanh toán',
-    'footer.companyDesc': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
     'footer.companyDescription1': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
     'footer.companyDescription2': 'Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.',
     'footer.customers': '500+ Khách hàng',
     'footer.years': '5+ Năm',
     'footer.support': '24/7 Hỗ trợ',
-    
-    // Footer mới
-    'footer.companyDesc': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
-    'footer.allProducts': 'Tất cả sản phẩm',
-    'footer.categories': 'Danh mục',
-    'footer.company': 'Công ty',
-    'footer.about': 'Giới thiệu',
-    'footer.contact': 'Liên hệ',
-    'footer.legal': 'Pháp lý',
-    'footer.terms': 'Điều khoản sử dụng',
-    'footer.privacy': 'Chính sách bảo mật',
-    'footer.cookies': 'Chính sách cookie',
-    'footer.allRights': 'Đã đăng ký bản quyền.',
     
     // Products page
     'products.title': 'Sản phẩm',
@@ -493,25 +479,6 @@ const translations: Record<Language, Record<string, string>> = {
     'orders.needLoginDesc': 'Vui lòng đăng nhập để xem lịch sử đơn hàng của bạn',
     'orders.login': 'Đăng nhập',
     'notifications.none': 'Không có thông báo nào',
-    'footer.support': '24/7 Hỗ trợ',
-    
-    // Footer mới
-    'footer.companyDesc': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
-    'footer.products': 'Sản phẩm',
-    'footer.allProducts': 'Tất cả sản phẩm',
-    'footer.categories': 'Danh mục',
-    'footer.pricing': 'Bảng giá',
-    'footer.company': 'Công ty',
-    'footer.about': 'Giới thiệu',
-    'footer.contact': 'Liên hệ',
-    'footer.support': 'Hỗ trợ',
-    'footer.legal': 'Pháp lý',
-    'footer.terms': 'Điều khoản sử dụng',
-    'footer.privacy': 'Chính sách bảo mật',
-    'footer.cookies': 'Chính sách cookie',
-    'footer.allRights': 'Đã đăng ký bản quyền.',
-    
-    // Products page
   },
   en: {
     // Header
@@ -973,25 +940,6 @@ const translations: Record<Language, Record<string, string>> = {
     'orders.needLoginDesc': 'Please login to view your order history',
     'orders.login': 'Login',
     'notifications.none': 'No notifications',
-    'footer.support': '24/7 Support',
-    
-    // Footer mới
-    'footer.companyDesc': 'XLab is a leading company in the field of technology solutions and professional software development for businesses.',
-    'footer.products': 'Sản phẩm',
-    'footer.allProducts': 'Tất cả sản phẩm',
-    'footer.categories': 'Danh mục',
-    'footer.pricing': 'Bảng giá',
-    'footer.company': 'Công ty',
-    'footer.about': 'Giới thiệu',
-    'footer.contact': 'Liên hệ',
-    'footer.support': 'Hỗ trợ',
-    'footer.legal': 'Pháp lý',
-    'footer.terms': 'Điều khoản sử dụng',
-    'footer.privacy': 'Chính sách bảo mật',
-    'footer.cookies': 'Chính sách cookie',
-    'footer.allRights': 'Đã đăng ký bản quyền.',
-    
-    // Products page
   },
 };
 
