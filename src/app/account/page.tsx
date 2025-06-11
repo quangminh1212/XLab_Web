@@ -1014,7 +1014,9 @@ export default function AccountPage() {
                             </svg>
                           </div>
                           <div>
-                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <h3 className="font-semibold">
+                              {t(`coupon.${coupon.code.toLowerCase()}`) || coupon.name}
+                            </h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
                               {coupon.code}
                             </div>
@@ -1054,7 +1056,9 @@ export default function AccountPage() {
                             </svg>
                           </div>
                           <div>
-                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <h3 className="font-semibold">
+                              {t(`coupon.${coupon.code.toLowerCase()}`) || coupon.name}
+                            </h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
                               {coupon.code}
                             </div>
@@ -1069,11 +1073,10 @@ export default function AccountPage() {
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? t('account.discountPercentage', { 
-                                    value: coupon.value, 
-                                    maxDiscount: coupon.maxDiscount ? formatCurrency(coupon.maxDiscount) : undefined 
-                                  })
-                                : t('account.discountFixed', { value: formatCurrency(coupon.value) })}
+                                ? coupon.maxDiscount 
+                                  ? `Giảm ${coupon.value}% (tối đa ${formatCurrency(coupon.maxDiscount)})`
+                                  : `Giảm ${coupon.value}%` 
+                                : `Giảm ${formatCurrency(coupon.value)}`}
                             </div>
                           </div>
                         </div>
@@ -1940,7 +1943,9 @@ export default function AccountPage() {
                             </svg>
                           </div>
                           <div>
-                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <h3 className="font-semibold">
+                              {t(`coupon.${coupon.code.toLowerCase()}`) || coupon.name}
+                            </h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
                               {coupon.code}
                             </div>
@@ -1980,7 +1985,9 @@ export default function AccountPage() {
                             </svg>
                           </div>
                           <div>
-                            <h3 className="font-semibold">{coupon.name}</h3>
+                            <h3 className="font-semibold">
+                              {t(`coupon.${coupon.code.toLowerCase()}`) || coupon.name}
+                            </h3>
                             <div className="text-sm font-mono text-primary-600 mt-1">
                               {coupon.code}
                             </div>
@@ -1995,11 +2002,10 @@ export default function AccountPage() {
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? t('account.discountPercentage', { 
-                                    value: coupon.value, 
-                                    maxDiscount: coupon.maxDiscount ? formatCurrency(coupon.maxDiscount) : undefined 
-                                  })
-                                : t('account.discountFixed', { value: formatCurrency(coupon.value) })}
+                                ? coupon.maxDiscount 
+                                  ? `Giảm ${coupon.value}% (tối đa ${formatCurrency(coupon.maxDiscount)})`
+                                  : `Giảm ${coupon.value}%` 
+                                : `Giảm ${formatCurrency(coupon.value)}`}
                             </div>
                           </div>
                         </div>
