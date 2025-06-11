@@ -145,10 +145,82 @@ function HomePage() {
       </section>
 
       <div className="container mx-auto py-responsive">
-        {/* Chuyển sang layout 2 cột với sidebar bên trái */}
+        {/* Chuyển sang layout 2 cột với sidebar bên phải */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-responsive">
-          {/* Sidebar Column - Left */}
-          <div className="w-full flex flex-col h-full md:col-span-1">
+          {/* Main Content Column - Left */}
+          <div className="md:col-span-4 h-full">
+            {/* Featured Products */}
+            {isLoading ? (
+              <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+              </div>
+            ) : (
+              <>
+                {/* Featured Products Section */}
+                <section className="mb-8 sm:mb-12">
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h2 className="heading-3 text-gray-800">{t('home.featuredProducts')}</h2>
+                    <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
+                      {t('home.viewAll')}
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {featuredProducts.map((product) => (
+                      <div key={product.id} className="aspect-[1/1.3]">
+                        <ProductCard 
+                          id={product.id}
+                          name={product.name}
+                          description={product.shortDescription || product.description || ''}
+                          price={product.price}
+                          originalPrice={product.originalPrice}
+                          image={getValidImageUrl(product)}
+                          rating={product.rating}
+                          reviewCount={product.reviewCount}
+                          weeklyPurchases={product.weeklyPurchases}
+                          totalSold={product.totalSold}
+                          slug={product.slug}
+                          isAccount={product.isAccount}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* New Products Section */}
+                <section>
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h2 className="heading-3 text-gray-800">{t('home.newProducts')}</h2>
+                    <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
+                      {t('home.viewAll')}
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {newProducts.map((product) => (
+                      <div key={product.id} className="aspect-[1/1.3]">
+                        <ProductCard 
+                          id={product.id}
+                          name={product.name}
+                          description={product.shortDescription || product.description || ''}
+                          price={product.price}
+                          originalPrice={product.originalPrice}
+                          image={getValidImageUrl(product)}
+                          rating={product.rating}
+                          reviewCount={product.reviewCount}
+                          weeklyPurchases={product.weeklyPurchases}
+                          totalSold={product.totalSold}
+                          slug={product.slug}
+                          isAccount={product.isAccount}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
+          </div>
+          
+          {/* Sidebar Column - Right */}
+          <div className="w-full flex flex-col h-full md:col-span-1 md:pl-4">
             {/* About Section */}
             <section className="bg-gray-50 rounded-xl overflow-hidden">
               <div className="rounded-xl overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 p-1 mb-responsive-sm">
@@ -396,78 +468,6 @@ function HomePage() {
                 {t('home.contactUs')}
               </Link>
             </section>
-          </div>
-
-          {/* Main Content Column - Right */}
-          <div className="md:col-span-4 h-full">
-            {/* Featured Products */}
-            {isLoading ? (
-              <div className="flex justify-center items-center h-40">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
-              </div>
-            ) : (
-              <>
-                {/* Featured Products Section */}
-                <section className="mb-8 sm:mb-12">
-                  <div className="flex items-center justify-between mb-4 sm:mb-6">
-                    <h2 className="heading-3 text-gray-800">{t('home.featuredProducts')}</h2>
-                    <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
-                      {t('home.viewAll')}
-                    </Link>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                    {featuredProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.3]">
-                        <ProductCard 
-                          id={product.id}
-                          name={product.name}
-                          description={product.shortDescription || product.description || ''}
-                          price={product.price}
-                          originalPrice={product.originalPrice}
-                          image={getValidImageUrl(product)}
-                          rating={product.rating}
-                          reviewCount={product.reviewCount}
-                          weeklyPurchases={product.weeklyPurchases}
-                          totalSold={product.totalSold}
-                          slug={product.slug}
-                          isAccount={product.isAccount}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
-                {/* New Products Section */}
-                <section>
-                  <div className="flex items-center justify-between mb-4 sm:mb-6">
-                    <h2 className="heading-3 text-gray-800">{t('home.newProducts')}</h2>
-                    <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
-                      {t('home.viewAll')}
-                    </Link>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                    {newProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.3]">
-                        <ProductCard 
-                          id={product.id}
-                          name={product.name}
-                          description={product.shortDescription || product.description || ''}
-                          price={product.price}
-                          originalPrice={product.originalPrice}
-                          image={getValidImageUrl(product)}
-                          rating={product.rating}
-                          reviewCount={product.reviewCount}
-                          weeklyPurchases={product.weeklyPurchases}
-                          totalSold={product.totalSold}
-                          slug={product.slug}
-                          isAccount={product.isAccount}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              </>
-            )}
           </div>
         </div>
       </div>
