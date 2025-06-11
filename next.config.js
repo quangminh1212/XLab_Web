@@ -11,6 +11,9 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
+    optimizeCss: true,
+    optimisticClientCache: true,
+    enableUndici: true,
   },
   images: {
     domains: [
@@ -30,20 +33,24 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-    unoptimized: true,
+    formats: ['image/webp', 'image/avif'],
+    unoptimized: process.env.NODE_ENV === 'development',
   },
   compiler: {
     styledComponents: true,
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
   },
   poweredByHeader: false,
   compress: true,
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
-  assetPrefix: '',
+  assetPrefix: process.env.ASSET_PREFIX || '',
   logging: {
     fetches: {
-      fullUrl: false,
+      fullUrl: process.env.NODE_ENV !== 'production',
     },
   },
   webpack: (config, { dev, isServer }) => {
@@ -53,20 +60,33 @@ const nextConfig = {
     };
 
     if (!isServer) {
-      // Configure optimization to avoid CSS 404 errors
       const optimization = config.optimization;
       if (optimization && optimization.splitChunks) {
         const splitChunks = optimization.splitChunks;
 
         optimization.splitChunks = {
           ...splitChunks,
+          chunks: 'all',
           cacheGroups: {
             default: {
               minChunks: 2,
               priority: -20,
               reuseExistingChunk: true,
             },
-            // Disable CSS splitting
+            commons: {
+              name: 'commons',
+              chunks: 'all',
+              minChunks: 2,
+              priority: -10,
+              reuseExistingChunk: true,
+            },
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /[\\/]node_modules[\\/]/,
+              priority: -5,
+              reuseExistingChunk: true,
+            },
             styles: false,
           },
         };
@@ -90,13 +110,27 @@ const nextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'strict-origin-when-cross-origin',
           },
           {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-        ],
+          {
+            key: 'Content-Security-Policy',
+            value: process.env.NODE_ENV === 'production' 
+              ? "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:;" 
+              : "",
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(self), interest-cohort=()',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+        ].filter(header => header.value !== ""),
       },
     ];
   },

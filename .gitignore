@@ -16,14 +16,22 @@ cypress/screenshots
 
 # next.js
 /.next/
+/.next-dev/
 /out/
+.next/
+.next-dev/
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
 *.pem
+.env
+.env.development
+.env.production
+.env.test
 
 # debug
 npm-debug.log*
@@ -51,19 +59,28 @@ next-env.d.ts
 /data/backups/
 *.user_*.json
 
-
-
 # IDE
-.idea
-.vscode
-.next
+.idea/
+.vscode/
+.next/
+*.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 
 # Generated files
 /*.timestamp
 *-timestamp
+output.txt
+output-*.txt
 
 # Runtime generated files
 /public/timestamp-handler.js
+/public/sw.js
+/public/workbox-*.js
+/public/worker-*.js
+/public/fallback-*.js
 
 # backups
 /public/images/backup-categories/
@@ -71,11 +88,11 @@ next-env.d.ts
 
 # Log files
 *.log
-logs
+logs/
 next-setup.log
 
 # Turbo
-.turbo
+.turbo/
 
 # Files to be deleted after migration
 fix-all-errors.log
@@ -99,3 +116,10 @@ run-fixed.bat
 /data/backups/
 *.bak
 *.temp
+*.cache
+
+# ESLint cache
+.eslintcache
+
+# Report files
+report.*.json

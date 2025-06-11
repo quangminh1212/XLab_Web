@@ -1,9 +1,16 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 
-interface CartItem {
+// Constants
+const PLACEHOLDER_IMAGE = '/images/placeholder/product-placeholder.svg';
+const STORAGE_KEY = 'cart';
+
+/**
+ * Item interface for cart items
+ */
+export interface CartItem {
   id: string;
   name: string;
   price: number;
@@ -14,7 +21,10 @@ interface CartItem {
   uniqueKey?: string; // Key duy nhất để phân biệt các variant
 }
 
-interface CartContextType {
+/**
+ * CartContext interface defining all available operations
+ */
+export interface CartContextType {
   items: CartItem[];
   addItem: (item: CartItem) => void;
   removeItem: (uniqueKey: string) => void;
@@ -26,6 +36,7 @@ interface CartContextType {
   syncWithServer: () => Promise<void>;
 }
 
+// Create cart context with default values
 const CartContext = createContext<CartContextType>({
   items: [],
   addItem: () => {},
@@ -38,26 +49,51 @@ const CartContext = createContext<CartContextType>({
   syncWithServer: async () => {},
 });
 
-// Tạo key duy nhất cho sản phẩm dựa trên id, version và options
+/**
+ * Generate unique key for cart items based on product attributes
+ */
 const generateUniqueKey = (item: CartItem): string => {
   const version = item.version || 'default';
   const options = (item.options || []).sort().join('|');
   return `${item.id}_${version}_${options}`;
 };
 
+/**
+ * Hook to access cart context
+ */
 export const useCart = () => {
   return useContext(CartContext);
 };
 
+/**
+ * Normalize image URL to use proper placeholder if invalid
+ */
+const normalizeImageUrl = (imageUrl?: string): string => {
+  if (!imageUrl) return PLACEHOLDER_IMAGE;
+  
+  const isPlaceholder = 
+    imageUrl.includes('/images/product-placeholder.svg') || 
+    imageUrl.includes('/images/placeholder/product-placeholder');
+    
+  return isPlaceholder ? PLACEHOLDER_IMAGE : imageUrl;
+};
+
+/**
+ * Cart provider component that manages cart state
+ */
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { data: session, status } = useSession();
+  
+  const isAuthenticated = !!session?.user?.email;
 
-  // Load cart từ server khi user đăng nhập
-  const loadCartFromServer = async () => {
-    if (!session?.user?.email) return;
+  /**
+   * Load cart from server for authenticated users
+   */
+  const loadCartFromServer = useCallback(async () => {
+    if (!isAuthenticated) return;
 
     try {
       setIsLoading(true);
@@ -67,8 +103,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (result.success && result.cart) {
           console.log('🛒 Cart loaded from server:', result.cart);
           setItems(result.cart);
-          // Cũng lưu vào localStorage để backup
-          localStorage.setItem('cart', JSON.stringify(result.cart));
+          // Backup to localStorage
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(result.cart));
         }
       } else {
         console.error('Failed to load cart from server:', response.statusText);
@@ -78,11 +114,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isAuthenticated]);
 
-  // Save cart lên server
-  const saveCartToServer = async (cartItems: CartItem[]) => {
-    if (!session?.user?.email) return;
+  /**
+   * Save cart to server for authenticated users
+   */
+  const saveCartToServer = useCallback(async (cartItems: CartItem[]) => {
+    if (!isAuthenticated) return;
 
     try {
       const response = await fetch('/api/cart', {
@@ -102,24 +140,28 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error saving cart to server:', error);
     }
-  };
+  }, [isAuthenticated]);
 
-  // Sync với server (public method)
-  const syncWithServer = async () => {
+  /**
+   * Public method to sync cart with server
+   */
+  const syncWithServer = useCallback(async () => {
     await loadCartFromServer();
-  };
+  }, [loadCartFromServer]);
 
-  // Load cart khi component mount
+  /**
+   * Initialize cart from localStorage or server
+   */
   useEffect(() => {
     const initializeCart = async () => {
-      if (status === 'loading') return; // Đợi session load
+      if (status === 'loading') return; // Wait for session
 
-      if (session?.user?.email) {
-        // User đã đăng nhập - load từ server
+      if (isAuthenticated) {
+        // User is logged in - load from server
         await loadCartFromServer();
       } else {
-        // User chưa đăng nhập - load từ localStorage
-        const savedCart = localStorage.getItem('cart');
+        // User is not logged in - load from localStorage
+        const savedCart = localStorage.getItem(STORAGE_KEY);
         if (savedCart) {
           try {
             const parsedCart = JSON.parse(savedCart);
@@ -138,43 +180,55 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     initializeCart();
-  }, [session, status]);
+  }, [isAuthenticated, loadCartFromServer, status]);
 
-  // Save cart khi items thay đổi
+  /**
+   * Save cart when items change
+   */
   useEffect(() => {
     if (!loaded) return;
 
-    // Luôn lưu vào localStorage
-    localStorage.setItem('cart', JSON.stringify(items));
+    // Always save to localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 
-    // Nếu user đã đăng nhập, cũng lưu lên server
-    if (session?.user?.email) {
+    // If user is logged in, also save to server
+    if (isAuthenticated) {
       saveCartToServer(items);
     }
-  }, [items, loaded, session]);
+  }, [items, loaded, isAuthenticated, saveCartToServer]);
 
-  // Khi user đăng nhập, sync cart từ localStorage lên server
+  /**
+   * Merge local cart with server when user logs in
+   */
   useEffect(() => {
-    if (session?.user?.email && loaded) {
-      // Merge cart từ localStorage với server
-      const localCart = localStorage.getItem('cart');
+    if (isAuthenticated && loaded) {
+      // Merge cart from localStorage with server
+      const localCart = localStorage.getItem(STORAGE_KEY);
       if (localCart) {
         try {
           const parsedLocalCart = JSON.parse(localCart);
           if (parsedLocalCart.length > 0) {
-            // Có cart trong localStorage, merge với server
+            // Have cart in localStorage, merge with server
             loadCartFromServer().then(() => {
               // After loading server cart, merge with local cart if needed
               const mergedCart = [...items];
               parsedLocalCart.forEach((localItem: CartItem) => {
                 const existingIndex = mergedCart.findIndex(
-                  (serverItem) => generateUniqueKey(serverItem) === generateUniqueKey(localItem),
+                  (serverItem) => generateUniqueKey(serverItem) === generateUniqueKey(localItem)
                 );
                 if (existingIndex === -1) {
-                  mergedCart.push({
-                    ...localItem,
-                    uniqueKey: localItem.uniqueKey || generateUniqueKey(localItem),
-                  });
+                  // Ensure the local item has all required properties
+                  const safeLocalItem: CartItem = {
+                    id: localItem.id || '',
+                    name: localItem.name || '',
+                    price: localItem.price || 0,
+                    quantity: localItem.quantity || 1,
+                    image: localItem.image,
+                    options: localItem.options,
+                    version: localItem.version,
+                    uniqueKey: localItem.uniqueKey || generateUniqueKey(localItem)
+                  };
+                  mergedCart.push(safeLocalItem);
                 }
               });
 
@@ -188,60 +242,41 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     }
-  }, [session?.user?.email, loaded]);
+  }, [isAuthenticated, loaded, items, loadCartFromServer]);
 
-  // Hàm kiểm tra xem 2 sản phẩm có giống nhau không (bao gồm tất cả thuộc tính)
-  const isSameProduct = (item1: CartItem, item2: CartItem): boolean => {
-    return generateUniqueKey(item1) === generateUniqueKey(item2);
-  };
-
-  const addItem = async (newItem: CartItem) => {
+  /**
+   * Add item to cart
+   */
+  const addItem = useCallback((newItem: CartItem) => {
     setItems((prevItems) => {
-      // Tìm sản phẩm giống nhau hoàn toàn (bao gồm version và options)
-      const existingItemIndex = prevItems.findIndex((item) => isSameProduct(item, newItem));
+      // Find product with the same attributes
+      const existingItemIndex = prevItems.findIndex((item) => 
+        generateUniqueKey(item) === generateUniqueKey(newItem)
+      );
 
       if (existingItemIndex > -1) {
-        // Nếu item đã tồn tại hoàn toàn giống nhau, gộp số lượng
+        // If item already exists, update quantity
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex].quantity += newItem.quantity || 1;
 
-        // Đảm bảo item đã có uniqueKey
+        // Ensure item has uniqueKey
         if (!updatedItems[existingItemIndex].uniqueKey) {
-          updatedItems[existingItemIndex].uniqueKey = generateUniqueKey(
-            updatedItems[existingItemIndex],
-          );
+          updatedItems[existingItemIndex].uniqueKey = generateUniqueKey(updatedItems[existingItemIndex]);
         }
 
-        // Đảm bảo giữ lại đường dẫn hình ảnh tốt nhất
-        if (
-          newItem.image &&
-          (!updatedItems[existingItemIndex].image ||
-            updatedItems[existingItemIndex].image ===
-              '/images/placeholder/product-placeholder.svg' ||
-            updatedItems[existingItemIndex].image ===
-              '/images/placeholder/product-placeholder.jpg' ||
-            updatedItems[existingItemIndex].image === '/images/product-placeholder.svg')
-        ) {
-          updatedItems[existingItemIndex].image = newItem.image;
+        // Keep best image URL
+        if (newItem.image && (!updatedItems[existingItemIndex].image || 
+            normalizeImageUrl(updatedItems[existingItemIndex].image) === PLACEHOLDER_IMAGE)) {
+          updatedItems[existingItemIndex].image = normalizeImageUrl(newItem.image);
         }
 
         return updatedItems;
       } else {
-        // Nếu là item mới hoặc có thuộc tính khác nhau, thêm vào mảng
-        const itemImage = newItem.image || '/images/placeholder/product-placeholder.svg';
-        // Kiểm tra đường dẫn hình ảnh
-        const finalImage =
-          itemImage.includes('/images/product-placeholder.svg') ||
-          itemImage.includes('/images/placeholder/product-placeholder.jpg')
-            ? '/images/placeholder/product-placeholder.svg'
-            : itemImage;
-
+        // If new item, add to array
         const itemWithUniqueKey = {
           ...newItem,
-          image: finalImage,
+          image: normalizeImageUrl(newItem.image),
           quantity: newItem.quantity || 1,
-          version: newItem.version || undefined,
-          options: newItem.options || undefined,
           uniqueKey: generateUniqueKey(newItem),
         };
 
@@ -250,19 +285,25 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
 
     console.log('🛒 Item added to cart:', newItem.name);
-  };
+  }, []);
 
-  const removeItem = async (uniqueKey: string) => {
+  /**
+   * Remove item from cart
+   */
+  const removeItem = useCallback((uniqueKey: string) => {
     setItems((prevItems) => {
       const newItems = prevItems.filter((item) => item.uniqueKey !== uniqueKey);
       console.log('🛒 Item removed from cart, uniqueKey:', uniqueKey);
       return newItems;
     });
-  };
+  }, []);
 
-  const updateQuantity = async (uniqueKey: string, quantity: number) => {
+  /**
+   * Update item quantity
+   */
+  const updateQuantity = useCallback((uniqueKey: string, quantity: number) => {
     if (quantity <= 0) {
-      await removeItem(uniqueKey);
+      removeItem(uniqueKey);
       return;
     }
 
@@ -271,31 +312,49 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
 
     console.log('🛒 Cart quantity updated, uniqueKey:', uniqueKey, 'quantity:', quantity);
-  };
+  }, [removeItem]);
 
-  const clearCart = async () => {
+  /**
+   * Clear all items from cart
+   */
+  const clearCart = useCallback(() => {
     setItems([]);
     console.log('🛒 Cart cleared');
-  };
+  }, []);
 
-  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+  // Calculate cart stats with memoization to prevent unnecessary recalculations
+  const { itemCount, totalAmount } = useMemo(() => {
+    return {
+      itemCount: items.reduce((total, item) => total + item.quantity, 0),
+      totalAmount: items.reduce((total, item) => total + item.price * item.quantity, 0),
+    };
+  }, [items]);
 
-  const totalAmount = items.reduce((total, item) => total + item.price * item.quantity, 0);
+  // Create context value with memoization
+  const contextValue = useMemo(() => ({
+    items,
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    itemCount,
+    totalAmount,
+    isLoading,
+    syncWithServer,
+  }), [
+    items, 
+    addItem, 
+    removeItem, 
+    updateQuantity, 
+    clearCart, 
+    itemCount, 
+    totalAmount, 
+    isLoading, 
+    syncWithServer
+  ]);
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        itemCount,
-        totalAmount,
-        isLoading,
-        syncWithServer,
-      }}
-    >
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );

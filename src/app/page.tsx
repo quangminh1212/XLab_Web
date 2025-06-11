@@ -8,8 +8,63 @@ import { categories } from '@/data/mockData';
 import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-// Helper function to lấy URL ảnh hợp lệ
-const getValidImageUrl = (product: any): string => {
+// Types
+interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  shortDescription?: string;
+  price: number;
+  originalPrice?: number;
+  images?: Array<string | { url: string }>;
+  imageUrl?: string;
+  createdAt?: string;
+  slug?: string;
+  rating?: number;
+  reviewCount?: number;
+  weeklyPurchases?: number;
+  totalSold?: number;
+  isAccount?: boolean;
+  type?: string;
+}
+
+// Components
+const SearchBar = ({ placeholder }: { placeholder: string }) => (
+  <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl">
+    <input
+      type="text"
+      placeholder={placeholder}
+      className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800 text-sm sm:text-base"
+    />
+    <button className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-4 h-4 sm:w-5 sm:h-5"
+      >
+        <path
+          fillRule="evenodd"
+          d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </button>
+  </div>
+);
+
+const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
+  <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
+    <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+      {icon}
+    </div>
+    <h3 className="font-bold text-gray-900 mb-2 text-base">{title}</h3>
+    <p className="text-sm text-gray-600">{description}</p>
+  </div>
+);
+
+// Helper function
+const getValidImageUrl = (product: Product): string => {
   if (!product) return '/images/placeholder/product-placeholder.jpg';
 
   // Kiểm tra nếu có hình ảnh trong mảng hình ảnh
@@ -24,7 +79,7 @@ const getValidImageUrl = (product: any): string => {
   }
 
   // Kiểm tra nếu có thuộc tính imageUrl
-  if (product.imageUrl) {
+  if (typeof product.imageUrl === 'string') {
     return product.imageUrl;
   }
 
@@ -33,7 +88,7 @@ const getValidImageUrl = (product: any): string => {
 
 function HomePage() {
   const { t } = useLanguage();
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch products from API
@@ -64,8 +119,8 @@ function HomePage() {
   // Lọc sản phẩm mới nhất
   const newProducts = [...products]
     .sort((a, b) => {
-      const dateA = new Date(a.createdAt || 0);
-      const dateB = new Date(b.createdAt || 0);
+      const dateA = new Date(a.createdAt || '0');
+      const dateB = new Date(b.createdAt || '0');
       return dateB.getTime() - dateA.getTime();
     })
     .slice(0, 4);
@@ -84,27 +139,7 @@ function HomePage() {
               {t('home.slogan')}
             </p>
 
-            <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl">
-              <input
-                type="text"
-                placeholder={t('home.search')}
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 rounded-lg shadow-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-gray-800 text-sm sm:text-base"
-              />
-              <button className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary-500 transition-colors">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-4 h-4 sm:w-5 sm:h-5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
+            <SearchBar placeholder={t('home.search')} />
           </div>
         </div>
       </section>
@@ -166,8 +201,8 @@ function HomePage() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-2 space-y-3 snap-y snap-mandatory">
-                <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                <FeatureCard
+                  icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -180,12 +215,13 @@ function HomePage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.domesticProduct')}</h3>
-                  <p className="text-sm text-gray-600">{t('home.vietnamDevs')}</p>
-                </div>
-                <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                  }
+                  title={t('home.domesticProduct')}
+                  description={t('home.vietnamDevs')}
+                />
+                
+                <FeatureCard
+                  icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -194,12 +230,13 @@ function HomePage() {
                     >
                       <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
                     </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.support247')}</h3>
-                  <p className="text-sm text-gray-600">{t('home.supportTeam')}</p>
-                </div>
-                <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                  }
+                  title={t('home.support247')}
+                  description={t('home.supportTeam')}
+                />
+                
+                <FeatureCard
+                  icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -212,12 +249,13 @@ function HomePage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.highSecurity')}</h3>
-                  <p className="text-sm text-gray-600">{t('home.encryptedData')}</p>
-                </div>
-                <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                  }
+                  title={t('home.highSecurity')}
+                  description={t('home.encryptedData')}
+                />
+                
+                <FeatureCard
+                  icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -231,12 +269,13 @@ function HomePage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.reasonablePrice')}</h3>
-                  <p className="text-sm text-gray-600">{t('home.budgetOptions')}</p>
-                </div>
-                <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                  }
+                  title={t('home.reasonablePrice')}
+                  description={t('home.budgetOptions')}
+                />
+                
+                <FeatureCard
+                  icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -249,12 +288,13 @@ function HomePage() {
                         d="M11.3 1.046a.75.75 0 011.4.042l3.926 8.137h4.396a.75.75 0 01.578 1.268l-8.459 8.459a.75.75 0 01-1.268-.578v-4.396L2.41 11.7a.75.75 0 01.578-1.268h4.396L11.3 1.046z"
                       />
                     </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.aiIntegration')}</h3>
-                  <p className="text-sm text-gray-600">{t('home.aiSupport')}</p>
-                </div>
-                <div className="snap-start bg-white border border-gray-100 hover:border-primary-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
-                  <div className="bg-primary-50 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                  }
+                  title={t('home.aiIntegration')}
+                  description={t('home.aiSupport')}
+                />
+                
+                <FeatureCard
+                  icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -269,10 +309,10 @@ function HomePage() {
                         d="M4 4v5h5M20 20v-5h-5M5 10a8 8 0 0111.966-2.79M18.364 18.364A8 8 0 015 10"
                       />
                     </svg>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-2 text-base">{t('home.continuousUpdates')}</h3>
-                  <p className="text-sm text-gray-600">{t('home.newFeatures')}</p>
-                </div>
+                  }
+                  title={t('home.continuousUpdates')}
+                  description={t('home.newFeatures')}
+                />
               </div>
             </section>
 
@@ -345,302 +385,73 @@ function HomePage() {
           </div>
 
           {/* Main Content Column - Right */}
-          <div className="w-full md:col-span-4">
-            {/* Phần mềm */}
-            <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-2xl font-bold text-gray-800">{t('home.software')}</h2>
-                  <Link
-                    href="/products"
-                    className="text-primary-600 hover:text-primary-800 transition-colors text-base font-medium"
-                  >
-                    {t('home.viewAll')}
-                  </Link>
-                </div>
-
-                {isLoading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+          <div className="md:col-span-4 h-full">
+            {/* Featured Products */}
+            {isLoading ? (
+              <div className="flex justify-center items-center h-40">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+              </div>
+            ) : (
+              <>
+                {/* Featured Products Section */}
+                <section className="mb-8 sm:mb-12">
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h2 className="heading-3 text-gray-800">{t('home.featuredProducts')}</h2>
+                    <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
+                      {t('home.viewAll')}
+                    </Link>
                   </div>
-                ) : products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
                     {featuredProducts.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        id={product.id.toString()}
+                      <ProductCard 
+                        key={product.id} 
+                        id={product.id}
                         name={product.name}
-                        description={product.shortDescription || ''}
-                        price={product.price || 0}
+                        description={product.shortDescription || product.description || ''}
+                        price={product.price}
                         originalPrice={product.originalPrice}
                         image={getValidImageUrl(product)}
                         rating={product.rating}
-                        reviewCount={product.reviewCount || 0}
-                        weeklyPurchases={product.weeklyPurchases || 0}
-                        totalSold={product.totalSold || 0}
+                        reviewCount={product.reviewCount}
+                        weeklyPurchases={product.weeklyPurchases}
+                        totalSold={product.totalSold}
                         slug={product.slug}
+                        isAccount={product.isAccount}
                       />
                     ))}
                   </div>
-                ) : (
-                  <div className="flex items-center justify-center">
-                    <div className="text-center py-6">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-10 w-10 mx-auto text-gray-400 mb-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                        />
-                      </svg>
-                      <h3 className="text-base font-medium text-gray-700 mb-1">{t('home.noSoftware')}</h3>
-                      <p className="text-gray-500 max-w-lg mx-auto text-sm">
-                        {t('home.updateSoon')}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+                </section>
 
-            {/* Dịch vụ */}
-            <div className="mb-4 bg-white rounded-xl p-5 shadow-sm">
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-2xl font-bold text-gray-800">{t('home.services')}</h2>
-                  <Link
-                    href="/products?filter=service"
-                    className="text-primary-600 hover:text-primary-800 transition-colors text-base font-medium"
-                  >
-                    {t('home.viewAll')}
-                  </Link>
-                </div>
-
-                {isLoading ? (
-                  <div className="flex items-center justify-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                {/* New Products Section */}
+                <section>
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <h2 className="heading-3 text-gray-800">{t('home.newProducts')}</h2>
+                    <Link href="/products" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
+                      {t('home.viewAll')}
+                    </Link>
                   </div>
-                ) : products.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
-                    {products
-                      .filter((product) => product.isAccount || product.type === 'account')
-                      .slice(0, 6)
-                      .map((product) => (
-                        <ProductCard
-                          key={product.id}
-                          id={product.id.toString()}
-                          name={product.name}
-                          description={product.shortDescription || ''}
-                          price={product.price || 0}
-                          originalPrice={product.originalPrice}
-                          image={getValidImageUrl(product)}
-                          rating={product.rating}
-                          reviewCount={product.reviewCount || 0}
-                          weeklyPurchases={product.weeklyPurchases || 0}
-                          totalSold={product.totalSold || 0}
-                          slug={product.slug}
-                          isAccount={true}
-                        />
-                      ))}
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center">
-                    <div className="text-center py-6">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-10 w-10 mx-auto text-gray-400 mb-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                        />
-                      </svg>
-                      <h3 className="text-base font-medium text-gray-700 mb-1">{t('home.noServices')}</h3>
-                      <p className="text-gray-500 max-w-lg mx-auto text-sm">
-                        {t('home.updateServices')}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Câu hỏi thường gặp */}
-            <section className="py-8 bg-white rounded-xl shadow-sm mb-4">
-              <div className="px-5">
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold mb-4">{t('home.faq')}</h2>
-                  <p className="text-gray-600 max-w-2xl mx-auto">
-                    {t('home.faqDesc')}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                      {t('home.faq1Title')}
-                    </h3>
-                    <p className="text-gray-600">
-                      {t('home.faq1Desc')}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                      {t('home.faq2Title')}
-                    </h3>
-                    <p className="text-gray-600">
-                      {t('home.faq2Desc')}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                      {t('home.faq3Title')}
-                    </h3>
-                    <p className="text-gray-600">
-                      {t('home.faq3Desc')}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                      {t('home.faq4Title')}
-                    </h3>
-                    <p className="text-gray-600">
-                      {t('home.faq4Desc')}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                      {t('home.faq5Title')}
-                    </h3>
-                    <p className="text-gray-600">
-                      {t('home.faq5Desc')}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 p-6 rounded-lg border border-gray-100 hover:border-primary-100 hover:shadow-md transition-all flex flex-col h-full">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="text-primary-600 mr-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </span>
-                      {t('home.faq6Title')}
-                    </h3>
-                    <p className="text-gray-600">
-                      {t('home.faq6Desc')}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-center mt-8">
-                  <Link
-                    href="/support"
-                    className="inline-flex items-center bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors"
-                  >
-                    {t('home.moreQuestions')}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 ml-1"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                        clipRule="evenodd"
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
+                    {newProducts.map((product) => (
+                      <ProductCard 
+                        key={product.id} 
+                        id={product.id}
+                        name={product.name}
+                        description={product.shortDescription || product.description || ''}
+                        price={product.price}
+                        originalPrice={product.originalPrice}
+                        image={getValidImageUrl(product)}
+                        rating={product.rating}
+                        reviewCount={product.reviewCount}
+                        weeklyPurchases={product.weeklyPurchases}
+                        totalSold={product.totalSold}
+                        slug={product.slug}
+                        isAccount={product.isAccount}
                       />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            </section>
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
           </div>
         </div>
       </div>

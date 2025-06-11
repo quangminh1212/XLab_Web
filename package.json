@@ -19,7 +19,14 @@
     "fix:security": "node scripts/fix-security-issues.js",
     "update-purchases": "node src/scripts/update-purchases.js",
     "verify-products": "node src/scripts/verify-products.js",
-    "fix:all": "node scripts/fix-all-issues.js"
+    "fix:all": "node scripts/fix-all-issues.js",
+    "type-check": "tsc --noEmit",
+    "analyze": "cross-env ANALYZE=true next build",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "check": "npm run lint && npm run type-check",
+    "prepare": "node scripts/fix-next-errors.js",
+    "postinstall": "node scripts/fix-next-errors.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
@@ -65,8 +72,12 @@
     "eslint": "9.0.0",
     "eslint-config-next": "15.2.4",
     "eslint-config-prettier": "10.1.5",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.7.0",
     "postcss": "8.4.32",
     "prettier": "3.5.3",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "rimraf": "5.0.5",
     "sharp": "0.33.5",
     "tailwindcss": "3.4.0",
@@ -86,5 +97,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

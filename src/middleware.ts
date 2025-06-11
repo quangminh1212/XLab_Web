@@ -2,114 +2,118 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-// Danh sách các đường dẫn được bảo vệ (yêu cầu đăng nhập)
-const protectedPaths = ['/account', '/checkout', '/api/protected'];
+// Định nghĩa các loại route
+const ROUTES = {
+  protected: ['/account', '/checkout', '/api/protected'],
+  admin: ['/admin'],
+  public: [
+    '/login',
+    '/register',
+    '/about',
+    '/products',
+    '/accounts',
+    '/services',
+    '/support',
+    '/contact',
+    '/api/auth',
+  ],
+  // Các đuôi file tĩnh cần bỏ qua
+  staticExtensions: ['.png', '.jpg', '.jpeg', '.svg', '.gif', '.ico', '.webmanifest', '.css', '.js', '.json', '.xml', '.txt'],
+  // Các path pattern của file tĩnh
+  staticPaths: ['/_next/', '/images/', '/favicon.ico'],
+};
 
-// Danh sách các đường dẫn chỉ dành cho admin
-const adminPaths = ['/admin'];
+// Danh sách email admin (lưu ở một nơi tập trung)
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',') || ['xlab.rnd@gmail.com'];
 
-// Danh sách email admin (giữ đồng bộ với NextAuth)
-const ADMIN_EMAILS = ['xlab.rnd@gmail.com'];
-
-// Danh sách các đường dẫn công khai (không cần đăng nhập)
-const publicPaths = [
-  '/login',
-  '/register',
-  '/about',
-  '/products',
-  '/accounts',
-  '/services',
-  '/support',
-  '/contact',
-  '/api/auth',
-];
-
-// Kiểm tra xem đường dẫn có thuộc danh sách được bảo vệ hay không
-const isProtectedPath = (path: string) => {
-  return protectedPaths.some(
-    (protectedPath) => path === protectedPath || path.startsWith(`${protectedPath}/`),
+/**
+ * Kiểm tra xem đường dẫn có thuộc loại được xác định hay không
+ * @param path Đường dẫn cần kiểm tra
+ * @param routeList Danh sách đường dẫn tham chiếu
+ */
+const matchesRoute = (path: string, routeList: string[]): boolean => {
+  return routeList.some(
+    (route) => path === route || path.startsWith(`${route}/`)
   );
 };
 
-// Kiểm tra xem đường dẫn có thuộc danh sách admin hay không
-const isAdminPath = (path: string) => {
-  return adminPaths.some((adminPath) => path === adminPath || path.startsWith(`${adminPath}/`));
-};
-
-// Kiểm tra xem đường dẫn có thuộc danh sách công khai hay không
-const isPublicPath = (path: string) => {
-  return publicPaths.some((publicPath) => path === publicPath || path.startsWith(`${publicPath}/`));
-};
-
-// Kiểm tra nếu đường dẫn là tệp tĩnh
-const isStaticFile = (path: string) => {
+/**
+ * Kiểm tra nếu đường dẫn là tệp tĩnh
+ * @param path Đường dẫn cần kiểm tra
+ */
+const isStaticFile = (path: string): boolean => {
   return (
-    path.includes('/_next/') ||
-    path.includes('/images/') ||
-    path.includes('/favicon.ico') ||
-    path.endsWith('.png') ||
-    path.endsWith('.jpg') ||
-    path.endsWith('.jpeg') ||
-    path.endsWith('.svg') ||
-    path.endsWith('.gif') ||
-    path.endsWith('.ico') ||
-    path.endsWith('.webmanifest') ||
-    path.endsWith('.css') ||
-    path.endsWith('.js') ||
-    path.endsWith('.json') ||
-    path.endsWith('.xml') ||
-    path.endsWith('.txt')
+    ROUTES.staticPaths.some(pattern => path.includes(pattern)) ||
+    ROUTES.staticExtensions.some(ext => path.endsWith(ext))
   );
 };
 
-// Hàm debug để kiểm tra token và đường dẫn (chỉ trong development)
-const debug = (request: NextRequest, token: any) => {
+/**
+ * Log thông tin debug (chỉ trong development)
+ */
+const logDebug = (request: NextRequest, token: any): void => {
   if (process.env.NODE_ENV === 'development') {
     console.log('[Middleware Debug]:', {
       path: request.nextUrl.pathname,
       token: token ? `Found (${token.email})` : 'Not found',
+      timestamp: new Date().toISOString(),
     });
   }
 };
 
+/**
+ * Kiểm tra quyền admin
+ * @param token NextAuth token
+ */
+const isAdmin = (token: any): boolean => {
+  return token?.email && ADMIN_EMAILS.includes(token.email);
+};
+
+/**
+ * Tạo response chuyển hướng đến trang đăng nhập
+ */
+const redirectToLogin = (request: NextRequest, callbackPath: string): NextResponse => {
+  const loginUrl = new URL('/login', request.url);
+  loginUrl.searchParams.set('callbackUrl', callbackPath);
+  return NextResponse.redirect(loginUrl);
+};
+
+/**
+ * Middleware chính để xử lý kiểm tra quyền truy cập
+ */
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Bỏ qua các file static và api routes không cần kiểm tra
+  // Bỏ qua các file static và api auth routes không cần kiểm tra
   if (isStaticFile(pathname) || pathname.includes('/api/auth')) {
     return NextResponse.next();
   }
 
-  // Lấy token từ cookie với secret từ environment hoặc fallback
+  // Lấy token từ cookie với secret từ environment
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-build',
   });
 
-  // Log thông tin debug
-  debug(request, token);
+  // Log thông tin debug trong môi trường phát triển
+  logDebug(request, token);
 
-  // Nếu là đường dẫn admin
-  if (isAdminPath(pathname)) {
+  // Xử lý đường dẫn admin
+  if (matchesRoute(pathname, ROUTES.admin)) {
     // Nếu chưa đăng nhập, chuyển đến login
     if (!token) {
-      const url = new URL('/login', request.url);
-      url.searchParams.set('callbackUrl', pathname);
-      return NextResponse.redirect(url);
+      return redirectToLogin(request, pathname);
     }
 
-    // Kiểm tra email có trong danh sách admin không
-    if (!token.email || !ADMIN_EMAILS.includes(token.email)) {
-      const url = new URL('/', request.url);
-      return NextResponse.redirect(url);
+    // Kiểm tra có quyền admin không
+    if (!isAdmin(token)) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
   }
 
-  // Nếu là đường dẫn được bảo vệ và chưa đăng nhập, chuyển hướng đến trang đăng nhập
-  if (isProtectedPath(pathname) && !token) {
-    const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(url);
+  // Xử lý đường dẫn được bảo vệ
+  if (matchesRoute(pathname, ROUTES.protected) && !token) {
+    return redirectToLogin(request, pathname);
   }
 
   return NextResponse.next();
