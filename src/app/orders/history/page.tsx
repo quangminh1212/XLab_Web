@@ -203,14 +203,14 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 px-4 max-w-4xl">
-      <h1 className="text-xl font-semibold mb-6 text-gray-800">{t('orders.history')}</h1>
+    <div className="container mx-auto py-4 px-3 max-w-3xl">
+      <h1 className="text-lg font-medium mb-4 text-gray-800">{t('orders.history')}</h1>
 
       {orders.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+        <div className="bg-white rounded-md shadow-sm p-6 text-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-12 w-12 mx-auto text-gray-400 mb-3"
+            className="h-10 w-10 mx-auto text-gray-400 mb-2"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -222,18 +222,18 @@ export default function OrderHistoryPage() {
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <h2 className="text-base font-medium text-gray-700 mb-2">{t('orders.noOrders')}</h2>
-          <p className="text-gray-500 mb-4 text-sm">
+          <h2 className="text-sm font-medium text-gray-700 mb-1">{t('orders.noOrders')}</h2>
+          <p className="text-gray-500 mb-3 text-xs">
             {t('orders.noOrdersDesc')}
           </p>
           <Link
             href="/products"
-            className="inline-flex items-center bg-primary-600 text-white px-4 py-2 text-sm rounded-md hover:bg-primary-700 transition-colors"
+            className="inline-flex items-center bg-primary-600 text-white px-3 py-1.5 text-xs rounded hover:bg-primary-700 transition-colors"
           >
             {t('orders.exploreProducts')}
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 ml-1.5"
+              className="h-3.5 w-3.5 ml-1"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -246,24 +246,24 @@ export default function OrderHistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 border border-gray-100">
-              <div className="border-b border-gray-100 bg-gray-50 px-4 py-3">
-                <div className="flex flex-wrap justify-between items-center gap-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
+            <div key={order.id} className="bg-white rounded-md shadow-sm overflow-hidden hover:shadow transition-shadow duration-200 border border-gray-100">
+              <div className="border-b border-gray-100 bg-gray-50 px-3 py-2">
+                <div className="flex justify-between items-center text-xs">
+                  <div className="flex items-center gap-3">
                     <div>
-                      <span className="text-xs text-gray-500 mr-1 font-medium">{t('orders.orderCode')}:</span>
+                      <span className="text-gray-500 mr-1">{t('orders.orderCode')}:</span>
                       <span className="font-medium">{order.id}</span>
                     </div>
                     <div>
-                      <span className="text-xs text-gray-500 mr-1 font-medium">{t('orders.orderDate')}:</span>
+                      <span className="text-gray-500 mr-1">{t('orders.orderDate')}:</span>
                       <span>{formatDate(order.createdAt)}</span>
                     </div>
                   </div>
                   <div>
                     <span
-                      className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
+                      className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}
                     >
                       {getStatusName(order.status)}
                     </span>
@@ -271,65 +271,58 @@ export default function OrderHistoryPage() {
                 </div>
               </div>
 
-              <div className="px-4 py-3">
-                <div className="divide-y divide-gray-100">
-                  {order.items.map((item, index) => (
-                    <div key={index} className="py-3 flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100">
-                          <Image
-                            src={getProductImage(item.productId, item.productName)}
-                            alt={item.productName}
-                            fill
-                            className="object-contain"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = '/images/placeholder/product-placeholder.jpg';
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <h3 className="font-medium text-gray-800 text-sm">{item.productName}</h3>
-                          <p className="text-xs text-gray-500">
-                            <span className="inline-block mr-1">{t('orders.quantity')}:</span>
-                            <span className="font-medium">{item.quantity}</span>
-                          </p>
-                        </div>
+              <div className="px-3 py-2">
+                {order.items.map((item, index) => (
+                  <div key={index} className="py-2 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="relative w-10 h-10 rounded overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-100">
+                        <Image
+                          src={getProductImage(item.productId, item.productName)}
+                          alt={item.productName}
+                          fill
+                          className="object-contain"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/images/placeholder/product-placeholder.jpg';
+                          }}
+                        />
                       </div>
-                      <div className="text-right">
-                        <p className="font-medium text-gray-800 text-sm">{formatCurrency(item.price)}</p>
+                      <div>
+                        <h3 className="font-medium text-gray-800 text-xs">{item.productName}</h3>
+                        <div className="flex items-center gap-2 text-xs text-gray-500">
+                          <span>{t('orders.quantity')}: <span className="font-medium">{item.quantity}</span></span>
+                          <span className="font-medium">{formatCurrency(item.price)}</span>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
 
-              <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-700 text-sm">{t('orders.total')}:</span>
-                  <span className="font-semibold text-primary-600">
+              <div className="px-3 py-2 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+                <Link
+                  href={`/orders/${order.id}`}
+                  className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-xs"
+                >
+                  {t('orders.viewDetails')}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3.5 w-3.5 ml-0.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Link>
+                <div className="flex items-center">
+                  <span className="text-xs text-gray-500 mr-1">{t('orders.total')}:</span>
+                  <span className="font-semibold text-primary-600 text-sm">
                     {formatCurrency(order.totalAmount)}
                   </span>
-                </div>
-                <div className="mt-2 flex justify-end">
-                  <Link
-                    href={`/orders/${order.id}`}
-                    className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium text-xs"
-                  >
-                    {t('orders.viewDetails')}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 ml-1"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </Link>
                 </div>
               </div>
             </div>
