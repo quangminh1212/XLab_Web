@@ -48,6 +48,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Homepage
     'home.slogan': 'Tối ưu hiệu quả, tối thiểu chi phí!',
     'home.search': 'Tìm kiếm phần mềm, ứng dụng...',
+    'home.loadMore': 'Xem thêm',
     'home.aboutTitle': 'Về XLab',
     'home.aboutDesc1': 'XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.',
     'home.aboutDesc2': 'Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.',
@@ -509,6 +510,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Homepage
     'home.slogan': 'Maximize efficiency, minimize costs!',
     'home.search': 'Search for software, applications...',
+    'home.loadMore': 'Load more',
     'home.aboutTitle': 'About XLab',
     'home.aboutDesc1': 'XLab is a platform providing advanced AI-integrated software solutions that help users enhance productivity in work and daily life.',
     'home.aboutDesc2': 'Our mission is to provide Vietnamese people with access to tools for work, study, and entertainment at reasonable prices and international quality.',
