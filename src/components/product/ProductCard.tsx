@@ -484,23 +484,23 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
+      <div className="p-6 flex-1 flex flex-col justify-between bg-white">
         {displayCategory && (
-          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+          <div className="text-xs font-medium text-gray-500 mb-3 uppercase tracking-wide">
             {displayCategory}
           </div>
         )}
-        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
+        <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-3 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
+        <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between">
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-2 mb-2">
               <span
-                className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+                className={`text-2xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
                 {formatCurrency(price)}
               </span>
@@ -515,11 +515,11 @@ export default function ProductCard({
           <div className="flex flex-col items-end gap-2">
             {weeklyPurchases > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-xs ${currentColor.stats} flex items-center px-3 py-1.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  className={`h-3.5 w-3.5 mr-1.5 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -536,11 +536,11 @@ export default function ProductCard({
             )}
             {totalSold > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-xs ${currentColor.stats} flex items-center px-3 py-1.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  className={`h-3.5 w-3.5 mr-1.5 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
