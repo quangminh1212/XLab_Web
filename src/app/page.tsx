@@ -3,9 +3,9 @@
 // Thêm comment này để kiểm tra hot-reload
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import ProductCard from '@/components/product/ProductCard';
 import { categories } from '@/data/mockData';
-import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Types
@@ -492,7 +492,15 @@ function HomePage() {
                         "Tôi đã sử dụng dịch vụ của XLab trong 2 năm qua và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, tính năng đầy đủ và đội ngũ hỗ trợ rất tận tâm."
                       </p>
                       <div className="flex items-center">
-                        <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-700 font-bold mr-3">NT</div>
+                        <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                          <Image 
+                            src="https://randomuser.me/api/portraits/men/32.jpg" 
+                            alt="Nguyễn Thành" 
+                            width={40} 
+                            height={40}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <div>
                           <h4 className="font-medium text-gray-900">Nguyễn Thành</h4>
                           <p className="text-sm text-gray-500">Giám đốc kinh doanh</p>
@@ -515,7 +523,15 @@ function HomePage() {
                         "Các giải pháp AI của XLab đã giúp doanh nghiệp chúng tôi tiết kiệm 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."
                       </p>
                       <div className="flex items-center">
-                        <div className="w-10 h-10 bg-secondary-100 rounded-full flex items-center justify-center text-secondary-700 font-bold mr-3">TL</div>
+                        <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                          <Image 
+                            src="https://randomuser.me/api/portraits/men/41.jpg" 
+                            alt="Trần Linh" 
+                            width={40} 
+                            height={40}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <div>
                           <h4 className="font-medium text-gray-900">Trần Linh</h4>
                           <p className="text-sm text-gray-500">CTO - Công ty công nghệ</p>
@@ -538,7 +554,15 @@ function HomePage() {
                         "Những cập nhật liên tục của XLab khiến sản phẩm luôn đáp ứng được nhu cầu ngày càng cao của chúng tôi. Giao diện thân thiện, dễ sử dụng ngay cả với người mới."
                       </p>
                       <div className="flex items-center">
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold mr-3">PH</div>
+                        <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+                          <Image 
+                            src="https://randomuser.me/api/portraits/women/68.jpg" 
+                            alt="Phạm Hoa" 
+                            width={40} 
+                            height={40}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
                         <div>
                           <h4 className="font-medium text-gray-900">Phạm Hoa</h4>
                           <p className="text-sm text-gray-500">Quản lý dự án</p>
