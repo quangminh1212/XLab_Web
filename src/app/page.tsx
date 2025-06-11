@@ -90,6 +90,7 @@ function HomePage() {
   const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [visibleProductCount, setVisibleProductCount] = useState(8);
 
   // Fetch products from API
   useEffect(() => {
@@ -117,13 +118,15 @@ function HomePage() {
   const featuredProducts = products.slice(0, 6);
 
   // Lọc sản phẩm mới nhất
-  const newProducts = [...products]
+  const sortedNewProducts = [...products]
     .sort((a, b) => {
       const dateA = new Date(a.createdAt || '0');
       const dateB = new Date(b.createdAt || '0');
       return dateB.getTime() - dateA.getTime();
-    })
-    .slice(0, 4);
+    });
+  
+  // Lấy số lượng sản phẩm hiển thị theo giá trị visibleProductCount
+  const newProducts = sortedNewProducts.slice(0, visibleProductCount);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -413,7 +416,7 @@ function HomePage() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {featuredProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.3]">
+                      <div key={product.id} className="aspect-[1/1.5]">
                         <ProductCard 
                           id={product.id}
                           name={product.name}
@@ -443,7 +446,7 @@ function HomePage() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                     {newProducts.map((product) => (
-                      <div key={product.id} className="aspect-[1/1.3]">
+                      <div key={product.id} className="aspect-[1/1.5]">
                         <ProductCard 
                           id={product.id}
                           name={product.name}
@@ -461,6 +464,26 @@ function HomePage() {
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Nút xem thêm sản phẩm mới */}
+                  {sortedNewProducts.length > visibleProductCount && (
+                    <div className="flex justify-center mt-6">
+                      <button
+                        onClick={() => setVisibleProductCount(prevCount => prevCount + 8)}
+                        className="bg-primary-100 hover:bg-primary-200 text-primary-800 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+                      >
+                        {t('home.loadMore')}
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          viewBox="0 0 20 20" 
+                          fill="currentColor" 
+                          className="w-5 h-5"
+                        >
+                          <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
                 </section>
               </>
             )}

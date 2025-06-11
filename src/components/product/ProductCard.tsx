@@ -433,7 +433,7 @@ export default function ProductCard({
           <div className="flex flex-col gap-1">
             <button
               onClick={handleAddToCart}
-              className="bg-white/95 backdrop-blur-sm text-gray-800 hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 border border-white/50 px-2 py-1 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs"
+              className="bg-white/95 backdrop-blur-sm text-gray-800 hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 border border-white/50 px-3 py-1.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs"
             >
               <span className="flex items-center justify-center">
                 <svg className="w-2 h-2 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -464,7 +464,7 @@ export default function ProductCard({
                 });
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-2 py-1 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs"
+              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-3 py-1.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs"
             >
               <span className="flex items-center justify-center">
                 <svg className="w-2 h-2 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -482,7 +482,7 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between bg-white">
+      <div className="p-3 flex-1 flex flex-col bg-white">
         {displayCategory && (
           <div className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">
             {displayCategory}
@@ -491,10 +491,10 @@ export default function ProductCard({
         <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-1 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-xs text-gray-600 line-clamp-2 mb-2 leading-relaxed">
+        <p className="text-xs text-gray-600 line-clamp-3 min-h-[3.6rem] mb-4 leading-relaxed">
           {shortDescription}
         </p>
-        <div className="flex items-end justify-between">
+        <div className="flex items-end justify-between mt-auto">
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
