@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
-    "dev:clean": "node scripts/clean-temp-files.js && node scripts/fix-next-errors.js && next dev",
+    "dev:clean": "node scripts/fix-next-errors.js && npm run dev",
     "dev:safe": "node scripts/fix-next-errors.js && npm run dev",
     "dev:silent": "cross-env NODE_OPTIONS=--no-warnings next dev",
     "build": "next build",
@@ -14,14 +14,12 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
-    "clean": "node scripts/clean-temp-files.js",
+    "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "fix": "node scripts/fix-next-errors.js",
     "fix:security": "node scripts/fix-security-issues.js",
     "update-purchases": "node src/scripts/update-purchases.js",
     "verify-products": "node src/scripts/verify-products.js",
-    "fix:all": "node scripts/fix-all-issues.js",
-    "analyze": "cross-env ANALYZE=true next build",
-    "optimize": "npm run clean && npm run format && npm run lint:fix && npm run fix"
+    "fix:all": "node scripts/fix-all-issues.js"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",

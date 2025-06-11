@@ -51,6 +51,8 @@ next-env.d.ts
 /data/backups/
 *.user_*.json
 
+
+
 # IDE
 .idea
 .vscode
@@ -97,19 +99,3 @@ run-fixed.bat
 /data/backups/
 *.bak
 *.temp
-
-# Thêm các file tạm thời
-output.txt
-output-categories.txt
-*.zip
-*.gz
-*.tar
-
-# Windows temporary files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# Thư mục tạm thời có thể được tạo ra trong quá trình chạy
-/temp/
-/.temp/
