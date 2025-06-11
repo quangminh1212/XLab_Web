@@ -401,23 +401,24 @@ function HomePage() {
                       {t('home.viewAll')}
                     </Link>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 sm:gap-6">
                     {featuredProducts.map((product) => (
-                      <ProductCard 
-                        key={product.id} 
-                        id={product.id}
-                        name={product.name}
-                        description={product.shortDescription || product.description || ''}
-                        price={product.price}
-                        originalPrice={product.originalPrice}
-                        image={getValidImageUrl(product)}
-                        rating={product.rating}
-                        reviewCount={product.reviewCount}
-                        weeklyPurchases={product.weeklyPurchases}
-                        totalSold={product.totalSold}
-                        slug={product.slug}
-                        isAccount={product.isAccount}
-                      />
+                      <div key={product.id} className="h-full flex">
+                        <ProductCard 
+                          id={product.id} 
+                          name={product.name}
+                          description={product.shortDescription || product.description || ''}
+                          price={product.price}
+                          originalPrice={product.originalPrice}
+                          image={getValidImageUrl(product)}
+                          rating={product.rating}
+                          reviewCount={product.reviewCount}
+                          weeklyPurchases={product.weeklyPurchases}
+                          totalSold={product.totalSold}
+                          slug={product.slug}
+                          isAccount={product.isAccount}
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>
@@ -430,23 +431,24 @@ function HomePage() {
                       {t('home.viewAll')}
                     </Link>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 sm:gap-6">
                     {newProducts.map((product) => (
-                      <ProductCard 
-                        key={product.id} 
-                        id={product.id}
-                        name={product.name}
-                        description={product.shortDescription || product.description || ''}
-                        price={product.price}
-                        originalPrice={product.originalPrice}
-                        image={getValidImageUrl(product)}
-                        rating={product.rating}
-                        reviewCount={product.reviewCount}
-                        weeklyPurchases={product.weeklyPurchases}
-                        totalSold={product.totalSold}
-                        slug={product.slug}
-                        isAccount={product.isAccount}
-                      />
+                      <div key={product.id} className="h-full flex">
+                        <ProductCard 
+                          id={product.id} 
+                          name={product.name}
+                          description={product.shortDescription || product.description || ''}
+                          price={product.price}
+                          originalPrice={product.originalPrice}
+                          image={getValidImageUrl(product)}
+                          rating={product.rating}
+                          reviewCount={product.reviewCount}
+                          weeklyPurchases={product.weeklyPurchases}
+                          totalSold={product.totalSold}
+                          slug={product.slug}
+                          isAccount={product.isAccount}
+                        />
+                      </div>
                     ))}
                   </div>
                 </section>
