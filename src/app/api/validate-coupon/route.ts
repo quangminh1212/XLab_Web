@@ -1,8 +1,8 @@
 // ... existing code ...
-// Tìm và cập nhật logic xử lý mã giảm giá để thêm loại "cashback"
-// Trong hàm POST hoặc GET, cập nhật phần kiểm tra và áp dụng mã giảm giá
+// Find and update discount code processing logic to add "cashback" type
+// In the POST or GET function, update the validation and application of discount codes
 
-// Ví dụ: Cập nhật interface Coupon
+// Example: Update Coupon interface
 interface Coupon {
   id: string;
   code: string;
@@ -24,15 +24,15 @@ interface Coupon {
   isPublic: boolean;
 }
 
-// Cập nhật logic tính toán số tiền giảm
-// Ví dụ:
+// Update discount calculation logic
+// Example:
 // if (coupon.type === 'percentage') {
-//   // Logic tính giảm theo phần trăm
+//   // Logic for percentage-based discount
 // } else if (coupon.type === 'fixed') {
-//   // Logic tính giảm theo số tiền cố định
+//   // Logic for fixed amount discount
 // } else if (coupon.type === 'cashback') {
-//   // Logic tính hoàn tiền
-//   // Đối với cashback, số tiền giảm vẫn được tính nhưng sẽ được đánh dấu là cashback
-//   // để xử lý ở bước sau khi thanh toán
+//   // Logic for cashback
+//   // For cashback, the discount amount is still calculated but will be marked as cashback
+//   // to be processed in the post-payment step
 // }
 // ... existing code ... 
