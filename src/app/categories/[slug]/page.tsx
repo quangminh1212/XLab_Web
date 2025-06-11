@@ -61,7 +61,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         {categoryProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
             {categoryProducts.map((product) => (
-              <div key={product.id} className="aspect-[1/1.6]">
+              <div key={product.id} className="aspect-[1/1.3]">
                 <ProductCard
                   id={product.id.toString()}
                   name={product.name}

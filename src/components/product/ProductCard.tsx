@@ -197,7 +197,7 @@ export default function ProductCard({
           <svg
             key={i}
             xmlns="http://www.w3.org/2000/svg"
-            className={`h-3 w-3 ${
+            className={`h-2 w-2 ${
               i < fullStars
                 ? 'text-yellow-400'
                 : i === fullStars && hasHalfStar
@@ -223,7 +223,7 @@ export default function ProductCard({
             />
           </svg>
         ))}
-        {reviewCount > 0 && <span className="ml-1 text-[10px] text-gray-500">({reviewCount})</span>}
+        {reviewCount > 0 && <span className="ml-1 text-[8px] text-gray-500">({reviewCount})</span>}
       </div>
     );
   };
@@ -361,7 +361,7 @@ export default function ProductCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative pt-[100%] bg-white">
+      <div className="relative pt-[90%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div
             className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
@@ -383,7 +383,7 @@ export default function ProductCard({
 
         {!isImageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-white">
-            <svg className="w-10 h-10 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -406,11 +406,11 @@ export default function ProductCard({
             className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
           >
             <div
-              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}
+              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-3 py-1 rounded-full flex items-center shadow-lg text-xs`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
+                className="h-3 w-3 mr-1"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -426,15 +426,17 @@ export default function ProductCard({
         )}
 
         <div
-          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 to-primary-900/40 flex items-center justify-center transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 to-primary-900/40 flex items-center justify-center transition-opacity duration-300 ${
+            isHovered ? 'opacity-100' : 'opacity-0'
+          }`}
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <button
               onClick={handleAddToCart}
-              className="bg-white/95 backdrop-blur-sm text-gray-800 hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 border border-white/50 px-3 py-1.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs"
+              className="bg-white/95 backdrop-blur-sm text-gray-800 hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 border border-white/50 px-2 py-1 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs"
             >
               <span className="flex items-center justify-center">
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-2 h-2 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -462,10 +464,10 @@ export default function ProductCard({
                 });
                 router.push('/checkout?skipInfo=true');
               }}
-              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-3 py-1.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs"
+              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-2 py-1 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs"
             >
               <span className="flex items-center justify-center">
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-2 h-2 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -480,23 +482,23 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
+      <div className="p-3 flex-1 flex flex-col justify-between bg-white">
         {displayCategory && (
-          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+          <div className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">
             {displayCategory}
           </div>
         )}
-        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
+        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-1 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-xs text-gray-600 line-clamp-2 mb-3 leading-relaxed">
+        <p className="text-xs text-gray-600 line-clamp-2 mb-2 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between">
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
-                className={`text-lg font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+                className={`text-base font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
                 {formatCurrency(price)}
               </span>
@@ -506,16 +508,16 @@ export default function ProductCard({
                 </span>
               )}
             </div>
-            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-3"></div>}</div>
+            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-2"></div>}</div>
           </div>
           <div className="flex flex-col items-end gap-1">
             {weeklyPurchases > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -532,11 +534,11 @@ export default function ProductCard({
             )}
             {totalSold > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-[10px] ${currentColor.stats} flex items-center px-1 py-0.5 rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  className={`h-2 w-2 mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
