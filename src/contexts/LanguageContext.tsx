@@ -488,8 +488,16 @@ const translations: Record<Language, Record<string, string>> = {
     'product.relatedProducts': 'Sản phẩm liên quan',
     'product.mightAlsoLike': 'Bạn có thể thích',
     'product.options': 'Tùy chọn',
-    'testimonials.title': 'Đánh giá từ khách hàng',
+    'testimonials.title': 'Đánh giá của khách hàng',
     'testimonials.verified': 'Đã xác minh',
+    'home.testimonials': 'Đánh giá của khách hàng',
+    'home.viewAllTestimonials': 'Xem tất cả đánh giá',
+    'testimonial.michael': '"Tôi đã sử dụng dịch vụ của XLab được 2 năm và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, có đầy đủ tính năng, và đội ngũ hỗ trợ rất tận tâm."',
+    'testimonial.david': '"Các giải pháp AI của XLab đã giúp doanh nghiệp của chúng tôi tiết kiệm được 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."',
+    'testimonial.emily': '"Các bản cập nhật liên tục của XLab đảm bảo sản phẩm luôn đáp ứng được những yêu cầu ngày càng cao của chúng tôi. Giao diện thân thiện và dễ sử dụng ngay cả với người mới."',
+    'testimonial.position.business': 'Giám đốc kinh doanh',
+    'testimonial.position.cto': 'CTO - Tech Solutions',
+    'testimonial.position.project': 'Quản lý dự án',
   },
   en: {
     // Header
@@ -962,14 +970,6 @@ const translations: Record<Language, Record<string, string>> = {
     'product.options': 'Options',
     'testimonials.title': 'Customer Reviews',
     'testimonials.verified': 'Verified',
-    'home.testimonials': 'Customer Reviews',
-    'home.viewAllTestimonials': 'View all reviews',
-    'testimonial.michael': '"I have been using XLab services for 2 years and am extremely satisfied. The software runs smoothly, has complete features, and the support team is very dedicated."',
-    'testimonial.david': '"XLab\'s AI solutions have helped our business save 30% in operating costs. The technical support team responds quickly and effectively."',
-    'testimonial.emily': '"XLab\'s continuous updates ensure the product always meets our increasingly high demands. The interface is friendly and easy to use even for newcomers."',
-    'testimonial.position.business': 'Business Director',
-    'testimonial.position.cto': 'CTO - Tech Solutions',
-    'testimonial.position.project': 'Project Manager',
   },
 };
 
