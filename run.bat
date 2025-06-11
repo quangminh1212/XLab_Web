@@ -19,8 +19,8 @@ echo.
 echo Starting development server...
 echo.
 
-rem Start development server directly
-call npm run dev
+cd %~dp0
+npm run dev
 
 rem Keep the window open if there's an error
 if errorlevel 1 (

@@ -268,7 +268,7 @@ const translations: Record<Language, Record<string, string>> = {
     'products.accounts': 'Tài khoản học tập',
     
     // Product detail page
-    'product.details': 'Thông tin chi tiết',
+    'product.details': 'Chi tiết sản phẩm',
     'product.specifications': 'Thông số kỹ thuật',
     'product.requirements': 'Yêu cầu hệ thống',
     'product.metaTitle': 'XLab - Phần mềm và Dịch vụ',
@@ -482,6 +482,14 @@ const translations: Record<Language, Record<string, string>> = {
     'orders.needLoginDesc': 'Vui lòng đăng nhập để xem lịch sử đơn hàng của bạn',
     'orders.login': 'Đăng nhập',
     'notifications.none': 'Không có thông báo nào',
+    'product.details': 'Chi tiết sản phẩm',
+    'product.features': 'Tính năng',
+    'product.frequentlyAskedQuestions': 'Câu hỏi thường gặp',
+    'product.relatedProducts': 'Sản phẩm liên quan',
+    'product.mightAlsoLike': 'Bạn có thể thích',
+    'product.options': 'Tùy chọn',
+    'testimonials.title': 'Đánh giá từ khách hàng',
+    'testimonials.verified': 'Đã xác minh',
   },
   en: {
     // Header
@@ -946,6 +954,14 @@ const translations: Record<Language, Record<string, string>> = {
     'orders.needLoginDesc': 'Please login to view your order history',
     'orders.login': 'Login',
     'notifications.none': 'No notifications',
+    'product.details': 'Product details',
+    'product.features': 'Features',
+    'product.frequentlyAskedQuestions': 'Frequently Asked Questions',
+    'product.relatedProducts': 'Related products',
+    'product.mightAlsoLike': 'You might also like',
+    'product.options': 'Options',
+    'testimonials.title': 'Customer Reviews',
+    'testimonials.verified': 'Verified',
   },
 };
 
