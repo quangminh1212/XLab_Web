@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface OrderItem {
   productId: string;
@@ -27,6 +28,7 @@ export default function OrderHistoryPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     // Tải danh sách sản phẩm
@@ -78,10 +80,10 @@ export default function OrderHistoryPage() {
           // Dữ liệu mẫu để hiển thị khi có lỗi
           const sampleOrders: Order[] = [
             {
-              id: 'ORD-12345',
+              id: 'XL-361231',
               status: 'completed',
               totalAmount: 149000,
-              createdAt: '2023-03-15T15:30:00Z',
+              createdAt: '2023-04-06T11:16:00Z',
               items: [
                 {
                   productId: 'chatgpt',
@@ -92,21 +94,15 @@ export default function OrderHistoryPage() {
               ],
             },
             {
-              id: 'ORD-12346',
+              id: 'XL-806787',
               status: 'completed',
               totalAmount: 298000,
-              createdAt: '2023-04-20T21:20:00Z',
+              createdAt: '2023-08-06T11:16:00Z',
               items: [
                 {
                   productId: 'grok',
                   productName: 'Grok',
-                  quantity: 1,
-                  price: 149000,
-                },
-                {
-                  productId: 'chatgpt',
-                  productName: 'ChatGPT',
-                  quantity: 1,
+                  quantity: 2,
                   price: 149000,
                 },
               ],
@@ -126,15 +122,15 @@ export default function OrderHistoryPage() {
   const getStatusName = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'Chờ xử lý';
+        return t('orders.pending');
       case 'processing':
-        return 'Đang xử lý';
+        return t('orders.processing');
       case 'completed':
-        return 'Hoàn thành';
+        return t('orders.completed');
       case 'cancelled':
-        return 'Đã hủy';
+        return t('orders.cancelled');
       case 'refunded':
-        return 'Hoàn tiền';
+        return t('orders.refunded');
       default:
         return status;
     }
@@ -161,7 +157,7 @@ export default function OrderHistoryPage() {
   // Format ngày tháng
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('vi-VN', {
+    return date.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US', {
       hour: '2-digit',
       minute: '2-digit',
       day: '2-digit',
@@ -172,7 +168,7 @@ export default function OrderHistoryPage() {
 
   // Format tiền tệ
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
+    return new Intl.NumberFormat(language === 'vi' ? 'vi-VN' : 'en-US', {
       style: 'currency',
       currency: 'VND',
       minimumFractionDigits: 0,
@@ -193,13 +189,13 @@ export default function OrderHistoryPage() {
     return (
       <div className="container mx-auto py-8 px-4">
         <div className="text-center py-12">
-          <h2 className="text-2xl font-bold mb-4">Bạn cần đăng nhập</h2>
-          <p className="text-gray-600 mb-6">Vui lòng đăng nhập để xem lịch sử đơn hàng của bạn</p>
+          <h2 className="text-2xl font-bold mb-4">{t('orders.needLogin')}</h2>
+          <p className="text-gray-600 mb-6">{t('orders.needLoginDesc')}</p>
           <Link
             href="/login"
             className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
           >
-            Đăng nhập
+            {t('orders.login')}
           </Link>
         </div>
       </div>
@@ -207,8 +203,8 @@ export default function OrderHistoryPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-8">Lịch sử đơn hàng của bạn</h1>
+    <div className="container mx-auto py-8 px-4 max-w-6xl">
+      <h1 className="text-2xl font-bold mb-8 text-gray-800">{t('orders.history')}</h1>
 
       {orders.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
@@ -226,15 +222,15 @@ export default function OrderHistoryPage() {
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <h2 className="text-lg font-medium text-gray-700 mb-2">Bạn chưa có đơn hàng nào</h2>
+          <h2 className="text-lg font-medium text-gray-700 mb-2">{t('orders.noOrders')}</h2>
           <p className="text-gray-500 mb-6">
-            Hãy khám phá các sản phẩm của chúng tôi và đặt hàng ngay!
+            {t('orders.noOrdersDesc')}
           </p>
           <Link
             href="/products"
             className="inline-flex items-center bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
           >
-            Xem sản phẩm
+            {t('orders.exploreProducts')}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 ml-2"
@@ -252,16 +248,18 @@ export default function OrderHistoryPage() {
       ) : (
         <div className="space-y-6">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
               <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
-                <div className="flex flex-wrap justify-between items-center">
-                  <div>
-                    <span className="text-sm text-gray-500">Mã đơn hàng:</span>
-                    <span className="ml-2 font-medium">{order.id}</span>
-                  </div>
-                  <div>
-                    <span className="text-sm text-gray-500">Ngày đặt:</span>
-                    <span className="ml-2">{formatDate(order.createdAt)}</span>
+                <div className="flex flex-wrap justify-between items-center gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+                    <div>
+                      <span className="text-sm text-gray-500 mr-1">{t('orders.orderCode')}:</span>
+                      <span className="font-medium">{order.id}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-500 mr-1">{t('orders.orderDate')}:</span>
+                      <span className="font-medium">{formatDate(order.createdAt)}</span>
+                    </div>
                   </div>
                   <div>
                     <span
@@ -276,9 +274,9 @@ export default function OrderHistoryPage() {
               <div className="px-6 py-4">
                 <div className="divide-y divide-gray-200">
                   {order.items.map((item, index) => (
-                    <div key={index} className="py-3 flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                    <div key={index} className="py-4 flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
                           <Image
                             src={getProductImage(item.productId, item.productName)}
                             alt={item.productName}
@@ -291,12 +289,15 @@ export default function OrderHistoryPage() {
                           />
                         </div>
                         <div>
-                          <h3 className="font-medium">{item.productName}</h3>
-                          <p className="text-sm text-gray-500">Số lượng: {item.quantity}</p>
+                          <h3 className="font-medium text-gray-800">{item.productName}</h3>
+                          <p className="text-sm text-gray-500">
+                            <span className="inline-block mr-1">{t('orders.quantity')}:</span>
+                            <span className="font-medium">{item.quantity}</span>
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">{formatCurrency(item.price)}</p>
+                        <p className="font-medium text-gray-800">{formatCurrency(item.price)}</p>
                       </div>
                     </div>
                   ))}
@@ -305,7 +306,7 @@ export default function OrderHistoryPage() {
 
               <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
                 <div className="flex justify-between items-center">
-                  <span className="font-medium">Tổng cộng:</span>
+                  <span className="font-medium text-gray-700">{t('orders.total')}:</span>
                   <span className="font-bold text-xl text-primary-600">
                     {formatCurrency(order.totalAmount)}
                   </span>
@@ -315,7 +316,7 @@ export default function OrderHistoryPage() {
                     href={`/orders/${order.id}`}
                     className="inline-flex items-center text-primary-600 hover:text-primary-800 font-medium"
                   >
-                    Xem chi tiết
+                    {t('orders.viewDetails')}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5 ml-1"
