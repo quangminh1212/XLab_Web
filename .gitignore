@@ -17,14 +17,6 @@ cypress/screenshots
 # next.js
 /.next/
 /out/
-# Generated Next.js webpack files
-/.next/static/webpack/
-/.next/static/chunks/
-/.next/cache/webpack/
-/.next/trace/
-/.next/server/middleware-build.lock
-/.next/server/server-reference-manifest.lock
-/.next/webpack.lock
 
 # production
 /build
@@ -40,8 +32,6 @@ yarn-error.log*
 lerna-debug.log*
 next.config.log
 next-fix-all.log
-webpack-log.txt
-turbopack-error.log
 
 # local env files
 .env*.local

@@ -179,7 +179,7 @@ export default function ProductCard({
   const cleanImageUrl = product ? getImageFromProduct() : getValidImageUrl(image);
 
   // Sử dụng mô tả đã được dịch
-  const shortDescription = translatedDescription || description || 'Không có mô tả ngắn cho sản phẩm này';
+  const shortDescription = translatedDescription || '';
 
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage =
@@ -317,9 +317,9 @@ export default function ProductCard({
   };
 
   // Tạo slug từ tên nếu không có slug được truyền vào
-  const formattedSlug =
-    productSlug || 
-    (translatedName || '')
+  const productSlug =
+    slug ||
+    name
       .toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9-]/g, '');
@@ -408,7 +408,7 @@ export default function ProductCard({
 
   return (
     <Link
-      href={productIsAccount ? `/services/${productId}` : `/products/${formattedSlug}`}
+      href={productIsAccount ? `/services/${productId}` : `/products/${productSlug}`}
       className={`group flex flex-col h-full w-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

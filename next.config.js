@@ -20,7 +20,6 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  useFileSystemPublicRoutes: true,
   reactStrictMode: true,
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
@@ -30,9 +29,7 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
-    turbo: {
-      enabled: false
-    },
+    outputFileTracingIgnores: ['.next/trace/**'],
   },
   images: {
     domains: [
