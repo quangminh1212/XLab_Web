@@ -498,6 +498,7 @@ const translations: Record<Language, Record<string, string>> = {
     'testimonial.position.business': 'Giám đốc kinh doanh',
     'testimonial.position.cto': 'CTO - Tech Solutions',
     'testimonial.position.project': 'Quản lý dự án',
+    'cart.enterCoupon': 'Nhập mã giảm giá',
   },
   en: {
     // Header
@@ -970,6 +971,13 @@ const translations: Record<Language, Record<string, string>> = {
     'product.options': 'Options',
     'testimonials.title': 'Customer Reviews',
     'testimonials.verified': 'Verified',
+    'testimonials.positions.CTO': 'Chief Technology Officer',
+    'testimonials.positions.CTO - Tech Solutions': 'Chief Technology Officer',
+    'testimonials.positions.Marketing Manager': 'Marketing Manager',
+    'testimonials.positions.Developer': 'Developer',
+    'testimonials.companies.Tech Solutions': 'Tech Solutions',
+    'testimonials.companies.Digital Agency': 'Digital Agency',
+    'testimonials.companies.Software Inc.': 'Software Inc.',
   },
 };
 

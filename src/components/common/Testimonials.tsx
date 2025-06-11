@@ -43,7 +43,7 @@ const defaultTestimonials: Testimonial[] = [
     content: 'Tôi đã sử dụng nhiều sản phẩm tương tự nhưng cái này có giao diện dễ sử dụng nhất. Tiết kiệm được rất nhiều thời gian cho công việc hàng ngày.',
     date: '2023-11-28',
     verified: true,
-    position: 'Marketing Manager',
+    position: 'Quản lý Marketing',
     company: 'Digital Agency'
   },
   {
@@ -251,7 +251,11 @@ export default function Testimonials({ productId, limit = 3 }: TestimonialsProps
                       <div className="font-medium text-gray-900">{testimonial.name}</div>
                       {(testimonial.position || testimonial.company) && (
                         <div className="text-sm text-gray-600">
-                          {testimonial.position}
+                          {language === 'en' && testimonial.position === 'CTO - Tech Solutions' ? 'Chief Technology Officer - Tech Solutions' :
+                           language === 'en' && testimonial.position === 'Quản lý Marketing' ? 'Marketing Manager' : 
+                           language === 'en' && testimonial.position === 'Nhà phát triển' ? 'Developer' :
+                           language === 'vi' && testimonial.position === 'CTO - Tech Solutions' ? 'Giám đốc Công nghệ - Tech Solutions' :
+                           testimonial.position}
                           {testimonial.position && testimonial.company && ' - '}
                           {testimonial.company}
                         </div>
