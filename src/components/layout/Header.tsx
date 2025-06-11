@@ -610,7 +610,7 @@ const Header = () => {
                         ) : (
                           <div className="px-4 py-6 text-center">
                             <p className="text-xs sm:text-sm text-gray-500">
-                              Không có thông báo nào
+                              {t('notifications.none')}
                             </p>
                           </div>
                         )}
@@ -623,7 +623,7 @@ const Header = () => {
                           onClick={() => setIsNotificationOpen(false)}
                           role="menuitem"
                         >
-                          Xem tất cả thông báo
+                          {t('notifications.viewAll')}
                         </Link>
                       </div>
                     </div>
