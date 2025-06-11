@@ -2,8 +2,8 @@
   {
     "id": "2",
     "code": "WELCOME50",
-    "name": "Chào mừng thành viên mới",
-    "description": "Ưu đãi cho khách hàng đăng ký mới",
+    "name": "Welcome offer for new members",
+    "description": "Welcome offer for new members",
     "type": "fixed",
     "value": 50000,
     "minOrder": 200000,
@@ -21,8 +21,8 @@
   {
     "id": "3",
     "code": "XLABRND10",
-    "name": "Ưu đãi riêng 10%",
-    "description": "Mã giảm giá đặc biệt dành riêng cho khách hàng thân thiết",
+    "name": "Special 10% Discount",
+    "description": "Special discount code for loyal customers",
     "type": "percentage",
     "value": 10,
     "minOrder": 50000,
@@ -45,8 +45,8 @@
   {
     "id": "4",
     "code": "MEMBER100K",
-    "name": "Giảm 100K cho thành viên",
-    "description": "Mã giảm giá 100K cho các thành viên tích cực",
+    "name": "100K Discount for Members",
+    "description": "100K discount code for active members",
     "type": "fixed",
     "value": 100000,
     "minOrder": 500000,
