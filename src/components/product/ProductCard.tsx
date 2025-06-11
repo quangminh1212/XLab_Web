@@ -23,6 +23,7 @@ interface ProductCardProps {
   slug?: string;
   onAddToCart?: (id: string) => void;
   onView?: (id: string) => void;
+  size?: 'normal' | 'small'; // Thêm prop kích thước
 }
 
 export default function ProductCard({
@@ -41,6 +42,7 @@ export default function ProductCard({
   slug = '',
   onAddToCart = () => {},
   onView = () => {},
+  size = 'normal', // Mặc định là kích thước bình thường
 }: ProductCardProps) {
   const { t, language } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
@@ -354,6 +356,20 @@ export default function ProductCard({
   const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
   const currentColor = colorPalette[colorIndex] || colorPalette[0];
 
+  // Chỉnh sửa kiểu dáng dựa vào kích thước
+  const cardStyles = {
+    paddingContent: size === 'small' ? 'p-3' : 'p-4',
+    titleText: size === 'small' ? 'text-sm' : 'text-base',
+    descriptionText: size === 'small' ? 'text-xs line-clamp-1' : 'text-xs line-clamp-2',
+    marginBottom: size === 'small' ? 'mb-1' : 'mb-2',
+    priceText: size === 'small' ? 'text-base' : 'text-lg',
+    buttonPadding: size === 'small' ? 'px-2 py-1' : 'px-3 py-1.5',
+    iconSize: size === 'small' ? 'h-2.5 w-2.5' : 'h-3 w-3',
+    gapSize: size === 'small' ? 'gap-1' : 'gap-2',
+    badgeSize: size === 'small' ? 'text-xs px-1.5 py-0.5' : 'text-xs px-2 py-1',
+    marginBottomSection: size === 'small' ? 'mb-1.5' : 'mb-3',
+  };
+
   return (
     <Link
       href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
@@ -364,7 +380,7 @@ export default function ProductCard({
       <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div
-            className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
+            className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white ${cardStyles.badgeSize} font-bold rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
           >
             -{discountPercentage}%
           </div>
@@ -408,11 +424,11 @@ export default function ProductCard({
             className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
           >
             <div
-              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}
+              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold ${cardStyles.buttonPadding} rounded-full flex items-center shadow-lg`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
+                className={`${cardStyles.iconSize} mr-1`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -432,13 +448,13 @@ export default function ProductCard({
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div className="flex flex-col gap-2">
+          <div className={`flex flex-col ${cardStyles.gapSize}`}>
             <button
               onClick={handleAddToCart}
-              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-3 py-1.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs`}
+              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 ${cardStyles.buttonPadding} rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs`}
             >
               <span className="flex items-center justify-center">
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`${cardStyles.iconSize} mr-1`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -466,10 +482,10 @@ export default function ProductCard({
                 });
                 router.push('/checkout?skipInfo=true');
               }}
-              className={`bg-gradient-to-r ${currentColor.button} text-white px-3 py-1.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs`}
+              className={`bg-gradient-to-r ${currentColor.button} text-white ${cardStyles.buttonPadding} rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs`}
             >
               <span className="flex items-center justify-center">
-                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`${cardStyles.iconSize} mr-1`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -484,23 +500,23 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
+      <div className={`${cardStyles.paddingContent} flex-1 flex flex-col justify-between bg-white`}>
         {displayCategory && (
-          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
+          <div className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">
             {displayCategory}
           </div>
         )}
-        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
+        <h3 className={`${cardStyles.titleText} font-bold text-gray-900 line-clamp-2 ${cardStyles.marginBottom} group-hover:text-gray-700 transition-colors duration-200`}>
           {translatedName}
         </h3>
-        <p className="text-xs text-gray-600 line-clamp-2 mb-3 leading-relaxed">
+        <p className={`${cardStyles.descriptionText} text-gray-600 ${cardStyles.marginBottomSection} leading-relaxed`}>
           {shortDescription}
         </p>
         <div className="flex items-end justify-between">
           <div className="flex-1">
-            <div className="flex items-baseline flex-wrap gap-1 mb-1">
+            <div className={`flex items-baseline flex-wrap gap-1 ${cardStyles.marginBottom}`}>
               <span
-                className={`text-lg font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+                className={`${cardStyles.priceText} font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
                 {formatCurrency(price)}
               </span>
@@ -512,14 +528,14 @@ export default function ProductCard({
             </div>
             <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-3"></div>}</div>
           </div>
-          <div className="flex flex-col items-end gap-1">
+          <div className={`flex flex-col items-end ${cardStyles.gapSize}`}>
             {weeklyPurchases > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-xs ${currentColor.stats} flex items-center ${cardStyles.buttonPadding} rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  className={`${cardStyles.iconSize} mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
@@ -531,16 +547,16 @@ export default function ProductCard({
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                   />
                 </svg>
-                <span className="font-semibold">{t('product.purchasesPerWeek', { count: weeklyPurchases })}</span>
+                <span className="font-semibold">{size === 'small' ? weeklyPurchases : t('product.purchasesPerWeek', { count: weeklyPurchases })}</span>
               </div>
             )}
             {totalSold > 0 && (
               <div
-                className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
+                className={`text-xs ${currentColor.stats} flex items-center ${cardStyles.buttonPadding} rounded-full bg-white shadow-sm`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className={`h-3 w-3 mr-1 ${currentColor.statsIcon}`}
+                  className={`${cardStyles.iconSize} mr-1 ${currentColor.statsIcon}`}
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor"
