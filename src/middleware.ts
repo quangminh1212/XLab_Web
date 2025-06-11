@@ -16,6 +16,7 @@ const ROUTES = {
     '/support',
     '/contact',
     '/api/auth',
+    '/',
   ],
   // Các đuôi file tĩnh cần bỏ qua
   staticExtensions: ['.png', '.jpg', '.jpeg', '.svg', '.gif', '.ico', '.webmanifest', '.css', '.js', '.json', '.xml', '.txt'],
@@ -116,6 +117,7 @@ export async function middleware(request: NextRequest) {
     return redirectToLogin(request, pathname);
   }
 
+  // Mọi route khác được xử lý bởi Next.js App Router
   return NextResponse.next();
 }
 

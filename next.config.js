@@ -13,7 +13,6 @@ const nextConfig = {
     },
     optimizeCss: true,
     optimisticClientCache: true,
-    enableUndici: true,
   },
   images: {
     domains: [
