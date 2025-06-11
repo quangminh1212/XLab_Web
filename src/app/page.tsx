@@ -463,7 +463,7 @@ function HomePage() {
                           fill="currentColor" 
                           className="w-5 h-5"
                         >
-                          <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 010 1.08l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.04 1.08l-5.25 5.5a.75.75 0 010 1.08l-5.25-5.5a.75.75 0 111.04-1.08l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
                         </svg>
                       </button>
                     </div>
@@ -495,15 +495,15 @@ function HomePage() {
                         <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
                           <Image 
                             src="https://randomuser.me/api/portraits/men/32.jpg" 
-                            alt="Nguyễn Thành" 
+                            alt="Michael Roberts" 
                             width={40} 
                             height={40}
                             className="w-full h-full object-cover"
                           />
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900">Nguyễn Thành</h4>
-                          <p className="text-sm text-gray-500">Giám đốc kinh doanh</p>
+                          <h4 className="font-medium text-gray-900">Michael Roberts</h4>
+                          <p className="text-sm text-gray-500">Business Director</p>
                         </div>
                       </div>
                     </div>
@@ -526,15 +526,15 @@ function HomePage() {
                         <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
                           <Image 
                             src="https://randomuser.me/api/portraits/men/41.jpg" 
-                            alt="Trần Linh" 
+                            alt="David Wilson" 
                             width={40} 
                             height={40}
                             className="w-full h-full object-cover"
                           />
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900">Trần Linh</h4>
-                          <p className="text-sm text-gray-500">CTO - Công ty công nghệ</p>
+                          <h4 className="font-medium text-gray-900">David Wilson</h4>
+                          <p className="text-sm text-gray-500">CTO - Tech Solutions</p>
                         </div>
                       </div>
                     </div>
@@ -557,15 +557,15 @@ function HomePage() {
                         <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
                           <Image 
                             src="https://randomuser.me/api/portraits/women/68.jpg" 
-                            alt="Phạm Hoa" 
+                            alt="Emily Parker" 
                             width={40} 
                             height={40}
                             className="w-full h-full object-cover"
                           />
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900">Phạm Hoa</h4>
-                          <p className="text-sm text-gray-500">Quản lý dự án</p>
+                          <h4 className="font-medium text-gray-900">Emily Parker</h4>
+                          <p className="text-sm text-gray-500">Project Manager</p>
                         </div>
                       </div>
                     </div>
