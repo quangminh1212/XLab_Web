@@ -962,6 +962,14 @@ const translations: Record<Language, Record<string, string>> = {
     'product.options': 'Options',
     'testimonials.title': 'Customer Reviews',
     'testimonials.verified': 'Verified',
+    'home.testimonials': 'Customer Reviews',
+    'home.viewAllTestimonials': 'View all reviews',
+    'testimonial.michael': '"I have been using XLab services for 2 years and am extremely satisfied. The software runs smoothly, has complete features, and the support team is very dedicated."',
+    'testimonial.david': '"XLab\'s AI solutions have helped our business save 30% in operating costs. The technical support team responds quickly and effectively."',
+    'testimonial.emily': '"XLab\'s continuous updates ensure the product always meets our increasingly high demands. The interface is friendly and easy to use even for newcomers."',
+    'testimonial.position.business': 'Business Director',
+    'testimonial.position.cto': 'CTO - Tech Solutions',
+    'testimonial.position.project': 'Project Manager',
   },
 };
 

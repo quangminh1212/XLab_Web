@@ -11,7 +11,7 @@ export default function HomeTestimonials() {
   return (
     <section className="mt-12 mb-12">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="heading-3 text-gray-800">{t('home.testimonials') || 'Đánh giá từ khách hàng'}</h2>
+        <h2 className="heading-3 text-gray-800">{t('home.testimonials')}</h2>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -25,7 +25,7 @@ export default function HomeTestimonials() {
             ))}
           </div>
           <p className="text-gray-700 mb-4">
-            "Tôi đã sử dụng dịch vụ của XLab trong 2 năm qua và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, tính năng đầy đủ và đội ngũ hỗ trợ rất tận tâm."
+            {t('testimonial.michael')}
           </p>
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
@@ -43,7 +43,7 @@ export default function HomeTestimonials() {
             </div>
             <div>
               <h4 className="font-medium text-gray-900">Michael Roberts</h4>
-              <p className="text-sm text-gray-500">Business Director</p>
+              <p className="text-sm text-gray-500">{t('testimonial.position.business')}</p>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function HomeTestimonials() {
             ))}
           </div>
           <p className="text-gray-700 mb-4">
-            "Các giải pháp AI của XLab đã giúp doanh nghiệp chúng tôi tiết kiệm 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."
+            {t('testimonial.david')}
           </p>
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
@@ -76,7 +76,7 @@ export default function HomeTestimonials() {
             </div>
             <div>
               <h4 className="font-medium text-gray-900">David Wilson</h4>
-              <p className="text-sm text-gray-500">CTO - Tech Solutions</p>
+              <p className="text-sm text-gray-500">{t('testimonial.position.cto')}</p>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function HomeTestimonials() {
             ))}
           </div>
           <p className="text-gray-700 mb-4">
-            "Những cập nhật liên tục của XLab khiến sản phẩm luôn đáp ứng được nhu cầu ngày càng cao của chúng tôi. Giao diện thân thiện, dễ sử dụng ngay cả với người mới."
+            {t('testimonial.emily')}
           </p>
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
@@ -109,7 +109,7 @@ export default function HomeTestimonials() {
             </div>
             <div>
               <h4 className="font-medium text-gray-900">Emily Parker</h4>
-              <p className="text-sm text-gray-500">Project Manager</p>
+              <p className="text-sm text-gray-500">{t('testimonial.position.project')}</p>
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function HomeTestimonials() {
       
       <div className="flex justify-center mt-6">
         <Link href="/testimonials" className="text-primary-600 hover:text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
-          {t('home.viewAllTestimonials') || 'Xem tất cả đánh giá'}
+          {t('home.viewAllTestimonials')}
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
           </svg>
