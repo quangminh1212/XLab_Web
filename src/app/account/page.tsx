@@ -852,7 +852,7 @@ export default function AccountPage() {
                             type="text"
                             name="phone"
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                            placeholder="Chưa cập nhật"
+                            placeholder={t('account.notUpdated')}
                             value={profile.phone}
                             onChange={handleProfileChange}
                           />
