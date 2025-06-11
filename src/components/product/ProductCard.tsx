@@ -357,7 +357,7 @@ export default function ProductCard({
   return (
     <Link
       href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
-      className={`group flex flex-col h-full min-h-[420px] w-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
+      className={`group flex flex-col h-full w-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -491,10 +491,10 @@ export default function ProductCard({
         <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-sm text-gray-600 mb-3 leading-relaxed min-h-[80px]">
+        <p className="text-sm text-gray-600 mb-3 leading-relaxed min-h-[60px]">
           {shortDescription}
         </p>
-        <div className="flex items-end justify-between mt-auto">
+        <div className="flex items-end justify-between">
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
