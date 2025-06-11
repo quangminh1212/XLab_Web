@@ -98,6 +98,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.addToCart': 'Thêm vào giỏ',
     'product.buyNow': 'Mua ngay',
     'product.added': 'Đã thêm',
+    'product.week': 'tuần',
     
     // About page
     'about.title': 'Giới thiệu về XLab',
@@ -402,6 +403,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.addToCart': 'Add to cart',
     'product.buyNow': 'Buy now',
     'product.added': 'Added',
+    'product.week': 'week',
     
     // About page
     'about.title': 'About XLab',
