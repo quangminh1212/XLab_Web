@@ -361,7 +361,7 @@ export default function ProductCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative pt-[100%] bg-white">
+      <div className="relative pt-[75%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div
             className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
@@ -482,16 +482,16 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className="p-3 flex-1 flex flex-col justify-between bg-white">
+      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
         {displayCategory && (
           <div className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">
             {displayCategory}
           </div>
         )}
-        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-1 group-hover:text-gray-700 transition-colors duration-200">
+        <h3 className="text-sm font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className="text-xs text-gray-600 mb-2 leading-relaxed">
+        <p className="text-sm text-gray-600 mb-3 leading-relaxed min-h-[60px]">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between">
