@@ -54,7 +54,7 @@ export default function HomeTestimonials() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {texts.testimonials.map((testimonial) => (
-          <div key={testimonial.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+          <div key={testimonial.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col h-full">
             <div className="flex text-yellow-400 mb-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -62,11 +62,11 @@ export default function HomeTestimonials() {
                 </svg>
               ))}
             </div>
-            <p className="text-gray-700 mb-4">
+            <p className="text-gray-700 flex-grow min-h-[120px]">
               {testimonial.text}
             </p>
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
+            <div className="mt-auto pt-4 border-t border-gray-100 flex items-center">
+              <div className="w-10 h-10 rounded-full overflow-hidden mr-3 flex-shrink-0">
                 <Image 
                   src={testimonial.image} 
                   alt={testimonial.name} 
