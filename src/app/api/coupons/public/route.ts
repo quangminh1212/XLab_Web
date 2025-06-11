@@ -4,12 +4,12 @@ import path from 'path';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-// Tạo đường dẫn đến file lưu dữ liệu
+// Create path to data files
 const dataDir = path.join(process.cwd(), 'data');
 const couponsFilePath = path.join(dataDir, 'coupons.json');
 const usersDir = path.join(dataDir, 'users');
 
-// Định nghĩa interface cho Coupon
+// Define Coupon interface
 interface Coupon {
   id: string;
   code: string;
@@ -31,7 +31,7 @@ interface Coupon {
   userLimit?: number;
 }
 
-// Interface cho thông tin người dùng
+// Interface for user data
 interface UserData {
   email: string;
   vouchers?: {
@@ -39,7 +39,7 @@ interface UserData {
   };
 }
 
-// Hàm đọc dữ liệu từ file
+// Function to read data from file
 function loadCoupons(): Coupon[] {
   try {
     if (fs.existsSync(couponsFilePath)) {
@@ -62,7 +62,7 @@ function loadCoupons(): Coupon[] {
   }
 }
 
-// Hàm đọc dữ liệu người dùng từ file
+// Function to read user data from file
 function loadUserData(email: string): UserData | null {
   try {
     const userFilePath = path.join(usersDir, `${email}.json`);
@@ -84,20 +84,20 @@ function loadUserData(email: string): UserData | null {
 
 export async function GET() {
   try {
-    // Lấy thông tin phiên đăng nhập
+    // Get session information
     const session = await getServerSession(authOptions);
 
-    // Đọc dữ liệu từ file
+    // Read data from file
     const allCoupons = loadCoupons();
 
-    // Lọc chỉ lấy mã giảm giá công khai (bao gồm cả đã hết hạn)
+    // Filter to get only public discount codes (including expired ones)
     const now = new Date();
     const publicCoupons = allCoupons.filter((coupon) => {
       const isPublic = coupon.isPublic === true;
       const isActive = coupon.isActive === true;
       const hasStarted = new Date(coupon.startDate) <= now;
 
-      // Không còn lọc những voucher đã hết hạn
+      // No longer filtering out expired vouchers
       const result = isPublic && isActive && hasStarted;
       if (!result) {
         console.log(
@@ -109,15 +109,15 @@ export async function GET() {
 
     console.log(`Returning ${publicCoupons.length} public active coupons`);
 
-    // Nếu người dùng đã đăng nhập, thêm thông tin về việc sử dụng voucher
+    // If user is logged in, add information about voucher usage
     let userData: UserData | null = null;
     if (session?.user?.email) {
       userData = loadUserData(session.user.email);
     }
 
-    // Trả về thông tin đầy đủ để hiển thị trên trang public vouchers
+    // Return complete information to display on public vouchers page
     const fullCoupons = publicCoupons.map((coupon) => {
-      // Chuẩn bị thông tin cơ bản về voucher
+      // Prepare basic voucher information
       const voucherInfo = {
         id: coupon.id,
         code: coupon.code,
@@ -135,7 +135,7 @@ export async function GET() {
         applicableProducts: coupon.applicableProducts,
       };
 
-      // Thêm thông tin về việc sử dụng nếu người dùng đã đăng nhập
+      // Add usage information if user is logged in
       if (userData && userData.vouchers && coupon.userLimit) {
         const usedCount = userData.vouchers[coupon.id] || 0;
         return {
@@ -164,7 +164,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching public coupons:', error);
     return NextResponse.json(
-      { error: 'Đã xảy ra lỗi khi tải danh sách mã giảm giá', details: String(error) },
+      { error: 'An error occurred while loading the discount codes list', details: String(error) },
       {
         status: 500,
         headers: {
