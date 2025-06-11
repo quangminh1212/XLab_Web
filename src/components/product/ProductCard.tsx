@@ -8,12 +8,12 @@ import { useCart } from '@/components/cart/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProductCardProps {
-  id: string;
-  name: string;
-  description: string; // Mô tả ngắn của sản phẩm
-  price: number;
+  id?: string;
+  name?: string;
+  description?: string; // Mô tả ngắn của sản phẩm
+  price?: number;
   originalPrice?: number;
-  image: string;
+  image?: string;
   category?: string | object;
   rating?: number;
   reviewCount?: number;
@@ -23,6 +23,7 @@ interface ProductCardProps {
   slug?: string;
   onAddToCart?: (id: string) => void;
   onView?: (id: string) => void;
+  product?: any; // Thêm prop product
 }
 
 export default function ProductCard({
@@ -41,19 +42,49 @@ export default function ProductCard({
   slug = '',
   onAddToCart = () => {},
   onView = () => {},
+  product, // Thêm product parameter
 }: ProductCardProps) {
   const { t, language } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showAddedEffect, setShowAddedEffect] = useState(false);
-  const [translatedDescription, setTranslatedDescription] = useState<string>(description);
-  const [translatedName, setTranslatedName] = useState<string>(name);
+  const [translatedDescription, setTranslatedDescription] = useState<string>(description || '');
+  const [translatedName, setTranslatedName] = useState<string>(name || '');
   const router = useRouter();
   const { addItem, clearCart } = useCart();
 
+  // Xử lý nếu có product prop
+  useEffect(() => {
+    if (product) {
+      // Cập nhật state từ product nếu không có prop riêng lẻ
+      if (!id && product.id) setProductId(product.id.toString());
+      if (!name && product.name) setTranslatedName(product.name);
+      if (!description && product.shortDescription) setTranslatedDescription(product.shortDescription);
+      if (!price && product.price) setProductPrice(product.price);
+      if (!originalPrice && product.originalPrice) setProductOriginalPrice(product.originalPrice);
+      if (!slug && product.slug) setProductSlug(product.slug);
+      if (!rating && product.rating) setProductRating(product.rating);
+      if (!reviewCount && product.reviewCount) setProductReviewCount(product.reviewCount);
+      if (!weeklyPurchases && product.weeklyPurchases) setProductWeeklyPurchases(product.weeklyPurchases);
+      if (!totalSold && product.totalSold) setProductTotalSold(product.totalSold);
+      if (!isAccount && product.isAccount) setProductIsAccount(product.isAccount);
+    }
+  }, [product, id, name, description, price, originalPrice, slug, rating, reviewCount, weeklyPurchases, totalSold, isAccount]);
+
+  // State cho các thuộc tính lấy từ product
+  const [productId, setProductId] = useState<string>(id || '');
+  const [productPrice, setProductPrice] = useState<number>(price || 0);
+  const [productOriginalPrice, setProductOriginalPrice] = useState<number | undefined>(originalPrice);
+  const [productSlug, setProductSlug] = useState<string>(slug || '');
+  const [productRating, setProductRating] = useState<number>(rating || 0);
+  const [productReviewCount, setProductReviewCount] = useState<number>(reviewCount || 0);
+  const [productWeeklyPurchases, setProductWeeklyPurchases] = useState<number>(weeklyPurchases || 0);
+  const [productTotalSold, setProductTotalSold] = useState<number>(totalSold || 0);
+  const [productIsAccount, setProductIsAccount] = useState<boolean>(isAccount || false);
+
   // Log the image URL for debugging
-  console.log(`ProductCard image URL for ${name}:`, image);
+  console.log(`ProductCard image URL for ${translatedName}:`, image);
 
   // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
   useEffect(() => {
@@ -61,41 +92,41 @@ export default function ProductCard({
     if (language === 'en') {
       const fetchTranslation = async () => {
         try {
-          const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);
+          const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
           if (response.ok) {
             const data = await response.json();
-            console.log(`ProductCard translation data for ${id}:`, data);
+            console.log(`ProductCard translation data for ${productId}:`, data);
             // Cập nhật mô tả ngắn đã dịch
             if (data && data.shortDescription) {
               setTranslatedDescription(data.shortDescription);
             } else {
-              setTranslatedDescription(description); // Fallback to original if no translation
+              setTranslatedDescription(description || ''); // Fallback to original if no translation
             }
             
             // Cập nhật tên sản phẩm đã dịch
             if (data && data.name) {
               setTranslatedName(data.name);
             } else {
-              setTranslatedName(name); // Fallback to original if no translation
+              setTranslatedName(name || ''); // Fallback to original if no translation
             }
           } else {
-            setTranslatedDescription(description); // Fallback to original
-            setTranslatedName(name);
+            setTranslatedDescription(description || ''); // Fallback to original
+            setTranslatedName(name || '');
           }
         } catch (error) {
           console.error('Error fetching translation:', error);
-          setTranslatedDescription(description); // Fallback to original
-          setTranslatedName(name);
+          setTranslatedDescription(description || ''); // Fallback to original
+          setTranslatedName(name || '');
         }
       };
 
       fetchTranslation();
     } else {
       // Nếu tiếng Việt, sử dụng mô tả và tên gốc
-      setTranslatedDescription(description);
-      setTranslatedName(name);
+      setTranslatedDescription(description || '');
+      setTranslatedName(name || '');
     }
-  }, [description, name, language, id]);
+  }, [description, name, language, productId]);
 
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
@@ -121,16 +152,39 @@ export default function ProductCard({
     }
   };
 
+  // Xử lý hình ảnh từ product nếu cần
+  const getImageFromProduct = (): string => {
+    if (!product) return getValidImageUrl(image);
+    
+    // Nếu có hình ảnh trong mảng hình ảnh
+    if (product.images && product.images.length > 0) {
+      const imageUrl = product.images[0];
+      // Kiểm tra xem đây là string hay object
+      if (typeof imageUrl === 'string') {
+        return getValidImageUrl(imageUrl);
+      } else if (imageUrl.url) {
+        return getValidImageUrl(imageUrl.url);
+      }
+    }
+    
+    // Kiểm tra nếu có thuộc tính imageUrl
+    if (product.imageUrl) {
+      return getValidImageUrl(product.imageUrl);
+    }
+    
+    return getValidImageUrl(image);
+  };
+
   // Get the final image URL
-  const cleanImageUrl = getValidImageUrl(image);
+  const cleanImageUrl = product ? getImageFromProduct() : getValidImageUrl(image);
 
   // Sử dụng mô tả đã được dịch
   const shortDescription = translatedDescription || '';
 
   // Calculate discount only if originalPrice is higher than price
   const discountPercentage =
-    originalPrice && originalPrice > price
-      ? Math.round(((originalPrice - price) / originalPrice) * 100)
+    productOriginalPrice && productOriginalPrice > productPrice
+      ? Math.round(((productOriginalPrice - productPrice) / productOriginalPrice) * 100)
       : 0;
 
   // The actual image to display (with fallback) - moved up for use in handleAddToCart
@@ -209,7 +263,7 @@ export default function ProductCard({
           >
             {i === fullStars && hasHalfStar ? (
               <defs>
-                <linearGradient id={`halfGradient-${id}-${i}`}>
+                <linearGradient id={`halfGradient-${productId}-${i}`}>
                   <stop offset="50%" stopColor="#FACC15" />
                   <stop offset="50%" stopColor="#D1D5DB" />
                 </linearGradient>
@@ -217,13 +271,13 @@ export default function ProductCard({
             ) : null}
             <path
               fill={
-                i === fullStars && hasHalfStar ? `url(#halfGradient-${id}-${i})` : 'currentColor'
+                i === fullStars && hasHalfStar ? `url(#halfGradient-${productId}-${i})` : 'currentColor'
               }
               d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
             />
           </svg>
         ))}
-        {reviewCount > 0 && <span className="ml-1 text-xs text-gray-500">({reviewCount})</span>}
+        {productReviewCount > 0 && <span className="ml-1 text-xs text-gray-500">({productReviewCount})</span>}
       </div>
     );
   };
@@ -234,9 +288,9 @@ export default function ProductCard({
 
     // Thêm sản phẩm vào giỏ hàng trực tiếp từ component
     addItem({
-      id,
+      id: productId,
       name: translatedName,
-      price,
+      price: productPrice,
       quantity: 1,
       image: displayImageUrl,
     });
@@ -248,18 +302,16 @@ export default function ProductCard({
     }, 1000);
 
     // Gọi callback nếu được cung cấp
-    if (onAddToCart) {
-      onAddToCart(id);
-    }
+    onAddToCart(productId);
   };
 
   const handleView = () => {
-    if (onView) onView(id);
+    onView(productId);
   };
 
   // Handle image error and use placeholder
   const handleImageError = () => {
-    console.log(`Lỗi tải hình ảnh cho ${name}: ${cleanImageUrl}`);
+    console.log(`Lỗi tải hình ảnh cho ${translatedName}: ${cleanImageUrl}`);
     setImageError(true);
     setIsImageLoaded(true); // Mark as loaded to hide spinner
   };
@@ -349,20 +401,20 @@ export default function ProductCard({
   ];
 
   // Chọn màu dựa trên ID sản phẩm để đảm bảo consistent
-  const safeId = id || '0';
+  const safeId = productId || '0';
   const parsedId = parseInt(safeId);
   const colorIndex = isNaN(parsedId) ? 0 : Math.abs(parsedId) % colorPalette.length;
   const currentColor = colorPalette[colorIndex] || colorPalette[0];
 
   return (
     <Link
-      href={isAccount ? `/services/${id}` : `/products/${productSlug}`}
+      href={productIsAccount ? `/services/${productId}` : `/products/${productSlug}`}
       className={`group flex flex-col h-full w-full bg-gradient-to-br ${currentColor.bg} rounded-xl border border-gray-200/60 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-black/10 hover:-translate-y-1 hover:scale-[1.02] ${currentColor.hover} relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative pt-[100%] bg-white">
-        {originalPrice && discountPercentage > 0 && (
+        {productOriginalPrice && discountPercentage > 0 && (
           <div
             className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
           >
@@ -372,7 +424,7 @@ export default function ProductCard({
 
         <Image
           src={displayImageUrl}
-          alt={name}
+          alt={translatedName}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className={`object-contain transition-all duration-500 ${
@@ -456,13 +508,13 @@ export default function ProductCard({
                 // Clear cart and add only this product
                 clearCart();
                 addItem({
-                  id,
-                  name: translatedName,
-                  price,
+                  id: productId,
+                  name: translatedName || 'Sản phẩm',
+                  price: productPrice,
                   quantity: 1,
-                  image,
+                  image: displayImageUrl,
                   version: '',
-                  uniqueKey: `${id}_default_`,
+                  uniqueKey: `${productId}_default_`,
                 });
                 router.push('/checkout?skipInfo=true');
               }}
@@ -502,18 +554,18 @@ export default function ProductCard({
               <span
                 className={`text-xl font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
-                {formatCurrency(price)}
+                {formatCurrency(productPrice)}
               </span>
-              {originalPrice && originalPrice > price && (
+              {productOriginalPrice && productOriginalPrice > productPrice && (
                 <span className="text-sm text-gray-400 line-through">
-                  {formatCurrency(originalPrice)}
+                  {formatCurrency(productOriginalPrice)}
                 </span>
               )}
             </div>
-            <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-4"></div>}</div>
+            <div>{productRating > 0 ? renderRatingStars(productRating) : <div className="h-4"></div>}</div>
           </div>
           <div className="flex flex-col items-end gap-2">
-            {weeklyPurchases > 0 && (
+            {productWeeklyPurchases > 0 && (
               <div
                 className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
               >
@@ -531,10 +583,10 @@ export default function ProductCard({
                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
                   />
                 </svg>
-                <span className="font-semibold">{t('product.purchasesPerWeek', { count: weeklyPurchases })}</span>
+                <span className="font-semibold">{t('product.purchasesPerWeek', { count: productWeeklyPurchases })}</span>
               </div>
             )}
-            {totalSold > 0 && (
+            {productTotalSold > 0 && (
               <div
                 className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
               >
@@ -552,7 +604,7 @@ export default function ProductCard({
                     d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                   />
                 </svg>
-                <span className="font-semibold">{totalSold}</span>
+                <span className="font-semibold">{productTotalSold}</span>
               </div>
             )}
           </div>

@@ -16,11 +16,14 @@ if exist ".next" (
     rd /s /q ".next"
 )
 echo.
+echo Running fix scripts...
+call node scripts\fix-next-errors.js
+echo.
 echo Starting development server...
 echo.
 
 rem Start development server directly
-call npm run dev
+call npm run dev:clean
 
 rem Keep the window open if there's an error
 if errorlevel 1 (

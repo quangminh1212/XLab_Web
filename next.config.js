@@ -1,4 +1,22 @@
 const path = require('path');
+const fs = require('fs');
+
+// Tạo thư mục .next nếu chưa tồn tại
+if (!fs.existsSync('.next')) {
+  fs.mkdirSync('.next', { recursive: true });
+}
+
+// Tạo thư mục .next/trace với quyền truy cập đầy đủ
+const tracePath = path.join(__dirname, '.next', 'trace');
+try {
+  if (!fs.existsSync(tracePath)) {
+    fs.mkdirSync(tracePath, { recursive: true, mode: 0o777 });
+  } else {
+    fs.chmodSync(tracePath, 0o777);
+  }
+} catch (error) {
+  console.warn('Warning: Could not create or set permissions for .next/trace directory');
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -11,6 +29,7 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000', 'localhost:3001', 'localhost:3002'],
     },
+    outputFileTracingIgnores: ['.next/trace/**'],
   },
   images: {
     domains: [
@@ -71,6 +90,15 @@ const nextConfig = {
           },
         };
       }
+    }
+
+    // Thêm cấu hình để tránh lỗi permission
+    if (config.watchOptions) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        followSymlinks: false,
+        ignored: ['**/node_modules', '**/.next/cache/**'],
+      };
     }
 
     return config;
