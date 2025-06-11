@@ -99,6 +99,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.buyNow': 'Mua ngay',
     'product.added': 'Đã thêm',
     'product.week': 'tuần',
+    'product.purchasesPerWeek': '{count}/tuần',
     
     // About page
     'about.title': 'Giới thiệu về XLab',
@@ -432,6 +433,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.buyNow': 'Buy now',
     'product.added': 'Added',
     'product.week': 'week',
+    'product.purchasesPerWeek': '{count}/week',
     
     // About page
     'about.title': 'About XLab',
