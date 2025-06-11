@@ -379,22 +379,6 @@ function HomePage() {
                 </div>
               </div>
             </section>
-
-            {/* Ready to boost - Compact version */}
-            <section className="bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl overflow-hidden p-3 text-white">
-              <div className="flex flex-col">
-                <h2 className="text-base font-bold mb-1">{t('home.ctaTitle')}</h2>
-                <p className="text-xs mb-2 text-white/90">
-                  {t('home.ctaDesc')}
-                </p>
-                <Link
-                  href="/contact"
-                  className="bg-white text-primary-600 hover:bg-gray-100 text-xs font-medium py-1.5 px-3 rounded-lg transition-colors self-start"
-                >
-                  {t('home.contactUs')}
-                </Link>
-              </div>
-            </section>
           </div>
 
           {/* Main Content Column - Right */}
