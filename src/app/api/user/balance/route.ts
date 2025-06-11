@@ -23,10 +23,17 @@ setInterval(
 
 export async function GET() {
   try {
+    // Check authentication
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user || !session.user.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { 
+          error: 'Unauthorized', 
+          message: 'You need to log in to access this resource' 
+        }, 
+        { status: 401 }
+      );
     }
 
     const userEmail = session.user.email;
@@ -40,18 +47,37 @@ export async function GET() {
       });
     }
 
-    // Get synchronized balance from both systems
-    const balance = await syncUserBalance(userEmail);
+    try {
+      // Get synchronized balance from both systems
+      const balance = await syncUserBalance(userEmail);
 
-    // Cache the result
-    balanceCache.set(userEmail, { balance, timestamp: Date.now() });
+      // Cache the result
+      balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
-    return NextResponse.json({
-      balance: balance,
-      cached: false,
-    });
+      return NextResponse.json({
+        balance: balance,
+        cached: false,
+      });
+    } catch (syncError) {
+      console.error('Error syncing user balance:', syncError);
+      return NextResponse.json(
+        { 
+          error: 'Balance Sync Error', 
+          message: syncError instanceof Error ? syncError.message : 'Failed to sync user balance',
+          details: process.env.NODE_ENV === 'development' ? syncError : undefined
+        }, 
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error('Error fetching user balance:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { 
+        error: 'Internal Server Error', 
+        message: error instanceof Error ? error.message : 'Unknown error occurred',
+        details: process.env.NODE_ENV === 'development' ? error : undefined
+      }, 
+      { status: 500 }
+    );
   }
 }

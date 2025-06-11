@@ -69,29 +69,68 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
           setError(null);
         }
 
-        const response = await fetch('/api/user/balance', {
-          cache: 'no-cache', // Đảm bảo không cache ở browser level
-        });
+        // Sử dụng retry mechanism để thử lại 3 lần nếu lỗi
+        let attempts = 0;
+        const maxAttempts = 3;
+        let success = false;
+        let errorMessage = '';
 
-        if (response.ok) {
-          const data = await response.json();
-          const newBalance = data.balance || 0;
+        while (attempts < maxAttempts && !success) {
+          try {
+            attempts++;
+            
+            const response = await fetch('/api/user/balance', {
+              cache: 'no-cache', // Đảm bảo không cache ở browser level
+              headers: {
+                'Cache-Control': 'no-cache, no-store',
+                'Pragma': 'no-cache'
+              },
+            });
 
-          // Chỉ update state nếu component vẫn mounted
-          if (isMountedRef.current) {
-            setBalance(newBalance);
-            setLastUpdated(new Date());
+            if (response.ok) {
+              const data = await response.json();
+              const newBalance = data.balance || 0;
+
+              // Chỉ update state nếu component vẫn mounted
+              if (isMountedRef.current) {
+                setBalance(newBalance);
+                setLastUpdated(new Date());
+              }
+
+              cachedBalance = newBalance;
+              lastFetchTime = now;
+
+              // Chỉ log khi không phải cached để giảm spam log
+              if (!data.cached) {
+                console.log(`💰 Balance updated: ${newBalance.toLocaleString('vi-VN')} VND`);
+              }
+              
+              success = true;
+              break;
+            } else {
+              const errorData = await response.json().catch(() => ({}));
+              errorMessage = errorData.error || response.statusText || 'Failed to fetch balance';
+              
+              console.warn(`Balance fetch attempt ${attempts} failed: ${errorMessage} (Status: ${response.status})`);
+              
+              // Wait 500ms before retry
+              if (attempts < maxAttempts) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+              }
+            }
+          } catch (err) {
+            errorMessage = err instanceof Error ? err.message : 'Unknown network error';
+            console.warn(`Balance fetch attempt ${attempts} failed: ${errorMessage}`);
+            
+            // Wait 500ms before retry
+            if (attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 500));
+            }
           }
+        }
 
-          cachedBalance = newBalance;
-          lastFetchTime = now;
-
-          // Chỉ log khi không phải cached để giảm spam log
-          if (!data.cached) {
-            console.log(`💰 Balance updated: ${newBalance.toLocaleString('vi-VN')} VND`);
-          }
-        } else {
-          throw new Error('Failed to fetch balance');
+        if (!success) {
+          throw new Error(`Failed to fetch balance after ${maxAttempts} attempts: ${errorMessage}`);
         }
       } catch (err) {
         console.error('Error fetching balance:', err);
