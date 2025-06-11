@@ -37,21 +37,21 @@ const formatDate = (dateString: string) => {
   try {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
-      return 'Không xác định';
+      return 'Undefined';
     }
     return date.toLocaleDateString('vi-VN');
   } catch (error) {
-    return 'Không xác định';
+    return 'Undefined';
   }
 };
 
-// Tính phần trăm sử dụng của voucher
+// Calculate usage percentage of voucher
 const calculateUsagePercentage = (used: number, total: number) => {
   if (!total) return 0;
   return Math.min(100, Math.round((used / total) * 100));
 };
 
-// Kiểm tra xem voucher đã hết hạn chưa
+// Check if voucher is expired
 const isExpired = (endDate: string) => {
   try {
     const end = new Date(endDate);
@@ -62,7 +62,7 @@ const isExpired = (endDate: string) => {
   }
 };
 
-// Kiểm tra xem voucher đã được người dùng sử dụng hết chưa
+// Check if voucher has been fully used by user
 const isFullyUsedByUser = (voucher: Voucher) => {
   if (!voucher.userUsage) return false;
   return voucher.userUsage.current >= voucher.userUsage.limit;
@@ -111,11 +111,11 @@ export default function PublicVouchersPage() {
       })
       .catch((err) => {
         console.error('Copy failed:', err);
-        alert('Không thể sao chép mã. Vui lòng thử lại.');
+        alert('Unable to copy the code. Please try again.');
       });
   };
 
-  // Lọc voucher theo tab đang active
+  // Filter vouchers based on active tab
   const filteredVouchers = vouchers.filter((voucher) => {
     if (activeTab === 'expired') {
       return (
@@ -143,11 +143,11 @@ export default function PublicVouchersPage() {
     <div className="max-w-5xl mx-auto py-10 px-4 min-h-screen bg-gradient-to-b from-white to-gray-50/50">
       <div className="text-center mb-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600 mb-3">
-          Mã giảm giá
+          Discount Codes
         </h1>
         <div className="w-24 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full mb-4"></div>
         <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-          Các mã giảm giá hiện có và còn hiệu lực mà bạn có thể sử dụng khi thanh toán
+          Current and valid discount codes that you can use during checkout
         </p>
 
         {/* Tab navigation - improved design */}
@@ -176,7 +176,7 @@ export default function PublicVouchersPage() {
                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Có thể dùng
+                Available
               </div>
             </button>
             <button
@@ -202,7 +202,7 @@ export default function PublicVouchersPage() {
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Đã dùng
+                Used
               </div>
             </button>
             <button
@@ -228,7 +228,7 @@ export default function PublicVouchersPage() {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                Đã hết hạn
+                Expired
               </div>
             </button>
           </div>
@@ -243,7 +243,7 @@ export default function PublicVouchersPage() {
               <div className="h-7 w-7 bg-white rounded-full"></div>
             </div>
           </div>
-          <p className="ml-4 text-gray-600 font-medium">Đang tải mã giảm giá...</p>
+          <p className="ml-4 text-gray-600 font-medium">Loading discount codes...</p>
         </div>
       ) : filteredVouchers.length === 0 ? (
         <div className="text-center max-w-lg mx-auto">
@@ -264,16 +264,16 @@ export default function PublicVouchersPage() {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              {activeTab === 'available' && 'Không có mã giảm giá nào có thể sử dụng'}
-              {activeTab === 'used' && 'Bạn chưa sử dụng mã giảm giá nào'}
-              {activeTab === 'expired' && 'Không có mã giảm giá nào đã hết hạn hoặc hết lượt'}
+              {activeTab === 'available' && 'No available discount codes'}
+              {activeTab === 'used' && 'You haven\'t used any discount codes yet'}
+              {activeTab === 'expired' && 'No expired or used up discount codes'}
             </h3>
             <p className="text-gray-600 mb-5">
               {activeTab === 'available' &&
-                'Hiện chưa có mã giảm giá nào có thể sử dụng. Vui lòng quay lại sau.'}
-              {activeTab === 'used' && 'Bạn chưa sử dụng mã giảm giá nào hoặc bạn chưa đăng nhập.'}
+                'There are currently no available discount codes. Please check back later.'}
+              {activeTab === 'used' && 'You haven\'t used any discount codes yet or you\'re not logged in.'}
               {activeTab === 'expired' &&
-                'Không có mã giảm giá nào đã hết hạn hoặc hết lượt sử dụng. Các mã hiện tại vẫn còn hiệu lực và còn lượt sử dụng.'}
+                'There are no expired or used up discount codes. Current codes are still valid and have available uses.'}
             </p>
             <Link
               href="/"
@@ -293,7 +293,7 @@ export default function PublicVouchersPage() {
                   d="M10 19l-7-7m0 0l7-7m-7 7h18"
                 />
               </svg>
-              Quay lại trang chủ
+              Return to Home
             </Link>
           </div>
         </div>
@@ -330,7 +330,7 @@ export default function PublicVouchersPage() {
                         ? 'cursor-pointer hover:bg-white/20 transition-colors rounded-sm px-1 py-0.5 flex items-center'
                         : ''
                     }`}
-                    title={activeTab === 'available' ? 'Nhấn để sao chép mã' : ''}
+                    title={activeTab === 'available' ? 'Click to copy code' : ''}
                   >
                     {voucher.code}
                   </span>
@@ -345,10 +345,10 @@ export default function PublicVouchersPage() {
                   }`}
                 >
                   {voucher.type === 'percentage'
-                    ? `Giảm ${voucher.value}%`
-                    : `Giảm ${formatCurrency(voucher.value)}`}
-                  {activeTab === 'expired' && ' (Hết hạn)'}
-                  {activeTab === 'used' && ' (Đã dùng)'}
+                    ? `${voucher.value}% Off`
+                    : `${formatCurrency(voucher.value)} Off`}
+                  {activeTab === 'expired' && ' (Expired)'}
+                  {activeTab === 'used' && ' (Used)'}
                 </div>
               </div>
 
@@ -377,7 +377,7 @@ export default function PublicVouchersPage() {
                           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-                      <span>HSD: {formatDate(voucher.endDate)}</span>
+                      <span>Expires: {formatDate(voucher.endDate)}</span>
                     </div>
 
                     {voucher.userUsage && (
@@ -397,7 +397,7 @@ export default function PublicVouchersPage() {
                           />
                         </svg>
                         <span>
-                          Đã dùng: {voucher.userUsage.current}/{voucher.userUsage.limit}
+                          Used: {voucher.userUsage.current}/{voucher.userUsage.limit}
                         </span>
                       </div>
                     )}
@@ -418,7 +418,7 @@ export default function PublicVouchersPage() {
                             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                           />
                         </svg>
-                        <span>Tối đa: {formatCurrency(voucher.maxDiscount)}</span>
+                        <span>Max: {formatCurrency(voucher.maxDiscount)}</span>
                       </div>
                     )}
 
@@ -438,7 +438,7 @@ export default function PublicVouchersPage() {
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <span>{voucher.userLimit} lần/người</span>
+                        <span>{voucher.userLimit} times/user</span>
                       </div>
                     ) : (
                       <div className="flex items-center text-xs text-gray-600">
@@ -456,7 +456,7 @@ export default function PublicVouchersPage() {
                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                           />
                         </svg>
-                        <span>Vô hạn lần/người</span>
+                        <span>Unlimited uses/user</span>
                       </div>
                     )}
                   </div>
@@ -466,7 +466,7 @@ export default function PublicVouchersPage() {
                     <div className="mb-4">
                       <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                         <span className="font-medium">
-                          Còn lại: {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit}
+                          Remaining: {voucher.usageLimit - voucher.usedCount}/{voucher.usageLimit}
                         </span>
                         <span
                           className={`${voucher.usageLimit - voucher.usedCount < 10 ? 'text-red-600 font-medium' : ''}`}
@@ -508,7 +508,7 @@ export default function PublicVouchersPage() {
                             d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
                           />
                         </svg>
-                        <span>Số lượng: Vô hạn</span>
+                        <span>Quantity: Unlimited</span>
                       </div>
                     </div>
                   )}
@@ -516,7 +516,7 @@ export default function PublicVouchersPage() {
                   {/* Applicable products if any */}
                   {voucher.applicableProducts && voucher.applicableProducts.length > 0 && (
                     <div className="text-xs text-gray-500 mt-auto">
-                      <span className="font-medium">Áp dụng cho: </span>
+                      <span className="font-medium">Applicable to: </span>
                       {voucher.applicableProducts.join(', ')}
                     </div>
                   )}
@@ -526,7 +526,7 @@ export default function PublicVouchersPage() {
                     voucher.userUsage.current >= voucher.userUsage.limit &&
                     activeTab === 'available' && (
                       <div className="mt-auto mb-2 text-xs px-3 py-2 bg-red-50 rounded-md text-center text-red-600 font-medium">
-                        Bạn đã sử dụng hết lượt
+                        You have used all available uses
                       </div>
                     )}
                 </div>
@@ -540,8 +540,8 @@ export default function PublicVouchersPage() {
                   <div>
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
-                        Đơn tối thiểu: {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} đ |
-                        Đã dùng:{' '}
+                        Min order: {voucher.minOrder ? formatCurrency(voucher.minOrder) : 0} đ |
+                        Used:{' '}
                         {voucher.userUsage
                           ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
                           : '0/1'}
@@ -569,17 +569,17 @@ export default function PublicVouchersPage() {
                       <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                         <span>
                           {voucher.minOrder
-                            ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)}`
+                            ? `Min order: ${formatCurrency(voucher.minOrder)}`
                             : ''}
-                          {voucher.minOrder ? ' | ' : ''}Đã dùng:{' '}
+                          {voucher.minOrder ? ' | ' : ''}Used:{' '}
                           {voucher.userUsage
                             ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
                             : '0/1'}{' '}
-                          | Còn{' '}
+                          | {' '}
                           {voucher.userUsage
                             ? voucher.userUsage.limit - voucher.userUsage.current
                             : 1}{' '}
-                          lượt
+                          uses left
                         </span>
                         <span className="text-gray-500">
                           {calculateUsagePercentage(
@@ -606,13 +606,13 @@ export default function PublicVouchersPage() {
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
                         {voucher.minOrder
-                          ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)}`
+                          ? `Min order: ${formatCurrency(voucher.minOrder)}`
                           : ''}
-                        {voucher.minOrder ? ' | ' : ''}Đã dùng:{' '}
+                        {voucher.minOrder ? ' | ' : ''}Used:{' '}
                         {voucher.userUsage
                           ? `${voucher.userUsage.current}/${voucher.userUsage.limit}`
                           : '1/1'}{' '}
-                        | <span className="text-orange-600 font-medium">Hết lượt dùng</span>
+                        | <span className="text-orange-600 font-medium">No uses left</span>
                       </span>
                       <span className="text-orange-600">100%</span>
                     </div>
@@ -623,7 +623,7 @@ export default function PublicVouchersPage() {
                       ></div>
                     </div>
                     <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-orange-700 bg-orange-50">
-                      Đã sử dụng hết số lần cho phép
+                      Used all allowed times
                     </div>
                   </div>
                 )}
@@ -633,10 +633,10 @@ export default function PublicVouchersPage() {
                     <div className="flex justify-between items-center text-xs text-gray-600 mb-1.5">
                       <span>
                         {voucher.minOrder
-                          ? `Đơn tối thiểu: ${formatCurrency(voucher.minOrder)}`
+                          ? `Min order: ${formatCurrency(voucher.minOrder)}`
                           : ''}
-                        {voucher.minOrder ? ' | ' : ''}Trạng thái:{' '}
-                        <span className="text-gray-600 font-medium">Hết hạn</span>
+                        {voucher.minOrder ? ' | ' : ''}Status:{' '}
+                        <span className="text-gray-600 font-medium">Expired</span>
                       </span>
                       <span className="text-gray-500">100%</span>
                     </div>
@@ -648,8 +648,8 @@ export default function PublicVouchersPage() {
                     </div>
                     <div className="w-full py-1.5 px-4 mt-2 rounded-md font-medium text-xs text-center text-gray-500 bg-gray-100">
                       {voucher.usageLimit !== undefined && voucher.usageLimit <= voucher.usedCount
-                        ? 'Đã hết lượt sử dụng'
-                        : `Đã hết hạn vào ${formatDate(voucher.endDate)}`}
+                        ? 'Out of uses'
+                        : `Expired on ${formatDate(voucher.endDate)}`}
                     </div>
                   </div>
                 )}
