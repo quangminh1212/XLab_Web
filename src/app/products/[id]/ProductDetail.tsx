@@ -677,8 +677,9 @@ export default function ProductDetail({ product }: { product: ProductType }) {
                     >
                       <Image
                         src={img}
-                        alt={`${product.name} - Hình ${index + 1}`}
+                        alt={`${product.name} - ${index + 1}`}
                         fill
+                        sizes="(max-width: 768px) 25vw, 100px"
                         className="object-cover"
                       />
                     </div>
