@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { siteConfig } from '@/config/siteConfig';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import RichTextContent from '@/components/common/RichTextContent';
 
 export default function WarrantyPage() {
   const { t } = useLanguage();
@@ -78,7 +79,7 @@ export default function WarrantyPage() {
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.periodTitle')}</span>
-                    {t('warranty.period', { days: 365 })}
+                    <RichTextContent content={t('warranty.period', { days: 365 })} />
                   </p>
                 </div>
               </div>
@@ -87,7 +88,7 @@ export default function WarrantyPage() {
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.processTitle')}</span>
-                    {t('warranty.process')}
+                    <RichTextContent content={t('warranty.process')} />
                   </p>
                 </div>
               </div>
@@ -96,7 +97,7 @@ export default function WarrantyPage() {
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.conditionsTitle')}</span>
-                    {t('warranty.conditions')}
+                    <RichTextContent content={t('warranty.conditions')} />
                   </p>
                 </div>
               </div>
@@ -109,7 +110,7 @@ export default function WarrantyPage() {
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.refundPeriodTitle')}</span>
-                    {t('warranty.refundPeriod', { days: 7 })}
+                    <RichTextContent content={t('warranty.refundPeriod', { days: 7 })} />
                   </p>
                 </div>
               </div>
@@ -118,7 +119,7 @@ export default function WarrantyPage() {
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.refundConditionsTitle')}</span>
-                    {t('warranty.refundConditions')}
+                    <RichTextContent content={t('warranty.refundConditions')} />
                   </p>
                 </div>
               </div>
@@ -127,7 +128,7 @@ export default function WarrantyPage() {
                 <div className="border-l-4 border-green-500 pl-4 py-2">
                   <p className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.refundProcessTitle')}</span>
-                    {t('warranty.refundProcess')}
+                    <RichTextContent content={t('warranty.refundProcess')} />
                   </p>
                 </div>
               </div>
@@ -285,11 +286,11 @@ export default function WarrantyPage() {
 
               <div className="bg-gray-50 p-6 rounded-lg mb-8">
                 <p className="text-gray-700 mb-4">
-                  {t('warranty.supportInfo1')}
+                  <RichTextContent content={t('warranty.supportInfo1')} />
                 </p>
 
                 <p className="text-gray-700 mb-6">
-                  {t('warranty.supportInfo2')}
+                  <RichTextContent content={t('warranty.supportInfo2')} />
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
