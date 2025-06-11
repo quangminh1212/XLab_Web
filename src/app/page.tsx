@@ -382,6 +382,20 @@ function HomePage() {
                 </div>
               </div>
             </section>
+
+            {/* Ready to boost - Thêm vào sidebar */}
+            <section className="bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl overflow-hidden p-4 text-white">
+              <h2 className="text-xl font-bold mb-2">{t('home.ctaTitle')}</h2>
+              <p className="text-sm mb-4 text-white/90">
+                {t('home.ctaDesc')}
+              </p>
+              <Link
+                href="/contact"
+                className="bg-white text-primary-600 hover:bg-gray-100 text-sm font-medium py-2 px-4 rounded-lg transition-colors inline-block"
+              >
+                {t('home.contactUs')}
+              </Link>
+            </section>
           </div>
 
           {/* Main Content Column - Right */}
@@ -457,28 +471,6 @@ function HomePage() {
           </div>
         </div>
       </div>
-
-      {/* Call to Action */}
-      <section className="py-8 sm:py-10 md:py-12 bg-gradient-to-br from-primary-500 to-primary-600 text-white">
-        <div className="container">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
-              {t('home.ctaTitle')}
-            </h2>
-            <p className="text-white/90 text-base md:text-lg mb-8 max-w-2xl mx-auto">
-              {t('home.ctaDesc')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/contact"
-                className="bg-white text-primary-600 hover:bg-gray-100 font-medium py-3 px-6 rounded-lg transition-all shadow-lg hover:shadow-xl"
-              >
-                {t('home.contactUs')}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
