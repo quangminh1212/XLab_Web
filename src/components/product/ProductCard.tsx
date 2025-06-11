@@ -23,7 +23,6 @@ interface ProductCardProps {
   slug?: string;
   onAddToCart?: (id: string) => void;
   onView?: (id: string) => void;
-  size?: 'normal' | 'small';
 }
 
 export default function ProductCard({
@@ -42,7 +41,6 @@ export default function ProductCard({
   slug = '',
   onAddToCart = () => {},
   onView = () => {},
-  size = 'normal',
 }: ProductCardProps) {
   const { t, language } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
@@ -363,10 +361,10 @@ export default function ProductCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`relative ${size === 'small' ? 'pt-[80%]' : 'pt-[100%]'} bg-white`}>
+      <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div
-            className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white ${size === 'small' ? 'text-[10px] px-1.5 py-0.5' : 'text-xs px-2 py-1'} font-bold rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
+            className={`absolute top-2 left-2 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
           >
             -{discountPercentage}%
           </div>
@@ -387,7 +385,7 @@ export default function ProductCard({
 
         {!isImageLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-white">
-            <svg className={`${size === 'small' ? 'w-6 h-6' : 'w-10 h-10'} text-gray-300 animate-spin`} fill="none" viewBox="0 0 24 24">
+            <svg className="w-10 h-10 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -410,11 +408,11 @@ export default function ProductCard({
             className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/40 ${currentColor.overlay} z-20 animate-fadeInOut`}
           >
             <div
-              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold ${size === 'small' ? 'px-3 py-1 text-xs' : 'px-4 py-2'} rounded-full flex items-center shadow-lg`}
+              className={`bg-gradient-to-r ${currentColor.badge} text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`${size === 'small' ? 'h-4 w-4' : 'h-5 w-5'} mr-1`}
+                className="h-5 w-5 mr-1"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -437,10 +435,10 @@ export default function ProductCard({
           <div className="flex flex-col gap-2">
             <button
               onClick={handleAddToCart}
-              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 ${size === 'small' ? 'px-2 py-1' : 'px-3 py-1.5'} rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform ${size === 'small' ? 'text-[10px]' : 'text-xs'}`}
+              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-3 py-1.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs`}
             >
               <span className="flex items-center justify-center">
-                <svg className={`${size === 'small' ? 'w-2.5 h-2.5' : 'w-3 h-3'} mr-1`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -468,10 +466,10 @@ export default function ProductCard({
                 });
                 router.push('/checkout?skipInfo=true');
               }}
-              className={`bg-gradient-to-r ${currentColor.button} text-white ${size === 'small' ? 'px-2 py-1' : 'px-3 py-1.5'} rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 ${size === 'small' ? 'text-[10px]' : 'text-xs'}`}
+              className={`bg-gradient-to-r ${currentColor.button} text-white px-3 py-1.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs`}
             >
               <span className="flex items-center justify-center">
-                <svg className={`${size === 'small' ? 'w-2.5 h-2.5' : 'w-3 h-3'} mr-1`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -486,28 +484,28 @@ export default function ProductCard({
         </div>
       </div>
 
-      <div className={`${size === 'small' ? 'p-3' : 'p-4'} flex-1 flex flex-col justify-between bg-white`}>
+      <div className="p-4 flex-1 flex flex-col justify-between bg-white">
         {displayCategory && (
-          <div className={`${size === 'small' ? 'text-[10px]' : 'text-xs'} font-medium text-gray-500 mb-1 uppercase tracking-wide`}>
+          <div className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">
             {displayCategory}
           </div>
         )}
-        <h3 className={`${size === 'small' ? 'text-sm' : 'text-base'} font-bold text-gray-900 line-clamp-2 mb-1 group-hover:text-gray-700 transition-colors duration-200`}>
+        <h3 className="text-base font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-gray-700 transition-colors duration-200">
           {translatedName}
         </h3>
-        <p className={`${size === 'small' ? 'text-[10px] line-clamp-1' : 'text-xs line-clamp-2'} text-gray-600 mb-2 leading-relaxed`}>
+        <p className="text-xs text-gray-600 line-clamp-2 mb-3 leading-relaxed">
           {shortDescription}
         </p>
         <div className="flex items-end justify-between">
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-1 mb-1">
               <span
-                className={`${size === 'small' ? 'text-base' : 'text-lg'} font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
+                className={`text-lg font-extrabold bg-gradient-to-r ${currentColor.price} bg-clip-text text-transparent`}
               >
                 {formatCurrency(price)}
               </span>
               {originalPrice && originalPrice > price && (
-                <span className={`${size === 'small' ? 'text-[10px]' : 'text-xs'} text-gray-400 line-through`}>
+                <span className="text-xs text-gray-400 line-through">
                   {formatCurrency(originalPrice)}
                 </span>
               )}
@@ -515,7 +513,7 @@ export default function ProductCard({
             <div>{rating > 0 ? renderRatingStars(rating) : <div className="h-3"></div>}</div>
           </div>
           <div className="flex flex-col items-end gap-1">
-            {weeklyPurchases > 0 && size !== 'small' && (
+            {weeklyPurchases > 0 && (
               <div
                 className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
               >
@@ -536,7 +534,7 @@ export default function ProductCard({
                 <span className="font-semibold">{t('product.purchasesPerWeek', { count: weeklyPurchases })}</span>
               </div>
             )}
-            {totalSold > 0 && size !== 'small' && (
+            {totalSold > 0 && (
               <div
                 className={`text-xs ${currentColor.stats} flex items-center px-2 py-1 rounded-full bg-white shadow-sm`}
               >
