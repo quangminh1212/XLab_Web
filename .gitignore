@@ -20,6 +20,12 @@ cypress/screenshots
 /out/
 .next/
 .next-dev/
+.next/cache/
+.next/static/
+.next/server/
+.next/server/app/api/auth/
+.next/server/chunks/
+.next/server/app/api/auth/[...nextauth]/
 
 # production
 /build
@@ -123,3 +129,13 @@ run-fixed.bat
 
 # Report files
 report.*.json
+
+# Runtime cache files
+.next/cache/webpack/client-development/
+.next/cache/webpack/server-development/
+.next/cache/webpack/edge-server-development/
+.next/static/css/
+.next/static/development/
+.next/static/chunks/
+.next/static/webpack/
+.next/trace

@@ -395,11 +395,11 @@ export default function ProductsPage() {
                   console.log(`Processed image URL for ${product.name}:`, imageUrl);
 
                   return (
-                    <div key={product.id} className="aspect-[1/1.3]">
+                    <div key={product.id} className="aspect-[1/1.5]">
                       <ProductCard
                         id={product.id.toString()}
                         name={product.name}
-                        description={product.shortDescription || ''}
+                        description={product.shortDescription || product.description || ''}
                         price={displayPrice}
                         originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
                         image={imageUrl}
