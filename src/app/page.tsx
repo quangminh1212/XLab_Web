@@ -479,11 +479,176 @@ function HomePage() {
                           fill="currentColor" 
                           className="w-5 h-5"
                         >
-                          <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
+                          <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 010 1.08l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
                         </svg>
                       </button>
                     </div>
                   )}
+                </section>
+                
+                {/* Phần Testimonials - Đánh giá từ khách hàng */}
+                <section className="mt-12 mb-12">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="heading-3 text-gray-800">{t('home.testimonials') || 'Đánh giá từ khách hàng'}</h2>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Testimonial 1 */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                      <div className="flex items-center mb-4">
+                        <div className="flex text-yellow-400 mb-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                            </svg>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-700 mb-4 italic">
+                        "Tôi đã sử dụng dịch vụ của XLab trong 2 năm qua và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, tính năng đầy đủ và đội ngũ hỗ trợ rất tận tâm."
+                      </p>
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-700 font-bold mr-3">NT</div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">Nguyễn Thành</h4>
+                          <p className="text-sm text-gray-500">Giám đốc kinh doanh</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Testimonial 2 */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                      <div className="flex items-center mb-4">
+                        <div className="flex text-yellow-400 mb-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                            </svg>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-700 mb-4 italic">
+                        "Các giải pháp AI của XLab đã giúp doanh nghiệp chúng tôi tiết kiệm 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."
+                      </p>
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-secondary-100 rounded-full flex items-center justify-center text-secondary-700 font-bold mr-3">TL</div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">Trần Linh</h4>
+                          <p className="text-sm text-gray-500">CTO - Công ty công nghệ</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Testimonial 3 */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                      <div className="flex items-center mb-4">
+                        <div className="flex text-yellow-400 mb-2">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <svg key={star} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                            </svg>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-gray-700 mb-4 italic">
+                        "Những cập nhật liên tục của XLab khiến sản phẩm luôn đáp ứng được nhu cầu ngày càng cao của chúng tôi. Giao diện thân thiện, dễ sử dụng ngay cả với người mới."
+                      </p>
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold mr-3">PH</div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">Phạm Hoa</h4>
+                          <p className="text-sm text-gray-500">Quản lý dự án</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-center mt-6">
+                    <Link href="/testimonials" className="text-primary-600 hover:text-primary-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
+                      {t('home.viewAllTestimonials') || 'Xem tất cả đánh giá'}
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                        <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+                      </svg>
+                    </Link>
+                  </div>
+                </section>
+                
+                {/* Phần Blog/Tin tức mới nhất */}
+                <section className="mb-12">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="heading-3 text-gray-800">{t('home.latestNews') || 'Tin tức mới nhất'}</h2>
+                    <Link href="/blog" className="text-responsive-sm text-primary-600 hover:text-primary-700 font-medium">
+                      {t('home.viewAllNews') || 'Xem tất cả tin tức'}
+                    </Link>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Bài viết 1 */}
+                    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
+                      <div className="relative aspect-video bg-gray-100">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-400">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="p-5">
+                        <div className="text-xs text-gray-500 mb-2">20/05/2023</div>
+                        <h3 className="font-semibold text-gray-900 mb-2">Chúng tôi ra mắt nền tảng AI tích hợp mới</h3>
+                        <p className="text-sm text-gray-600 mb-3">XLab vừa chính thức giới thiệu giải pháp AI mới hỗ trợ doanh nghiệp tự động hóa quy trình vận hành.</p>
+                        <Link href="/blog/ai-platform" className="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center">
+                          Đọc tiếp
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1">
+                            <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+                          </svg>
+                        </Link>
+                      </div>
+                    </div>
+                    
+                    {/* Bài viết 2 */}
+                    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
+                      <div className="relative aspect-video bg-gray-100">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-400">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="p-5">
+                        <div className="text-xs text-gray-500 mb-2">12/05/2023</div>
+                        <h3 className="font-semibold text-gray-900 mb-2">Hướng dẫn sử dụng hiệu quả các công cụ phân tích dữ liệu</h3>
+                        <p className="text-sm text-gray-600 mb-3">Khám phá cách tận dụng công cụ phân tích dữ liệu của XLab để đưa ra quyết định kinh doanh tốt hơn.</p>
+                        <Link href="/blog/data-analytics" className="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center">
+                          Đọc tiếp
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1">
+                            <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+                          </svg>
+                        </Link>
+                      </div>
+                    </div>
+                    
+                    {/* Bài viết 3 */}
+                    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100">
+                      <div className="relative aspect-video bg-gray-100">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-gray-400">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="p-5">
+                        <div className="text-xs text-gray-500 mb-2">05/05/2023</div>
+                        <h3 className="font-semibold text-gray-900 mb-2">5 xu hướng công nghệ doanh nghiệp nên theo dõi trong năm 2023</h3>
+                        <p className="text-sm text-gray-600 mb-3">Những xu hướng công nghệ hàng đầu mà các doanh nghiệp nên chú ý để duy trì lợi thế cạnh tranh.</p>
+                        <Link href="/blog/tech-trends" className="text-primary-600 hover:text-primary-700 text-sm font-medium inline-flex items-center">
+                          Đọc tiếp
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 ml-1">
+                            <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+                          </svg>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 </section>
               </>
             )}
