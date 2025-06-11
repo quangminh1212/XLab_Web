@@ -118,7 +118,7 @@ export default function Footer() {
           {/* Sản phẩm & Dịch vụ + Điều hướng */}
           <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-white text-lg sm:text-xl font-bold mb-4 sm:mb-5 relative group">
-              <span className="relative z-10">{t('footer.productsServices')}</span>
+              <span className="relative z-10">{t('footer.productsAndServices')}</span>
               <div className="absolute -bottom-1 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-14 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-300 group-hover:w-16"></div>
             </h3>
             <ul className="space-y-2 sm:space-y-3 text-center sm:text-left mb-4">
@@ -128,7 +128,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.productsList')}
+                  {t('footer.products')}
                 </Link>
               </li>
               <li>
@@ -137,7 +137,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.servicesList')}
+                  {t('footer.services')}
                 </Link>
               </li>
               <li>
@@ -146,7 +146,7 @@ export default function Footer() {
                   className="group inline-flex items-center text-slate-400 hover:text-emerald-400 text-sm sm:text-base transition-all duration-300 hover:translate-x-1"
                 >
                   <span className="w-0 group-hover:w-1.5 h-0.5 bg-emerald-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
-                  {t('footer.testimonialsList')}
+                  {t('footer.testimonials')}
                 </Link>
               </li>
             </ul>
