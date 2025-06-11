@@ -77,28 +77,28 @@ export default function WarrantyPage() {
               <h2 className="text-2xl font-bold mb-6">{t('warranty.policyTitle')}</h2>
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
-                  <p className="text-gray-700">
+                  <div className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.periodTitle')}</span>
                     <RichTextContent content={t('warranty.period', { days: 365 })} />
-                  </p>
+                  </div>
                 </div>
               </div>
 
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
-                  <p className="text-gray-700">
+                  <div className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.processTitle')}</span>
                     <RichTextContent content={t('warranty.process')} />
-                  </p>
+                  </div>
                 </div>
               </div>
 
               <div className="bg-white border border-gray-200 p-5 rounded-lg">
                 <div className="border-l-4 border-primary-500 pl-4 py-2">
-                  <p className="text-gray-700">
+                  <div className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.conditionsTitle')}</span>
                     <RichTextContent content={t('warranty.conditions')} />
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -108,28 +108,28 @@ export default function WarrantyPage() {
               <h2 className="text-2xl font-bold mb-6">{t('warranty.refundPolicyTitle')}</h2>
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
-                  <p className="text-gray-700">
+                  <div className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.refundPeriodTitle')}</span>
                     <RichTextContent content={t('warranty.refundPeriod', { days: 7 })} />
-                  </p>
+                  </div>
                 </div>
               </div>
 
               <div className="bg-white border border-gray-200 p-5 rounded-lg mb-4">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
-                  <p className="text-gray-700">
+                  <div className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.refundConditionsTitle')}</span>
                     <RichTextContent content={t('warranty.refundConditions')} />
-                  </p>
+                  </div>
                 </div>
               </div>
 
               <div className="bg-white border border-gray-200 p-5 rounded-lg">
                 <div className="border-l-4 border-green-500 pl-4 py-2">
-                  <p className="text-gray-700">
+                  <div className="text-gray-700">
                     <span className="font-medium block mb-1">{t('warranty.refundProcessTitle')}</span>
                     <RichTextContent content={t('warranty.refundProcess')} />
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -285,13 +285,13 @@ export default function WarrantyPage() {
               <h2 className="text-2xl font-bold mb-6">{t('warranty.contactInfoTitle')}</h2>
 
               <div className="bg-gray-50 p-6 rounded-lg mb-8">
-                <p className="text-gray-700 mb-4">
+                <div className="text-gray-700 mb-4">
                   <RichTextContent content={t('warranty.supportInfo1')} />
-                </p>
+                </div>
 
-                <p className="text-gray-700 mb-6">
+                <div className="text-gray-700 mb-6">
                   <RichTextContent content={t('warranty.supportInfo2')} />
-                </p>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
