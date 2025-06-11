@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Avatar from '@/components/common/Avatar';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Khai báo các kiểu dữ liệu
 interface OrderItem {
@@ -78,6 +79,7 @@ export default function AccountPage() {
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
+  const { t, language } = useLanguage();
 
   const currencyFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' });
   const formatCurrency = (amount: number) => {
@@ -462,9 +464,9 @@ export default function AccountPage() {
       {/* Page Header */}
       <section className="bg-primary-600 text-white py-16">
         <div className="container">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Tài khoản của tôi</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('account.myAccount')}</h1>
           <p className="text-xl max-w-3xl">
-            Quản lý thông tin cá nhân, giấy phép và lịch sử mua hàng của bạn.
+            {t('account.manageInfo')}
           </p>
         </div>
       </section>
@@ -474,7 +476,7 @@ export default function AccountPage() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng sản phẩm đã mua</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalProducts')}</h3>
               <p className="text-3xl font-bold text-gray-800">{totalProducts}</p>
               <div className="mt-2 flex items-center text-sm text-gray-600">
                 {hasProducts ? (
@@ -491,7 +493,7 @@ export default function AccountPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>Tất cả đang hoạt động</span>
+                    <span>{t('account.allActive')}</span>
                   </>
                 ) : (
                   <>
@@ -507,14 +509,14 @@ export default function AccountPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span>Chưa có sản phẩm nào</span>
+                    <span>{t('account.noProducts')}</span>
                   </>
                 )}
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã thanh toán</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalPaid')}</h3>
               <p className="text-3xl font-bold text-gray-800 whitespace-nowrap">
                 {formatCurrency(totalSpent)}
               </p>
@@ -531,12 +533,12 @@ export default function AccountPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Qua {purchaseHistory.length} đơn hàng</span>
+                <span>{t('account.throughOrders', { count: purchaseHistory.length })}</span>
               </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-gray-500 text-sm font-medium mb-2">Tổng số tiền đã tiết kiệm</h3>
+              <h3 className="text-gray-500 text-sm font-medium mb-2">{t('account.totalSaved')}</h3>
               <p className="text-3xl font-bold text-green-600 whitespace-nowrap">
                 {formatCurrency(totalSaved)}
               </p>
@@ -553,7 +555,7 @@ export default function AccountPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>So với giá gốc</span>
+                <span>{t('account.comparedToOriginal')}</span>
               </div>
             </div>
           </div>
@@ -608,7 +610,7 @@ export default function AccountPage() {
                   </div>
                   <h2 className="text-xl font-bold">{profile.name}</h2>
                   <p className="text-gray-600">{profile.email}</p>
-                  <p className="text-sm text-gray-500">Thành viên từ {profile.memberSince}</p>
+                  <p className="text-sm text-gray-500">{t('account.memberSince', { date: profile.memberSince })}</p>
                 </div>
 
                 <nav className="space-y-1">
@@ -630,7 +632,7 @@ export default function AccountPage() {
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
-                    Hồ sơ cá nhân
+                    {t('account.profile')}
                   </a>
                   <a
                     href="#my-products"
@@ -806,21 +808,21 @@ export default function AccountPage() {
             <div className="lg:w-3/4">
               {/* Phần Hồ sơ cá nhân */}
               <div id="profile" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Hồ sơ cá nhân</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('account.profile')}</h2>
 
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-3">Thông tin cá nhân</h3>
-                    <form onSubmit={handleUpdateProfile}>
+                    <h3 className="font-semibold text-gray-800 mb-3">{t('account.personalInfo')}</h3>
+                    <form onSubmit={handleUpdateProfile} className="mb-8">
                       {saveSuccess && (
                         <div className="mb-4 p-2 bg-green-100 text-green-700 rounded-md">
-                          Thông tin đã được cập nhật thành công!
+                          {t('account.infoUpdated')}
                         </div>
                       )}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Họ tên
+                          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                            {t('account.fullName')}
                           </label>
                           <input
                             type="text"
@@ -831,8 +833,8 @@ export default function AccountPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Email
+                          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                            {t('account.email')}
                           </label>
                           <input
                             type="email"
@@ -843,19 +845,8 @@ export default function AccountPage() {
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Ngày tham gia
-                          </label>
-                          <input
-                            type="text"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 bg-gray-100"
-                            value={profile.memberSince}
-                            disabled
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Số điện thoại
+                          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                            {t('account.phone')}
                           </label>
                           <input
                             type="text"
@@ -868,20 +859,44 @@ export default function AccountPage() {
                         </div>
                       </div>
 
-                      <div className="mt-4 text-right">
+                      <div className="flex justify-end">
                         <button
                           type="submit"
                           disabled={isSaving}
-                          className={`px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
+                          className={`px-6 py-2.5 bg-primary-600 text-white rounded-md font-medium hover:bg-primary-700 transition flex items-center ${
+                            isSaving ? 'opacity-75 cursor-not-allowed' : ''
+                          }`}
                         >
-                          {isSaving ? 'Đang cập nhật...' : 'Cập nhật thông tin'}
+                          {isSaving ? (
+                            <svg
+                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                          ) : null}
+                          {isSaving ? t('account.saving') : t('account.updateInfo')}
                         </button>
                       </div>
                     </form>
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-3">Đổi mật khẩu</h3>
+                    <h3 className="font-semibold text-gray-800 mb-3">{t('account.changePassword')}</h3>
                     {showPasswordMessage && (
                       <div className="mb-4 p-3 bg-blue-50 text-blue-600 text-sm rounded-md flex items-start justify-between">
                         <div className="flex items-start">
@@ -924,7 +939,7 @@ export default function AccountPage() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Mật khẩu hiện tại
+                          {t('account.currentPassword')}
                         </label>
                         <input
                           type="password"
@@ -933,7 +948,7 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Mật khẩu mới
+                          {t('account.newPassword')}
                         </label>
                         <input
                           type="password"
@@ -942,7 +957,7 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Xác nhận mật khẩu mới
+                          {t('account.confirmPassword')}
                         </label>
                         <input
                           type="password"
@@ -957,12 +972,12 @@ export default function AccountPage() {
                         onClick={(e) => {
                           e.preventDefault();
                           setPasswordMessage(
-                            'Tính năng đổi mật khẩu chỉ hoạt động cho tài khoản đăng ký bằng email/mật khẩu. Tài khoản Google không hỗ trợ thay đổi mật khẩu qua trang này.',
+                            t('account.passwordChangeInstructions'),
                           );
                           setShowPasswordMessage(true);
                         }}
                       >
-                        Đổi mật khẩu
+                        {t('account.changePassword')}
                       </button>
                     </div>
                   </div>
@@ -971,7 +986,7 @@ export default function AccountPage() {
 
               {/* Section mã giảm giá chuyển lên ngay sau hồ sơ cá nhân */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mb-8">
-                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('account.coupons')}</h2>
 
                 {loadingCoupons ? (
                   <div className="flex justify-center py-8">
@@ -1009,7 +1024,7 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                                {t('account.appliesToOrder', { amount: formatCurrency(coupon.minOrder) })}
                               </div>
                             )}
                           </div>
@@ -1049,13 +1064,16 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                                {t('account.appliesToOrder', { amount: formatCurrency(coupon.minOrder) })}
                               </div>
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}`
-                                : `Giảm ${formatCurrency(coupon.value)}`}
+                                ? t('account.discountPercentage', { 
+                                    value: coupon.value, 
+                                    maxDiscount: coupon.maxDiscount ? formatCurrency(coupon.maxDiscount) : undefined 
+                                  })
+                                : t('account.discountFixed', { value: formatCurrency(coupon.value) })}
                             </div>
                           </div>
                         </div>
@@ -1064,14 +1082,14 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>Bạn chưa có mã giảm giá nào</p>
+                    <p>{t('account.noCoupons')}</p>
                   </div>
                 )}
               </div>
 
               {/* Phần Sản phẩm đã mua */}
               <div id="my-products" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Sản phẩm đã mua</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('account.purchasedProducts')}</h2>
 
                 {hasProducts ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1085,11 +1103,11 @@ export default function AccountPage() {
                           </div>
                           <div className="p-4">
                             <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-600">Giá</span>
+                              <span className="text-gray-600">{t('account.price')}</span>
                               <span className="font-semibold">{formatCurrency(item.price)}</span>
                             </div>
                             <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-600">Tiết kiệm từ giá sale</span>
+                              <span className="text-gray-600">{t('account.savingsFromSale')}</span>
                               <span className="font-semibold text-green-600">
                                 {formatCurrency(item.originalPrice - item.price)}
                               </span>
@@ -1102,7 +1120,7 @@ export default function AccountPage() {
                                     key={`purchase-date-${order.id}-${item.id}`}
                                     className="flex justify-between items-center mb-2"
                                   >
-                                    <span className="text-gray-600">Ngày mua</span>
+                                    <span className="text-gray-600">{t('account.purchaseDate')}</span>
                                     <span className="font-semibold">{order.date}</span>
                                   </div>
                                 );
@@ -1121,7 +1139,7 @@ export default function AccountPage() {
                                     key={`voucher-${order.id}-${item.id}`}
                                     className="flex justify-between items-center mb-2"
                                   >
-                                    <span className="text-gray-600">Tiết kiệm từ voucher</span>
+                                    <span className="text-gray-600">{t('account.savingsFromVoucher')}</span>
                                     <span className="font-semibold text-green-600">
                                       {formatCurrency(order.couponDiscount)}
                                     </span>
@@ -1131,15 +1149,15 @@ export default function AccountPage() {
                               return null;
                             })}
                             <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-600">Hạn giấy phép</span>
+                              <span className="text-gray-600">{t('account.licenseExpiry')}</span>
                               <span className="font-semibold">{item.expiryDate}</span>
                             </div>
                             <div className="mt-4 flex space-x-2">
                               <button className="bg-primary-600 text-white px-3 py-1 rounded-md text-sm hover:bg-primary-700 transition">
-                                Tải xuống
+                                {t('account.download')}
                               </button>
                               <button className="bg-gray-200 text-gray-800 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition">
-                                Xem chi tiết
+                                {t('account.viewDetails')}
                               </button>
                             </div>
                           </div>
@@ -1163,10 +1181,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Chưa có sản phẩm nào
+                      {t('account.noProducts')}
                     </h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                      Bạn chưa mua sản phẩm nào. Khám phá các sản phẩm của chúng tôi để bắt đầu.
+                      {t('account.noProductsDescription')}
                     </p>
                     <Link
                       href="/products"
@@ -1186,7 +1204,7 @@ export default function AccountPage() {
                           d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                         />
                       </svg>
-                      Khám phá sản phẩm
+                      {t('account.exploreProducts')}
                     </Link>
                   </div>
                 )}
@@ -1194,7 +1212,7 @@ export default function AccountPage() {
 
               {/* Phần Quản lý giấy phép */}
               <div id="licenses" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Quản lý giấy phép</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('account.licenses')}</h2>
 
                 {hasProducts ? (
                   <div className="overflow-x-auto">
@@ -1205,37 +1223,37 @@ export default function AccountPage() {
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Sản phẩm
+                            {t('account.product')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Mã giấy phép
+                            {t('account.licenseKey')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Ngày kích hoạt
+                            {t('account.activationDate')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Hạn sử dụng
+                            {t('account.expiryDate')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Trạng thái
+                            {t('account.status')}
                           </th>
                           <th
                             scope="col"
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
-                            Thao tác
+                            {t('account.actions')}
                           </th>
                         </tr>
                       </thead>
@@ -1279,16 +1297,16 @@ export default function AccountPage() {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                  Đang hoạt động
+                                  {t('account.active')}
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <div className="flex space-x-2">
                                   <button className="text-primary-600 hover:text-primary-900">
-                                    Sao chép
+                                    {t('account.copy')}
                                   </button>
                                   <button className="text-blue-600 hover:text-blue-900">
-                                    Gia hạn
+                                    {t('account.extend')}
                                   </button>
                                 </div>
                               </td>
@@ -1314,10 +1332,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Không có giấy phép nào
+                      {t('account.noLicenses')}
                     </h3>
                     <p className="text-gray-600 mb-4 max-w-md mx-auto">
-                      Bạn chưa có giấy phép sản phẩm nào. Hãy mua sản phẩm để nhận giấy phép.
+                      {t('account.noLicensesDescription')}
                     </p>
                   </div>
                 )}
@@ -1326,13 +1344,13 @@ export default function AccountPage() {
               {/* Phần Lịch sử mua hàng */}
               <div id="orders" className="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <h2 className="text-2xl font-bold mb-6">
-                  Lịch sử mua hàng
+                  {t('account.purchaseHistory')}
                   {hasProducts && (
                     <button
                       onClick={goToOrdersPage}
                       className="ml-4 text-sm font-medium text-primary-600 hover:text-primary-700"
                     >
-                      Xem tất cả đơn hàng
+                      {t('account.viewAllOrders')}
                     </button>
                   )}
                 </h2>
@@ -1343,8 +1361,8 @@ export default function AccountPage() {
                       <div key={orderIndex} className="border rounded-lg overflow-hidden">
                         <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
                           <div>
-                            <h3 className="font-bold">Đơn hàng #{order.id}</h3>
-                            <p className="text-sm text-gray-600">Ngày đặt: {order.date}</p>
+                            <h3 className="font-bold">{t('account.order', { id: order.id })}</h3>
+                            <p className="text-sm text-gray-600">{t('account.orderDate', { date: order.date })}</p>
                           </div>
                           <div>
                             <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
@@ -1365,13 +1383,13 @@ export default function AccountPage() {
                                 </div>
                                 <div className="flex flex-col md:flex-row md:items-center md:space-x-8">
                                   <div className="text-sm">
-                                    <span className="text-gray-600">Giá: </span>
+                                    <span className="text-gray-600">{t('account.price')}: </span>
                                     <span className="font-semibold">
                                       {formatCurrency(item.price)}
                                     </span>
                                   </div>
                                   <div className="text-sm">
-                                    <span className="text-gray-600">Hạn dùng: </span>
+                                    <span className="text-gray-600">{t('account.expiryDate')}: </span>
                                     <span className="font-semibold">{item.expiryDate}</span>
                                   </div>
                                 </div>
@@ -1382,7 +1400,7 @@ export default function AccountPage() {
                             {/* Hiển thị chi tiết tiết kiệm */}
                             <div className="space-y-2 mb-4">
                               <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Tiết kiệm từ giá sale:</span>
+                                <span className="text-gray-600">{t('account.savingsFromSale')}:</span>
                                 <span className="font-semibold text-green-600">
                                   {formatCurrency(
                                     order.items.reduce(
@@ -1394,14 +1412,14 @@ export default function AccountPage() {
                               </div>
                               {order.couponDiscount && order.couponDiscount > 0 && (
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-gray-600">Tiết kiệm từ voucher:</span>
+                                  <span className="text-gray-600">{t('account.savingsFromVoucher')}:</span>
                                   <span className="font-semibold text-green-600">
                                     {formatCurrency(order.couponDiscount)}
                                   </span>
                                 </div>
                               )}
                               <div className="flex justify-between text-sm font-bold border-t pt-2">
-                                <span className="text-gray-800">Tổng tiết kiệm:</span>
+                                <span className="text-gray-800">{t('account.totalSavings')}:</span>
                                 <span className="text-green-600">
                                   {formatCurrency(
                                     order.items.reduce(
@@ -1415,17 +1433,17 @@ export default function AccountPage() {
 
                             <div className="flex justify-between items-center">
                               <div className="text-lg font-semibold">
-                                Tổng thanh toán: {formatCurrency(order.total)}
+                                {t('account.totalPayment', { amount: formatCurrency(order.total) })}
                               </div>
                               <div className="flex space-x-3">
                                 <Link
                                   href={`/orders/${order.id}`}
                                   className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition text-sm"
                                 >
-                                  Chi tiết đơn hàng
+                                  {t('account.viewOrder')}
                                 </Link>
                                 <button className="px-3 py-1 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm">
-                                  Tải hóa đơn PDF
+                                  {t('account.downloadPDF')}
                                 </button>
                               </div>
                             </div>
@@ -1453,7 +1471,7 @@ export default function AccountPage() {
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                           />
                         </svg>
-                        Xem tất cả đơn hàng
+                        {t('account.viewAllOrders')}
                       </button>
                     </div>
                   </div>
@@ -1474,10 +1492,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Chưa có đơn hàng nào
+                      {t('account.noOrders')}
                     </h3>
                     <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                      Bạn chưa thực hiện giao dịch nào. Hãy khám phá sản phẩm của chúng tôi.
+                      {t('account.noOrdersDescription')}
                     </p>
                     <Link
                       href="/products"
@@ -1497,7 +1515,7 @@ export default function AccountPage() {
                           d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                         />
                       </svg>
-                      Mua sắm ngay
+                      {t('account.buyNow')}
                     </Link>
                   </div>
                 )}
@@ -1505,7 +1523,7 @@ export default function AccountPage() {
 
               {/* Phần Tải xuống */}
               <div id="downloads" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Tải xuống</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('account.downloads')}</h2>
 
                 {hasProducts ? (
                   <div className="space-y-4">
@@ -1521,7 +1539,7 @@ export default function AccountPage() {
                               {item.name} - {item.version}
                             </h3>
                             <p className="text-sm text-gray-600">
-                              Phiên bản: 2.1.0 (Cập nhật: 01/07/2023)
+                              {t('account.version', { version: '2.1.0' })}
                             </p>
                           </div>
                           <div className="flex items-center space-x-3">
@@ -1540,7 +1558,7 @@ export default function AccountPage() {
                                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                                 />
                               </svg>
-                              Xem lịch sử
+                              {t('account.viewHistory')}
                             </button>
                             <button className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition text-sm flex items-center">
                               <svg
@@ -1557,7 +1575,7 @@ export default function AccountPage() {
                                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                                 />
                               </svg>
-                              Tải xuống
+                              {t('account.download')}
                             </button>
                           </div>
                         </div>
@@ -1580,10 +1598,10 @@ export default function AccountPage() {
                       />
                     </svg>
                     <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                      Không có tệp nào để tải xuống
+                      {t('account.noDownloads')}
                     </h3>
                     <p className="text-gray-600 mb-4 max-w-md mx-auto">
-                      Bạn cần mua sản phẩm trước khi có thể tải xuống phần mềm.
+                      {t('account.noDownloadsDescription')}
                     </p>
                   </div>
                 )}
@@ -1591,13 +1609,13 @@ export default function AccountPage() {
 
               {/* Phần Hỗ trợ kỹ thuật */}
               <div id="support" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Hỗ trợ kỹ thuật</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('account.support')}</h2>
 
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-md">
-                    <h3 className="font-semibold text-lg mb-2">Yêu cầu hỗ trợ mới</h3>
+                    <h3 className="font-semibold text-lg mb-2">{t('account.newRequest')}</h3>
                     <p className="text-gray-600 mb-4">
-                      Gửi yêu cầu hỗ trợ kỹ thuật cho sản phẩm bạn đã mua
+                      {t('account.supportDescription')}
                     </p>
 
                     {supportSuccess && (
@@ -1616,10 +1634,7 @@ export default function AccountPage() {
                               d="M5 13l4 4L19 7"
                             />
                           </svg>
-                          <span>
-                            Yêu cầu hỗ trợ của bạn đã được gửi thành công! Chúng tôi sẽ phản hồi sớm
-                            nhất có thể.
-                          </span>
+                          <span>{t('account.requestSuccess')}</span>
                         </div>
                         <button
                           onClick={() => setSupportSuccess(false)}
@@ -1646,14 +1661,14 @@ export default function AccountPage() {
                     <div className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Sản phẩm
+                          {t('account.product')}
                         </label>
                         <select
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
                           value={supportProduct}
                           onChange={(e) => setSupportProduct(e.target.value)}
                         >
-                          <option value="">Chọn sản phẩm cần hỗ trợ</option>
+                          <option value="">{t('account.selectProduct')}</option>
                           {purchaseHistory
                             .flatMap((order) => order.items)
                             .map((item, index) => (
@@ -1665,23 +1680,23 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Tiêu đề
+                          {t('account.title')}
                         </label>
                         <input
                           type="text"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-                          placeholder="Nhập tiêu đề vấn đề"
+                          placeholder={t('account.enterTitle')}
                           value={supportTitle}
                           onChange={(e) => setSupportTitle(e.target.value)}
                         />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Mô tả vấn đề
+                          {t('account.description')}
                         </label>
                         <textarea
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 min-h-[120px]"
-                          placeholder="Mô tả chi tiết vấn đề bạn đang gặp phải"
+                          placeholder={t('account.enterDescription')}
                           value={supportDescription}
                           onChange={(e) => setSupportDescription(e.target.value)}
                         ></textarea>
@@ -1695,7 +1710,7 @@ export default function AccountPage() {
                           e.preventDefault();
                           // Validate form
                           if (!supportTitle || !supportDescription) {
-                            alert('Vui lòng nhập đầy đủ thông tin');
+                            alert(t('account.formValidation'));
                             return;
                           }
 
@@ -1711,7 +1726,7 @@ export default function AccountPage() {
                           }, 5000);
                         }}
                       >
-                        Gửi yêu cầu hỗ trợ
+                        {t('account.submitRequest')}
                       </button>
                     </div>
                   </div>
@@ -1720,11 +1735,11 @@ export default function AccountPage() {
 
               {/* Phần Cài đặt tài khoản */}
               <div id="settings" className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 className="text-2xl font-bold mb-6">Cài đặt tài khoản</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('account.settings')}</h2>
 
                 <div className="space-y-6">
                   <div className="bg-gray-50 p-4 rounded-md">
-                    <h3 className="font-semibold text-lg mb-3">Thông báo</h3>
+                    <h3 className="font-semibold text-lg mb-3">{t('account.notifications')}</h3>
 
                     {settingsSaved && (
                       <div className="mb-4 p-3 bg-green-50 text-green-600 text-sm rounded-md flex items-start justify-between">
@@ -1742,7 +1757,7 @@ export default function AccountPage() {
                               d="M5 13l4 4L19 7"
                             />
                           </svg>
-                          <span>Cài đặt thông báo đã được lưu thành công!</span>
+                          <span>{t('account.settingsSaved')}</span>
                         </div>
                         <button
                           onClick={() => setSettingsSaved(false)}
@@ -1768,7 +1783,7 @@ export default function AccountPage() {
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo qua email</span>
+                        <span className="text-gray-700">{t('account.emailNotifications')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1784,7 +1799,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo cập nhật sản phẩm</span>
+                        <span className="text-gray-700">{t('account.productUpdates')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1800,7 +1815,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo khuyến mãi và ưu đãi</span>
+                        <span className="text-gray-700">{t('account.promotions')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1816,7 +1831,7 @@ export default function AccountPage() {
                         </label>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700">Thông báo hết hạn giấy phép</span>
+                        <span className="text-gray-700">{t('account.expiryReminders')}</span>
                         <label className="inline-flex items-center">
                           <input
                             type="checkbox"
@@ -1857,7 +1872,7 @@ export default function AccountPage() {
                         }, 3000);
                       }}
                     >
-                      Lưu thay đổi
+                      {t('account.saveChanges')}
                     </button>
                   </div>
                 </div>
@@ -1866,9 +1881,9 @@ export default function AccountPage() {
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold text-lg text-gray-800">Đăng xuất</h3>
+                      <h3 className="font-semibold text-lg text-gray-800">{t('account.logout')}</h3>
                       <p className="text-sm text-gray-600 mt-1">
-                        Kết thúc phiên đăng nhập hiện tại của bạn
+                        {t('account.endSession')}
                       </p>
                     </div>
                     <button
@@ -1889,7 +1904,7 @@ export default function AccountPage() {
                           d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                         />
                       </svg>
-                      Đăng xuất
+                      {t('account.logout')}
                     </button>
                   </div>
                 </div>
@@ -1897,7 +1912,7 @@ export default function AccountPage() {
 
               {/* Thêm section mã giảm giá */}
               <div id="coupons" className="bg-white rounded-lg shadow p-6 mt-6">
-                <h2 className="text-xl font-semibold mb-4">Mã giảm giá đang sở hữu</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('account.coupons')}</h2>
 
                 {loadingCoupons ? (
                   <div className="flex justify-center py-8">
@@ -1935,7 +1950,7 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                                {t('account.appliesToOrder', { amount: formatCurrency(coupon.minOrder) })}
                               </div>
                             )}
                           </div>
@@ -1975,13 +1990,16 @@ export default function AccountPage() {
                             </div>
                             {coupon.minOrder && (
                               <div className="text-xs text-teal-600 mt-1">
-                                Áp dụng cho đơn từ {formatCurrency(coupon.minOrder)}
+                                {t('account.appliesToOrder', { amount: formatCurrency(coupon.minOrder) })}
                               </div>
                             )}
                             <div className="text-xs font-medium text-green-600 mt-1">
                               {coupon.type === 'percentage'
-                                ? `Giảm ${coupon.value}%${coupon.maxDiscount ? ` (tối đa ${formatCurrency(coupon.maxDiscount)})` : ''}`
-                                : `Giảm ${formatCurrency(coupon.value)}`}
+                                ? t('account.discountPercentage', { 
+                                    value: coupon.value, 
+                                    maxDiscount: coupon.maxDiscount ? formatCurrency(coupon.maxDiscount) : undefined 
+                                  })
+                                : t('account.discountFixed', { value: formatCurrency(coupon.value) })}
                             </div>
                           </div>
                         </div>
@@ -1990,16 +2008,16 @@ export default function AccountPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>Bạn chưa có mã giảm giá nào</p>
+                    <p>{t('account.noCoupons')}</p>
                   </div>
                 )}
               </div>
 
               <div className="bg-white rounded-lg shadow p-6 mt-6">
-                <h2 className="text-xl font-semibold mb-4">Thông tin tài khoản</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('account.accountDetails')}</h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Họ và tên</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('account.fullName')}</label>
                     <input
                       type="text"
                       name="name"
@@ -2009,7 +2027,7 @@ export default function AccountPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('account.email')}</label>
                     <input
                       type="email"
                       value={profile.email}
@@ -2018,7 +2036,7 @@ export default function AccountPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Số điện thoại</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('account.phone')}</label>
                     <input
                       type="tel"
                       name="phone"
