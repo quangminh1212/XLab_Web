@@ -184,7 +184,7 @@ const ProductGrid = ({
           console.log('ProductGrid - Safe props for', product.name, ':', safeProps);
 
           return (
-            <div key={safeProps.key} className="h-full min-h-[520px] flex">
+            <div key={safeProps.key} className="h-full aspect-[1/1.6] flex">
               <ProductCard
                 id={safeProps.id}
                 name={safeProps.name}

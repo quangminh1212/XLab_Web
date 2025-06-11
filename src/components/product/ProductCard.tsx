@@ -375,9 +375,7 @@ export default function ProductCard({
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-contain transition-all duration-500 ${
-            isHovered ? 'scale-110' : 'scale-100'
-          } ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`object-contain transition-all duration-500 scale-100 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setIsImageLoaded(true)}
           priority={false}
           onError={handleImageError}
@@ -428,14 +426,12 @@ export default function ProductCard({
         )}
 
         <div
-          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 ${currentColor.overlay} flex items-center justify-center transition-opacity duration-300 ${
-            isHovered ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 bg-gradient-to-br from-black/40 via-gray-900/30 to-primary-900/40 flex items-center justify-center transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
         >
           <div className="flex flex-col gap-2">
             <button
               onClick={handleAddToCart}
-              className={`bg-white/95 backdrop-blur-sm text-gray-800 ${currentColor.buttonHover} border border-white/50 px-3 py-1.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs`}
+              className="bg-white/95 backdrop-blur-sm text-gray-800 hover:bg-primary-50 hover:text-primary-700 hover:border-primary-300 border border-white/50 px-3 py-1.5 rounded-full font-semibold transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform text-xs"
             >
               <span className="flex items-center justify-center">
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -466,7 +462,7 @@ export default function ProductCard({
                 });
                 router.push('/checkout?skipInfo=true');
               }}
-              className={`bg-gradient-to-r ${currentColor.button} text-white px-3 py-1.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs`}
+              className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-3 py-1.5 rounded-full font-bold text-center transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl hover:scale-105 transform border border-white/20 text-xs"
             >
               <span className="flex items-center justify-center">
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

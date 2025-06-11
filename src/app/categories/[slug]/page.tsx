@@ -61,19 +61,20 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         {categoryProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 auto-rows-fr">
             {categoryProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                id={product.id.toString()}
-                name={product.name}
-                description={product.description}
-                price={product.salePrice || product.price}
-                originalPrice={
-                  product.salePrice && product.salePrice < product.price ? product.price : undefined
-                }
-                image={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
-                rating={product.rating}
-                isAccount={product.isAccount || product.type === 'account'}
-              />
+              <div key={product.id} className="aspect-[1/1.6]">
+                <ProductCard
+                  id={product.id.toString()}
+                  name={product.name}
+                  description={product.description}
+                  price={product.salePrice || product.price}
+                  originalPrice={
+                    product.salePrice && product.salePrice < product.price ? product.price : undefined
+                  }
+                  image={product.imageUrl || '/images/placeholder/product-placeholder.jpg'}
+                  rating={product.rating}
+                  isAccount={product.isAccount || product.type === 'account'}
+                />
+              </div>
             ))}
           </div>
         ) : (
