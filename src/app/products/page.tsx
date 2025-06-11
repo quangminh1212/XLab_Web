@@ -395,23 +395,22 @@ export default function ProductsPage() {
                   console.log(`Processed image URL for ${product.name}:`, imageUrl);
 
                   return (
-                    <div key={product.id} className="h-full flex">
-                      <ProductCard
-                        id={product.id.toString()}
-                        name={product.name}
-                        description={product.shortDescription || ''}
-                        price={displayPrice}
-                        originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
-                        image={imageUrl}
-                        category={categories.find((c) => c.id === product.categoryId)?.name}
-                        rating={product.rating}
-                        reviewCount={product.reviewCount}
-                        weeklyPurchases={product.weeklyPurchases}
-                        totalSold={product.totalSold}
-                        slug={product.slug}
-                        isAccount={product.isAccount || product.type === 'account'}
-                      />
-                    </div>
+                    <ProductCard
+                      key={product.id}
+                      id={product.id.toString()}
+                      name={product.name}
+                      description={product.shortDescription || ''}
+                      price={displayPrice}
+                      originalPrice={originalPrice > displayPrice ? originalPrice : undefined}
+                      image={imageUrl}
+                      category={categories.find((c) => c.id === product.categoryId)?.name}
+                      rating={product.rating}
+                      reviewCount={product.reviewCount}
+                      weeklyPurchases={product.weeklyPurchases}
+                      totalSold={product.totalSold}
+                      slug={product.slug}
+                      isAccount={product.isAccount || product.type === 'account'}
+                    />
                   );
                 })}
               </div>

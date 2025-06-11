@@ -361,7 +361,7 @@ export default function ProductCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative pt-[100%] bg-white w-full h-0">
+      <div className="relative pt-[100%] bg-white">
         {originalPrice && discountPercentage > 0 && (
           <div
             className={`absolute top-3 left-3 z-10 bg-gradient-to-r ${currentColor.badge} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-black/20 animate-pulse hover:animate-none hover:scale-110 transition-transform duration-200 border border-white/20`}
@@ -496,7 +496,7 @@ export default function ProductCard({
         <p className="text-sm text-gray-600 line-clamp-2 mb-4 leading-relaxed">
           {shortDescription}
         </p>
-        <div className="mt-auto flex items-end justify-between">
+        <div className="flex items-end justify-between">
           <div className="flex-1">
             <div className="flex items-baseline flex-wrap gap-2 mb-2">
               <span
