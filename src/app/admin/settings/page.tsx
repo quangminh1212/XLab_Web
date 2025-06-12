@@ -153,7 +153,9 @@ function SettingsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{t('admin.settings.title')}</h1>
+        <h1 className="text-2xl font-bold">
+          {language === 'vi' ? 'Cài đặt hệ thống' : 'System Settings'}
+        </h1>
       </div>
 
       {/* Thông báo lỗi */}
@@ -186,7 +188,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.tabGeneral')}
+              {language === 'vi' ? 'Thông tin chung' : 'General'}
             </button>
             <button
               onClick={() => setActiveTab('payment')}
@@ -196,7 +198,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.tabPayment')}
+              {language === 'vi' ? 'Thanh toán' : 'Payment'}
             </button>
             <button
               onClick={() => setActiveTab('email')}
@@ -206,7 +208,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.tabEmail')}
+              {language === 'vi' ? 'Email' : 'Email'}
             </button>
 
             <button
@@ -217,7 +219,7 @@ function SettingsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('admin.settings.tabAdvanced')}
+              {language === 'vi' ? 'Nâng cao' : 'Advanced'}
             </button>
           </nav>
         </div>
