@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { User, UserStats } from '@/models/UserModel';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface UserWithOrderStats extends User {
   purchasedProducts?: number;
@@ -22,6 +23,7 @@ function UsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive' | 'admin'>('all');
+  const { language } = useLanguage();
 
   // Lấy dữ liệu người dùng từ API
   useEffect(() => {
@@ -92,31 +94,41 @@ function UsersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Quản lý người dùng</h1>
+        <h1 className="text-2xl font-bold">
+          {language === 'vi' ? 'Quản lý người dùng' : 'User Management'}
+        </h1>
         <Link
           href="/admin"
           className="bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors text-sm"
         >
-          ← Quay lại Dashboard
+          {language === 'vi' ? '← Quay lại Dashboard' : '← Back to Dashboard'}
         </Link>
       </div>
 
       {/* Thống kê */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Tổng người dùng</h3>
+          <h3 className="text-gray-500 text-sm font-medium">
+            {language === 'vi' ? 'Tổng người dùng' : 'Total Users'}
+          </h3>
           <p className="mt-2 text-3xl font-bold">{stats.total}</p>
         </div>
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Đang hoạt động</h3>
+          <h3 className="text-gray-500 text-sm font-medium">
+            {language === 'vi' ? 'Đang hoạt động' : 'Active'}
+          </h3>
           <p className="mt-2 text-3xl font-bold text-green-600">{stats.active}</p>
         </div>
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Không hoạt động</h3>
+          <h3 className="text-gray-500 text-sm font-medium">
+            {language === 'vi' ? 'Không hoạt động' : 'Inactive'}
+          </h3>
           <p className="mt-2 text-3xl font-bold text-gray-500">{stats.inactive}</p>
         </div>
         <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Mới tháng này</h3>
+          <h3 className="text-gray-500 text-sm font-medium">
+            {language === 'vi' ? 'Mới tháng này' : 'New this month'}
+          </h3>
           <p className="mt-2 text-3xl font-bold text-blue-600">{stats.newThisMonth}</p>
         </div>
       </div>
@@ -127,7 +139,7 @@ function UsersPage() {
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="Tìm kiếm theo tên hoặc email..."
+              placeholder={language === 'vi' ? "Tìm kiếm theo tên hoặc email..." : "Search by name or email..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -155,9 +167,9 @@ function UsersPage() {
               onChange={(e) => setFilter(e.target.value as any)}
               className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">Tất cả</option>
-              <option value="active">Đang hoạt động</option>
-              <option value="inactive">Không hoạt động</option>
+              <option value="all">{language === 'vi' ? 'Tất cả' : 'All'}</option>
+              <option value="active">{language === 'vi' ? 'Đang hoạt động' : 'Active'}</option>
+              <option value="inactive">{language === 'vi' ? 'Không hoạt động' : 'Inactive'}</option>
               <option value="admin">Admin</option>
             </select>
           </div>
@@ -179,49 +191,49 @@ function UsersPage() {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Người dùng
+                    {language === 'vi' ? 'Người dùng' : 'User'}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Trạng thái
+                    {language === 'vi' ? 'Trạng thái' : 'Status'}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Vai trò
+                    {language === 'vi' ? 'Vai trò' : 'Role'}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Số dư
+                    {language === 'vi' ? 'Số dư' : 'Balance'}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    SP đã mua
+                    {language === 'vi' ? 'SP đã mua' : 'Products Purchased'}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Ngày tạo
+                    {language === 'vi' ? 'Ngày tạo' : 'Created Date'}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Đăng nhập cuối
+                    {language === 'vi' ? 'Đăng nhập cuối' : 'Last Login'}
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Tác vụ
+                    {language === 'vi' ? 'Tác vụ' : 'Actions'}
                   </th>
                 </tr>
               </thead>
@@ -262,7 +274,9 @@ function UsersPage() {
                             : 'bg-gray-100 text-gray-800'
                         }`}
                       >
-                        {user.isActive ? 'Hoạt động' : 'Không hoạt động'}
+                        {user.isActive 
+                          ? (language === 'vi' ? 'Hoạt động' : 'Active') 
+                          : (language === 'vi' ? 'Không hoạt động' : 'Inactive')}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -271,31 +285,34 @@ function UsersPage() {
                           Admin
                         </span>
                       ) : (
-                        <span>Người dùng</span>
+                        <span>{language === 'vi' ? 'Người dùng' : 'User'}</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="font-medium text-gray-900">
-                        {user.balance.toLocaleString('vi-VN')} VNĐ
+                        {user.balance.toLocaleString('vi-VN')} {language === 'vi' ? 'VNĐ' : 'VND'}
                       </div>
                       {user.totalSpent && user.totalSpent > 0 && (
                         <div className="text-xs text-gray-500">
-                          Đã chi: {user.totalSpent.toLocaleString('vi-VN')} VNĐ
+                          {language === 'vi' ? 'Đã chi: ' : 'Spent: '}
+                          {user.totalSpent.toLocaleString('vi-VN')} {language === 'vi' ? 'VNĐ' : 'VND'}
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      <div className="font-medium">{user.purchasedProducts || 0} sản phẩm</div>
+                      <div className="font-medium">
+                        {user.purchasedProducts || 0} {language === 'vi' ? 'sản phẩm' : 'products'}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(user.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.lastLogin ? formatDate(user.lastLogin) : 'Chưa đăng nhập'}
+                      {user.lastLogin ? formatDate(user.lastLogin) : (language === 'vi' ? 'Chưa đăng nhập' : 'Never logged in')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button className="text-indigo-600 hover:text-indigo-900 mr-3">
-                        Chi tiết
+                        {language === 'vi' ? 'Chi tiết' : 'Details'}
                       </button>
                       <button
                         className={`${
@@ -304,7 +321,9 @@ function UsersPage() {
                             : 'text-green-600 hover:text-green-900'
                         }`}
                       >
-                        {user.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
+                        {user.isActive 
+                          ? (language === 'vi' ? 'Vô hiệu hóa' : 'Disable') 
+                          : (language === 'vi' ? 'Kích hoạt' : 'Enable')}
                       </button>
                     </td>
                   </tr>
@@ -314,7 +333,7 @@ function UsersPage() {
 
             {filteredUsers.length === 0 && (
               <div className="py-12 text-center text-gray-500">
-                <p>Không tìm thấy người dùng phù hợp.</p>
+                <p>{language === 'vi' ? 'Không tìm thấy người dùng phù hợp.' : 'No matching users found.'}</p>
               </div>
             )}
           </>
