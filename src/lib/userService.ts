@@ -433,182 +433,122 @@ export async function getUserTransactions(userEmail: string): Promise<Transactio
 
 // Sync balance between users.json and balances.json
 export async function syncUserBalance(email: string): Promise<number> {
-  const DEBUG_MODE = true;
-  const startTime = Date.now();
-  
-  // Debug logger
-  function logDebug(message: string, data?: any) {
-    if (DEBUG_MODE) {
-      console.log(`[syncUserBalance] ${message}`, data || '');
-    }
-  }
-  
-  logDebug(`Starting balance sync for ${email}`);
-  
   try {
     if (!email) {
       throw new Error('Email is required for syncUserBalance');
     }
 
-    // Tạo các promises để đọc dữ liệu từ các nguồn khác nhau
-    const promises = [];
+    // Read from both sources
+    let balanceFromUsers = 0;
+    let balanceFromBalances = 0;
+    let balanceFromUserFile = 0;
+    let errorMessages = [];
     let userData: UserData | null = null;
+
+    // Get from user's individual file
+    try {
+      userData = await getUserDataFromFile(email);
+      if (userData) {
+        balanceFromUserFile = userData.profile.balance || 0;
+      }
+    } catch (error) {
+      console.log('Could not read from user file:', error);
+      errorMessages.push(`User file error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+
+    // Get from users.json
     let user: User | null = null;
-    let balances: UserBalance = {};
+    try {
+      const users = await getUsers();
+      user = users.find((u) => u.email === email) || null;
+      balanceFromUsers = user?.balance || 0;
+    } catch (error) {
+      console.log('Could not read from users.json:', error);
+      errorMessages.push(`users.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
 
-    // Promise đọc từ file user
-    const getUserDataPromise = (async () => {
+    // Get from balances.json
+    try {
+      // Check if file exists first
       try {
-        logDebug(`Reading user data file for ${email}`);
-        userData = await getUserDataFromFile(email);
-        const balance = userData?.profile.balance || 0;
-        logDebug(`User data file balance: ${balance}`);
-        return balance;
-      } catch (error) {
-        logDebug(`Error reading from user file for ${email}`, error);
-        return 0;
+        await fs.access(BALANCES_FILE);
+        const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
+        const balances: UserBalance = JSON.parse(balanceData);
+        balanceFromBalances = balances[email] || 0;
+      } catch (accessError) {
+        // Create empty balances file if it doesn't exist
+        await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
+        console.log('Created new balances.json file');
       }
-    })();
-    promises.push(getUserDataPromise);
-
-    // Promise đọc từ users.json
-    const getUsersPromise = (async () => {
-      try {
-        logDebug('Reading users.json');
-        const users = await getUsers();
-        user = users.find((u) => u.email === email) || null;
-        const balance = user?.balance || 0;
-        logDebug(`users.json balance for ${email}: ${balance}`);
-        return balance;
-      } catch (error) {
-        logDebug('Error reading from users.json', error);
-        return 0;
-      }
-    })();
-    promises.push(getUsersPromise);
-
-    // Promise đọc từ balances.json
-    const getBalancesPromise = (async () => {
-      try {
-        // Check if file exists first
-        try {
-          logDebug('Reading balances.json');
-          await fs.access(BALANCES_FILE);
-          const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
-          balances = JSON.parse(balanceData);
-          const balance = balances[email] || 0;
-          logDebug(`balances.json balance for ${email}: ${balance}`);
-          return balance;
-        } catch (accessError) {
-          // Create empty balances file if it doesn't exist
-          logDebug('balances.json not found, creating new file');
-          await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
-          return 0;
-        }
-      } catch (error) {
-        logDebug('Error reading from balances.json', error);
-        return 0;
-      }
-    })();
-    promises.push(getBalancesPromise);
-
-    // Chạy tất cả các promises song song để tăng tốc độ
-    logDebug('Running all balance fetch promises in parallel');
-    const [balanceFromUserFile, balanceFromUsers, balanceFromBalances] = await Promise.all(promises);
-    logDebug('All balance sources fetched', { balanceFromUserFile, balanceFromUsers, balanceFromBalances });
+    } catch (error) {
+      console.log('Could not read from balances.json:', error);
+      errorMessages.push(`balances.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
 
     // If no user data exists anywhere, create new user with fallback mechanism
     if (!userData && !user) {
-      logDebug(`No user data found for ${email}, creating new user`);
       try {
         user = await createNewUserFromEmail(email);
         const newUserData = createDefaultUserData(user);
         await saveUserDataToFile(email, newUserData);
-        logDebug('New user created with 0 balance');
         return 0; // New user has 0 balance
       } catch (createError) {
-        logDebug('Failed to create new user', createError);
+        console.error('Failed to create new user:', createError);
+        errorMessages.push(`User creation error: ${createError instanceof Error ? createError.message : 'Unknown error'}`);
         // Last resort fallback
         return 0;
       }
     }
 
+    // If we have error messages but still have at least one balance value, continue
+    if (errorMessages.length > 0) {
+      console.warn(`Continuing with partial data despite errors: ${errorMessages.join('; ')}`);
+    }
+
     // Use the highest balance and sync
-    const finalBalance = Math.max(
-      balanceFromUsers as number, 
-      balanceFromBalances as number, 
-      balanceFromUserFile as number
-    );
-    logDebug(`Final balance determined: ${finalBalance}`);
+    const finalBalance = Math.max(balanceFromUsers, balanceFromBalances, balanceFromUserFile);
 
-    // Cập nhật các hệ thống song song để tăng tốc độ
-    const updatePromises = [];
-
-    // Update users.json nếu cần
-    if (balanceFromUsers !== finalBalance) {
-      updatePromises.push((async () => {
-        try {
-          logDebug(`Updating users.json balance from ${balanceFromUsers} to ${finalBalance}`);
-          await updateUserBalanceInFile(email, finalBalance - (balanceFromUsers as number));
-          logDebug('users.json balance updated successfully');
-        } catch (updateError) {
-          logDebug('Failed to update users.json', updateError);
-        }
-      })());
+    // Update all systems with the final balance - with error handling for each step
+    try {
+      if (balanceFromUsers !== finalBalance) {
+        await updateUserBalanceInFile(email, finalBalance - balanceFromUsers);
+      }
+    } catch (updateError) {
+      console.error('Failed to update users.json:', updateError);
     }
 
-    // Update balances.json nếu cần
-    if (balanceFromBalances !== finalBalance) {
-      updatePromises.push((async () => {
-        try {
-          logDebug(`Updating balances.json balance from ${balanceFromBalances} to ${finalBalance}`);
-          await updateBalanceInBalancesFile(email, finalBalance);
-          logDebug('balances.json balance updated successfully');
-        } catch (updateError) {
-          logDebug('Failed to update balances.json', updateError);
-        }
-      })());
+    try {
+      if (balanceFromBalances !== finalBalance) {
+        await updateBalanceInBalancesFile(email, finalBalance);
+      }
+    } catch (updateError) {
+      console.error('Failed to update balances.json:', updateError);
     }
 
-    // Update user file nếu cần
-    if (balanceFromUserFile !== finalBalance) {
-      updatePromises.push((async () => {
-        try {
-          logDebug(`Updating user file balance from ${balanceFromUserFile} to ${finalBalance}`);
-          let userDataToUpdate = await getUserDataFromFile(email);
-          if (!userDataToUpdate) {
-            // Create user data if it doesn't exist
-            logDebug('User file not found, creating new user data');
-            const users = await getUsers();
-            const existingUser = users.find((u) => u.email === email);
-            if (existingUser) {
-              userDataToUpdate = createDefaultUserData(existingUser);
-            } else if (user) {
-              userDataToUpdate = createDefaultUserData(user);
-            }
+    try {
+      if (balanceFromUserFile !== finalBalance) {
+        let userData = await getUserDataFromFile(email);
+        if (!userData) {
+          // Create user data if it doesn't exist
+          const users = await getUsers();
+          const existingUser = users.find((u) => u.email === email);
+          if (existingUser) {
+            userData = createDefaultUserData(existingUser);
+          } else if (user) {
+            userData = createDefaultUserData(user);
           }
-          if (userDataToUpdate) {
-            userDataToUpdate.profile.balance = finalBalance;
-            await saveUserDataToFile(email, userDataToUpdate);
-            logDebug('User file balance updated successfully');
-          }
-        } catch (updateError) {
-          logDebug('Failed to update user file', updateError);
         }
-      })());
+        if (userData) {
+          userData.profile.balance = finalBalance;
+          await saveUserDataToFile(email, userData);
+        }
+      }
+    } catch (updateError) {
+      console.error('Failed to update user file:', updateError);
     }
 
-    // Chờ tất cả các cập nhật hoàn thành (nhưng không block nếu có lỗi)
-    logDebug('Waiting for all balance updates to complete');
-    const updateResults = await Promise.allSettled(updatePromises);
-    logDebug('Balance update results', updateResults);
-
-    const totalTime = Date.now() - startTime;
-    logDebug(`Balance sync completed in ${totalTime}ms with final balance: ${finalBalance}`);
     return finalBalance;
   } catch (error) {
-    const totalTime = Date.now() - startTime;
-    logDebug(`Balance sync failed after ${totalTime}ms`, error);
     console.error('Error syncing balance:', error);
     // Rethrow with more context for better debugging
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -822,4 +762,180 @@ export async function updateUserProfileData(
   profileData: Partial<User>,
 ): Promise<User | null> {
   return await syncAllUserData(email, profileData);
+}
+
+// Cập nhật cart và đảm bảo metadata được cập nhật
+export async function updateUserCartSync(email: string, cart: CartItem[]): Promise<void> {
+  try {
+    const userData = await ensureUserDataExists(email);
+
+    userData.cart = cart;
+    userData.metadata.lastUpdated = new Date().toISOString();
+    userData.profile.updatedAt = new Date().toISOString();
+
+    await saveUserDataToFile(email, userData);
+
+    // Trigger sync để đảm bảo consistency
+    await syncAllUserData(email);
+
+    console.log(`✅ Cart updated and synced for user: ${email}`);
+  } catch (error) {
+    console.error(`❌ Error updating cart for ${email}:`, error);
+    throw error;
+  }
+}
+
+// Migrate dữ liệu đơn hàng từ localStorage vào file user data
+export async function migrateOrdersFromLocalStorage(email: string): Promise<void> {
+  try {
+    console.log(`🔄 Migrating orders from localStorage for: ${email}`);
+
+    // Chỉ chạy trên client side
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const userData = await ensureUserDataExists(email);
+
+    // Lấy dữ liệu từ localStorage
+    const localOrders = JSON.parse(localStorage.getItem(`orders_${email}`) || '[]');
+
+    if (localOrders.length > 0) {
+      // Convert localStorage orders to our Order format
+      const migratedOrders: Order[] = localOrders.map((localOrder: any) => ({
+        id: localOrder.id || `ORDER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        items:
+          localOrder.items?.map((item: any) => ({
+            productId: item.productId || item.id,
+            productName: item.productName || item.name,
+            quantity: item.quantity || 1,
+            price: item.price || 0,
+            originalPrice: item.originalPrice,
+            image: item.image,
+            version: item.version || 'default',
+          })) || [],
+        totalAmount: localOrder.totalAmount || 0,
+        couponDiscount: localOrder.couponDiscount || 0,
+        status: localOrder.status || 'completed',
+        paymentMethod: localOrder.paymentMethod || 'unknown',
+        paymentStatus: localOrder.paymentStatus || 'paid',
+        createdAt: localOrder.createdAt || new Date().toISOString(),
+        updatedAt: localOrder.updatedAt || new Date().toISOString(),
+        transactionId: localOrder.transactionId,
+      }));
+
+      // Merge với orders hiện có (tránh duplicate)
+      const existingOrderIds = userData.orders.map((o) => o.id);
+      const newOrders = migratedOrders.filter((o) => !existingOrderIds.includes(o.id));
+
+      if (newOrders.length > 0) {
+        userData.orders.push(...newOrders);
+        userData.metadata.lastUpdated = new Date().toISOString();
+
+        await saveUserDataToFile(email, userData);
+        console.log(`✅ Migrated ${newOrders.length} orders for: ${email}`);
+      } else {
+        console.log(`ℹ️ No new orders to migrate for: ${email}`);
+      }
+    }
+  } catch (error) {
+    console.error(`❌ Error migrating orders for ${email}:`, error);
+  }
+}
+
+// ===== ORDER MANAGEMENT FUNCTIONS =====
+
+// Lấy danh sách đơn hàng của user
+export async function getUserOrders(email: string): Promise<Order[]> {
+  try {
+    const userData = await getUserDataFromFile(email);
+    return userData?.orders || [];
+  } catch (error) {
+    console.error(`Error getting orders for ${email}:`, error);
+    return [];
+  }
+}
+
+// Thêm đơn hàng mới cho user
+export async function addUserOrder(email: string, order: Order): Promise<void> {
+  try {
+    const userData = await ensureUserDataExists(email);
+
+    userData.orders.push(order);
+    userData.metadata.lastUpdated = new Date().toISOString();
+    userData.profile.updatedAt = new Date().toISOString();
+
+    await saveUserDataToFile(email, userData);
+    console.log(`✅ Order ${order.id} added for user: ${email}`);
+  } catch (error) {
+    console.error(`❌ Error adding order for ${email}:`, error);
+    throw error;
+  }
+}
+
+// Cập nhật đơn hàng của user
+export async function updateUserOrder(
+  email: string,
+  orderId: string,
+  updates: Partial<Order>,
+): Promise<void> {
+  try {
+    const userData = await ensureUserDataExists(email);
+
+    const orderIndex = userData.orders.findIndex((order) => order.id === orderId);
+    if (orderIndex >= 0) {
+      userData.orders[orderIndex] = {
+        ...userData.orders[orderIndex],
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+
+      userData.metadata.lastUpdated = new Date().toISOString();
+      userData.profile.updatedAt = new Date().toISOString();
+
+      await saveUserDataToFile(email, userData);
+      console.log(`✅ Order ${orderId} updated for user: ${email}`);
+    } else {
+      console.log(`❌ Order ${orderId} not found for user: ${email}`);
+    }
+  } catch (error) {
+    console.error(`❌ Error updating order for ${email}:`, error);
+    throw error;
+  }
+}
+
+// Lấy thống kê đơn hàng của user
+export async function getUserOrderStats(email: string): Promise<{
+  totalOrders: number;
+  completedOrders: number;
+  totalSpent: number;
+  totalProducts: number;
+}> {
+  try {
+    const orders = await getUserOrders(email);
+
+    const totalOrders = orders.length;
+    const completedOrders = orders.filter((o) => o.status === 'completed').length;
+    const totalSpent = orders
+      .filter((o) => o.status === 'completed')
+      .reduce((sum, o) => sum + o.totalAmount, 0);
+    const totalProducts = orders
+      .filter((o) => o.status === 'completed')
+      .reduce((sum, o) => sum + o.items.length, 0);
+
+    return {
+      totalOrders,
+      completedOrders,
+      totalSpent,
+      totalProducts,
+    };
+  } catch (error) {
+    console.error(`Error getting order stats for ${email}:`, error);
+    return {
+      totalOrders: 0,
+      completedOrders: 0,
+      totalSpent: 0,
+      totalProducts: 0,
+    };
+  }
 }
