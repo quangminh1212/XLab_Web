@@ -153,9 +153,6 @@ const translations: Record<Language, Record<string, string>> = {
     'testimonial.position.project': 'Gerente de Proyecto',
     'home.testimonials': 'Opiniones de clientes',
     'home.viewAllTestimonials': 'Ver todas las opiniones',
-    'testimonials.videoTitle': 'Videos de testimonios',
-    'testimonials.videoSubtitle': 'Vea cómo nuestros clientes comparten sus experiencias con nuestros productos',
-    'testimonials.results': 'Resultados obtenidos',
   },
   vi: {
     // Admin Notifications
