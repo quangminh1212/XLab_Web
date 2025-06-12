@@ -600,17 +600,6 @@ const translations: Record<Language, Record<string, string>> = {
     'product.options': 'Tùy chọn',
     'testimonials.title': 'Đánh giá của khách hàng',
     'testimonials.verified': 'Đã xác minh',
-    'home.testimonials': 'Đánh giá của khách hàng',
-    'home.viewAllTestimonials': 'Xem tất cả đánh giá',
-    'testimonial.michael': '"Tôi đã sử dụng dịch vụ của XLab được 2 năm và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, có đầy đủ tính năng, và đội ngũ hỗ trợ rất tận tâm."',
-    'testimonial.david': '"Các giải pháp AI của XLab đã giúp doanh nghiệp của chúng tôi tiết kiệm được 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."',
-    'testimonial.emily': '"Các bản cập nhật liên tục của XLab đảm bảo sản phẩm luôn đáp ứng được những yêu cầu ngày càng cao của chúng tôi. Giao diện thân thiện và dễ sử dụng ngay cả với người mới."',
-    'testimonial.position.business': 'Giám đốc kinh doanh',
-    'testimonial.position.cto': 'CTO - Tech Solutions',
-    'testimonial.position.project': 'Quản lý dự án',
-    'cart.enterCoupon': 'Nhập mã giảm giá',
-
-    // Testimonials page
     'testimonials.pageTitle': 'Đánh giá của khách hàng',
     'testimonials.pageSubtitle': 'Khách hàng nói gì về chúng tôi',
     'testimonials.verified': 'Đã xác minh',
@@ -1670,7 +1659,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.subtitle': 'Accompanying your business in the digital transformation journey',
     'about.values': 'Our core values',
     'about.innovation': 'Innovation',
-    'about.innovationDesc': 'Continuously create and innovate technology to deliver the best value',
+    'about.innovationDesc': 'Innovation and creativity in technology to deliver the best value',
     'about.quality': 'Quality',
     'about.qualityDesc': 'Commitment to the highest quality in all products and services',
     'about.integrity': 'Integrity',
@@ -2051,6 +2040,7 @@ const translations: Record<Language, Record<string, string>> = {
     'product.options': 'Options',
     'testimonials.title': 'Customer Reviews',
     'testimonials.verified': 'Verified',
+<<<<<<< HEAD
     'home.testimonials': 'Đánh giá của khách hàng',
     'home.viewAllTestimonials': 'Xem tất cả đánh giá',
     'testimonial.michael': '"Tôi đã sử dụng dịch vụ của XLab được 2 năm và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, có đầy đủ tính năng, và đội ngũ hỗ trợ rất tận tâm."',
@@ -2071,6 +2061,20 @@ const translations: Record<Language, Record<string, string>> = {
     'testimonials.viewAll': 'Xem tất cả đánh giá',
     'testimonials.ratings': 'đánh giá',
 
+=======
+    'testimonials.pageTitle': 'Customer Reviews',
+    'testimonials.pageSubtitle': 'Discover the experiences and real results that customers have achieved using XLab solutions',
+    'testimonials.clientsTab': 'Client Testimonials',
+    'testimonials.caseStudiesTab': 'Case Studies',
+    'testimonials.videoTitle': 'Video Testimonials',
+    'testimonials.videoSubtitle': 'Watch videos from customers sharing their experience using XLab products and services',
+    'testimonials.results': 'Results achieved:',
+    'testimonials.cta.title': 'Ready to elevate your business?',
+    'testimonials.cta.description': 'Contact us today for a consultation about the most suitable solution for your needs.',
+    'testimonials.cta.contact': 'Contact Us',
+    'testimonials.cta.explore': 'Explore Our Services',
+    
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     // User Notifications
     'notifications.title': 'Your Notifications',
     'notifications.markAllRead': 'Mark all as read',
@@ -2239,7 +2243,11 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.notifications.priority.medium': 'Media',
     'admin.notifications.priority.low': 'Baja',
     'admin.notifications.created': 'Creado',
+<<<<<<< HEAD
     'admin.notifications.readCount': 'Leído',
+=======
+    'admin.notifications.readCount': 'Leídos',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'admin.notifications.sentTo': 'Enviado a',
     'admin.notifications.expires': 'Expira',
     'admin.notifications.viewDetails': 'Ver detalles',
@@ -2251,9 +2259,15 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.notifications.updateBtn': 'Actualizar notificación',
     'admin.notifications.creatingBtn': 'Creando...',
     'admin.notifications.form.title': 'Título de la notificación *',
+<<<<<<< HEAD
     'admin.notifications.form.titlePlaceholder': 'Ingrese el título de la notificación',
     'admin.notifications.form.content': 'Contenido de la notificación *',
     'admin.notifications.form.contentPlaceholder': 'Ingrese el contenido de la notificación',
+=======
+    'admin.notifications.form.titlePlaceholder': 'Introduce el título de la notificación',
+    'admin.notifications.form.content': 'Contenido de la notificación *',
+    'admin.notifications.form.contentPlaceholder': 'Introduce el contenido de la notificación',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'admin.notifications.form.type': 'Tipo de notificación *',
     'admin.notifications.settings.title': 'Configuración de notificaciones',
     'admin.notifications.settings.automatic': 'Notificaciones automáticas',
@@ -2264,6 +2278,7 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.notifications.settings.retention': 'Días de retención de notificaciones',
     'admin.notifications.settings.retentionDesc': 'Las notificaciones se eliminarán automáticamente después de estos días',
     'admin.notifications.settings.saveBtn': 'Guardar configuración',
+<<<<<<< HEAD
     'admin.notifications.success': '¡Notificación creada con éxito!',
     'admin.notifications.updateSuccess': '¡Notificación actualizada con éxito!',
     'admin.notifications.deleteSuccess': '¡Notificación eliminada con éxito!',
@@ -2274,10 +2289,46 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.notifications.connectionError': 'Se produjo un error al conectar con el servidor',
     'admin.notifications.people': 'personas',
     
+=======
+    'admin.notifications.success': '¡La notificación se ha creado con éxito!',
+    'admin.notifications.updateSuccess': '¡La notificación se ha actualizado con éxito!',
+    'admin.notifications.deleteSuccess': '¡La notificación se ha eliminado con éxito!',
+    'admin.notifications.settingsSaved': '¡La configuración de notificaciones se ha guardado!',
+    'admin.notifications.error': 'Ha ocurrido un error al crear la notificación',
+    'admin.notifications.updateError': 'Ha ocurrido un error al actualizar la notificación',
+    'admin.notifications.deleteError': 'Ha ocurrido un error al eliminar la notificación',
+    'admin.notifications.connectionError': 'Ha ocurrido un error al conectar con el servidor',
+    'admin.notifications.people': 'personas',
+    
+    // Testimonials
+    'testimonials.title': 'Opiniones de Clientes',
+    'testimonials.verified': 'Verificado',
+    'testimonials.pageTitle': 'Opiniones de Clientes',
+    'testimonials.pageSubtitle': 'Descubre las experiencias y resultados reales que nuestros clientes han conseguido usando las soluciones de XLab',
+    'testimonials.clientsTab': 'Opiniones de Clientes',
+    'testimonials.caseStudiesTab': 'Casos de Estudio',
+    'testimonials.videoTitle': 'Vídeos de Testimonios',
+    'testimonials.videoSubtitle': 'Mira videos de clientes compartiendo su experiencia usando productos y servicios de XLab',
+    'testimonials.results': 'Resultados obtenidos:',
+    'testimonials.cta.title': '¿Listo para elevar tu negocio?',
+    'testimonials.cta.description': 'Contáctanos hoy para una consulta sobre la solución más adecuada para tus necesidades.',
+    'testimonials.cta.contact': 'Contáctanos',
+    'testimonials.cta.explore': 'Explora Nuestros Servicios',
+    'home.testimonials': 'Opiniones de Clientes',
+    'home.viewAllTestimonials': 'Ver todas las opiniones',
+    'testimonial.position.business': 'Director de Negocio',
+    'testimonial.position.cto': 'CTO - Soluciones Tecnológicas',
+    'testimonial.position.project': 'Gerente de Proyecto',
+    'testimonial.michael': '"He estado usando los servicios de XLab durante 2 años y estoy extremadamente satisfecho. El software funciona sin problemas, tiene características completas, y el equipo de soporte está muy dedicado."',
+    'testimonial.david': '"Las soluciones de IA de XLab han ayudado a nuestro negocio a ahorrar un 30% en costos operativos. El equipo de soporte técnico responde rápidamente y de manera efectiva."',
+    'testimonial.emily': '"Las actualizaciones continuas de XLab aseguran que el producto siempre cumple con nuestras demandas cada vez más exigentes. La interfaz es amigable y fácil de usar incluso para principiantes."',
+    
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     // Terms page
     'terms.title': 'Términos de servicio',
     'terms.lastUpdated': 'Última actualización',
     'terms.section1.title': 'Introducción',
+<<<<<<< HEAD
     'terms.section1.content': 'Bienvenido a {siteName}! Estos Términos de Servicio ("Términos") rigen su acceso y uso de nuestro sitio web, productos y servicios. Al acceder o utilizar nuestros servicios, acepta cumplir con estos Términos.',
     'terms.section2.title': 'Su cuenta',
     'terms.section2.content': 'Para utilizar algunas funciones de nuestros servicios, debe crear una cuenta. Usted es responsable de mantener la seguridad de su cuenta y contraseña, y también es responsable de todas las actividades que ocurran bajo su cuenta.',
@@ -2303,6 +2354,33 @@ const translations: Record<Language, Record<string, string>> = {
     'terms.section11.content': 'Estos Términos se regirán e interpretarán de acuerdo con las leyes de Vietnam, sin tener en cuenta los conflictos de principios legales.',
     'terms.section12.title': 'Contacto',
     'terms.section12.content': 'Si tiene alguna pregunta sobre estos Términos, contáctenos a través de',
+=======
+    'terms.section1.content': '¡Bienvenido a {siteName}! Estos Términos de Servicio ("Términos") rigen el acceso y uso de nuestro sitio web, productos y servicios. Al acceder o utilizar nuestros servicios, acepta cumplir con estos Términos.',
+    'terms.section2.title': 'Su cuenta',
+    'terms.section2.content': 'Para utilizar algunas características de nuestros servicios, debe crear una cuenta. Usted es responsable de mantener la seguridad de su cuenta y contraseña, y también es responsable de todas las actividades que ocurran bajo su cuenta.',
+    'terms.section3.title': 'Contenido y propiedad intelectual',
+    'terms.section3.content': '{companyName} y sus licenciantes poseen todos los derechos, títulos e intereses en los servicios, incluidos todos los derechos de propiedad intelectual relacionados. No puede copiar, modificar, distribuir o vender ninguna parte de nuestros servicios sin nuestro permiso explícito por escrito.',
+    'terms.section4.title': 'Licencia de uso',
+    'terms.section4.content': '{companyName} le otorga una licencia personal, no exclusiva e intransferible para usar nuestros servicios. No puede copiar, modificar, distribuir, vender, alquilar, arrendar o sublicenciar ninguna parte de los servicios.',
+    'terms.section5.title': 'Precios y pagos',
+    'terms.section5.content': 'Para los servicios de pago, acepta pagar todas las tarifas aplicables. Podemos cambiar los precios notificándole con anticipación. Los pagos no son reembolsables a menos que se especifique lo contrario en nuestra política de reembolso.',
+    'terms.section6.title': 'Privacidad y datos personales',
+    'terms.section6.content': 'Recopilamos y procesamos sus datos personales de acuerdo con nuestra',
+    'terms.section6.privacyPolicy': 'Política de Privacidad',
+    'terms.section6.content2': '. Al utilizar nuestros servicios, acepta la recopilación y el procesamiento de datos de acuerdo con esta política.',
+    'terms.section7.title': 'Descargo de responsabilidad',
+    'terms.section7.content': 'Nuestros servicios se proporcionan "tal cual" y "según disponibilidad". {companyName} renuncia a todas las garantías, expresas o implícitas, incluidas, entre otras, las garantías de comerciabilidad, idoneidad para un propósito particular y no infracción.',
+    'terms.section8.title': 'Limitación de responsabilidad',
+    'terms.section8.content': 'En ningún caso {companyName} será responsable por daños indirectos, incidentales, especiales, consecuentes o punitivos, incluida la pérdida de ganancias, ingresos, datos u oportunidades comerciales.',
+    'terms.section9.title': 'Terminación',
+    'terms.section9.content': 'Podemos suspender o terminar su acceso a todos o parte de los servicios si viola estos Términos, o si creemos que su uso puede dañar a {companyName} u otros usuarios.',
+    'terms.section10.title': 'Cambios en los términos',
+    'terms.section10.content': 'Podemos modificar estos Términos en cualquier momento. Si realizamos cambios significativos, se lo notificaremos. El uso continuado de nuestros servicios después de que los cambios entren en vigencia significa que acepta los nuevos términos.',
+    'terms.section11.title': 'Ley aplicable',
+    'terms.section11.content': 'Estos Términos se regirán e interpretarán de acuerdo con las leyes de Vietnam, sin tener en cuenta los conflictos de principios legales.',
+    'terms.section12.title': 'Contacto',
+    'terms.section12.content': 'Si tiene alguna pregunta sobre estos Términos, contáctenos a través de la dirección de correo electrónico:',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'terms.section12.content2': 'o visite nuestra página de',
     'terms.section12.contactPage': 'Contacto',
     'terms.section12.content3': '.',
@@ -2310,7 +2388,11 @@ const translations: Record<Language, Record<string, string>> = {
     // Header
     'nav.home': 'Inicio',
     'nav.products': 'Productos',
+<<<<<<< HEAD
     'nav.about': 'Nosotros',
+=======
+    'nav.about': 'Acerca de',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'nav.contact': 'Contacto',
     'nav.warranty': 'Garantía',
     'nav.login': 'Iniciar sesión',
@@ -2322,8 +2404,13 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Login page
     'login.welcome': '¡Bienvenido de nuevo!',
+<<<<<<< HEAD
     'login.continue': 'Para continuar usando los servicios de XLab',
     'login.connect': 'Conexión segura con tu cuenta de Google',
+=======
+    'login.continue': 'Para continuar utilizando los servicios de XLab',
+    'login.connect': 'Conéctate de forma segura con tu cuenta de Google',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'login.google': 'Continuar con Google',
     'login.secure': '100% seguro',
     'login.terms': 'Al continuar, aceptas nuestros',
@@ -2333,12 +2420,21 @@ const translations: Record<Language, Record<string, string>> = {
     'login.ourCompany': '.',
     
     // Homepage
+<<<<<<< HEAD
     'home.slogan': '¡Máxima eficiencia, mínimo costo!',
     'home.search': 'Buscar software, aplicaciones...',
     'home.loadMore': 'Ver más',
     'home.aboutTitle': 'Sobre XLab',
     'home.aboutDesc1': 'XLab es una plataforma que proporciona soluciones de software integradas con IA avanzada para ayudar a los usuarios a mejorar la eficiencia en el trabajo y la vida cotidiana.',
     'home.aboutDesc2': 'Nuestra misión es brindar a las personas acceso a herramientas para el trabajo, el estudio y el entretenimiento a precios razonables y con calidad internacional.',
+=======
+    'home.slogan': '¡Optimiza la eficiencia, minimiza los costos!',
+    'home.search': 'Buscar software, aplicaciones...',
+    'home.loadMore': 'Ver más',
+    'home.aboutTitle': 'Sobre XLab',
+    'home.aboutDesc1': 'XLab es una plataforma que proporciona soluciones de software con IA avanzada integrada para ayudar a los usuarios a mejorar la eficiencia en el trabajo y la vida diaria.',
+    'home.aboutDesc2': 'Nuestra misión es brindar a los vietnamitas la oportunidad de acceder a herramientas para el trabajo, el estudio y el entretenimiento a precios asequibles y con calidad internacional.',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'home.learnMore': 'Saber más',
     'home.domesticProduct': 'Producto nacional',
     'home.vietnamDevs': 'Desarrollado por ingenieros vietnamitas',
@@ -2348,8 +2444,13 @@ const translations: Record<Language, Record<string, string>> = {
     'home.encryptedData': 'Datos encriptados de forma segura',
     'home.reasonablePrice': 'Precio razonable',
     'home.budgetOptions': 'Múltiples opciones para todos los presupuestos',
+<<<<<<< HEAD
     'home.aiIntegration': 'Integración con IA',
     'home.aiSupport': 'Tecnología de IA avanzada para apoyarte',
+=======
+    'home.aiIntegration': 'Integración de IA',
+    'home.aiSupport': 'Tecnología de IA avanzada para ayudarte',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'home.continuousUpdates': 'Actualizaciones continuas',
     'home.newFeatures': 'Siempre actualizado con nuevas funciones',
     'home.achievements': 'Nuestros logros',
@@ -2362,6 +2463,7 @@ const translations: Record<Language, Record<string, string>> = {
     'home.newProducts': 'Nuevos productos',
     'home.viewAll': 'Ver todos',
     'home.noSoftware': 'No hay software disponible',
+<<<<<<< HEAD
     'home.updateSoon': 'Actualizaremos pronto con software.',
     'home.noServices': 'No hay servicios disponibles',
     'home.updateServices': 'Actualizaremos pronto con servicios.',
@@ -2382,6 +2484,28 @@ const translations: Record<Language, Record<string, string>> = {
     'home.moreQuestions': 'Ver más preguntas',
     'home.ctaTitle': '¿Listo para mejorar tu productividad con XLab?',
     'home.ctaDesc': 'Ofrecemos descuentos especiales para clientes que compran en grandes cantidades. Cuanto más compre, mayor será el descuento. Nos comprometemos a brindarle las mejores soluciones al costo más razonable.',
+=======
+    'home.updateSoon': 'Actualizaremos los productos de software pronto.',
+    'home.noServices': 'No hay servicios disponibles',
+    'home.updateServices': 'Actualizaremos los servicios pronto.',
+    'home.faq': 'Preguntas frecuentes',
+    'home.faqDesc': 'Respuestas a las preguntas más comunes de los clientes sobre los productos y servicios de XLab',
+    'home.faq1Title': '¿Cómo descargo el software?',
+    'home.faq1Desc': 'Puede descargar software gratuito en la página del producto correspondiente después de iniciar sesión en su cuenta. Para productos de pago, debe completar el pago antes de la descarga.',
+    'home.faq2Title': '¿Cómo activo la licencia?',
+    'home.faq2Desc': 'Después de comprar el producto, recibirá un código de activación por correo electrónico. Abra la aplicación, vaya a "Activar licencia" e ingrese este código para utilizar todas las funciones.',
+    'home.faq3Title': '¿En cuántos dispositivos puedo usarlo?',
+    'home.faq3Desc': 'Cada licencia le permite usar en hasta 3 dispositivos diferentes. Si desea usar en más dispositivos, compre licencias adicionales o actualice a un plan empresarial.',
+    'home.faq4Title': '¿Cuál es la política de reembolso?',
+    'home.faq4Desc': 'Tenemos una política de reembolso dentro de los 7 días posteriores a la compra si el producto no satisface sus necesidades. Póngase en contacto con nuestro equipo de soporte para obtener instrucciones.',
+    'home.faq5Title': '¿Cómo contacto al soporte técnico?',
+    'home.faq5Desc': 'Puede contactar a nuestro equipo de soporte técnico por correo electrónico a support@xlab.vn, línea directa 1900.xxxx o chat en vivo en el sitio web. Respondemos dentro de las 24 horas hábiles.',
+    'home.faq6Title': '¿XLab proporciona soluciones para empresas?',
+    'home.faq6Desc': 'Sí, tenemos paquetes de servicio especiales para empresas con descuentos en precios y soporte técnico especializado. Contáctenos para obtener la solución más adecuada.',
+    'home.moreQuestions': 'Ver más preguntas',
+    'home.ctaTitle': '¿Listo para mejorar la eficiencia de tu trabajo con XLab?',
+    'home.ctaDesc': 'Ofrecemos varios niveles de precios especiales para clientes que compran en grandes cantidades. Cuanto más compra, mayor es el descuento. Nos comprometemos a ofrecerte las mejores soluciones al costo más razonable.',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'home.contactUs': 'Contactar para asesoramiento',
     
     // Product card
@@ -2396,6 +2520,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.subtitle': 'Acompañando a tu empresa en el viaje de transformación digital',
     'about.values': 'Nuestros valores fundamentales',
     'about.innovation': 'Innovación',
+<<<<<<< HEAD
     'about.innovationDesc': 'Crear e innovar continuamente en tecnología para ofrecer el mejor valor',
     'about.quality': 'Calidad',
     'about.qualityDesc': 'Compromiso con la máxima calidad en todos los productos y servicios',
@@ -2404,10 +2529,21 @@ const translations: Record<Language, Record<string, string>> = {
     'about.collaboration': 'Colaboración',
     'about.collaborationDesc': 'Construir asociaciones a largo plazo basadas en el respeto y la cooperación mutuamente beneficiosa',
     'about.partnership': 'Asociarse con XLab',
+=======
+    'about.innovationDesc': 'Innovación y creatividad continuas en tecnología para brindar el mejor valor',
+    'about.quality': 'Calidad',
+    'about.qualityDesc': 'Compromiso con la más alta calidad en todos los productos y servicios',
+    'about.integrity': 'Integridad',
+    'about.integrityDesc': 'Mantener la ética empresarial y la transparencia en todas las operaciones',
+    'about.collaboration': 'Colaboración',
+    'about.collaborationDesc': 'Construir relaciones de asociación duraderas basadas en el respeto y la cooperación mutuamente beneficiosa',
+    'about.partnership': 'Colabora con XLab',
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     'about.partnershipDesc': 'Siempre estamos listos para escuchar y acompañar a tu empresa en el viaje de transformación digital y desarrollo sostenible.',
     'about.contactNow': 'Contactar ahora',
     'about.exploreServices': 'Explorar servicios',
 
+<<<<<<< HEAD
     // Common buttons
     'button.getStarted': 'Comenzar',
     'button.learnMore': 'Saber más',
@@ -2447,6 +2583,51 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.documentation': 'Documentación',
     'footer.faq': 'Preguntas frecuentes',
     'footer.followUs': 'Síguenos'
+=======
+    // About page - Additional keys
+    'about.pageTitle': 'Sobre nosotros',
+    'about.pageSubtitle': 'XLab - Empresa pionera en el campo del desarrollo de software y soluciones tecnológicas en Vietnam',
+    'about.ourStory': 'Nuestra historia',
+    'about.storyP1': 'XLab fue fundada en 2018 por un grupo de ingenieros de software apasionados con una visión de crear soluciones tecnológicas avanzadas para ayudar a las empresas vietnamitas a mejorar la eficiencia operativa y la competitividad en la era digital.',
+    'about.storyP2': 'Después de más de 10 años de operación y desarrollo, XLab se ha convertido en un socio tecnológico confiable para cientos de empresas nacionales e internacionales, desde startups hasta grandes corporaciones en diversos campos como finanzas, retail, manufactura, educación y salud.',
+    'about.storyP3': 'Estamos orgullosos de nuestro talentoso equipo apasionado por la tecnología, con más de 100 expertos en software, ingenieros de sistemas y consultores experimentados, siempre dedicados al objetivo de proporcionar soluciones óptimas para socios y clientes.',
+    'about.mission': 'Misión',
+    'about.missionDesc': 'La misión de XLab es aplicar tecnología avanzada para crear excelentes soluciones de software que ayuden a las empresas vietnamitas a optimizar procesos, aumentar la productividad y desarrollarse de manera sostenible en la era digital. Nos comprometemos a ofrecer productos y servicios de alta calidad que satisfagan las diversas necesidades de los clientes, mientras contribuimos al desarrollo de la industria de tecnología de la información de Vietnam.',
+    'about.vision': 'Visión',
+    'about.visionDesc': 'XLab aspira a convertirse en una empresa tecnológica líder en Vietnam y el sudeste asiático en el campo del desarrollo de software y la provisión de soluciones integrales de tecnología de la información. Nos esforzamos por ser un socio confiable y a largo plazo para las empresas en su viaje de transformación digital, así como un entorno de trabajo ideal para que los talentos tecnológicos desarrollen sus carreras.',
+    'about.coreValues': 'Valores fundamentales',
+    'about.coreValuesDesc': 'Los valores que forman nuestra cultura y guían todas nuestras actividades',
+    'about.value1': 'Calidad',
+    'about.value1Desc': 'Poner la calidad del producto y servicio en primer lugar, mejorando continuamente para lograr la excelencia',
+    'about.value2': 'Innovación',
+    'about.value2Desc': 'Fomentar el pensamiento creativo, atreverse a experimentar con nuevas ideas y tecnologías avanzadas',
+    'about.value3': 'Colaboración',
+    'about.value3Desc': 'Construir relaciones de asociación duraderas basadas en el respeto y la cooperación mutuamente beneficiosa',
+    'about.value4': 'Responsabilidad',
+    'about.value4Desc': 'Trabajar con un alto sentido de responsabilidad, comprometidos a cumplir todos los compromisos con los clientes',
+    
+    // Contact page
+    'contact.title': 'Contacta con nosotros',
+    'contact.subtitle': 'Contacta con nosotros para recibir asesoramiento sobre la solución más adecuada para tu empresa.',
+    'contact.pageTitle': 'Contacta con nosotros',
+    'contact.pageSubtitle': 'Contacta con nosotros para recibir asesoramiento sobre la solución más adecuada para tu empresa.',
+    'contact.sendMessage': 'Envíanos un mensaje',
+    'contact.yourName': 'Tu nombre completo',
+    'contact.yourEmail': 'Tu correo electrónico',
+    'contact.yourPhone': 'Número de teléfono',
+    'contact.yourCompany': 'Empresa',
+    'contact.serviceInterest': 'Servicio que te interesa',
+    'contact.selectService': '-- Seleccionar servicio --',
+    'contact.softwareDev': 'Desarrollo de software',
+    'contact.cloudServices': 'Servicios en la nube',
+    'contact.consulting': 'Consultoría tecnológica',
+    'contact.techSupport': 'Soporte técnico',
+    'contact.other': 'Otro',
+    'contact.message': 'Mensaje',
+    'contact.send': 'Enviar mensaje',
+    'contact.sending': 'Enviando...',
+    'contact.info': 'Información de contacto'
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
   }
 };
 
@@ -2455,15 +2636,22 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
   // Load saved language from localStorage on mount
   useEffect(() => {
+<<<<<<< HEAD
     const savedLanguage = localStorage.getItem('language');
+=======
+    const savedLanguage = localStorage.getItem('language') as Language;
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage);
     }
   }, []);
 
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
     localStorage.setItem('language', lang);
+<<<<<<< HEAD
+=======
+    setLanguageState(lang);
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
   };
 
   const t = (key: string, params?: Record<string, any>): string => {

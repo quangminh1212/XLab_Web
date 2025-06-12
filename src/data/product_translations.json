@@ -42,5 +42,49 @@
       },
       "options": "Options"
     }
+  },
+  "es": {
+    "chatgpt": {
+      "name": "ChatGPT",
+      "description": "<p style=\"margin-bottom: 1rem; font-size: 18px;\">ChatGPT es un potente chatbot de IA actualmente disponible. Puede responder a una amplia variedad de preguntas tanto en inglés como en vietnamita. Puede brindar soporte de programación desde Front-end hasta Back-end. Además, las cuentas de ChatGPT pueden responder a muchos tipos diferentes de preguntas, incluidas las relacionadas con conocimiento, cultura, sociedad y otros campos.</p>",
+      "shortDescription": "ChatGPT es un chatbot de IA potente, capaz de responder a muchas preguntas en inglés y vietnamita, ayudando con el desarrollo desde Front-end hasta Back-end.",
+      "features": [
+        "Todos los efectos premium y herramientas de edición avanzadas",
+        "Exportaciones de video ilimitadas con resolución 4K",
+        "Sin marca de agua",
+        "Biblioteca completa de efectos y sonidos con actualizaciones regulares",
+        "Se puede usar tanto en dispositivos móviles como en computadoras",
+        "Soporte técnico prioritario 24/7",
+        "Acceso inmediato a nuevas funciones cuando se lanzan",
+        "Garantía de devolución de dinero de 30 días",
+        "Soporte de sincronización en la nube ilimitado",
+        "Ahorra más del 70% en comparación con la compra mensual"
+      ],
+      "productOptions": {
+        "Full - Dùng riêng - 1 Tháng": "Completo - Uso privado - 1 Mes"
+      },
+      "options": "Opciones"
+    },
+    "grok": {
+      "name": "Grok",
+      "description": "<p>Grok IA te ayuda a procesar y analizar datos rápidamente, apoyando la toma de decisiones precisas y ahorrando tiempo. Se puede aplicar ampliamente en muchos campos.</p>",
+      "shortDescription": "Grok IA ayuda a analizar y procesar datos a gran velocidad, asistiendo en la toma de decisiones precisas y ahorrando tiempo. Ampliamente aplicable en muchos campos.",
+      "features": [
+        "Análisis de datos en tiempo real",
+        "Procesamiento rápido de grandes conjuntos de datos",
+        "Capacidades de conversación en lenguaje natural",
+        "Asistencia en investigación",
+        "Herramientas de generación de contenido",
+        "Actualizaciones regulares del modelo",
+        "Acceso API para desarrolladores",
+        "Visualización avanzada de datos"
+      ],
+      "productOptions": {
+        "Full - Dùng riêng - 1 Tháng": "Completo - Uso privado - 1 Mes",
+        "Full - Dùng riêng - 3 Tháng": "Completo - Uso privado - 3 Meses",
+        "Full - Dùng riêng - 6 Tháng": "Completo - Uso privado - 6 Meses"
+      },
+      "options": "Opciones"
+    }
   }
 } 

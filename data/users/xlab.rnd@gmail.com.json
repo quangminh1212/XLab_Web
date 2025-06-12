@@ -8,7 +8,11 @@
     "isActive": true,
     "balance": 57000,
     "createdAt": "2025-05-29T20:16:59.995Z",
+<<<<<<< HEAD
     "updatedAt": "2025-06-12T10:03:53.755Z",
+=======
+    "updatedAt": "2025-06-12T14:59:59.608Z",
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     "lastLogin": "2025-05-29T20:16:59.995Z"
   },
   "transactions": [],
@@ -34,7 +38,11 @@
     "theme": "light"
   },
   "metadata": {
+<<<<<<< HEAD
     "lastUpdated": "2025-06-12T10:03:53.758Z",
+=======
+    "lastUpdated": "2025-06-12T14:59:59.611Z",
+>>>>>>> a4060eb998188ab3e088647752a5818a316f642c
     "version": "1.0"
   }
 }
