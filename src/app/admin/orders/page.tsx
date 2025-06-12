@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import withAdminAuth from '@/components/withAdminAuth';
 import { Order, OrderStats } from '@/models/OrderModel';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -21,6 +22,7 @@ function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [timeFilter, setTimeFilter] = useState<string>('all');
+  const { language } = useLanguage();
 
   // Giả lập dữ liệu đơn hàng
   useEffect(() => {
@@ -133,15 +135,15 @@ function OrdersPage() {
   const getStatusName = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'Chờ xử lý';
+        return language === 'vi' ? 'Chờ xử lý' : 'Pending';
       case 'processing':
-        return 'Đang xử lý';
+        return language === 'vi' ? 'Đang xử lý' : 'Processing';
       case 'completed':
-        return 'Hoàn thành';
+        return language === 'vi' ? 'Hoàn thành' : 'Completed';
       case 'cancelled':
-        return 'Đã hủy';
+        return language === 'vi' ? 'Đã hủy' : 'Cancelled';
       case 'refunded':
-        return 'Hoàn tiền';
+        return language === 'vi' ? 'Hoàn tiền' : 'Refunded';
       default:
         return status;
     }
@@ -168,7 +170,9 @@ function OrdersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>
+        <h1 className="text-2xl font-bold">
+          {language === 'vi' ? 'Quản lý đơn hàng' : 'Order Management'}
+        </h1>
         <div className="flex space-x-3">
           <Link
             href="/orders/history"
@@ -192,7 +196,7 @@ function OrdersPage() {
                 clipRule="evenodd"
               />
             </svg>
-            Xem trang khách hàng
+            {language === 'vi' ? 'Xem trang khách hàng' : 'View customer page'}
           </Link>
           <Link
             href="/admin"
@@ -206,47 +210,56 @@ function OrdersPage() {
             >
               <path
                 fillRule="evenodd"
-                d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+                d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z"
                 clipRule="evenodd"
               />
             </svg>
-            Quay lại Dashboard
+            {language === 'vi' ? 'Quay lại Dashboard' : 'Back to Dashboard'}
           </Link>
         </div>
       </div>
 
-      {/* Thống kê */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Tổng đơn hàng</h3>
-          <p className="mt-2 text-3xl font-bold">{stats.total}</p>
+      {/* Thống kê đơn hàng */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+          <h3 className="text-gray-500 text-sm font-medium mb-1">
+            {language === 'vi' ? 'Tổng đơn hàng' : 'Total Orders'}
+          </h3>
+          <p className="text-3xl font-bold">{stats.total}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Đơn hoàn thành</h3>
-          <p className="mt-2 text-3xl font-bold text-green-600">{stats.completed}</p>
+
+        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+          <h3 className="text-gray-500 text-sm font-medium mb-1">
+            {language === 'vi' ? 'Đơn chờ xử lý' : 'Pending Orders'}
+          </h3>
+          <p className="text-3xl font-bold text-yellow-500">{stats.pending}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Đơn đang xử lý</h3>
-          <p className="mt-2 text-3xl font-bold text-blue-600">
-            {stats.pending + stats.processing}
-          </p>
+
+        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+          <h3 className="text-gray-500 text-sm font-medium mb-1">
+            {language === 'vi' ? 'Hoàn thành' : 'Completed'}
+          </h3>
+          <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-gray-500 text-sm font-medium">Doanh thu</h3>
-          <p className="mt-2 text-3xl font-bold text-indigo-600">{formatCurrency(stats.revenue)}</p>
+
+        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+          <h3 className="text-gray-500 text-sm font-medium mb-1">
+            {language === 'vi' ? 'Doanh thu' : 'Revenue'}
+          </h3>
+          <p className="text-3xl font-bold text-blue-700">{formatCurrency(stats.revenue)}</p>
         </div>
       </div>
 
       {/* Bộ lọc và tìm kiếm */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex flex-col md:flex-row gap-4 justify-between">
+      <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-100">
+        <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <input
               type="text"
-              placeholder="Tìm kiếm theo mã đơn/tên/email..."
+              placeholder={language === 'vi' ? "Tìm kiếm theo ID, tên, email..." : "Search by ID, name, email..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
@@ -265,18 +278,18 @@ function OrdersPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex space-x-2">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">Tất cả trạng thái</option>
-              <option value="pending">Chờ xử lý</option>
-              <option value="processing">Đang xử lý</option>
-              <option value="completed">Hoàn thành</option>
-              <option value="cancelled">Đã hủy</option>
-              <option value="refunded">Hoàn tiền</option>
+              <option value="all">{language === 'vi' ? 'Tất cả trạng thái' : 'All statuses'}</option>
+              <option value="pending">{language === 'vi' ? 'Chờ xử lý' : 'Pending'}</option>
+              <option value="processing">{language === 'vi' ? 'Đang xử lý' : 'Processing'}</option>
+              <option value="completed">{language === 'vi' ? 'Hoàn thành' : 'Completed'}</option>
+              <option value="cancelled">{language === 'vi' ? 'Đã hủy' : 'Cancelled'}</option>
+              <option value="refunded">{language === 'vi' ? 'Hoàn tiền' : 'Refunded'}</option>
             </select>
 
             <select
@@ -284,210 +297,137 @@ function OrdersPage() {
               onChange={(e) => setTimeFilter(e.target.value)}
               className="py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              <option value="all">Tất cả thời gian</option>
-              <option value="today">Hôm nay</option>
-              <option value="thisWeek">Tuần này</option>
-              <option value="thisMonth">Tháng này</option>
+              <option value="all">{language === 'vi' ? 'Tất cả thời gian' : 'All time'}</option>
+              <option value="today">{language === 'vi' ? 'Hôm nay' : 'Today'}</option>
+              <option value="thisWeek">{language === 'vi' ? 'Tuần này' : 'This week'}</option>
+              <option value="thisMonth">{language === 'vi' ? 'Tháng này' : 'This month'}</option>
             </select>
           </div>
         </div>
       </div>
 
       {/* Danh sách đơn hàng */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
           </div>
         ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Mã đơn hàng
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Khách hàng
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Sản phẩm
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Trạng thái
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Tổng tiền
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Thời gian
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Tác vụ
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredOrders.map((order) => (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {language === 'vi' ? 'Mã đơn hàng' : 'Order ID'}
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {language === 'vi' ? 'Khách hàng' : 'Customer'}
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {language === 'vi' ? 'Ngày đặt' : 'Date'}
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {language === 'vi' ? 'Tổng tiền' : 'Total'}
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {language === 'vi' ? 'Phương thức' : 'Payment Method'}
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {language === 'vi' ? 'Trạng thái' : 'Status'}
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {language === 'vi' ? 'Hành động' : 'Actions'}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredOrders.length > 0 ? (
+                  filteredOrders.map((order) => (
                     <tr key={order.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{order.id}</div>
+                        <div className="text-xs text-gray-500">
+                          {language === 'vi' ? 'Sản phẩm: ' : 'Products: '}{order.items.length}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{order.userName}</div>
                         <div className="text-sm text-gray-500">{order.userEmail}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">
-                          {order.items.map((item, index) => (
-                            <div key={index} className="mb-1">
-                              {item.productName} x{item.quantity}
-                            </div>
-                          ))}
-                        </div>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(order.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{formatCurrency(order.totalAmount)}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {order.paymentMethod === 'credit_card' 
+                          ? (language === 'vi' ? 'Thẻ' : 'Card') 
+                          : order.paymentMethod === 'bank_transfer' 
+                            ? (language === 'vi' ? 'Chuyển khoản' : 'Bank Transfer') 
+                            : order.paymentMethod === 'momo' || order.paymentMethod === 'zalopay'
+                              ? order.paymentMethod.toUpperCase()
+                              : order.paymentMethod === 'cash'
+                                ? (language === 'vi' ? 'Tiền mặt' : 'Cash')
+                                : order.paymentMethod}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}
+                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                            order.status
+                          )}`}
                         >
                           {getStatusName(order.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatCurrency(order.totalAmount)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(order.createdAt)}
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button className="text-indigo-600 hover:text-indigo-900 mr-3">
-                          Chi tiết
-                        </button>
-                        {(order.status === 'pending' || order.status === 'processing') && (
-                          <button className="text-green-600 hover:text-green-900 mr-3">
-                            Hoàn thành
+                        <Link href={`/orders/${order.id}`} className="text-indigo-600 hover:text-indigo-900 mr-3">
+                          {language === 'vi' ? 'Xem' : 'View'}
+                        </Link>
+                        {order.status === 'pending' && (
+                          <button className="text-green-600 hover:text-green-900 ml-2">
+                            {language === 'vi' ? 'Duyệt' : 'Approve'}
                           </button>
                         )}
-                        {order.status === 'pending' && (
-                          <button className="text-red-600 hover:text-red-900">Hủy</button>
+                        {(order.status === 'pending' || order.status === 'processing') && (
+                          <button className="text-red-600 hover:text-red-900 ml-2">
+                            {language === 'vi' ? 'Hủy' : 'Cancel'}
+                          </button>
                         )}
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {filteredOrders.length === 0 && (
-              <div className="py-12 text-center text-gray-500">
-                {orders.length === 0 ? (
-                  <>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-12 h-12 mx-auto mb-4 text-gray-400"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
-                      />
-                    </svg>
-                    <p className="text-lg font-medium mb-2">Chưa có đơn hàng nào</p>
-                    <p className="mb-4">Hiện tại chưa có đơn hàng nào được tạo trong hệ thống.</p>
-                    <Link
-                      href="/admin"
-                      className="inline-flex items-center text-primary-600 hover:text-primary-700"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-4 h-4 mr-1"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                        />
-                      </svg>
-                      Quay lại bảng điều khiển
-                    </Link>
-                  </>
+                  ))
                 ) : (
-                  <>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-12 h-12 mx-auto mb-4 text-gray-400"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                      />
-                    </svg>
-                    <p className="text-lg font-medium mb-2">Không tìm thấy đơn hàng</p>
-                    <p className="mb-4">Không tìm thấy đơn hàng nào phù hợp với bộ lọc đã chọn.</p>
-                    <button
-                      onClick={() => {
-                        setSearchTerm('');
-                        setStatusFilter('all');
-                        setTimeFilter('all');
-                      }}
-                      className="inline-flex items-center text-primary-600 hover:text-primary-700"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-4 h-4 mr-1"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                        />
-                      </svg>
-                      Xóa bộ lọc
-                    </button>
-                  </>
+                  <tr>
+                    <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
+                      {language === 'vi' ? 'Không tìm thấy đơn hàng nào' : 'No orders found'}
+                    </td>
+                  </tr>
                 )}
-              </div>
-            )}
-          </>
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
