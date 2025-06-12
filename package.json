@@ -14,6 +14,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "clean": "rimraf .next node_modules/.cache && npm cache clean --force",
     "fix": "node scripts/fix-next-errors.js",
     "fix:security": "node scripts/fix-security-issues.js",
@@ -24,9 +25,19 @@
     "analyze": "cross-env ANALYZE=true next build",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:ci": "jest --ci --coverage",
     "check": "npm run lint && npm run type-check",
     "prepare": "node scripts/fix-next-errors.js",
-    "postinstall": "node scripts/fix-next-errors.js"
+    "postinstall": "node scripts/fix-next-errors.js",
+    "validate": "npm run lint && npm run format:check && npm run type-check && npm run test",
+    "precommit": "lint-staged",
+    "postbuild": "next-sitemap",
+    "find:unused": "next-unused",
+    "find:deadcode": "ts-prune",
+    "find:circular": "madge --circular --extensions ts,tsx,js,jsx src",
+    "security": "npm audit --production",
+    "upgrade:deps": "npm-check-updates -u && npm install",
+    "optimize:images": "next-image-export-optimizer"
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "15.3.2",
@@ -59,6 +70,9 @@
     "@next/swc-win32-x64-msvc": "15.2.4",
     "@tailwindcss/forms": "0.5.7",
     "@tailwindcss/typography": "0.5.10",
+    "@testing-library/jest-dom": "^6.4.3",
+    "@testing-library/react": "^14.2.2",
+    "@testing-library/user-event": "^14.5.2",
     "@types/draft-js": "0.11.18",
     "@types/node": "20.10.5",
     "@types/react": "18.2.45",
@@ -72,17 +86,28 @@
     "eslint": "9.0.0",
     "eslint-config-next": "15.2.4",
     "eslint-config-prettier": "10.1.5",
+    "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jest": "^27.9.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^9.0.11",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.2",
+    "madge": "^6.1.0",
+    "next-router-mock": "^0.9.12",
+    "next-sitemap": "^4.2.3",
+    "next-unused": "^0.0.6",
     "postcss": "8.4.32",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "rimraf": "5.0.5",
     "sharp": "0.33.5",
     "tailwindcss": "3.4.0",
+    "ts-prune": "^0.10.3",
     "typescript": "5.3.3",
     "webpack": "5.92.0",
+    "webpack-bundle-analyzer": "^4.10.1",
     "webpack-manifest-plugin": "5.0.1"
   },
   "resolutions": {
@@ -100,5 +125,28 @@
   "description": "",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
+  "next-unused": {
+    "alias": {
+      "@": "src"
+    },
+    "include": [
+      "src"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+    "entrypoints": [
+      "src/app"
+    ]
   }
 }

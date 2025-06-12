@@ -4,9 +4,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.0-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![ESLint](https://img.shields.io/badge/ESLint-9.0.0-4B32C3?style=flat&logo=eslint)](https://eslint.org/)
+[![Prettier](https://img.shields.io/badge/Prettier-3.5.3-F7B93E?style=flat&logo=prettier)](https://prettier.io/)
+[![Jest](https://img.shields.io/badge/Jest-29.7.0-C21325?style=flat&logo=jest)](https://jestjs.io/)
 [![License](https://img.shields.io/badge/license-ISC-green?style=flat)](LICENSE)
 
-> Web application for software products and services marketplace
+> Web application for software products and services marketplace - Tối ưu theo chuẩn quốc tế
 
 ## 📋 Table of Contents
 
@@ -15,9 +17,13 @@
 - [Technologies](#-technologies)
 - [Getting Started](#-getting-started)
 - [Development](#-development)
+- [Code Standards](#-code-standards)
+- [Testing](#-testing)
 - [Deployment](#-deployment)
 - [Authentication](#-authentication)
 - [Performance Optimizations](#-performance-optimizations)
+- [Continuous Integration](#-continuous-integration)
+- [Security](#-security)
 - [License](#-license)
 
 ## ✨ Features
@@ -30,6 +36,9 @@
 - **Responsive Design**: Optimized for all device sizes
 - **Internationalization**: Support for multiple languages (Vietnamese and English)
 - **SEO Optimized**: Built with SEO best practices
+- **Performance Optimized**: Fast loading with optimized assets and code splitting
+- **Accessibility Compliant**: WCAG 2.1 AA compliant
+- **Security Best Practices**: Implemented security headers and protection mechanisms
 
 ## 🏗️ Project Structure
 
@@ -91,13 +100,17 @@ import { formatCurrency } from '@/shared/utils';
 
 - **Development Tools**:
   - [ESLint 9](https://eslint.org/) - Code linting
-  - [Prettier](https://prettier.io/) - Code formatting
+  - [Prettier 3](https://prettier.io/) - Code formatting
+  - [Jest 29](https://jestjs.io/) - Unit & integration testing
+  - [Testing Library](https://testing-library.com/) - Component testing
+  - [Husky](https://typicode.github.io/husky/) - Git hooks
+  - [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) - Performance monitoring
 
 ## 🏁 Getting Started
 
 ### Prerequisites
 
-- Node.js 18.17.0 or higher
+- Node.js 18.17.0 or higher (specified in .nvmrc)
 - npm, yarn, or pnpm
 
 ### Installation
@@ -148,8 +161,18 @@ npm run dev
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues
 - `npm run format` - Format with Prettier
+- `npm run format:check` - Check formatting
 - `npm run type-check` - Run TypeScript checks
 - `npm run analyze` - Analyze bundle size
+- `npm run test` - Run Jest tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:ci` - Run tests for CI
+- `npm run validate` - Run all checks (lint, format, type, test)
+- `npm run find:unused` - Find unused exports/files
+- `npm run find:deadcode` - Find dead code
+- `npm run find:circular` - Find circular dependencies
+- `npm run security` - Run security audit
+- `npm run optimize:images` - Optimize images
 
 ### Development Guidelines
 
@@ -167,6 +190,69 @@ npm run dev
    - Follow ESLint and Prettier configuration
    - Use explicit return types for functions
    - Document complex logic with comments
+
+## 📏 Code Standards
+
+We follow international coding standards:
+
+### TypeScript
+
+- Strict mode enabled
+- No implicit any
+- Explicit function return types
+- Proper nullability handling
+- Type imports separated from value imports
+
+### ESLint
+
+- Extended configs:
+  - next/core-web-vitals
+  - plugin:@typescript-eslint/recommended
+  - plugin:import/recommended
+  - prettier
+
+### Prettier
+
+- Single quotes
+- 2 space indentation
+- 100 character line length
+- ES5 trailing commas
+- Sorted imports with separate groups
+
+### Git Workflow
+
+- Conventional commits format
+- Pre-commit hooks with Husky
+- Lint and format checks before commit
+- No direct commits to main branch
+
+## 🧪 Testing
+
+### Testing Strategy
+
+- Unit tests for utilities and hooks
+- Component tests with React Testing Library
+- Integration tests for critical flows
+- E2E tests for core user journeys
+
+### Running Tests
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:ci
+```
+
+### Test Coverage Goals
+
+- 70%+ code coverage for critical paths
+- Focus on business logic and user interactions
+- Mocked external dependencies
 
 ## 📦 Deployment
 
@@ -187,6 +273,7 @@ npm run start
 - Set `NODE_ENV=production` for production environments
 - Use proper `NEXTAUTH_URL` for authentication callback
 - Configure CDN if applicable using `ASSET_PREFIX`
+- Set proper Content Security Policy headers
 
 ## 🔐 Authentication
 
@@ -216,11 +303,40 @@ Routes can be protected using middleware:
 
 ## ⚡ Performance Optimizations
 
-- **Image Optimization**: Using Next.js Image component with WebP/AVIF formats
+- **Image Optimization**: Using Next.js Image component with WebP/AVIF formats and responsive sizes
 - **Code Splitting**: Automatic code splitting by pages and dynamic imports
 - **Server Components**: Using React Server Components for better performance
-- **Caching**: Implementing proper cache strategies
+- **Caching**: Implementing proper cache strategies with Cache-Control headers
 - **Bundle Analysis**: Regular bundle size monitoring with `npm run analyze`
+- **Chunk Optimization**: Vendor and framework chunks separated for better caching
+- **Font Optimization**: Preloaded and subset fonts
+- **CSS Optimization**: Purge unused CSS with Tailwind
+- **Core Web Vitals**: Optimized for all Core Web Vitals metrics
+
+## 🔄 Continuous Integration
+
+We use a robust CI/CD pipeline:
+
+- **Code Quality**: ESLint, TypeScript, and Prettier checks
+- **Testing**: Automated tests with Jest
+- **Performance**: Lighthouse CI for performance regression testing
+- **Security**: Dependency scanning and security checks
+- **Build Verification**: Verify production build completes successfully
+
+## 🔒 Security
+
+Security is a top priority:
+
+- **Content Security Policy**: Strict CSP implemented
+- **HTTPS Only**: All communication over HTTPS
+- **Secure Headers**: X-Frame-Options, X-Content-Type-Options, etc.
+- **Input Validation**: All user input validated server-side
+- **Dependency Scanning**: Regular security audits
+- **Authentication**: Secure session management with NextAuth.js
+- **XSS Protection**: React's built-in protection + extra measures
+- **CSRF Protection**: Built-in protection with Next.js
+
+For more details, see our [Security Policy](SECURITY.md).
 
 ## 📄 License
 
