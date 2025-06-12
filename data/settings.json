@@ -1,0 +1,35 @@
+{
+  "site": {
+    "siteName": "XLab Shop",
+    "siteDescription": "Cửa hàng bán sản phẩm công nghệ",
+    "logoUrl": "/images/logo.png",
+    "faviconUrl": "/images/favicon.ico",
+    "contactEmail": "xlab.rnd@gmail.com",
+    "contactPhone": "0866528014",
+    "address": "Long Biên, Hà Nội"
+  },
+  "payment": {
+    "enableMomo": false,
+    "enableZalopay": false,
+    "enableBankTransfer": true,
+    "enableCreditCard": false,
+    "bankName": "BIDV",
+    "bankAccountName": "CÔNG TY TNHH XLAB",
+    "bankAccountNumber": "12345678901234",
+    "bankBranch": "TP.HCM"
+  },
+  "email": {
+    "smtpServer": "xlab.rnd@gmail.com",
+    "smtpPort": 587,
+    "smtpUsername": "",
+    "smtpPassword": "",
+    "senderEmail": "xlab.rnd@gmail.com",
+    "senderName": "XLab Shop",
+    "enableEmailNotification": false
+  },
+  "maintenanceMode": false,
+  "disableRegistration": false,
+  "disableCheckout": false,
+  "lastUpdated": "2025-06-12T08:22:11.821Z",
+  "updatedBy": "xlab.rnd@gmail.com"
+}
