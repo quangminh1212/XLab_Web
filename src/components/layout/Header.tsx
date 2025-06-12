@@ -33,7 +33,7 @@ interface PublicCoupon {
 const Header = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
@@ -330,64 +330,6 @@ const Header = () => {
     { href: '/bao-hanh', label: t('nav.warranty') },
   ];
 
-  const getCouponTranslatedName = (code: string, name: string) => {
-    // Danh sách các tên coupon đã biết theo hai ngôn ngữ
-    const couponNames: Record<string, Record<'vi' | 'en', string>> = {
-      'welcome50': {
-        vi: 'Ưu đãi chào mừng thành viên mới',
-        en: 'Welcome Offer for New Members'
-      },
-      'xlabrnd10': {
-        vi: 'Giảm giá đặc biệt 10%',
-        en: 'Special 10% Discount'
-      },
-      'member100k': {
-        vi: 'Giảm 100K cho thành viên',
-        en: '100K Discount for Members'
-      },
-      'summer2024': {
-        vi: 'Khuyến mãi mùa hè 2024',
-        en: 'Summer 2024 Promotion'
-      },
-      'newuser': {
-        vi: 'Ưu đãi người dùng mới',
-        en: 'New User Offer'
-      }
-    };
-    
-    // Nếu có bản dịch sẵn cho mã này, sử dụng nó, ngược lại giữ nguyên tên
-    return couponNames[code]?.[language as 'vi' | 'en'] || name;
-  };
-
-  const getCouponTranslatedDescription = (code: string, description?: string) => {
-    // Danh sách các mô tả coupon đã biết theo hai ngôn ngữ
-    const couponDescriptions: Record<string, Record<'vi' | 'en', string>> = {
-      'welcome50': {
-        vi: 'Giảm giá 50% cho thành viên mới tham gia',
-        en: '50% discount for new members'
-      },
-      'xlabrnd10': {
-        vi: 'Giảm giá 10% cho tất cả các sản phẩm XLab',
-        en: '10% off all XLab products'
-      },
-      'member100k': {
-        vi: 'Giảm 100.000đ cho tất cả thành viên khi mua sản phẩm từ 500.000đ',
-        en: '100,000 VND off for all members on orders over 500,000 VND'
-      },
-      'summer2024': {
-        vi: 'Giảm giá đặc biệt cho mùa hè năm 2024',
-        en: 'Special discount for summer 2024'
-      },
-      'newuser': {
-        vi: 'Dành riêng cho người dùng mới đăng ký tài khoản',
-        en: 'Exclusively for newly registered users'
-      }
-    };
-    
-    // Nếu có bản dịch sẵn cho mã này, sử dụng nó, ngược lại giữ nguyên mô tả
-    return couponDescriptions[code]?.[language as 'vi' | 'en'] || description || '';
-  };
-
   return (
     <>
       <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -523,12 +465,12 @@ const Header = () => {
                                   </span>
                                 </div>
                                 <h4 className="text-xs sm:text-sm font-medium text-gray-900">
-                                  {getCouponTranslatedName(coupon.code, coupon.name)}
+                                  {coupon.name}
                                 </h4>
                                 {coupon.description && (
                                   <div className="flex justify-between items-center mt-1">
                                     <p className="text-xs text-gray-600 line-clamp-2">
-                                      {getCouponTranslatedDescription(coupon.code, coupon.description)}
+                                      {coupon.description}
                                     </p>
                                     {coupon.userUsage && coupon.userUsage.limit > 0 && (
                                       <span className="text-xs font-medium text-teal-600">

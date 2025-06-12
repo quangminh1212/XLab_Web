@@ -42,25 +42,5 @@
       },
       "options": "Options"
     }
-  },
-  "vi": {
-    "chatgpt": {
-      "name": "ChatGPT",
-      "shortDescription": "ChatGPT là một chatbot AI mạnh mẽ có khả năng trả lời nhiều loại câu hỏi khác nhau bằng cả tiếng Anh và tiếng Việt, hỗ trợ lập trình từ Front-end đến Back-end.",
-      "productOptions": {
-        "Full - Private Use - 1 Month": "Full - Dùng riêng - 1 Tháng"
-      },
-      "options": "Tùy chọn"
-    },
-    "grok": {
-      "name": "Grok",
-      "shortDescription": "Grok AI là hệ thống thông minh có khả năng xử lý và phân tích dữ liệu nhanh chóng, hỗ trợ nghiên cứu và tạo nội dung.",
-      "productOptions": {
-        "Full - Private Use - 1 Month": "Full - Dùng riêng - 1 Tháng",
-        "Full - Private Use - 3 Months": "Full - Dùng riêng - 3 Tháng",
-        "Full - Private Use - 6 Months": "Full - Dùng riêng - 6 Tháng"
-      },
-      "options": "Tùy chọn"
-    }
   }
 } 
