@@ -746,11 +746,23 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.disableCheckout': 'Tạm ngừng thanh toán',
     'admin.settings.saving': 'Đang lưu...',
     'admin.settings.saveButton': 'Lưu cài đặt',
+    
+    // Coupon names and descriptions
+    'coupon.welcome50': 'Ưu đãi chào mừng thành viên mới',
+    'coupon.welcome50.description': 'Giảm giá 50% cho thành viên mới tham gia',
+    'coupon.xlabrnd10': 'Giảm giá đặc biệt 10%',
+    'coupon.xlabrnd10.description': 'Giảm giá 10% cho tất cả các sản phẩm XLab',
+    'coupon.member100k': 'Giảm 100K cho thành viên',
+    'coupon.member100k.description': 'Giảm 100.000đ cho tất cả thành viên khi mua sản phẩm từ 500.000đ',
+    'coupon.summer2024': 'Khuyến mãi mùa hè 2024',
+    'coupon.summer2024.description': 'Giảm giá đặc biệt cho mùa hè năm 2024',
+    'coupon.newuser': 'Ưu đãi người dùng mới',
+    'coupon.newuser.description': 'Dành riêng cho người dùng mới đăng ký tài khoản',
   },
   en: {
     // Admin Notifications
     'admin.notifications.title': 'Notification Management',
-    'admin.notifications.list': 'Notifications List',
+    'admin.notifications.list': 'Notification List',
     'admin.notifications.edit': 'Edit',
     'admin.notifications.settings': 'Settings',
     'admin.notifications.create': 'Create New Notification',
@@ -764,8 +776,8 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.notifications.priority.medium': 'Medium',
     'admin.notifications.priority.low': 'Low',
     'admin.notifications.created': 'Created',
-    'admin.notifications.readCount': 'Read by',
-    'admin.notifications.sentTo': 'Sent to',
+    'admin.notifications.readCount': 'Read Count',
+    'admin.notifications.sentTo': 'Sent To',
     'admin.notifications.expires': 'Expires',
     'admin.notifications.viewDetails': 'View Details',
     'admin.notifications.editBtn': 'Edit',
@@ -1214,8 +1226,6 @@ const translations: Record<Language, Record<string, string>> = {
     'coupon.welcome50': 'New Member Welcome',
     'coupon.xlabrnd10': 'Exclusive 10% Discount',
     'coupon.member100k': '100K Member Discount',
-    'account.purchasedProducts': 'Purchased Products',
-    'account.price': 'Price',
     'account.savingsFromSale': 'Savings from sale',
     'account.purchaseDate': 'Purchase date',
     'account.savingsFromVoucher': 'Savings from voucher',
@@ -1476,6 +1486,18 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.disableCheckout': 'Disable Checkout',
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
+    
+    // Coupon names and descriptions
+    'coupon.welcome50': 'Welcome Offer for New Members',
+    'coupon.welcome50.description': '50% discount for new members',
+    'coupon.xlabrnd10': 'Special 10% Discount',
+    'coupon.xlabrnd10.description': '10% off all XLab products',
+    'coupon.member100k': '100K Member Discount',
+    'coupon.member100k.description': '100,000 VND off for all members on orders over 500,000 VND',
+    'coupon.summer2024': 'Summer 2024 Promotion',
+    'coupon.summer2024.description': 'Special discount for summer 2024',
+    'coupon.newuser': 'New User Offer',
+    'coupon.newuser.description': 'Exclusively for newly registered users',
   },
 };
 
@@ -1507,15 +1529,26 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
         return '';
       }
       
-      // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-      let text = translations[language]?.[key] || key;
+      // Lấy chuỗi dịch hoặc trả về default nếu không tìm thấy
+      let text = translations[language]?.[key];
+      
+      // Nếu không tìm thấy key và có default trong params, trả về default
+      if (!text && params?.default) {
+        text = params.default;
+      } else if (!text) {
+        // Nếu không có default, trả về key
+        text = key;
+      }
       
       // Thay thế tham số nếu có
       if (params && typeof params === 'object' && Object.keys(params).length > 0) {
         Object.entries(params).forEach(([param, value]) => {
-          const regex = new RegExp(`\\{${param}\\}`, 'g');
-          const strValue = convertValueToString(value, param);
-          text = text.replace(regex, strValue);
+          // Bỏ qua param 'default' vì đã xử lý ở trên
+          if (param !== 'default') {
+            const regex = new RegExp(`\\{${param}\\}`, 'g');
+            const strValue = convertValueToString(value, param);
+            text = text.replace(regex, strValue);
+          }
         });
       }
       
