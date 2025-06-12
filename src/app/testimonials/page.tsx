@@ -157,44 +157,59 @@ export default function TestimonialsPage() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-16">
-      <div className="bg-gradient-to-r from-primary-600 to-primary-700 py-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('testimonials.pageTitle')}</h1>
-          <p className="text-primary-100 max-w-2xl mx-auto">{t('testimonials.pageSubtitle')}</p>
+    <div className="bg-gradient-to-b from-gray-50 to-white">
+      {/* Page Header */}
+      <section className="bg-gradient-to-r from-primary-700 to-primary-500 text-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+              {t('testimonials.pageTitle')}
+            </h1>
+            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+              {t('testimonials.pageSubtitle')}
+            </p>
+          </div>
         </div>
-      </div>
-      
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex p-1 bg-gray-100 rounded-lg">
+      </section>
+
+      {/* Tabs */}
+      <section className="py-8 border-b border-gray-200 sticky top-0 bg-white z-10 shadow-sm">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex justify-center">
               <button
-                className={`py-2 px-4 rounded-lg ${
+                className={`px-8 py-4 font-medium text-sm sm:text-base rounded-t-lg transition-all duration-300 ${
                   activeTab === 'clients'
-                    ? 'bg-white shadow-sm text-primary-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                    : 'text-gray-500 hover:text-primary-500 hover:bg-gray-50'
                 }`}
                 onClick={() => setActiveTab('clients')}
+                type="button"
               >
                 {t('testimonials.clientsTab')}
               </button>
               <button
-                className={`py-2 px-4 rounded-lg ${
+                className={`px-8 py-4 font-medium text-sm sm:text-base rounded-t-lg transition-all duration-300 ${
                   activeTab === 'case-studies'
-                    ? 'bg-white shadow-sm text-primary-600'
-                    : 'text-gray-500 hover:text-gray-700'
+                    ? 'text-primary-600 border-b-2 border-primary-600 bg-white'
+                    : 'text-gray-500 hover:text-primary-500 hover:bg-gray-50'
                 }`}
                 onClick={() => setActiveTab('case-studies')}
+                type="button"
               >
                 {t('testimonials.caseStudiesTab')}
               </button>
             </div>
           </div>
+        </div>
+      </section>
 
+      {/* Content */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
           {activeTab === 'clients' && (
-            <div className="space-y-16 animate-fadeIn">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+            <div className="animate-fadeIn">
+              <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
                 {testimonials.map((testimonial) => (
                   <div
                     key={testimonial.id}
@@ -247,78 +262,62 @@ export default function TestimonialsPage() {
               </div>
 
               {/* Testimonial Video */}
-              <div className="mt-20">
-                <h2 className="text-2xl font-bold text-center mb-3 text-gray-900">{t('testimonials.videoTitle')}</h2>
-                <p className="text-gray-600 text-center max-w-2xl mx-auto mb-10">
-                  {t('testimonials.videoSubtitle')}
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Video 1 */}
-                  <div className="bg-gray-100 rounded-xl overflow-hidden shadow-md">
-                    <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center">
-                      <div className="text-center p-6">
-                        <svg
-                          className="w-20 h-20 mx-auto text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="font-semibold text-lg mb-2">Nguyễn Văn An - TechViet Solutions</h3>
-                      <p className="text-gray-600 text-sm">
-                        Giám đốc điều hành chia sẻ về quá trình chuyển đổi số với XLab
-                      </p>
-                    </div>
-                  </div>
+              <div className="mt-24">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl font-bold mb-4">{t('testimonials.videoTitle')}</h2>
+                  <p className="text-gray-600 max-w-3xl mx-auto">
+                    {t('testimonials.videoSubtitle')}
+                  </p>
+                </div>
 
-                  {/* Video 2 */}
-                  <div className="bg-gray-100 rounded-xl overflow-hidden shadow-md">
-                    <div className="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center">
-                      <div className="text-center p-6">
-                        <svg
-                          className="w-20 h-20 mx-auto text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="font-semibold text-lg mb-2">Global Commerce - Case Study</h3>
-                      <p className="text-gray-600 text-sm">
-                        Tăng trưởng doanh thu 150% nhờ nền tảng thương mại điện tử đa kênh
-                      </p>
-                    </div>
+                <div className="relative aspect-video max-w-4xl mx-auto shadow-xl rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-900/60 to-gray-900/40 flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-20 w-20 text-white opacity-80"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  {/* Placeholder for video - in production, replace with actual video component */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <button
+                      className="rounded-full bg-primary-600 bg-opacity-90 p-5 text-white hover:bg-opacity-100 transition-all transform hover:scale-110"
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        console.log('Video play button clicked');
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-12 w-12"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -409,21 +408,25 @@ export default function TestimonialsPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-        <div className="bg-primary-600 rounded-xl shadow-lg overflow-hidden">
-          <div className="p-8 md:p-12 text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">{t('testimonials.cta.title')}</h2>
-            <p className="text-primary-100 max-w-3xl mx-auto mb-8">{t('testimonials.cta.description')}</p>
+      <section className="py-20 bg-gradient-to-br from-primary-700 to-primary-600 text-white">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              {t('testimonials.cta.title')}
+            </h2>
+            <p className="text-xl mb-10 max-w-3xl mx-auto opacity-90">
+              {t('testimonials.cta.description')}
+            </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a
                 href="/contact"
-                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-lg text-primary-600 bg-white hover:bg-primary-50 transition-colors"
+                className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
               >
                 {t('testimonials.cta.contact')}
               </a>
               <a
                 href="/services"
-                className="inline-flex items-center justify-center px-5 py-3 border border-white text-base font-medium rounded-lg text-white hover:bg-primary-700 transition-colors"
+                className="border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-4 rounded-full font-semibold transition-all transform hover:-translate-y-1"
               >
                 {t('testimonials.cta.explore')}
               </a>

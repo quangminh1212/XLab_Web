@@ -79,10 +79,6 @@ next-env.d.ts
 *.user
 *.userosscache
 *.sln.docstates
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-!.vscode/launch.json
 
 # Generated files
 /*.timestamp
@@ -149,44 +145,6 @@ report.*.json
 .next/static/webpack/
 .next/trace
 
-<<<<<<< HEAD
-# Temporary files
-.temp
-.tmp
-.cache
-tmp/
-temp/
-
-# Package manager specific
-npm-debug.log
-yarn-error.log
-yarn-debug.log
-.pnpm-debug.log
-.pnpm-store/
-.npm/
-
-# OS specific
-.directory
-.Trash-*
-Thumbs.db
-ehthumbs.db
-desktop.ini
-
-# Performance related
-lighthouse-report.html
-.lighthouseci/
-
-# PWA files
-**/public/precache.*.*.js
-**/public/sw.js
-**/public/workbox-*.js
-**/public/worker-*.js
-**/public/precache-manifest.*.js
-**/public/service-worker.js
-
-# Storybook
-storybook-static/
-=======
 # Thêm các file được gen ra khi dự án đang chạy
 .next/cache/webpack/**/*
 .next/cache/webpack/*/[0-9]*.pack
@@ -199,4 +157,3 @@ storybook-static/
 .next/trace
 .next/server/middleware*
 .next/types/package.json
->>>>>>> a4060eb998188ab3e088647752a5818a316f642c

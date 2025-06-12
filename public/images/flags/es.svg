@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-=======
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
->>>>>>> a4060eb998188ab3e088647752a5818a316f642c
 <svg xmlns="http://www.w3.org/2000/svg" width="750" height="500" viewBox="0 0 750 500">
   <rect width="750" height="500" fill="#c60b1e"/>
   <rect width="750" height="250" fill="#ffc400" y="125"/>

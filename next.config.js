@@ -13,8 +13,6 @@ const nextConfig = {
     },
     optimizeCss: true,
     optimisticClientCache: true,
-    instrumentationHook: true,
-    serverComponentsExternalPackages: [],
   },
   images: {
     domains: [
@@ -36,8 +34,6 @@ const nextConfig = {
     ],
     formats: ['image/webp', 'image/avif'],
     unoptimized: process.env.NODE_ENV === 'development',
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   compiler: {
     styledComponents: true,
@@ -90,35 +86,10 @@ const nextConfig = {
               priority: -5,
               reuseExistingChunk: true,
             },
-            react: {
-              name: 'react',
-              chunks: 'all',
-              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-              priority: 10,
-              reuseExistingChunk: true,
-            },
-            framework: {
-              name: 'framework',
-              chunks: 'all',
-              test: /[\\/]node_modules[\\/](next|@next)[\\/]/,
-              priority: 20,
-              reuseExistingChunk: true,
-            },
             styles: false,
           },
         };
       }
-    }
-
-    if (process.env.ANALYZE === 'true') {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'server',
-          analyzerPort: 8888,
-          openAnalyzer: true,
-        })
-      );
     }
 
     return config;
@@ -158,38 +129,7 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
           },
-          {
-            key: 'Cache-Control',
-            value: process.env.NODE_ENV === 'production' ? 'public, max-age=31536000, immutable' : 'no-cache, no-store, must-revalidate',
-          },
         ].filter(header => header.value !== ""),
-      },
-      {
-        source: '/api/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate',
-          },
-        ],
-      },
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-      },
-      {
-        source: '/static/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
       },
     ];
   },

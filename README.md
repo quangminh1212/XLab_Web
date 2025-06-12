@@ -4,12 +4,9 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.0-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![ESLint](https://img.shields.io/badge/ESLint-9.0.0-4B32C3?style=flat&logo=eslint)](https://eslint.org/)
-[![Prettier](https://img.shields.io/badge/Prettier-3.5.3-F7B93E?style=flat&logo=prettier)](https://prettier.io/)
-[![Jest](https://img.shields.io/badge/Jest-29.7.0-C21325?style=flat&logo=jest)](https://jestjs.io/)
-[![Security](https://img.shields.io/badge/Security-AES_256-green?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMzM2IDUwOC4ybC0xNi0xNkwyMTYgMzkyIDEyOCAzMDRsLTE2IDE2TDIxNiA0MjR6TTkgNDMuN2wxMC43LTEwLjdMNjQgNzdsNTQuOS01NC45TDEyOSAzMi44TDY0IDk3LjlMMTUuMSA0OUMxMi41IDQ2LjQgOS4yIDQ0LjkgNS43IDQ0LjlTLTEgNDYuNCAtMy42IDQ5cy0yLjUgNi44LTIuNSAxMC4zIDEgNi44IDMuNiA5LjRMOSA4MC4zbC03LjEgN0MtLjYgODkuOC0yIDkyLjgtMiA5NnMxLjQgNi4yIDMuOSA4LjdsMTYgMTYgMTYtMTZMNjQgNDQuOXoiLz48L3N2Zz4=)](SECURITY.md)
 [![License](https://img.shields.io/badge/license-ISC-green?style=flat)](LICENSE)
 
-> Web application for software products and services marketplace - Tối ưu theo chuẩn quốc tế
+> Web application for software products and services marketplace
 
 ## 📋 Table of Contents
 
@@ -18,14 +15,9 @@
 - [Technologies](#-technologies)
 - [Getting Started](#-getting-started)
 - [Development](#-development)
-- [Code Standards](#-code-standards)
-- [Testing](#-testing)
 - [Deployment](#-deployment)
 - [Authentication](#-authentication)
 - [Performance Optimizations](#-performance-optimizations)
-- [Continuous Integration](#-continuous-integration)
-- [Security](#-security)
-- [Secure Data Storage System](#-secure-data-storage-system)
 - [License](#-license)
 
 ## ✨ Features
@@ -38,11 +30,6 @@
 - **Responsive Design**: Optimized for all device sizes
 - **Internationalization**: Support for multiple languages (Vietnamese and English)
 - **SEO Optimized**: Built with SEO best practices
-- **Performance Optimized**: Fast loading with optimized assets and code splitting
-- **Accessibility Compliant**: WCAG 2.1 AA compliant
-- **Security Best Practices**: Implemented security headers and protection mechanisms
-- **Encrypted User Data**: AES-256-CBC encryption for sensitive user information
-- **Session Tracking**: Secure tracking of user sessions and activities
 
 ## 🏗️ Project Structure
 
@@ -64,10 +51,6 @@ src/
 │   └── product/       # Product components
 ├── contexts/          # React contexts for state management
 ├── data/              # Data files and mock data
-│   ├── users/         # Encrypted user data (NOT committed)
-│   ├── backups/       # Automatic backups (NOT committed)
-│   ├── translations/  # i18n translations
-│   └── ...            # Other data files
 ├── lib/               # Utility libraries and helpers
 ├── models/            # Data models and schemas
 ├── scripts/           # Utility scripts
@@ -106,25 +89,15 @@ import { formatCurrency } from '@/shared/utils';
   - [NextAuth.js 4](https://next-auth.js.org/) - Authentication solution
   - Google OAuth - Social login
 
-- **Security**:
-  - AES-256-CBC encryption for user data
-  - SHA-256 checksums for data integrity
-  - Secure session management
-  - Data backup and recovery
-
 - **Development Tools**:
   - [ESLint 9](https://eslint.org/) - Code linting
-  - [Prettier 3](https://prettier.io/) - Code formatting
-  - [Jest 29](https://jestjs.io/) - Unit & integration testing
-  - [Testing Library](https://testing-library.com/) - Component testing
-  - [Husky](https://typicode.github.io/husky/) - Git hooks
-  - [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) - Performance monitoring
+  - [Prettier](https://prettier.io/) - Code formatting
 
 ## 🏁 Getting Started
 
 ### Prerequisites
 
-- Node.js 18.17.0 or higher (specified in .nvmrc)
+- Node.js 18.17.0 or higher
 - npm, yarn, or pnpm
 
 ### Installation
@@ -154,27 +127,15 @@ NEXTAUTH_SECRET=your-secret-key
 GOOGLE_CLIENT_ID=your-client-id
 GOOGLE_CLIENT_SECRET=your-client-secret
 
-# Security encryption key for user data - IMPORTANT: Change in production
-DATA_ENCRYPTION_KEY=your-super-secure-encryption-key-here-change-in-production
-
 # Other configs
 ```
 
-5. Generate a secure encryption key:
-```bash
-# Using OpenSSL
-openssl rand -base64 32
-
-# Or using Node.js
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
-
-6. Run the development server:
+5. Run the development server:
 ```bash
 npm run dev
 ```
 
-7. Open [http://localhost:3000](http://localhost:3000) in your browser
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## 💻 Development
 
@@ -187,18 +148,8 @@ npm run dev
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues
 - `npm run format` - Format with Prettier
-- `npm run format:check` - Check formatting
 - `npm run type-check` - Run TypeScript checks
 - `npm run analyze` - Analyze bundle size
-- `npm run test` - Run Jest tests
-- `npm run test:watch` - Run tests in watch mode
-- `npm run test:ci` - Run tests for CI
-- `npm run validate` - Run all checks (lint, format, type, test)
-- `npm run find:unused` - Find unused exports/files
-- `npm run find:deadcode` - Find dead code
-- `npm run find:circular` - Find circular dependencies
-- `npm run security` - Run security audit
-- `npm run optimize:images` - Optimize images
 
 ### Development Guidelines
 
@@ -216,69 +167,6 @@ npm run dev
    - Follow ESLint and Prettier configuration
    - Use explicit return types for functions
    - Document complex logic with comments
-
-## 📏 Code Standards
-
-We follow international coding standards:
-
-### TypeScript
-
-- Strict mode enabled
-- No implicit any
-- Explicit function return types
-- Proper nullability handling
-- Type imports separated from value imports
-
-### ESLint
-
-- Extended configs:
-  - next/core-web-vitals
-  - plugin:@typescript-eslint/recommended
-  - plugin:import/recommended
-  - prettier
-
-### Prettier
-
-- Single quotes
-- 2 space indentation
-- 100 character line length
-- ES5 trailing commas
-- Sorted imports with separate groups
-
-### Git Workflow
-
-- Conventional commits format
-- Pre-commit hooks with Husky
-- Lint and format checks before commit
-- No direct commits to main branch
-
-## 🧪 Testing
-
-### Testing Strategy
-
-- Unit tests for utilities and hooks
-- Component tests with React Testing Library
-- Integration tests for critical flows
-- E2E tests for core user journeys
-
-### Running Tests
-
-```bash
-# Run all tests
-npm run test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:ci
-```
-
-### Test Coverage Goals
-
-- 70%+ code coverage for critical paths
-- Focus on business logic and user interactions
-- Mocked external dependencies
 
 ## 📦 Deployment
 
@@ -299,17 +187,6 @@ npm run start
 - Set `NODE_ENV=production` for production environments
 - Use proper `NEXTAUTH_URL` for authentication callback
 - Configure CDN if applicable using `ASSET_PREFIX`
-- Set proper Content Security Policy headers
-- Ensure `DATA_ENCRYPTION_KEY` is set and secure
-
-### Production Security
-
-```bash
-# Set secure file permissions
-chmod 600 data/users/*
-chmod 700 data/users/
-chmod 700 data/backups/
-```
 
 ## 🔐 Authentication
 
@@ -328,7 +205,6 @@ chmod 700 data/backups/
 3. After authentication, returns to callback URL
 4. NextAuth creates a session and redirects to the app
 5. User is authenticated with session data available
-6. Session information is securely stored with encryption
 
 ### Protected Routes
 
@@ -340,127 +216,11 @@ Routes can be protected using middleware:
 
 ## ⚡ Performance Optimizations
 
-- **Image Optimization**: Using Next.js Image component with WebP/AVIF formats and responsive sizes
+- **Image Optimization**: Using Next.js Image component with WebP/AVIF formats
 - **Code Splitting**: Automatic code splitting by pages and dynamic imports
 - **Server Components**: Using React Server Components for better performance
-- **Caching**: Implementing proper cache strategies with Cache-Control headers
+- **Caching**: Implementing proper cache strategies
 - **Bundle Analysis**: Regular bundle size monitoring with `npm run analyze`
-- **Chunk Optimization**: Vendor and framework chunks separated for better caching
-- **Font Optimization**: Preloaded and subset fonts
-- **CSS Optimization**: Purge unused CSS with Tailwind
-- **Core Web Vitals**: Optimized for all Core Web Vitals metrics
-
-## 🔄 Continuous Integration
-
-We use a robust CI/CD pipeline:
-
-- **Code Quality**: ESLint, TypeScript, and Prettier checks
-- **Testing**: Automated tests with Jest
-- **Performance**: Lighthouse CI for performance regression testing
-- **Security**: Dependency scanning and security checks
-- **Build Verification**: Verify production build completes successfully
-
-## 🔒 Security
-
-Security is a top priority:
-
-- **Content Security Policy**: Strict CSP implemented
-- **HTTPS Only**: All communication over HTTPS
-- **Secure Headers**: X-Frame-Options, X-Content-Type-Options, etc.
-- **Input Validation**: All user input validated server-side
-- **Dependency Scanning**: Regular security audits
-- **Authentication**: Secure session management with NextAuth.js
-- **XSS Protection**: React's built-in protection + extra measures
-- **CSRF Protection**: Built-in protection with Next.js
-- **Data Encryption**: AES-256-CBC for sensitive user data
-- **Integrity Checks**: SHA-256 checksums for data validation
-
-For more details, see our [Security Policy](SECURITY.md).
-
-## 🔐 Secure Data Storage System
-
-### Overview
-
-The system has been upgraded to store individual user data in separate files with AES-256-CBC encryption and data integrity checks.
-
-### Data Storage Structure
-
-```
-data/
-├── users/                    # Encrypted user data (NEVER commit)
-│   ├── user_abc123def456.json
-│   └── user_789xyz012345.json
-├── backups/                  # Automatic backups (NEVER commit)
-│   ├── 2025-01-29T10-30-00_user_abc123def456.json
-│   └── 2025-01-29T11-15-00_user_789xyz012345.json
-├── users.json               # Legacy data (fallback)
-├── transactions.json        # Legacy data (fallback)
-└── balances.json           # Legacy data (fallback)
-```
-
-### Security Features
-
-1. **Data Encryption**
-   - AES-256-CBC encryption
-   - Unique IV (Initialization Vector) per file
-   - SHA-256 checksum for integrity validation
-
-2. **Secure Filenames**
-   - SHA-256 hash of email as filename
-   - Cannot guess email from filename
-
-3. **Automatic Backups**
-   - Automatic backup before updates
-   - Timestamped for recovery
-
-4. **Integrity Verification**
-   - Checksum validation
-   - Detect data tampering
-
-### User Data Structure
-
-```typescript
-interface UserData {
-  profile: User; // Personal information
-  transactions: Transaction[]; // Transaction history
-  sessions: UserSession[]; // Login information
-  activities: UserActivity[]; // Activity history
-  settings: UserSettings; // Personal settings
-  metadata: {
-    // Security metadata
-    lastBackup: string;
-    dataVersion: string;
-    checksum: string;
-  };
-}
-```
-
-### Admin Interface
-
-Access through: `/admin`
-
-- 🔍 Search user data
-- 📊 View detailed statistics
-- ✅ Verify data integrity
-- 📝 View recent activities
-- 💰 Transaction history
-- 🖥️ Login sessions
-
-### Legacy System Migration
-
-The new system is backward compatible:
-
-1. Automatically creates new user data on login
-2. Syncs balance from old system
-3. Falls back to reading from old files if no new data exists
-
-### Important Security Notes
-
-1. **NEVER commit /data/users/ and /data/backups/ directories**
-2. **Change DATA_ENCRYPTION_KEY in production**
-3. **Periodically backup the data/ directory**
-4. **Regularly check error logs**
-5. **Test integrity check feature periodically**
 
 ## 📄 License
 
