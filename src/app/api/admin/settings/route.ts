@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Cài đặt hệ thống đã được cập nhật',
+      message: '',
       settings: systemSettings,
     });
   } catch (error) {

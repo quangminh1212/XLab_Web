@@ -67,14 +67,14 @@ function SettingsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage(data.message || t('admin.settings.saveSuccess'));
+        setSuccessMessage(data.message || (language === 'vi' ? 'Cài đặt đã được lưu thành công!' : 'Settings saved successfully!'));
         setSettings(data.settings);
       } else {
-        setErrors(data.details || [data.error || t('admin.settings.saveError')]);
+        setErrors(data.details || [data.error || (language === 'vi' ? 'Đã xảy ra lỗi khi lưu cài đặt' : 'An error occurred while saving settings')]);
       }
     } catch (error) {
       console.error('Error saving settings:', error);
-      setErrors([t('admin.settings.connectionError')]);
+      setErrors([(language === 'vi' ? 'Không thể kết nối đến máy chủ' : 'Cannot connect to server')]);
     } finally {
       setIsSaving(false);
 
