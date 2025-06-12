@@ -366,15 +366,15 @@ function CouponsPage() {
   const saveInlineEdit = async (couponId: string, field: string) => {
     const editKey = `${couponId}-${field}`;
     const newValue = editValues[editKey];
-    console.log(`Saving inline edit for coupon ${couponId}, field ${field}, value:`, newValue);
+    console.log(`Đang lưu chỉnh sửa cho mã ${couponId}, trường ${field}, giá trị:`, newValue);
 
     try {
       const coupon = coupons.find((c) => c.id === couponId);
       if (!coupon) {
-        console.error('Could not find coupon with ID:', couponId);
+        console.error('Không tìm thấy mã giảm giá với ID:', couponId);
         return;
       }
-      console.log('Found coupon to update:', coupon);
+      console.log('Đã tìm thấy mã cần cập nhật:', coupon);
 
       // Tạo bản sao sâu của coupon để chỉnh sửa
       const updateData: Record<string, any> = { ...coupon };
@@ -409,7 +409,7 @@ function CouponsPage() {
       }
 
       console.log(
-        `Sending update request to /api/admin/coupons/${couponId} with data:`,
+        `Gửi yêu cầu cập nhật đến /api/admin/coupons/${couponId} với dữ liệu:`,
         updateData,
       );
       console.log('API URL:', `/api/admin/coupons/${couponId}`);
@@ -423,7 +423,7 @@ function CouponsPage() {
       });
 
       const responseData = await response.json();
-      console.log('API response:', responseData, 'Status:', response.status);
+      console.log('Phản hồi API:', responseData, 'Trạng thái:', response.status);
 
       if (response.ok) {
         setCoupons((prev) =>
@@ -448,7 +448,7 @@ function CouponsPage() {
         setTimeout(() => setErrorMessage(''), 3000);
       }
     } catch (error) {
-      console.error('Error updating coupon:', error);
+      console.error('Lỗi khi cập nhật mã giảm giá:', error);
       setErrorMessage('Có lỗi xảy ra khi cập nhật');
       setTimeout(() => setErrorMessage(''), 3000);
     }
@@ -471,7 +471,7 @@ function CouponsPage() {
     }
   }, [successMessage, errorMessage]);
 
-  // Separate coupons into active (not expired) and expired groups
+  // Phân chia mã giảm giá thành nhóm còn hạn và hết hạn
   const nonExpiredCoupons = coupons.filter((coupon) => !isExpired(coupon.endDate));
   const expiredCoupons = coupons.filter((coupon) => isExpired(coupon.endDate));
 
