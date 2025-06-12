@@ -159,25 +159,25 @@ export default function Footer() {
               <div className="space-y-3 text-center sm:text-left">
                 <Link
                   href="/"
-                  className="group inline-flex items-center text-slate-400 hover:text-blue-400 text-base transition-all duration-300 hover:translate-x-1"
+                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-blue-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   {t('nav.home')}
                 </Link>
                 <br />
                 <Link
                   href="/about"
-                  className="group inline-flex items-center text-slate-400 hover:text-blue-400 text-base transition-all duration-300 hover:translate-x-1"
+                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-blue-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   {t('nav.about')}
                 </Link>
                 <br />
                 <Link
                   href="/pricing"
-                  className="group inline-flex items-center text-slate-400 hover:text-blue-400 text-base transition-all duration-300 hover:translate-x-1"
+                  className="group inline-flex items-center text-slate-400 hover:text-primary-400 text-base transition-all duration-300 hover:translate-x-1"
                 >
-                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-blue-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
+                  <span className="w-0 group-hover:w-1.5 h-0.5 bg-primary-400 rounded-full mr-0 group-hover:mr-2.5 transition-all duration-300"></span>
                   {t('footer.pricing')}
                 </Link>
               </div>
