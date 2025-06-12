@@ -2,7 +2,7 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
-type Language = 'vi' | 'en';
+type Language = 'vi' | 'en' | 'es';
 
 type LanguageContextType = {
   language: Language;
@@ -19,6 +19,119 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 // Translations
 const translations: Record<Language, Record<string, string>> = {
+  es: {
+    // Header
+    'nav.home': 'Inicio',
+    'nav.products': 'Productos',
+    'nav.about': 'Nosotros',
+    'nav.contact': 'Contacto',
+    'nav.warranty': 'Garantía',
+    'nav.login': 'Iniciar sesión',
+    'nav.logout': 'Cerrar sesión',
+    'nav.account': 'Cuenta',
+    'nav.admin': 'Administración',
+    'auth.signOut': 'Cerrar sesión',
+    'auth.signIn': 'Iniciar sesión',
+    
+    // Homepage
+    'home.slogan': '¡Máxima eficiencia, mínimo costo!',
+    'home.search': 'Buscar software, aplicaciones...',
+    'home.loadMore': 'Ver más',
+    'home.aboutTitle': 'Sobre XLab',
+    'home.aboutDesc1': 'XLab es una plataforma que proporciona soluciones de software integradas con IA avanzada para ayudar a los usuarios a mejorar la eficiencia en el trabajo y la vida cotidiana.',
+    'home.aboutDesc2': 'Nuestra misión es brindar a las personas acceso a herramientas para el trabajo, el estudio y el entretenimiento a precios razonables y con calidad internacional.',
+    'home.learnMore': 'Saber más',
+    'home.featuredProducts': 'Productos destacados',
+    'home.newProducts': 'Nuevos productos',
+    'home.viewAll': 'Ver todos',
+    'home.noSoftware': 'No hay software disponible',
+    'home.updateSoon': 'Actualizaremos pronto con software.',
+    'home.noServices': 'No hay servicios disponibles',
+    'home.updateServices': 'Actualizaremos pronto con servicios.',
+    'home.faq': 'Preguntas frecuentes',
+    
+    // Product card
+    'product.addToCart': 'Añadir al carrito',
+    'product.buyNow': 'Comprar ahora',
+    'product.added': 'Añadido',
+    'product.week': 'semana',
+    'product.purchasesPerWeek': '{count}/semana',
+    
+    // Footer
+    'footer.aboutLink': 'Sobre XLab',
+    'footer.contactLink': 'Contacto',
+    'footer.productsAndServices': 'Productos y servicios',
+    'footer.products': 'Productos',
+    'footer.services': 'Servicios',
+    'footer.testimonials': 'Testimonios',
+    'footer.navigationLinks': 'Navegación',
+    'footer.pricing': 'Precios',
+    'footer.copyright': 'Derechos de autor de',
+    'footer.acceptedPayments': 'Pagos aceptados',
+    'footer.companyDescription1': 'XLab es una empresa líder en el campo de soluciones tecnológicas y desarrollo de software profesional para empresas.',
+    'footer.companyDescription2': 'Con un equipo de expertos experimentados, XLab se enorgullece de ser un socio de confianza de más de 500+ empresas.',
+    'footer.customers': '500+ Clientes',
+    'footer.years': '5+ Años',
+    'footer.support': 'Soporte 24/7',
+    
+    // Login page
+    'login.welcome': '¡Bienvenido de nuevo!',
+    'login.continue': 'Para continuar usando los servicios de XLab',
+    'login.connect': 'Conexión segura con tu cuenta de Google',
+    'login.google': 'Continuar con Google',
+    'login.secure': '100% seguro',
+    'login.terms': 'Al continuar, aceptas nuestros',
+    'login.termsLink': 'Términos de servicio',
+    'login.and': 'y',
+    'login.privacyLink': 'Política de privacidad',
+    
+    // Cart and Checkout
+    'cart.title': 'Carrito de compras',
+    'cart.empty': 'Tu carrito está vacío',
+    'cart.continueShopping': 'Continuar comprando',
+    'cart.checkout': 'Pagar',
+    'cart.subtotal': 'Subtotal',
+    'cart.discount': 'Descuento',
+    'cart.total': 'Total',
+    'cart.remove': 'Eliminar',
+    'cart.quantity': 'Cantidad',
+    'cart.price': 'Precio',
+    'cart.voucher': 'Código de descuento',
+    'cart.applyVoucher': 'Aplicar',
+    
+    // Notifications
+    'notifications.title': 'Notificaciones',
+    'notifications.markAllRead': 'Marcar todo como leído',
+    'notifications.noNotifications': 'No tienes ninguna notificación todavía. Por favor, vuelve más tarde.',
+    'notifications.none': 'No hay notificaciones',
+    
+    // About page
+    'about.title': 'Acerca de XLab',
+    'about.subtitle': 'Acompañando a tu empresa en el viaje de transformación digital',
+    'about.values': 'Nuestros valores fundamentales',
+    'about.innovation': 'Innovación',
+    'about.quality': 'Calidad',
+    'about.integrity': 'Integridad',
+    'about.collaboration': 'Colaboración',
+    
+    // Product details
+    'product.details': 'Detalles del producto',
+    'product.specifications': 'Especificaciones técnicas',
+    'product.requirements': 'Requisitos del sistema',
+    'product.relatedProducts': 'Productos relacionados',
+    'product.features': 'Características',
+    'product.frequentlyAskedQuestions': 'Preguntas frecuentes',
+    
+    // Common buttons
+    'button.getStarted': 'Comenzar',
+    'button.learnMore': 'Saber más',
+    'button.viewDetails': 'Ver detalles',
+    'button.addToCart': 'Añadir al carrito',
+    'button.buyNow': 'Comprar ahora',
+    'button.download': 'Descargar',
+    'button.contactUs': 'Contáctanos',
+    'button.viewAll': 'Ver todo'
+  },
   vi: {
     // Admin Notifications
     'admin.notifications.title': 'Quản lý thông báo',
@@ -1477,86 +1590,326 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
   },
+  es: {
+    // Admin Notifications
+    'admin.notifications.title': 'Gestión de notificaciones',
+    'admin.notifications.list': 'Lista de notificaciones',
+    'admin.notifications.edit': 'Editar',
+    'admin.notifications.settings': 'Configuración',
+    'admin.notifications.create': 'Crear nueva notificación',
+    'admin.notifications.noNotifications': 'No hay notificaciones',
+    'admin.notifications.noNotificationsDesc': 'Crea la primera notificación para enviar a los usuarios',
+    'admin.notifications.type.promotion': 'Promoción',
+    'admin.notifications.type.update': 'Actualización',
+    'admin.notifications.type.order': 'Pedido',
+    'admin.notifications.type.system': 'Sistema',
+    'admin.notifications.priority.high': 'Alta',
+    'admin.notifications.priority.medium': 'Media',
+    'admin.notifications.priority.low': 'Baja',
+    'admin.notifications.created': 'Creado',
+    'admin.notifications.readCount': 'Leído',
+    'admin.notifications.sentTo': 'Enviado a',
+    'admin.notifications.expires': 'Expira',
+    'admin.notifications.viewDetails': 'Ver detalles',
+    'admin.notifications.editBtn': 'Editar',
+    'admin.notifications.deleteBtn': 'Eliminar',
+    'admin.notifications.cancelBtn': 'Cancelar',
+    'admin.notifications.createBtn': 'Crear notificación',
+    'admin.notifications.updatingBtn': 'Actualizando...',
+    'admin.notifications.updateBtn': 'Actualizar notificación',
+    'admin.notifications.creatingBtn': 'Creando...',
+    'admin.notifications.form.title': 'Título de la notificación *',
+    'admin.notifications.form.titlePlaceholder': 'Ingrese el título de la notificación',
+    'admin.notifications.form.content': 'Contenido de la notificación *',
+    'admin.notifications.form.contentPlaceholder': 'Ingrese el contenido de la notificación',
+    'admin.notifications.form.type': 'Tipo de notificación *',
+    'admin.notifications.settings.title': 'Configuración de notificaciones',
+    'admin.notifications.settings.automatic': 'Notificaciones automáticas',
+    'admin.notifications.settings.autoOrder': 'Notificaciones automáticas de pedidos',
+    'admin.notifications.settings.autoPromotion': 'Notificaciones automáticas de promociones',
+    'admin.notifications.settings.autoUpdate': 'Notificaciones automáticas de actualizaciones',
+    'admin.notifications.settings.email': 'Notificaciones por correo electrónico',
+    'admin.notifications.settings.retention': 'Días de retención de notificaciones',
+    'admin.notifications.settings.retentionDesc': 'Las notificaciones se eliminarán automáticamente después de estos días',
+    'admin.notifications.settings.saveBtn': 'Guardar configuración',
+    'admin.notifications.success': '¡Notificación creada con éxito!',
+    'admin.notifications.updateSuccess': '¡Notificación actualizada con éxito!',
+    'admin.notifications.deleteSuccess': '¡Notificación eliminada con éxito!',
+    'admin.notifications.settingsSaved': '¡La configuración de notificaciones ha sido guardada!',
+    'admin.notifications.error': 'Se produjo un error al crear la notificación',
+    'admin.notifications.updateError': 'Se produjo un error al actualizar la notificación',
+    'admin.notifications.deleteError': 'Se produjo un error al eliminar la notificación',
+    'admin.notifications.connectionError': 'Se produjo un error al conectar con el servidor',
+    'admin.notifications.people': 'personas',
+    
+    // Terms page
+    'terms.title': 'Términos de servicio',
+    'terms.lastUpdated': 'Última actualización',
+    'terms.section1.title': 'Introducción',
+    'terms.section1.content': 'Bienvenido a {siteName}! Estos Términos de Servicio ("Términos") rigen su acceso y uso de nuestro sitio web, productos y servicios. Al acceder o utilizar nuestros servicios, acepta cumplir con estos Términos.',
+    'terms.section2.title': 'Su cuenta',
+    'terms.section2.content': 'Para utilizar algunas funciones de nuestros servicios, debe crear una cuenta. Usted es responsable de mantener la seguridad de su cuenta y contraseña, y también es responsable de todas las actividades que ocurran bajo su cuenta.',
+    'terms.section3.title': 'Contenido y propiedad intelectual',
+    'terms.section3.content': '{companyName} y sus licenciantes poseen todos los derechos, títulos e intereses en los Servicios, incluidos todos los derechos de propiedad intelectual relacionados. No puede copiar, modificar, distribuir o vender ninguna parte de nuestros Servicios sin nuestro permiso explícito por escrito.',
+    'terms.section4.title': 'Licencia de uso',
+    'terms.section4.content': '{companyName} le otorga una licencia personal, no exclusiva e intransferible para usar nuestros Servicios. No puede copiar, modificar, distribuir, vender, alquilar, arrendar o sublicenciar ninguna parte de los Servicios.',
+    'terms.section5.title': 'Precios y pagos',
+    'terms.section5.content': 'Para servicios de pago, acepta pagar todas las tarifas aplicables. Podemos cambiar los precios notificándole con anticipación. Los pagos no son reembolsables a menos que se especifique lo contrario en nuestra política de reembolso.',
+    'terms.section6.title': 'Privacidad y datos personales',
+    'terms.section6.content': 'Recopilamos y procesamos su información personal de acuerdo con nuestra',
+    'terms.section6.privacyPolicy': 'Política de Privacidad',
+    'terms.section6.content2': 'Al utilizar nuestros Servicios, acepta la recopilación y el procesamiento de datos según esta política.',
+    'terms.section7.title': 'Descargo de responsabilidad',
+    'terms.section7.content': 'Nuestros servicios se proporcionan "tal cual" y "según disponibilidad". {companyName} renuncia a todas las garantías, expresas o implícitas, incluidas, entre otras, garantías de comerciabilidad, idoneidad para un propósito particular y no infracción.',
+    'terms.section8.title': 'Limitación de responsabilidad',
+    'terms.section8.content': 'En ningún caso {companyName} será responsable por daños indirectos, incidentales, especiales, consecuentes o punitivos, incluida la pérdida de ganancias, ingresos, datos u oportunidades de negocio.',
+    'terms.section9.title': 'Terminación',
+    'terms.section9.content': 'Podemos suspender o terminar su acceso a todos o parte de los Servicios si viola estos Términos, o si creemos que su uso puede dañar a {companyName} u otros usuarios.',
+    'terms.section10.title': 'Cambios en los términos',
+    'terms.section10.content': 'Podemos modificar estos Términos en cualquier momento. Si realizamos cambios materiales, se lo notificaremos. Su uso continuado de nuestros Servicios después de que los cambios entren en vigencia constituye su aceptación de los nuevos términos.',
+    'terms.section11.title': 'Ley aplicable',
+    'terms.section11.content': 'Estos Términos se regirán e interpretarán de acuerdo con las leyes de Vietnam, sin tener en cuenta los conflictos de principios legales.',
+    'terms.section12.title': 'Contacto',
+    'terms.section12.content': 'Si tiene alguna pregunta sobre estos Términos, contáctenos a través de',
+    'terms.section12.content2': 'o visite nuestra página de',
+    'terms.section12.contactPage': 'Contacto',
+    'terms.section12.content3': '.',
+
+    // Header
+    'nav.home': 'Inicio',
+    'nav.products': 'Productos',
+    'nav.about': 'Nosotros',
+    'nav.contact': 'Contacto',
+    'nav.warranty': 'Garantía',
+    'nav.login': 'Iniciar sesión',
+    'nav.logout': 'Cerrar sesión',
+    'nav.account': 'Cuenta',
+    'nav.admin': 'Administración',
+    'auth.signOut': 'Cerrar sesión',
+    'auth.signIn': 'Iniciar sesión',
+    
+    // Login page
+    'login.welcome': '¡Bienvenido de nuevo!',
+    'login.continue': 'Para continuar usando los servicios de XLab',
+    'login.connect': 'Conexión segura con tu cuenta de Google',
+    'login.google': 'Continuar con Google',
+    'login.secure': '100% seguro',
+    'login.terms': 'Al continuar, aceptas nuestros',
+    'login.termsLink': 'Términos de servicio',
+    'login.and': 'y',
+    'login.privacyLink': 'Política de privacidad',
+    'login.ourCompany': '.',
+    
+    // Homepage
+    'home.slogan': '¡Máxima eficiencia, mínimo costo!',
+    'home.search': 'Buscar software, aplicaciones...',
+    'home.loadMore': 'Ver más',
+    'home.aboutTitle': 'Sobre XLab',
+    'home.aboutDesc1': 'XLab es una plataforma que proporciona soluciones de software integradas con IA avanzada para ayudar a los usuarios a mejorar la eficiencia en el trabajo y la vida cotidiana.',
+    'home.aboutDesc2': 'Nuestra misión es brindar a las personas acceso a herramientas para el trabajo, el estudio y el entretenimiento a precios razonables y con calidad internacional.',
+    'home.learnMore': 'Saber más',
+    'home.domesticProduct': 'Producto nacional',
+    'home.vietnamDevs': 'Desarrollado por ingenieros vietnamitas',
+    'home.support247': 'Soporte 24/7',
+    'home.supportTeam': 'Equipo de soporte dedicado',
+    'home.highSecurity': 'Alta seguridad',
+    'home.encryptedData': 'Datos encriptados de forma segura',
+    'home.reasonablePrice': 'Precio razonable',
+    'home.budgetOptions': 'Múltiples opciones para todos los presupuestos',
+    'home.aiIntegration': 'Integración con IA',
+    'home.aiSupport': 'Tecnología de IA avanzada para apoyarte',
+    'home.continuousUpdates': 'Actualizaciones continuas',
+    'home.newFeatures': 'Siempre actualizado con nuevas funciones',
+    'home.achievements': 'Nuestros logros',
+    'home.customers': 'Clientes satisfechos',
+    'home.softwareSolutions': 'Soluciones de software',
+    'home.yearsExperience': 'Años de experiencia',
+    'home.software': 'Software',
+    'home.services': 'Servicios',
+    'home.featuredProducts': 'Productos destacados',
+    'home.newProducts': 'Nuevos productos',
+    'home.viewAll': 'Ver todos',
+    'home.noSoftware': 'No hay software disponible',
+    'home.updateSoon': 'Actualizaremos pronto con software.',
+    'home.noServices': 'No hay servicios disponibles',
+    'home.updateServices': 'Actualizaremos pronto con servicios.',
+    'home.faq': 'Preguntas frecuentes',
+    'home.faqDesc': 'Respuestas a las preguntas más comunes sobre nuestros productos y servicios',
+    'home.faq1Title': '¿Cómo descargo el software?',
+    'home.faq1Desc': 'Puede descargar software gratuito en la página del producto correspondiente después de iniciar sesión en su cuenta. Para productos de pago, debe completar el pago antes de la descarga.',
+    'home.faq2Title': '¿Cómo activo la licencia?',
+    'home.faq2Desc': 'Después de comprar el producto, recibirá un código de activación por correo electrónico. Abra la aplicación, vaya a "Activar licencia" e ingrese este código para usar todas las funciones.',
+    'home.faq3Title': '¿En cuántos dispositivos puedo usarlo?',
+    'home.faq3Desc': 'Cada licencia permite su uso en un máximo de 3 dispositivos diferentes. Si desea usarlo en más dispositivos, compre licencias adicionales o actualice al plan empresarial.',
+    'home.faq4Title': '¿Cuál es la política de reembolso?',
+    'home.faq4Desc': 'Tenemos una política de reembolso dentro de los 7 días posteriores a la compra si el producto no satisface sus necesidades. Póngase en contacto con nuestro equipo de soporte para obtener orientación.',
+    'home.faq5Title': '¿Cómo contacto al soporte técnico?',
+    'home.faq5Desc': 'Puede contactar a nuestro equipo de soporte técnico por correo electrónico a support@xlab.vn, línea directa 1900.xxxx o chat en vivo en el sitio web. Respondemos dentro de las 24 horas hábiles.',
+    'home.faq6Title': '¿XLab ofrece soluciones para empresas?',
+    'home.faq6Desc': 'Sí, tenemos paquetes de servicios especiales para empresas con descuentos en precios y soporte técnico especializado. Contáctenos para obtener la solución más adecuada.',
+    'home.moreQuestions': 'Ver más preguntas',
+    'home.ctaTitle': '¿Listo para mejorar tu productividad con XLab?',
+    'home.ctaDesc': 'Ofrecemos descuentos especiales para clientes que compran en grandes cantidades. Cuanto más compre, mayor será el descuento. Nos comprometemos a brindarle las mejores soluciones al costo más razonable.',
+    'home.contactUs': 'Contactar para asesoramiento',
+    
+    // Product card
+    'product.addToCart': 'Añadir al carrito',
+    'product.buyNow': 'Comprar ahora',
+    'product.added': 'Añadido',
+    'product.week': 'semana',
+    'product.purchasesPerWeek': '{count}/semana',
+    
+    // About page
+    'about.title': 'Acerca de XLab',
+    'about.subtitle': 'Acompañando a tu empresa en el viaje de transformación digital',
+    'about.values': 'Nuestros valores fundamentales',
+    'about.innovation': 'Innovación',
+    'about.innovationDesc': 'Crear e innovar continuamente en tecnología para ofrecer el mejor valor',
+    'about.quality': 'Calidad',
+    'about.qualityDesc': 'Compromiso con la máxima calidad en todos los productos y servicios',
+    'about.integrity': 'Integridad',
+    'about.integrityDesc': 'Mantener siempre la ética empresarial y la transparencia en todas las actividades',
+    'about.collaboration': 'Colaboración',
+    'about.collaborationDesc': 'Construir asociaciones a largo plazo basadas en el respeto y la cooperación mutuamente beneficiosa',
+    'about.partnership': 'Asociarse con XLab',
+    'about.partnershipDesc': 'Siempre estamos listos para escuchar y acompañar a tu empresa en el viaje de transformación digital y desarrollo sostenible.',
+    'about.contactNow': 'Contactar ahora',
+    'about.exploreServices': 'Explorar servicios',
+
+    // Common buttons
+    'button.getStarted': 'Comenzar',
+    'button.learnMore': 'Saber más',
+    'button.viewDetails': 'Ver detalles',
+    'button.addToCart': 'Añadir al carrito',
+    'button.buyNow': 'Comprar ahora',
+    'button.download': 'Descargar',
+    'button.contactUs': 'Contáctanos',
+    'button.viewAll': 'Ver todo',
+
+    // Footer
+    'footer.aboutLink': 'Sobre XLab',
+    'footer.contactLink': 'Contacto',
+    'footer.productsAndServices': 'Productos y servicios',
+    'footer.products': 'Productos',
+    'footer.services': 'Servicios',
+    'footer.testimonials': 'Testimonios',
+    'footer.navigationLinks': 'Navegación',
+    'footer.pricing': 'Precios',
+    'footer.copyright': 'Derechos de autor de',
+    'footer.acceptedPayments': 'Pagos aceptados',
+    'footer.companyDescription1': 'XLab es una empresa líder en el campo de soluciones tecnológicas y desarrollo de software profesional para empresas.',
+    'footer.companyDescription2': 'Con un equipo de expertos experimentados, XLab se enorgullece de ser un socio de confianza de más de 500+ empresas.',
+    'footer.customers': '500+ Clientes',
+    'footer.years': '5+ Años',
+    'footer.support': 'Soporte 24/7',
+    'footer.company': 'Empresa',
+    'footer.careers': 'Carreras',
+    'footer.terms': 'Términos de servicio',
+    'footer.privacy': 'Política de privacidad',
+    'footer.softwareDev': 'Desarrollo de software',
+    'footer.consulting': 'Consultoría tecnológica',
+    'footer.cloudServices': 'Servicios en la nube',
+    'footer.techSupport': 'Soporte técnico',
+    'footer.resources': 'Recursos',
+    'footer.blog': 'Blog',
+    'footer.documentation': 'Documentación',
+    'footer.faq': 'Preguntas frecuentes',
+    'footer.followUs': 'Síguenos'
+  }
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  // Mặc định là tiếng Việt
-  const [language, setLanguageState] = useState<Language>('vi');
+  const [languageState, setLanguageState] = useState<Language>('vi');
 
-  // Khởi tạo ngôn ngữ từ localStorage khi component được mount
+  // Load saved language from localStorage on mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage);
     }
   }, []);
 
-  // Lưu ngôn ngữ vào localStorage khi thay đổi
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('language', lang);
-    document.documentElement.lang = lang;
   };
 
-  // Hàm dịch văn bản
   const t = (key: string, params?: Record<string, any>): string => {
-    try {
-      // Kiểm tra key hợp lệ
-      if (typeof key !== 'string' || !key) {
-        console.warn('Invalid translation key:', key);
-        return '';
-      }
+    // Kiểm tra nếu key tồn tại trong ngôn ngữ hiện tại
+    if (translations[languageState][key]) {
+      let text = translations[languageState][key];
       
-      // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-      let text = translations[language]?.[key] || key;
-      
-      // Thay thế tham số nếu có
-      if (params && typeof params === 'object' && Object.keys(params).length > 0) {
-        Object.entries(params).forEach(([param, value]) => {
-          const regex = new RegExp(`\\{${param}\\}`, 'g');
-          const strValue = convertValueToString(value, param);
-          text = text.replace(regex, strValue);
+      // Thay thế các tham số nếu có
+      if (params) {
+        Object.keys(params).forEach(param => {
+          const value = convertValueToString(params[param], param);
+          text = text.replace(new RegExp(`\\{${param}\\}`, 'g'), value);
         });
       }
       
       return text;
-    } catch (error) {
-      console.error('Translation error:', error);
-      return typeof key === 'string' ? key : '';
     }
+    
+    // Fallback về tiếng Anh nếu không tìm thấy trong ngôn ngữ hiện tại
+    if (languageState !== 'en' && translations.en[key]) {
+      let text = translations.en[key];
+      
+      // Thay thế các tham số nếu có
+      if (params) {
+        Object.keys(params).forEach(param => {
+          const value = convertValueToString(params[param], param);
+          text = text.replace(new RegExp(`\\{${param}\\}`, 'g'), value);
+        });
+      }
+      
+      return text;
+    }
+    
+    // Trả về key nếu không tìm thấy trong cả ngôn ngữ hiện tại và tiếng Anh
+    return key;
   };
-  
-  // Hàm hỗ trợ chuyển đổi giá trị thành chuỗi an toàn
+
   function convertValueToString(value: any, paramName: string): string {
-    if (value === undefined || value === null) {
+    if (value === null || value === undefined) {
       return '';
+    }
+    
+    if (typeof value === 'number') {
+      // Format currency if param name suggests it's a currency
+      if (paramName.toLowerCase().includes('price') || 
+          paramName.toLowerCase().includes('cost') || 
+          paramName.toLowerCase().includes('amount') ||
+          paramName.toLowerCase().includes('total')) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+      }
+      
+      // Format as number for other numeric values
+      return value.toString();
+    }
+    
+    if (typeof value === 'boolean') {
+      return value ? 'true' : 'false';
     }
     
     if (typeof value === 'object') {
       try {
-        return String(value);
-      } catch (err) {
-        console.warn(`Error converting object param ${paramName}:`, err);
-        return '';
+        return JSON.stringify(value);
+      } catch (e) {
+        return '[Object]';
       }
     }
     
-    try {
-      return String(value);
-    } catch (err) {
-      console.warn(`Error converting param ${paramName}:`, err);
-      return '';
-    }
+    // For string and other types
+    return value.toString();
   }
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language: languageState, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
-// Hook để sử dụng context này
 export const useLanguage = (): LanguageContextType => {
   const context = useContext(LanguageContext);
   if (context === undefined) {
