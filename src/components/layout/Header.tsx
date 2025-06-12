@@ -66,25 +66,27 @@ const Header = () => {
   // Nếu chưa được mount ở client, render phiên bản đơn giản để tránh hydration mismatch
   if (!isMounted) {
     return (
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container max-w-[99.5%] mx-auto py-2 sm:py-3 md:py-2">
-          <div className="flex justify-between items-center">
-            {/* Logo placeholder */}
+      <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200/80 shadow-sm">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <a className="flex items-center justify-center">
-                <div className="w-auto h-8 sm:h-9 md:h-10 lg:h-11"></div>
-              </a>
+              <div className="flex-shrink-0">
+                {/* Logo placeholder */}
+                <div className="h-8 w-32"></div>
+              </div>
             </div>
-            {/* Nav placeholders */}
-            <nav className="hidden md:flex space-x-2 lg:space-x-4 xl:space-x-6">
-              <a className="transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50"></a>
-              <a className="transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50"></a>
-              <a className="transition-colors text-sm lg:text-base tracking-wide font-medium px-2 py-1 rounded-md hover:bg-gray-50"></a>
-            </nav>
-            {/* Action buttons placeholders */}
-            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
-              <div className="h-8 w-8"></div>
-              <div className="h-8 w-8"></div>
+            <div className="hidden md:block">
+              <div className="flex items-center space-x-4">
+                {/* Nav placeholders */}
+                <div className="h-4 w-16 bg-slate-100 rounded"></div>
+                <div className="h-4 w-20 bg-slate-100 rounded"></div>
+                <div className="h-4 w-16 bg-slate-100 rounded"></div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              {/* Action buttons placeholders */}
+              <div className="h-8 w-8 bg-slate-100 rounded-full"></div>
+              <div className="h-8 w-8 bg-slate-100 rounded-full"></div>
             </div>
           </div>
         </div>

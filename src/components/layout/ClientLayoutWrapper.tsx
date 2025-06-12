@@ -14,7 +14,6 @@ import { CartProvider } from '@/components/cart';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
-import SessionFix from './SessionFix';
 
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
@@ -23,7 +22,6 @@ interface ClientLayoutWrapperProps {
 export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperProps) {
   return (
     <SessionProvider>
-      <SessionFix />
       <LanguageProvider>
         <NotificationProvider>
           <BalanceProvider>
