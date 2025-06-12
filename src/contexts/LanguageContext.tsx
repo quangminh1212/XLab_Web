@@ -1714,12 +1714,11 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Mặc định là tiếng Việt
   const [language, setLanguageState] = useState<Language>('vi');
 
-  // Khởi tạo ngôn ngữ từ localStorage khi component được mount
+  // Luôn ưu tiên tiếng Việt mặc định
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
-      setLanguageState(savedLanguage);
-    }
+    // Đặt ngôn ngữ về tiếng Việt và lưu vào localStorage
+    localStorage.setItem('language', 'vi');
+    setLanguageState('vi');
   }, []);
 
   // Lưu ngôn ngữ vào localStorage khi thay đổi
