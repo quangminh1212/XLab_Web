@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import withAdminAuth from '@/components/withAdminAuth';
 import VoucherUsageList from '@/components/admin/VoucherUsageList';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Coupon {
   id: string;
@@ -44,6 +45,7 @@ interface CouponForm {
 
 function CouponsPage() {
   const { data: session } = useSession();
+  const { t } = useLanguage();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -112,11 +114,11 @@ function CouponsPage() {
         const data = await response.json();
         setCoupons(data.coupons || []);
       } else {
-        setErrorMessage('Không thể tải danh sách mã giảm giá');
+        setErrorMessage(t('admin.coupons.fetchError'));
       }
     } catch (error) {
       console.error('Error fetching coupons:', error);
-      setErrorMessage('Đã xảy ra lỗi khi tải mã giảm giá');
+      setErrorMessage(t('admin.coupons.fetchError'));
     } finally {
       setIsLoading(false);
     }
@@ -172,16 +174,16 @@ function CouponsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage('Mã giảm giá đã được tạo thành công!');
+        setSuccessMessage(t('admin.coupons.createSuccess'));
         resetForm();
         fetchCoupons();
         setTimeout(() => setActiveTab('list'), 2000);
       } else {
-        setErrorMessage(data.error || 'Đã xảy ra lỗi khi tạo mã giảm giá');
+        setErrorMessage(data.error || t('admin.coupons.createError'));
       }
     } catch (error) {
       console.error('Error creating coupon:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+      setErrorMessage(t('admin.coupons.createError'));
     } finally {
       setIsCreating(false);
     }
@@ -495,9 +497,9 @@ function CouponsPage() {
               <span className="text-lg">🏷️</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">Quản lý mã giảm giá</h1>
+              <h1 className="text-xl font-bold text-white">{t('admin.coupons.title')}</h1>
               <p className="text-primary-100 text-sm">
-                Tạo và quản lý các mã giảm giá cho khách hàng
+                {t('admin.coupons.subtitle')}
               </p>
             </div>
           </div>
@@ -505,17 +507,17 @@ function CouponsPage() {
           <div className="flex items-center space-x-6">
             <div className="text-center">
               <div className="text-lg font-bold text-white">{coupons.length}</div>
-              <div className="text-xs text-primary-100">Tổng số mã</div>
+              <div className="text-xs text-primary-100">{t('admin.coupons.totalCount')}</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-bold text-white">{actuallyActiveCoupons.length}</div>
-              <div className="text-xs text-primary-100">Đang hoạt động</div>
+              <div className="text-xs text-primary-100">{t('admin.coupons.activeCount')}</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-bold text-white">
                 {coupons.filter((c) => isExpired(c.endDate)).length}
               </div>
-              <div className="text-xs text-primary-100">Đã hết hạn</div>
+              <div className="text-xs text-primary-100">{t('admin.coupons.expiredCount')}</div>
             </div>
           </div>
         </div>
@@ -531,7 +533,7 @@ function CouponsPage() {
                   : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
-              📋 Danh sách mã ({coupons.length})
+              📋 {t('admin.coupons.listTab')} ({coupons.length})
             </button>
             <button
               onClick={() => {
@@ -545,7 +547,7 @@ function CouponsPage() {
                   : 'text-white/80 hover:text-white hover:bg-white/20'
               }`}
             >
-              ➕ Tạo mã mới
+              ➕ {t('admin.coupons.createTab')}
             </button>
           </nav>
         </div>
@@ -573,7 +575,7 @@ function CouponsPage() {
       {activeTab === 'list' && (
         <div className="bg-white rounded-lg shadow border border-gray-100">
           <div className="p-4">
-            <h2 className="text-base font-medium text-gray-900 mb-3">Danh sách mã giảm giá</h2>
+            <h2 className="text-base font-medium text-gray-900 mb-3">{t('admin.coupons.listTitle')}</h2>
 
             {/* Sub-tabs for active vs expired */}
             <div className="mb-4">
@@ -582,29 +584,31 @@ function CouponsPage() {
                   onClick={() => setFilterTab('active')}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium ${filterTab === 'active' ? 'bg-primary-100 text-primary-700' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
-                  Đang hoạt động ({actuallyActiveCoupons.length})
+                  {t('admin.coupons.activeTab')} ({actuallyActiveCoupons.length})
                 </button>
                 <button
                   onClick={() => setFilterTab('expired')}
                   className={`px-3 py-1.5 rounded-md text-sm font-medium ${filterTab === 'expired' ? 'bg-primary-100 text-primary-700' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
-                  Đã hết hạn ({expiredCoupons.length})
+                  {t('admin.coupons.expiredTab')} ({expiredCoupons.length})
                 </button>
               </nav>
             </div>
 
+            {/* Empty state */}
             {coupons.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">🏷️</div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có mã giảm giá nào</h3>
+              <div className="text-center py-12">
+                <div className="inline-flex items-center justify-center p-4 bg-primary-50 rounded-full mb-4">
+                  <span className="text-4xl">🏷️</span>
+                </div>
                 <p className="text-gray-500 mb-8">
-                  Tạo mã giảm giá đầu tiên để bắt đầu chương trình khuyến mãi cho khách hàng
+                  {t('admin.coupons.noCoUponsMessage')}
                 </p>
                 <button
                   onClick={() => setActiveTab('create')}
                   className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-lg"
                 >
-                  🚀 Tạo mã đầu tiên
+                  🚀 {t('admin.coupons.createFirstButton')}
                 </button>
               </div>
             ) : (
@@ -613,22 +617,22 @@ function CouponsPage() {
                   <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                     <tr>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                        Mã / Tên
+                        {t('admin.coupons.codeColumn')}
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                        Loại / Giá trị
+                        {t('admin.coupons.typeColumn')}
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                        Thời gian
+                        {t('admin.coupons.timeColumn')}
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                        Sử dụng
+                        {t('admin.coupons.usageColumn')}
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                        Trạng thái
+                        {t('admin.coupons.statusColumn')}
                       </th>
                       <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                        Hành động
+                        {t('admin.coupons.actionsColumn')}
                       </th>
                     </tr>
                   </thead>
@@ -681,7 +685,10 @@ function CouponsPage() {
                                   </div>
                                 ) : (
                                   <span
-                                    onClick={() => startInlineEdit(coupon.id, 'name', coupon.name)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      startInlineEdit(coupon.id, 'name', coupon.name);
+                                    }}
                                     className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                     title="Click để chỉnh sửa"
                                   >
@@ -705,6 +712,10 @@ function CouponsPage() {
                                         }))
                                       }
                                       className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
+                                      onBlur={(e) => {
+                                        e.stopPropagation();
+                                        saveInlineEdit(coupon.id, 'type');
+                                      }}
                                       onBlur={() => saveInlineEdit(coupon.id, 'type')}
                                       autoFocus
                                     >
@@ -727,11 +738,16 @@ function CouponsPage() {
                                   </div>
                                 ) : (
                                   <span
-                                    className="text-sm font-medium mr-2 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                     onClick={() => startInlineEdit(coupon.id, 'type', coupon.type)}
                                     title="Click để chỉnh sửa loại giảm giá"
+                                    className="text-sm font-medium mr-2 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                   >
-                                    {coupon.type === 'percentage' ? 'Phần trăm' : coupon.type === 'cashback' ? 'Hoàn tiền vào tài khoản' : 'Cố định'}
+                                    {coupon.type === 'percentage' 
+                                      ? t('admin.coupons.percentageType') 
+                                      : coupon.type === 'cashback' 
+                                        ? t('admin.coupons.cashbackType')
+                                        : t('admin.coupons.fixedType')
+                                    }
                                   </span>
                                 )}
                                 {inlineEditing[`${coupon.id}-value`] ? (
