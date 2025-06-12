@@ -4,22 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { siteConfig } from '@/config/siteConfig';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useState, useEffect } from 'react';
 
 export default function Footer() {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
-  const [isClient, setIsClient] = useState(false);
-
-  // Đảm bảo chỉ render khi đã ở client-side để tránh hydration mismatch
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Nếu chưa ở client, trả về div trống để tránh hydration error
-  if (!isClient) {
-    return <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden"></footer>;
-  }
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden">
