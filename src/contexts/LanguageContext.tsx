@@ -2,7 +2,7 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
-type Language = 'vi' | 'en';
+type Language = 'vi' | 'en' | 'es';
 
 type LanguageContextType = {
   language: Language;
@@ -1477,16 +1477,124 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
   },
+  es: {
+    // Admin Notifications
+    'admin.notifications.title': 'Gestión de notificaciones',
+    'admin.notifications.list': 'Lista de notificaciones',
+    'admin.notifications.edit': 'Editar',
+    'admin.notifications.settings': 'Configuración',
+    'admin.notifications.create': 'Crear nueva notificación',
+    'admin.notifications.noNotifications': 'Aún no hay notificaciones',
+    'admin.notifications.noNotificationsDesc': 'Crea tu primera notificación para enviar a los usuarios',
+    'admin.notifications.type.promotion': 'Promoción',
+    'admin.notifications.type.update': 'Actualización',
+    'admin.notifications.type.order': 'Pedido',
+    'admin.notifications.type.system': 'Sistema',
+    'admin.notifications.priority.high': 'Alta',
+    'admin.notifications.priority.medium': 'Media',
+    'admin.notifications.priority.low': 'Baja',
+    'admin.notifications.created': 'Creado',
+    'admin.notifications.readCount': 'Leído por',
+    'admin.notifications.sentTo': 'Enviado a',
+    'admin.notifications.expires': 'Expira',
+    'admin.notifications.viewDetails': 'Ver detalles',
+    'admin.notifications.editBtn': 'Editar',
+    'admin.notifications.deleteBtn': 'Eliminar',
+    'admin.notifications.cancelBtn': 'Cancelar',
+    'admin.notifications.createBtn': 'Crear notificación',
+    'admin.notifications.updatingBtn': 'Actualizando...',
+    'admin.notifications.updateBtn': 'Actualizar notificación',
+    'admin.notifications.creatingBtn': 'Creando...',
+    'admin.notifications.form.title': 'Título de la notificación *',
+    'admin.notifications.form.titlePlaceholder': 'Ingrese el título de la notificación',
+    'admin.notifications.form.content': 'Contenido de la notificación *',
+    'admin.notifications.form.contentPlaceholder': 'Ingrese el contenido de la notificación',
+    'admin.notifications.form.type': 'Tipo de notificación *',
+    'admin.notifications.settings.title': 'Configuración de notificaciones',
+    'admin.notifications.settings.automatic': 'Notificaciones automáticas',
+    'admin.notifications.settings.autoOrder': 'Notificaciones automáticas de pedidos',
+    'admin.notifications.settings.autoPromotion': 'Notificaciones automáticas de promociones',
+    'admin.notifications.settings.autoUpdate': 'Notificaciones automáticas de actualizaciones',
+    'admin.notifications.settings.email': 'Notificaciones por correo electrónico',
+    'admin.notifications.settings.retention': 'Días de retención de notificaciones',
+    'admin.notifications.settings.retentionDesc': 'Las notificaciones se eliminarán automáticamente después de estos días',
+    'admin.notifications.settings.saveBtn': 'Guardar configuración',
+    'admin.notifications.success': '¡Notificación creada con éxito!',
+    'admin.notifications.updateSuccess': '¡Notificación actualizada con éxito!',
+    'admin.notifications.deleteSuccess': '¡Notificación eliminada con éxito!',
+    'admin.notifications.settingsSaved': '¡La configuración de notificaciones ha sido guardada!',
+    'admin.notifications.error': 'Se produjo un error al crear la notificación',
+    'admin.notifications.updateError': 'Se produjo un error al actualizar la notificación',
+    'admin.notifications.deleteError': 'Se produjo un error al eliminar la notificación',
+    'admin.notifications.connectionError': 'Se produjo un error al conectar con el servidor',
+    'admin.notifications.people': 'personas',
+    
+    // Terms page
+    'terms.title': 'Términos de servicio',
+    'terms.lastUpdated': 'Última actualización',
+    'terms.section1.title': 'Introducción',
+    'terms.section1.content': '¡Bienvenido a {siteName}! Estos Términos de Servicio ("Términos") rigen su acceso y uso de nuestro sitio web, productos y servicios. Al acceder o utilizar nuestros servicios, acepta estos Términos.',
+    
+    // Header
+    'nav.home': 'Inicio',
+    'nav.products': 'Productos',
+    'nav.about': 'Acerca de',
+    'nav.contact': 'Contacto',
+    'nav.warranty': 'Garantía',
+    'nav.login': 'Iniciar sesión',
+    'nav.logout': 'Cerrar sesión',
+    'nav.account': 'Cuenta',
+    'nav.admin': 'Administración',
+    'auth.signOut': 'Cerrar sesión',
+    'auth.signIn': 'Iniciar sesión',
+    
+    // Login page
+    'login.welcome': '¡Bienvenido de nuevo!',
+    'login.continue': 'Para continuar usando los servicios de XLab',
+    'login.connect': 'Conéctate de forma segura con tu cuenta de Google',
+    'login.google': 'Continuar con Google',
+    'login.secure': '100% Seguro',
+    'login.terms': 'Al continuar, aceptas nuestros',
+    'login.termsLink': 'Términos de servicio',
+    'login.and': 'y',
+    'login.privacyLink': 'Política de privacidad',
+    'login.ourCompany': '.',
+    
+    // Homepage
+    'home.slogan': '¡Optimiza la eficiencia, minimiza los costos!',
+    'home.search': 'Buscar software, aplicaciones...',
+    'home.loadMore': 'Ver más',
+    'home.aboutTitle': 'Sobre XLab',
+    'home.featuredProducts': 'Productos destacados',
+    'home.newProducts': 'Nuevos productos',
+    'home.viewAll': 'Ver todo',
+    
+    // Product card
+    'product.addToCart': 'Añadir al carrito',
+    'product.buyNow': 'Comprar ahora',
+    'product.added': 'Añadido',
+    'product.week': 'semana',
+    'product.purchasesPerWeek': '{count}/semana',
+    
+    // Cart and Checkout
+    'cart.title': 'Carrito de compras',
+    'cart.empty': 'Tu carrito está vacío',
+    'cart.continueShopping': 'Continuar comprando',
+    'cart.checkout': 'Pagar',
+    'cart.subtotal': 'Subtotal',
+    'cart.discount': 'Descuento',
+    'cart.total': 'Total',
+    'cart.remove': 'Eliminar',
+    'cart.quantity': 'Cantidad'
+  }
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  // Mặc định là tiếng Việt
-  const [language, setLanguageState] = useState<Language>('vi');
+  const [languageState, setLanguageState] = useState<Language>('vi');
 
-  // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage);
     }
   }, []);
@@ -1508,7 +1616,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       }
       
       // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-      let text = translations[language]?.[key] || key;
+      let text = translations[languageState]?.[key] || key;
       
       // Thay thế tham số nếu có
       if (params && typeof params === 'object' && Object.keys(params).length > 0) {
@@ -1550,7 +1658,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   }
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language: languageState, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
