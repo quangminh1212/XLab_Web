@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export interface Notification {
   id: number | string;
@@ -36,6 +37,7 @@ export const useNotifications = () => {
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   // Tính toán số thông báo chưa đọc
   const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -108,7 +110,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       ...notification,
       id: Date.now(),
       isRead: false,
-      time: 'Vừa xong',
+      time: t('notifications.justNow') || 'Vừa xong',
     };
 
     setNotifications((prev) => [newNotification, ...prev]);

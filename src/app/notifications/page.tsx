@@ -6,11 +6,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useNotifications, type Notification } from '@/contexts/NotificationContext';
 import NotificationDemo from './demo';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const NotificationsPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'all' | 'unread'>('all');
+  const { t } = useLanguage();
 
   // Sử dụng NotificationContext
   const { notifications, markAsRead, markAllAsRead } = useNotifications();
@@ -134,7 +136,7 @@ const NotificationsPage = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-t-4 border-primary-600 border-solid rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Đang tải...</p>
+          <p className="text-gray-600">{t('notifications.loading')}</p>
         </div>
       </div>
     );
@@ -148,13 +150,13 @@ const NotificationsPage = () => {
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="p-6 border-b border-gray-200">
               <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold text-gray-900">Thông báo của bạn</h1>
+                <h1 className="text-2xl font-bold text-gray-900">{t('notifications.title')}</h1>
                 {notifications.some((n) => !n.isRead) && (
                   <button
                     onClick={markAllAsRead}
                     className="px-4 py-2 bg-primary-50 text-primary-600 text-sm font-medium rounded-md hover:bg-primary-100 transition-colors"
                   >
-                    Đánh dấu tất cả đã đọc
+                    {t('notifications.markAllRead')}
                   </button>
                 )}
               </div>
@@ -168,7 +170,7 @@ const NotificationsPage = () => {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  Tất cả ({notifications.length})
+                  {t('notifications.all')} ({notifications.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('unread')}
@@ -178,7 +180,7 @@ const NotificationsPage = () => {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  Chưa đọc ({notifications.filter((n) => !n.isRead).length})
+                  {t('notifications.unread')} ({notifications.filter((n) => !n.isRead).length})
                 </button>
               </div>
             </div>
@@ -207,7 +209,7 @@ const NotificationsPage = () => {
                       {notification.link && (
                         <div className="mt-2">
                           <span className="text-sm text-primary-600 hover:text-primary-800">
-                            {notification.isRead ? 'Xem chi tiết' : 'Xem ngay'}
+                            {notification.isRead ? t('notifications.viewDetails') : t('notifications.viewNow')}
                           </span>
                         </div>
                       )}
@@ -235,11 +237,11 @@ const NotificationsPage = () => {
                       d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                     />
                   </svg>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">Không có thông báo nào</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">{t('notifications.empty')}</h3>
                   <p className="text-gray-500 max-w-sm mx-auto">
                     {activeTab === 'unread'
-                      ? 'Bạn đã đọc tất cả thông báo!'
-                      : 'Bạn chưa có thông báo nào. Hãy quay lại sau.'}
+                      ? t('notifications.allRead')
+                      : t('notifications.noNotifications')}
                   </p>
                 </div>
               )}
@@ -251,7 +253,7 @@ const NotificationsPage = () => {
 
           <div className="mt-6 text-center">
             <Link href="/" className="text-sm text-primary-600 hover:text-primary-800">
-              Quay lại trang chủ
+              {t('notifications.backToHome')}
             </Link>
           </div>
         </div>
