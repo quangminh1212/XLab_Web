@@ -9,7 +9,7 @@ import { useNotifications } from '@/contexts/NotificationContext';
 import { useCart } from '@/components/cart/CartContext';
 import BalanceDisplay from '@/components/common/BalanceDisplay';
 import Avatar from '@/components/common/Avatar';
-import LanguageSelector from '@/components/layout/LanguageSelector';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Thêm interface cho voucher
@@ -371,7 +371,7 @@ const Header = () => {
               )}
 
               {/* Language Switcher */}
-              <LanguageSelector />
+              <LanguageSwitcher className="mr-2" />
 
               {/* Voucher Icon */}
               <div className="relative" ref={voucherRef}>
@@ -759,7 +759,7 @@ const Header = () => {
               {/* Mobile menu button */}
               <div className="flex md:hidden items-center space-x-3">
                 {/* Language Switcher for Mobile */}
-                <LanguageSelector />
+                <LanguageSwitcher className="mr-0.5" />
 
                 <Link
                   href="/cart"
