@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { esTranslations } from './es_translations';
 
 type Language = 'vi' | 'en' | 'es';
 
@@ -1302,22 +1303,21 @@ const translations: Record<Language, Record<string, string>> = {
     'product.options': 'Options',
     'testimonials.title': 'Customer Reviews',
     'testimonials.verified': 'Verified',
-    'testimonials.positions.CTO': 'Chief Technology Officer',
-    'testimonials.positions.CTO - Tech Solutions': 'Chief Technology Officer',
-    'testimonials.positions.Marketing Manager': 'Marketing Manager',
-    'testimonials.positions.Developer': 'Developer',
-    'testimonials.companies.Tech Solutions': 'Tech Solutions',
-    'testimonials.companies.Digital Agency': 'Digital Agency',
-    'testimonials.companies.Software Inc.': 'Software Inc.',
-    'testimonial.position.project': 'Project Manager',
-    'testimonial.position.business': 'Business Director',
+    'home.testimonials': 'Đánh giá của khách hàng',
+    'home.viewAllTestimonials': 'Xem tất cả đánh giá',
+    'testimonial.michael': '"Tôi đã sử dụng dịch vụ của XLab được 2 năm và cực kỳ hài lòng. Phần mềm hoạt động mượt mà, có đầy đủ tính năng, và đội ngũ hỗ trợ rất tận tâm."',
+    'testimonial.david': '"Các giải pháp AI của XLab đã giúp doanh nghiệp của chúng tôi tiết kiệm được 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."',
+    'testimonial.emily': '"Các bản cập nhật liên tục của XLab đảm bảo sản phẩm luôn đáp ứng được những yêu cầu ngày càng cao của chúng tôi. Giao diện thân thiện và dễ sử dụng ngay cả với người mới."',
+    'testimonial.position.business': 'Giám đốc kinh doanh',
     'testimonial.position.cto': 'CTO - Tech Solutions',
+    'testimonial.position.project': 'Quản lý dự án',
+    'cart.enterCoupon': 'Nhập mã giảm giá',
 
     // Testimonials page
-    'testimonials.pageTitle': 'Customer Reviews',
-    'testimonials.pageSubtitle': 'Discover the experiences and real results that customers have achieved using XLab solutions',
-    'testimonials.clientsTab': 'Client Testimonials',
-    'testimonials.caseStudiesTab': 'Case Studies',
+    'testimonials.pageTitle': 'Đánh giá của khách hàng',
+    'testimonials.pageSubtitle': 'Khám phá những trải nghiệm và kết quả thực tế mà khách hàng đã đạt được khi sử dụng giải pháp của XLab',
+    'testimonials.clientsTab': 'Đánh giá từ khách hàng',
+    'testimonials.caseStudiesTab': 'Các dự án tiêu biểu',
     'testimonials.videoTitle': 'Video Testimonials',
     'testimonials.videoSubtitle': 'Watch videos from customers sharing their experience using XLab products and services',
     'testimonials.results': 'Results achieved:',
@@ -1477,116 +1477,7 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
   },
-  es: {
-    // Admin Notifications
-    'admin.notifications.title': 'Gestión de notificaciones',
-    'admin.notifications.list': 'Lista de notificaciones',
-    'admin.notifications.edit': 'Editar',
-    'admin.notifications.settings': 'Configuración',
-    'admin.notifications.create': 'Crear nueva notificación',
-    'admin.notifications.noNotifications': 'Aún no hay notificaciones',
-    'admin.notifications.noNotificationsDesc': 'Crea tu primera notificación para enviar a los usuarios',
-    'admin.notifications.type.promotion': 'Promoción',
-    'admin.notifications.type.update': 'Actualización',
-    'admin.notifications.type.order': 'Pedido',
-    'admin.notifications.type.system': 'Sistema',
-    'admin.notifications.priority.high': 'Alta',
-    'admin.notifications.priority.medium': 'Media',
-    'admin.notifications.priority.low': 'Baja',
-    'admin.notifications.created': 'Creado',
-    'admin.notifications.readCount': 'Leído por',
-    'admin.notifications.sentTo': 'Enviado a',
-    'admin.notifications.expires': 'Expira',
-    'admin.notifications.viewDetails': 'Ver detalles',
-    'admin.notifications.editBtn': 'Editar',
-    'admin.notifications.deleteBtn': 'Eliminar',
-    'admin.notifications.cancelBtn': 'Cancelar',
-    'admin.notifications.createBtn': 'Crear notificación',
-    'admin.notifications.updatingBtn': 'Actualizando...',
-    'admin.notifications.updateBtn': 'Actualizar notificación',
-    'admin.notifications.creatingBtn': 'Creando...',
-    'admin.notifications.form.title': 'Título de la notificación *',
-    'admin.notifications.form.titlePlaceholder': 'Ingrese el título de la notificación',
-    'admin.notifications.form.content': 'Contenido de la notificación *',
-    'admin.notifications.form.contentPlaceholder': 'Ingrese el contenido de la notificación',
-    'admin.notifications.form.type': 'Tipo de notificación *',
-    'admin.notifications.settings.title': 'Configuración de notificaciones',
-    'admin.notifications.settings.automatic': 'Notificaciones automáticas',
-    'admin.notifications.settings.autoOrder': 'Notificaciones automáticas de pedidos',
-    'admin.notifications.settings.autoPromotion': 'Notificaciones automáticas de promociones',
-    'admin.notifications.settings.autoUpdate': 'Notificaciones automáticas de actualizaciones',
-    'admin.notifications.settings.email': 'Notificaciones por correo electrónico',
-    'admin.notifications.settings.retention': 'Días de retención de notificaciones',
-    'admin.notifications.settings.retentionDesc': 'Las notificaciones se eliminarán automáticamente después de estos días',
-    'admin.notifications.settings.saveBtn': 'Guardar configuración',
-    'admin.notifications.success': '¡Notificación creada con éxito!',
-    'admin.notifications.updateSuccess': '¡Notificación actualizada con éxito!',
-    'admin.notifications.deleteSuccess': '¡Notificación eliminada con éxito!',
-    'admin.notifications.settingsSaved': '¡La configuración de notificaciones ha sido guardada!',
-    'admin.notifications.error': 'Se produjo un error al crear la notificación',
-    'admin.notifications.updateError': 'Se produjo un error al actualizar la notificación',
-    'admin.notifications.deleteError': 'Se produjo un error al eliminar la notificación',
-    'admin.notifications.connectionError': 'Se produjo un error al conectar con el servidor',
-    'admin.notifications.people': 'personas',
-    
-    // Terms page
-    'terms.title': 'Términos de servicio',
-    'terms.lastUpdated': 'Última actualización',
-    'terms.section1.title': 'Introducción',
-    'terms.section1.content': '¡Bienvenido a {siteName}! Estos Términos de Servicio ("Términos") rigen su acceso y uso de nuestro sitio web, productos y servicios. Al acceder o utilizar nuestros servicios, acepta estos Términos.',
-    
-    // Header
-    'nav.home': 'Inicio',
-    'nav.products': 'Productos',
-    'nav.about': 'Acerca de',
-    'nav.contact': 'Contacto',
-    'nav.warranty': 'Garantía',
-    'nav.login': 'Iniciar sesión',
-    'nav.logout': 'Cerrar sesión',
-    'nav.account': 'Cuenta',
-    'nav.admin': 'Administración',
-    'auth.signOut': 'Cerrar sesión',
-    'auth.signIn': 'Iniciar sesión',
-    
-    // Login page
-    'login.welcome': '¡Bienvenido de nuevo!',
-    'login.continue': 'Para continuar usando los servicios de XLab',
-    'login.connect': 'Conéctate de forma segura con tu cuenta de Google',
-    'login.google': 'Continuar con Google',
-    'login.secure': '100% Seguro',
-    'login.terms': 'Al continuar, aceptas nuestros',
-    'login.termsLink': 'Términos de servicio',
-    'login.and': 'y',
-    'login.privacyLink': 'Política de privacidad',
-    'login.ourCompany': '.',
-    
-    // Homepage
-    'home.slogan': '¡Optimiza la eficiencia, minimiza los costos!',
-    'home.search': 'Buscar software, aplicaciones...',
-    'home.loadMore': 'Ver más',
-    'home.aboutTitle': 'Sobre XLab',
-    'home.featuredProducts': 'Productos destacados',
-    'home.newProducts': 'Nuevos productos',
-    'home.viewAll': 'Ver todo',
-    
-    // Product card
-    'product.addToCart': 'Añadir al carrito',
-    'product.buyNow': 'Comprar ahora',
-    'product.added': 'Añadido',
-    'product.week': 'semana',
-    'product.purchasesPerWeek': '{count}/semana',
-    
-    // Cart and Checkout
-    'cart.title': 'Carrito de compras',
-    'cart.empty': 'Tu carrito está vacío',
-    'cart.continueShopping': 'Continuar comprando',
-    'cart.checkout': 'Pagar',
-    'cart.subtotal': 'Subtotal',
-    'cart.discount': 'Descuento',
-    'cart.total': 'Total',
-    'cart.remove': 'Eliminar',
-    'cart.quantity': 'Cantidad'
-  }
+  es: esTranslations
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
@@ -1599,41 +1490,26 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     }
   }, []);
 
-  // Lưu ngôn ngữ vào localStorage khi thay đổi
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
     localStorage.setItem('language', lang);
-    document.documentElement.lang = lang;
+    setLanguageState(lang);
   };
 
-  // Hàm dịch văn bản
   const t = (key: string, params?: Record<string, any>): string => {
-    try {
-      // Kiểm tra key hợp lệ
-      if (typeof key !== 'string' || !key) {
-        console.warn('Invalid translation key:', key);
-        return '';
-      }
-      
-      // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-      let text = translations[languageState]?.[key] || key;
-      
-      // Thay thế tham số nếu có
-      if (params && typeof params === 'object' && Object.keys(params).length > 0) {
-        Object.entries(params).forEach(([param, value]) => {
-          const regex = new RegExp(`\\{${param}\\}`, 'g');
-          const strValue = convertValueToString(value, param);
-          text = text.replace(regex, strValue);
-        });
-      }
-      
-      return text;
-    } catch (error) {
-      console.error('Translation error:', error);
-      return typeof key === 'string' ? key : '';
+    // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
+    let text = translations[languageState]?.[key] || key;
+    
+    // Thay thế tham số nếu có
+    if (params) {
+      Object.entries(params).forEach(([paramName, value]) => {
+        const paramRegex = new RegExp(`{${paramName}}`, 'g');
+        text = text.replace(paramRegex, convertValueToString(value, paramName));
+      });
     }
+    
+    return text;
   };
-  
+
   // Hàm hỗ trợ chuyển đổi giá trị thành chuỗi an toàn
   function convertValueToString(value: any, paramName: string): string {
     if (value === undefined || value === null) {
