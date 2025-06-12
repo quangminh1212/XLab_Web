@@ -45,7 +45,7 @@ interface CouponForm {
 
 function CouponsPage() {
   const { data: session } = useSession();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -222,15 +222,15 @@ function CouponsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage('Mã giảm giá đã được cập nhật thành công!');
+        setSuccessMessage(t('admin.coupons.updateSuccess'));
         closeEditModal();
         fetchCoupons();
       } else {
-        setErrorMessage(data.error || 'Đã xảy ra lỗi khi cập nhật mã giảm giá');
+        setErrorMessage(data.error || t('admin.coupons.updateError'));
       }
     } catch (error) {
       console.error('Error updating coupon:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+      setErrorMessage(t('admin.notifications.connectionError'));
     } finally {
       setIsCreating(false);
     }
@@ -238,7 +238,7 @@ function CouponsPage() {
 
   // Delete coupon
   const handleDeleteCoupon = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')) return;
+    if (!confirm(t('admin.coupons.confirmDelete', { default: 'Bạn có chắc chắn muốn xóa mã giảm giá này?' }))) return;
 
     try {
       const response = await fetch(`/api/admin/coupons/${id}`, {
@@ -246,15 +246,15 @@ function CouponsPage() {
       });
 
       if (response.ok) {
-        setSuccessMessage('Mã giảm giá đã được xóa thành công!');
+        setSuccessMessage(t('admin.coupons.deleteSuccess', { default: 'Mã giảm giá đã được xóa thành công!' }));
         fetchCoupons();
       } else {
         const data = await response.json();
-        setErrorMessage(data.error || 'Đã xảy ra lỗi khi xóa mã giảm giá');
+        setErrorMessage(data.error || t('admin.coupons.deleteError', { default: 'Đã xảy ra lỗi khi xóa mã giảm giá' }));
       }
     } catch (error) {
       console.error('Error deleting coupon:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+      setErrorMessage(t('admin.notifications.connectionError'));
     }
   };
 
@@ -271,16 +271,17 @@ function CouponsPage() {
 
       if (response.ok) {
         setSuccessMessage(
-          `Mã giảm giá đã được ${!isActive ? 'kích hoạt' : 'vô hiệu hóa'} thành công!`,
+          !isActive ? t('admin.coupons.activateSuccess', { default: 'Mã giảm giá đã được kích hoạt thành công!' }) : 
+                     t('admin.coupons.deactivateSuccess', { default: 'Mã giảm giá đã được vô hiệu hóa thành công!' })
         );
         fetchCoupons();
       } else {
         const data = await response.json();
-        setErrorMessage(data.error || 'Đã xảy ra lỗi khi cập nhật trạng thái');
+        setErrorMessage(data.error || t('admin.coupons.toggleError'));
       }
     } catch (error) {
       console.error('Error toggling coupon status:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+      setErrorMessage(t('admin.notifications.connectionError'));
     }
   };
 
@@ -329,7 +330,7 @@ function CouponsPage() {
       date.getUTCFullYear(),
       date.getUTCMonth(),
       date.getUTCDate(),
-    ).toLocaleDateString('vi-VN');
+    ).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
   };
 
   // Check if coupon is expired
@@ -690,7 +691,7 @@ function CouponsPage() {
                                       startInlineEdit(coupon.id, 'name', coupon.name);
                                     }}
                                     className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                    title="Click để chỉnh sửa"
+                                    title={t('admin.coupons.clickToEdit', { default: 'Click để chỉnh sửa' })}
                                   >
                                     {coupon.name}
                                   </span>
@@ -712,11 +713,6 @@ function CouponsPage() {
                                         }))
                                       }
                                       className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
-                                      onBlur={(e) => {
-                                        e.stopPropagation();
-                                        saveInlineEdit(coupon.id, 'type');
-                                      }}
-                                      onBlur={() => saveInlineEdit(coupon.id, 'type')}
                                       autoFocus
                                     >
                                       <option value="percentage">{t('admin.coupons.percentageType')} (%)</option>
@@ -739,7 +735,7 @@ function CouponsPage() {
                                 ) : (
                                   <span
                                     onClick={() => startInlineEdit(coupon.id, 'type', coupon.type)}
-                                    title="Click để chỉnh sửa loại giảm giá"
+                                    title={t('admin.coupons.clickToEditType', { default: 'Click để chỉnh sửa loại giảm giá' })}
                                     className="text-sm font-medium mr-2 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                   >
                                     {coupon.type === 'percentage' 
@@ -791,7 +787,7 @@ function CouponsPage() {
                                       startInlineEdit(coupon.id, 'value', coupon.value)
                                     }
                                     className="text-sm font-bold cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
-                                    title="Click để chỉnh sửa"
+                                    title={t('admin.coupons.clickToEdit', { default: 'Click để chỉnh sửa' })}
                                   >
                                     {coupon.type === 'percentage' || coupon.type === 'cashback'
                                       ? `${coupon.value}%`
@@ -823,13 +819,13 @@ function CouponsPage() {
                                   onClick={() => saveInlineEdit(coupon.id, 'startDate')}
                                   className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
                                 >
-                                  ✓ Lưu
+                                  ✓ {t('admin.coupons.save', { default: 'Lưu' })}
                                 </button>
                                 <button
                                   onClick={() => cancelInlineEdit(coupon.id, 'startDate')}
                                   className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
                                 >
-                                  ✕ Hủy
+                                  ✕ {t('admin.coupons.cancel', { default: 'Hủy' })}
                                 </button>
                               </div>
                             ) : (
@@ -868,13 +864,13 @@ function CouponsPage() {
                                   onClick={() => saveInlineEdit(coupon.id, 'endDate')}
                                   className="text-green-600 hover:text-green-800 text-xs px-2 py-1 bg-green-50 border border-green-200 rounded"
                                 >
-                                  ✓ Lưu
+                                  ✓ {t('admin.coupons.save', { default: 'Lưu' })}
                                 </button>
                                 <button
                                   onClick={() => cancelInlineEdit(coupon.id, 'endDate')}
                                   className="text-red-600 hover:text-red-800 text-xs px-2 py-1 bg-red-50 border border-red-200 rounded"
                                 >
-                                  ✕ Hủy
+                                  ✕ {t('admin.coupons.cancel', { default: 'Hủy' })}
                                 </button>
                               </div>
                             ) : (
@@ -930,11 +926,11 @@ function CouponsPage() {
                                 </div>
                               ) : (
                                 <span
-                                  className="text-lg font-bold text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                   onClick={() =>
                                     startInlineEdit(coupon.id, 'usedCount', coupon.usedCount)
                                   }
-                                  title="Click để chỉnh sửa số lượt đã sử dụng"
+                                  title={t('admin.coupons.clickToEditUsage', { default: 'Click để chỉnh sửa số lượt đã sử dụng' })}
+                                  className="text-lg font-bold text-gray-700 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                 >
                                   {coupon.usedCount}
                                 </span>
@@ -968,7 +964,6 @@ function CouponsPage() {
                                   />
                                 ) : (
                                   <span
-                                    className="cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded"
                                     onClick={() =>
                                       startInlineEdit(
                                         coupon.id,
@@ -980,7 +975,7 @@ function CouponsPage() {
                                     {coupon.usageLimit ? coupon.usageLimit : '∞'}
                                   </span>
                                 )}{' '}
-                                lần
+                                {t('admin.coupons.usageCount', { default: 'lần' })}
                               </span>
 
                               {coupon.userUsage && Object.keys(coupon.userUsage).length > 0 && (
@@ -1007,7 +1002,6 @@ function CouponsPage() {
                                       [`${coupon.id}-isPublic`]: e.target.value === 'public',
                                     }))
                                   }
-                                  onBlur={() => saveInlineEdit(coupon.id, 'isPublic')}
                                   className="border border-gray-300 rounded px-2 py-1 text-xs"
                                   autoFocus
                                 >
@@ -1026,15 +1020,15 @@ function CouponsPage() {
                               )}
                               {isExpired(coupon.endDate) ? (
                                 <span className="inline-flex items-center px-2 py-0.5 rounded bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
-                                  Đã hết hạn
+                                  {t('admin.coupons.expired', { default: 'Đã hết hạn' })}
                                 </span>
                               ) : coupon.isActive ? (
                                 <span className="inline-flex items-center px-2 py-0.5 rounded bg-primary-50 border border-primary-200 text-primary-700 text-xs font-medium">
-                                  Đang hoạt động
+                                  {t('admin.coupons.active', { default: 'Đang hoạt động' })}
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium">
-                                  Tạm dừng
+                                  {t('admin.coupons.inactive', { default: 'Tạm dừng' })}
                                 </span>
                               )}
                             </div>
@@ -1045,7 +1039,7 @@ function CouponsPage() {
                                 onClick={() => handleEditCoupon(coupon)}
                                 className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors duration-150 text-sm font-medium border border-gray-200"
                               >
-                                Sửa
+                                {t('admin.coupons.edit')}
                               </button>
                               <button
                                 onClick={() => handleToggleStatus(coupon.id, coupon.isActive)}
@@ -1055,13 +1049,13 @@ function CouponsPage() {
                                     : 'bg-primary-100 text-primary-600 hover:bg-primary-200 border-primary-200'
                                 }`}
                               >
-                                {coupon.isActive ? 'Dừng' : 'Hoạt động'}
+                                {coupon.isActive ? t('admin.coupons.stop') : t('admin.coupons.activate', { default: 'Hoạt động' })}
                               </button>
                               <button
                                 onClick={() => handleDeleteCoupon(coupon.id)}
                                 className="px-3 py-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition-colors duration-150 text-sm font-medium border border-red-200"
                               >
-                                Xóa
+                                {t('admin.coupons.delete')}
                               </button>
                             </div>
                           </td>
@@ -1097,13 +1091,13 @@ function CouponsPage() {
                       <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                     </svg>
                   </span>
-                  Thông tin cơ bản
+                  {t('admin.coupons.basicInfo', { default: 'Thông tin cơ bản' })}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Mã giảm giá */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Mã giảm giá *
+                      {t('admin.coupons.code', { default: 'Mã giảm giá' })} *
                     </label>
                     <div className="flex">
                       <input
@@ -1113,7 +1107,7 @@ function CouponsPage() {
                           setForm((prev) => ({ ...prev, code: e.target.value.toUpperCase() }))
                         }
                         className="flex-1 px-2 py-1.5 border border-gray-300 rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                        placeholder="VD: SUMMER2024"
+                        placeholder={t('admin.coupons.codePlaceholder', { default: 'VD: SUMMER2024' })}
                         required
                       />
                       <button
@@ -1121,7 +1115,7 @@ function CouponsPage() {
                         onClick={generateCode}
                         className="px-3 py-1.5 bg-gray-100 text-gray-700 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-200 text-sm"
                       >
-                        Tạo tự động
+                        {t('admin.coupons.generateAuto', { default: 'Tạo tự động' })}
                       </button>
                     </div>
                   </div>
@@ -1129,14 +1123,14 @@ function CouponsPage() {
                   {/* Tên mã giảm giá */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Tên mã giảm giá *
+                      {t('admin.coupons.name', { default: 'Tên mã giảm giá' })} *
                     </label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
                       className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
-                      placeholder="VD: Giảm giá mùa hè"
+                      placeholder={t('admin.coupons.namePlaceholder', { default: 'VD: Giảm giá mùa hè' })}
                       required
                     />
                   </div>
@@ -1151,13 +1145,13 @@ function CouponsPage() {
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-14a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V4z" clipRule="evenodd" />
                     </svg>
                   </span>
-                  Loại và giá trị
+                  {t('admin.coupons.typeAndValue')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Loại giảm giá */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Loại giảm giá *
+                      {t('admin.coupons.type', { default: 'Loại giảm giá' })} *
                     </label>
                     <select
                       value={form.type}
@@ -1178,7 +1172,7 @@ function CouponsPage() {
                   {/* Giá trị giảm */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Giá trị {form.type === 'cashback' ? 'hoàn tiền' : 'giảm'} *
+                      {t('admin.coupons.value', { default: 'Giá trị giảm' })} *
                     </label>
                     <input
                       type="number"
@@ -1241,7 +1235,7 @@ function CouponsPage() {
                   {/* Thời gian hiệu lực */}
                   <div className="md:col-span-2">
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      {t('admin.coupons.validityPeriod')} *
+                      {t('admin.coupons.validityPeriod', { default: 'Thời gian hiệu lực' })} *
                     </label>
                     <div className="flex space-x-2">
                       <input
@@ -1265,7 +1259,7 @@ function CouponsPage() {
                   {/* Đơn hàng tối thiểu có thể sử dụng */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      {t('admin.coupons.minOrder')}
+                      {t('admin.coupons.minOrder', { default: 'Đơn hàng tối thiểu' })}
                     </label>
                     <input
                       type="number"
@@ -1278,14 +1272,14 @@ function CouponsPage() {
                       min="0"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Giá trị đơn hàng tối thiểu để áp dụng mã giảm giá.
+                      {t('admin.coupons.minOrderDesc', { default: 'Giá trị đơn hàng tối thiểu để áp dụng mã giảm giá.' })}
                     </p>
                   </div>
 
                   {/* Trạng thái */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      {t('admin.coupons.status')} *
+                      {t('admin.coupons.status', { default: 'Trạng thái' })} *
                     </label>
                     <select
                       value={form.isPublic ? 'public' : 'private'}
@@ -1316,7 +1310,7 @@ function CouponsPage() {
                   {/* Số lần sử dụng tối đa */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      {t('admin.coupons.totalUsageLimit')}
+                      {t('admin.coupons.totalUsageLimit', { default: 'Số lần sử dụng tối đa' })}
                     </label>
                     <input
                       type="number"
@@ -1329,14 +1323,14 @@ function CouponsPage() {
                       min="0"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      {t('admin.coupons.totalUsageDesc')}
+                      {t('admin.coupons.totalUsageDesc', { default: 'Số lần mã giảm giá có thể được sử dụng' })}
                     </p>
                   </div>
 
                   {/* Số lần mỗi người dùng */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      {t('admin.coupons.perUserLimit')}
+                      {t('admin.coupons.perUserLimit', { default: 'Số lần mỗi người dùng' })}
                     </label>
                     <input
                       type="number"
@@ -1349,7 +1343,7 @@ function CouponsPage() {
                       min="0"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      {t('admin.coupons.perUserLimitDesc')}
+                      {t('admin.coupons.perUserLimitDesc', { default: 'Số lần mã giảm giá có thể được sử dụng bởi mỗi người' })}
                     </p>
                   </div>
                 </div>
@@ -1368,7 +1362,7 @@ function CouponsPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                   </svg>
-                  Hủy
+                  {t('admin.notifications.cancelBtn')}
                 </button>
                 <button
                   type="submit"
@@ -1381,7 +1375,7 @@ function CouponsPage() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Đang xử lý...
+                      {t('admin.coupons.processing', { default: 'Đang xử lý...' })}
                     </>
                   ) : (
                     <>
@@ -1405,7 +1399,7 @@ function CouponsPage() {
             <div className="p-4 border-b border-gray-200">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Chỉnh sửa mã giảm giá: {editingCoupon.code}
+                  {t('admin.coupons.editTitle', { default: 'Chỉnh sửa mã giảm giá:' })} {editingCoupon.code}
                 </h3>
                 <button
                   onClick={closeEditModal}
@@ -1574,14 +1568,14 @@ function CouponsPage() {
                     className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
                     disabled={isCreating}
                   >
-                    Hủy
+                    {t('admin.notifications.cancelBtn')}
                   </button>
                   <button
                     type="submit"
                     disabled={isCreating}
                     className="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-md hover:from-primary-700 hover:to-primary-800 disabled:opacity-50"
                   >
-                    {isCreating ? 'Đang cập nhật...' : 'Cập nhật'}
+                    {isCreating ? t('admin.coupons.updating', { default: 'Đang cập nhật...' }) : t('admin.coupons.updateButton', { default: 'Cập nhật' })}
                   </button>
                 </div>
               </form>
