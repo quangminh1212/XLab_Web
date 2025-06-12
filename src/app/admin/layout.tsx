@@ -176,7 +176,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <Link
                     href="/admin"
                     className={`flex items-center px-4 py-3 rounded text-gray-800 hover:bg-teal-50 transition-colors ${isActive('/admin') || 'text-teal-600'} ${isSidebarCollapsed ? 'justify-center' : ''}`}
-                    title="Dashboard"
+                    title={language === 'vi' ? "Bảng điều khiển" : "Dashboard"}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -192,7 +192,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
                       />
                     </svg>
-                    {!isSidebarCollapsed && <span className="ml-3">Dashboard</span>}
+                    {!isSidebarCollapsed && <span className="ml-3">{language === 'vi' ? 'Bảng điều khiển' : 'Dashboard'}</span>}
                   </Link>
                 </li>
                 <li>
