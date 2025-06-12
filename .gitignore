@@ -26,6 +26,11 @@ cypress/screenshots
 .next/server/app/api/auth/
 .next/server/chunks/
 .next/server/app/api/auth/[...nextauth]/
+.next/cache/webpack/edge-server-development/*.pack
+.next/cache/webpack/edge-server-development/*.pack.gz
+.next/cache/webpack/client-development/*.pack
+.next/cache/webpack/server-development/*.pack
+.next/static/css/app-layout.css
 
 # production
 /build
@@ -111,7 +116,7 @@ hide-warnings.js
 update-gitignore.js
 dev.cmd
 dev.ps1
-powershell-dev.ps1
+powershell-dev.js
 start-dev.bat
 no-trace.bat
 run-fixed.bat
@@ -139,3 +144,16 @@ report.*.json
 .next/static/chunks/
 .next/static/webpack/
 .next/trace
+
+# Thêm các file được gen ra khi dự án đang chạy
+.next/cache/webpack/**/*
+.next/cache/webpack/*/[0-9]*.pack
+.next/cache/webpack/*/[0-9]*.pack.gz
+.next/static/chunks/app-*
+.next/static/chunks/webpack-*
+.next/static/chunks/pages/*
+.next/static/media/*
+.next/static/css/*
+.next/trace
+.next/server/middleware*
+.next/types/package.json

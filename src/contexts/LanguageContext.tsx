@@ -2,7 +2,7 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
-type Language = 'vi' | 'en';
+type Language = 'vi' | 'en' | 'es';
 
 type LanguageContextType = {
   language: Language;
@@ -921,7 +921,7 @@ const translations: Record<Language, Record<string, string>> = {
     'about.subtitle': 'Accompanying your business in the digital transformation journey',
     'about.values': 'Our core values',
     'about.innovation': 'Innovation',
-    'about.innovationDesc': 'Continuously create and innovate technology to deliver the best value',
+    'about.innovationDesc': 'Innovation and creativity in technology to deliver the best value',
     'about.quality': 'Quality',
     'about.qualityDesc': 'Commitment to the highest quality in all products and services',
     'about.integrity': 'Integrity',
@@ -1477,6 +1477,236 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
   },
+  es: {
+    // Admin Notifications
+    'admin.notifications.title': 'Gestión de notificaciones',
+    'admin.notifications.list': 'Lista de notificaciones',
+    'admin.notifications.edit': 'Editar',
+    'admin.notifications.settings': 'Configuración',
+    'admin.notifications.create': 'Crear nueva notificación',
+    'admin.notifications.noNotifications': 'No hay notificaciones',
+    'admin.notifications.noNotificationsDesc': 'Crea la primera notificación para enviar a los usuarios',
+    'admin.notifications.type.promotion': 'Promoción',
+    'admin.notifications.type.update': 'Actualización',
+    'admin.notifications.type.order': 'Pedido',
+    'admin.notifications.type.system': 'Sistema',
+    'admin.notifications.priority.high': 'Alta',
+    'admin.notifications.priority.medium': 'Media',
+    'admin.notifications.priority.low': 'Baja',
+    'admin.notifications.created': 'Creado',
+    'admin.notifications.readCount': 'Leídos',
+    'admin.notifications.sentTo': 'Enviado a',
+    'admin.notifications.expires': 'Expira',
+    'admin.notifications.viewDetails': 'Ver detalles',
+    'admin.notifications.editBtn': 'Editar',
+    'admin.notifications.deleteBtn': 'Eliminar',
+    'admin.notifications.cancelBtn': 'Cancelar',
+    'admin.notifications.createBtn': 'Crear notificación',
+    'admin.notifications.updatingBtn': 'Actualizando...',
+    'admin.notifications.updateBtn': 'Actualizar notificación',
+    'admin.notifications.creatingBtn': 'Creando...',
+    'admin.notifications.form.title': 'Título de la notificación *',
+    'admin.notifications.form.titlePlaceholder': 'Introduce el título de la notificación',
+    'admin.notifications.form.content': 'Contenido de la notificación *',
+    'admin.notifications.form.contentPlaceholder': 'Introduce el contenido de la notificación',
+    'admin.notifications.form.type': 'Tipo de notificación *',
+    'admin.notifications.settings.title': 'Configuración de notificaciones',
+    'admin.notifications.settings.automatic': 'Notificaciones automáticas',
+    'admin.notifications.settings.autoOrder': 'Notificaciones automáticas de pedidos',
+    'admin.notifications.settings.autoPromotion': 'Notificaciones automáticas de promociones',
+    'admin.notifications.settings.autoUpdate': 'Notificaciones automáticas de actualizaciones',
+    'admin.notifications.settings.email': 'Notificaciones por correo electrónico',
+    'admin.notifications.settings.retention': 'Días de retención de notificaciones',
+    'admin.notifications.settings.retentionDesc': 'Las notificaciones se eliminarán automáticamente después de estos días',
+    'admin.notifications.settings.saveBtn': 'Guardar configuración',
+    'admin.notifications.success': '¡La notificación se ha creado con éxito!',
+    'admin.notifications.updateSuccess': '¡La notificación se ha actualizado con éxito!',
+    'admin.notifications.deleteSuccess': '¡La notificación se ha eliminado con éxito!',
+    'admin.notifications.settingsSaved': '¡La configuración de notificaciones se ha guardado!',
+    'admin.notifications.error': 'Ha ocurrido un error al crear la notificación',
+    'admin.notifications.updateError': 'Ha ocurrido un error al actualizar la notificación',
+    'admin.notifications.deleteError': 'Ha ocurrido un error al eliminar la notificación',
+    'admin.notifications.connectionError': 'Ha ocurrido un error al conectar con el servidor',
+    'admin.notifications.people': 'personas',
+    
+    // Terms page
+    'terms.title': 'Términos de servicio',
+    'terms.lastUpdated': 'Última actualización',
+    'terms.section1.title': 'Introducción',
+    'terms.section1.content': '¡Bienvenido a {siteName}! Estos Términos de Servicio ("Términos") rigen el acceso y uso de nuestro sitio web, productos y servicios. Al acceder o utilizar nuestros servicios, acepta cumplir con estos Términos.',
+    'terms.section2.title': 'Su cuenta',
+    'terms.section2.content': 'Para utilizar algunas características de nuestros servicios, debe crear una cuenta. Usted es responsable de mantener la seguridad de su cuenta y contraseña, y también es responsable de todas las actividades que ocurran bajo su cuenta.',
+    'terms.section3.title': 'Contenido y propiedad intelectual',
+    'terms.section3.content': '{companyName} y sus licenciantes poseen todos los derechos, títulos e intereses en los servicios, incluidos todos los derechos de propiedad intelectual relacionados. No puede copiar, modificar, distribuir o vender ninguna parte de nuestros servicios sin nuestro permiso explícito por escrito.',
+    'terms.section4.title': 'Licencia de uso',
+    'terms.section4.content': '{companyName} le otorga una licencia personal, no exclusiva e intransferible para usar nuestros servicios. No puede copiar, modificar, distribuir, vender, alquilar, arrendar o sublicenciar ninguna parte de los servicios.',
+    'terms.section5.title': 'Precios y pagos',
+    'terms.section5.content': 'Para los servicios de pago, acepta pagar todas las tarifas aplicables. Podemos cambiar los precios notificándole con anticipación. Los pagos no son reembolsables a menos que se especifique lo contrario en nuestra política de reembolso.',
+    'terms.section6.title': 'Privacidad y datos personales',
+    'terms.section6.content': 'Recopilamos y procesamos sus datos personales de acuerdo con nuestra',
+    'terms.section6.privacyPolicy': 'Política de Privacidad',
+    'terms.section6.content2': '. Al utilizar nuestros servicios, acepta la recopilación y el procesamiento de datos de acuerdo con esta política.',
+    'terms.section7.title': 'Descargo de responsabilidad',
+    'terms.section7.content': 'Nuestros servicios se proporcionan "tal cual" y "según disponibilidad". {companyName} renuncia a todas las garantías, expresas o implícitas, incluidas, entre otras, las garantías de comerciabilidad, idoneidad para un propósito particular y no infracción.',
+    'terms.section8.title': 'Limitación de responsabilidad',
+    'terms.section8.content': 'En ningún caso {companyName} será responsable por daños indirectos, incidentales, especiales, consecuentes o punitivos, incluida la pérdida de ganancias, ingresos, datos u oportunidades comerciales.',
+    'terms.section9.title': 'Terminación',
+    'terms.section9.content': 'Podemos suspender o terminar su acceso a todos o parte de los servicios si viola estos Términos, o si creemos que su uso puede dañar a {companyName} u otros usuarios.',
+    'terms.section10.title': 'Cambios en los términos',
+    'terms.section10.content': 'Podemos modificar estos Términos en cualquier momento. Si realizamos cambios significativos, se lo notificaremos. El uso continuado de nuestros servicios después de que los cambios entren en vigencia significa que acepta los nuevos términos.',
+    'terms.section11.title': 'Ley aplicable',
+    'terms.section11.content': 'Estos Términos se regirán e interpretarán de acuerdo con las leyes de Vietnam, sin tener en cuenta los conflictos de principios legales.',
+    'terms.section12.title': 'Contacto',
+    'terms.section12.content': 'Si tiene alguna pregunta sobre estos Términos, contáctenos a través de la dirección de correo electrónico:',
+    'terms.section12.content2': 'o visite nuestra página de',
+    'terms.section12.contactPage': 'Contacto',
+    'terms.section12.content3': '.',
+
+    // Header
+    'nav.home': 'Inicio',
+    'nav.products': 'Productos',
+    'nav.about': 'Acerca de',
+    'nav.contact': 'Contacto',
+    'nav.warranty': 'Garantía',
+    'nav.login': 'Iniciar sesión',
+    'nav.logout': 'Cerrar sesión',
+    'nav.account': 'Cuenta',
+    'nav.admin': 'Administración',
+    'auth.signOut': 'Cerrar sesión',
+    'auth.signIn': 'Iniciar sesión',
+    
+    // Login page
+    'login.welcome': '¡Bienvenido de nuevo!',
+    'login.continue': 'Para continuar utilizando los servicios de XLab',
+    'login.connect': 'Conéctate de forma segura con tu cuenta de Google',
+    'login.google': 'Continuar con Google',
+    'login.secure': '100% seguro',
+    'login.terms': 'Al continuar, aceptas nuestros',
+    'login.termsLink': 'Términos de servicio',
+    'login.and': 'y',
+    'login.privacyLink': 'Política de privacidad',
+    'login.ourCompany': '.',
+    
+    // Homepage
+    'home.slogan': '¡Optimiza la eficiencia, minimiza los costos!',
+    'home.search': 'Buscar software, aplicaciones...',
+    'home.loadMore': 'Ver más',
+    'home.aboutTitle': 'Sobre XLab',
+    'home.aboutDesc1': 'XLab es una plataforma que proporciona soluciones de software con IA avanzada integrada para ayudar a los usuarios a mejorar la eficiencia en el trabajo y la vida diaria.',
+    'home.aboutDesc2': 'Nuestra misión es brindar a los vietnamitas la oportunidad de acceder a herramientas para el trabajo, el estudio y el entretenimiento a precios asequibles y con calidad internacional.',
+    'home.learnMore': 'Saber más',
+    'home.domesticProduct': 'Producto nacional',
+    'home.vietnamDevs': 'Desarrollado por ingenieros vietnamitas',
+    'home.support247': 'Soporte 24/7',
+    'home.supportTeam': 'Equipo de soporte dedicado',
+    'home.highSecurity': 'Alta seguridad',
+    'home.encryptedData': 'Datos encriptados de forma segura',
+    'home.reasonablePrice': 'Precio razonable',
+    'home.budgetOptions': 'Múltiples opciones para todos los presupuestos',
+    'home.aiIntegration': 'Integración de IA',
+    'home.aiSupport': 'Tecnología de IA avanzada para ayudarte',
+    'home.continuousUpdates': 'Actualizaciones continuas',
+    'home.newFeatures': 'Siempre actualizado con nuevas funciones',
+    'home.achievements': 'Nuestros logros',
+    'home.customers': 'Clientes satisfechos',
+    'home.softwareSolutions': 'Soluciones de software',
+    'home.yearsExperience': 'Años de experiencia',
+    'home.software': 'Software',
+    'home.services': 'Servicios',
+    'home.featuredProducts': 'Productos destacados',
+    'home.newProducts': 'Nuevos productos',
+    'home.viewAll': 'Ver todos',
+    'home.noSoftware': 'No hay software disponible',
+    'home.updateSoon': 'Actualizaremos los productos de software pronto.',
+    'home.noServices': 'No hay servicios disponibles',
+    'home.updateServices': 'Actualizaremos los servicios pronto.',
+    'home.faq': 'Preguntas frecuentes',
+    'home.faqDesc': 'Respuestas a las preguntas más comunes de los clientes sobre los productos y servicios de XLab',
+    'home.faq1Title': '¿Cómo descargo el software?',
+    'home.faq1Desc': 'Puede descargar software gratuito en la página del producto correspondiente después de iniciar sesión en su cuenta. Para productos de pago, debe completar el pago antes de la descarga.',
+    'home.faq2Title': '¿Cómo activo la licencia?',
+    'home.faq2Desc': 'Después de comprar el producto, recibirá un código de activación por correo electrónico. Abra la aplicación, vaya a "Activar licencia" e ingrese este código para utilizar todas las funciones.',
+    'home.faq3Title': '¿En cuántos dispositivos puedo usarlo?',
+    'home.faq3Desc': 'Cada licencia le permite usar en hasta 3 dispositivos diferentes. Si desea usar en más dispositivos, compre licencias adicionales o actualice a un plan empresarial.',
+    'home.faq4Title': '¿Cuál es la política de reembolso?',
+    'home.faq4Desc': 'Tenemos una política de reembolso dentro de los 7 días posteriores a la compra si el producto no satisface sus necesidades. Póngase en contacto con nuestro equipo de soporte para obtener instrucciones.',
+    'home.faq5Title': '¿Cómo contacto al soporte técnico?',
+    'home.faq5Desc': 'Puede contactar a nuestro equipo de soporte técnico por correo electrónico a support@xlab.vn, línea directa 1900.xxxx o chat en vivo en el sitio web. Respondemos dentro de las 24 horas hábiles.',
+    'home.faq6Title': '¿XLab proporciona soluciones para empresas?',
+    'home.faq6Desc': 'Sí, tenemos paquetes de servicio especiales para empresas con descuentos en precios y soporte técnico especializado. Contáctenos para obtener la solución más adecuada.',
+    'home.moreQuestions': 'Ver más preguntas',
+    'home.ctaTitle': '¿Listo para mejorar la eficiencia de tu trabajo con XLab?',
+    'home.ctaDesc': 'Ofrecemos varios niveles de precios especiales para clientes que compran en grandes cantidades. Cuanto más compra, mayor es el descuento. Nos comprometemos a ofrecerte las mejores soluciones al costo más razonable.',
+    'home.contactUs': 'Contactar para asesoramiento',
+    
+    // Product card
+    'product.addToCart': 'Añadir al carrito',
+    'product.buyNow': 'Comprar ahora',
+    'product.added': 'Añadido',
+    'product.week': 'semana',
+    'product.purchasesPerWeek': '{count}/semana',
+    
+    // About page
+    'about.title': 'Acerca de XLab',
+    'about.subtitle': 'Acompañando a tu empresa en el viaje de transformación digital',
+    'about.values': 'Nuestros valores fundamentales',
+    'about.innovation': 'Innovación',
+    'about.innovationDesc': 'Innovación y creatividad continuas en tecnología para brindar el mejor valor',
+    'about.quality': 'Calidad',
+    'about.qualityDesc': 'Compromiso con la más alta calidad en todos los productos y servicios',
+    'about.integrity': 'Integridad',
+    'about.integrityDesc': 'Mantener la ética empresarial y la transparencia en todas las operaciones',
+    'about.collaboration': 'Colaboración',
+    'about.collaborationDesc': 'Construir relaciones de asociación duraderas basadas en el respeto y la cooperación mutuamente beneficiosa',
+    'about.partnership': 'Colabora con XLab',
+    'about.partnershipDesc': 'Siempre estamos listos para escuchar y acompañar a tu empresa en el viaje de transformación digital y desarrollo sostenible.',
+    'about.contactNow': 'Contactar ahora',
+    'about.exploreServices': 'Explorar servicios',
+
+    // About page - Additional keys
+    'about.pageTitle': 'Sobre nosotros',
+    'about.pageSubtitle': 'XLab - Empresa pionera en el campo del desarrollo de software y soluciones tecnológicas en Vietnam',
+    'about.ourStory': 'Nuestra historia',
+    'about.storyP1': 'XLab fue fundada en 2018 por un grupo de ingenieros de software apasionados con una visión de crear soluciones tecnológicas avanzadas para ayudar a las empresas vietnamitas a mejorar la eficiencia operativa y la competitividad en la era digital.',
+    'about.storyP2': 'Después de más de 10 años de operación y desarrollo, XLab se ha convertido en un socio tecnológico confiable para cientos de empresas nacionales e internacionales, desde startups hasta grandes corporaciones en diversos campos como finanzas, retail, manufactura, educación y salud.',
+    'about.storyP3': 'Estamos orgullosos de nuestro talentoso equipo apasionado por la tecnología, con más de 100 expertos en software, ingenieros de sistemas y consultores experimentados, siempre dedicados al objetivo de proporcionar soluciones óptimas para socios y clientes.',
+    'about.mission': 'Misión',
+    'about.missionDesc': 'La misión de XLab es aplicar tecnología avanzada para crear excelentes soluciones de software que ayuden a las empresas vietnamitas a optimizar procesos, aumentar la productividad y desarrollarse de manera sostenible en la era digital. Nos comprometemos a ofrecer productos y servicios de alta calidad que satisfagan las diversas necesidades de los clientes, mientras contribuimos al desarrollo de la industria de tecnología de la información de Vietnam.',
+    'about.vision': 'Visión',
+    'about.visionDesc': 'XLab aspira a convertirse en una empresa tecnológica líder en Vietnam y el sudeste asiático en el campo del desarrollo de software y la provisión de soluciones integrales de tecnología de la información. Nos esforzamos por ser un socio confiable y a largo plazo para las empresas en su viaje de transformación digital, así como un entorno de trabajo ideal para que los talentos tecnológicos desarrollen sus carreras.',
+    'about.coreValues': 'Valores fundamentales',
+    'about.coreValuesDesc': 'Los valores que forman nuestra cultura y guían todas nuestras actividades',
+    'about.value1': 'Calidad',
+    'about.value1Desc': 'Poner la calidad del producto y servicio en primer lugar, mejorando continuamente para lograr la excelencia',
+    'about.value2': 'Innovación',
+    'about.value2Desc': 'Fomentar el pensamiento creativo, atreverse a experimentar con nuevas ideas y tecnologías avanzadas',
+    'about.value3': 'Colaboración',
+    'about.value3Desc': 'Construir relaciones de asociación duraderas basadas en el respeto y la cooperación mutuamente beneficiosa',
+    'about.value4': 'Responsabilidad',
+    'about.value4Desc': 'Trabajar con un alto sentido de responsabilidad, comprometidos a cumplir todos los compromisos con los clientes',
+    
+    // Contact page
+    'contact.title': 'Contacta con nosotros',
+    'contact.subtitle': 'Contacta con nosotros para recibir asesoramiento sobre la solución más adecuada para tu empresa.',
+    'contact.pageTitle': 'Contacta con nosotros',
+    'contact.pageSubtitle': 'Contacta con nosotros para recibir asesoramiento sobre la solución más adecuada para tu empresa.',
+    'contact.sendMessage': 'Envíanos un mensaje',
+    'contact.yourName': 'Tu nombre completo',
+    'contact.yourEmail': 'Tu correo electrónico',
+    'contact.yourPhone': 'Número de teléfono',
+    'contact.yourCompany': 'Empresa',
+    'contact.serviceInterest': 'Servicio que te interesa',
+    'contact.selectService': '-- Seleccionar servicio --',
+    'contact.softwareDev': 'Desarrollo de software',
+    'contact.cloudServices': 'Servicios en la nube',
+    'contact.consulting': 'Consultoría tecnológica',
+    'contact.techSupport': 'Soporte técnico',
+    'contact.other': 'Otro',
+    'contact.message': 'Mensaje',
+    'contact.send': 'Enviar mensaje',
+    'contact.sending': 'Enviando...',
+    'contact.info': 'Información de contacto'
+  }
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
@@ -1485,17 +1715,16 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage);
     }
   }, []);
 
   // Lưu ngôn ngữ vào localStorage khi thay đổi
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
     localStorage.setItem('language', lang);
-    document.documentElement.lang = lang;
+    setLanguageState(lang);
   };
 
   // Hàm dịch văn bản
