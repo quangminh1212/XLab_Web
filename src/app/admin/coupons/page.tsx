@@ -719,9 +719,9 @@ function CouponsPage() {
                                       onBlur={() => saveInlineEdit(coupon.id, 'type')}
                                       autoFocus
                                     >
-                                      <option value="percentage">Phần trăm (%)</option>
-                                      <option value="fixed">Cố định (VNĐ)</option>
-                                      <option value="cashback">Hoàn tiền vào tài khoản</option>
+                                      <option value="percentage">{t('admin.coupons.percentageType')} (%)</option>
+                                      <option value="fixed">{t('admin.coupons.fixedType')} (VNĐ)</option>
+                                      <option value="cashback">{t('admin.coupons.cashbackType')}</option>
                                     </select>
                                     <button
                                       onClick={() => saveInlineEdit(coupon.id, 'type')}
@@ -1011,7 +1011,7 @@ function CouponsPage() {
                                   className="border border-gray-300 rounded px-2 py-1 text-xs"
                                   autoFocus
                                 >
-                                  <option value="public">Công khai</option>
+                                  <option value="public">{t('admin.coupons.public')}</option>
                                   <option value="private">Riêng tư</option>
                                 </select>
                               ) : (
@@ -1021,7 +1021,7 @@ function CouponsPage() {
                                     startInlineEdit(coupon.id, 'isPublic', coupon.isPublic)
                                   }
                                 >
-                                  {coupon.isPublic ? 'Công khai' : 'Riêng tư'}
+                                  {coupon.isPublic ? t('admin.coupons.public') : t('admin.coupons.private')}
                                 </span>
                               )}
                               {isExpired(coupon.endDate) ? (
@@ -1085,7 +1085,7 @@ function CouponsPage() {
                   <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                 </svg>
               </span>
-              Tạo mã giảm giá mới
+              {t('admin.coupons.createTitle')}
             </h2>
 
             <form onSubmit={handleCreateCoupon} className="space-y-6">
@@ -1169,9 +1169,9 @@ function CouponsPage() {
                       }
                       className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     >
-                      <option value="percentage">Phần trăm (%)</option>
-                      <option value="fixed">Số tiền cố định (VNĐ)</option>
-                      <option value="cashback">Hoàn tiền vào tài khoản</option>
+                      <option value="percentage">{t('admin.coupons.percentageType')} (%)</option>
+                      <option value="fixed">{t('admin.coupons.fixedType')} (VNĐ)</option>
+                      <option value="cashback">{t('admin.coupons.cashbackType')}</option>
                     </select>
                   </div>
 
@@ -1235,13 +1235,13 @@ function CouponsPage() {
                       <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                     </svg>
                   </span>
-                  Thời gian và điều kiện
+                  {t('admin.coupons.timeAndConditions')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Thời gian hiệu lực */}
                   <div className="md:col-span-2">
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Thời gian hiệu lực *
+                      {t('admin.coupons.validityPeriod')} *
                     </label>
                     <div className="flex space-x-2">
                       <input
@@ -1265,7 +1265,7 @@ function CouponsPage() {
                   {/* Đơn hàng tối thiểu có thể sử dụng */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Đơn hàng tối thiểu có thể sử dụng
+                      {t('admin.coupons.minOrder')}
                     </label>
                     <input
                       type="number"
@@ -1285,7 +1285,7 @@ function CouponsPage() {
                   {/* Trạng thái */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Trạng thái *
+                      {t('admin.coupons.status')} *
                     </label>
                     <select
                       value={form.isPublic ? 'public' : 'private'}
@@ -1295,7 +1295,7 @@ function CouponsPage() {
                       className="w-full px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       required
                     >
-                      <option value="public">Công khai</option>
+                      <option value="public">{t('admin.coupons.public')}</option>
                       <option value="private">Riêng tư</option>
                     </select>
                   </div>
@@ -1310,13 +1310,13 @@ function CouponsPage() {
                       <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                     </svg>
                   </span>
-                  Giới hạn sử dụng
+                  {t('admin.coupons.usageLimits')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Số lần sử dụng tối đa */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Số lần sử dụng tối đa (0 = không giới hạn)
+                      {t('admin.coupons.totalUsageLimit')}
                     </label>
                     <input
                       type="number"
@@ -1329,14 +1329,14 @@ function CouponsPage() {
                       min="0"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Số lượt sử dụng được áp dụng cho toàn bộ mã giảm giá.
+                      {t('admin.coupons.totalUsageDesc')}
                     </p>
                   </div>
 
                   {/* Số lần mỗi người dùng */}
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Số lần mỗi người có thể sử dụng (0 = không giới hạn)
+                      {t('admin.coupons.perUserLimit')}
                     </label>
                     <input
                       type="number"
@@ -1349,7 +1349,7 @@ function CouponsPage() {
                       min="0"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      Giới hạn số lần mỗi người dùng có thể sử dụng mã giảm giá này.
+                      {t('admin.coupons.perUserLimitDesc')}
                     </p>
                   </div>
                 </div>
@@ -1388,7 +1388,7 @@ function CouponsPage() {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586V4z" clipRule="evenodd" />
                       </svg>
-                      Tạo mã giảm giá
+                      {t('admin.coupons.createButton')}
                     </>
                   )}
                 </button>
@@ -1451,7 +1451,7 @@ function CouponsPage() {
                       type="text"
                       value={form.name}
                       onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       placeholder="VD: Giảm giá mùa hè"
                       required
                     />
@@ -1469,11 +1469,11 @@ function CouponsPage() {
                           type: e.target.value as 'percentage' | 'fixed' | 'cashback',
                         }))
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                     >
-                      <option value="percentage">Phần trăm (%)</option>
-                      <option value="fixed">Số tiền cố định (VNĐ)</option>
-                      <option value="cashback">Hoàn tiền vào tài khoản</option>
+                      <option value="percentage">{t('admin.coupons.percentageType')} (%)</option>
+                      <option value="fixed">{t('admin.coupons.fixedType')} (VNĐ)</option>
+                      <option value="cashback">{t('admin.coupons.cashbackType')}</option>
                     </select>
                   </div>
                   {/* Giá trị giảm */}
@@ -1487,7 +1487,7 @@ function CouponsPage() {
                       onChange={(e) =>
                         setForm((prev) => ({ ...prev, value: Number(e.target.value) }))
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       placeholder={form.type === 'percentage' || form.type === 'cashback' ? 'VD: 10' : 'VD: 50000'}
                       min="0"
                       max={form.type === 'percentage' || form.type === 'cashback' ? 100 : undefined}
@@ -1513,7 +1513,7 @@ function CouponsPage() {
                         onChange={(e) =>
                           setForm((prev) => ({ ...prev, maxDiscount: Number(e.target.value) }))
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                         placeholder="VD: 100000"
                         min="0"
                       />
@@ -1534,8 +1534,7 @@ function CouponsPage() {
                         type="date"
                         value={form.startDate}
                         onChange={(e) =>
-                          setForm((prev) => ({ ...prev, startDate: e.target.value }))
-                        }
+                          setForm((prev) => ({ ...prev, startDate: e.target.value }))}
                         className="flex-1 px-2 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                         required
                       />
@@ -1562,7 +1561,7 @@ function CouponsPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
                       required
                     >
-                      <option value="public">Công khai</option>
+                      <option value="public">{t('admin.coupons.public')}</option>
                       <option value="private">Riêng tư</option>
                     </select>
                   </div>
