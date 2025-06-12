@@ -157,10 +157,3 @@ report.*.json
 .next/trace
 .next/server/middleware*
 .next/types/package.json
-
-# Next.js build output
-.next/
-.next/cache/
-.next/static/
-.next/server/
-.next/cache/webpack/

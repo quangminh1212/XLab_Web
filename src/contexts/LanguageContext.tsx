@@ -1728,14 +1728,14 @@ export const translations: Record<Language, Record<string, string>> = {
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  // Mặc định là tiếng Tây Ban Nha
-  const [language, setLanguageState] = useState<Language>('es');
+  // Mặc định là tiếng Việt
+  const [language, setLanguageState] = useState<Language>('vi');
 
-  // Luôn ưu tiên tiếng Tây Ban Nha mặc định
+  // Luôn ưu tiên tiếng Việt mặc định
   useEffect(() => {
-    // Đặt ngôn ngữ về tiếng Tây Ban Nha và lưu vào localStorage
-    localStorage.setItem('language', 'es');
-    setLanguageState('es');
+    // Đặt ngôn ngữ về tiếng Việt và lưu vào localStorage
+    localStorage.setItem('language', 'vi');
+    setLanguageState('vi');
   }, []);
 
   // Lưu ngôn ngữ vào localStorage khi thay đổi
