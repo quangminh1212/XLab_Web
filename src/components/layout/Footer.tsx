@@ -9,23 +9,16 @@ import { useState, useEffect } from 'react';
 export default function Footer() {
   const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
-  const [isMounted, setIsMounted] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   // Đảm bảo chỉ render khi đã ở client-side để tránh hydration mismatch
   useEffect(() => {
-    setIsMounted(true);
+    setIsClient(true);
   }, []);
 
-  // Trả về div trống với cùng class để đảm bảo HTML khớp nhau giữa server và client
-  if (!isMounted) {
-    return (
-      <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden">
-        {/* Giữ cấu trúc DOM giống với phiên bản đầy đủ, nhưng không có nội dung */}
-        <div className="absolute inset-0 opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent"></div>
-        <div className="relative container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-6 sm:pb-8"></div>
-      </footer>
-    );
+  // Nếu chưa ở client, trả về div trống để tránh hydration error
+  if (!isClient) {
+    return <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-200 overflow-hidden"></footer>;
   }
 
   return (

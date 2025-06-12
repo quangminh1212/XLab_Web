@@ -44,7 +44,6 @@ const Header = () => {
   const [lastCouponFetch, setLastCouponFetch] = React.useState<number>(0);
   const [showNotification, setShowNotification] = React.useState(false);
   const [notificationMessage, setNotificationMessage] = React.useState('');
-  const [isMounted, setIsMounted] = useState(false);
 
   // Lấy thông tin giỏ hàng
   const { itemCount } = useCart();
@@ -57,42 +56,6 @@ const Header = () => {
 
   // Sử dụng NotificationContext
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
-
-  // Đảm bảo component chỉ render đầy đủ ở client-side
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Nếu chưa được mount ở client, render phiên bản đơn giản để tránh hydration mismatch
-  if (!isMounted) {
-    return (
-      <header className="sticky top-0 z-40 w-full bg-white border-b border-slate-200/80 shadow-sm">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                {/* Logo placeholder */}
-                <div className="h-8 w-32"></div>
-              </div>
-            </div>
-            <div className="hidden md:block">
-              <div className="flex items-center space-x-4">
-                {/* Nav placeholders */}
-                <div className="h-4 w-16 bg-slate-100 rounded"></div>
-                <div className="h-4 w-20 bg-slate-100 rounded"></div>
-                <div className="h-4 w-16 bg-slate-100 rounded"></div>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {/* Action buttons placeholders */}
-              <div className="h-8 w-8 bg-slate-100 rounded-full"></div>
-              <div className="h-8 w-8 bg-slate-100 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </header>
-    );
-  }
 
   // Thêm useEffect để fetch vouchers công khai và vouchers của người dùng
   const fetchCoupons = async () => {
