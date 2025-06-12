@@ -1723,7 +1723,37 @@ export const translations: Record<Language, Record<string, string>> = {
     'contact.message': 'Mensaje',
     'contact.send': 'Enviar mensaje',
     'contact.sending': 'Enviando...',
-    'contact.info': 'Información de contacto'
+    'contact.info': 'Información de contacto',
+
+    // Footer
+    'footer.aboutLink': 'Acerca de nosotros',
+    'footer.contactLink': 'Contacto',
+    'footer.productsAndServices': 'Productos y servicios',
+    'footer.products': 'Productos',
+    'footer.services': 'Servicios',
+    'footer.testimonials': 'Testimonios',
+    'footer.navigationLinks': 'Navegación',
+    'footer.pricing': 'Precios',
+    'footer.copyright': 'Derechos reservados a',
+    'footer.acceptedPayments': 'Pagos aceptados',
+    'footer.companyDescription1': 'XLab es una empresa líder en el campo de soluciones tecnológicas y desarrollo de software profesional para empresas.',
+    'footer.companyDescription2': 'Con un equipo de expertos experimentados, XLab se enorgullece de ser un socio de confianza para más de 500+ empresas.',
+    'footer.customers': '500+ Clientes',
+    'footer.years': '5+ Años',
+    'footer.support': 'Soporte 24/7',
+    'footer.company': 'Empresa',
+    'footer.careers': 'Carreras',
+    'footer.terms': 'Términos de servicio',
+    'footer.privacy': 'Política de privacidad',
+    'footer.softwareDev': 'Desarrollo de software',
+    'footer.consulting': 'Consultoría tecnológica',
+    'footer.cloudServices': 'Servicios en la nube',
+    'footer.techSupport': 'Soporte técnico',
+    'footer.resources': 'Recursos',
+    'footer.blog': 'Blog',
+    'footer.documentation': 'Documentación',
+    'footer.faq': 'Preguntas frecuentes',
+    'footer.followUs': 'Síguenos'
   }
 };
 
