@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import withAdminAuth from '@/components/withAdminAuth';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Notification {
   id: string;
@@ -29,6 +30,7 @@ interface NotificationForm {
 
 function NotificationsPage() {
   const { data: session } = useSession();
+  const { t } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -66,11 +68,11 @@ function NotificationsPage() {
         const data = await response.json();
         setNotifications(data.notifications || []);
       } else {
-        setErrorMessage('Không thể tải danh sách thông báo');
+        setErrorMessage(t('admin.notifications.error'));
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
-      setErrorMessage('Đã xảy ra lỗi khi tải thông báo');
+      setErrorMessage(t('admin.notifications.connectionError'));
     } finally {
       setIsLoading(false);
     }
@@ -101,10 +103,10 @@ function NotificationsPage() {
         title: form.title,
         content: form.content,
         type: form.type,
-        link: undefined,
-        priority: 'medium',
-        expiresAt: undefined,
-        targetUsers: [],
+        link: undefined as string | undefined,
+        priority: 'medium' as const,
+        expiresAt: undefined as string | undefined,
+        targetUsers: [] as string[],
       };
 
       const response = await fetch('/api/notifications', {
@@ -118,16 +120,16 @@ function NotificationsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage('Thông báo đã được tạo thành công!');
+        setSuccessMessage(t('admin.notifications.success'));
         resetForm();
         fetchNotifications(); // Refresh list
         setActiveTab('list'); // Quay về danh sách ngay lập tức
       } else {
-        setErrorMessage(data.error || 'Đã xảy ra lỗi khi tạo thông báo');
+        setErrorMessage(data.error || t('admin.notifications.error'));
       }
     } catch (error) {
       console.error('Error creating notification:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+      setErrorMessage(t('admin.notifications.connectionError'));
     } finally {
       setIsCreating(false);
     }
@@ -147,10 +149,10 @@ function NotificationsPage() {
         title: form.title,
         content: form.content,
         type: form.type,
-        link: undefined,
-        priority: 'medium',
-        expiresAt: undefined,
-        targetUsers: [],
+        link: undefined as string | undefined,
+        priority: 'medium' as const,
+        expiresAt: undefined as string | undefined,
+        targetUsers: [] as string[],
       };
 
       const response = await fetch(`/api/admin/notifications/${isEditing}`, {
@@ -164,17 +166,17 @@ function NotificationsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage('Thông báo đã được cập nhật thành công!');
+        setSuccessMessage(t('admin.notifications.updateSuccess'));
         resetForm();
         setIsEditing(null);
         fetchNotifications();
         setActiveTab('list'); // Quay về danh sách ngay lập tức
       } else {
-        setErrorMessage(data.error || 'Đã xảy ra lỗi khi cập nhật thông báo');
+        setErrorMessage(data.error || t('admin.notifications.updateError'));
       }
     } catch (error) {
       console.error('Error updating notification:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+      setErrorMessage(t('admin.notifications.connectionError'));
     } finally {
       setIsCreating(false);
     }
@@ -188,15 +190,15 @@ function NotificationsPage() {
       });
 
       if (response.ok) {
-        setSuccessMessage('Thông báo đã được xóa thành công!');
+        setSuccessMessage(t('admin.notifications.deleteSuccess'));
         fetchNotifications();
       } else {
         const data = await response.json();
-        setErrorMessage(data.error || 'Đã xảy ra lỗi khi xóa thông báo');
+        setErrorMessage(data.error || t('admin.notifications.deleteError'));
       }
     } catch (error) {
       console.error('Error deleting notification:', error);
-      setErrorMessage('Đã xảy ra lỗi khi kết nối đến máy chủ');
+      setErrorMessage(t('admin.notifications.connectionError'));
     }
   };
 
@@ -283,7 +285,7 @@ function NotificationsPage() {
   // Save settings
   const handleSaveSettings = () => {
     localStorage.setItem('admin_notification_settings', JSON.stringify(notificationSettings));
-    setSuccessMessage('Cài đặt thông báo đã được lưu!');
+    setSuccessMessage(t('admin.notifications.settingsSaved'));
     setTimeout(() => setSuccessMessage(''), 3000);
   };
 
@@ -298,7 +300,7 @@ function NotificationsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Quản lý thông báo</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('admin.notifications.title')}</h1>
       </div>
 
       {/* Messages */}
@@ -326,7 +328,7 @@ function NotificationsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Danh sách thông báo ({notifications.length})
+              {t('admin.notifications.list')} ({notifications.length})
             </button>
             {isEditing && (
               <button
@@ -337,7 +339,7 @@ function NotificationsPage() {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Chỉnh sửa
+                {t('admin.notifications.edit')}
               </button>
             )}
             <button
@@ -348,7 +350,7 @@ function NotificationsPage() {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              Cài đặt
+              {t('admin.notifications.settings')}
             </button>
           </nav>
         </div>
@@ -381,7 +383,7 @@ function NotificationsPage() {
                       d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                     />
                   </svg>
-                  <span className="text-lg font-medium">Tạo thông báo mới</span>
+                  <span className="text-lg font-medium">{t('admin.notifications.create')}</span>
                 </button>
               </div>
 
@@ -401,30 +403,30 @@ function NotificationsPage() {
                               className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(notification.priority)}`}
                             >
                               {notification.priority === 'high'
-                                ? 'Cao'
+                                ? t('admin.notifications.priority.high')
                                 : notification.priority === 'medium'
-                                  ? 'Trung bình'
-                                  : 'Thấp'}
+                                  ? t('admin.notifications.priority.medium')
+                                  : t('admin.notifications.priority.low')}
                             </span>
                             <span className="px-2 py-1 text-xs font-medium bg-primary-100 text-primary-600 rounded-full">
                               {notification.type === 'promotion'
-                                ? 'Khuyến mãi'
+                                ? t('admin.notifications.type.promotion')
                                 : notification.type === 'update'
-                                  ? 'Cập nhật'
+                                  ? t('admin.notifications.type.update')
                                   : notification.type === 'order'
-                                    ? 'Đơn hàng'
-                                    : 'Hệ thống'}
+                                    ? t('admin.notifications.type.order')
+                                    : t('admin.notifications.type.system')}
                             </span>
                           </div>
                           <p className="text-gray-600 mb-2">{notification.content}</p>
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
-                            <span>Tạo: {formatDate(notification.createdAt)}</span>
-                            <span>Đã đọc: {getReadCount(notification)} người</span>
+                            <span>{t('admin.notifications.created')}: {formatDate(notification.createdAt)}</span>
+                            <span>{t('admin.notifications.readCount')}: {getReadCount(notification)} {t('admin.notifications.people')}</span>
                             {notification.targetUsers && notification.targetUsers.length > 0 && (
-                              <span>Gửi tới: {notification.targetUsers.length} người</span>
+                              <span>{t('admin.notifications.sentTo')}: {notification.targetUsers.length} {t('admin.notifications.people')}</span>
                             )}
                             {notification.expiresAt && (
-                              <span>Hết hạn: {formatDate(notification.expiresAt)}</span>
+                              <span>{t('admin.notifications.expires')}: {formatDate(notification.expiresAt)}</span>
                             )}
                           </div>
                           {notification.link && (
@@ -433,7 +435,7 @@ function NotificationsPage() {
                                 href={notification.link}
                                 className="text-primary-600 hover:text-primary-700 text-sm"
                               >
-                                Xem chi tiết →
+                                {t('admin.notifications.viewDetails')} →
                               </a>
                             </div>
                           )}
@@ -444,13 +446,13 @@ function NotificationsPage() {
                           onClick={() => handleEditNotification(notification)}
                           className="px-3 py-1.5 text-sm bg-[#00A19A] text-white rounded hover:bg-[#008B85] transition-colors"
                         >
-                          Chỉnh sửa
+                          {t('admin.notifications.editBtn')}
                         </button>
                         <button
                           onClick={() => handleDeleteNotification(notification.id)}
                           className="px-3 py-1.5 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                         >
-                          Xóa
+                          {t('admin.notifications.deleteBtn')}
                         </button>
                       </div>
                     </div>
@@ -459,8 +461,8 @@ function NotificationsPage() {
               ) : (
                 <div className="text-center py-12">
                   <div className="text-gray-400 text-6xl mb-4">📢</div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có thông báo nào</h3>
-                  <p className="text-gray-500">Tạo thông báo đầu tiên để gửi tới người dùng</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t('admin.notifications.noNotifications')}</h3>
+                  <p className="text-gray-500">{t('admin.notifications.noNotificationsDesc')}</p>
                 </div>
               )}
             </div>
@@ -469,12 +471,12 @@ function NotificationsPage() {
           {/* Form tạo thông báo */}
           {activeTab === 'create' && (
             <div className="max-w-2xl">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">Tạo thông báo mới</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.notifications.create')}</h2>
 
               <form onSubmit={handleCreateNotification} className="space-y-6">
                 <div>
                   <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                    Tiêu đề thông báo *
+                    {t('admin.notifications.form.title')}
                   </label>
                   <input
                     type="text"
@@ -483,13 +485,13 @@ function NotificationsPage() {
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
-                    placeholder="Nhập tiêu đề thông báo"
+                    placeholder={t('admin.notifications.form.titlePlaceholder')}
                   />
                 </div>
 
                 <div>
                   <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-                    Nội dung thông báo *
+                    {t('admin.notifications.form.content')}
                   </label>
                   <textarea
                     id="content"
@@ -498,13 +500,13 @@ function NotificationsPage() {
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
-                    placeholder="Nhập nội dung thông báo"
+                    placeholder={t('admin.notifications.form.contentPlaceholder')}
                   />
                 </div>
 
                 <div>
                   <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
-                    Loại thông báo *
+                    {t('admin.notifications.form.type')}
                   </label>
                   <select
                     id="type"
@@ -512,10 +514,10 @@ function NotificationsPage() {
                     onChange={(e) => setForm({ ...form, type: e.target.value as any })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="system">Hệ thống</option>
-                    <option value="promotion">Khuyến mãi</option>
-                    <option value="update">Cập nhật</option>
-                    <option value="order">Đơn hàng</option>
+                    <option value="system">{t('admin.notifications.type.system')}</option>
+                    <option value="promotion">{t('admin.notifications.type.promotion')}</option>
+                    <option value="update">{t('admin.notifications.type.update')}</option>
+                    <option value="order">{t('admin.notifications.type.order')}</option>
                   </select>
                 </div>
 
@@ -525,14 +527,14 @@ function NotificationsPage() {
                     onClick={() => setActiveTab('list')}
                     className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
                   >
-                    Hủy
+                    {t('admin.notifications.cancelBtn')}
                   </button>
                   <button
                     type="submit"
                     disabled={isCreating}
                     className="px-4 py-2 bg-[#00A19A] text-white rounded-md hover:bg-[#008B85] disabled:bg-gray-400"
                   >
-                    {isCreating ? 'Đang tạo...' : 'Tạo thông báo'}
+                    {isCreating ? t('admin.notifications.creatingBtn') : t('admin.notifications.createBtn')}
                   </button>
                 </div>
               </form>
@@ -542,7 +544,7 @@ function NotificationsPage() {
           {/* Form chỉnh sửa thông báo */}
           {activeTab === 'edit' && (
             <div className="max-w-2xl">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">Chỉnh sửa thông báo</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.notifications.edit')}</h2>
 
               <form onSubmit={handleUpdateNotification} className="space-y-6">
                 <div>
@@ -550,7 +552,7 @@ function NotificationsPage() {
                     htmlFor="edit-title"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Tiêu đề thông báo *
+                    {t('admin.notifications.form.title')}
                   </label>
                   <input
                     type="text"
@@ -559,7 +561,7 @@ function NotificationsPage() {
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
-                    placeholder="Nhập tiêu đề thông báo"
+                    placeholder={t('admin.notifications.form.titlePlaceholder')}
                   />
                 </div>
 
@@ -568,7 +570,7 @@ function NotificationsPage() {
                     htmlFor="edit-content"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Nội dung thông báo *
+                    {t('admin.notifications.form.content')}
                   </label>
                   <textarea
                     id="edit-content"
@@ -577,7 +579,7 @@ function NotificationsPage() {
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
-                    placeholder="Nhập nội dung thông báo"
+                    placeholder={t('admin.notifications.form.contentPlaceholder')}
                   />
                 </div>
 
@@ -586,7 +588,7 @@ function NotificationsPage() {
                     htmlFor="edit-type"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Loại thông báo *
+                    {t('admin.notifications.form.type')}
                   </label>
                   <select
                     id="edit-type"
@@ -594,10 +596,10 @@ function NotificationsPage() {
                     onChange={(e) => setForm({ ...form, type: e.target.value as any })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="system">Hệ thống</option>
-                    <option value="promotion">Khuyến mãi</option>
-                    <option value="update">Cập nhật</option>
-                    <option value="order">Đơn hàng</option>
+                    <option value="system">{t('admin.notifications.type.system')}</option>
+                    <option value="promotion">{t('admin.notifications.type.promotion')}</option>
+                    <option value="update">{t('admin.notifications.type.update')}</option>
+                    <option value="order">{t('admin.notifications.type.order')}</option>
                   </select>
                 </div>
 
@@ -611,14 +613,14 @@ function NotificationsPage() {
                     }}
                     className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
                   >
-                    Hủy
+                    {t('admin.notifications.cancelBtn')}
                   </button>
                   <button
                     type="submit"
                     disabled={isCreating}
                     className="px-4 py-2 bg-[#00A19A] text-white rounded-md hover:bg-[#008B85] disabled:bg-gray-400"
                   >
-                    {isCreating ? 'Đang cập nhật...' : 'Cập nhật thông báo'}
+                    {isCreating ? t('admin.notifications.updatingBtn') : t('admin.notifications.updateBtn')}
                   </button>
                 </div>
               </form>
@@ -628,15 +630,15 @@ function NotificationsPage() {
           {/* Cài đặt */}
           {activeTab === 'settings' && (
             <div className="max-w-2xl">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">Cài đặt thông báo</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.notifications.settings.title')}</h2>
 
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-md font-medium text-gray-900">Thông báo tự động</h3>
+                  <h3 className="text-md font-medium text-gray-900">{t('admin.notifications.settings.automatic')}</h3>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Thông báo đơn hàng tự động</span>
+                      <span className="text-gray-700">{t('admin.notifications.settings.autoOrder')}</span>
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
@@ -653,7 +655,7 @@ function NotificationsPage() {
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Thông báo khuyến mãi tự động</span>
+                      <span className="text-gray-700">{t('admin.notifications.settings.autoPromotion')}</span>
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
@@ -670,7 +672,7 @@ function NotificationsPage() {
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Thông báo cập nhật tự động</span>
+                      <span className="text-gray-700">{t('admin.notifications.settings.autoUpdate')}</span>
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
@@ -687,7 +689,7 @@ function NotificationsPage() {
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Thông báo qua email</span>
+                      <span className="text-gray-700">{t('admin.notifications.settings.email')}</span>
                       <label className="inline-flex items-center">
                         <input
                           type="checkbox"
@@ -710,7 +712,7 @@ function NotificationsPage() {
                     htmlFor="retentionDays"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Số ngày lưu trữ thông báo
+                    {t('admin.notifications.settings.retention')}
                   </label>
                   <input
                     type="number"
@@ -727,7 +729,7 @@ function NotificationsPage() {
                     max="365"
                   />
                   <p className="text-sm text-gray-500 mt-1">
-                    Thông báo sẽ tự động bị xóa sau số ngày này
+                    {t('admin.notifications.settings.retentionDesc')}
                   </p>
                 </div>
 
@@ -736,7 +738,7 @@ function NotificationsPage() {
                     onClick={handleSaveSettings}
                     className="px-4 py-2 bg-[#00A19A] text-white rounded-md hover:bg-[#008B85]"
                   >
-                    Lưu cài đặt
+                    {t('admin.notifications.settings.saveBtn')}
                   </button>
                 </div>
               </div>
