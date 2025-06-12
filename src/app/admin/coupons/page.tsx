@@ -1012,7 +1012,7 @@ function CouponsPage() {
                                   autoFocus
                                 >
                                   <option value="public">{t('admin.coupons.public')}</option>
-                                  <option value="private">Riêng tư</option>
+                                  <option value="private">{t('admin.coupons.private')}</option>
                                 </select>
                               ) : (
                                 <span
@@ -1296,7 +1296,7 @@ function CouponsPage() {
                       required
                     >
                       <option value="public">{t('admin.coupons.public')}</option>
-                      <option value="private">Riêng tư</option>
+                      <option value="private">{t('admin.coupons.private')}</option>
                     </select>
                   </div>
                 </div>
@@ -1562,7 +1562,7 @@ function CouponsPage() {
                       required
                     >
                       <option value="public">{t('admin.coupons.public')}</option>
-                      <option value="private">Riêng tư</option>
+                      <option value="private">{t('admin.coupons.private')}</option>
                     </select>
                   </div>
                 </div>
