@@ -6,6 +6,7 @@
 [![ESLint](https://img.shields.io/badge/ESLint-9.0.0-4B32C3?style=flat&logo=eslint)](https://eslint.org/)
 [![Prettier](https://img.shields.io/badge/Prettier-3.5.3-F7B93E?style=flat&logo=prettier)](https://prettier.io/)
 [![Jest](https://img.shields.io/badge/Jest-29.7.0-C21325?style=flat&logo=jest)](https://jestjs.io/)
+[![Security](https://img.shields.io/badge/Security-AES_256-green?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMzM2IDUwOC4ybC0xNi0xNkwyMTYgMzkyIDEyOCAzMDRsLTE2IDE2TDIxNiA0MjR6TTkgNDMuN2wxMC43LTEwLjdMNjQgNzdsNTQuOS01NC45TDEyOSAzMi44TDY0IDk3LjlMMTUuMSA0OUMxMi41IDQ2LjQgOS4yIDQ0LjkgNS43IDQ0LjlTLTEgNDYuNCAtMy42IDQ5cy0yLjUgNi44LTIuNSAxMC4zIDEgNi44IDMuNiA5LjRMOSA4MC4zbC03LjEgN0MtLjYgODkuOC0yIDkyLjgtMiA5NnMxLjQgNi4yIDMuOSA4LjdsMTYgMTYgMTYtMTZMNjQgNDQuOXoiLz48L3N2Zz4=)](SECURITY.md)
 [![License](https://img.shields.io/badge/license-ISC-green?style=flat)](LICENSE)
 
 > Web application for software products and services marketplace - Tối ưu theo chuẩn quốc tế
@@ -24,6 +25,7 @@
 - [Performance Optimizations](#-performance-optimizations)
 - [Continuous Integration](#-continuous-integration)
 - [Security](#-security)
+- [Secure Data Storage System](#-secure-data-storage-system)
 - [License](#-license)
 
 ## ✨ Features
@@ -39,6 +41,8 @@
 - **Performance Optimized**: Fast loading with optimized assets and code splitting
 - **Accessibility Compliant**: WCAG 2.1 AA compliant
 - **Security Best Practices**: Implemented security headers and protection mechanisms
+- **Encrypted User Data**: AES-256-CBC encryption for sensitive user information
+- **Session Tracking**: Secure tracking of user sessions and activities
 
 ## 🏗️ Project Structure
 
@@ -60,6 +64,10 @@ src/
 │   └── product/       # Product components
 ├── contexts/          # React contexts for state management
 ├── data/              # Data files and mock data
+│   ├── users/         # Encrypted user data (NOT committed)
+│   ├── backups/       # Automatic backups (NOT committed)
+│   ├── translations/  # i18n translations
+│   └── ...            # Other data files
 ├── lib/               # Utility libraries and helpers
 ├── models/            # Data models and schemas
 ├── scripts/           # Utility scripts
@@ -97,6 +105,12 @@ import { formatCurrency } from '@/shared/utils';
 - **Authentication**:
   - [NextAuth.js 4](https://next-auth.js.org/) - Authentication solution
   - Google OAuth - Social login
+
+- **Security**:
+  - AES-256-CBC encryption for user data
+  - SHA-256 checksums for data integrity
+  - Secure session management
+  - Data backup and recovery
 
 - **Development Tools**:
   - [ESLint 9](https://eslint.org/) - Code linting
@@ -140,15 +154,27 @@ NEXTAUTH_SECRET=your-secret-key
 GOOGLE_CLIENT_ID=your-client-id
 GOOGLE_CLIENT_SECRET=your-client-secret
 
+# Security encryption key for user data - IMPORTANT: Change in production
+DATA_ENCRYPTION_KEY=your-super-secure-encryption-key-here-change-in-production
+
 # Other configs
 ```
 
-5. Run the development server:
+5. Generate a secure encryption key:
+```bash
+# Using OpenSSL
+openssl rand -base64 32
+
+# Or using Node.js
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+6. Run the development server:
 ```bash
 npm run dev
 ```
 
-6. Open [http://localhost:3000](http://localhost:3000) in your browser
+7. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## 💻 Development
 
@@ -274,6 +300,16 @@ npm run start
 - Use proper `NEXTAUTH_URL` for authentication callback
 - Configure CDN if applicable using `ASSET_PREFIX`
 - Set proper Content Security Policy headers
+- Ensure `DATA_ENCRYPTION_KEY` is set and secure
+
+### Production Security
+
+```bash
+# Set secure file permissions
+chmod 600 data/users/*
+chmod 700 data/users/
+chmod 700 data/backups/
+```
 
 ## 🔐 Authentication
 
@@ -292,6 +328,7 @@ npm run start
 3. After authentication, returns to callback URL
 4. NextAuth creates a session and redirects to the app
 5. User is authenticated with session data available
+6. Session information is securely stored with encryption
 
 ### Protected Routes
 
@@ -335,8 +372,95 @@ Security is a top priority:
 - **Authentication**: Secure session management with NextAuth.js
 - **XSS Protection**: React's built-in protection + extra measures
 - **CSRF Protection**: Built-in protection with Next.js
+- **Data Encryption**: AES-256-CBC for sensitive user data
+- **Integrity Checks**: SHA-256 checksums for data validation
 
 For more details, see our [Security Policy](SECURITY.md).
+
+## 🔐 Secure Data Storage System
+
+### Overview
+
+The system has been upgraded to store individual user data in separate files with AES-256-CBC encryption and data integrity checks.
+
+### Data Storage Structure
+
+```
+data/
+├── users/                    # Encrypted user data (NEVER commit)
+│   ├── user_abc123def456.json
+│   └── user_789xyz012345.json
+├── backups/                  # Automatic backups (NEVER commit)
+│   ├── 2025-01-29T10-30-00_user_abc123def456.json
+│   └── 2025-01-29T11-15-00_user_789xyz012345.json
+├── users.json               # Legacy data (fallback)
+├── transactions.json        # Legacy data (fallback)
+└── balances.json           # Legacy data (fallback)
+```
+
+### Security Features
+
+1. **Data Encryption**
+   - AES-256-CBC encryption
+   - Unique IV (Initialization Vector) per file
+   - SHA-256 checksum for integrity validation
+
+2. **Secure Filenames**
+   - SHA-256 hash of email as filename
+   - Cannot guess email from filename
+
+3. **Automatic Backups**
+   - Automatic backup before updates
+   - Timestamped for recovery
+
+4. **Integrity Verification**
+   - Checksum validation
+   - Detect data tampering
+
+### User Data Structure
+
+```typescript
+interface UserData {
+  profile: User; // Personal information
+  transactions: Transaction[]; // Transaction history
+  sessions: UserSession[]; // Login information
+  activities: UserActivity[]; // Activity history
+  settings: UserSettings; // Personal settings
+  metadata: {
+    // Security metadata
+    lastBackup: string;
+    dataVersion: string;
+    checksum: string;
+  };
+}
+```
+
+### Admin Interface
+
+Access through: `/admin`
+
+- 🔍 Search user data
+- 📊 View detailed statistics
+- ✅ Verify data integrity
+- 📝 View recent activities
+- 💰 Transaction history
+- 🖥️ Login sessions
+
+### Legacy System Migration
+
+The new system is backward compatible:
+
+1. Automatically creates new user data on login
+2. Syncs balance from old system
+3. Falls back to reading from old files if no new data exists
+
+### Important Security Notes
+
+1. **NEVER commit /data/users/ and /data/backups/ directories**
+2. **Change DATA_ENCRYPTION_KEY in production**
+3. **Periodically backup the data/ directory**
+4. **Regularly check error logs**
+5. **Test integrity check feature periodically**
 
 ## 📄 License
 
