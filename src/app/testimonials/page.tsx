@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Testimonial {
   id: string;
@@ -24,6 +25,7 @@ interface CaseStudy {
 }
 
 export default function TestimonialsPage() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'clients' | 'case-studies'>('clients');
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
@@ -161,11 +163,10 @@ export default function TestimonialsPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              Khách hàng nói gì về chúng tôi
+              {t('testimonials.pageTitle')}
             </h1>
             <p className="text-xl opacity-90 max-w-3xl mx-auto">
-              Khám phá những trải nghiệm và kết quả thực tế mà khách hàng đã đạt được khi sử dụng
-              giải pháp của XLab
+              {t('testimonials.pageSubtitle')}
             </p>
           </div>
         </div>
@@ -185,7 +186,7 @@ export default function TestimonialsPage() {
                 onClick={() => setActiveTab('clients')}
                 type="button"
               >
-                Đánh giá từ khách hàng
+                {t('testimonials.clientsTab')}
               </button>
               <button
                 className={`px-8 py-4 font-medium text-sm sm:text-base rounded-t-lg transition-all duration-300 ${
@@ -196,7 +197,7 @@ export default function TestimonialsPage() {
                 onClick={() => setActiveTab('case-studies')}
                 type="button"
               >
-                Các dự án tiêu biểu
+                {t('testimonials.caseStudiesTab')}
               </button>
             </div>
           </div>
@@ -263,10 +264,9 @@ export default function TestimonialsPage() {
               {/* Testimonial Video */}
               <div className="mt-24">
                 <div className="text-center mb-12">
-                  <h2 className="text-3xl font-bold mb-4">Video đánh giá từ khách hàng</h2>
+                  <h2 className="text-3xl font-bold mb-4">{t('testimonials.videoTitle')}</h2>
                   <p className="text-gray-600 max-w-3xl mx-auto">
-                    Xem video chia sẻ từ khách hàng về trải nghiệm sử dụng sản phẩm và dịch vụ của
-                    XLab
+                    {t('testimonials.videoSubtitle')}
                   </p>
                 </div>
 
@@ -371,7 +371,7 @@ export default function TestimonialsPage() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        Kết quả đạt được:
+                        {t('testimonials.results')}
                       </h4>
                       <ul className="space-y-3 mb-8">
                         {caseStudy.results.map((result, index) => (
@@ -412,24 +412,23 @@ export default function TestimonialsPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Sẵn sàng nâng tầm doanh nghiệp của bạn?
+              {t('testimonials.cta.title')}
             </h2>
             <p className="text-xl mb-10 max-w-3xl mx-auto opacity-90">
-              Hãy liên hệ với chúng tôi ngay hôm nay để được tư vấn về giải pháp phù hợp nhất cho
-              nhu cầu của bạn.
+              {t('testimonials.cta.description')}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a
                 href="/contact"
                 className="bg-white text-primary-600 hover:bg-gray-100 px-8 py-4 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
               >
-                Liên hệ tư vấn
+                {t('testimonials.cta.contact')}
               </a>
               <a
                 href="/services"
                 className="border-2 border-white text-white hover:bg-white hover:text-primary-600 px-8 py-4 rounded-full font-semibold transition-all transform hover:-translate-y-1"
               >
-                Khám phá dịch vụ
+                {t('testimonials.cta.explore')}
               </a>
             </div>
           </div>
