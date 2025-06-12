@@ -18,7 +18,8 @@ interface LanguageProviderProps {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 // Translations
-const translations: Record<Language, Record<string, string>> = {
+// Expose translations for debugging
+export const translations: Record<Language, Record<string, string>> = {
   vi: {
     // Admin Notifications
     'admin.notifications.title': 'Quản lý thông báo',
@@ -1736,8 +1737,25 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
         return '';
       }
       
+      // Kiểm tra nếu không có bản dịch cho ngôn ngữ
+      if (!translations[language]) {
+        console.error(`No translations found for language: ${language}`);
+        return key;
+      }
+      
       // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-      let text = translations[language]?.[key] || key;
+      let text = translations[language]?.[key];
+      
+      // Debug thông tin
+      const isDebugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug-translations');
+      if (isDebugMode) {
+        console.log(`[Translation] Language: ${language}, Key: ${key}, Found: ${Boolean(text)}, Value: ${text?.substring(0, 50) || 'undefined'}`);
+      }
+      
+      // Nếu không tìm thấy bản dịch, sử dụng key
+      if (text === undefined) {
+        return key;
+      }
       
       // Thay thế tham số nếu có
       if (params && typeof params === 'object' && Object.keys(params).length > 0) {

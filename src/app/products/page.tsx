@@ -8,9 +8,23 @@ import ProductImage from '@/components/product/ProductImage';
 import ProductCard from '@/components/product/ProductCard';
 import { Button } from '@/components/common/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { logTranslationState } from '@/shared/utils/translation-debug';
 
 export default function ProductsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  // Log các khóa dịch quan trọng để debug
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('debug-translations')) {
+      console.log('====== TRANSLATION DEBUG ======');
+      logTranslationState(language, 'products.title', t('products.title'));
+      logTranslationState(language, 'products.subtitle', t('products.subtitle'));
+      logTranslationState(language, 'products.all', t('products.all'));
+      logTranslationState(language, 'products.software', t('products.software'));
+      logTranslationState(language, 'products.service', t('products.service'));
+      console.log('=============================');
+    }
+  }, [language, t]);
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -265,11 +279,17 @@ export default function ProductsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="bg-gray-50 py-4">
         <div className="container mx-auto px-2 md:px-4 max-w-none w-[90%]">
-          <h1 className="text-3xl font-bold mb-2">{t('products.title')}</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            {language === 'es' ? 'Productos' : 
+             language === 'en' ? 'Products' : 
+             'Sản phẩm'}
+          </h1>
           
           <div className="mb-6">
             <p className="text-sm md:text-base text-gray-600">
-              {t('products.subtitle')}
+              {language === 'es' ? 'Lista de software y servicios de alta calidad con los mejores precios del mercado.' : 
+               language === 'en' ? 'List of high-quality software and services with the best prices on the market.' : 
+               'Danh sách phần mềm và dịch vụ chất lượng cao với giá tốt nhất trên thị trường.'}
             </p>
           </div>
 
@@ -295,7 +315,9 @@ export default function ProductsPage() {
                       d="M4 6h16M4 10h16M4 14h16M4 18h16"
                     />
                   </svg>
-                  {t('products.all')}
+                  {language === 'es' ? 'Todos' : 
+                   language === 'en' ? 'All' : 
+                   'Tất cả'}
                 </div>
               </button>
               <button
@@ -317,7 +339,9 @@ export default function ProductsPage() {
                       d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  {t('products.software')}
+                  {language === 'es' ? 'Software' : 
+                   language === 'en' ? 'Software' : 
+                   'Phần mềm'}
                 </div>
               </button>
               <button
@@ -339,7 +363,9 @@ export default function ProductsPage() {
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  {t('products.service')}
+                  {language === 'es' ? 'Servicio' : 
+                   language === 'en' ? 'Service' : 
+                   'Dịch vụ'}
                 </div>
               </button>
             </div>
@@ -351,11 +377,15 @@ export default function ProductsPage() {
               {/* Filters bar */}
               <div className="bg-white p-2 rounded-lg shadow-sm mb-3 flex flex-wrap justify-between items-center">
                 <div className="text-sm md:text-base text-gray-600">
-                  {t('products.showing', { count: sortedProducts.length })}
+                  {language === 'es' ? `Mostrando ${sortedProducts.length} resultados` : 
+                   language === 'en' ? `Showing ${sortedProducts.length} results` : 
+                   `Đang hiển thị ${sortedProducts.length} kết quả`}
                 </div>
                 <div className="flex items-center space-x-2">
                   <label htmlFor="sort" className="text-sm md:text-base text-gray-700">
-                    {t('products.sortBy')}:
+                    {language === 'es' ? 'Ordenar por' : 
+                     language === 'en' ? 'Sort by' : 
+                     'Sắp xếp theo'}:
                   </label>
                   <select
                     id="sort"
@@ -363,10 +393,26 @@ export default function ProductsPage() {
                     value={sort}
                     onChange={(e) => setSort(e.target.value)}
                   >
-                    <option value="newest">{t('products.sortNewest')}</option>
-                    <option value="price-low">{t('products.sortPriceLow')}</option>
-                    <option value="price-high">{t('products.sortPriceHigh')}</option>
-                    <option value="popular">{t('products.sortPopular')}</option>
+                    <option value="newest">
+                      {language === 'es' ? 'Más recientes' : 
+                       language === 'en' ? 'Newest' : 
+                       'Mới nhất'}
+                    </option>
+                    <option value="price-low">
+                      {language === 'es' ? 'Precio: de menor a mayor' : 
+                       language === 'en' ? 'Price: Low to High' : 
+                       'Giá: Thấp đến cao'}
+                    </option>
+                    <option value="price-high">
+                      {language === 'es' ? 'Precio: de mayor a menor' : 
+                       language === 'en' ? 'Price: High to Low' : 
+                       'Giá: Cao đến thấp'}
+                    </option>
+                    <option value="popular">
+                      {language === 'es' ? 'Más populares' : 
+                       language === 'en' ? 'Most Popular' : 
+                       'Phổ biến nhất'}
+                    </option>
                   </select>
                 </div>
               </div>
