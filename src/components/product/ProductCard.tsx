@@ -60,8 +60,8 @@ export default function ProductCard({
 
   // Xử lý dịch mô tả ngắn và tên sản phẩm khi ngôn ngữ thay đổi
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh hoặc tiếng Tây Ban Nha
-    if (language === 'en' || language === 'es') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + id + '&lang=' + language);

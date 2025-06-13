@@ -30,14 +30,11 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   }, []);
 
   const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
-<<<<<<< HEAD
-=======
     if (lang === language) {
       setIsOpen(false);
       return;
     }
     
->>>>>>> dev_7
     setLanguage(lang);
     setIsOpen(false);
   };

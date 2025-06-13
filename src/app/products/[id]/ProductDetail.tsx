@@ -26,8 +26,8 @@ const ProductDescription = ({ description, productId }: { description: string, p
   const [translatedDescription, setTranslatedDescription] = useState<string>(description);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh hoặc tiếng Tây Ban Nha
-    if (language === 'en' || language === 'es') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -119,8 +119,8 @@ const ProductShortDescription = ({ shortDescription, productId }: { shortDescrip
   const [translatedShortDescription, setTranslatedShortDescription] = useState<string>(shortDescription);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh hoặc tiếng Tây Ban Nha
-    if (language === 'en' || language === 'es') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -159,8 +159,8 @@ const ProductFeatures = ({ features, productId }: { features: any[], productId: 
   const [translatedFeatures, setTranslatedFeatures] = useState<any[]>(features);
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh hoặc tiếng Tây Ban Nha
-    if (language === 'en' || language === 'es') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
@@ -227,8 +227,8 @@ const ProductOptions = ({
   const [optionsTitle, setOptionsTitle] = useState<string>(t('product.options'));
 
   useEffect(() => {
-    // Lấy bản dịch nếu đang ở chế độ tiếng Anh hoặc tiếng Tây Ban Nha
-    if (language === 'en' || language === 'es') {
+    // Lấy bản dịch nếu đang ở chế độ tiếng Anh
+    if (language === 'en') {
       const fetchTranslation = async () => {
         try {
           const response = await fetch('/api/product-translations?id=' + productId + '&lang=' + language);
