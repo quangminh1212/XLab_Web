@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState, useEffect } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 
 interface BalanceDisplayProps {
@@ -11,7 +11,25 @@ interface BalanceDisplayProps {
 
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
-  const { balance, loading } = useBalance();
+  const { balance, loading, error } = useBalance();
+  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
+  
+  // Đợi 1s trước khi hiện loading indicator để tránh nhấp nháy
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    
+    if (loading) {
+      timer = setTimeout(() => {
+        setShowLoadingIndicator(true);
+      }, 1000);
+    } else {
+      setShowLoadingIndicator(false);
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [loading]);
 
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
@@ -45,11 +63,15 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
           />
         </svg>
-        {loading ? (
+        {showLoadingIndicator ? (
           <div className="flex items-center space-x-1.5 sm:space-x-2">
             <div className="animate-spin rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 border-t-2 border-b-2 border-teal-600"></div>
             <span className="text-xs sm:text-sm font-medium text-teal-600">Đang tải...</span>
           </div>
+        ) : error ? (
+          <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">
+            {formattedBalance || '0 đ'}
+          </span>
         ) : (
           <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">
             {formattedBalance}
@@ -60,4 +82,5 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   );
 }
 
+// Sử dụng memo để tránh re-render không cần thiết
 export default memo(BalanceDisplay);
