@@ -58,10 +58,12 @@ next-fix-all.log
 *.tsbuildinfo
 next-env.d.ts
 
-# User data files
-/data/users.json
-/data/users/*.json
+# User generated data files (runtime data) - cho phép commit dữ liệu cơ bản
+/data/transactions.json
+
+# Secure user data - NEVER commit these!
 /data/backups/
+*.user_*.json
 
 # IDE
 .idea/
