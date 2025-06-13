@@ -2,7 +2,7 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
-type Language = 'vi' | 'en';
+type Language = 'vi' | 'en' | 'es';
 
 type LanguageContextType = {
   language: Language;
@@ -1477,6 +1477,125 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
   },
+  es: {
+    // Admin Notifications
+    'admin.notifications.title': 'Gestión de notificaciones',
+    'admin.notifications.list': 'Lista de notificaciones',
+    'admin.notifications.edit': 'Editar',
+    'admin.notifications.settings': 'Configuración',
+    'admin.notifications.create': 'Crear nueva notificación',
+    'admin.notifications.noNotifications': 'Aún no hay notificaciones',
+    'admin.notifications.noNotificationsDesc': 'Crea tu primera notificación para enviar a los usuarios',
+    'admin.notifications.type.promotion': 'Promoción',
+    'admin.notifications.type.update': 'Actualización',
+    'admin.notifications.type.order': 'Pedido',
+    'admin.notifications.type.system': 'Sistema',
+    'admin.notifications.priority.high': 'Alta',
+    'admin.notifications.priority.medium': 'Media',
+    'admin.notifications.priority.low': 'Baja',
+    'admin.notifications.created': 'Creado',
+    'admin.notifications.readCount': 'Leído por',
+    'admin.notifications.sentTo': 'Enviado a',
+    'admin.notifications.expires': 'Expira',
+    'admin.notifications.viewDetails': 'Ver detalles',
+    'admin.notifications.editBtn': 'Editar',
+    'admin.notifications.deleteBtn': 'Eliminar',
+    'admin.notifications.cancelBtn': 'Cancelar',
+    'admin.notifications.createBtn': 'Crear notificación',
+    'admin.notifications.updatingBtn': 'Actualizando...',
+    'admin.notifications.updateBtn': 'Actualizar notificación',
+    'admin.notifications.creatingBtn': 'Creando...',
+    'admin.notifications.form.title': 'Título de la notificación *',
+    'admin.notifications.form.titlePlaceholder': 'Introduce el título de la notificación',
+    'admin.notifications.form.content': 'Contenido de la notificación *',
+    'admin.notifications.form.contentPlaceholder': 'Introduce el contenido de la notificación',
+    'admin.notifications.form.type': 'Tipo de notificación *',
+    
+    // Terms page
+    'terms.title': 'Términos de servicio',
+    'terms.lastUpdated': 'Última actualización',
+    'terms.section1.title': 'Introducción',
+
+    // Header
+    'nav.home': 'Inicio',
+    'nav.products': 'Productos',
+    'nav.about': 'Acerca de',
+    'nav.contact': 'Contacto',
+    'nav.warranty': 'Garantía',
+    'nav.login': 'Iniciar sesión',
+    'nav.logout': 'Cerrar sesión',
+    'nav.account': 'Cuenta',
+    'nav.admin': 'Administración',
+
+    // Login page
+    'login.welcome': '¡Bienvenido de nuevo!',
+    'login.continue': 'Para continuar usando los servicios de XLab',
+    'login.connect': 'Conectarse de forma segura con tu cuenta de Google',
+    'login.google': 'Continuar con Google',
+    'login.secure': '100% Seguro',
+    'login.terms': 'Al continuar, aceptas nuestros',
+    'login.termsLink': 'Términos de servicio',
+    'login.and': 'y',
+    'login.privacyLink': 'Política de privacidad',
+
+    // Homepage
+    'home.slogan': '¡Optimiza la eficiencia, minimiza el costo!',
+    'home.search': 'Buscar software, aplicaciones...',
+    'home.loadMore': 'Ver más',
+    'home.aboutTitle': 'Sobre XLab',
+    'home.featuredProducts': 'Productos destacados',
+    'home.newProducts': 'Nuevos productos',
+    'home.viewAll': 'Ver todos',
+    
+    // Product card
+    'product.addToCart': 'Añadir al carrito',
+    'product.buyNow': 'Comprar ahora',
+    'product.added': 'Añadido',
+    
+    // About page
+    'about.title': 'Acerca de XLab',
+    'about.subtitle': 'Acompañamos a tu empresa en su viaje de transformación digital',
+    
+    // Contact page
+    'contact.title': 'Contáctenos',
+    'contact.subtitle': 'Contáctenos para obtener asesoramiento sobre la solución más adecuada para su empresa.',
+    
+    // Common buttons
+    'button.getStarted': 'Comenzar',
+    'button.learnMore': 'Saber más',
+    'button.viewDetails': 'Ver detalles',
+    'button.addToCart': 'Añadir al carrito',
+    'button.buyNow': 'Comprar ahora',
+    'button.download': 'Descargar',
+    'button.contactUs': 'Contáctenos',
+    'button.viewAll': 'Ver todo',
+    
+    // Cart and Checkout
+    'cart.title': 'Carrito',
+    'cart.empty': 'Tu carrito está vacío',
+    'cart.continueShopping': 'Continuar comprando',
+    'cart.checkout': 'Pagar',
+    'cart.subtotal': 'Subtotal',
+    'cart.discount': 'Descuento',
+    'cart.total': 'Total',
+    
+    // Footer
+    'footer.aboutLink': 'Acerca de',
+    'footer.contactLink': 'Contacto',
+    'footer.productsAndServices': 'Productos y Servicios',
+    'footer.products': 'Productos',
+    'footer.services': 'Servicios',
+    'footer.copyright': 'Derechos de autor pertenecen a la empresa',
+    
+    // Products page
+    'products.title': 'Productos',
+    'products.subtitle': 'Lista de software y servicios de alta calidad al mejor precio del mercado.',
+    
+    // Product detail page
+    'product.details': 'Detalles del producto',
+    'product.specifications': 'Especificaciones',
+    'product.requirements': 'Requisitos del sistema',
+  },
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
@@ -1486,8 +1605,8 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
-      setLanguageState(savedLanguage);
+    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
+      setLanguageState(savedLanguage as Language);
     }
   }, []);
 

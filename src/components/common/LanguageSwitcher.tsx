@@ -27,19 +27,15 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     };
   }, []);
 
-  const changeLanguage = (lang: 'vi' | 'en') => {
+  const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
     setLanguage(lang);
     setIsOpen(false);
   };
 
-  return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
-        aria-expanded={isOpen}
-      >
-        {language === 'vi' ? (
+  const renderCurrentLanguage = () => {
+    switch (language) {
+      case 'vi':
+        return (
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -52,7 +48,9 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>VIE</span>
           </>
-        ) : (
+        );
+      case 'en':
+        return (
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -65,7 +63,33 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>ENG</span>
           </>
-        )}
+        );
+      case 'es':
+        return (
+          <>
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/es.svg" 
+                alt="Español" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ESP</span>
+          </>
+        );
+    }
+  };
+
+  return (
+    <div className={`relative ${className}`} ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors px-2 py-1 rounded-md border border-transparent hover:border-gray-200"
+        aria-expanded={isOpen}
+      >
+        {renderCurrentLanguage()}
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           className="h-4 w-4 ml-1" 
@@ -108,6 +132,21 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               />
             </div>
             <span>ENG</span>
+          </button>
+          <button
+            onClick={() => changeLanguage('es')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'es' ? 'bg-gray-100' : ''}`}
+          >
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/es.svg" 
+                alt="Español" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ESP</span>
           </button>
         </div>
       )}
