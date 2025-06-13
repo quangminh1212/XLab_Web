@@ -14,18 +14,10 @@ cypress/videos
 cypress/screenshots
 /__tests__/output
 
-# next.js
-/.next/
-/.next-dev/
+# next.js - sửa lại các đường dẫn này
+/.next/cache/
 /out/
-.next/
-.next-dev/
-.next/cache/
-.next/static/
-.next/server/
-.next/server/app/api/auth/
-.next/server/chunks/
-.next/server/app/api/auth/[...nextauth]/
+# Bỏ các dòng chặn thư mục .next/static và # .next/static/ - được bỏ qua để sửa lỗi static fileschunks
 
 # production
 /build
@@ -68,7 +60,6 @@ next-env.d.ts
 # IDE
 .idea/
 .vscode/
-.next/
 *.iml
 *.suo
 *.user
@@ -130,12 +121,7 @@ run-fixed.bat
 # Report files
 report.*.json
 
-# Runtime cache files
+# Runtime cache files - sửa lại để chỉ bỏ qua cache và không bỏ qua các file chunks
 .next/cache/webpack/client-development/
 .next/cache/webpack/server-development/
 .next/cache/webpack/edge-server-development/
-.next/static/css/
-.next/static/development/
-.next/static/chunks/
-.next/static/webpack/
-.next/trace

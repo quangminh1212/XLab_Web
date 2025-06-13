@@ -35,7 +35,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const renderCurrentLanguage = () => {
     switch (language) {
       case 'vi':
-        return (
+  return (
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
