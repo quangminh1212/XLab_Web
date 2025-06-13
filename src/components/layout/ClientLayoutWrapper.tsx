@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Header, Footer } from '@/components/layout';
 import {
   Analytics,
@@ -20,6 +20,15 @@ interface ClientLayoutWrapperProps {
 }
 
 export default function ClientLayoutWrapper({ children }: ClientLayoutWrapperProps) {
+  // Đảm bảo localStorage được khởi tạo đúng trên client
+  useEffect(() => {
+    // Kiểm tra xem đã có cài đặt ngôn ngữ chưa
+    if (typeof window !== 'undefined' && !localStorage.getItem('language')) {
+      localStorage.setItem('language', 'vi');
+      document.documentElement.lang = 'vi';
+    }
+  }, []);
+
   return (
     <SessionProvider>
       <LanguageProvider>
