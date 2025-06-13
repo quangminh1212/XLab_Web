@@ -5,26 +5,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function AboutPage() {
-  const { t, language, setLanguage } = useLanguage();
+  const { t, language } = useLanguage();
   const router = useRouter();
   
-  // Thiết lập ngôn ngữ ngay khi component được mount
+  // Chỉ cập nhật title động
   useEffect(() => {
-    // Xem xét trạng thái hiện tại
-    if (typeof window !== 'undefined' && language !== 'es') {
-      // Đặt ngôn ngữ mặc định thành tiếng Tây Ban Nha trực tiếp vào localStorage
-      localStorage.setItem('language', 'es');
-      
-      // Cập nhật ngôn ngữ trong ứng dụng
-      setLanguage('es');
-      
-      // Hard refresh để đảm bảo toàn bộ trang được load lại với ngôn ngữ mới
-      window.location.reload();
-    }
-
     // Cập nhật title động
     document.title = `${t('about.pageTitle')} | XLab`;
-  }, [language, setLanguage, t]);
+  }, [t]);
   
   return (
     <div>

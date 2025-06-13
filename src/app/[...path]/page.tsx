@@ -10,14 +10,16 @@ const CatchAllPage: NextPage = () => {
   const params = useParams();
   const { language } = useLanguage();
   
-  // Force reload when language changes
+  // Handle loading of dynamic route
   useEffect(() => {
     // Get the current path from params
     const path = Array.isArray(params.path) ? params.path.join('/') : params.path || '';
     
-    // Reload the current page
-    router.push(`/${path}`);
-  }, [params, router, language]);
+    // Redirect to 404 if path is not valid
+    if (!path) {
+      router.push('/404');
+    }
+  }, [params, router]);
 
   return null;
 }
