@@ -1,40 +1,18 @@
 export type Language = 'vi' | 'en' | 'es';
 
+export { default as vi } from './vi';
+export { default as en } from './en';
+export { default as es } from './es';
+
 // Kiểu dữ liệu cho các bản dịch
 export type TranslationRecord = Record<string, string>;
 
-// Import các namespace
-import { adminVI, adminEN, adminES } from './namespaces/admin';
-import { commonVI, commonEN, commonES } from './namespaces/common';
-import { homeVI, homeEN, homeES } from './namespaces/home';
-import { termsVI, termsEN, termsES } from './namespaces/terms';
-
-// Kết hợp các bản dịch theo ngôn ngữ
-const vi = {
-  ...adminVI,
-  ...commonVI,
-  ...homeVI,
-  ...termsVI,
-};
-
-const en = {
-  ...adminEN,
-  ...commonEN,
-  ...homeEN,
-  ...termsEN,
-};
-
-const es = {
-  ...adminES,
-  ...commonES,
-  ...homeES,
-  ...termsES,
-};
-
-export { vi, en, es };
-
 // Hàm kiểm tra xem một key có tồn tại trong tất cả các ngôn ngữ hay không
 export function validateTranslationKeys() {
+  const vi = require('./vi').default;
+  const en = require('./en').default;
+  const es = require('./es').default;
+  
   const allKeys = new Set([
     ...Object.keys(vi),
     ...Object.keys(en),
