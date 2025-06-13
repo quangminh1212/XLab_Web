@@ -3,30 +3,26 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { syncUserBalance } from '@/lib/userService';
 
-// Cải thiện balance cache với thời gian giữ ngắn hơn
+// Balance cache với timeout 2 phút để giảm spam requests
 const balanceCache = new Map<string, { balance: number; timestamp: number }>();
-const CACHE_TIMEOUT = 60 * 1000; // 60 seconds (1 minute)
-const MIN_CACHE_TIMEOUT = 5 * 1000; // 5 seconds - thời gian tối thiểu giữa các request
+const CACHE_TIMEOUT = 120 * 1000; // 120 seconds (2 minutes)
 
-// Cleanup cache mỗi 5 phút
+// Cleanup cache mỗi 10 phút để tránh memory leak
 setInterval(
   () => {
     const now = Date.now();
     balanceCache.forEach((cache, email) => {
       if (now - cache.timestamp > CACHE_TIMEOUT * 2) {
-        // Remove after 2 minutes
+        // Remove after 4 minutes
         balanceCache.delete(email);
       }
     });
   },
-  5 * 60 * 1000, // 5 minutes
-);
+  10 * 60 * 1000,
+); // 10 minutes
 
 export async function GET() {
   try {
-    // Performance timer
-    const startTime = Date.now();
-
     // Check authentication
     const session = await getServerSession(authOptions);
 
@@ -42,84 +38,33 @@ export async function GET() {
 
     const userEmail = session.user.email;
 
-    // Check cache first - always return cache if available
+    // Check cache first
     const cached = balanceCache.get(userEmail);
-    const now = Date.now();
-    
-    // Return cache immediately if less than MIN_CACHE_TIMEOUT has passed
-    if (cached && now - cached.timestamp < MIN_CACHE_TIMEOUT) {
+    if (cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
       return NextResponse.json({
         balance: cached.balance,
         cached: true,
-        timestamp: cached.timestamp,
-        responseTime: Date.now() - startTime,
-      });
-    }
-    
-    // Return cache and refresh in background if less than CACHE_TIMEOUT has passed
-    if (cached && now - cached.timestamp < CACHE_TIMEOUT) {
-      // Trigger background sync if cache is older than 30 seconds
-      if (now - cached.timestamp > 30 * 1000) {
-        // Don't await - let it run in the background
-        syncUserBalance(userEmail)
-          .then((newBalance) => {
-            balanceCache.set(userEmail, { balance: newBalance, timestamp: Date.now() });
-          })
-          .catch((error) => {
-            console.error(`Background balance sync failed for ${userEmail}:`, error);
-          });
-      }
-      
-      return NextResponse.json({
-        balance: cached.balance,
-        cached: true,
-        timestamp: cached.timestamp,
-        responseTime: Date.now() - startTime,
       });
     }
 
     try {
-      // Use timeout to prevent hanging requests
-      const timeoutPromise = new Promise<number>((_, reject) => {
-        setTimeout(() => {
-          reject(new Error('Balance sync timed out after 5 seconds'));
-        }, 5000);
-      });
-      
       // Get synchronized balance from both systems
-      const balancePromise = syncUserBalance(userEmail);
-      
-      // Race between timeout and actual balance fetch
-      const balance = await Promise.race([balancePromise, timeoutPromise]);
+      const balance = await syncUserBalance(userEmail);
 
       // Cache the result
-      balanceCache.set(userEmail, { balance, timestamp: now });
+      balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
       return NextResponse.json({
         balance: balance,
         cached: false,
-        responseTime: Date.now() - startTime,
       });
     } catch (syncError) {
       console.error('Error syncing user balance:', syncError);
-      
-      // Return cached data if available, even if expired
-      if (cached) {
-        return NextResponse.json({
-          balance: cached.balance,
-          cached: true,
-          stale: true,
-          error: 'Using stale cache due to sync error',
-          timestamp: cached.timestamp,
-          responseTime: Date.now() - startTime,
-        });
-      }
-      
       return NextResponse.json(
         { 
           error: 'Balance Sync Error', 
           message: syncError instanceof Error ? syncError.message : 'Failed to sync user balance',
-          responseTime: Date.now() - startTime,
+          details: process.env.NODE_ENV === 'development' ? syncError : undefined
         }, 
         { status: 500 }
       );
@@ -130,6 +75,7 @@ export async function GET() {
       { 
         error: 'Internal Server Error', 
         message: error instanceof Error ? error.message : 'Unknown error occurred',
+        details: process.env.NODE_ENV === 'development' ? error : undefined
       }, 
       { status: 500 }
     );
