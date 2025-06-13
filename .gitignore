@@ -26,11 +26,19 @@ cypress/screenshots
 .next/server/app/api/auth/
 .next/server/chunks/
 .next/server/app/api/auth/[...nextauth]/
+<<<<<<< HEAD
 .next/cache/webpack/edge-server-development/*.pack
 .next/cache/webpack/edge-server-development/*.pack.gz
 .next/cache/webpack/client-development/*.pack
 .next/cache/webpack/server-development/*.pack
 .next/static/css/app-layout.css
+=======
+.next/app-paths-manifest.json
+.next/app-build-manifest.json
+.next/server/app-paths-manifest.json
+.next/server/middleware-manifest.json
+.next/server/pages-manifest.json
+>>>>>>> dev_7
 
 # production
 /build

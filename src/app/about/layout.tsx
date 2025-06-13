@@ -1,17 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AboutLayout = ({ children }: { children: React.ReactNode }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [forceUpdate, setForceUpdate] = useState(0);
   
-  // Cập nhật title và meta description khi component mount hoặc ngôn ngữ thay đổi
+  // Actualizar el título y la meta descripción cuando se monta el componente o cambia el idioma
   useEffect(() => {
-    // Sử dụng template string để tạo ra một chuỗi duy nhất
+    // Dùng template string để tạo chuỗi duy nhất
     document.title = `${t('about.title')} | XLab`;
     
-    // Cập nhật meta description
+    // Actualizar meta descripción
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', t('about.subtitle'));
@@ -21,10 +22,15 @@ const AboutLayout = ({ children }: { children: React.ReactNode }) => {
       meta.content = t('about.subtitle');
       document.head.appendChild(meta);
     }
-  }, [t]);
+
+    // Ghi log để gỡ lỗi
+    console.log("Thiết kế About được cập nhật với ngôn ngữ:", language);
+    console.log("Tiêu đề hiện tại:", document.title);
+    console.log("Mô tả meta:", t('about.subtitle'));
+  }, [t, language]);
 
   return (
-    <div className="about-layout">
+    <div className="about-layout" key={`about-layout-${language}-${forceUpdate}`}>
       {children}
     </div>
   );
