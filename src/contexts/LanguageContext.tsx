@@ -1670,7 +1670,45 @@ const translations: Record<Language, Record<string, string>> = {
     'filter.noResultsDesc': 'Pruebe con otros criterios de búsqueda',
     'sort.newest': 'Más reciente',
     'sort.priceAsc': 'Precio: menor a mayor',
-    'sort.priceDesc': 'Precio: mayor a menor'
+    'sort.priceDesc': 'Precio: mayor a menor',
+
+    // About page
+    'about.title': 'Acerca de XLab',
+    'about.subtitle': 'Acompañando su empresa en el camino de transformación digital',
+    'about.values': 'Nuestros valores fundamentales',
+    'about.innovation': 'Innovación',
+    'about.innovationDesc': 'Crear e innovar continuamente en tecnología para ofrecer el mejor valor',
+    'about.quality': 'Calidad',
+    'about.qualityDesc': 'Compromiso con la más alta calidad en todos los productos y servicios',
+    'about.integrity': 'Integridad',
+    'about.integrityDesc': 'Mantener siempre la ética empresarial y la transparencia en todas las actividades',
+    'about.collaboration': 'Colaboración',
+    'about.collaborationDesc': 'Construir alianzas a largo plazo basadas en el respeto y la cooperación mutuamente beneficiosa',
+    'about.partnership': 'Asóciate con XLab',
+    'about.partnershipDesc': 'Siempre estamos dispuestos a escuchar y acompañar a su empresa en el camino de transformación digital y desarrollo sostenible.',
+    'about.contactNow': 'Contactar ahora',
+    'about.exploreServices': 'Explorar servicios',
+    
+    'about.pageTitle': 'Sobre nosotros',
+    'about.pageSubtitle': 'XLab - Pionero en desarrollo de software y soluciones tecnológicas en Vietnam',
+    'about.ourStory': 'Nuestra historia',
+    'about.storyP1': 'XLab fue fundada en 2018 por un grupo de ingenieros de software apasionados con una visión de crear soluciones tecnológicas avanzadas para ayudar a las empresas vietnamitas a mejorar la eficiencia operativa.',
+    'about.storyP2': 'Después de más de 10 años de operación y desarrollo, XLab se ha convertido en un socio tecnológico de confianza para cientos de empresas nacionales e internacionales, desde startups hasta grandes corporaciones.',
+    'about.storyP3': 'Estamos orgullosos de nuestro talentoso equipo apasionado por la tecnología, con más de 100 expertos en software, ingenieros de sistemas y consultores experimentados, siempre dedicados al objetivo de proporcionar las mejores soluciones.',
+    'about.mission': 'Misión',
+    'about.missionDesc': 'La misión de XLab es aplicar tecnología avanzada para crear excelentes soluciones de software, ayudando a las empresas vietnamitas a optimizar procesos, aumentar la productividad y desarrollarse de manera sostenible.',
+    'about.vision': 'Visión',
+    'about.visionDesc': 'XLab aspira a convertirse en una empresa tecnológica líder en Vietnam y en la región del Sudeste Asiático en desarrollo de software y provisión de soluciones informáticas integrales.',
+    'about.coreValues': 'Valores fundamentales',
+    'about.coreValuesDesc': 'Los valores que forman la cultura de XLab y guían todas las actividades',
+    'about.value1': 'Calidad',
+    'about.value1Desc': 'Poner la calidad del producto y servicio en primer lugar, mejorar continuamente para lograr la excelencia',
+    'about.value2': 'Innovación',
+    'about.value2Desc': 'Fomentar el pensamiento creativo, atreverse a experimentar con nuevas ideas y tecnologías avanzadas',
+    'about.value3': 'Colaboración',
+    'about.value3Desc': 'Construir asociaciones a largo plazo basadas en el respeto y la cooperación mutuamente beneficiosa',
+    'about.value4': 'Responsabilidad',
+    'about.value4Desc': 'Trabajar con alta responsabilidad, comprometidos a cumplir todos los compromisos con los clientes'
   }
 };
 
