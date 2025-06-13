@@ -42,15 +42,18 @@ export default function ProductCard({
   onAddToCart = () => {},
   onView = () => {},
 }: ProductCardProps) {
-  const { t, language } = useLanguage();
+  const {
+    t,
+    language // Lấy ngôn ngữ hiện tại từ context
+  } = useLanguage();
+  const router = useRouter();
+  const { addItem, clearCart } = useCart();
   const [isHovered, setIsHovered] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showAddedEffect, setShowAddedEffect] = useState(false);
   const [translatedDescription, setTranslatedDescription] = useState<string>(description);
   const [translatedName, setTranslatedName] = useState<string>(name);
-  const router = useRouter();
-  const { addItem, clearCart } = useCart();
 
   // Log the image URL for debugging
   console.log(`ProductCard image URL for ${name}:`, image);
@@ -96,6 +99,14 @@ export default function ProductCard({
       setTranslatedName(name);
     }
   }, [description, name, language, id]);
+
+  // Debug ngôn ngữ và chuỗi dịch
+  useEffect(() => {
+    if (weeklyPurchases > 0) {
+      console.log("Current language:", language);
+      console.log("Translated purchasesPerWeek:", t('product.purchasesPerWeek', { count: weeklyPurchases }));
+    }
+  }, [language, t, weeklyPurchases]);
 
   // Determine the image URL with thorough validation
   const getValidImageUrl = (imgUrl: string | null | undefined): string => {
