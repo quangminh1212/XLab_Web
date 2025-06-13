@@ -4,6 +4,7 @@ import nav from './nav';
 import home from './home';
 import common from './common';
 import footer from './footer';
+import product from './product';
 
 // Kết hợp tất cả các phần dịch
 const vi = {
@@ -13,6 +14,7 @@ const vi = {
   ...home,
   ...common,
   ...footer,
+  ...product,
 };
 
 export default vi; 

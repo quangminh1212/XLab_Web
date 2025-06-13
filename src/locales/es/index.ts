@@ -4,6 +4,7 @@ import nav from './nav';
 import home from './home';
 import common from './common';
 import footer from './footer';
+import product from './product';
 
 // Combinar todas las traducciones
 const es = {
@@ -13,6 +14,7 @@ const es = {
   ...home,
   ...common,
   ...footer,
+  ...product,
 };
 
 export default es; 
