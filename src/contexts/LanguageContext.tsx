@@ -2,7 +2,7 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
-type Language = 'vi' | 'en';
+type Language = 'vi' | 'en' | 'es';
 
 type LanguageContextType = {
   language: Language;
@@ -1043,9 +1043,6 @@ const translations: Record<Language, Record<string, string>> = {
     'footer.aboutLink': 'About XLab',
     'footer.contactLink': 'Contact',
     'footer.productsAndServices': 'Products & Services',
-    'footer.products': 'Products',
-    'footer.services': 'Services',
-    'footer.testimonials': 'Testimonials',
     'footer.navigationLinks': 'Navigation',
     'footer.pricing': 'Pricing',
     'footer.copyright': 'Copyright owned by',
@@ -1477,6 +1474,139 @@ const translations: Record<Language, Record<string, string>> = {
     'admin.settings.saving': 'Saving...',
     'admin.settings.saveButton': 'Save Settings',
   },
+  es: {
+    // Admin Notifications
+    'admin.notifications.title': 'Gestión de Notificaciones',
+    'admin.notifications.list': 'Lista de Notificaciones',
+    'admin.notifications.edit': 'Editar',
+    'admin.notifications.settings': 'Configuración',
+    'admin.notifications.create': 'Crear Nueva Notificación',
+    'admin.notifications.noNotifications': 'No hay notificaciones todavía',
+    'admin.notifications.noNotificationsDesc': 'Crea tu primera notificación para enviar a los usuarios',
+    'admin.notifications.type.promotion': 'Promoción',
+    'admin.notifications.type.update': 'Actualización',
+    'admin.notifications.type.order': 'Pedido',
+    'admin.notifications.type.system': 'Sistema',
+    'admin.notifications.priority.high': 'Alta',
+    'admin.notifications.priority.medium': 'Media',
+    'admin.notifications.priority.low': 'Baja',
+    'admin.notifications.created': 'Creado',
+    'admin.notifications.readCount': 'Leído por',
+    'admin.notifications.sentTo': 'Enviado a',
+    'admin.notifications.expires': 'Expira',
+    'admin.notifications.viewDetails': 'Ver Detalles',
+    'admin.notifications.editBtn': 'Editar',
+    'admin.notifications.deleteBtn': 'Eliminar',
+    'admin.notifications.cancelBtn': 'Cancelar',
+    'admin.notifications.createBtn': 'Crear Notificación',
+    'admin.notifications.updatingBtn': 'Actualizando...',
+    'admin.notifications.updateBtn': 'Actualizar Notificación',
+    'admin.notifications.creatingBtn': 'Creando...',
+    'admin.notifications.form.title': 'Título de la Notificación *',
+    'admin.notifications.form.titlePlaceholder': 'Ingrese el título de la notificación',
+    'admin.notifications.form.content': 'Contenido de la Notificación *',
+    'admin.notifications.form.contentPlaceholder': 'Ingrese el contenido de la notificación',
+    'admin.notifications.form.type': 'Tipo de Notificación *',
+    'admin.notifications.settings.title': 'Configuración de Notificaciones',
+    'admin.notifications.settings.automatic': 'Notificaciones Automáticas',
+    'admin.notifications.settings.autoOrder': 'Notificaciones Automáticas de Pedidos',
+    'admin.notifications.settings.autoPromotion': 'Notificaciones Automáticas de Promociones',
+    'admin.notifications.settings.autoUpdate': 'Notificaciones Automáticas de Actualizaciones',
+    'admin.notifications.settings.email': 'Notificaciones por Email',
+    'admin.notifications.settings.retention': 'Días de Retención de Notificaciones',
+    'admin.notifications.settings.retentionDesc': 'Las notificaciones se eliminarán automáticamente después de estos días',
+    'admin.notifications.settings.saveBtn': 'Guardar Configuración',
+    'admin.notifications.success': '¡Notificación creada con éxito!',
+    'admin.notifications.updateSuccess': '¡Notificación actualizada con éxito!',
+    'admin.notifications.deleteSuccess': '¡Notificación eliminada con éxito!',
+    'admin.notifications.settingsSaved': '¡La configuración de notificaciones ha sido guardada!',
+    'admin.notifications.error': 'Ocurrió un error al crear la notificación',
+    'admin.notifications.updateError': 'Ocurrió un error al actualizar la notificación',
+    'admin.notifications.deleteError': 'Ocurrió un error al eliminar la notificación',
+    'admin.notifications.connectionError': 'Ocurrió un error al conectar con el servidor',
+    'admin.notifications.people': 'personas',
+    
+    // Terms page
+    'terms.title': 'Términos de Servicio',
+    'terms.lastUpdated': 'Última actualización',
+    'terms.section1.title': 'Introducción',
+    'terms.section1.content': '¡Bienvenido a {siteName}! Estos Términos de Servicio ("Términos") rigen su acceso y uso de nuestro sitio web, productos y servicios. Al acceder o usar nuestros servicios, acepta estos Términos.',
+    'terms.section2.title': 'Su Cuenta',
+    'terms.section2.content': 'Para usar ciertas funciones de nuestros servicios, puede necesitar crear una cuenta. Usted es responsable de mantener la seguridad de su cuenta y contraseña, y también es responsable de todas las actividades que ocurran bajo su cuenta.',
+    'terms.section3.title': 'Contenido y Propiedad Intelectual',
+    'terms.section3.content': '{companyName} y sus licenciantes poseen todos los derechos, títulos e intereses en los servicios, incluidos todos los derechos de propiedad intelectual relacionados. No puede copiar, modificar, distribuir o vender ninguna parte de nuestros servicios sin permiso explícito por escrito.',
+    
+    // Header
+    'nav.home': 'Inicio',
+    'nav.products': 'Productos',
+    'nav.about': 'Acerca de',
+    'nav.contact': 'Contacto',
+    'nav.warranty': 'Garantía',
+    'nav.login': 'Iniciar Sesión',
+    'nav.logout': 'Cerrar Sesión',
+    'nav.account': 'Cuenta',
+    'nav.admin': 'Admin',
+    'auth.signOut': 'Cerrar Sesión',
+    'auth.signIn': 'Iniciar Sesión',
+    
+    // Login page
+    'login.welcome': '¡Bienvenido de nuevo!',
+    'login.continue': 'Para continuar usando los servicios de XLab',
+    'login.connect': 'Conecte de forma segura con su cuenta de Google',
+    'login.google': 'Continuar con Google',
+    'login.secure': '100% Seguro',
+    'login.terms': 'Al continuar, acepta nuestros',
+    'login.termsLink': 'Términos de Servicio',
+    'login.and': 'y',
+    'login.privacyLink': 'Política de Privacidad',
+    'login.ourCompany': '.',
+    
+    // Homepage
+    'home.slogan': '¡Optimice la eficiencia, minimice el costo!',
+    'home.search': 'Buscar software, aplicaciones...',
+    'home.loadMore': 'Cargar más',
+    'home.aboutTitle': 'Acerca de XLab',
+    'home.aboutDesc1': 'XLab es una plataforma que proporciona soluciones de software integradas con IA avanzada que ayudan a los usuarios a mejorar la eficiencia en el trabajo y la vida diaria.',
+    'home.aboutDesc2': 'Nuestra misión es proporcionar a las personas acceso a herramientas para el trabajo, estudio y entretenimiento a precios razonables y con calidad internacional.',
+    'home.learnMore': 'Más información',
+    'home.domesticProduct': 'Productos Nacionales',
+    'home.vietnamDevs': 'Desarrollado por ingenieros vietnamitas',
+    'home.support247': 'Soporte 24/7',
+    'home.supportTeam': 'Equipo de soporte dedicado',
+    'home.highSecurity': 'Alta Seguridad',
+    'home.encryptedData': 'Datos encriptados de forma segura',
+    'home.reasonablePrice': 'Precios Razonables',
+    'home.budgetOptions': 'Múltiples opciones para cualquier presupuesto',
+    'home.aiIntegration': 'Integración con IA',
+    'home.aiSupport': 'Tecnología de IA avanzada para apoyarle',
+    'home.continuousUpdates': 'Actualizaciones Continuas',
+    'home.newFeatures': 'Siempre actualizado con nuevas funciones',
+    
+    // Common buttons
+    'button.getStarted': 'Comenzar',
+    'button.learnMore': 'Más información',
+    'button.viewDetails': 'Ver detalles',
+    'button.addToCart': 'Añadir al carrito',
+    'button.buyNow': 'Comprar ahora',
+    
+    // Cart and Checkout
+    'cart.title': 'Carrito',
+    'cart.empty': 'Tu carrito está vacío',
+    'cart.continueShopping': 'Continuar comprando',
+    'cart.checkout': 'Pagar',
+    'cart.subtotal': 'Subtotal',
+    'cart.discount': 'Descuento',
+    'cart.total': 'Total',
+    
+    // Footer
+    'footer.aboutLink': 'Acerca de',
+    'footer.contactLink': 'Contacto',
+    'footer.productsAndServices': 'Productos y Servicios',
+    'footer.navigationLinks': 'Enlaces de navegación',
+    'footer.pricing': 'Precios',
+    'footer.copyright': 'Derechos de autor de la compañía',
+    'footer.acceptedPayments': 'Pagos aceptados'
+  }
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
@@ -1486,8 +1616,8 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en')) {
-      setLanguageState(savedLanguage);
+    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
+      setLanguageState(savedLanguage as Language);
     }
   }, []);
 
