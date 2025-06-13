@@ -27,7 +27,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     };
   }, []);
 
-  const changeLanguage = (lang: 'vi' | 'en') => {
+  const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
     setLanguage(lang);
     setIsOpen(false);
   };
@@ -51,6 +51,19 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               />
             </div>
             <span>VIE</span>
+          </>
+        ) : language === 'es' ? (
+          <>
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/es.svg" 
+                alt="Español" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ESP</span>
           </>
         ) : (
           <>
@@ -108,6 +121,21 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               />
             </div>
             <span>ENG</span>
+          </button>
+          <button
+            onClick={() => changeLanguage('es')}
+            className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full ${language === 'es' ? 'bg-gray-100' : ''}`}
+          >
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/es.svg" 
+                alt="Español" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ESP</span>
           </button>
         </div>
       )}
