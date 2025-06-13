@@ -1779,7 +1779,40 @@ export const translations: Record<Language, Record<string, string>> = {
     'footer.blog': 'Blog',
     'footer.documentation': 'Documentación',
     'footer.faq': 'Preguntas frecuentes',
-    'footer.followUs': 'Síguenos'
+    'footer.followUs': 'Síguenos',
+
+    // Warranty
+    'warranty.title': 'Garantía y Política de Reembolso',
+    'warranty.subtitle': 'Información sobre nuestra garantía de producto y política de reembolso para todos los productos y servicios',
+    'warranty.policyTitle': 'Política de Garantía',
+    'warranty.periodTitle': 'Período de Garantía',
+    'warranty.period': 'Todos los productos de XLab tienen una garantía de {days} días desde la fecha de compra. Durante este período, proporcionaremos soporte técnico y resolución de problemas para cualquier defecto o mal funcionamiento del producto.',
+    'warranty.processTitle': 'Proceso de Garantía',
+    'warranty.process': 'Si encuentra algún problema con su producto durante el período de garantía, por favor complete el formulario de soporte a continuación o contacte directamente con nuestro equipo de soporte. Responderemos dentro de 24 horas laborables y trabajaremos para resolver su problema lo más rápido posible.',
+    'warranty.conditionsTitle': 'Términos y Condiciones',
+    'warranty.conditions': 'La garantía cubre defectos en el funcionamiento normal del producto bajo las condiciones de uso recomendadas. La garantía no es válida si el producto ha sido modificado, mal utilizado o dañado debido a un uso inadecuado.',
+    'warranty.refundPolicyTitle': 'Política de Reembolso',
+    'warranty.refundPeriodTitle': 'Período de Reembolso',
+    'warranty.refundPeriod': 'Ofrecemos un período de reembolso de {days} días para todos los productos digitales. Si no está satisfecho con su compra, puede solicitar un reembolso completo dentro de este período.',
+    'warranty.refundConditionsTitle': 'Condiciones de Reembolso',
+    'warranty.refundConditions': 'Para ser elegible para un reembolso, el producto no debe haber sido utilizado excesivamente (más del 50% del límite de uso) y debe proporcionar una razón clara para la solicitud de reembolso.',
+    'warranty.refundProcessTitle': 'Proceso de Reembolso',
+    'warranty.refundProcess': 'Para solicitar un reembolso, por favor envíe un correo electrónico a nuestro equipo de soporte con su número de pedido y motivo de la solicitud. Una vez aprobado, el reembolso será procesado dentro de 7 días laborables a través del método de pago original.',
+    'warranty.supportRequestTitle': 'Solicitud de Soporte Técnico',
+    'warranty.contactInfoTitle': 'Información de Contacto',
+    'warranty.submitSuccess': 'Su solicitud ha sido enviada con éxito. Nos pondremos en contacto con usted pronto.',
+    'warranty.formName': 'Nombre completo',
+    'warranty.formEmail': 'Correo electrónico',
+    'warranty.formPhone': 'Número de teléfono',
+    'warranty.formOrderCode': 'Código de pedido (si está disponible)',
+    'warranty.formAccountName': 'Nombre de cuenta (si aplica)',
+    'warranty.formProblem': 'Descripción del problema',
+    'warranty.formProblemPlaceholder': 'Por favor describa detalladamente el problema que está experimentando...',
+    'warranty.formSubmitting': 'Enviando...',
+    'warranty.formSubmit': 'Enviar solicitud',
+    'warranty.supportInfo1': 'Nuestro equipo de soporte técnico está disponible para ayudarle con cualquier problema que pueda tener con nuestros productos o servicios.',
+    'warranty.supportInfo2': 'No dude en contactarnos a través de cualquiera de los siguientes canales:',
+    'warranty.address': 'Dirección'
   }
 };
 
