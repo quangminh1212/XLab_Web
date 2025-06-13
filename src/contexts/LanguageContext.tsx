@@ -312,22 +312,22 @@ const translations: Record<Language, Record<string, string>> = {
     'cart.enterCoupon': 'Nhập mã giảm giá',
 
     // Footer
-    'footer.aboutLink': 'Giới thiệu',
-    'footer.contactLink': 'Liên hệ',
-    'footer.productsAndServices': 'Sản phẩm & Dịch vụ',
-    'footer.products': 'Sản phẩm',
-    'footer.services': 'Dịch vụ',
-    'footer.testimonials': 'Đánh giá',
-    'footer.navigationLinks': 'Điều hướng',
-    'footer.pricing': 'Bảng giá',
-    'footer.copyright': 'Bản quyền thuộc về công ty',
-    'footer.acceptedPayments': 'Chấp nhận thanh toán',
-    'footer.companyDescription1': 'XLab là công ty hàng đầu trong lĩnh vực phát triển giải pháp công nghệ và phần mềm chuyên nghiệp cho doanh nghiệp.',
-    'footer.companyDescription2': 'Với đội ngũ chuyên gia giàu kinh nghiệm, XLab tự hào là đối tác tin cậy của hơn 500+ doanh nghiệp.',
-    'footer.customers': '500+ Khách hàng',
-    'footer.years': '5+ Năm',
-    'footer.support': '24/7 Hỗ trợ',
-    
+    'footer.aboutLink': 'Acerca de',
+    'footer.contactLink': 'Contacto',
+    'footer.productsAndServices': 'Productos y Servicios',
+    'footer.products': 'Productos',
+    'footer.services': 'Servicios',
+    'footer.testimonials': 'Testimonios',
+    'footer.companyDescription1': 'XLab es una empresa líder en el campo de soluciones tecnológicas y desarrollo de software profesional para empresas.',
+    'footer.companyDescription2': 'Con un equipo de expertos experimentados, XLab se enorgullece de ser un socio de confianza para más de 500+ empresas.',
+    'footer.customers': '500+ Clientes',
+    'footer.years': '5+ Años',
+    'footer.support': 'Soporte 24/7',
+    'footer.navigationLinks': 'Enlaces de navegación',
+    'footer.pricing': 'Precios',
+    'footer.copyright': 'Derechos de autor de la compañía',
+    'footer.acceptedPayments': 'Pagos aceptados',
+
     // Products page
     'products.title': 'Sản phẩm',
     'products.subtitle': 'Danh sách các phần mềm và dịch vụ chất lượng cao với mức giá tốt nhất thị trường.',
@@ -1650,6 +1650,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Products page
     'products.title': 'Productos',
     'products.subtitle': 'Lista de software y servicios de alta calidad con los mejores precios del mercado.',
+    'products.pageTitle': 'Software | XLab - Software y Servicios',
     'products.all': 'Todos',
     'products.software': 'Software',
     'products.service': 'Servicio',
@@ -1790,8 +1791,8 @@ const translations: Record<Language, Record<string, string>> = {
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  // Mặc định là tiếng Việt
-  const [language, setLanguageState] = useState<Language>('vi');
+  // Mặc định là tiếng Tây Ban Nha
+  const [language, setLanguageState] = useState<Language>('es');
 
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
@@ -1817,7 +1818,23 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
         return '';
       }
       
-      // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
+      // Luôn trả về các khóa footer bằng tiếng Tây Ban Nha
+      if (key.startsWith('footer.') || key.startsWith('nav.')) {
+        let text = translations['es']?.[key] || key;
+        
+        // Thay thế tham số nếu có
+        if (params && typeof params === 'object' && Object.keys(params).length > 0) {
+          Object.entries(params).forEach(([param, value]) => {
+            const regex = new RegExp(`\\{${param}\\}`, 'g');
+            const strValue = convertValueToString(value, param);
+            text = text.replace(regex, strValue);
+          });
+        }
+        
+        return text;
+      }
+      
+      // Xử lý các khóa bình thường
       let text = translations[language]?.[key] || key;
       
       // Thay thế tham số nếu có
