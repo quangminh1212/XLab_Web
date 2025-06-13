@@ -1,8 +1,12 @@
 'use client';
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+<<<<<<< HEAD
 
 type Language = 'vi' | 'en' | 'es';
+=======
+import { translations, Language } from '@/locales';
+>>>>>>> dev_8
 
 type LanguageContextType = {
   language: Language;
@@ -17,6 +21,7 @@ interface LanguageProviderProps {
 // Tạo một context mới
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+<<<<<<< HEAD
 // Bộ dịch tiếng Việt
 const viTranslations: Record<string, string> = {
   // Admin Notifications
@@ -105,6 +110,17 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
         return savedLanguage as Language;
       }
+=======
+export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  // Mặc định là tiếng Việt
+  const [language, setLanguageState] = useState<Language>('vi');
+
+  // Khởi tạo ngôn ngữ từ localStorage khi component được mount
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
+      setLanguageState(savedLanguage as Language);
+>>>>>>> dev_8
     }
     return 'vi';
   });

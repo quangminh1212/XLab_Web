@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg xmlns="http://www.w3.org/2000/svg" height="500" width="750" viewBox="0 0 750 500">
   <rect width="750" height="500" fill="#c60b1e"/>
   <rect width="750" height="250" y="125" fill="#ffb400"/>
   <path d="M150 250h50v-25h-50z" fill="#c60b1e"/>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <rect width="750" height="500" fill="#c60b1e"/>
+  <rect width="750" height="250" y="125" fill="#ffc400"/>
+>>>>>>> dev_8
 </svg> 
