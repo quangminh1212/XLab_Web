@@ -154,3 +154,7 @@ report.*.json
 .next/cache/webpack/edge-server-development
 .next/server/chunks
 .next/static/css/app-layout.css
+
+# user data files
+/data/users/*.json
+/data/users.json
