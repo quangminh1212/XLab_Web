@@ -2,15 +2,11 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 <<<<<<< HEAD
-import { translations, Language } from '@/locales';
-=======
-<<<<<<< HEAD
 import { Language, translations } from '@/locales';
 =======
 
 type Language = 'vi' | 'en';
 >>>>>>> parent of eea5ca55 (feat: add Spanish translations to language context)
->>>>>>> 2e12e51b9d6fbcf0295e287983cd4b62520f02ad
 
 type LanguageContextType = {
   language: Language;
@@ -25,8 +21,6 @@ interface LanguageProviderProps {
 // Tạo một context mới
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-<<<<<<< HEAD
-=======
 <<<<<<< HEAD
 =======
 // Translations
@@ -1492,21 +1486,14 @@ const translations: Record<Language, Record<string, string>> = {
 };
 
 >>>>>>> parent of eea5ca55 (feat: add Spanish translations to language context)
->>>>>>> 2e12e51b9d6fbcf0295e287983cd4b62520f02ad
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   const [language, setLanguageState] = useState<Language>('vi');
 
   // Khởi tạo ngôn ngữ từ localStorage (nếu có)
   useEffect(() => {
-<<<<<<< HEAD
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
-      setLanguageState(savedLanguage as Language);
-=======
     const savedLanguage = localStorage.getItem('language') as Language | null;
     if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage);
->>>>>>> 2e12e51b9d6fbcf0295e287983cd4b62520f02ad
     }
   }, []);
 

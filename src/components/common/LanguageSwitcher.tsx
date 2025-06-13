@@ -28,14 +28,11 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   }, []);
 
   const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
-<<<<<<< HEAD
-=======
     if (lang === language) {
       setIsOpen(false);
       return;
     }
     
->>>>>>> 2e12e51b9d6fbcf0295e287983cd4b62520f02ad
     setLanguage(lang);
     setIsOpen(false);
   };
@@ -60,24 +57,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>VIE</span>
           </>
-<<<<<<< HEAD
-        ) : language === 'es' ? (
-          <>
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/es.svg" 
-                alt="Español" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>ESP</span>
-          </>
-        ) : (
-=======
         ) : language === 'en' ? (
->>>>>>> 2e12e51b9d6fbcf0295e287983cd4b62520f02ad
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
