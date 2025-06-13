@@ -6,13 +6,55 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import QRCode from 'qrcode';
 import { QRPay } from 'vietnam-qr-pay';
-import { useBalance } from '@/contexts/BalanceContext';
+// import { useBalance } from '@/contexts/BalanceContext'; // Tạm thời bỏ qua context
 
 export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { balance, refreshBalance } = useBalance();
+  
+  // Tự quản lý state số dư thay vì sử dụng context
+  const [balance, setBalance] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Hàm fetch balance trực tiếp
+  const fetchBalance = async () => {
+    if (!session?.user?.email) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      console.log('📊 Fetching balance directly');
+      const response = await fetch('/api/user/balance', {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store',
+          'Pragma': 'no-cache'
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('📊 Balance API response:', data);
+        setBalance(data.balance || 0);
+      } else {
+        console.error('❌ Failed to fetch balance:', response.statusText);
+        setError('Không thể tải số dư. ' + response.statusText);
+      }
+    } catch (err) {
+      console.error('❌ Error fetching balance:', err);
+      setError('Lỗi khi tải số dư');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Hàm refresh balance
+  const refreshBalance = () => {
+    fetchBalance();
+  };
 
   // Lấy thông tin từ URL params
   const suggestedAmount = searchParams?.get('amount');
@@ -36,8 +78,14 @@ export default function DepositPage() {
     if (status === 'unauthenticated') {
       router.push('/login');
     } else if (session?.user) {
+      // Khởi tạo mã giao dịch
       generateTransactionCode();
+      
+      // Tải số dư khi trang được load
+      console.log('🔄 Initial balance fetch on page load');
+      fetchBalance();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, status, router]);
 
   const checkTransactionStatus = async () => {
@@ -133,13 +181,21 @@ export default function DepositPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    })
-      .format(amount)
-      .replace('₫', 'đ');
+    console.log('💰 Formatting amount:', amount);
+    
+    // Kiểm tra nếu amount undefined hoặc null hoặc NaN, trả về "0 đ"
+    if (amount === undefined || amount === null || isNaN(amount)) {
+      console.log('⚠️ Invalid amount value, returning 0đ');
+      return "0 đ";
+    }
+    
+    try {
+      // Sử dụng phương pháp đơn giản hơn
+      return amount.toLocaleString('vi-VN') + ' đ';
+    } catch (error) {
+      console.error('❌ Currency formatting error:', error);
+      return amount + " đ";
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -322,7 +378,55 @@ export default function DepositPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
               </div>
-              <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
+              <p className="text-3xl font-bold text-teal-600">
+                {loading ? (
+                  <span className="inline-flex items-center">
+                    <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-teal-600 mr-2"></span>
+                    Đang tải...
+                  </span>
+                ) : (
+                  formatCurrency(balance)
+                )}
+              </p>
+              
+              {/* Debug thông tin để kiểm tra */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="mt-1 text-xs text-gray-500">
+                  Debug: balance={balance}, loading={loading ? 'true' : 'false'}
+                </div>
+              )}
+              
+              {/* Nút làm mới số dư luôn hiển thị */}
+              <div className="mt-2 text-center">
+                <button 
+                  onClick={() => {
+                    console.log('🔄 Manual refresh balance');
+                    fetchBalance();
+                  }} 
+                  disabled={loading}
+                  className={`text-xs px-2 py-1 rounded ${loading 
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+                    : 'bg-teal-100 text-teal-700 hover:bg-teal-200'}`}
+                >
+                  {loading ? 'Đang tải...' : 'Làm mới số dư'}
+                </button>
+              </div>
+              {error && (
+                <p className="mt-1 text-xs text-red-500">
+                  Lỗi: {error}. <button onClick={() => {
+                    console.log('🔄 Manual balance refresh requested');
+                    refreshBalance();
+                  }} className="underline">Thử lại</button>
+                </p>
+              )}
+              {!loading && !error && balance === 0 && (
+                <p className="mt-1 text-xs">
+                  <button onClick={() => {
+                    console.log('🔄 Force refresh balance');
+                    refreshBalance();
+                  }} className="underline text-teal-600">Làm mới số dư</button>
+                </p>
+              )}
             </div>
 
             {/* Transfer Information */}

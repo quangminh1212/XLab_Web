@@ -47,13 +47,31 @@ export async function GET() {
       });
     }
 
-    try {
+          try {
+      console.log(`🔄 Syncing balance for user: ${userEmail}`);
       // Get synchronized balance from both systems
       const balance = await syncUserBalance(userEmail);
+      console.log(`✅ Balance synced successfully: ${balance}`);
+
+      // Kiểm tra giá trị balance trước khi trả về
+      if (balance === undefined || balance === null || isNaN(balance)) {
+        console.error(`⚠️ Invalid balance value returned: ${balance}, using 0 instead`);
+        // Cache giá trị an toàn
+        balanceCache.set(userEmail, { balance: 0, timestamp: Date.now() });
+        
+        return NextResponse.json({
+          balance: 0,
+          cached: false,
+          warning: "Invalid balance value detected, using 0 as fallback"
+        });
+      }
 
       // Cache the result
       balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
+      // Log response for debugging
+      console.log(`📤 Sending balance response: ${balance}`);
+      
       return NextResponse.json({
         balance: balance,
         cached: false,
