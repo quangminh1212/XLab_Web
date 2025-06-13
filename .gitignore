@@ -139,3 +139,18 @@ report.*.json
 .next/static/chunks/
 .next/static/webpack/
 .next/trace
+
+# user data
+/data/users/*.json
+/data/backups
+
+# IDE
+.idea
+.vscode
+
+# Generated files during runtime
+.next/cache/webpack/client-development
+.next/cache/webpack/server-development
+.next/cache/webpack/edge-server-development
+.next/server/chunks
+.next/static/css/app-layout.css
