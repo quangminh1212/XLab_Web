@@ -4,11 +4,14 @@ import { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AboutLayout = ({ children }: { children: React.ReactNode }) => {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const [forceUpdate, setForceUpdate] = useState(0);
   
   // Actualizar el título y la meta descripción cuando se monta el componente o cambia el idioma
   useEffect(() => {
+    // Establecer el idioma español por defecto
+    setLanguage('es');
+  
     // Forzar re-renderizado cuando cambia el idioma
     setForceUpdate(prev => prev + 1);
     

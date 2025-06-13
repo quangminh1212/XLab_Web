@@ -2,26 +2,29 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AboutPage() {
   const { t, language, setLanguage } = useLanguage();
-  const [forceUpdate, setForceUpdate] = useState(0);
+  const router = useRouter();
   
-  // Force re-render when language changes and set default language to Spanish
+  // Thiết lập ngôn ngữ ngay khi component được mount
   useEffect(() => {
-    // Đặt ngôn ngữ mặc định thành tiếng Tây Ban Nha nếu chưa phải là tiếng Tây Ban Nha
-    if (language !== 'es') {
+    // Xem xét trạng thái hiện tại
+    if (typeof window !== 'undefined' && language !== 'es') {
+      // Đặt ngôn ngữ mặc định thành tiếng Tây Ban Nha trực tiếp vào localStorage
+      localStorage.setItem('language', 'es');
+      
+      // Cập nhật ngôn ngữ trong ứng dụng
       setLanguage('es');
+      
+      // Hard refresh để đảm bảo toàn bộ trang được load lại với ngôn ngữ mới
+      window.location.reload();
     }
-    
+
     // Cập nhật title động
     document.title = `${t('about.pageTitle')} | XLab`;
   }, [language, setLanguage, t]);
-  
-  // Effect riêng cho forceUpdate để tránh lặp vô hạn
-  useEffect(() => {
-    setForceUpdate(prev => prev + 1);
-  }, [language]);
   
   return (
     <div>
