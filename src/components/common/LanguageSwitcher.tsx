@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface LanguageSwitcherProps {
@@ -13,7 +12,6 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   // Xử lý click bên ngoài dropdown để đóng dropdown
   useEffect(() => {
@@ -30,14 +28,6 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   }, []);
 
   const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
-<<<<<<< HEAD
-    if (lang === language) {
-      setIsOpen(false);
-      return;
-    }
-    
-=======
->>>>>>> dev_8
     setLanguage(lang);
     setIsOpen(false);
   };
@@ -62,9 +52,6 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>VIE</span>
           </>
-<<<<<<< HEAD
-        ) : language === 'en' ? (
-=======
         ) : language === 'es' ? (
           <>
             <div className="relative w-6 h-4 mr-2">
@@ -79,7 +66,6 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             <span>ESP</span>
           </>
         ) : (
->>>>>>> dev_8
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -91,19 +77,6 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
               />
             </div>
             <span>ENG</span>
-          </>
-        ) : (
-          <>
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/es.svg" 
-                alt="Español" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>ESP</span>
           </>
         )}
         <svg 

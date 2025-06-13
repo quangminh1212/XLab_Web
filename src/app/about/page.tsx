@@ -1,18 +1,9 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function AboutPage() {
-  const { t, language } = useLanguage();
-  const router = useRouter();
-  
-  // Chỉ cập nhật title động
-  useEffect(() => {
-    // Cập nhật title động
-    document.title = `${t('about.pageTitle')} | XLab`;
-  }, [t]);
+  const { t } = useLanguage();
   
   return (
     <div>
@@ -46,17 +37,17 @@ export default function AboutPage() {
               <div className="relative slideshow-container h-96">
                 <img
                   src="/images/office-workspace.jpg"
-                  alt="Espacio de trabajo en XLab"
+                  alt="Không gian làm việc tại XLab"
                   className="w-full h-full object-cover slideshow-item"
                 />
                 <img
                   src="/images/company-team.jpg"
-                  alt="Equipo de XLab trabajando juntos"
+                  alt="Đội ngũ XLab làm việc cùng nhau"
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
                 <img
                   src="/images/tech-workspace.jpg"
-                  alt="Espacio tecnológico en XLab"
+                  alt="Không gian công nghệ tại XLab"
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
 
@@ -272,42 +263,42 @@ export default function AboutPage() {
             const dots = document.querySelectorAll('.slideshow-dot');
             
             function showSlides() {
-              // Ocultar todas las diapositivas
+              // Ẩn tất cả slides
               slides.forEach(slide => {
                 slide.classList.add('hidden');
               });
               
-              // Quitar clase active de todos los puntos
+              // Xóa lớp active khỏi tất cả dots
               dots.forEach(dot => {
                 dot.classList.remove('slideshow-dot-active');
               });
               
-              // Aumentar slideIndex
+              // Tăng slideIndex
               slideIndex++;
               
-              // Reiniciar slideIndex si excede el número de diapositivas
+              // Reset slideIndex nếu vượt quá số slides
               if (slideIndex > slides.length) {
                 slideIndex = 1;
               }
               
-              // Mostrar diapositiva actual
+              // Hiển thị slide hiện tại
               if (slides[slideIndex - 1]) {
                 slides[slideIndex - 1].classList.remove('hidden');
               }
               
-              // Marcar el punto correspondiente como activo
+              // Đánh dấu dot tương ứng là active
               if (dots[slideIndex - 1]) {
                 dots[slideIndex - 1].classList.add('slideshow-dot-active');
               }
               
-              // Llamar a la función nuevamente después de 5 segundos
+              // Gọi lại hàm sau 5 giây
               setTimeout(showSlides, 5000);
             }
             
-            // Inicializar slideshow
+            // Khởi tạo slideshow
             showSlides();
             
-            // Manejar eventos de clic en los puntos
+            // Xử lý sự kiện click vào dot
             dots.forEach((dot, index) => {
               dot.addEventListener('click', () => {
                 slideIndex = index;
