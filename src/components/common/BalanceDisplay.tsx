@@ -13,6 +13,11 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
   const { balance, loading, error, refreshBalance } = useBalance();
 
+  // Debug log
+  console.log('🔍 BalanceDisplay - Balance:', balance);
+  console.log('🔍 BalanceDisplay - Loading:', loading);
+  console.log('🔍 BalanceDisplay - Error:', error);
+
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -52,7 +57,12 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
           </div>
         ) : error ? (
           <div onClick={(e) => { e.preventDefault(); refreshBalance(); }} className="cursor-pointer">
-            <span className="text-xs sm:text-sm font-medium text-red-600">Lỗi kết nối</span>
+            <span className="text-xs sm:text-sm font-medium text-red-600 whitespace-nowrap flex items-center">
+              <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Tải lại
+            </span>
           </div>
         ) : (
           <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">

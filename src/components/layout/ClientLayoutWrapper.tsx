@@ -15,6 +15,9 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { BalanceProvider } from '@/contexts/BalanceContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 
+// Debug log
+console.log('🔄 ClientLayoutWrapper rendering');
+
 interface ClientLayoutWrapperProps {
   children: React.ReactNode;
 }

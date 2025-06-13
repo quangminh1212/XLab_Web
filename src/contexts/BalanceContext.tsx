@@ -23,7 +23,7 @@ const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 
 // Cache để tránh gọi API quá nhiều - tăng thời gian cache
 let lastFetchTime = 0;
-let cachedBalance = 0;
+let cachedBalance = -1; // Đặt thành -1 để không trùng với giá trị hợp lệ
 let isCurrentlyFetching = false;
 const CACHE_DURATION = 60000; // 60 seconds (tăng từ 30s lên 60s)
 const AUTO_REFRESH_INTERVAL = 300000; // 5 minutes (tăng từ 2 phút lên 5 phút)
@@ -191,11 +191,12 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   // Initial fetch khi user login
   useEffect(() => {
     if (session?.user?.email && status === 'authenticated') {
-      fetchBalance();
+      console.log("🔁 Initial fetch balance triggered");
+      fetchBalance(true); // Force refresh khi đăng nhập
     } else if (status === 'unauthenticated') {
       setBalance(0);
       setLoading(false);
-      cachedBalance = 0;
+      cachedBalance = -1;
       lastFetchTime = 0;
       setError(null);
     }
