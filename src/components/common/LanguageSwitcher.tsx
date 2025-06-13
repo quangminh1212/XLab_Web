@@ -30,11 +30,13 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   }, []);
 
   const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
+    if (lang === language) {
+      setIsOpen(false);
+      return;
+    }
+    
     setLanguage(lang);
     setIsOpen(false);
-    
-    // Tải lại trang ngay lập tức để cập nhật ngôn ngữ
-    window.location.reload();
   };
 
   return (
