@@ -1791,8 +1791,8 @@ const translations: Record<Language, Record<string, string>> = {
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  // Mặc định là tiếng Tây Ban Nha
-  const [language, setLanguageState] = useState<Language>('es');
+  // Mặc định là tiếng Việt
+  const [language, setLanguageState] = useState<Language>('vi');
 
   // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
@@ -1816,22 +1816,6 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       if (typeof key !== 'string' || !key) {
         console.warn('Invalid translation key:', key);
         return '';
-      }
-      
-      // Luôn trả về các khóa footer bằng tiếng Tây Ban Nha
-      if (key.startsWith('footer.') || key.startsWith('nav.')) {
-        let text = translations['es']?.[key] || key;
-        
-        // Thay thế tham số nếu có
-        if (params && typeof params === 'object' && Object.keys(params).length > 0) {
-          Object.entries(params).forEach(([param, value]) => {
-            const regex = new RegExp(`\\{${param}\\}`, 'g');
-            const strValue = convertValueToString(value, param);
-            text = text.replace(regex, strValue);
-          });
-        }
-        
-        return text;
       }
       
       // Xử lý các khóa bình thường

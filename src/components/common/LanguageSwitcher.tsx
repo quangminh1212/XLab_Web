@@ -33,13 +33,8 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
     setLanguage(lang);
     setIsOpen(false);
     
-    // Sử dụng router.refresh() để refresh lại trang với ngôn ngữ mới
-    router.refresh();
-    
-    // Thêm một timeout ngắn để chắc chắn rằng thay đổi được áp dụng
-    setTimeout(() => {
-      window.location.reload();
-    }, 300);
+    // Tải lại trang ngay lập tức để cập nhật ngôn ngữ
+    window.location.reload();
   };
 
   return (
