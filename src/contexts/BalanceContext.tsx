@@ -63,7 +63,6 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
       }
 
       isCurrentlyFetching = true;
-      console.log('🔄 Fetching balance...');
 
       try {
         if (isMountedRef.current) {
@@ -79,7 +78,6 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         while (attempts < maxAttempts && !success) {
           try {
             attempts++;
-            console.log(`Attempt ${attempts} to fetch balance...`);
             
             const response = await fetch('/api/user/balance', {
               cache: 'no-cache', // Đảm bảo không cache ở browser level
@@ -87,11 +85,8 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
                 'Cache-Control': 'no-cache, no-store',
                 'Pragma': 'no-cache'
               },
-              credentials: 'include', // Đảm bảo gửi cookies và session data
             });
 
-            console.log(`Balance fetch response status: ${response.status}`);
-            
             if (response.ok) {
               const data = await response.json();
               const newBalance = data.balance || 0;
@@ -135,11 +130,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         }
 
         if (!success) {
-          console.error(`Failed to fetch balance after ${maxAttempts} attempts: ${errorMessage}`);
-          // Vẫn set loading thành false thay vì throw error để tránh crash app
-          if (isMountedRef.current) {
-            setError(`Failed to fetch balance: ${errorMessage}`);
-          }
+          throw new Error(`Failed to fetch balance after ${maxAttempts} attempts: ${errorMessage}`);
         }
       } catch (err) {
         console.error('Error fetching balance:', err);

@@ -11,7 +11,7 @@ interface BalanceDisplayProps {
 
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
-  const { balance, loading, error, refreshBalance } = useBalance();
+  const { balance, loading } = useBalance();
 
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
@@ -29,7 +29,7 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
     <Link
       href="/account/deposit"
       className={`group flex items-center space-x-1.5 sm:space-x-2 text-teal-600 hover:text-teal-700 transition-colors duration-300 ${className}`}
-      title={error ? `Lỗi: ${error}` : "Số dư tài khoản - Click để nạp tiền"}
+      title="Số dư tài khoản - Click để nạp tiền"
     >
       <div className="flex items-center space-x-1.5 sm:space-x-2">
         <svg
@@ -49,10 +49,6 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
           <div className="flex items-center space-x-1.5 sm:space-x-2">
             <div className="animate-spin rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 border-t-2 border-b-2 border-teal-600"></div>
             <span className="text-xs sm:text-sm font-medium text-teal-600">Đang tải...</span>
-          </div>
-        ) : error ? (
-          <div onClick={(e) => { e.preventDefault(); refreshBalance(); }} className="cursor-pointer">
-            <span className="text-xs sm:text-sm font-medium text-red-600">Lỗi kết nối</span>
           </div>
         ) : (
           <span className="text-xs sm:text-sm font-bold text-teal-600 group-hover:text-teal-700 transition-colors whitespace-nowrap">

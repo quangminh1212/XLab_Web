@@ -3,7 +3,6 @@ import path from 'path';
 import crypto from 'crypto';
 import { User } from '@/models/UserModel';
 import { Transaction } from '@/models/TransactionModel';
-import { v4 as uuidv4 } from 'uuid';
 
 // File paths cũ (fallback)
 const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
@@ -12,8 +11,6 @@ const BALANCES_FILE = path.join(process.cwd(), 'data', 'balances.json');
 
 // Thư mục lưu dữ liệu user riêng lẻ
 const USERS_DIR = path.join(process.cwd(), 'data', 'users');
-const DATA_DIR = path.join(process.cwd(), 'data');
-const BACKUPS_DIR = path.join(DATA_DIR, 'backups');
 
 // Interface cho giỏ hàng
 interface CartItem {
@@ -71,16 +68,6 @@ interface UserData {
 // User balance interface
 interface UserBalance {
   [email: string]: number;
-}
-
-// Ensure directory exists
-async function ensureDir(dirPath: string): Promise<void> {
-  try {
-    await fs.access(dirPath);
-  } catch (error) {
-    await fs.mkdir(dirPath, { recursive: true });
-    console.log(`Created directory: ${dirPath}`);
-  }
 }
 
 // Tạo tên file từ email
@@ -451,8 +438,6 @@ export async function syncUserBalance(email: string): Promise<number> {
       throw new Error('Email is required for syncUserBalance');
     }
 
-    console.log(`🔄 Syncing balance for user: ${email}`);
-
     // Read from both sources
     let balanceFromUsers = 0;
     let balanceFromBalances = 0;
@@ -465,9 +450,6 @@ export async function syncUserBalance(email: string): Promise<number> {
       userData = await getUserDataFromFile(email);
       if (userData) {
         balanceFromUserFile = userData.profile.balance || 0;
-        console.log(`Balance from user file: ${balanceFromUserFile}`);
-      } else {
-        console.log('User data not found in individual file');
       }
     } catch (error) {
       console.log('Could not read from user file:', error);
@@ -480,7 +462,6 @@ export async function syncUserBalance(email: string): Promise<number> {
       const users = await getUsers();
       user = users.find((u) => u.email === email) || null;
       balanceFromUsers = user?.balance || 0;
-      console.log(`Balance from users.json: ${balanceFromUsers}`);
     } catch (error) {
       console.log('Could not read from users.json:', error);
       errorMessages.push(`users.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -494,11 +475,8 @@ export async function syncUserBalance(email: string): Promise<number> {
         const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
         const balances: UserBalance = JSON.parse(balanceData);
         balanceFromBalances = balances[email] || 0;
-        console.log(`Read balance for ${email} from balances.json: ${balanceFromBalances}`);
       } catch (accessError) {
         // Create empty balances file if it doesn't exist
-        console.log('balances.json not found, creating file');
-        await ensureDir(path.dirname(BALANCES_FILE));
         await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
         console.log('Created new balances.json file');
       }
@@ -510,7 +488,6 @@ export async function syncUserBalance(email: string): Promise<number> {
     // If no user data exists anywhere, create new user with fallback mechanism
     if (!userData && !user) {
       try {
-        console.log('No user data exists, creating new user');
         user = await createNewUserFromEmail(email);
         const newUserData = createDefaultUserData(user);
         await saveUserDataToFile(email, newUserData);
@@ -530,12 +507,10 @@ export async function syncUserBalance(email: string): Promise<number> {
 
     // Use the highest balance and sync
     const finalBalance = Math.max(balanceFromUsers, balanceFromBalances, balanceFromUserFile);
-    console.log(`Final balance calculated: ${finalBalance} (max of ${balanceFromUsers}, ${balanceFromBalances}, ${balanceFromUserFile})`);
 
     // Update all systems with the final balance - with error handling for each step
     try {
       if (balanceFromUsers !== finalBalance) {
-        console.log(`Updating users.json balance from ${balanceFromUsers} to ${finalBalance}`);
         await updateUserBalanceInFile(email, finalBalance - balanceFromUsers);
       }
     } catch (updateError) {
@@ -544,7 +519,6 @@ export async function syncUserBalance(email: string): Promise<number> {
 
     try {
       if (balanceFromBalances !== finalBalance) {
-        console.log(`Updating balances.json balance from ${balanceFromBalances} to ${finalBalance}`);
         await updateBalanceInBalancesFile(email, finalBalance);
       }
     } catch (updateError) {
@@ -553,11 +527,9 @@ export async function syncUserBalance(email: string): Promise<number> {
 
     try {
       if (balanceFromUserFile !== finalBalance) {
-        console.log(`Updating user file balance from ${balanceFromUserFile} to ${finalBalance}`);
         let userData = await getUserDataFromFile(email);
         if (!userData) {
           // Create user data if it doesn't exist
-          console.log('No user data file found, creating new one');
           const users = await getUsers();
           const existingUser = users.find((u) => u.email === email);
           if (existingUser) {
@@ -569,7 +541,6 @@ export async function syncUserBalance(email: string): Promise<number> {
         if (userData) {
           userData.profile.balance = finalBalance;
           await saveUserDataToFile(email, userData);
-          console.log('User file updated with new balance');
         }
       }
     } catch (updateError) {

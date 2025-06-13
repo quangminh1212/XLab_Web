@@ -23,14 +23,10 @@ setInterval(
 
 export async function GET() {
   try {
-    console.log('🔍 Balance API called');
-    
     // Check authentication
     const session = await getServerSession(authOptions);
-    console.log('💡 Session status:', session ? 'Found' : 'Not found');
-    
+
     if (!session || !session.user || !session.user.email) {
-      console.log('❌ User not authenticated');
       return NextResponse.json(
         { 
           error: 'Unauthorized', 
@@ -41,12 +37,10 @@ export async function GET() {
     }
 
     const userEmail = session.user.email;
-    console.log(`👤 User authenticated: ${userEmail}`);
 
     // Check cache first
     const cached = balanceCache.get(userEmail);
     if (cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
-      console.log(`💰 Returning cached balance for ${userEmail}: ${cached.balance}`);
       return NextResponse.json({
         balance: cached.balance,
         cached: true,
@@ -54,21 +48,18 @@ export async function GET() {
     }
 
     try {
-      console.log(`🔄 Syncing balance for user: ${userEmail}`);
       // Get synchronized balance from both systems
       const balance = await syncUserBalance(userEmail);
-      console.log(`✅ Balance synced successfully: ${balance}`);
 
       // Cache the result
       balanceCache.set(userEmail, { balance, timestamp: Date.now() });
 
-      console.log(`📤 Sending balance response: ${balance}`);
       return NextResponse.json({
         balance: balance,
         cached: false,
       });
     } catch (syncError) {
-      console.error('❌ Error syncing user balance:', syncError);
+      console.error('Error syncing user balance:', syncError);
       return NextResponse.json(
         { 
           error: 'Balance Sync Error', 
@@ -79,7 +70,7 @@ export async function GET() {
       );
     }
   } catch (error) {
-    console.error('❌ Error fetching user balance:', error);
+    console.error('Error fetching user balance:', error);
     return NextResponse.json(
       { 
         error: 'Internal Server Error', 
