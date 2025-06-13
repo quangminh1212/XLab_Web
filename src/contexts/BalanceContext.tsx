@@ -47,36 +47,21 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         return;
       }
 
-      console.log('🔄 Fetching balance for:', session.user.email);
-
       // Kiểm tra cache nếu không force
       const now = Date.now();
       if (!force && now - lastFetchTime < CACHE_DURATION && cachedBalance >= 0) {
         if (isMountedRef.current) {
-          console.log('💰 Using cached balance:', cachedBalance);
-          // Sử dụng setTimeout để đảm bảo React không bỏ qua state update trong strict mode
           setBalance(cachedBalance);
-          // Dùng timeout ngắn để đảm bảo state được cập nhật tuần tự
-          setTimeout(() => {
-            if (isMountedRef.current) {
-              console.log('⏱️ Resetting loading state after using cache');
-              setLoading(false);
-            }
-          }, 0);
+          setLoading(false);
         }
         return;
       }
 
       // Tránh multiple requests cùng lúc
       if (isCurrentlyFetching) {
-        console.log('⏳ Balance fetch already in progress, skipping');
         return;
       }
 
-      if (isMountedRef.current) {
-        setLoading(true); // Đảm bảo loading state được set trước khi fetch
-      }
-      
       isCurrentlyFetching = true;
 
       try {
@@ -105,18 +90,11 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
             if (response.ok) {
               const data = await response.json();
               const newBalance = data.balance || 0;
-              console.log(`🔢 Received balance from API: ${newBalance}`);
 
               // Chỉ update state nếu component vẫn mounted
               if (isMountedRef.current) {
-                console.log(`💰 Setting balance in state: ${newBalance}`);
-                // Gọi setState trong một promise chain để đảm bảo thứ tự cập nhật
-                Promise.resolve().then(() => {
-                  if (isMountedRef.current) {
-                    setBalance(newBalance);
-                    setLastUpdated(new Date());
-                  }
-                });
+                setBalance(newBalance);
+                setLastUpdated(new Date());
               }
 
               cachedBalance = newBalance;
@@ -160,16 +138,9 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
           setError(err instanceof Error ? err.message : 'Unknown error');
         }
       } finally {
-        // Đảm bảo loading state được reset sau một chút
-        setTimeout(() => {
-          if (isMountedRef.current) {
-            console.log('✅ Balance fetch completed, turning off loading state');
-            setLoading(false);
-          } else {
-            console.log('⚠️ Component unmounted during balance fetch');
-          }
-        }, 50); // Delay nhỏ để đảm bảo các state updates trước đã được xử lý
-
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
         isCurrentlyFetching = false;
       }
     },
@@ -177,23 +148,10 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
   );
 
   const refreshBalance = useCallback(async (): Promise<void> => {
-    console.log('🔄 Manual refresh balance requested');
     if (isMountedRef.current) {
-      // Đảm bảo loading state được hiển thị
       setLoading(true);
-      
-      // Đặt timeout trước khi fetch để đảm bảo UI kịp cập nhật
-      await new Promise(resolve => setTimeout(resolve, 50));
     }
-    try {
-      await fetchBalance(true); // Force refresh
-    } catch (error) {
-      console.error('❌ Error in refreshBalance:', error);
-      // Đảm bảo loading state được reset trong trường hợp lỗi
-      if (isMountedRef.current) {
-        setLoading(false);
-      }
-    }
+    await fetchBalance(true); // Force refresh
   }, [fetchBalance]);
 
   // Cleanup khi component unmount

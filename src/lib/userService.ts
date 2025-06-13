@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import * as fsSync from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { User } from '@/models/UserModel';
@@ -9,17 +8,6 @@ import { Transaction } from '@/models/TransactionModel';
 const USERS_FILE = path.join(process.cwd(), 'data', 'users.json');
 const TRANSACTIONS_FILE = path.join(process.cwd(), 'data', 'transactions.json');
 const BALANCES_FILE = path.join(process.cwd(), 'data', 'balances.json');
-
-// Đảm bảo file balances.json tồn tại
-try {
-  if (!fsSync.existsSync(BALANCES_FILE)) {
-    // Tạo file balances.json nếu chưa tồn tại
-    fsSync.writeFileSync(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
-    console.log('Created new balances.json file');
-  }
-} catch (error) {
-  console.error('Error checking/creating balances.json:', error);
-}
 
 // Thư mục lưu dữ liệu user riêng lẻ
 const USERS_DIR = path.join(process.cwd(), 'data', 'users');
@@ -481,29 +469,20 @@ export async function syncUserBalance(email: string): Promise<number> {
 
     // Get from balances.json
     try {
-      // Kiểm tra xem file có tồn tại không trước khi đọc
-      if (fsSync.existsSync(BALANCES_FILE)) {
+      // Check if file exists first
+      try {
+        await fs.access(BALANCES_FILE);
         const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
-        try {
-          const balances: UserBalance = JSON.parse(balanceData);
-          balanceFromBalances = balances[email] || 0;
-          console.log(`Read balance for ${email} from balances.json: ${balanceFromBalances}`);
-        } catch (parseError) {
-          console.error('Error parsing balances.json:', parseError);
-          // File tồn tại nhưng nội dung không hợp lệ, tạo mới
-          await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
-          console.log('Recreated balances.json file due to invalid content');
-          errorMessages.push(`balances.json parse error: ${parseError instanceof Error ? parseError.message : 'Invalid JSON'}`);
-        }
-      } else {
-        // File không tồn tại, tạo mới
+        const balances: UserBalance = JSON.parse(balanceData);
+        balanceFromBalances = balances[email] || 0;
+      } catch (accessError) {
+        // Create empty balances file if it doesn't exist
         await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
-        console.log('Created new balances.json file because it was missing');
-        errorMessages.push('balances.json file was missing and has been created');
+        console.log('Created new balances.json file');
       }
     } catch (error) {
-      console.error('Error checking/reading balances.json:', error);
-      errorMessages.push(`balances.json access error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.log('Could not read from balances.json:', error);
+      errorMessages.push(`balances.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
     // If no user data exists anywhere, create new user with fallback mechanism
