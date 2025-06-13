@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface LanguageSwitcherProps {
@@ -12,6 +13,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Xử lý click bên ngoài dropdown để đóng dropdown
   useEffect(() => {
@@ -30,6 +32,14 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
   const changeLanguage = (lang: 'vi' | 'en' | 'es') => {
     setLanguage(lang);
     setIsOpen(false);
+    
+    // Sử dụng router.refresh() để refresh lại trang với ngôn ngữ mới
+    router.refresh();
+    
+    // Thêm một timeout ngắn để chắc chắn rằng thay đổi được áp dụng
+    setTimeout(() => {
+      window.location.reload();
+    }, 300);
   };
 
   return (
