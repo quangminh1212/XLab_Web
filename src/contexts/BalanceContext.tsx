@@ -33,21 +33,12 @@ interface BalanceProviderProps {
 }
 
 export function BalanceProvider({ children }: BalanceProviderProps) {
-  console.log('🚀 BalanceProvider rendering');
-  
   const { data: session, status } = useSession();
   const [balance, setBalance] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const isMountedRef = useRef(true);
-  const initialFetchDoneRef = useRef(false);
-  
-  // Log thông tin session
-  useEffect(() => {
-    console.log('🔑 BalanceProvider session status:', status);
-    console.log('👤 BalanceProvider session user:', session?.user?.email || 'None');
-  }, [session, status]);
 
   const fetchBalance = useCallback(
     async (force = false): Promise<void> => {
@@ -56,16 +47,10 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         return;
       }
 
-      // Đảm bảo luôn fetch khi chưa từng fetch thành công
+      // Kiểm tra cache nếu không force
       const now = Date.now();
-      const shouldUseCachedValue = !force && initialFetchDoneRef.current && 
-                                  now - lastFetchTime < CACHE_DURATION && cachedBalance > 0;
-      
-      console.log(`💰 Fetch balance - Should use cached value? ${shouldUseCachedValue} (cached: ${cachedBalance}, initialFetch: ${initialFetchDoneRef.current})`);
-      
-      if (shouldUseCachedValue) {
+      if (!force && now - lastFetchTime < CACHE_DURATION && cachedBalance >= 0) {
         if (isMountedRef.current) {
-          console.log(`💰 Using cached balance: ${cachedBalance}`);
           setBalance(cachedBalance);
           setLoading(false);
         }
@@ -115,9 +100,6 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
               if (isMountedRef.current) {
                 setBalance(newBalance);
                 setLastUpdated(new Date());
-                
-                // Đánh dấu là đã fetch thành công
-                initialFetchDoneRef.current = true;
               }
 
               cachedBalance = newBalance;
@@ -246,14 +228,5 @@ export function useBalance() {
   if (context === undefined) {
     throw new Error('useBalance must be used within a BalanceProvider');
   }
-  
-  // Debug log
-  console.log('⚡ useBalance hook called:', {
-    balance: context.balance,
-    loading: context.loading,
-    error: context.error,
-    lastUpdated: context.lastUpdated
-  });
-  
   return context;
 }
