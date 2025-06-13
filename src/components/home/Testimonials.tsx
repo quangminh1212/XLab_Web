@@ -8,9 +8,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export default function HomeTestimonials() {
   const { t, language } = useLanguage();
 
-  // Định nghĩa các chuỗi văn bản dựa vào key dịch
+  // Định nghĩa các chuỗi văn bản trực tiếp dựa trên ngôn ngữ hiện tại
   const texts = {
-<<<<<<< HEAD
     title: language === 'vi' ? 'Đánh giá của khách hàng' : 
            language === 'es' ? 'Opiniones de Clientes' : 'Customer Reviews',
     viewAll: language === 'vi' ? 'Xem tất cả đánh giá' : 
@@ -26,22 +25,11 @@ export default function HomeTestimonials() {
         name: 'Michael Roberts',
         position: language === 'vi' ? 'Giám đốc kinh doanh' : 
                  language === 'es' ? 'Director de Negocio' : 'Business Director',
-=======
-    title: t('testimonials.title'),
-    viewAll: t('testimonials.viewAll'),
-    testimonials: [
-      {
-        id: 1,
-        text: t('testimonials.michael.text'),
-        name: 'Michael Roberts',
-        position: t('testimonial.position.business'),
->>>>>>> 6dce837a276c6645e332e9824301030ef3775b5c
         image: '/images/testimonials/michael-roberts.jpg',
         fallbackImage: 'https://randomuser.me/api/portraits/men/32.jpg'
       },
       {
         id: 2,
-<<<<<<< HEAD
         text: language === 'vi'
           ? '"Các giải pháp AI của XLab đã giúp doanh nghiệp của chúng tôi tiết kiệm được 30% chi phí vận hành. Đội ngũ hỗ trợ kỹ thuật phản hồi nhanh chóng và hiệu quả."'
           : language === 'es'
@@ -50,17 +38,11 @@ export default function HomeTestimonials() {
         name: 'David Wilson',
         position: language === 'vi' ? 'CTO - Tech Solutions' : 
                  language === 'es' ? 'CTO - Soluciones Tecnológicas' : 'CTO - Tech Solutions',
-=======
-        text: t('testimonials.david.text'),
-        name: 'David Wilson',
-        position: t('testimonials.positions.CTO - Tech Solutions'),
->>>>>>> 6dce837a276c6645e332e9824301030ef3775b5c
         image: '/images/testimonials/david-wilson.jpg',
         fallbackImage: 'https://randomuser.me/api/portraits/men/41.jpg'
       },
       {
         id: 3,
-<<<<<<< HEAD
         text: language === 'vi'
           ? '"Các bản cập nhật liên tục của XLab đảm bảo sản phẩm luôn đáp ứng được những yêu cầu ngày càng cao của chúng tôi. Giao diện thân thiện và dễ sử dụng ngay cả với người mới."'
           : language === 'es'
@@ -69,11 +51,6 @@ export default function HomeTestimonials() {
         name: 'Emily Parker',
         position: language === 'vi' ? 'Quản lý dự án' : 
                  language === 'es' ? 'Gerente de Proyecto' : 'Project Manager',
-=======
-        text: t('testimonials.emily.text'),
-        name: 'Emily Parker',
-        position: t('testimonial.position.project'),
->>>>>>> 6dce837a276c6645e332e9824301030ef3775b5c
         image: '/images/testimonials/emily-parker.jpg',
         fallbackImage: 'https://randomuser.me/api/portraits/women/68.jpg'
       }

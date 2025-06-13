@@ -14,14 +14,14 @@ cypress/videos
 cypress/screenshots
 /__tests__/output
 
-# next.js - sửa lại các đường dẫn này
-/.next/cache/
+# next.js
+/.next/
+/.next-dev/
 /out/
-<<<<<<< HEAD
 .next/
 .next-dev/
 .next/cache/
-# .next/static/ - được bỏ qua để sửa lỗi static files
+.next/static/
 .next/server/
 .next/server/app/api/auth/
 .next/server/chunks/
@@ -30,10 +30,7 @@ cypress/screenshots
 .next/cache/webpack/edge-server-development/*.pack.gz
 .next/cache/webpack/client-development/*.pack
 .next/cache/webpack/server-development/*.pack
-# .next/static/css/ - được bỏ qua để sửa lỗi static filesapp-layout.css
-=======
-# Bỏ các dòng chặn thư mục .next/static và # .next/static/ - được bỏ qua để sửa lỗi static fileschunks
->>>>>>> 6dce837a276c6645e332e9824301030ef3775b5c
+.next/static/css/app-layout.css
 
 # production
 /build
@@ -76,6 +73,7 @@ next-env.d.ts
 # IDE
 .idea/
 .vscode/
+.next/
 *.iml
 *.suo
 *.user
@@ -137,15 +135,14 @@ run-fixed.bat
 # Report files
 report.*.json
 
-# Runtime cache files - sửa lại để chỉ bỏ qua cache và không bỏ qua các file chunks
+# Runtime cache files
 .next/cache/webpack/client-development/
 .next/cache/webpack/server-development/
 .next/cache/webpack/edge-server-development/
-<<<<<<< HEAD
 .next/static/css/
-# .next/static/development/ - được bỏ qua để sửa lỗi static files
-# .next/static/chunks/ - được bỏ qua để sửa lỗi static files
-# .next/static/webpack/ - được bỏ qua để sửa lỗi static files
+.next/static/development/
+.next/static/chunks/
+.next/static/webpack/
 .next/trace
 
 # Thêm các file được gen ra khi dự án đang chạy
@@ -169,5 +166,3 @@ report.*.json
 .next/analysis/*
 .next/required-server-files.json
 .next/prerender-manifest.json
-=======
->>>>>>> 6dce837a276c6645e332e9824301030ef3775b5c
