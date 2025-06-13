@@ -10,7 +10,7 @@ import { Button } from '@/components/common/button';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ProductsPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -18,6 +18,12 @@ export default function ProductsPage() {
   const [filter, setFilter] = useState<string>('all');
   const [sort, setSort] = useState<string>('newest');
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // Force reload on language change
+  useEffect(() => {
+    // Set the document title with translation
+    document.title = t('products.title') + ' | XLab';
+  }, [language, t]);
 
   // Set filter from URL params
   useEffect(() => {
@@ -54,11 +60,6 @@ export default function ProductsPage() {
     };
 
     fetchProducts();
-  }, [t]);
-
-  // Update title when component is rendered
-  useEffect(() => {
-    document.title = t('products.pageTitle');
   }, [t]);
 
   // Lọc tất cả sản phẩm (bao gồm phần mềm và dịch vụ)
@@ -135,17 +136,17 @@ export default function ProductsPage() {
 
   // Danh mục sản phẩm
   const productCategories = [
-    { id: 'all', name: 'Tất cả', count: Array.isArray(allProducts) ? allProducts.length : 0 },
+    { id: 'all', name: t('products.all'), count: Array.isArray(allProducts) ? allProducts.length : 0 },
     {
       id: 'software',
-      name: 'Phần mềm',
+      name: t('products.software'),
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => !p.isAccount && (p.type === 'software' || !p.type)).length
         : 0,
     },
     {
       id: 'service',
-      name: 'Dịch vụ',
+      name: t('products.service'),
       count: Array.isArray(allProducts)
         ? allProducts.filter((p) => p.isAccount || p.type === 'account').length
         : 0,
