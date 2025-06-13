@@ -7,15 +7,15 @@ const AboutLayout = ({ children }: { children: React.ReactNode }) => {
   const { t, language } = useLanguage();
   const [forceUpdate, setForceUpdate] = useState(0);
   
-  // Cập nhật title và meta description khi component mount hoặc ngôn ngữ thay đổi
+  // Actualizar el título y la meta descripción cuando se monta el componente o cambia el idioma
   useEffect(() => {
-    // Force re-render khi ngôn ngữ thay đổi
+    // Forzar re-renderizado cuando cambia el idioma
     setForceUpdate(prev => prev + 1);
     
-    // Sử dụng template string để tạo ra một chuỗi duy nhất
+    // Usar template string para crear una cadena única
     document.title = `${t('about.title')} | XLab`;
     
-    // Cập nhật meta description
+    // Actualizar meta descripción
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', t('about.subtitle'));
@@ -26,10 +26,10 @@ const AboutLayout = ({ children }: { children: React.ReactNode }) => {
       document.head.appendChild(meta);
     }
 
-    // Log để debug
-    console.log("About layout updated with language:", language);
-    console.log("Title now:", document.title);
-    console.log("Meta description:", t('about.subtitle'));
+    // Log para depuración
+    console.log("Diseño About actualizado con idioma:", language);
+    console.log("Título ahora:", document.title);
+    console.log("Meta descripción:", t('about.subtitle'));
   }, [t, language]);
 
   return (

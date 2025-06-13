@@ -4,15 +4,24 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect, useState } from 'react';
 
 export default function AboutPage() {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const [forceUpdate, setForceUpdate] = useState(0);
   
-  // Force re-render when language changes
+  // Force re-render when language changes and set default language to Spanish
   useEffect(() => {
-    setForceUpdate(prev => prev + 1);
+    // Đặt ngôn ngữ mặc định thành tiếng Tây Ban Nha nếu chưa phải là tiếng Tây Ban Nha
+    if (language !== 'es') {
+      setLanguage('es');
+    }
+    
     // Cập nhật title động
     document.title = `${t('about.pageTitle')} | XLab`;
-  }, [language, t]);
+  }, [language, setLanguage, t]);
+  
+  // Effect riêng cho forceUpdate để tránh lặp vô hạn
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+  }, [language]);
   
   return (
     <div>
@@ -46,17 +55,17 @@ export default function AboutPage() {
               <div className="relative slideshow-container h-96">
                 <img
                   src="/images/office-workspace.jpg"
-                  alt="Không gian làm việc tại XLab"
+                  alt="Espacio de trabajo en XLab"
                   className="w-full h-full object-cover slideshow-item"
                 />
                 <img
                   src="/images/company-team.jpg"
-                  alt="Đội ngũ XLab làm việc cùng nhau"
+                  alt="Equipo de XLab trabajando juntos"
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
                 <img
                   src="/images/tech-workspace.jpg"
-                  alt="Không gian công nghệ tại XLab"
+                  alt="Espacio tecnológico en XLab"
                   className="w-full h-full object-cover slideshow-item hidden"
                 />
 
@@ -272,42 +281,42 @@ export default function AboutPage() {
             const dots = document.querySelectorAll('.slideshow-dot');
             
             function showSlides() {
-              // Ẩn tất cả slides
+              // Ocultar todas las diapositivas
               slides.forEach(slide => {
                 slide.classList.add('hidden');
               });
               
-              // Xóa lớp active khỏi tất cả dots
+              // Quitar clase active de todos los puntos
               dots.forEach(dot => {
                 dot.classList.remove('slideshow-dot-active');
               });
               
-              // Tăng slideIndex
+              // Aumentar slideIndex
               slideIndex++;
               
-              // Reset slideIndex nếu vượt quá số slides
+              // Reiniciar slideIndex si excede el número de diapositivas
               if (slideIndex > slides.length) {
                 slideIndex = 1;
               }
               
-              // Hiển thị slide hiện tại
+              // Mostrar diapositiva actual
               if (slides[slideIndex - 1]) {
                 slides[slideIndex - 1].classList.remove('hidden');
               }
               
-              // Đánh dấu dot tương ứng là active
+              // Marcar el punto correspondiente como activo
               if (dots[slideIndex - 1]) {
                 dots[slideIndex - 1].classList.add('slideshow-dot-active');
               }
               
-              // Gọi lại hàm sau 5 giây
+              // Llamar a la función nuevamente después de 5 segundos
               setTimeout(showSlides, 5000);
             }
             
-            // Khởi tạo slideshow
+            // Inicializar slideshow
             showSlides();
             
-            // Xử lý sự kiện click vào dot
+            // Manejar eventos de clic en los puntos
             dots.forEach((dot, index) => {
               dot.addEventListener('click', () => {
                 slideIndex = index;
