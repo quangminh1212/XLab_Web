@@ -57,20 +57,7 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>VIE</span>
           </>
-        ) : language === 'es' ? (
-          <>
-            <div className="relative w-6 h-4 mr-2">
-              <Image 
-                src="/images/flags/es.svg" 
-                alt="Español" 
-                width={24}
-                height={16}
-                className="object-cover rounded-sm"
-              />
-            </div>
-            <span>ESP</span>
-          </>
-        ) : (
+        ) : language === 'en' ? (
           <>
             <div className="relative w-6 h-4 mr-2">
               <Image 
@@ -83,9 +70,28 @@ const LanguageSwitcher = ({ className = '' }: LanguageSwitcherProps) => {
             </div>
             <span>ENG</span>
           </>
+        ) : (
+          <>
+            <div className="relative w-6 h-4 mr-2">
+              <Image 
+                src="/images/flags/es.svg" 
+                alt="Español" 
+                width={24}
+                height={16}
+                className="object-cover rounded-sm"
+              />
+            </div>
+            <span>ESP</span>
+          </>
         )}
-        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          className="h-4 w-4 ml-1" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
