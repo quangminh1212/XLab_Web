@@ -1,9 +1,18 @@
 'use client';
 
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect, useState } from 'react';
 
 export default function AboutPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [forceUpdate, setForceUpdate] = useState(0);
+  
+  // Force re-render when language changes
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+    // Cập nhật title động
+    document.title = `${t('about.pageTitle')} | XLab`;
+  }, [language, t]);
   
   return (
     <div>

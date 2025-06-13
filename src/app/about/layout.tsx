@@ -1,13 +1,17 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const AboutLayout = ({ children }: { children: React.ReactNode }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [forceUpdate, setForceUpdate] = useState(0);
   
   // Cập nhật title và meta description khi component mount hoặc ngôn ngữ thay đổi
   useEffect(() => {
+    // Force re-render khi ngôn ngữ thay đổi
+    setForceUpdate(prev => prev + 1);
+    
     // Sử dụng template string để tạo ra một chuỗi duy nhất
     document.title = `${t('about.title')} | XLab`;
     
@@ -21,10 +25,15 @@ const AboutLayout = ({ children }: { children: React.ReactNode }) => {
       meta.content = t('about.subtitle');
       document.head.appendChild(meta);
     }
-  }, [t]);
+
+    // Log để debug
+    console.log("About layout updated with language:", language);
+    console.log("Title now:", document.title);
+    console.log("Meta description:", t('about.subtitle'));
+  }, [t, language]);
 
   return (
-    <div className="about-layout">
+    <div className="about-layout" key={`about-layout-${language}-${forceUpdate}`}>
       {children}
     </div>
   );
