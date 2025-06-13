@@ -1,17 +1,17 @@
 export type Language = 'vi' | 'en' | 'es';
 
-export { default as vi } from './vi';
-export { default as en } from './en';
-export { default as es } from './es';
+export { default as vi } from './vi/index';
+export { default as en } from './en/index';
+export { default as es } from './es/index';
 
 // Kiểu dữ liệu cho các bản dịch
 export type TranslationRecord = Record<string, string>;
 
 // Hàm kiểm tra xem một key có tồn tại trong tất cả các ngôn ngữ hay không
 export function validateTranslationKeys() {
-  const vi = require('./vi').default;
-  const en = require('./en').default;
-  const es = require('./es').default;
+  const vi = require('./vi/index').default;
+  const en = require('./en/index').default;
+  const es = require('./es/index').default;
   
   const allKeys = new Set([
     ...Object.keys(vi),
