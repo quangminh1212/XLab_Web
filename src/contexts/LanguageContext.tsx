@@ -1758,10 +1758,10 @@ export const translations: Record<Language, Record<string, string>> = {
 };
 
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
-  // Mặc định là tiếng Việt, nhưng kiểm tra localStorage trước
-  const [language, setLanguageState] = useState<Language>('vi');
+  // Mặc định là tiếng Tây Ban Nha, nhưng kiểm tra localStorage trước
+  const [language, setLanguageState] = useState<Language>('es');
 
-  // Kiểm tra và sử dụng ngôn ngữ đã lưu, hoặc mặc định là tiếng Việt
+  // Kiểm tra và sử dụng ngôn ngữ đã lưu, hoặc mặc định là tiếng Tây Ban Nha
   useEffect(() => {
     // Đọc ngôn ngữ từ localStorage nếu có
     const savedLanguage = localStorage.getItem('language') as Language;
@@ -1770,9 +1770,9 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
     if (savedLanguage && validLanguages.includes(savedLanguage)) {
       setLanguageState(savedLanguage);
     } else {
-      // Nếu không có hoặc không hợp lệ thì đặt mặc định là tiếng Việt
-      localStorage.setItem('language', 'vi');
-      setLanguageState('vi');
+      // Nếu không có hoặc không hợp lệ thì đặt mặc định là tiếng Tây Ban Nha
+      localStorage.setItem('language', 'es');
+      setLanguageState('es');
     }
   }, []);
 

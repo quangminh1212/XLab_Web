@@ -157,3 +157,12 @@ report.*.json
 .next/trace
 .next/server/middleware*
 .next/types/package.json
+.next/server/**/*
+.next/build-manifest.json
+.next/package.json
+.next/react-loadable-manifest.json
+.next/app-build-manifest.json
+.next/compile-manifest.json
+.next/analysis/*
+.next/required-server-files.json
+.next/prerender-manifest.json
