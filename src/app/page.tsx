@@ -92,6 +92,12 @@ function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [visibleProductCount, setVisibleProductCount] = useState(8);
+  const [isClient, setIsClient] = useState(false);
+
+  // Đánh dấu khi component được mount ở client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Fetch products from API
   useEffect(() => {
@@ -140,10 +146,10 @@ function HomePage() {
               <span className="text-primary-500">Lab</span>
             </h1>
             <p className="text-responsive-lg text-gray-600 max-w-3xl mb-6 sm:mb-8">
-              {t('home.slogan')}
+              {isClient ? t('home.slogan') : 'Tối ưu hiệu quả, tối thiểu chi phí!'}
             </p>
 
-            <SearchBar placeholder={t('home.search')} />
+            <SearchBar placeholder={isClient ? t('home.search') : 'Tìm kiếm phần mềm, ứng dụng...'} />
           </div>
         </div>
       </section>
@@ -174,19 +180,19 @@ function HomePage() {
                       </svg>
                     </div>
                   </div>
-                  <h2 className="heading-3 mb-3 text-gray-800 text-center">{t('home.aboutTitle')}</h2>
+                  <h2 className="heading-3 mb-3 text-gray-800 text-center">{isClient ? t('home.aboutTitle') : 'Về XLab'}</h2>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    {t('home.aboutDesc1')}
+                    {isClient ? t('home.aboutDesc1') : 'XLab là nền tảng cung cấp các giải pháp phần mềm tích hợp AI tiên tiến giúp người dùng nâng cao hiệu suất công việc và cuộc sống hàng ngày.'}
                   </p>
                   <p className="text-responsive-sm text-gray-700 mb-3">
-                    {t('home.aboutDesc2')}
+                    {isClient ? t('home.aboutDesc2') : 'Sứ mệnh của chúng tôi là đem đến cho người Việt cơ hội tiếp cận với các công cụ phục vụ làm việc, học tập, giải trí với giá cả phải chăng và chất lượng quốc tế.'}
                   </p>
                   <div className="mt-4">
                     <Link
                       href="/about"
                       className="w-full bg-primary-50 hover:bg-primary-100 text-primary-700 font-medium py-2 px-3 sm:px-4 rounded-lg transition-colors flex items-center justify-center text-responsive-sm"
                     >
-                      {t('home.learnMore')}
+                      {isClient ? t('home.learnMore') : 'Tìm hiểu thêm'}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-3 w-3 sm:h-4 sm:w-4 ml-1"
