@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-es" viewBox="0 0 640 480">
   <path fill="#AA151B" d="M0 0h640v480H0z"/>
   <path fill="#F1BF00" d="M0 120h640v240H0z"/>
@@ -542,3 +543,10 @@
   <path fill="none" stroke="#000" stroke-width=".2" d="M272.6 216.6v-.2"/>
   <path fill="none" d="M279.1 217v-1m-.6 1v-1m-.4 1.1V216"/>
 </svg>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 500">
+  <rect width="750" height="500" fill="#c60b1e"/>
+  <rect width="750" height="250" y="125" fill="#ffc400"/>
+</svg> 
+>>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')

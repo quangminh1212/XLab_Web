@@ -2,11 +2,15 @@
 
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Language, translations } from '@/locales';
 =======
 
 type Language = 'vi' | 'en';
 >>>>>>> parent of eea5ca55 (feat: add Spanish translations to language context)
+=======
+import { translations, Language } from '@/locales';
+>>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
 
 type LanguageContextType = {
   language: Language;
@@ -21,6 +25,7 @@ interface LanguageProviderProps {
 // Tạo một context mới
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 // Translations
@@ -1486,61 +1491,82 @@ const translations: Record<Language, Record<string, string>> = {
 };
 
 >>>>>>> parent of eea5ca55 (feat: add Spanish translations to language context)
+=======
+>>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
+  // Mặc định là tiếng Việt
   const [language, setLanguageState] = useState<Language>('vi');
 
-  // Khởi tạo ngôn ngữ từ localStorage (nếu có)
+  // Khởi tạo ngôn ngữ từ localStorage khi component được mount
   useEffect(() => {
+<<<<<<< HEAD
     const savedLanguage = localStorage.getItem('language') as Language | null;
     if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
       setLanguageState(savedLanguage);
+=======
+    const savedLanguage = localStorage.getItem('language');
+    if (savedLanguage && (savedLanguage === 'vi' || savedLanguage === 'en' || savedLanguage === 'es')) {
+      setLanguageState(savedLanguage as Language);
+>>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
     }
   }, []);
 
-  // Cập nhật ngôn ngữ và lưu vào localStorage
+  // Lưu ngôn ngữ vào localStorage khi thay đổi
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem('language', lang);
+    document.documentElement.lang = lang;
   };
 
   // Hàm dịch văn bản
   const t = (key: string, params?: Record<string, any>): string => {
-    const translation = translations[language][key];
-    
-    if (!translation) {
-      console.warn(`Translation key not found: ${key}`);
-      return key;
-    }
-
-    if (!params) {
-      return translation;
-    }
-
-    // Thay thế các tham số trong chuỗi dịch
-    return translation.replace(/{([^}]+)}/g, (_: string, paramName: string) => {
-      if (params[paramName] === undefined) {
-        console.warn(`Parameter not provided: ${paramName}`);
-        return `{${paramName}}`;
+    try {
+      // Kiểm tra key hợp lệ
+      if (typeof key !== 'string' || !key) {
+        console.warn('Invalid translation key:', key);
+        return '';
       }
-      return convertValueToString(params[paramName], paramName);
-    });
+      
+      // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
+      let text = translations[language]?.[key] || key;
+      
+      // Thay thế tham số nếu có
+      if (params && typeof params === 'object' && Object.keys(params).length > 0) {
+        Object.entries(params).forEach(([param, value]) => {
+          const regex = new RegExp(`\\{${param}\\}`, 'g');
+          const strValue = convertValueToString(value, param);
+          text = text.replace(regex, strValue);
+        });
+      }
+      
+      return text;
+    } catch (error) {
+      console.error('Translation error:', error);
+      return typeof key === 'string' ? key : '';
+    }
   };
-
+  
+  // Hàm hỗ trợ chuyển đổi giá trị thành chuỗi an toàn
   function convertValueToString(value: any, paramName: string): string {
-    if (typeof value === 'string') {
-      return value;
+    if (value === undefined || value === null) {
+      return '';
     }
-    if (typeof value === 'number' || typeof value === 'boolean') {
-      return value.toString();
+    
+    if (typeof value === 'object') {
+      try {
+        return String(value);
+      } catch (err) {
+        console.warn(`Error converting object param ${paramName}:`, err);
+        return '';
+      }
     }
-    if (value === null) {
-      return 'null';
+    
+    try {
+      return String(value);
+    } catch (err) {
+      console.warn(`Error converting param ${paramName}:`, err);
+      return '';
     }
-    if (value === undefined) {
-      return 'undefined';
-    }
-    console.warn(`Cannot convert parameter ${paramName} to string:`, value);
-    return JSON.stringify(value);
   }
 
   return (
@@ -1550,9 +1576,10 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   );
 };
 
+// Hook để sử dụng context này
 export const useLanguage = (): LanguageContextType => {
   const context = useContext(LanguageContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
