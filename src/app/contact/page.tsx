@@ -5,7 +5,7 @@ import { siteConfig } from '@/config/siteConfig';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ContactPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -270,7 +270,11 @@ export default function ContactPage() {
                     </div>
                     <div className="ml-3">
                       <p className="text-gray-800 font-medium">{t('contact.address')}</p>
-                      <p className="text-gray-600">{siteConfig.contact.address}</p>
+                      <p className="text-gray-600">
+                        {language === 'es' ? 'Long Biên, Hanói' : 
+                         language === 'en' ? 'Long Bien, Hanoi' :
+                         siteConfig.contact.address}
+                      </p>
                     </div>
                   </div>
 
