@@ -578,6 +578,10 @@ export async function cleanupOldFiles(): Promise<void> {
     const userDir = path.dirname(getUserFilePath('dummy'));
     const backupDir = path.dirname(getBackupFilePath('dummy', ''));
 
+    // Đảm bảo các thư mục tồn tại
+    await ensureDirectoryExists(userDir);
+    await ensureDirectoryExists(backupDir);
+
     // Cleanup user directory
     try {
       const userFiles = await fs.readdir(userDir);
