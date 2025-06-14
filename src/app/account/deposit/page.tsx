@@ -32,13 +32,25 @@ export default function DepositPage() {
     accountName: 'BACH MINH QUANG',
   };
 
+  // Debug balance info
+  useEffect(() => {
+    console.log('💰 DepositPage - Balance value:', balance);
+  }, [balance]);
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login');
     } else if (session?.user) {
-      generateTransactionCode();
+      // Force refresh balance when page loads
+      refreshBalance().then(() => {
+        console.log('💰 DepositPage - Balance refreshed');
+        generateTransactionCode();
+      }).catch(err => {
+        console.error('💰 DepositPage - Error refreshing balance:', err);
+        generateTransactionCode();
+      });
     }
-  }, [session, status, router]);
+  }, [session, status, router, refreshBalance]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -133,6 +145,10 @@ export default function DepositPage() {
   };
 
   const formatCurrency = (amount: number) => {
+    if (amount === undefined || amount === null) {
+      console.log('⚠️ Warning: formatCurrency called with invalid amount:', amount);
+      amount = 0;
+    }
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',

@@ -23,10 +23,13 @@ setInterval(
 
 export async function GET() {
   try {
+    console.log('🔄 API: Balance request received');
+    
     // Check authentication
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user || !session.user.email) {
+      console.log('❌ API: Balance request - Unauthorized');
       return NextResponse.json(
         { 
           error: 'Unauthorized', 
@@ -37,10 +40,12 @@ export async function GET() {
     }
 
     const userEmail = session.user.email;
+    console.log(`👤 API: Balance request for ${userEmail}`);
 
     // Check cache first
     const cached = balanceCache.get(userEmail);
     if (cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
+      console.log(`📋 API: Returning cached balance for ${userEmail}: ${cached.balance}`);
       return NextResponse.json({
         balance: cached.balance,
         cached: true,
@@ -49,7 +54,9 @@ export async function GET() {
 
     try {
       // Get synchronized balance from both systems
+      console.log(`🔄 API: Syncing balance for ${userEmail}`);
       const balance = await syncUserBalance(userEmail);
+      console.log(`✅ API: Balance synced for ${userEmail}: ${balance}`);
 
       // Cache the result
       balanceCache.set(userEmail, { balance, timestamp: Date.now() });
