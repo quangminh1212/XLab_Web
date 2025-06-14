@@ -5,6 +5,7 @@ import home from './home';
 import common from './common';
 import footer from './footer';
 import product from './product';
+import products from './products';
 
 // Combinar todas las traducciones
 const es = {
@@ -15,6 +16,7 @@ const es = {
   ...common,
   ...footer,
   ...product,
+  ...products,
 };
 
 export default es; 
