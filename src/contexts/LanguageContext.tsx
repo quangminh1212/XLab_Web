@@ -3,8 +3,12 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Language, translations } from '@/locales';
 =======
+=======
+import translations from '@/locales';
+>>>>>>> dev_11
 
 type Language = 'vi' | 'en';
 >>>>>>> parent of eea5ca55 (feat: add Spanish translations to language context)
@@ -25,6 +29,7 @@ interface LanguageProviderProps {
 // Tạo một context mới
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -1493,6 +1498,8 @@ const translations: Record<Language, Record<string, string>> = {
 >>>>>>> parent of eea5ca55 (feat: add Spanish translations to language context)
 =======
 >>>>>>> parent of 8b6c7b2f (Merge commit '2e12e51b9d6fbcf0295e287983cd4b62520f02ad')
+=======
+>>>>>>> dev_11
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Mặc định là tiếng Việt
   const [language, setLanguageState] = useState<Language>('vi');
@@ -1528,7 +1535,8 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
       }
       
       // Lấy chuỗi dịch hoặc trả về key nếu không tìm thấy
-      let text = translations[language]?.[key] || key;
+      const langTranslations = translations[language] as Record<string, string>;
+      let text = langTranslations[key] || key;
       
       // Thay thế tham số nếu có
       if (params && typeof params === 'object' && Object.keys(params).length > 0) {

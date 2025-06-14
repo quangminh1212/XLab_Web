@@ -34,10 +34,8 @@ cypress/screenshots
 # misc
 .DS_Store
 *.pem
-.env
 .env.development
 .env.production
-.env.test
 
 # debug
 npm-debug.log*
@@ -47,9 +45,6 @@ lerna-debug.log*
 next.config.log
 next-fix-all.log
 
-# local env files
-.env*.local
-!.env.example
 
 # vercel
 .vercel
@@ -58,12 +53,13 @@ next-fix-all.log
 *.tsbuildinfo
 next-env.d.ts
 
-# User generated data files (runtime data) - cho phép commit dữ liệu cơ bản
-/data/transactions.json
-
-# Secure user data - NEVER commit these!
 /data/backups/
-*.user_*.json
+
+# Generated files
+.next/
+.next/cache/
+.next/server/
+.next/static/
 
 # IDE
 .idea/
