@@ -172,3 +172,14 @@ tmp/
 # Translation validation
 validate-translations.js
 validate-translations-output.json
+
+# Generated files when project is running
+.next/cache/webpack/
+.next/static/chunks/
+.next/static/css/
+.next/server/app/
+.next/server/chunks/
+.next/cache/webpack/client-development/
+.next/cache/webpack/server-development/
+.next/cache/webpack/edge-server-development/
+.next/cache/webpack/client-development-fallback/
