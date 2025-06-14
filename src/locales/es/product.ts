@@ -26,6 +26,17 @@ const product: TranslationRecord = {
   'product.continueShopping': 'Continuar Comprando',
   'product.purchasesPerWeek': '{count}/semana',
   'product.added': 'Añadido',
+  
+  // Speech to text
+  'product.speechToText.notSupported': 'Tu navegador no es compatible con el reconocimiento de voz.',
+  'product.speechToText.useBrowser': 'Utiliza la última versión de Chrome, Edge o Safari.',
+  'product.speechToText.copy': 'Copiar',
+  'product.speechToText.clear': 'Borrar',
+  'product.speechToText.copied': '¡Copiado al portapapeles!',
+  'product.speechToText.feature1': 'Reconoce voz en español y otros idiomas',
+  'product.speechToText.feature2': 'Formato automático y edición de texto',
+  'product.speechToText.feature3': 'Integración con Microsoft Office y otras aplicaciones de oficina',
+  'product.speechToText.feature4': 'Funciona tanto en línea como fuera de línea'
 };
 
 export default product; 

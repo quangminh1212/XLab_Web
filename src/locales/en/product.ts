@@ -26,6 +26,17 @@ const product: TranslationRecord = {
   'product.continueShopping': 'Continue Shopping',
   'product.purchasesPerWeek': '{count}/week',
   'product.added': 'Added',
+  
+  // Speech to text
+  'product.speechToText.notSupported': 'Your browser does not support speech recognition.',
+  'product.speechToText.useBrowser': 'Please use the latest version of Chrome, Edge, or Safari.',
+  'product.speechToText.copy': 'Copy',
+  'product.speechToText.clear': 'Clear',
+  'product.speechToText.copied': 'Copied to clipboard!',
+  'product.speechToText.feature1': 'Recognizes speech in English and other languages',
+  'product.speechToText.feature2': 'Automatic formatting and text editing',
+  'product.speechToText.feature3': 'Integration with Microsoft Office and other office apps',
+  'product.speechToText.feature4': 'Works both online and offline'
 };
 
 export default product; 

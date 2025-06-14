@@ -26,6 +26,17 @@ const product: TranslationRecord = {
   'product.continueShopping': 'Tiếp tục mua sắm',
   'product.purchasesPerWeek': '{count}/tuần',
   'product.added': 'Đã thêm',
+  
+  // Speech to text
+  'product.speechToText.notSupported': 'Trình duyệt của bạn không hỗ trợ nhận dạng giọng nói.',
+  'product.speechToText.useBrowser': 'Vui lòng sử dụng Chrome, Edge hoặc Safari phiên bản mới nhất.',
+  'product.speechToText.copy': 'Sao chép',
+  'product.speechToText.clear': 'Xóa',
+  'product.speechToText.copied': 'Đã sao chép vào clipboard!',
+  'product.speechToText.feature1': 'Nhận dạng giọng nói tiếng Việt và các ngôn ngữ khác',
+  'product.speechToText.feature2': 'Tự động định dạng và chỉnh sửa văn bản',
+  'product.speechToText.feature3': 'Tích hợp với Microsoft Office và các ứng dụng văn phòng',
+  'product.speechToText.feature4': 'Hoạt động cả online và offline'
 };
 
 export default product; 

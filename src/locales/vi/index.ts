@@ -9,6 +9,7 @@ import products from './products';
 import about from './about';
 import contact from './contact';
 import privacy from './privacy';
+import user from './user';
 
 // Kết hợp tất cả các phần dịch
 const vi = {
@@ -23,6 +24,7 @@ const vi = {
   ...about,
   ...contact,
   ...privacy,
+  ...user,
 };
 
 export default vi; 

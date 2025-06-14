@@ -9,6 +9,7 @@ import products from './products';
 import about from './about';
 import contact from './contact';
 import privacy from './privacy';
+import user from './user';
 
 // Combinar todas las traducciones
 const es = {
@@ -23,6 +24,7 @@ const es = {
   ...about,
   ...contact,
   ...privacy,
+  ...user,
 };
 
 export default es; 

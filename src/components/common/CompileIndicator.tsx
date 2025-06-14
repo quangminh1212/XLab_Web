@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 /**
  * Component hiển thị thông báo khi trang đang biên dịch
@@ -8,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 const CompileIndicator: React.FC = () => {
   const [isCompiling, setIsCompiling] = useState(false);
   const [compilingPath, setCompilingPath] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Hàm để xác định khi nào trang đang biên dịch
@@ -78,7 +80,7 @@ const CompileIndicator: React.FC = () => {
           ></path>
         </svg>
         <div>
-          <div className="font-medium text-gray-800">Đang biên dịch...</div>
+          <div className="font-medium text-gray-800">{t('common.compiling')}</div>
           {compilingPath && (
             <div className="text-xs text-gray-600 mt-0.5 max-w-[200px] truncate">
               {compilingPath}
