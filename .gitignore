@@ -110,7 +110,7 @@ hide-warnings.js
 update-gitignore.js
 dev.cmd
 dev.ps1
-powershell-dev.ps1
+powershell-dev.js
 start-dev.bat
 no-trace.bat
 run-fixed.bat
@@ -168,3 +168,7 @@ output-*.json
 test-output/
 temp/
 tmp/
+
+# Translation validation
+validate-translations.js
+validate-translations-output.json
