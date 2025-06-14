@@ -13,7 +13,7 @@ export default {
   'auth.signIn': 'Đăng nhập',
 
   // Footer
-  'footer.about': 'Về chúng tôi',
+  'footer.about': 'Giới thiệu',
   'footer.contact': 'Liên hệ',
   'footer.privacy': 'Chính sách bảo mật',
   'footer.terms': 'Điều khoản dịch vụ',

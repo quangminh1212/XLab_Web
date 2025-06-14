@@ -1,5 +1,5 @@
 export default {
-  'footer.aboutLink': 'Về chúng tôi',
+  'footer.aboutLink': 'Giới thiệu',
   'footer.contactLink': 'Liên hệ',
   'footer.privacy': 'Chính sách bảo mật',
   'footer.terms': 'Điều khoản dịch vụ',
