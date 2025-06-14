@@ -431,35 +431,31 @@ export async function getUserTransactions(userEmail: string): Promise<Transactio
   return userData.transactions || [];
 }
 
-// Sync balance between users.json and balances.json
+// Đồng bộ và trả về số dư của người dùng
+// Đơn giản và nhanh hơn, không làm nhiều thao tác phức tạp
 export async function syncUserBalance(email: string): Promise<number> {
   try {
-    console.log(`🔄 Syncing balance for user: ${email}`);
-    
-    // Force clear any previous cached results to ensure fresh data
+    // Log cho debug
+    console.log(`🔄 Đang lấy số dư của: ${email}`);
+
+    // Đơn giản hóa: chỉ lấy dữ liệu từ file người dùng
     const userData = await getUserDataFromFile(email);
-    let balanceFromUserFile = userData?.profile?.balance || 0;
-    
-    // Logging to help with debugging
-    console.log(`💰 Balance from user file: ${balanceFromUserFile}`);
-    
-    // Return the verified balance
-    let finalBalance = balanceFromUserFile;
-    
-    // Ensure it's a valid number
-    if (typeof finalBalance !== 'number' || isNaN(finalBalance)) {
-      finalBalance = 0;
+    let balance = userData?.profile?.balance || 0;
+
+    // Đảm bảo là số
+    if (typeof balance !== 'number' || isNaN(balance)) {
+      balance = 0;
     }
 
-    // Do any additional sync operations here
+    // Log cho debug
+    console.log(`💰 Số dư: ${balance.toLocaleString('vi-VN')} VND`);
     
-    // Return the synchronized balance
-    return finalBalance;
+    return balance;
   } catch (error) {
-    console.error('Error syncing balance:', error);
-    // Rethrow with more context for better debugging
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Failed to sync balance for ${email}: ${errorMessage}`);
+    console.error('Lỗi lấy số dư:', error);
+    // Rethrow nhưng với thông tin chi tiết hơn
+    const errorMessage = error instanceof Error ? error.message : 'Lỗi không xác định';
+    throw new Error(`Không thể lấy số dư cho ${email}: ${errorMessage}`);
   }
 }
 

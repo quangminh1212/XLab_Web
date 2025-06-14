@@ -56,6 +56,12 @@ export default function DepositPage() {
     setLastCheckTime(new Date());
     setNotFound(false);
 
+    // Đảm bảo kết thúc trạng thái checking sau 10 giây nếu có lỗi
+    const checkingTimeout = setTimeout(() => {
+      setIsChecking(false);
+      setNotFound(true);
+    }, 10000);
+
     try {
       console.log(`🔍 Checking transaction: ${transactionId}`);
 
@@ -70,6 +76,8 @@ export default function DepositPage() {
           accountNumber: BANK_INFO.accountNumber,
         }),
       });
+
+      clearTimeout(checkingTimeout);
 
       const data = await response.json();
 
@@ -100,6 +108,7 @@ export default function DepositPage() {
       console.error('Error checking transaction:', error);
       alert('Có lỗi khi kiểm tra giao dịch. Vui lòng thử lại.');
     } finally {
+      clearTimeout(checkingTimeout);
       setIsChecking(false);
     }
   };
@@ -344,12 +353,16 @@ export default function DepositPage() {
                 </button>
               </div>
               {loading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-teal-600"></div>
-                  <p className="text-sm text-gray-500">Đang tải...</p>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-teal-600"></div>
+                    <p className="text-sm text-gray-500">Đang tải...</p>
+                  </div>
+                  {/* Hiển thị số dư mặc định để người dùng không phải chờ */}
+                  <p className="text-3xl font-bold text-gray-400">{formatCurrency(balance || 0)}</p>
                 </div>
               ) : (
-                <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
+                <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance || 0)}</p>
               )}
             </div>
 

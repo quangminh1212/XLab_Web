@@ -5,9 +5,12 @@ import { syncUserBalance } from '@/lib/userService';
 
 // Balance cache với timeout giảm xuống để tăng tính realtime
 const balanceCache = new Map<string, { balance: number; timestamp: number }>();
-const CACHE_TIMEOUT = 30 * 1000; // 30 seconds (giảm từ 2 phút xuống 30s)
+const CACHE_TIMEOUT = 15 * 1000; // 15 seconds (giảm xuống còn 15s từ 30s)
 
-// Cleanup cache mỗi 10 phút để tránh memory leak
+// Flag để track API calls đang xử lý
+const pendingRequests = new Map<string, boolean>();
+
+// Cleanup cache mỗi 5 phút để tránh memory leak
 setInterval(
   () => {
     const now = Date.now();
@@ -17,9 +20,17 @@ setInterval(
         balanceCache.delete(email);
       }
     });
+
+    // Clear any stuck pending requests
+    pendingRequests.forEach((pending, key) => {
+      // Clear any request pending for more than 30 seconds
+      if (pendingRequests.get(key)) {
+        pendingRequests.delete(key);
+      }
+    });
   },
-  10 * 60 * 1000,
-); // 10 minutes
+  5 * 60 * 1000, // 5 minutes
+);
 
 export async function GET(request: Request) {
   try {
@@ -42,6 +53,20 @@ export async function GET(request: Request) {
     }
 
     const userEmail = session.user.email;
+    const requestId = `${userEmail}-${Date.now()}`;
+
+    // Thêm timeout để đảm bảo không bị mắc kẹt
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        // Trả về balance cached nếu request bị timeout
+        const cached = balanceCache.get(userEmail);
+        if (cached) {
+          console.log(`⏰ Balance request timed out for ${userEmail}, using cached value`);
+          pendingRequests.delete(requestId);
+          reject(new Error('Balance request timed out'));
+        }
+      }, 5000); // 5 seconds timeout
+    });
 
     // Check cache first if not forced to refresh
     const cached = balanceCache.get(userEmail);
@@ -52,32 +77,68 @@ export async function GET(request: Request) {
       });
     }
 
-    try {
-      // Get synchronized balance from both systems
-      let balance = await syncUserBalance(userEmail);
-      
-      // Ensure balance is a number
-      balance = Number(balance) || 0;
-
-      // Cache the result
-      balanceCache.set(userEmail, { balance, timestamp: Date.now() });
-      
-      console.log(`Balance API: Retrieved balance for ${userEmail}: ${balance}`);
-
+    // Nếu có request đang xử lý cho user này, trả về cached value để tránh overload
+    if (pendingRequests.get(userEmail) && !forceRefresh) {
+      console.log(`⚠️ Already processing balance request for ${userEmail}, using cached value`);
       return NextResponse.json({
-        balance: balance,
-        cached: false,
+        balance: cached ? Number(cached.balance) : 0,
+        cached: true,
       });
+    }
+
+    // Đánh dấu là đang xử lý request
+    pendingRequests.set(userEmail, true);
+
+    try {
+      // Race giữa thực tế fetch và timeout
+      try {
+        // Get synchronized balance from both systems
+        let balance = await Promise.race([
+          syncUserBalance(userEmail),
+          timeoutPromise
+        ]) as number;
+        
+        // Ensure balance is a number
+        balance = Number(balance) || 0;
+
+        // Cache the result
+        balanceCache.set(userEmail, { balance, timestamp: Date.now() });
+        
+        console.log(`Balance API: Retrieved balance for ${userEmail}: ${balance}`);
+
+        // Xóa flag đánh dấu xử lý
+        pendingRequests.delete(userEmail);
+
+        return NextResponse.json({
+          balance: balance,
+          cached: false,
+        });
+      } catch (timeoutError) {
+        // Nếu timeout, dùng cached value
+        const cachedFallback = balanceCache.get(userEmail);
+        return NextResponse.json({
+          balance: cachedFallback ? cachedFallback.balance : 0,
+          cached: true,
+          timeout: true
+        });
+      }
     } catch (syncError) {
       console.error('Error syncing user balance:', syncError);
+      
+      // Xóa flag đánh dấu xử lý
+      pendingRequests.delete(userEmail);
+
+      // Vẫn trả về cached value nếu có lỗi
+      const cachedFallback = balanceCache.get(userEmail);
+
       return NextResponse.json(
         { 
           error: 'Balance Sync Error', 
           message: syncError instanceof Error ? syncError.message : 'Failed to sync user balance',
           details: process.env.NODE_ENV === 'development' ? syncError : undefined,
-          balance: 0
+          balance: cachedFallback ? cachedFallback.balance : 0
         }, 
-        { status: 500 }
+        { status: syncError instanceof Error ? 500 : 200 }
       );
     }
   } catch (error) {

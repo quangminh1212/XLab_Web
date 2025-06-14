@@ -62,6 +62,18 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         return;
       }
 
+      // Set timeout cho loading state để tránh mắc kẹt
+      const loadingTimeout = setTimeout(() => {
+        if (isMountedRef.current) {
+          console.log('💰 Loading timeout - showing cached balance');
+          setLoading(false);
+          // Vẫn hiển thị cached balance nếu có
+          if (cachedBalance > 0) {
+            setBalance(cachedBalance);
+          }
+        }
+      }, 3000); // 3 giây timeout cho loading state
+
       isCurrentlyFetching = true;
 
       try {
@@ -94,6 +106,9 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
             if (response.ok) {
               const data = await response.json();
               const newBalance = typeof data.balance === 'number' ? data.balance : 0;
+              
+              // Clear loading timeout
+              clearTimeout(loadingTimeout);
 
               // Chỉ update state nếu component vẫn mounted
               if (isMountedRef.current) {
@@ -134,15 +149,28 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         }
 
         if (!success) {
+          // Ensure we clear loading state even on error
+          clearTimeout(loadingTimeout);
           throw new Error(`Failed to fetch balance after ${maxAttempts} attempts: ${errorMessage}`);
         }
       } catch (err) {
+        // Clear loading timeout
+        clearTimeout(loadingTimeout);
+        
         console.error('Error fetching balance:', err);
         if (isMountedRef.current) {
           setError(err instanceof Error ? err.message : 'Unknown error');
           setLoading(false);
+          
+          // Keep showing cached balance on error if available
+          if (cachedBalance > 0) {
+            setBalance(cachedBalance);
+          }
         }
       } finally {
+        // Clear loading timeout
+        clearTimeout(loadingTimeout);
+        
         if (isMountedRef.current) {
           setLoading(false);
         }
