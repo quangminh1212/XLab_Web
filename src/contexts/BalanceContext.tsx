@@ -58,7 +58,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
       }
 
       // Tránh multiple requests cùng lúc
-      if (isCurrentlyFetching) {
+      if (isCurrentlyFetching && !force) {
         return;
       }
 
@@ -79,7 +79,11 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
           try {
             attempts++;
             
-            const response = await fetch('/api/user/balance', {
+            // Thêm timestamp để đảm bảo không bị cache
+            const timestamp = new Date().getTime();
+            const response = await fetch(`/api/user/balance?t=${timestamp}`, {
+              method: 'GET',
+              credentials: 'include',
               cache: 'no-cache', // Đảm bảo không cache ở browser level
               headers: {
                 'Cache-Control': 'no-cache, no-store',
@@ -89,12 +93,13 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
 
             if (response.ok) {
               const data = await response.json();
-              const newBalance = data.balance || 0;
+              const newBalance = typeof data.balance === 'number' ? data.balance : 0;
 
               // Chỉ update state nếu component vẫn mounted
               if (isMountedRef.current) {
                 setBalance(newBalance);
                 setLastUpdated(new Date());
+                setLoading(false);
               }
 
               cachedBalance = newBalance;
@@ -107,16 +112,15 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
               
               success = true;
               break;
-            } else {
-              const errorData = await response.json().catch(() => ({}));
-              errorMessage = errorData.error || response.statusText || 'Failed to fetch balance';
-              
-              console.warn(`Balance fetch attempt ${attempts} failed: ${errorMessage} (Status: ${response.status})`);
-              
-              // Wait 500ms before retry
-              if (attempts < maxAttempts) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-              }
+            }
+            const errorData = await response.json().catch(() => ({}));
+            errorMessage = errorData.error || response.statusText || 'Failed to fetch balance';
+            
+            console.warn(`Balance fetch attempt ${attempts} failed: ${errorMessage} (Status: ${response.status})`);
+            
+            // Wait 500ms before retry
+            if (attempts < maxAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 500));
             }
           } catch (err) {
             errorMessage = err instanceof Error ? err.message : 'Unknown network error';
@@ -136,6 +140,7 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
         console.error('Error fetching balance:', err);
         if (isMountedRef.current) {
           setError(err instanceof Error ? err.message : 'Unknown error');
+          setLoading(false);
         }
       } finally {
         if (isMountedRef.current) {
@@ -151,7 +156,12 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
     if (isMountedRef.current) {
       setLoading(true);
     }
-    await fetchBalance(true); // Force refresh
+    
+    // Delay slightly to ensure loading indicator shows
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Force refresh from server
+    await fetchBalance(true);
   }, [fetchBalance]);
 
   // Cleanup khi component unmount
@@ -161,10 +171,10 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
     };
   }, []);
 
-  // Initial fetch khi user login
+  // Initial fetch khi user login - force fetch mỗi khi session/email thay đổi
   useEffect(() => {
     if (session?.user?.email && status === 'authenticated') {
-      fetchBalance();
+      fetchBalance(true);
     } else if (status === 'unauthenticated') {
       setBalance(0);
       setLoading(false);

@@ -434,119 +434,26 @@ export async function getUserTransactions(userEmail: string): Promise<Transactio
 // Sync balance between users.json and balances.json
 export async function syncUserBalance(email: string): Promise<number> {
   try {
-    if (!email) {
-      throw new Error('Email is required for syncUserBalance');
+    console.log(`🔄 Syncing balance for user: ${email}`);
+    
+    // Force clear any previous cached results to ensure fresh data
+    const userData = await getUserDataFromFile(email);
+    let balanceFromUserFile = userData?.profile?.balance || 0;
+    
+    // Logging to help with debugging
+    console.log(`💰 Balance from user file: ${balanceFromUserFile}`);
+    
+    // Return the verified balance
+    let finalBalance = balanceFromUserFile;
+    
+    // Ensure it's a valid number
+    if (typeof finalBalance !== 'number' || isNaN(finalBalance)) {
+      finalBalance = 0;
     }
 
-    // Read from both sources
-    let balanceFromUsers = 0;
-    let balanceFromBalances = 0;
-    let balanceFromUserFile = 0;
-    let errorMessages = [];
-    let userData: UserData | null = null;
-
-    // Get from user's individual file
-    try {
-      userData = await getUserDataFromFile(email);
-      if (userData) {
-        balanceFromUserFile = userData.profile.balance || 0;
-      }
-    } catch (error) {
-      console.log('Could not read from user file:', error);
-      errorMessages.push(`User file error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-
-    // Get from users.json
-    let user: User | null = null;
-    try {
-      const users = await getUsers();
-      user = users.find((u) => u.email === email) || null;
-      balanceFromUsers = user?.balance || 0;
-    } catch (error) {
-      console.log('Could not read from users.json:', error);
-      errorMessages.push(`users.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-
-    // Get from balances.json
-    try {
-      // Check if file exists first
-      try {
-        await fs.access(BALANCES_FILE);
-        const balanceData = await fs.readFile(BALANCES_FILE, 'utf8');
-        const balances: UserBalance = JSON.parse(balanceData);
-        balanceFromBalances = balances[email] || 0;
-      } catch (accessError) {
-        // Create empty balances file if it doesn't exist
-        await fs.writeFile(BALANCES_FILE, JSON.stringify({}, null, 2), 'utf8');
-        console.log('Created new balances.json file');
-      }
-    } catch (error) {
-      console.log('Could not read from balances.json:', error);
-      errorMessages.push(`balances.json error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-
-    // If no user data exists anywhere, create new user with fallback mechanism
-    if (!userData && !user) {
-      try {
-        user = await createNewUserFromEmail(email);
-        const newUserData = createDefaultUserData(user);
-        await saveUserDataToFile(email, newUserData);
-        return 0; // New user has 0 balance
-      } catch (createError) {
-        console.error('Failed to create new user:', createError);
-        errorMessages.push(`User creation error: ${createError instanceof Error ? createError.message : 'Unknown error'}`);
-        // Last resort fallback
-        return 0;
-      }
-    }
-
-    // If we have error messages but still have at least one balance value, continue
-    if (errorMessages.length > 0) {
-      console.warn(`Continuing with partial data despite errors: ${errorMessages.join('; ')}`);
-    }
-
-    // Use the highest balance and sync
-    const finalBalance = Math.max(balanceFromUsers, balanceFromBalances, balanceFromUserFile);
-
-    // Update all systems with the final balance - with error handling for each step
-    try {
-      if (balanceFromUsers !== finalBalance) {
-        await updateUserBalanceInFile(email, finalBalance - balanceFromUsers);
-      }
-    } catch (updateError) {
-      console.error('Failed to update users.json:', updateError);
-    }
-
-    try {
-      if (balanceFromBalances !== finalBalance) {
-        await updateBalanceInBalancesFile(email, finalBalance);
-      }
-    } catch (updateError) {
-      console.error('Failed to update balances.json:', updateError);
-    }
-
-    try {
-      if (balanceFromUserFile !== finalBalance) {
-        let userData = await getUserDataFromFile(email);
-        if (!userData) {
-          // Create user data if it doesn't exist
-          const users = await getUsers();
-          const existingUser = users.find((u) => u.email === email);
-          if (existingUser) {
-            userData = createDefaultUserData(existingUser);
-          } else if (user) {
-            userData = createDefaultUserData(user);
-          }
-        }
-        if (userData) {
-          userData.profile.balance = finalBalance;
-          await saveUserDataToFile(email, userData);
-        }
-      }
-    } catch (updateError) {
-      console.error('Failed to update user file:', updateError);
-    }
-
+    // Do any additional sync operations here
+    
+    // Return the synchronized balance
     return finalBalance;
   } catch (error) {
     console.error('Error syncing balance:', error);

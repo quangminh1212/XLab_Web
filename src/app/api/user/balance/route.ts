@@ -3,9 +3,9 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { syncUserBalance } from '@/lib/userService';
 
-// Balance cache với timeout 2 phút để giảm spam requests
+// Balance cache với timeout giảm xuống để tăng tính realtime
 const balanceCache = new Map<string, { balance: number; timestamp: number }>();
-const CACHE_TIMEOUT = 120 * 1000; // 120 seconds (2 minutes)
+const CACHE_TIMEOUT = 30 * 1000; // 30 seconds (giảm từ 2 phút xuống 30s)
 
 // Cleanup cache mỗi 10 phút để tránh memory leak
 setInterval(
@@ -13,7 +13,7 @@ setInterval(
     const now = Date.now();
     balanceCache.forEach((cache, email) => {
       if (now - cache.timestamp > CACHE_TIMEOUT * 2) {
-        // Remove after 4 minutes
+        // Remove after double the cache timeout
         balanceCache.delete(email);
       }
     });
@@ -21,8 +21,12 @@ setInterval(
   10 * 60 * 1000,
 ); // 10 minutes
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const url = new URL(request.url);
+    // Check for force refresh parameter
+    const forceRefresh = url.searchParams.has('t');
+    
     // Check authentication
     const session = await getServerSession(authOptions);
 
@@ -30,7 +34,8 @@ export async function GET() {
       return NextResponse.json(
         { 
           error: 'Unauthorized', 
-          message: 'You need to log in to access this resource' 
+          message: 'You need to log in to access this resource',
+          balance: 0
         }, 
         { status: 401 }
       );
@@ -38,21 +43,26 @@ export async function GET() {
 
     const userEmail = session.user.email;
 
-    // Check cache first
+    // Check cache first if not forced to refresh
     const cached = balanceCache.get(userEmail);
-    if (cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
+    if (!forceRefresh && cached && Date.now() - cached.timestamp < CACHE_TIMEOUT) {
       return NextResponse.json({
-        balance: cached.balance,
+        balance: Number(cached.balance) || 0,
         cached: true,
       });
     }
 
     try {
       // Get synchronized balance from both systems
-      const balance = await syncUserBalance(userEmail);
+      let balance = await syncUserBalance(userEmail);
+      
+      // Ensure balance is a number
+      balance = Number(balance) || 0;
 
       // Cache the result
       balanceCache.set(userEmail, { balance, timestamp: Date.now() });
+      
+      console.log(`Balance API: Retrieved balance for ${userEmail}: ${balance}`);
 
       return NextResponse.json({
         balance: balance,
@@ -64,7 +74,8 @@ export async function GET() {
         { 
           error: 'Balance Sync Error', 
           message: syncError instanceof Error ? syncError.message : 'Failed to sync user balance',
-          details: process.env.NODE_ENV === 'development' ? syncError : undefined
+          details: process.env.NODE_ENV === 'development' ? syncError : undefined,
+          balance: 0
         }, 
         { status: 500 }
       );
@@ -75,7 +86,8 @@ export async function GET() {
       { 
         error: 'Internal Server Error', 
         message: error instanceof Error ? error.message : 'Unknown error occurred',
-        details: process.env.NODE_ENV === 'development' ? error : undefined
+        details: process.env.NODE_ENV === 'development' ? error : undefined,
+        balance: 0
       }, 
       { status: 500 }
     );

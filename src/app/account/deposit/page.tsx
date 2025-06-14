@@ -12,7 +12,7 @@ export default function DepositPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { balance, refreshBalance } = useBalance();
+  const { balance, loading, refreshBalance } = useBalance();
 
   // Lấy thông tin từ URL params
   const suggestedAmount = searchParams?.get('amount');
@@ -37,8 +37,17 @@ export default function DepositPage() {
       router.push('/login');
     } else if (session?.user) {
       generateTransactionCode();
+      // Refresh balance immediately and force a reload from server
+      refreshBalance();
+      
+      // Set up periodic balance refresh
+      const refreshInterval = setInterval(() => {
+        refreshBalance();
+      }, 30000); // Refresh balance every 30 seconds
+      
+      return () => clearInterval(refreshInterval);
     }
-  }, [session, status, router]);
+  }, [session, status, router, refreshBalance]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -133,6 +142,9 @@ export default function DepositPage() {
   };
 
   const formatCurrency = (amount: number) => {
+    if (typeof amount !== 'number' || isNaN(amount)) {
+      amount = 0;
+    }
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
@@ -321,8 +333,24 @@ export default function DepositPage() {
                   </svg>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
+                <button 
+                  onClick={() => refreshBalance()} 
+                  className="ml-auto text-teal-600 hover:text-teal-800 p-1"
+                  title="Làm mới số dư"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
               </div>
-              <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
+              {loading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-teal-600"></div>
+                  <p className="text-sm text-gray-500">Đang tải...</p>
+                </div>
+              ) : (
+                <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
+              )}
             </div>
 
             {/* Transfer Information */}

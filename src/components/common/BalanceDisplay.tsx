@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useEffect } from 'react';
 import { useBalance } from '@/contexts/BalanceContext';
 
 interface BalanceDisplayProps {
@@ -11,7 +11,14 @@ interface BalanceDisplayProps {
 
 function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   const { data: session } = useSession();
-  const { balance, loading } = useBalance();
+  const { balance, loading, refreshBalance } = useBalance();
+
+  // Auto refresh balance when component mounts
+  useEffect(() => {
+    if (session?.user) {
+      refreshBalance();
+    }
+  }, [session?.user, refreshBalance]);
 
   const formattedBalance = useMemo(() => {
     return new Intl.NumberFormat('vi-VN', {
