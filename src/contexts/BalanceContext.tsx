@@ -91,15 +91,10 @@ export function BalanceProvider({ children }: BalanceProviderProps) {
               const data = await response.json();
               const newBalance = data.balance || 0;
 
-              // Log chi tiết để debug
-              console.log(`💰 API Response - Raw data:`, data);
-              console.log(`💰 API Response - Balance value: ${newBalance}, Type: ${typeof newBalance}`);
-
               // Chỉ update state nếu component vẫn mounted
               if (isMountedRef.current) {
                 setBalance(newBalance);
                 setLastUpdated(new Date());
-                console.log(`💰 Balance state updated to: ${newBalance}`);
               }
 
               cachedBalance = newBalance;

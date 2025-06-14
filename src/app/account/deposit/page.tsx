@@ -44,44 +44,13 @@ export default function DepositPage() {
       // Force refresh balance when page loads
       refreshBalance().then(() => {
         console.log('💰 DepositPage - Balance refreshed');
-        // Nếu balance vẫn là 0 sau khi refreshBalance, thử gọi trực tiếp API
-        if (!balance) {
-          directFetchBalance();
-        }
+        generateTransactionCode();
       }).catch(err => {
         console.error('💰 DepositPage - Error refreshing balance:', err);
-        // Thử gọi trực tiếp API khi có lỗi
-        directFetchBalance();
-      }).finally(() => {
-        // Luôn tạo mã giao dịch bất kể kết quả
         generateTransactionCode();
       });
     }
-  }, [session, status, router, refreshBalance, balance]);
-
-  // Hàm gọi trực tiếp API để lấy số dư 
-  const directFetchBalance = async () => {
-    try {
-      console.log('🔍 Trying to fetch balance directly...');
-      const response = await fetch('/api/user/balance', {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-cache, no-store',
-          'Pragma': 'no-cache'
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Direct balance fetch successful:', data);
-        if (data.balance) {
-          refreshBalance(); // Cập nhật balance trong context
-        }
-      }
-    } catch (error) {
-      console.error('❌ Failed to fetch balance directly:', error);
-    }
-  };
+  }, [session, status, router, refreshBalance]);
 
   const checkTransactionStatus = async () => {
     if (!transactionId || isChecking) return;
@@ -369,16 +338,7 @@ export default function DepositPage() {
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">Số dư hiện tại</h3>
               </div>
-              <div>
-                <p className="text-3xl font-bold text-teal-600">
-                  {formatCurrency(Number(balance) || 0)}
-                </p>
-                <div className="text-xs text-gray-500 mt-1">
-                  {balance ? 
-                    `Đã cập nhật số dư: ${balance.toLocaleString('vi-VN')} VND` :
-                    'Đang tải thông tin số dư...'}
-                </div>
-              </div>
+              <p className="text-3xl font-bold text-teal-600">{formatCurrency(balance)}</p>
             </div>
 
             {/* Transfer Information */}

@@ -21,12 +21,11 @@ function BalanceDisplay({ className = '' }: BalanceDisplayProps) {
   }, [balance, error]);
 
   const formattedBalance = useMemo(() => {
-    const validBalance = typeof balance === 'number' ? balance : 0;
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
       maximumFractionDigits: 0,
-    }).format(validBalance);
+    }).format(balance);
   }, [balance]);
 
   if (!session?.user) {
