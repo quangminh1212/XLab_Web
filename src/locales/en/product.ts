@@ -24,6 +24,8 @@ const product: TranslationRecord = {
   'product.addedToCart': 'Added to Cart',
   'product.viewCart': 'View Cart',
   'product.continueShopping': 'Continue Shopping',
+  'product.purchasesPerWeek': '{count}/week',
+  'product.added': 'Added',
 };
 
 export default product; 

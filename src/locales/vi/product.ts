@@ -24,6 +24,8 @@ const product: TranslationRecord = {
   'product.addedToCart': 'Đã thêm vào giỏ hàng',
   'product.viewCart': 'Xem giỏ hàng',
   'product.continueShopping': 'Tiếp tục mua sắm',
+  'product.purchasesPerWeek': '{count}/tuần',
+  'product.added': 'Đã thêm',
 };
 
 export default product; 

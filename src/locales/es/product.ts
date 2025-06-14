@@ -24,6 +24,8 @@ const product: TranslationRecord = {
   'product.addedToCart': 'Añadido al Carrito',
   'product.viewCart': 'Ver Carrito',
   'product.continueShopping': 'Continuar Comprando',
+  'product.purchasesPerWeek': '{count}/semana',
+  'product.added': 'Añadido',
 };
 
 export default product; 
